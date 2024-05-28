@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

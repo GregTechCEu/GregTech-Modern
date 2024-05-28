@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public class OverlayingFluidStorage implements IFluidStorage {
+
     private final IFluidTransfer transfer;
     private final int tank;
 

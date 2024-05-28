@@ -10,8 +10,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -45,12 +47,15 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRawRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), false);
+        ((IItemTransfer) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidTransfer) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Acetone.getFluid(8000), false);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled.getSecond() == 2,"Expected Parallel amount to be 2, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled.getSecond() == 2,
+                "Expected Parallel amount to be 2, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -79,12 +84,15 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRawRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), false);
+        ((IItemTransfer) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidTransfer) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Acetone.getFluid(8000), false);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0,
+                "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -113,15 +121,19 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRawRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Naphtha.getFluid(8000), false);
+        ((IItemTransfer) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidTransfer) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Naphtha.getFluid(8000), false);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0,
+                "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
 
-    // TODO add the rest of https://github.com/GregTechCEu/GregTech/blob/master/src/test/java/gregtech/api/recipes/logic/ParallelLogicTest.java.
+    // TODO add the rest of
+    // https://github.com/GregTechCEu/GregTech/blob/master/src/test/java/gregtech/api/recipes/logic/ParallelLogicTest.java.
 }

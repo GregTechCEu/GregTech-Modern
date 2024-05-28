@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +36,8 @@ public class VerticalTabsWidget extends TabsWidget {
         // main tab
         drawTab(mainTab, graphics, mouseX, mouseY, position.x, position.y + 8, 24, 24, hoveredTab);
         for (int i = 0; i < subTabs.size(); ++i) {
-            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + 8 + 24 * (i + 1), 24, 24, hoveredTab);
+            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + 8 + 24 * (i + 1), 24, 24,
+                    hoveredTab);
         }
     }
 
@@ -49,13 +52,11 @@ public class VerticalTabsWidget extends TabsWidget {
                 return mainTab;
             }
             // others
-            int i = ((int)mouseY - position.y - 24 - 8) / 24;
+            int i = ((int) mouseY - position.y - 24 - 8) / 24;
             if (i >= 0 && i < subTabs.size()) {
                 return subTabs.get(i);
             }
         }
         return null;
-
     }
-
 }

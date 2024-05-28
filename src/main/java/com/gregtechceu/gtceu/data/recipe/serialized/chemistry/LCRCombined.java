@@ -12,7 +12,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_REC
 public class LCRCombined {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         LARGE_CHEMICAL_RECIPES.recipeBuilder("ammonia_shortcut")
                 .circuitMeta(24)
                 .inputFluids(Methane.getFluid(3000))

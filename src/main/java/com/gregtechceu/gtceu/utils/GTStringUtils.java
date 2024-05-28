@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTStringUtils {
 
-
     /**
      * Better implementation of {@link ItemStack#toString()} which respects the stack-aware
      * {@link net.minecraft.world.item.Item#getDescriptionId(ItemStack)} method.

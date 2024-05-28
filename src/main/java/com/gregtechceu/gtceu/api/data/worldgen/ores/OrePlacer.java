@@ -12,25 +12,29 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Responsible for placing ores of surrounding veins for the current chunk.
  * 
- * <p>Surrounding veins are resolved from the {@link OreGenCache} and placed using each block position's {@link OreBlockPlacer}.
+ * <p>
+ * Surrounding veins are resolved from the {@link OreGenCache} and placed using each block position's
+ * {@link OreBlockPlacer}.
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OrePlacer {
+
     private final OreGenCache oreGenCache = new OreGenCache();
 
     /**
      * Place the contents of all surrounding ore veins in the current chunk.
      * 
-     * <p>Consumes the current chunk for all of the relevant veins, allowing the cache to unload the vein,
+     * <p>
+     * Consumes the current chunk for all of the relevant veins, allowing the cache to unload the vein,
      * once all of its chunks have been generated.
      */
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
@@ -44,7 +48,8 @@ public class OrePlacer {
         }
     }
 
-    private void placeVein(ChunkAccess chunk, RandomSource random, BulkSectionAccess access, GeneratedVein generatedVein) {
+    private void placeVein(ChunkAccess chunk, RandomSource random, BulkSectionAccess access,
+                           GeneratedVein generatedVein) {
         RuleTest layerTarget = generatedVein.getLayer().getTarget();
 
         resolvePlacerLists(chunk, generatedVein).forEach(((sectionPos, placers) -> {
@@ -57,8 +62,7 @@ public class OrePlacer {
                 var blockState = section.getBlockState(
                         SectionPos.sectionRelative(pos.getX()),
                         SectionPos.sectionRelative(pos.getY()),
-                        SectionPos.sectionRelative(pos.getZ())
-                );
+                        SectionPos.sectionRelative(pos.getZ()));
 
                 if (layerTarget.test(blockState, random))
                     placer.placeBlock(access, section);
@@ -70,8 +74,7 @@ public class OrePlacer {
         return vein.consumeOres(chunk.getPos()).entrySet().stream()
                 .collect(Collectors.groupingBy(
                         entry -> SectionPos.of(entry.getKey()),
-                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
-                ));
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     private void placeIndicators(ChunkAccess chunk, BulkSectionAccess access, GeneratedIndicators generatedVein) {

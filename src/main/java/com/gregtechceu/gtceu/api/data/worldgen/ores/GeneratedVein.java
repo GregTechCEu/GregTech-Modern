@@ -2,15 +2,17 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Holds a vein's {@link OreBlockPlacer}s for each of its blocks, grouped by chunk.
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GeneratedVein {
+
     @Getter
     private final ChunkPos origin;
 
@@ -27,9 +30,9 @@ public class GeneratedVein {
     private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedOres;
 
     /**
-     * @param origin              The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
-     * @param oresByPosition      The ore placers for each ore block position.<br>
-     *                            Doesn't need to be ordered, grouping by chunks is done internally.
+     * @param origin         The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
+     * @param oresByPosition The ore placers for each ore block position.<br>
+     *                       Doesn't need to be ordered, grouping by chunks is done internally.
      */
     public GeneratedVein(ChunkPos origin, IWorldGenLayer layer, Map<BlockPos, OreBlockPlacer> oresByPosition) {
         this.origin = origin;
@@ -47,6 +50,7 @@ public class GeneratedVein {
 
     @Override
     public String toString() {
-        return "GeneratedVein[origin=" + origin + ", chunks={" + generatedOres.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
+        return "GeneratedVein[origin=" + origin + ", chunks={" +
+                generatedOres.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
     }
 }

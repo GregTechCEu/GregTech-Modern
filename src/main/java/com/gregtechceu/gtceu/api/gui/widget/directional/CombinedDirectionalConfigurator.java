@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -15,8 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -24,14 +24,19 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CombinedDirectionalConfigurator extends WidgetGroup {
+
     protected final static int MOUSE_CLICK_CLIENT_ACTION_ID = 0x0001_0001;
     protected final static int UPDATE_UI_ID = 0x0001_0002;
 
@@ -46,7 +51,8 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     protected @Nullable BlockPos selectedPos;
     protected @Nullable Direction selectedSide;
 
-    public CombinedDirectionalConfigurator(FancyMachineUIWidget machineUI, IDirectionalConfigHandler[] configHandlers, MetaMachine machine, int width, int height) {
+    public CombinedDirectionalConfigurator(FancyMachineUIWidget machineUI, IDirectionalConfigHandler[] configHandlers,
+                                           MetaMachine machine, int width, int height) {
         super(0, 0, width, height);
         this.width = width;
         this.height = height;
@@ -74,22 +80,22 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         var pos = this.machine.getPos();
 
         SceneWidget sceneWidget = new SceneWidget(4, 4, width - 8, height - 8, this.machine.getLevel())
-            .setRenderedCore(List.of(pos), null)
-            .setRenderSelect(false)
-            .setOnSelected(this::onSideSelected);
+                .setRenderedCore(List.of(pos), null)
+                .setRenderSelect(false)
+                .setOnSelected(this::onSideSelected);
 
         if (isRemote()) {
             sceneWidget.getRenderer().addRenderedBlocks(
-                List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
-                new ISceneBlockRenderHook() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public void apply(boolean isTESR, RenderType layer) {
-                        RenderSystem.enableBlend();
-                        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-                    }
-                }
-            );
+                    List.of(pos.above(), pos.below(), pos.north(), pos.south(), pos.east(), pos.west()),
+                    new ISceneBlockRenderHook() {
+
+                        @Override
+                        @OnlyIn(Dist.CLIENT)
+                        public void apply(boolean isTESR, RenderType layer) {
+                            RenderSystem.enableBlend();
+                            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                        }
+                    });
 
             sceneWidget.getRenderer().setAfterWorldRender(this::renderOverlays);
 
@@ -126,7 +132,8 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
                     yOffsetLeft += widgetSize.height + 3;
                 }
                 case RIGHT -> {
-                    widget.setSelfPosition(new Position( width - widgetSize.width - 6, height - 6 - widgetSize.height - yOffsetRight));
+                    widget.setSelfPosition(
+                            new Position(width - widgetSize.width - 6, height - 6 - widgetSize.height - yOffsetRight));
                     yOffsetRight += widgetSize.height + 3;
                 }
             }

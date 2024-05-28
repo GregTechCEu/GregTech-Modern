@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IHPCAComputationProvider;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,10 +29,10 @@ public class HPCAComputationPartMachine extends HPCAComponentPartMachine impleme
     public ResourceTexture getComponentIcon() {
         if (isDamaged()) {
             return advanced ? GuiTextures.HPCA_ICON_DAMAGED_ADVANCED_COMPUTATION_COMPONENT :
-                GuiTextures.HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT;
+                    GuiTextures.HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT;
         }
         return advanced ? GuiTextures.HPCA_ICON_ADVANCED_COMPUTATION_COMPONENT :
-            GuiTextures.HPCA_ICON_COMPUTATION_COMPONENT;
+                GuiTextures.HPCA_ICON_COMPUTATION_COMPONENT;
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -28,7 +29,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -44,16 +45,17 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -62,13 +64,16 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class SteamBoilerMachine extends SteamWorkableMachine implements IUIMachine, IExplosionMachine, IDataInfoProvider {
+public abstract class SteamBoilerMachine extends SteamWorkableMachine
+                                         implements IUIMachine, IExplosionMachine, IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamBoilerMachine.class, SteamWorkableMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamBoilerMachine.class,
+            SteamWorkableMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableFluidTank waterTank;
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     private int currentTemperature;
     @Persisted
     private int timeBeforeCoolingDown;
@@ -86,7 +91,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -127,7 +132,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     //////////////////////////////////////
-    //*******     Auto Output    *******//
+    // ******* Auto Output *******//
     //////////////////////////////////////
 
     @Override
@@ -139,7 +144,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     protected void updateAutoOutputSubscription() {
         if (Direction.stream()
                 .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .anyMatch(direction -> FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(direction), direction.getOpposite()) != null)) {
+                .anyMatch(direction -> FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(direction),
+                        direction.getOpposite()) != null)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -159,7 +165,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     //////////////////////////////////////
-    //******     Recipe Logic     ******//
+    // ****** Recipe Logic ******//
     //////////////////////////////////////
 
     protected void updateSteamSubscription() {
@@ -186,15 +192,17 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                 currentTemperature -= getCoolDownRate();
                 timeBeforeCoolingDown = getCooldownInterval();
             }
-        } else --timeBeforeCoolingDown;
+        } else--timeBeforeCoolingDown;
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
-                long fillAmount = (long) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) / 2);
+                long fillAmount = (long) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) /
+                        2);
                 boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, false).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
-                    filledSteam = steamTank.fillInternal(GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), false);
+                    filledSteam = steamTank.fillInternal(
+                            GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), false);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     doExplosion(2.0f);
@@ -214,7 +222,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                             getFrontFacing().getStepZ() / 2.0, 0.1);
 
                     if (ConfigHolder.INSTANCE.machines.machineSounds) {
-                        getLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
+                        getLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f,
+                                1.0f);
                     }
 
                     // bypass capability check for special case behavior
@@ -248,7 +257,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = recipe.copy();
-            //recipe.duration *= 12; // maybe?
+            // recipe.duration *= 12; // maybe?
             recipe.duration = boilerMachine.isHighPressure ? recipe.duration / 2 : recipe.duration;
             return recipe;
         }
@@ -272,16 +281,17 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
 
     @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         return InteractionResult.PASS;
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -290,9 +300,11 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                 .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
-                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure), GuiTextures.PROGRESS_BAR_BOILER_HEAT)
+                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
+                                GuiTextures.PROGRESS_BAR_BOILER_HEAT)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature", (int) (currentTemperature + 274.15), (int) (getMaxTemperature() + 274.15))))
+                        .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature",
+                                (int) (currentTemperature + 274.15), (int) (getMaxTemperature() + 274.15))))
                 .widget(new TankWidget(waterTank.getStorages()[0], 83, 26, 10, 54, false, true)
                         .setShowAmount(false)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
@@ -302,11 +314,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
                 .widget(new ImageWidget(43, 44, 18, 18, GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
+                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }
 
     //////////////////////////////////////
-    //*********     Client     *********//
+    // ********* Client *********//
     //////////////////////////////////////
 
     @Override
@@ -341,9 +354,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
+                mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             return Collections.singletonList(Component.translatable("gtceu.machine.steam_boiler.heat_amount",
-                FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
+                    FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
         }
         return new ArrayList<>();
     }

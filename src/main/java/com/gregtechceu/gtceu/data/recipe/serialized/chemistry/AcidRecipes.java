@@ -19,7 +19,6 @@ public class AcidRecipes {
     }
 
     private static void sulfuricAcidRecipes(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("sulfur_dioxide_from_sulfur")
                 .circuitMeta(2)
                 .inputItems(dust, Sulfur)
@@ -65,7 +64,6 @@ public class AcidRecipes {
     }
 
     private static void nitricAcidRecipes(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("ammonia_from_elements")
                 .circuitMeta(1)
                 .inputFluids(Hydrogen.getFluid(3000))
@@ -130,7 +128,6 @@ public class AcidRecipes {
     }
 
     private static void phosphoricAcidRecipes(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("phosphorus_pentoxide_from_elements")
                 .circuitMeta(1)
                 .inputItems(dust, Phosphorus, 4)

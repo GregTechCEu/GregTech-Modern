@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
@@ -15,7 +14,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class HigherDegreeMaterials {
 
     public static void register() {
-
         Electrotine = new Material.Builder(GTCEu.id("electrotine"))
                 .dust().ore(5, 1, true)
                 .color(0x83cbf5).secondaryColor(0x004585).iconSet(SHINY)
@@ -86,7 +84,8 @@ public class HigherDegreeMaterials {
         HSSG = new Material.Builder(GTCEu.id("hssg"))
                 .ingot(3).fluid()
                 .color(0x9cbabe).secondaryColor(0x032550).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE,
+                        GENERATE_FOIL, GENERATE_GEAR)
                 .components(TungstenSteel, 5, Chromium, 1, Molybdenum, 2, Vanadium, 1)
                 .rotorStats(205, 140, 5.5f, 4000)
                 .cableProperties(GTValues.V[6], 4, 2)
@@ -123,7 +122,8 @@ public class HigherDegreeMaterials {
         HSSS = new Material.Builder(GTCEu.id("hsss"))
                 .ingot(4).fluid()
                 .color(0xae9abe).secondaryColor(0x66000e).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR, GENERATE_ROUND, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR,
+                        GENERATE_ROUND, GENERATE_FOIL, GENERATE_GEAR)
                 .components(HSSG, 6, Iridium, 2, Osmium, 1)
                 .rotorStats(250, 180, 7.0f, 3000)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1500)

@@ -6,28 +6,30 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
 import com.gregtechceu.gtceu.api.transfer.item.NoOpItemTransfer;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -45,7 +47,9 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @DescSynced
     @Persisted
     @UpdateListener(methodName = "onCoverSet")
-    @ReadOnlyManaged(onDirtyMethod = "onCoverDirty", serializeMethod = "serializeCoverUid", deserializeMethod = "deserializeCoverUid")
+    @ReadOnlyManaged(onDirtyMethod = "onCoverDirty",
+                     serializeMethod = "serializeCoverUid",
+                     deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
     public PipeCoverContainer(IPipeNode<?, ?> pipeTile) {
@@ -196,7 +200,8 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     @SuppressWarnings("unused")
     private boolean onCoverDirty(CoverBehavior coverBehavior) {
-        return coverBehavior != null && (coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields());
+        return coverBehavior != null && (coverBehavior.getSyncStorage().hasDirtySyncFields() ||
+                coverBehavior.getSyncStorage().hasDirtyPersistedFields());
     }
 
     @SuppressWarnings("unused")
@@ -218,5 +223,4 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
         GTCEu.LOGGER.error("couldn't find cover definition {}", definitionId);
         throw new RuntimeException();
     }
-
 }

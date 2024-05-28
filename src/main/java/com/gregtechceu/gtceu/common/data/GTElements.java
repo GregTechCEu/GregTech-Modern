@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+
 import net.minecraftforge.fml.ModLoader;
 
 public class GTElements {
@@ -150,7 +151,8 @@ public class GTElements {
     public static final Element Sp = createAndRegister(1, 0, -1, null, "Space", "Sp", false);
     public static final Element Ma = createAndRegister(1, 0, -1, null, "Magic", "Ma", false);
 
-    public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol, boolean isIsotope) {
+    public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo,
+                                            String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
         GTRegistries.ELEMENTS.register(name, element);
         return element;

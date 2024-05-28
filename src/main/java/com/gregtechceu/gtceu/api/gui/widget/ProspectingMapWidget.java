@@ -6,14 +6,14 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
+
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Getter;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -21,17 +21,19 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 public class ProspectingMapWidget extends WidgetGroup implements SearchComponentWidget.IWidgetSearch<Object> {
+
     private final int chunkRadius;
     private final ProspectorMode mode;
     private final int scanTick;
@@ -42,22 +44,26 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     private ProspectingTexture texture;
     private int playerChunkX;
     private int playerChunkZ;
-    //runtime
+    // runtime
     private int chunkIndex = 0;
     private final Queue<PacketProspecting> packetQueue = new LinkedBlockingQueue<>();
     private final Set<Object> items = new CopyOnWriteArraySet<>();
     private final Map<String, SelectableWidgetGroup> selectedMap = new ConcurrentHashMap<>();
 
-    public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius, @NotNull ProspectorMode mode, int scanTick) {
+    public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius,
+                                @NotNull ProspectorMode mode, int scanTick) {
         super(xPosition, yPosition, width, height);
         this.chunkRadius = chunkRadius;
         this.mode = mode;
         this.scanTick = scanTick;
         int imageWidth = (chunkRadius * 2 - 1) * 16;
         int imageHeight = (chunkRadius * 2 - 1) * 16;
-        addWidget(new ImageWidget(0, (height - imageHeight) / 2 - 4, imageWidth + 8, imageHeight + 8, GuiTextures.BACKGROUND_INVERSE));
-        var group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height).setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(itemList = new DraggableScrollableWidgetGroup(4, 28, group.getSize().width - 8, group.getSize().height - 32)
+        addWidget(new ImageWidget(0, (height - imageHeight) / 2 - 4, imageWidth + 8, imageHeight + 8,
+                GuiTextures.BACKGROUND_INVERSE));
+        var group = (WidgetGroup) new WidgetGroup(imageWidth + 10, 0, width - (imageWidth + 10), height)
+                .setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(itemList = new DraggableScrollableWidgetGroup(4, 28, group.getSize().width - 8,
+                group.getSize().height - 32)
                 .setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1)));
         group.addWidget(new SearchComponentWidget<>(6, 6, group.getSize().width - 12, 18, this));
         addWidget(group);
@@ -100,7 +106,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             for (int z = 0; z < mode.cellSize; z++) {
                 for (var item : data[x][z]) {
                     newItems.add(item);
-                    addNewItem(mode.getUniqueID(item), mode.getDescriptionId(item), mode.getItemIcon(item), mode.getItemColor(item));
+                    addNewItem(mode.getUniqueID(item), mode.getDescriptionId(item), mode.getItemIcon(item),
+                            mode.getItemColor(item));
                 }
             }
         }
@@ -113,7 +120,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
             var size = selectableWidgetGroup.getSize();
             selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
-            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
+            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15,
+                    new TextTexture(renderingName).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
             selectableWidgetGroup.setOnSelected(s -> {
                 if (isRemote()) {
                     texture.setSelected(uniqueID);
@@ -179,7 +187,6 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         }
     }
 
-
     @OnlyIn(Dist.CLIENT)
     private void addPacketToQueue(PacketProspecting packet) {
         packetQueue.add(packet);
@@ -191,7 +198,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         var position = getPosition();
         var size = getSize();
-        //draw background
+        // draw background
         var x = position.x + 3;
         var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
         texture.draw(graphics, x, y);
@@ -199,7 +206,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         int cZ = (mouseY - y) / 16;
         if (cX >= 0 && cZ >= 0 && cX < chunkRadius * 2 - 1 && cZ < chunkRadius * 2 - 1) {
             // draw hover layer
-            DrawerHelper.drawSolidRect(graphics, cX * 16 + x, cZ * 16 + y, 16, 16,0x4B6C6C6C);
+            DrawerHelper.drawSolidRect(graphics, cX * 16 + x, cZ * 16 + y, 16, 16, 0x4B6C6C6C);
         }
     }
 
@@ -257,7 +264,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             if (!added.contains(id)) {
                 added.add(id);
                 var localized = LocalizationUtils.format(resultDisplay(item));
-                if (item.toString().toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT)) || localized.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
+                if (item.toString().toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT)) ||
+                        localized.toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT))) {
                     consumer.accept(item);
                 }
             }

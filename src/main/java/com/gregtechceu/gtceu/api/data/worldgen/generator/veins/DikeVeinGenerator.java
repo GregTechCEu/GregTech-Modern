@@ -8,13 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -33,6 +27,14 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +44,11 @@ import java.util.stream.Stream;
 @Accessors(fluent = true, chain = true)
 @AllArgsConstructor
 public class DikeVeinGenerator extends VeinGenerator {
+
     public static final Codec<DikeVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(DikeBlockDefinition.CODEC).fieldOf("blocks").forGetter(it -> it.blocks),
             Codec.INT.fieldOf("min_y").forGetter(it -> it.minYLevel),
-            Codec.INT.fieldOf("max_y").forGetter(it -> it.maxYLevel)
-    ).apply(instance, DikeVeinGenerator::new));
+            Codec.INT.fieldOf("max_y").forGetter(it -> it.maxYLevel)).apply(instance, DikeVeinGenerator::new));
 
     public List<DikeBlockDefinition> blocks;
     @Setter
@@ -61,15 +63,18 @@ public class DikeVeinGenerator extends VeinGenerator {
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         return this.blocks.stream()
-                .flatMap(definition ->
-                        definition.block.map(state ->
-                                        state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
-                                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))))
+                .flatMap(definition -> definition.block.map(
+                        state -> state.stream()
+                                .map(target -> Map.entry(Either.<BlockState, Material>left(target.state),
+                                        definition.weight)),
+                        material -> Stream
+                                .of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                                  BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
@@ -89,7 +94,6 @@ public class DikeVeinGenerator extends VeinGenerator {
 
         BlockPos basePos = new BlockPos(xPos, yBottom, zPos);
 
-
         for (int dY = yBottom; dY <= yTop; dY++) {
             for (int dX = -radius; dX <= radius; dX++) {
                 for (int dZ = -radius; dZ <= radius; dZ++) {
@@ -101,7 +105,8 @@ public class DikeVeinGenerator extends VeinGenerator {
                     if (normalNoise.getValue(dX, dY, dZ) >= 0.5 && random.nextFloat() <= density) {
                         final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
 
-                        generatedBlocks.put(pos, (access, section) -> placeBlock(access, section, randomSeed, pos, entry));
+                        generatedBlocks.put(pos,
+                                (access, section) -> placeBlock(access, section, randomSeed, pos, entry));
                     }
                 }
             }
@@ -111,10 +116,11 @@ public class DikeVeinGenerator extends VeinGenerator {
     }
 
     private void placeBlock(
-            BulkSectionAccess level, LevelChunkSection section, long randomSeed, BlockPos pos, GTOreDefinition entry
-    ) {
+                            BulkSectionAccess level, LevelChunkSection section, long randomSeed, BlockPos pos,
+                            GTOreDefinition entry) {
         var rand = new XoroshiroRandomSource(randomSeed);
-        List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream().map(b -> Map.entry(b.weight, b)).toList();
+        List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream()
+                .map(b -> Map.entry(b.weight, b)).toList();
         DikeBlockDefinition blockDefinition = blocks.get(GTUtil.getRandomItem(rand, entries, entries.size()));
         BlockState current = level.getBlockState(pos);
 
@@ -125,7 +131,8 @@ public class DikeVeinGenerator extends VeinGenerator {
         if (pos.getY() >= blockDefinition.minY() && pos.getY() <= blockDefinition.maxY()) {
             blockDefinition.block.ifLeft(blockStates -> {
                 for (TargetBlockState targetState : blockStates) {
-                    if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, rand, entry, targetState, pos.mutable()))
+                    if (!OreVeinUtil.canPlaceOre(current, level::getBlockState, rand, entry, targetState,
+                            pos.mutable()))
                         continue;
                     if (targetState.state.isAir())
                         continue;
@@ -178,12 +185,14 @@ public class DikeVeinGenerator extends VeinGenerator {
 
     public record DikeBlockDefinition(Either<List<TargetBlockState>, Material> block, int weight,
                                       int minY, int maxY) {
+
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(x -> x.block),
+                Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("block")
+                        .forGetter(x -> x.block),
                 Codec.INT.fieldOf("weight").forGetter(x -> x.weight),
                 Codec.INT.fieldOf("min_y").orElse(320).forGetter(x -> x.minY),
-                Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY)
-        ).apply(instance, DikeBlockDefinition::new));
+                Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY))
+                .apply(instance, DikeBlockDefinition::new));
 
         public DikeBlockDefinition(Material block, int weight, int minY, int maxY) {
             this(Either.right(block), weight, minY, maxY);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.kinetic;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
+
 import net.minecraft.core.Direction;
 
 /**
@@ -11,8 +12,9 @@ import net.minecraft.core.Direction;
  * @implNote IKineticMachine
  */
 public interface IKineticMachine extends IMachineFeature {
+
     default KineticMachineBlockEntity getKineticHolder() {
-        return (KineticMachineBlockEntity)self().getHolder();
+        return (KineticMachineBlockEntity) self().getHolder();
     }
 
     default KineticMachineDefinition getKineticDefinition() {
@@ -25,7 +27,8 @@ public interface IKineticMachine extends IMachineFeature {
 
     default Direction getRotationFacing() {
         var frontFacing = self().getFrontFacing();
-        return getKineticDefinition().isFrontRotation() ? frontFacing : (frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : frontFacing.getClockWise());
+        return getKineticDefinition().isFrontRotation() ? frontFacing :
+                (frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : frontFacing.getClockWise());
     }
 
     default boolean hasShaftTowards(Direction face) {

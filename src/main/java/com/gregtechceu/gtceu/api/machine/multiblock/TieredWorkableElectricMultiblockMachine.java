@@ -4,10 +4,13 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -18,8 +21,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine implements ITieredMachine, IOverclockMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredWorkableElectricMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
+public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine
+                                                     implements ITieredMachine, IOverclockMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            TieredWorkableElectricMultiblockMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     private final int tier;
     @Persisted
@@ -32,7 +38,7 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -40,7 +46,7 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     }
 
     //////////////////////////////////////
-    //********     OVERCLOCK   *********//
+    // ******** OVERCLOCK *********//
     //////////////////////////////////////
     @Override
     public int getMinOverclockTier() {
@@ -61,7 +67,7 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
     @Override
     public int getTier() {

@@ -15,10 +15,12 @@ import java.util.function.BooleanSupplier;
  */
 @OnlyIn(Dist.CLIENT)
 public class AutoReleasedSound extends AbstractTickableSoundInstance {
+
     public final BooleanSupplier predicate;
     public final SoundEntry soundEntry;
 
-    protected AutoReleasedSound(SoundEntry soundEntry, BooleanSupplier predicate, BlockPos pos, boolean loop, int delay, float volume, float pitch) {
+    protected AutoReleasedSound(SoundEntry soundEntry, BooleanSupplier predicate, BlockPos pos, boolean loop, int delay,
+                                float volume, float pitch) {
         super(soundEntry.getMainEvent(), soundEntry.category, Minecraft.getInstance().level.random);
         this.soundEntry = soundEntry;
         this.predicate = predicate;
@@ -42,5 +44,4 @@ public class AutoReleasedSound extends AbstractTickableSoundInstance {
     public void release() {
         stop();
     }
-
 }

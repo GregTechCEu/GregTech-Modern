@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import lombok.Getter;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
+import lombok.Getter;
 
 import java.util.function.BiFunction;
 
@@ -36,7 +38,8 @@ public class TagType {
      */
     public static TagType withPrefixFormatter(String tagPath) {
         TagType type = new TagType(tagPath);
-        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name), mat.getName()));
+        type.formatter = (prefix, mat) -> TagUtil.createItemTag(
+                type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name), mat.getName()));
         return type;
     }
 
@@ -46,7 +49,8 @@ public class TagType {
      */
     public static TagType withPrefixOnlyFormatter(String tagPath) {
         TagType type = new TagType(tagPath);
-        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name)));
+        type.formatter = (prefix, mat) -> TagUtil
+                .createItemTag(type.tagPath.formatted(FormattingUtil.toLowerCaseUnderscore(prefix.name)));
         type.isParentTag = true;
         return type;
     }

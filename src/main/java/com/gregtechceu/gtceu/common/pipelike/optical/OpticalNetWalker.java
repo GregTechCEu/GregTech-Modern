@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 
 public class OpticalNetWalker extends PipeNetWalker<OpticalPipeBlockEntity, OpticalPipeProperties, OpticalPipeNet> {
@@ -13,7 +15,8 @@ public class OpticalNetWalker extends PipeNetWalker<OpticalPipeBlockEntity, Opti
     public static final OpticalRoutePath FAILED_MARKER = new OpticalRoutePath(null, null, 0);
 
     @Nullable
-    public static OpticalRoutePath createNetData(OpticalPipeNet world, BlockPos sourcePipe, Direction faceToSourceHandler) {
+    public static OpticalRoutePath createNetData(OpticalPipeNet world, BlockPos sourcePipe,
+                                                 Direction faceToSourceHandler) {
         OpticalNetWalker walker = new OpticalNetWalker(world, sourcePipe, 1);
         walker.sourcePipe = sourcePipe;
         walker.facingToHandler = faceToSourceHandler;
@@ -30,8 +33,10 @@ public class OpticalNetWalker extends PipeNetWalker<OpticalPipeBlockEntity, Opti
     }
 
     @Override
-    protected PipeNetWalker<OpticalPipeBlockEntity, OpticalPipeProperties, OpticalPipeNet> createSubWalker(OpticalPipeNet world, Direction facingToNextPos,
-                                                                   BlockPos nextPos, int walkedBlocks) {
+    protected PipeNetWalker<OpticalPipeBlockEntity, OpticalPipeProperties, OpticalPipeNet> createSubWalker(OpticalPipeNet world,
+                                                                                                           Direction facingToNextPos,
+                                                                                                           BlockPos nextPos,
+                                                                                                           int walkedBlocks) {
         OpticalNetWalker walker = new OpticalNetWalker(world, nextPos, walkedBlocks);
         walker.facingToHandler = facingToHandler;
         walker.sourcePipe = sourcePipe;

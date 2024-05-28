@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -50,9 +51,12 @@ public class MultiblockDisplayText {
             this.isStructureFormed = isStructureFormed;
 
             if (!isStructureFormed && showIncompleteStructureWarning) {
-                MutableComponent base = Component.translatable("gtceu.multiblock.invalid_structure").withStyle(ChatFormatting.RED);
-                Component hover = Component.translatable("gtceu.multiblock.invalid_structure.tooltip").withStyle(ChatFormatting.GRAY);
-                textList.add(base.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover))));
+                MutableComponent base = Component.translatable("gtceu.multiblock.invalid_structure")
+                        .withStyle(ChatFormatting.RED);
+                Component hover = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                        .withStyle(ChatFormatting.GRAY);
+                textList.add(base
+                        .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover))));
             }
         }
 
@@ -99,12 +103,14 @@ public class MultiblockDisplayText {
                 String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
                 // wrap in text component to keep it from being formatted
                 Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
+                        GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
 
                 MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-                Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover").withStyle(ChatFormatting.GRAY);
-                textList.add(bodyText.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
+                        energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
+                Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                        .withStyle(ChatFormatting.GRAY);
+                textList.add(bodyText.withStyle(
+                        style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
             }
             return this;
         }
@@ -123,10 +129,12 @@ public class MultiblockDisplayText {
 
             Component voltageName = Component.literal(GTValues.VNF[tier]);
             MutableComponent bodyText = Component.translatable(
-                "gtceu.multiblock.max_recipe_tier",
-                voltageName).withStyle(ChatFormatting.GRAY);
-            Component hoverText = Component.translatable("gtceu.multiblock.max_recipe_tier_hover").withStyle(ChatFormatting.GRAY);
-            textList.add(bodyText.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
+                    "gtceu.multiblock.max_recipe_tier",
+                    voltageName).withStyle(ChatFormatting.GRAY);
+            Component hoverText = Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
+                    .withStyle(ChatFormatting.GRAY);
+            textList.add(bodyText
+                    .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
             return this;
         }
 
@@ -142,10 +150,10 @@ public class MultiblockDisplayText {
                 String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
                 // wrap in text component to keep it from being formatted
                 Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
+                        GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
 
                 textList.add(Component.translatable("gtceu.multiblock.energy_consumption",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY));
+                        energyFormatted, voltageName).withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -162,10 +170,10 @@ public class MultiblockDisplayText {
                 String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
                 // wrap in text component to keep it from being formatted
                 Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
+                        GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
 
                 textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY));
+                        energyFormatted, voltageName).withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -184,10 +192,10 @@ public class MultiblockDisplayText {
                 String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
                 // wrap in text component to keep it from being formatted
                 Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
+                        GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
 
                 textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick_amps",
-                    energyFormatted, amperage, voltageName).withStyle(ChatFormatting.GRAY));
+                        energyFormatted, amperage, voltageName).withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -201,9 +209,10 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (maxCWUt > 0) {
-                Component computation = Component.literal(FormattingUtil.formatNumbers(maxCWUt)).withStyle(ChatFormatting.AQUA);
+                Component computation = Component.literal(FormattingUtil.formatNumbers(maxCWUt))
+                        .withStyle(ChatFormatting.AQUA);
                 textList.add(Component.translatable("gtceu.multiblock.computation.max",
-                    computation).withStyle(ChatFormatting.GRAY));
+                        computation).withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -217,10 +226,11 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (isActive && currentCWUt > 0) {
-                Component computation = Component.literal(FormattingUtil.formatNumbers(currentCWUt) + " CWU/t").withStyle(ChatFormatting.AQUA);
+                Component computation = Component.literal(FormattingUtil.formatNumbers(currentCWUt) + " CWU/t")
+                        .withStyle(ChatFormatting.AQUA);
                 textList.add(Component.translatable(
-                    "gtceu.multiblock.computation.usage",
-                    computation).withStyle(ChatFormatting.GRAY));
+                        "gtceu.multiblock.computation.usage",
+                        computation).withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -311,8 +321,10 @@ public class MultiblockDisplayText {
         public Builder addMachineModeLine(GTRecipeType recipeType) {
             if (!isStructureFormed)
                 return this;
-            textList.add(Component.translatable("gtceu.gui.machinemode", Component.translatable(recipeType.registryName.toLanguageKey()))
-                .withStyle(ChatFormatting.AQUA));
+            textList.add(Component
+                    .translatable("gtceu.gui.machinemode",
+                            Component.translatable(recipeType.registryName.toLanguageKey()))
+                    .withStyle(ChatFormatting.AQUA));
             return this;
         }
 
@@ -325,12 +337,13 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (numParallels > 1) {
-                Component parallels = Component.literal(FormattingUtil.formatNumbers(numParallels)).withStyle(ChatFormatting.DARK_PURPLE);
+                Component parallels = Component.literal(FormattingUtil.formatNumbers(numParallels))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
 
                 textList.add(Component.translatable(
                         "gtceu.multiblock.parallel",
                         parallels)
-                    .withStyle(ChatFormatting.GRAY));
+                        .withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -344,7 +357,8 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (isLowPower) {
-                textList.add(Component.translatable("gtceu.multiblock.not_enough_energy").withStyle(ChatFormatting.YELLOW));
+                textList.add(
+                        Component.translatable("gtceu.multiblock.not_enough_energy").withStyle(ChatFormatting.YELLOW));
             }
             return this;
         }
@@ -358,7 +372,8 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (isLowComputation) {
-                textList.add(Component.translatable("gtceu.multiblock.computation.not_enough_computation").withStyle(ChatFormatting.YELLOW));
+                textList.add(Component.translatable("gtceu.multiblock.computation.not_enough_computation")
+                        .withStyle(ChatFormatting.YELLOW));
             }
             return this;
         }
@@ -372,7 +387,8 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (isTooLow) {
-                textList.add(Component.translatable("gtceu.multiblock.not_enough_energy_output").withStyle(ChatFormatting.YELLOW));
+                textList.add(Component.translatable("gtceu.multiblock.not_enough_energy_output")
+                        .withStyle(ChatFormatting.YELLOW));
             }
             return this;
         }
@@ -391,39 +407,46 @@ public class MultiblockDisplayText {
 
                 // Wrench
                 if ((maintenanceProblems & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.wrench").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.wrench")
+                            .withStyle(ChatFormatting.GRAY));
                 }
 
                 // Screwdriver
                 if (((maintenanceProblems >> 1) & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver")
+                            .withStyle(ChatFormatting.GRAY));
                 }
 
                 // Soft Mallet
                 if (((maintenanceProblems >> 2) & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet")
+                            .withStyle(ChatFormatting.GRAY));
                 }
 
                 // Hammer
                 if (((maintenanceProblems >> 3) & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer")
+                            .withStyle(ChatFormatting.GRAY));
                 }
 
                 // Wire Cutters
                 if (((maintenanceProblems >> 4) & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter")
+                            .withStyle(ChatFormatting.GRAY));
                 }
 
                 // Crowbar
                 if (((maintenanceProblems >> 5) & 1) == 0) {
-                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar").withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar")
+                            .withStyle(ChatFormatting.GRAY));
                 }
             }
             return this;
         }
 
         private void addMaintenanceProblemHeader() {
-            textList.add(Component.translatable("gtceu.multiblock.universal.has_problems").withStyle(ChatFormatting.YELLOW));
+            textList.add(
+                    Component.translatable("gtceu.multiblock.universal.has_problems").withStyle(ChatFormatting.YELLOW));
         }
 
         /**
@@ -435,8 +458,10 @@ public class MultiblockDisplayText {
             if (!isStructureFormed)
                 return this;
             if (isObstructed) {
-                textList.add(Component.translatable("gtceu.multiblock.universal.muffler_obstructed").withStyle(ChatFormatting.RED));
-                textList.add(Component.translatable("gtceu.multiblock.universal.muffler_obstructed.tooltip").withStyle(ChatFormatting.GRAY));
+                textList.add(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")
+                        .withStyle(ChatFormatting.RED));
+                textList.add(Component.translatable("gtceu.multiblock.universal.muffler_obstructed.tooltip")
+                        .withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -450,10 +475,11 @@ public class MultiblockDisplayText {
             if (!isStructureFormed || !isActive)
                 return this;
             Component fuelNeeded = Component.literal(fuelName).withStyle(ChatFormatting.RED);
-            Component numTicks = Component.literal(FormattingUtil.formatNumbers(previousRecipeDuration)).withStyle(ChatFormatting.AQUA);
+            Component numTicks = Component.literal(FormattingUtil.formatNumbers(previousRecipeDuration))
+                    .withStyle(ChatFormatting.AQUA);
             textList.add(Component.translatable(
-                "gtceu.multiblock.turbine.fuel_needed",
-                fuelNeeded, numTicks).withStyle(ChatFormatting.GRAY));
+                    "gtceu.multiblock.turbine.fuel_needed",
+                    fuelNeeded, numTicks).withStyle(ChatFormatting.GRAY));
             return this;
         }
 

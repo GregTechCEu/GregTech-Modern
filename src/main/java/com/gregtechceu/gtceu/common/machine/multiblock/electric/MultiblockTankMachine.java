@@ -7,11 +7,12 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,10 +31,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MultiblockTankMachine extends MultiblockControllerMachine implements IFancyUIMachine {
-    @Persisted @Getter @NotNull
+
+    @Persisted
+    @Getter
+    @NotNull
     private final NotifiableFluidTank tank;
 
-    public MultiblockTankMachine(IMachineBlockEntity holder, int capacity, @Nullable PropertyFluidFilter filter, Object... args) {
+    public MultiblockTankMachine(IMachineBlockEntity holder, int capacity, @Nullable PropertyFluidFilter filter,
+                                 Object... args) {
         super(holder);
 
         this.tank = createTank(capacity, filter, args);
@@ -47,7 +54,8 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
         var superResult = super.onUse(state, world, pos, player, hand, hit);
 
         if (superResult != InteractionResult.PASS) return superResult;
@@ -57,7 +65,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     }
 
     /////////////////////////////////////
-    //***********    GUI    ***********//
+    // *********** GUI ***********//
     /////////////////////////////////////
 
     @Override
@@ -69,8 +77,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
         group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"));
         group.addWidget(new LabelWidget(8, 18, this::getFluidLabel).setTextColor(-1).setDropShadow(true));
         group.addWidget(new TankWidget(tank.getStorages()[0], 68, 23, true, true)
-            .setBackground(GuiTextures.FLUID_SLOT)
-        );
+                .setBackground(GuiTextures.FLUID_SLOT));
 
         return group;
     }
@@ -80,10 +87,11 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     }
 
     //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
+    // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockTankMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockTankMachine.class,
+            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

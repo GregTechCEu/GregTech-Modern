@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
@@ -16,28 +18,35 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class FluidPipeProperties implements IMaterialProperty<FluidPipeProperties>, IPropertyFluidFilter {
+
     /**
      * The maximum number of channels any fluid pipe can have
      */
     public static final int MAX_PIPE_CHANNELS = 9;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private long throughput;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int channels;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int maxFluidTemperature;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean gasProof;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean cryoProof;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean plasmaProof;
 
     private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
 
-
-    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, int channels) {
+    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof,
+                               boolean cryoProof, boolean plasmaProof, int channels) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;
@@ -50,7 +59,8 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
     /**
      * Default property constructor.
      */
-    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
+    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean acidProof,
+                               boolean cryoProof, boolean plasmaProof) {
         this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, 1);
     }
 
@@ -72,7 +82,7 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
         if (this == o) return true;
         if (!(o instanceof FluidPipeProperties that)) return false;
         return maxFluidTemperature == that.maxFluidTemperature &&
-            throughput == that.throughput && gasProof == that.gasProof && channels == that.channels;
+                throughput == that.throughput && gasProof == that.gasProof && channels == that.channels;
     }
 
     @Override

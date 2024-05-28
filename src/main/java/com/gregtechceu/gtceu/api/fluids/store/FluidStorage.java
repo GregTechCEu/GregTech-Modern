@@ -4,12 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
+import net.minecraft.world.level.material.Fluid;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +23,12 @@ public final class FluidStorage {
 
     @AllArgsConstructor
     public static class FluidEntry {
+
         @Getter
         private Supplier<? extends Fluid> fluid;
         @Nullable
-        @Getter @Setter
+        @Getter
+        @Setter
         private FluidBuilder builder;
     }
 
@@ -39,7 +42,7 @@ public final class FluidStorage {
     /**
      * Enqueue a fluid for registration
      *
-     * @param key the key corresponding with the fluid
+     * @param key     the key corresponding with the fluid
      * @param builder the FluidBuilder to build
      */
     public void enqueueRegistration(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
@@ -84,15 +87,17 @@ public final class FluidStorage {
         }
 
         toRegister.entrySet().stream()
-            .sorted(Comparator.comparingInt(e -> -e.getKey().getRegistrationPriority()))
-            .forEach(entry -> {
-                if (map.containsKey(entry.getKey())) {
-                    GTCEu.LOGGER.warn("{} already has an associated fluid for material {}", entry.getKey(), material);
-                    return;
-                }
-                Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material, entry.getKey(), registrate);
-                store(entry.getKey(), fluid, entry.getValue());
-            });
+                .sorted(Comparator.comparingInt(e -> -e.getKey().getRegistrationPriority()))
+                .forEach(entry -> {
+                    if (map.containsKey(entry.getKey())) {
+                        GTCEu.LOGGER.warn("{} already has an associated fluid for material {}", entry.getKey(),
+                                material);
+                        return;
+                    }
+                    Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material,
+                            entry.getKey(), registrate);
+                    store(entry.getKey(), fluid, entry.getValue());
+                });
         toRegister = null;
         registered = true;
     }
@@ -116,7 +121,8 @@ public final class FluidStorage {
      * @param fluid the fluid to associate with the key
      * @return if the associations were successfully updated
      */
-    public boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
+    public boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid,
+                                     @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             return false;
         }
@@ -125,11 +131,12 @@ public final class FluidStorage {
     }
 
     /**
-     * @param key the key to associate with the fluid
+     * @param key   the key to associate with the fluid
      * @param fluid the fluid to associate with the key
      * @throws IllegalArgumentException if a key is already associated with another fluid
      */
-    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
+    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid,
+                      @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             throw new IllegalArgumentException(key + " already has an associated fluid");
         }

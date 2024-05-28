@@ -3,32 +3,31 @@ package com.gregtechceu.gtceu.api.gui.texture;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.FastColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.lang.reflect.Array;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 
@@ -36,6 +35,7 @@ import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ProspectingTexture extends AbstractTexture {
+
     public static final String SELECTED_ALL = "[all]";
     @Getter
     private String selected = SELECTED_ALL;
@@ -53,11 +53,13 @@ public class ProspectingTexture extends AbstractTexture {
     private final ProspectorMode mode;
     private final int radius;
 
-    public ProspectingTexture(int playerChunkX, int playerChunkZ, int posX, int posZ, float direction, ProspectorMode mode, int radius, boolean darkMode) {
+    public ProspectingTexture(int playerChunkX, int playerChunkZ, int posX, int posZ, float direction,
+                              ProspectorMode mode, int radius, boolean darkMode) {
         this.darkMode = darkMode;
         this.radius = radius;
         this.mode = mode;
-        this.data = (Object[][][]) Array.newInstance(mode.getItemClass(), (radius * 2 - 1) * mode.cellSize, (radius * 2 - 1) * mode.cellSize, 0);
+        this.data = (Object[][][]) Array.newInstance(mode.getItemClass(), (radius * 2 - 1) * mode.cellSize,
+                (radius * 2 - 1) * mode.cellSize, 0);
         this.imageWidth = (radius * 2 - 1) * 16;
         this.imageHeight = (radius * 2 - 1) * 16;
         this.playerChunkX = playerChunkX;
@@ -65,8 +67,6 @@ public class ProspectingTexture extends AbstractTexture {
         this.direction = (direction + 180) % 360;
         this.playerXGui = posX - (playerChunkX - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
         playerYGui = posZ - (playerChunkZ - this.radius + 1) * 16 + (posX > 0 ? 1 : 0);
-
-
     }
 
     public void updateTexture(PacketProspecting packet) {
@@ -97,7 +97,8 @@ public class ProspectingTexture extends AbstractTexture {
         }
 
         for (int x = 0; x < mode.cellSize; x++) {
-            System.arraycopy(packet.data[x], 0, data[x + currentColumn * mode.cellSize], currentRow * mode.cellSize, mode.cellSize);
+            System.arraycopy(packet.data[x], 0, data[x + currentColumn * mode.cellSize], currentRow * mode.cellSize,
+                    mode.cellSize);
         }
         load();
     }
@@ -110,11 +111,12 @@ public class ProspectingTexture extends AbstractTexture {
                 var items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
                 // draw bg
                 image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
-                //draw items
+                // draw items
                 for (var item : items) {
                     if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
                     var color = mode.getItemColor(item);
-                    image.setPixelRGBA(i, j, combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
+                    image.setPixelRGBA(i, j,
+                            combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
                     break;
                 }
                 // draw grid
@@ -156,7 +158,7 @@ public class ProspectingTexture extends AbstractTexture {
         bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
         tessellator.end();
 
-        //draw special grid (e.g. fluid)
+        // draw special grid (e.g. fluid)
         for (int cx = 0; cx < radius * 2 - 1; cx++) {
             for (int cz = 0; cz < radius * 2 - 1; cz++) {
                 if (this.data[cx][cz] != null && this.data[cx][cz].length > 0) {
@@ -166,15 +168,16 @@ public class ProspectingTexture extends AbstractTexture {
             }
         }
 
-        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0,
+                x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
-        //draw red vertical line
+        // draw red vertical line
         if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {
             DrawerHelper.drawSolidRect(graphics, x + playerXGui - 1, y, 1, imageHeight, ColorPattern.RED.color);
         } else {
             DrawerHelper.drawSolidRect(graphics, x + playerXGui, y, 1, imageHeight, ColorPattern.RED.color);
         }
-        //draw red horizontal line
+        // draw red horizontal line
         if (playerYGui % 16 > 7 || playerYGui % 16 == 0) {
             DrawerHelper.drawSolidRect(graphics, x, y + playerYGui - 1, imageWidth, 1, ColorPattern.RED.color);
         } else {
@@ -183,9 +186,7 @@ public class ProspectingTexture extends AbstractTexture {
     }
 
     @Override
-    public void load(ResourceManager resourceManager) throws IOException {
-
-    }
+    public void load(ResourceManager resourceManager) throws IOException {}
 
     public void setDarkMode(boolean darkMode) {
         if (this.darkMode != darkMode) {

@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.common.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import com.google.gson.JsonObject;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 public class ResearchCondition extends RecipeCondition {
+
     public final static ResearchCondition INSTANCE = new ResearchCondition();
     public ResearchData data;
 
