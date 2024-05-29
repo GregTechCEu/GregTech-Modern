@@ -15,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -30,11 +28,13 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -105,16 +105,9 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0)
-            GTUtil.applyHazardEffects(material, livingEntity, () -> true);
-    }
-
-    @Override
-    public boolean emptyContents(@org.jetbrains.annotations.Nullable Player pPlayer, Level pLevel, BlockPos pPos,
-                                 @org.jetbrains.annotations.Nullable BlockHitResult pResult,
-                                 @org.jetbrains.annotations.Nullable ItemStack container) {
+    public boolean emptyContents(@Nullable Player pPlayer, Level pLevel, BlockPos pPos,
+                                 @Nullable BlockHitResult pResult,
+                                 @Nullable ItemStack container) {
         if (!(this.getFluid() instanceof FlowingFluid)) return false;
 
         BlockState blockstate = pLevel.getBlockState(pPos);
@@ -122,8 +115,8 @@ public class GTBucketItem extends BucketItem {
         boolean flag = blockstate.canBeReplaced(this.getFluid());
         boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer &&
                 ((LiquidBlockContainer) block).canPlaceLiquid(pLevel, pPos, blockstate, this.getFluid());
-        java.util.Optional<net.minecraftforge.fluids.FluidStack> containedFluidStack = java.util.Optional
-                .ofNullable(container).flatMap(net.minecraftforge.fluids.FluidUtil::getFluidContained);
+        Optional<net.minecraftforge.fluids.FluidStack> containedFluidStack = Optional
+                .ofNullable(container).flatMap(FluidUtil::getFluidContained);
         if (!flag1) {
             return pResult != null && this.emptyContents(pPlayer, pLevel,
                     pResult.getBlockPos().relative(pResult.getDirection()), null, container);

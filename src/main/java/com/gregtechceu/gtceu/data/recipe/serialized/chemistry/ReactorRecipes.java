@@ -16,8 +16,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.GELLED_TOLUENE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ReactorRecipes {
 
@@ -141,6 +140,15 @@ public class ReactorRecipes {
                 .outputFluids(Iron3Chloride.getFluid(1000))
                 .outputFluids(Hydrogen.getFluid(3000))
                 .duration(400).EUt(VA[LV])
+                .save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("iron_2_chloride")
+                .inputFluids(Iron3Chloride.getFluid(2000))
+                .inputFluids(Chlorobenzene.getFluid(1000))
+                .outputFluids(Iron2Chloride.getFluid(2000))
+                .outputFluids(HydrochloricAcid.getFluid(1000))
+                .outputFluids(Dichlorobenzene.getFluid(1000))
+                .duration(400).EUt(VA[MV])
                 .save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("chloromethane_from_methane")

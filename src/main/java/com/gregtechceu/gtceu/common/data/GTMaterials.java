@@ -591,6 +591,7 @@ public class GTMaterials {
     public static Material HydrofluoricAcid;
     public static Material NitricOxide;
     public static Material Iron3Chloride;
+    public static Material Iron2Chloride;
     public static Material UraniumHexafluoride;
     public static Material EnrichedUraniumHexafluoride;
     public static Material DepletedUraniumHexafluoride;
@@ -630,6 +631,29 @@ public class GTMaterials {
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
     public static Material Pyrochlore;
+    public static Material PotassiumHydroxide;
+    public static Material PotassiumIodide;
+    public static Material PotassiumFerrocyanide;
+    public static Material CalciumFerrocyanide;
+    public static Material CalciumHydroxide;
+    public static Material CalciumCarbonate;
+    public static Material PotassiumCyanide;
+    public static Material PotassiumCarbonate;
+    public static Material HydrogenCyanide;
+    public static Material FormicAcid;
+    public static Material PotassiumSulfate;
+    public static Material PrussianBlue;
+    public static Material Formaldehyde;
+    public static Material Glycolonitrile;
+    public static Material DiethylenetriaminePentaacetonitrile;
+    public static Material DiethylenetriaminepentaaceticAcid;
+    public static Material SodiumNitrite;
+
+    public static Material AcidicBromineSolution;
+    public static Material ConcentratedBromineSolution;
+    public static Material Iodide;
+    public static Material IodineSolution;
+    public static Material DiluteIodineSolution;
 
     /**
      * Organic chemistry
@@ -713,6 +737,11 @@ public class GTMaterials {
     public static Material PolyvinylButyral;
     public static Material Biphenyl;
     public static Material PolychlorinatedBiphenyl;
+    public static Material AceticAnhydride;
+    public static Material AminoPhenol;
+    public static Material Paracetamol;
+    public static Material AmmoniumFormate;
+    public static Material Formamide;
 
     /**
      * Not possible to determine exact Components
@@ -903,6 +932,13 @@ public class GTMaterials {
     public static Material SaltWater;
     public static Material Clay;
     public static Material Redstone;
+    public static Material Dichloroethane;
+    public static Material Diethylenetriamine;
+
+    public static Material RawBrine;
+    public static Material DebrominatedBrine;
+    public static Material BrominatedChlorineVapor;
+    public static Material AcidicBromineExhaust;
 
     /**
      * Third Degree Materials
@@ -923,6 +959,11 @@ public class GTMaterials {
     public static Material Fireclay;
     public static Material Diorite;
 
+    public static Material HotBrine;
+    public static Material HotChlorinatedBrominatedBrine;
+    public static Material HotDebrominatedBrine;
+    public static Material HotAlkalineDebrominatedBrine;
+
     /**
      * Fourth Degree Materials
      */
@@ -931,6 +972,7 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+    public static Material RadAway;
 
     /**
      * GCyM Materials

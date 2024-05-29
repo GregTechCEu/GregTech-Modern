@@ -24,13 +24,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -199,7 +201,7 @@ public class Material implements Comparable<Material> {
      * Retrieves a fluid from the material.
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     * 
+     *
      * @return the fluid
      * @see #getFluid(FluidStorageKey)
      */
@@ -268,7 +270,7 @@ public class Material implements Comparable<Material> {
      * <br/>
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     * 
+     *
      * @return the fluid builder
      */
     public FluidBuilder getFluidBuilder() {
@@ -291,7 +293,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * NOTE: only available before the fluids are registered.
-     * 
+     *
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
@@ -370,7 +372,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer in ARGB.
-     * 
+     *
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -384,7 +386,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer.
-     * 
+     *
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -627,7 +629,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a plasma for this material.
-         * 
+         *
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder plasma() {
@@ -649,7 +651,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a gas for this material.
-         * 
+         *
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
@@ -1050,51 +1052,123 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect,
+        // Tons of shortcut functions for adding various hazard effects.
+
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardEffect effect,
                               HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, damage, applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effect, damage, applyToDerivatives));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect,
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardEffect effect,
                               HazardProperty.HazardDamage damage) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, damage, true));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effect, damage, true));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect,
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardEffect effect,
                               boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, null, applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effect, null, applyToDerivatives));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardDamage damage,
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardDamage damage,
                               boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, null, damage, applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, List.of(), damage, applyToDerivatives));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, null, true));
+        @HideFromJS
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardEffect effect) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effect, null, true));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardDamage damage) {
-            properties.setProperty(HAZARD, new HazardProperty(poisonType, null, damage, true));
+        public Builder hazard(HazardProperty.HazardType hazardType, HazardProperty.HazardDamage damage) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, List.of(), damage, true));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType, boolean applyToDerivatives) {
+        public Builder hazard(HazardProperty.HazardType hazardType, List<HazardProperty.HazardEffect> effects) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effects, null, true));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType, List<HazardProperty.HazardEffect> effects,
+                              boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effects, null, applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+                              AttributeModifier maxModifier) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType,
+                    new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier)), null, true));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+                              AttributeModifier maxModifier, boolean applyToDerivatives) {
             properties.setProperty(HAZARD,
-                    new HazardProperty(poisonType, new HazardProperty.HazardEffect(200, MobEffects.POISON),
-                            new HazardProperty.HazardDamage(2, 1), applyToDerivatives));
+                    new HazardProperty(hazardType,
+                            new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier)), null,
+                            applyToDerivatives));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType poisonType) {
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+                              AttributeModifier maxModifier, int maxAirModifier) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType,
+                    new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier), maxAirModifier), null,
+                    true));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+                              AttributeModifier maxModifier, int maxAirModifier, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType,
+                    new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier), maxAirModifier), null,
+                    applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3),
+                    null, applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType hazardType) {
             properties.setProperty(HAZARD,
-                    new HazardProperty(poisonType, new HazardProperty.HazardEffect(200, MobEffects.POISON),
-                            new HazardProperty.HazardDamage(2, 1), true));
+                    new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, true));
+            return this;
+        }
+
+        public Builder radioactiveHazard(float multiplier) {
+            int effectAmplifier = (int) (multiplier - 1);
+            properties.setProperty(HAZARD, new HazardProperty(
+                    HazardProperty.HazardType.RADIOACTIVE,
+                    List.of(
+                            HazardProperty.slownessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
+                            HazardProperty.weaknessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
+                            HazardProperty.miningFautigueEffect(-1, (int) (3000 / multiplier), effectAmplifier),
+                            HazardProperty.maxAirLoweringEffect(1000, (int) (4000 / multiplier),
+                                    (int) (100 / multiplier)),
+                            HazardProperty.maxHealthLoweringEffect(4000, (int) (6000 / multiplier), 10),
+                            HazardProperty.witherEffect(10000, (int) (24000 / multiplier), effectAmplifier)),
+                    null,
+                    true));
+            return this;
+        }
+
+        public Builder irritantHazard(boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(
+                    HazardProperty.HazardType.CONTACT_POISON,
+                    List.of(
+                            HazardProperty.slownessEffect(200, 200, 0),
+                            HazardProperty.miningFautigueEffect(200, 300, 0)),
+                    null,
+                    applyToDerivatives));
             return this;
         }
 
@@ -1215,20 +1289,26 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        @HideFromJS
         public Material buildAndRegister() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
                     ImmutableList.copyOf(composition);
-            for (MaterialStack materialStack : materialInfo.componentList)
-                if (materialStack.material().getProperties().hasProperty(HAZARD) &&
-                        materialStack.material().getProperties().getProperty(HAZARD).isApplyToDerivatives() &&
-                        !properties.hasProperty(HAZARD))
-                    properties.setProperty(HAZARD, materialStack.material().getProperties().getProperty(HAZARD));
-
+            if (!properties.hasProperty(HAZARD)) {
+                for (MaterialStack materialStack : materialInfo.componentList) {
+                    Material material = materialStack.material();
+                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives()) {
+                        properties.setProperty(HAZARD, material.getProperty(HAZARD));
+                        break;
+                    }
+                }
+            }
             if (properties.hasProperty(HAZARD) &&
-                    properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE)
+                    properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE) {
                 properties.removeProperty(HAZARD);
+            }
+
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();
@@ -1236,6 +1316,7 @@ public class Material implements Comparable<Material> {
         }
 
         @Override
+        @HideFromJS
         public Material register() {
             return value = buildAndRegister();
         }

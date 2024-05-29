@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -116,5 +118,10 @@ public class GTCapabilityHelper {
             }
         }
         return null;
+    }
+
+    @Nullable
+    public static IHazardEffectTracker getHazardEffectTracker(@NotNull Entity entity) {
+        return entity.getCapability(GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER, null).resolve().orElse(null);
     }
 }
