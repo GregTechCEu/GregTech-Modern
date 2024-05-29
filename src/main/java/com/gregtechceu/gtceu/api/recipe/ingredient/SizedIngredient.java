@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -12,14 +9,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
+
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
     protected final int amount;
@@ -37,7 +38,8 @@ public class SizedIngredient extends Ingredient {
     }
 
     protected SizedIngredient(ItemStack itemStack) {
-        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) : Ingredient.of(itemStack), itemStack.getCount());
+        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) :
+                Ingredient.of(itemStack), itemStack.getCount());
     }
 
     public static SizedIngredient create(ItemStack inner) {
@@ -60,7 +62,8 @@ public class SizedIngredient extends Ingredient {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
             if (sizedIngredient.itemStacks != null) {
-                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy).toArray(ItemStack[]::new);
+                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
+                        .toArray(ItemStack[]::new);
             }
             return copied;
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
@@ -130,6 +133,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {
+
         @Override
         public @NotNull SizedIngredient parse(FriendlyByteBuf buffer) {
             int amount = buffer.readVarInt();

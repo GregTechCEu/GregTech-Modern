@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.info;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Arrays;
@@ -30,7 +31,8 @@ public class MaterialFlag {
     protected Set<MaterialFlag> verifyFlag(Material material) {
         requiredProperties.forEach(key -> {
             if (!material.hasProperty(key)) {
-                GTCEu.LOGGER.warn("Material {} does not have required property {} for flag {}!", material.getUnlocalizedName(), key.toString(), this.name);
+                GTCEu.LOGGER.warn("Material {} does not have required property {} for flag {}!",
+                        material.getUnlocalizedName(), key.toString(), this.name);
             }
         });
 

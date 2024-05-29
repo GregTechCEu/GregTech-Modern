@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core;
 
 import net.minecraft.core.Registry;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface IGTTagLoader<T> {
@@ -9,5 +10,4 @@ public interface IGTTagLoader<T> {
 
     @Nullable
     Registry<T> gtceu$getRegistry();
-
 }

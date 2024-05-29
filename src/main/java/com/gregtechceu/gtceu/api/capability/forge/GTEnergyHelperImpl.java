@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
+
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class GTEnergyHelperImpl {
 
     public static IPlatformEnergyStorage toPlatformEnergyStorage(IEnergyStorage handler) {
         return new IPlatformEnergyStorage() {
+
             @Override
             public long insert(long maxAmount, boolean simulate) {
                 return handler.receiveEnergy((int) maxAmount, simulate);

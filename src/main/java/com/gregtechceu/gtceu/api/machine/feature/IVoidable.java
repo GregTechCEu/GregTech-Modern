@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+
 import net.minecraft.util.StringRepresentable;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 
 public interface IVoidable extends IMachineFeature {
@@ -18,6 +20,7 @@ public interface IVoidable extends IMachineFeature {
     }
 
     enum VoidingMode implements StringRepresentable {
+
         VOID_NONE("gtceu.gui.multiblock_no_voiding"),
         VOID_ITEMS("gtceu.gui.multiblock_item_voiding"),
         VOID_FLUIDS("gtceu.gui.multiblock_fluid_voiding"),

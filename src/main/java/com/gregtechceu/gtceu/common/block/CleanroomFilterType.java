@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import lombok.Getter;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public enum CleanroomFilterType implements IFilterType {
@@ -31,5 +31,4 @@ public enum CleanroomFilterType implements IFilterType {
     public String toString() {
         return getSerializedName();
     }
-
 }

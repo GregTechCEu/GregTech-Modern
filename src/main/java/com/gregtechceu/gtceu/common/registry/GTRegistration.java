@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 
@@ -13,6 +14,4 @@ public class GTRegistration {
     }
 
     private GTRegistration() {/**/}
-
-
 }

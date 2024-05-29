@@ -4,10 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+
+import lombok.Getter;
 
 import java.util.Map;
 
@@ -15,10 +18,11 @@ public class FusionCasingBlock extends ActiveBlock {
 
     public FusionCasingBlock(Properties properties, IFusionCasingType casingType) {
         super(properties, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", casingType.getTexture())) : null,
+                Map.of("all", casingType.getTexture())) : null,
                 Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
                         Map.of("bot_all", casingType.getTexture(),
-                                "top_all", new ResourceLocation(casingType.getTexture() + "_bloom"))) : null);
+                                "top_all", new ResourceLocation(casingType.getTexture() + "_bloom"))) :
+                        null);
     }
 
     public enum CasingType implements IFusionCasingType, StringRepresentable {

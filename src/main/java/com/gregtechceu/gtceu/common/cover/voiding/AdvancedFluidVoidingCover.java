@@ -9,29 +9,40 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
-    @Persisted @DescSynced @Getter
+
+    @Persisted
+    @DescSynced
+    @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected long globalTransferSizeMillibuckets = 1L;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
     private NumberInputWidget<Long> stackSizeInput;
@@ -41,9 +52,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         super(definition, coverHolder, attachedSide);
     }
 
-
     //////////////////////////////////////////////
-    //***********     COVER LOGIC    ***********//
+    // *********** COVER LOGIC ***********//
     //////////////////////////////////////////////
 
     @Override
@@ -99,14 +109,12 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         this.transferBucketMode = transferBucketMode;
 
-
         if (stackSizeInput == null) return;
         stackSizeInput.setValue(getCurrentBucketModeTransferSize());
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -116,15 +124,17 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
 
         this.stackSizeInput = new LongInputWidget(35, 20, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize
-        ).setMin(1L).setMax(Long.MAX_VALUE);
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(1L)
+                .setMax(Long.MAX_VALUE);
         configureStackSizeInput();
         group.addWidget(this.stackSizeInput);
 
-        this.stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(), transferBucketMode, this::setTransferBucketMode);
+        this.stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(),
+                transferBucketMode, this::setTransferBucketMode);
         group.addWidget(this.stackSizeBucketModeInput);
     }
 
@@ -162,12 +172,14 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         return this.filterHandler.getFilter().isBlackList();
     }
-    
+
     //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
+    // ***** LDLib SyncData ******//
     //////////////////////////////////////
-    
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedFluidVoidingCover.class, FluidVoidingCover.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            AdvancedFluidVoidingCover.class, FluidVoidingCover.MANAGED_FIELD_HOLDER);
+
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;

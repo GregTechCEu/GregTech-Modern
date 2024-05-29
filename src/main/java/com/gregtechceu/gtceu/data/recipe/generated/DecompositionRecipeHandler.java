@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,19 +32,21 @@ public class DecompositionRecipeHandler {
         }
     }
 
-    private static void processDecomposition(TagPrefix decomposePrefix, Material material, Consumer<FinishedRecipe> provider) {
+    private static void processDecomposition(TagPrefix decomposePrefix, Material material,
+                                             Consumer<FinishedRecipe> provider) {
         if (material.getMaterialComponents().isEmpty() ||
                 (!material.hasFlag(DECOMPOSITION_BY_ELECTROLYZING) &&
                         !material.hasFlag(DECOMPOSITION_BY_CENTRIFUGING)) ||
-                //disable decomposition if explicitly disabled for this material or for one of it's components
+                // disable decomposition if explicitly disabled for this material or for one of it's components
                 material.hasFlag(DISABLE_DECOMPOSITION) ||
-                material.getMaterialComponents().size() > 6) return;
+                material.getMaterialComponents().size() > 6)
+            return;
 
         List<ItemStack> outputs = new ArrayList<>();
         List<FluidStack> fluidOutputs = new ArrayList<>();
         int totalInputAmount = 0;
 
-        //compute outputs
+        // compute outputs
         for (MaterialStack component : material.getMaterialComponents()) {
             totalInputAmount += component.amount();
             if (component.material().hasProperty(PropertyKey.DUST)) {
@@ -53,9 +56,9 @@ public class DecompositionRecipeHandler {
             }
         }
 
-        //only reduce items
+        // only reduce items
         if (decomposePrefix != null) {
-            //calculate lowest common denominator
+            // calculate lowest common denominator
             List<Integer> materialAmounts = new ArrayList<>();
             materialAmounts.add(totalInputAmount);
             outputs.forEach(itemStack -> materialAmounts.add(itemStack.getCount()));
@@ -69,7 +72,7 @@ public class DecompositionRecipeHandler {
                     highestDivisor = i;
             }
 
-            //divide components
+            // divide components
             if (highestDivisor != 1) {
                 List<ItemStack> reducedOutputs = new ArrayList<>();
 
@@ -93,8 +96,7 @@ public class DecompositionRecipeHandler {
             }
         }
 
-
-        //generate builder
+        // generate builder
         GTRecipeBuilder builder;
         if (material.hasFlag(DECOMPOSITION_BY_ELECTROLYZING)) {
             builder = ELECTROLYZER_RECIPES.recipeBuilder("decomposition_electrolyzing", material.getName())
@@ -108,14 +110,14 @@ public class DecompositionRecipeHandler {
         builder.outputItems(outputs.toArray(ItemStack[]::new));
         builder.outputFluids(fluidOutputs.toArray(FluidStack[]::new));
 
-        //finish builder
+        // finish builder
         if (decomposePrefix != null) {
             builder.inputItems(decomposePrefix, material, totalInputAmount);
         } else {
             builder.inputFluids(material.getFluid(1000));
         }
 
-        //register recipe
+        // register recipe
         builder.save(provider);
     }
 
@@ -130,5 +132,4 @@ public class DecompositionRecipeHandler {
     private static int getSmallestMaterialAmount(List<Integer> materialAmounts) {
         return materialAmounts.stream().min(Integer::compare).orElse(0);
     }
-
 }

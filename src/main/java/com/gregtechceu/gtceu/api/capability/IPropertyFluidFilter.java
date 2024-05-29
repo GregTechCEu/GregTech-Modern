@@ -4,14 +4,16 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -64,12 +66,14 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * Set the container as able to contain an attribute
      *
-     * @param attribute the attribute to change containment status for
+     * @param attribute  the attribute to change containment status for
      * @param canContain whether the attribute can be contained
      */
     void setCanContain(@NotNull FluidAttribute attribute, boolean canContain);
 
-    @NotNull @UnmodifiableView Collection<@NotNull FluidAttribute> getContainedAttributes();
+    @NotNull
+    @UnmodifiableView
+    Collection<@NotNull FluidAttribute> getContainedAttributes();
 
     /**
      * Append tooltips about containment info
@@ -80,7 +84,8 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      */
     default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
         if (GTUtil.isShiftDown()) {
-            if (showTemperatureInfo) tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
+            if (showTemperatureInfo)
+                tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
             if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));

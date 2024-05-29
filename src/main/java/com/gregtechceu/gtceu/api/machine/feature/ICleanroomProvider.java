@@ -18,5 +18,4 @@ public interface ICleanroomProvider extends IMachineFeature {
      * @return whether the cleanroom is currently clean
      */
     boolean isClean();
-
 }

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -69,8 +70,8 @@ public class EnergyNetHandler implements IEnergyContainer {
             for (CableBlockEntity cable : path.getPath()) {
                 if (cable.getMaxVoltage() < voltage) {
                     int heat = (int) (Math.log(
-                        GTUtil.getTierByVoltage(voltage) - GTUtil.getTierByVoltage(cable.getMaxVoltage())) *
-                        45 + 36.5);
+                            GTUtil.getTierByVoltage(voltage) - GTUtil.getTierByVoltage(cable.getMaxVoltage())) *
+                            45 + 36.5);
                     cable.applyHeat(heat);
 
                     cableBroken = cable.isInValid();
@@ -113,8 +114,8 @@ public class EnergyNetHandler implements IEnergyContainer {
         serverLevel.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
         if (!getNet().getLevel().isClientSide) {
             getNet().getLevel().sendParticles(ParticleTypes.LARGE_SMOKE,
-                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                5 + getNet().getLevel().random.nextInt(3), 0.0, 0.0, 0.0, 0.1);
+                    pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                    5 + getNet().getLevel().random.nextInt(3), 0.0, 0.0, 0.0, 0.1);
         }
     }
 

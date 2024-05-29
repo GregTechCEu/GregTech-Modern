@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IHPCACoolantProvider;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

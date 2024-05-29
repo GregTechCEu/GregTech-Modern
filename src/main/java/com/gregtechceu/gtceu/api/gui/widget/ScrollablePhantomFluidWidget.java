@@ -1,24 +1,29 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
+
     private static final int SCROLL_ACTION_ID = 0x0001_0001;
     private static final long MILLIBUCKETS = FluidHelper.getBucket() / 1000;
 
-
-    public ScrollablePhantomFluidWidget(@Nullable IFluidTransfer fluidTank, int tank, int x, int y, int width, int height, Supplier<FluidStack> phantomFluidGetter, Consumer<FluidStack> phantomFluidSetter) {
+    public ScrollablePhantomFluidWidget(@Nullable IFluidTransfer fluidTank, int tank, int x, int y, int width,
+                                        int height, Supplier<FluidStack> phantomFluidGetter,
+                                        Consumer<FluidStack> phantomFluidSetter) {
         super(fluidTank, tank, x, y, width, height, phantomFluidGetter, phantomFluidSetter);
     }
 

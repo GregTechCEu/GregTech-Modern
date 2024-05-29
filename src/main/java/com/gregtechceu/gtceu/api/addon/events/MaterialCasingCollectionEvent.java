@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.addon.events;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.tterrag.registrate.util.entry.BlockEntry;
+
 import net.minecraft.world.level.block.Block;
 
+import com.google.common.collect.ImmutableMap;
+import com.tterrag.registrate.util.entry.BlockEntry;
+
 public class MaterialCasingCollectionEvent {
+
     private final ImmutableMap.Builder<Material, BlockEntry<Block>> builder;
 
     public MaterialCasingCollectionEvent(ImmutableMap.Builder<Material, BlockEntry<Block>> builder) {

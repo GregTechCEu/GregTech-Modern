@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
@@ -14,6 +15,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
@@ -27,8 +29,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine, IExplosionMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredEnergyMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-    @Persisted @DescSynced
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TieredEnergyMachine.class,
+            MetaMachine.MANAGED_FIELD_HOLDER);
+    @Persisted
+    @DescSynced
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSubs;
     protected ISubscription energyListener;
@@ -39,7 +44,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -75,11 +80,12 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     }
 
     //////////////////////////////////////
-    //********     Explosion    ********//
+    // ******** Explosion ********//
     //////////////////////////////////////
 
     protected void updateExplosionSubscription() {
-        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() && energyContainer.getEnergyStored() > 0) {
+        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion && shouldWeatherOrTerrainExplosion() &&
+                energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
         } else if (explosionSubs != null) {
             explosionSubs.unsubscribe();
@@ -93,7 +99,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     }
 
     //////////////////////////////////////
-    //**********     MISC    ***********//
+    // ********** MISC ***********//
     //////////////////////////////////////
     @Override
     public int getAnalogOutputSignal() {
@@ -134,8 +140,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
             return progressBar;
         }, (progressBar, machine) -> {
-            progressBar.setProgressSupplier(() -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
+            progressBar.setProgressSupplier(
+                    () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
         });
     }
-
 }

@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -43,7 +45,8 @@ public class MapItemStackNBTIngredient extends MapItemStackIngredient {
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor)nbtIngredient).getStack(), ((StrictNBTIngredientAccessor)other.nbtIngredient).getStack());
+                    return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
+                            ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);

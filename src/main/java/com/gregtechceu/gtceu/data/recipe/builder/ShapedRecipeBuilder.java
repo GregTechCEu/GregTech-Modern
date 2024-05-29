@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.lowdragmc.lowdraglib.LDLib;
+
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -28,6 +30,7 @@ import java.util.function.Consumer;
  * @implNote ShapedRecipeBuilder
  */
 public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder> {
+
     protected ItemStack output = ItemStack.EMPTY;
     protected ResourceLocation id;
     protected String group;
@@ -50,9 +53,9 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
     }
 
     public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
+        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
             return where(cha, NBTIngredient.createNBTIngredient(itemStack));
-        }else {
+        } else {
             return where(cha, Ingredient.of(itemStack));
         }
     }
@@ -153,6 +156,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
 
     public void save(Consumer<FinishedRecipe> consumer) {
         consumer.accept(new FinishedRecipe() {
+
             @Override
             public void serializeRecipeData(JsonObject pJson) {
                 toJson(pJson);

@@ -5,24 +5,27 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,7 +44,9 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     @DescSynced
     @Persisted
     @UpdateListener(methodName = "onCoverSet")
-    @ReadOnlyManaged(onDirtyMethod = "onCoverDirty", serializeMethod = "serializeCoverUid", deserializeMethod = "deserializeCoverUid")
+    @ReadOnlyManaged(onDirtyMethod = "onCoverDirty",
+                     serializeMethod = "serializeCoverUid",
+                     deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
     public MachineCoverContainer(MetaMachine machine) {
@@ -112,9 +117,9 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
         ArrayList<VoxelShape> collisionList = new ArrayList<>();
         machine.addCollisionBoundingBox(collisionList);
-        //noinspection RedundantIfStatement
+        // noinspection RedundantIfStatement
         if (ICoverable.doesCoverCollide(side, collisionList, getCoverPlateThickness())) {
-            //cover collision box overlaps with meta tile entity collision box
+            // cover collision box overlaps with meta tile entity collision box
             return false;
         }
 
@@ -125,7 +130,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     public double getCoverPlateThickness() {
         return 0;
     }
-
 
     @Override
     public Direction getFrontFacing() {
@@ -191,7 +195,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             for (IRef ref : coverBehavior.getSyncStorage().getNonLazyFields()) {
                 ref.update();
             }
-            return coverBehavior.getSyncStorage().hasDirtySyncFields() || coverBehavior.getSyncStorage().hasDirtyPersistedFields();
+            return coverBehavior.getSyncStorage().hasDirtySyncFields() ||
+                    coverBehavior.getSyncStorage().hasDirtyPersistedFields();
         }
         return false;
     }
@@ -215,6 +220,4 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         GTCEu.LOGGER.error("couldn't find cover definition {}", definitionId);
         throw new RuntimeException();
     }
-
-
 }

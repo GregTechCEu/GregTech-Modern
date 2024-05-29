@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +37,7 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -45,11 +46,13 @@ public class PipeBlockItem extends BlockItem {
         var realPos = pos.relative(side.getOpposite());
         var baseNode = getBlock().getPipeTile(level, realPos);
         if (baseNode != null) {
-            var sideAttach = ICoverable.traceCoverSide(new BlockHitResult(context.getClickLocation(), side, realPos, false));
+            var sideAttach = ICoverable
+                    .traceCoverSide(new BlockHitResult(context.getClickLocation(), side, realPos, false));
             if (sideAttach != null && context.getLevel().isEmptyBlock(realPos.relative(sideAttach))) {
                 pos = realPos.relative(sideAttach);
                 side = sideAttach;
-                context = new BlockPlaceContext(level, context.getPlayer(), context.getHand(), context.getItemInHand(), new BlockHitResult(context.getClickLocation(), sideAttach, realPos, false));
+                context = new BlockPlaceContext(level, context.getPlayer(), context.getHand(), context.getItemInHand(),
+                        new BlockHitResult(context.getClickLocation(), sideAttach, realPos, false));
             }
         }
 
@@ -70,9 +73,10 @@ public class PipeBlockItem extends BlockItem {
                             otherPipe.setConnection(facing.getOpposite(), false, true);
                         }
                     }
-                } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables && selfTile.getPipeBlock().canPipeConnectToBlock(selfTile, facing, te)) {
-                    selfTile.setConnection(facing, true, false);
-                }
+                } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables &&
+                        selfTile.getPipeBlock().canPipeConnectToBlock(selfTile, facing, te)) {
+                            selfTile.setConnection(facing, true, false);
+                        }
             }
         }
         return superVal;

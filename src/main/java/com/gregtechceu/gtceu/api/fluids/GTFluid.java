@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.fluids;
 
-
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,11 +20,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,7 +45,9 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
     @Getter
     private final int burnTime;
 
-    public GTFluid(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid, Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block, Supplier<? extends Item> bucket, int burnTime) {
+    public GTFluid(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                   Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                   Supplier<? extends Item> bucket, int burnTime) {
         super();
         this.state = state;
         this.stillFluid = stillFluid;
@@ -59,7 +63,8 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
     }
 
     @Override
-    protected boolean canBeReplacedWith(net.minecraft.world.level.material.FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
+    protected boolean canBeReplacedWith(net.minecraft.world.level.material.FluidState state, BlockGetter level,
+                                        BlockPos pos, Fluid fluid, Direction direction) {
         return direction == Direction.DOWN && !isSame(fluid);
     }
 
@@ -123,4 +128,3 @@ public abstract class GTFluid extends FlowingFluid implements IAttributedFluid {
         return still || flowing;
     }
 }
-

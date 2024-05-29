@@ -7,20 +7,11 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
-import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import com.simibubi.create.content.kinetics.KineticNetwork;
-import com.simibubi.create.content.kinetics.base.IRotate;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
-import com.simibubi.create.foundation.utility.Lang;
-import com.tterrag.registrate.util.OneTimeEventReceiver;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,6 +27,18 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import com.jozufozu.flywheel.api.MaterialManager;
+import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
+import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+import com.simibubi.create.content.kinetics.KineticNetwork;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
+import com.simibubi.create.foundation.utility.Lang;
+import com.tterrag.registrate.util.OneTimeEventReceiver;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,6 +52,7 @@ import java.util.function.BiFunction;
  * @implNote CreateKineticSourceBlockEntity
  */
 public class KineticMachineBlockEntity extends KineticBlockEntity implements IMachineBlockEntity {
+
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
@@ -71,14 +75,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return result == null ? super.getCapability(cap, side) : result;
     }
 
-    public static void onBlockEntityRegister(BlockEntityType blockEntityType, NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory, boolean renderNormally) {
+    public static void onBlockEntityRegister(BlockEntityType blockEntityType,
+                                             NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
+                                             boolean renderNormally) {
         if (instanceFactory != null && LDLib.isClient()) {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE, FMLClientSetupEvent.class,
-                    ($) -> InstancedRenderRegistry.configure(blockEntityType)
-                        .factory(instanceFactory.get())
-                        .skipRender((be) -> !renderNormally)
-                        .apply()));
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                    () -> () -> OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE,
+                            FMLClientSetupEvent.class,
+                            ($) -> InstancedRenderRegistry.configure(blockEntityType)
+                                    .factory(instanceFactory.get())
+                                    .skipRender((be) -> !renderNormally)
+                                    .apply()));
         }
     }
 
@@ -102,7 +109,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         }
         return false;
     }
-
 
     @Override
     public long getOffset() {
@@ -137,7 +143,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     //////////////////////////////////////
-    //*********     Create     *********//
+    // ********* Create *********//
     //////////////////////////////////////
 
     public KineticEffectHandler getEffects() {
@@ -200,7 +206,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
             this.updateGeneratedRotation();
             this.reActivateSource = false;
         }
-
     }
 
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
@@ -216,7 +221,9 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
             speed = Math.abs(speed);
             float stressTotal = stressBase * speed;
-            Lang.number(stressTotal).translate("generic.unit.stress").style(ChatFormatting.AQUA).space().add(Lang.translate("gui.goggles.at_current_speed").style(ChatFormatting.DARK_GRAY)).forGoggles(tooltip, 1);
+            Lang.number(stressTotal).translate("generic.unit.stress").style(ChatFormatting.AQUA).space()
+                    .add(Lang.translate("gui.goggles.at_current_speed").style(ChatFormatting.DARK_GRAY))
+                    .forGoggles(tooltip, 1);
             added = true;
         }
 
@@ -300,5 +307,4 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         super.read(compound, clientPacket);
         workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
     }
-
 }

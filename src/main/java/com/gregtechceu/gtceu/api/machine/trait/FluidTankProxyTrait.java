@@ -2,14 +2,17 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.core.Direction;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +27,9 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidTankProxyTrait.class);
     @Getter
     public final IO capabilityIO;
-    @Setter @Getter @Nullable
+    @Setter
+    @Getter
+    @Nullable
     public IFluidTransfer proxy;
 
     public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
@@ -38,7 +43,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
     }
 
     //////////////////////////////////////
-    //*******     Capability    ********//
+    // ******* Capability ********//
     //////////////////////////////////////
 
     @Override
@@ -177,7 +182,8 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidTransfer,
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
+            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
+                    facing.getOpposite());
         }
     }
 }

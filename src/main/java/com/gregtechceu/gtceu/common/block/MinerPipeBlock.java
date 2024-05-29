@@ -14,7 +14,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class MinerPipeBlock extends Block {
 
-    public static VoxelShape SHAPE = Block.box(4,0, 4, 12, 16, 12);
+    public static VoxelShape SHAPE = Block.box(4, 0, 4, 12, 16, 12);
 
     public MinerPipeBlock(Properties properties) {
         super(properties);

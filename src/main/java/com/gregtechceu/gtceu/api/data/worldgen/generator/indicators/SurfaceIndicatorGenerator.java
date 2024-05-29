@@ -7,12 +7,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,10 +26,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
-import org.apache.commons.lang3.function.TriFunction;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,16 +41,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SurfaceIndicatorGenerator extends IndicatorGenerator {
+
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
+            Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block")
+                    .forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
             FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
-            IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement)
-    ).apply(instance, SurfaceIndicatorGenerator::new));
+            IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement))
+            .apply(instance, SurfaceIndicatorGenerator::new));
 
     private Either<BlockState, Material> block = Either.left(Blocks.AIR.defaultBlockState());
     private IntProvider radius = ConstantInt.of(5);
@@ -61,7 +64,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         super(entry);
     }
 
-    public SurfaceIndicatorGenerator(Either<BlockState, Material> block, IntProvider radius, FloatProvider density, IndicatorPlacement placement) {
+    public SurfaceIndicatorGenerator(Either<BlockState, Material> block, IntProvider radius, FloatProvider density,
+                                     IndicatorPlacement placement) {
         this.block = block;
         this.radius = radius;
         this.density = density;
@@ -115,7 +119,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     }
 
     @Override
-    public Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata metadata) {
+    public Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random,
+                                                      GeneratedVeinMetadata metadata) {
         BlockState blockState = placement.stateTransformer.apply(block);
 
         int radius = this.radius.sample(random);
@@ -125,8 +130,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         Stream<BlockPos> positionStream = BlockPos.betweenClosedStream(
                 center.getX() - radius, center.getY(), center.getZ() - radius,
-                center.getX() + radius, center.getY(), center.getZ() + radius
-        ).map(BlockPos::immutable);
+                center.getX() + radius, center.getY(), center.getZ() + radius).map(BlockPos::immutable);
 
         var positions = positionStream
                 .filter(pos -> pos.equals(center) || random.nextFloat() <= density)
@@ -134,10 +138,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                 .toList();
 
         return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> createPlacer(level, entry.getValue(), blockState)));
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        entry -> createPlacer(level, entry.getValue(), blockState)));
     }
 
-    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY, BlockState blockState) {
+    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
+                                            BlockState blockState) {
         return (access) -> {
             var positions = positionsWithoutY.stream()
                     .map(pos -> placement.resolver.apply(level, access, pos))
@@ -173,16 +179,14 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         return CODEC;
     }
 
-
     @AllArgsConstructor
     public enum IndicatorPlacement implements StringRepresentable {
+
         SURFACE(
                 (level, access, pos) -> pos.atY(Math.max(
-                    level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()),
-                    pos.getY()
-                )),
-                block -> getBlockState(block, Direction.DOWN)
-        ),
+                        level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()),
+                        pos.getY())),
+                block -> getBlockState(block, Direction.DOWN)),
 
         ABOVE(
                 (level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
@@ -190,10 +194,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                         pos -> access.getBlockState(pos).isAir() &&
                                 access.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP),
                         pos -> pos.move(Direction.UP, 1),
-                        level.getMaxBuildHeight() - initialPos.getY()
-                ).orElse(initialPos),
-                block -> getBlockState(block, Direction.DOWN)
-        ),
+                        level.getMaxBuildHeight() - initialPos.getY()).orElse(initialPos),
+                block -> getBlockState(block, Direction.DOWN)),
 
         BELOW(
                 (level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
@@ -201,10 +203,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                         pos -> access.getBlockState(pos).isAir() &&
                                 access.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN),
                         pos -> pos.move(Direction.DOWN, 1),
-                        initialPos.getY() - level.getMinBuildHeight()
-                ).orElse(initialPos),
-                block -> getBlockState(block, Direction.UP)
-        );
+                        initialPos.getY() - level.getMinBuildHeight()).orElse(initialPos),
+                block -> getBlockState(block, Direction.UP));
 
         public static final Codec<IndicatorPlacement> CODEC = StringRepresentable.fromEnum(IndicatorPlacement::values);
 
@@ -214,8 +214,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         private static BlockState getBlockState(Either<BlockState, Material> block, Direction direction) {
             return block.map(
                     state -> state,
-                    material -> GTBlocks.SURFACE_ROCK_BLOCKS.get(material).get().getStateForDirection(direction)
-            );
+                    material -> GTBlocks.SURFACE_ROCK_BLOCKS.get(material).get().getStateForDirection(direction));
         }
 
         @Override

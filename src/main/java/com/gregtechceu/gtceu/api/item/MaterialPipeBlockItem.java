@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
+
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -30,14 +32,15 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
     @Override
     @NotNull
     public MaterialPipeBlock getBlock() {
-        return (MaterialPipeBlock)super.getBlock();
+        return (MaterialPipeBlock) super.getBlock();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
             if (itemStack.getItem() instanceof MaterialPipeBlockItem materialBlockItem) {
-                return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null, index);
+                return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null,
+                        index);
             }
             return -1;
         };

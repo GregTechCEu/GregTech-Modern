@@ -12,7 +12,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_REC
 public class FuelRecipeChains {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         // High Octane Gasoline
         LARGE_CHEMICAL_RECIPES.recipeBuilder("raw_gasoline").EUt(VA[HV]).duration(100)
                 .inputFluids(Naphtha.getFluid(16000))

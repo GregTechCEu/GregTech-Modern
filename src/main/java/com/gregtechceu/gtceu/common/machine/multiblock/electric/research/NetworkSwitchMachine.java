@@ -9,19 +9,22 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.AccessLevel;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -66,7 +69,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                     transmitters.add(hatch);
                 }
             } else if (part.getRecipeHandlers().stream().anyMatch(IOpticalComputationHatch.class::isInstance)) {
-                var hatch = part.getRecipeHandlers().stream().filter(IOpticalComputationHatch.class::isInstance).map(IOpticalComputationHatch.class::cast).findFirst().orElse(null);
+                var hatch = part.getRecipeHandlers().stream().filter(IOpticalComputationHatch.class::isInstance)
+                        .map(IOpticalComputationHatch.class::cast).findFirst().orElse(null);
                 if (hatch != null) {
                     Block block = part.self().getBlockState().getBlock();
                     if (PartAbility.COMPUTATION_DATA_RECEPTION.isApplicable(block)) {
@@ -114,28 +118,30 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
-            .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-            .setWorkingStatusKeys(
-                "gtceu.multiblock.idling",
-                "gtceu.multiblock.idling",
-                "gtceu.multiblock.data_bank.providing")
-            .addEnergyUsageExactLine(getEnergyUsage())
-            .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
-            .addWorkingStatusLine();
+                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+                .setWorkingStatusKeys(
+                        "gtceu.multiblock.idling",
+                        "gtceu.multiblock.idling",
+                        "gtceu.multiblock.data_bank.providing")
+                .addEnergyUsageExactLine(getEnergyUsage())
+                .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
+                .addWorkingStatusLine();
     }
 
     /*
-    @Override
-    protected void addWarningText(List<Component> textList) {
-        super.addWarningText(textList);
-        if (isFormed() && computationHandler.hasNonBridgingConnections()) {
-            textList.add(Component.translatable("gtceu.multiblock.computation.non_bridging.detailed").withStyle(ChatFormatting.YELLOW));
-        }
-    }
-    */
+     * @Override
+     * protected void addWarningText(List<Component> textList) {
+     * super.addWarningText(textList);
+     * if (isFormed() && computationHandler.hasNonBridgingConnections()) {
+     * textList.add(Component.translatable("gtceu.multiblock.computation.non_bridging.detailed").withStyle(
+     * ChatFormatting.YELLOW));
+     * }
+     * }
+     */
 
     /** Handles computation load across multiple receivers and to multiple transmitters. */
     private static class MultipleComputationHandler extends NotifiableComputationContainer {
+
         // providers in the NS provide distributable computation to the NS
         private final Set<IOpticalComputationHatch> providers = new ObjectOpenHashSet<>();
         // transmitters in the NS give computation to other multis

@@ -7,14 +7,17 @@ import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider> {
+
     @Getter
     private final OpticalPipeBlockEntity targetPipe;
     @Getter
@@ -30,7 +33,8 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
 
     @Nullable
     public IOpticalDataAccessHatch getDataHatch() {
-        IDataAccessHatch dataAccessHatch = getTargetCapability(GTCapability.CAPABILITY_DATA_ACCESS, targetPipe.getPipeLevel());
+        IDataAccessHatch dataAccessHatch = getTargetCapability(GTCapability.CAPABILITY_DATA_ACCESS,
+                targetPipe.getPipeLevel());
         return dataAccessHatch instanceof IOpticalDataAccessHatch opticalHatch ? opticalHatch : null;
     }
 
@@ -47,6 +51,7 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
     @Nullable
     @Override
     public IOpticalComputationProvider getHandler(Level world) {
-        return GTCapabilityHelper.getOpticalComputationProvider(world, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
+        return GTCapabilityHelper.getOpticalComputationProvider(world, getTargetPipePos().relative(targetFacing),
+                targetFacing.getOpposite());
     }
 }

@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
-import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
-import com.tterrag.registrate.util.entry.ItemEntry;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
+
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import snownee.jade.addon.harvest.HarvestToolProvider;
 import snownee.jade.addon.harvest.SimpleToolHandler;
-import snownee.jade.addon.universal.FluidStorageProvider;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -24,6 +20,7 @@ import java.util.Objects;
 
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {
+
     @Override
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(new ElectricContainerBlockProvider(), BlockEntity.class);
@@ -46,8 +43,11 @@ public class GTJadePlugin implements IWailaPlugin {
 
     static {
         GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0), map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent).map(ItemProviderEntry::asItem).toArray(Item[]::new)));
+            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
+                return;
+            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
+                    map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
+                            .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
         });
     }
 }

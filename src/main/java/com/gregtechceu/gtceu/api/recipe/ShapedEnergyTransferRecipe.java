@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import lombok.Getter;
+
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
@@ -20,6 +18,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
+import com.google.gson.JsonObject;
+import lombok.Getter;
+
 import java.util.Map;
 
 /**
@@ -30,6 +31,7 @@ import java.util.Map;
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {
+
     public static final RecipeSerializer<ShapedEnergyTransferRecipe> SERIALIZER = new Serializer();
 
     @Getter
@@ -39,8 +41,9 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     @Getter
     private final boolean overrideCharge;
 
-
-    public ShapedEnergyTransferRecipe(ResourceLocation id, String group, int width, int height, Ingredient chargeIngredient, boolean overrideCharge, boolean transferMaxCharge, NonNullList<Ingredient> recipeItems, ItemStack result) {
+    public ShapedEnergyTransferRecipe(ResourceLocation id, String group, int width, int height,
+                                      Ingredient chargeIngredient, boolean overrideCharge, boolean transferMaxCharge,
+                                      NonNullList<Ingredient> recipeItems, ItemStack result) {
         super(id, group, CraftingBookCategory.MISC, width, height, recipeItems, result);
         this.chargeIngredient = chargeIngredient;
         this.transferMaxCharge = transferMaxCharge;
@@ -102,7 +105,8 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             boolean transferMaxCharge = GsonHelper.getAsBoolean(json, "transferMaxCharge");
             Ingredient chargeIngredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "chargeIngredient"));
             ItemStack result = ShapedEnergyTransferRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new ShapedEnergyTransferRecipe(recipeId, group, xSize, ySize, chargeIngredient, overrideCharge, transferMaxCharge, dissolved, result);
+            return new ShapedEnergyTransferRecipe(recipeId, group, xSize, ySize, chargeIngredient, overrideCharge,
+                    transferMaxCharge, dissolved, result);
         }
 
         @Override
@@ -116,7 +120,8 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             NonNullList<Ingredient> ingredients = NonNullList.withSize(xSize * ySize, Ingredient.EMPTY);
             ingredients.replaceAll($ -> Ingredient.fromNetwork(buffer));
             ItemStack result = buffer.readItem();
-            return new ShapedEnergyTransferRecipe(recipeId, group, xSize, ySize, chargeIngredient, overrideCharge, transferMaxCharge, ingredients, result);
+            return new ShapedEnergyTransferRecipe(recipeId, group, xSize, ySize, chargeIngredient, overrideCharge,
+                    transferMaxCharge, ingredients, result);
         }
 
         @Override
@@ -130,8 +135,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(((ShapedRecipeAccessor)this).getResult());
+            buffer.writeItem(((ShapedRecipeAccessor) this).getResult());
         }
     }
-
 }

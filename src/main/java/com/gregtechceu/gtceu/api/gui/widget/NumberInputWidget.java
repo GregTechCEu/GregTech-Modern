@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -12,10 +13,12 @@ import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import lombok.Getter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+
+import lombok.Getter;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -29,6 +32,7 @@ import java.util.function.Supplier;
  * </p>
  */
 public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
+
     protected abstract T defaultMin();
 
     protected abstract T defaultMax();
@@ -37,8 +41,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
     protected abstract T fromText(String value);
 
-    protected record ChangeValues<T extends Number>(T regular, T shift, T ctrl, T ctrlShift) {
-    }
+    protected record ChangeValues<T extends Number>(T regular, T shift, T ctrl, T ctrlShift) {}
 
     protected abstract ChangeValues<T> getChangeValues();
 
@@ -52,9 +55,8 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
     protected abstract T getOne(boolean positive);
 
-
     /////////////////////////////////////////////////
-    //***********     IMPLEMENTATION    ***********//
+    // *********** IMPLEMENTATION ***********//
     /////////////////////////////////////////////////
 
     private final ChangeValues<T> CHANGE_VALUES = getChangeValues();
@@ -71,7 +73,6 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     private final Consumer<T> onChanged;
 
     private TextFieldWidget textField;
-
 
     public NumberInputWidget(Supplier<T> valueSupplier, Consumer<T> onChanged) {
         this(0, 0, 100, 20, valueSupplier, onChanged);
@@ -116,22 +117,17 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
         this.addWidget(new ButtonWidget(0, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("-", buttonWidth)),
-                this::decrease
-        ).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
-
+                this::decrease).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
 
         this.textField = new TextFieldWidget(buttonWidth + 2, 0, textFieldWidth, 20,
                 () -> toText(valueSupplier.get()),
-                stringValue -> this.setValue(clamp(fromText(stringValue), min, max))
-        );
+                stringValue -> this.setValue(clamp(fromText(stringValue), min, max)));
         this.updateTextFieldRange();
         this.addWidget(this.textField);
 
-
         this.addWidget(new ButtonWidget(buttonWidth + textFieldWidth + 4, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("+", buttonWidth)),
-                this::increase
-        ).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+                this::increase).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
     }
 
     private IGuiTexture getButtonTexture(String prefix, int buttonWidth) {
