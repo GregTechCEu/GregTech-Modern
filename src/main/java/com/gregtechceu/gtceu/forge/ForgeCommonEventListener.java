@@ -2,7 +2,11 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
@@ -24,12 +28,15 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,6 +71,28 @@ public class ForgeCommonEventListener {
                             LazyOptional.of(() -> tracker));
                 }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void tickPlayerInventoryHazards(PlayerTickEvent.Post event) {
+        if (event.getEntity().level().isClientSide) {
+            return;
+        }
+        Player player = event.getEntity();
+        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
+        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY);
+        if (tracker != null && inventory != null) {
+            tracker.startTick();
+            for (int i = 0; i < inventory.getSlots(); ++i) {
+                ItemStack stack = inventory.getStackInSlot(i);
+                Material material = HazardProperty.getValidHazardMaterial(stack);
+                if (material == null) {
+                    continue;
+                }
+                tracker.tick(material);
+            }
+            tracker.endTick();
         }
     }
 

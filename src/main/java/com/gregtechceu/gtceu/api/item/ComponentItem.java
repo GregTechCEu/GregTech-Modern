@@ -156,7 +156,7 @@ public class ComponentItem extends Item
                 stack = interactionItem.finishUsingItem(stack, level, livingEntity);
             }
         }
-        return super.finishUsingItem(stack, level, livingEntity);
+        return stack;
     }
 
     @Override
