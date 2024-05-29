@@ -119,7 +119,7 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
 
     /**
      * Convert the passed object to a list of recipe lookup filters.
-     * 
+     *
      * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
      * @return a list of recipe lookup filters.
      */
@@ -172,8 +172,8 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput,
-                           MutableInt yOffset) {}
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
+                           boolean isInput, MutableInt yOffset) {}
 
     @NotNull
     public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {

@@ -115,16 +115,16 @@ public class GTRecipeWidget extends WidgetGroup {
         /// add text based on i/o's
         MutableInt yOff = new MutableInt(yOffset);
         for (var capability : recipe.inputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), false, true, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, true, yOff);
         }
         for (var capability : recipe.tickInputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), true, true, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, true, yOff);
         }
         for (var capability : recipe.outputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), false, false, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, false, yOff);
         }
         for (var capability : recipe.tickOutputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), true, false, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
         yOffset = yOff.getValue();
