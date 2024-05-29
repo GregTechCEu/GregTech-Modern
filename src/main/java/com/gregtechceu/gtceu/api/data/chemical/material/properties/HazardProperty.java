@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -92,6 +95,11 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
             if (affectedTagPrefixes.isEmpty()) return true; // empty list means all prefixes are affected
             return affectedTagPrefixes.contains(prefix);
         }
+
+        @Override
+        public String getSerializedName() {
+            return this.name;
+        }
     }
 
     public enum ProtectionType {
@@ -160,6 +168,39 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     public static HazardProperty.HazardEffect blindnessEffect(int duration, int startTime, int amplifier) {
         return new HazardProperty.HazardEffect(duration, startTime,
                 () -> new MobEffectInstance(MobEffects.BLINDNESS, 1, amplifier));
+    }
+
+    @Nullable
+    public static Material getValidHazardMaterial(ItemStack item) {
+        Material material = null;
+        TagPrefix prefix = null;
+        boolean isFluid = false;
+        if (item.getItem() instanceof TagPrefixItem prefixItem) {
+            material = prefixItem.material;
+            prefix = prefixItem.tagPrefix;
+        } else if (item.getItem() instanceof BucketItem bucket) {
+            if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
+                material = ChemicalHelper.getMaterial(bucket.getFluid());
+                isFluid = true;
+            }
+        } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
+            UnificationEntry entry = ChemicalHelper.getUnificationEntry(item.getItem());
+            if (entry != null && entry.material != null) {
+                material = entry.material;
+                prefix = entry.tagPrefix;
+            }
+        }
+        if (material == null) {
+            return null;
+        }
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+        if (property == null) {
+            return null;
+        }
+        if (!isFluid && !property.getHazardType().isAffected(prefix)) {
+            return null;
+        }
+        return material;
     }
 
     /**
@@ -244,49 +285,6 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
                 return -1;
             }
             return newMaxAirSupply / Math.max(Math.round((float) timeFromStart / Math.max(duration, 1)), 1);
-        }
-
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            tag.putInt("duration", duration);
-            tag.putInt("modifier_start_time", modifierStartTime);
-
-            ListTag effectsTag = new ListTag();
-            for (Supplier<MobEffectInstance> effect : effects) {
-                effectsTag.add(effect.get().save(new CompoundTag()));
-            }
-            tag.put("effects", effectsTag);
-            CompoundTag attributesTag = new CompoundTag();
-            for (Map.Entry<Attribute, AttributeModifier> modifier : modifiers.entrySet()) {
-                attributesTag.put(BuiltInRegistries.ATTRIBUTE.getKey(modifier.getKey()).toString(),
-                        modifier.getValue().save());
-            }
-            tag.put("modifiers", attributesTag);
-            tag.putInt("max_air_supply", newMaxAirSupply);
-
-            return tag;
-        }
-
-        public static HazardEffect deserializeNBT(CompoundTag tag) {
-            int duration = tag.getInt("duration");
-            int modifierStartTime = tag.getInt("modifier_start_time");
-
-            List<Supplier<MobEffectInstance>> effects = new ArrayList<>();
-            for (Tag effect : tag.getList("effects", Tag.TAG_COMPOUND)) {
-                if (!(effect instanceof CompoundTag compoundTag)) {
-                    continue;
-                }
-                effects.add(() -> MobEffectInstance.load(compoundTag));
-            }
-            Map<Attribute, AttributeModifier> modifiers = new HashMap<>();
-            CompoundTag attributesTag = tag.getCompound("modifiers");
-            for (String key : attributesTag.getAllKeys()) {
-                modifiers.put(BuiltInRegistries.ATTRIBUTE.get(new ResourceLocation(key)),
-                        AttributeModifier.load(attributesTag.getCompound(key)));
-            }
-            int maxAirModifier = tag.getInt("max_air_supply");
-
-            return new HazardEffect(duration, modifierStartTime, effects, modifiers, maxAirModifier);
         }
     }
 }

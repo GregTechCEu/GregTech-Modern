@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.commands.arguments.MaterialArgument;
@@ -71,8 +69,8 @@ public class ServerCommands {
                                             if (tracker == null) {
                                                 throw EntityArgument.NO_PLAYERS_FOUND.create();
                                             }
-                                            int count = tracker.getCurrentHazardEffects().keySet().size();
-                                            tracker.getCurrentHazardEffects().clear();
+                                            int count = tracker.getCurrentHazards().keySet().size();
+                                            tracker.getCurrentHazards().clear();
                                             return count;
                                         })
                                         .then(Commands.argument("targets", EntityArgument.players())
@@ -86,8 +84,8 @@ public class ServerCommands {
                                                         if (tracker == null) {
                                                             continue;
                                                         }
-                                                        count += tracker.getCurrentHazardEffects().keySet().size();
-                                                        tracker.getCurrentHazardEffects().clear();
+                                                        count += tracker.getCurrentHazards().keySet().size();
+                                                        tracker.getCurrentHazards().clear();
                                                     }
                                                     if (count == 0) {
                                                         throw ERROR_CLEAR_EVERYTHING_FAILED.create();
@@ -114,8 +112,7 @@ public class ServerCommands {
                                                                 if (tracker == null) {
                                                                     continue;
                                                                 }
-                                                                tracker.addHazardItem(
-                                                                        new UnificationEntry(TagPrefix.dust, material));
+                                                                tracker.getExtraHazards().add(material);
                                                                 success++;
                                                             }
                                                             if (success == 0) {
