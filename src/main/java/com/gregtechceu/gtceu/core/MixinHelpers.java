@@ -195,10 +195,8 @@ public class MixinHelpers {
                     LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
                             BLOCK_LOOT.applyExplosionDecay(block,
                                     LootItem.lootTableItem(dropItem.getItem())
-                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1,
-                                                    Math.max(1,
-                                                            material.getProperty(PropertyKey.ORE).getOreMultiplier() *
-                                                                    oreMultiplier))))));
+                                            .apply(SetItemCountFunction.setCount(
+                                                    UniformGenerator.between(1, Math.max(1, oreMultiplier))))));
                     // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for
                     // balance reasons. (for now, until we can think of a better solution.)
 
