@@ -501,5 +501,47 @@ public class SecondDegreeMaterials {
                 .components(Silicon, 1, Pyrite, 5, Ruby, 1, Mercury, 3)
                 .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
+
+        Dichloroethane = new Material.Builder(GTCEu.id("dichloroethane"))
+                .liquid()
+                .color(0xafc979)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Carbon, 2, Hydrogen, 4, Chlorine, 2)
+                .buildAndRegister();
+
+        Diethylenetriamine = new Material.Builder(GTCEu.id("diethylenetriamine"))
+                .liquid()
+                .color(0xa9d9a7)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .buildAndRegister();
+
+        RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
+                .liquid()
+                .color(0x9f6b26)
+                .components(Water, 4, Salt, 20, Magnesium, 3, Lithium, 2, Bromine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
+                .liquid()
+                .color(0xab8c6d)
+                .components(Water, 4, Salt, 20, Magnesium, 3, Lithium, 2)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .buildAndRegister();
+
+        BrominatedChlorineVapor = new Material.Builder(GTCEu.id("brominated_chlorine_vapor"))
+                .gas()
+                .color(0xbb9b72)
+                .components(Chlorine, 1, Bromine, 1, Steam, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        AcidicBromineExhaust = new Material.Builder(GTCEu.id("acidic_bromine_exhaust"))
+                .gas()
+                .color(0x8f681e)
+                .components(Steam, 3, Chlorine, 1)
+                .buildAndRegister();
     }
 }

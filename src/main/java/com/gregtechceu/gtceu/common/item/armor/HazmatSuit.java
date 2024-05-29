@@ -17,9 +17,11 @@ import org.jetbrains.annotations.Nullable;
 public class HazmatSuit implements IArmorLogic {
 
     private final ArmorItem.Type type;
+    private final String armorTexture;
 
-    public HazmatSuit(ArmorItem.Type type) {
+    public HazmatSuit(ArmorItem.Type type, String armorTexture) {
         this.type = type;
+        this.armorTexture = armorTexture;
     }
 
     @Override
@@ -35,7 +37,6 @@ public class HazmatSuit implements IArmorLogic {
     @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
                                                       ArmorMaterial.Layer layer) {
-        String armorTexture = "hazmat";
         return slot != EquipmentSlot.LEGS ?
                 GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));

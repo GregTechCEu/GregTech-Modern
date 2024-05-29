@@ -9,7 +9,6 @@
     "GuiGraphicsAccessor",
     "GuiGraphicsMixin",
     "GuiHeartTypeMixin",
-    "CompassManagerMixin",
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",

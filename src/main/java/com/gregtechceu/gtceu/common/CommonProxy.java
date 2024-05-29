@@ -28,6 +28,8 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.data.GTCommandArguments;
+import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -127,6 +129,8 @@ public class CommonProxy {
 
         GTRegistries.init(modBus);
         GTFeatures.init(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
         // init common features
         if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {

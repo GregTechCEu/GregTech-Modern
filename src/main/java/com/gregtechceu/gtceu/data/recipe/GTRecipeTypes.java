@@ -603,6 +603,11 @@ public class GTRecipeTypes {
                 }
             });
 
+    public static final GTRecipeType EVAPORATION_RECIPES = register("evaporation", ELECTRIC).setMaxIOSize(0, 1, 1, 6)
+            .setEUIO(IO.IN)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .setSound(GTSoundEntries.MOTOR);
+
     public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven", MULTIBLOCK).setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
             .setSound(GTSoundEntries.FIRE);

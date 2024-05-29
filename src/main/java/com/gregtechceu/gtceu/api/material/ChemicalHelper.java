@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tag.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +28,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
@@ -156,19 +155,15 @@ public class ChemicalHelper {
             for (final Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
-                    for (FluidStorageKey key : FluidStorageKey.allKeys()) {
-                        Fluid stored = property.getStorage().get(key);
-                        TagKey<Fluid> tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stored).getPath());
-                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("water")) &&
-                                !stored.isSame(Fluids.WATER))
-                            continue;
-                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("lava")) &&
-                                !stored.isSame(Fluids.LAVA))
-                            continue;
-                        if (f == stored || f.is(tag)) {
-                            return material;
-                        }
-                    }
+                    FluidStorageKey.allKeys().stream()
+                            .map(key -> property.getStorage().get(key))
+                            .filter(Objects::nonNull)
+                            .map(f -> Pair.of(f, TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(f).getPath())))
+                            .filter(pair -> allFluidTags.contains(pair.getSecond()))
+                            .forEach(pair -> {
+                                allFluidTags.remove(pair.getSecond());
+                                FLUID_MATERIAL.put(pair.getFirst(), material);
+                            });
                 }
             }
         }

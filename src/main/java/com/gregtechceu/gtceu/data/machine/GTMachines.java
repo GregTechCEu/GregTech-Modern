@@ -1472,6 +1472,33 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
+    public static final MachineDefinition EVAPORATION_PLANT = REGISTRATE
+            .multiblock("evaporation_plant", WorkableElectricMultiblockMachine::new)
+            .langValue("Evaporation Tower")
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.EVAPORATION_RECIPES)
+            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .appearanceBlock(CASING_STAINLESS_EVAPORATION)
+            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
+                    .aisle("YSYY", "YYYY", "YYYY", "YYYY")
+                    .aisle("XXXX", "X##X", "X##X", "XXXX").setRepeatable(3, 5)
+                    .aisle(" XX ", "X##X", "X##X", " XX ")
+                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('Y', blocks(CASING_STAINLESS_EVAPORATION.get())
+                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+                                    .setMaxGlobalLimited(2))
+                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
+                    .where('X', blocks(CASING_STAINLESS_EVAPORATION.get())
+                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMaxLayerLimited(1)))
+                    .where('#', Predicates.air())
+                    .where(' ', Predicates.any())
+                    .build())
+            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_stainless_evaporation"),
+                    GTCEu.id("block/multiblock/distillation_tower"), false)
+            .register();
+
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE
             .multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)

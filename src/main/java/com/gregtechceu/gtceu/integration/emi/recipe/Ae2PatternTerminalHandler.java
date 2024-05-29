@@ -86,5 +86,4 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
         }
         return new GenericStack(AEItemKey.of(ItemStack.EMPTY), 0);
     }
-
 }

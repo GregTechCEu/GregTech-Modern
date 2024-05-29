@@ -519,6 +519,9 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
+    public static final BlockEntry<Block> CASING_STAINLESS_EVAPORATION = createCasingBlock(
+            "stainless_evaporation_casing",
+            GTCEu.id("block/casings/solid/machine_casing_stainless_evaporation"));
 
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 

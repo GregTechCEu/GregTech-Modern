@@ -31,8 +31,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
-
 /**
  * @author KilaBash
  * @date 2023/2/14
@@ -106,12 +104,8 @@ public class TagPrefixItem extends Item {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
-
-
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
-                    GTUtil.applyHazardEffects(material, livingEntity, () -> material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
+                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST))
                     return;
-                }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);

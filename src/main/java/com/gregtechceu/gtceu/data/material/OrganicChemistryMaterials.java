@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
@@ -401,13 +402,14 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.BLINDNESS))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 200, 3))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.CONFUSION))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON,
+                        new HazardProperty.HazardEffect(200, () -> new MobEffectInstance(MobEffects.CONFUSION, 1)))
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 

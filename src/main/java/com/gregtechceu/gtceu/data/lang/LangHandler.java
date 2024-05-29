@@ -124,6 +124,10 @@ public class LangHandler {
         provider.add("gtceu.hazard.inhalation_poison", "§2Poisonous when inhaled");
         provider.add("gtceu.hazard.corrosive", "§6Corrosive");
         provider.add("gtceu.hazard.radioactive", "§eRadioactive");
+        provider.add("gtceu.hazard.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("gtceu.hazard.antidote.description_shift", "§aCures types:");
+        provider.add("gtceu.hazard.antidote.description.time_removed", "Removes %ss of current ailments' time");
+        provider.add("gtceu.hazard.antidote.description.time_removed.all", "all");
 
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
@@ -440,6 +444,7 @@ public class LangHandler {
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
+        replace(provider, GTMaterials.Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
 
         replace(provider, GTMaterials.HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
         replace(provider, GTMaterials.HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
@@ -1184,18 +1189,20 @@ public class LangHandler {
         replace(provider, "block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
+
+        provider.add("effect.gtceu.weak_poison", "Weak Poison");
     }
 
     /**
      * Returns the sub-key consisting of the given key plus the given index.<br>
      * E.g.,<br>
-     * 
+     *
      * <pre>
      * <code>getSubKey("terminal.fluid_prospector.tier", 0)</code>
      * </pre>
-     * 
+     *
      * returns the <code>String</code>:
-     * 
+     *
      * <pre>
      * <code>
      * "terminal.fluid_prospector.tier.0"</code>
@@ -1213,22 +1220,22 @@ public class LangHandler {
      * Registers multiple values under the same key with a given provider.<br>
      * <br>
      * For example, a cumbersome way to add translations would be the following:<br>
-     * 
+     *
      * <pre>
      * <code>provider.add("terminal.fluid_prospector.tier.0", "radius size 1");
      * provider.add("terminal.fluid_prospector.tier.1", "radius size 2");
      * provider.add("terminal.fluid_prospector.tier.2", "radius size 3");</code>
      * </pre>
-     * 
+     *
      * Instead, <code>multiLang</code> can be used for the same result:
-     * 
+     *
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     * 
+     *
      * In situations requiring a large number of generated translations, the following could be used instead, which
      * generates translations for 100 tiers:
-     * 
+     *
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", IntStream.of(100)
      *                 .map(i -> i + 1)
@@ -1251,21 +1258,21 @@ public class LangHandler {
     /**
      * Gets all translation components from a multi lang's sub-keys.<br>
      * E.g., given a multi lang:
-     * 
+     *
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     * 
+     *
      * The following code can be used to print out the translations:
-     * 
+     *
      * <pre>
      * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
      *     System.out.println(component.getString());
      * }</code>
      * </pre>
-     * 
+     *
      * Result:
-     * 
+     *
      * <pre>
      * <code>radius size 1
      * radius size 2
@@ -1290,21 +1297,21 @@ public class LangHandler {
      * Gets all translation components from a multi lang's sub-keys. Supports additional arguments for the translation
      * components.<br>
      * E.g., given a multi lang:
-     * 
+     *
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     * 
+     *
      * The following code can be used to print out the translations:
-     * 
+     *
      * <pre>
      * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
      *     System.out.println(component.getString());
      * }</code>
      * </pre>
-     * 
+     *
      * Result:
-     * 
+     *
      * <pre>
      * <code>radius size 1
      * radius size 2
@@ -1371,13 +1378,13 @@ public class LangHandler {
      * Adds one key-value-pair to the given lang provider per line in the given multiline (a multiline is a String
      * containing newline characters).<br>
      * Example:
-     * 
+     *
      * <pre>
      * <code>multilineLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");</code>
      * </pre>
-     * 
+     *
      * This results in the following translations:<br>
-     * 
+     *
      * <pre>
      * <code>"gtceu.gui.overclock.enabled.0": "Overclocking Enabled.",
      * "gtceu.gui.overclock.enabled.1": "Click to Disable",</code>

@@ -11,10 +11,11 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -452,6 +453,18 @@ public class MachineRecipeLoader {
             .outputItems(MASK_FILTER)
             .duration(100).EUt(2).save(provider);
 
+        CANNER_RECIPES.recipeBuilder("pack_paracetamol")
+                .inputItems(dust, Paracetamol, 16)
+                .notConsumable(GTItems.SHAPE_MOLD_PILL)
+                .outputItems(GTItems.PARACETAMOL_PILL.asStack(16))
+                .duration(60).EUt(VA[LV]).save(provider);
+
+        CANNER_RECIPES.recipeBuilder("pack_rad_away")
+                .inputItems(dust, RadAway, 16)
+                .notConsumable(GTItems.SHAPE_MOLD_PILL)
+                .outputItems(GTItems.RAD_AWAY_PILL.asStack(16))
+                .duration(60).EUt(VA[LV]).save(provider);
+
         Material material = Iron;
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_shutter")
@@ -677,6 +690,12 @@ public class MachineRecipeLoader {
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_evaporation")
+                .inputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(1))
+                .inputItems(wireGtDouble, AnnealedCopper, 4)
+                .inputFluids(PolyvinylChloride.getFluid(L * 2))
+                .outputItems(GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(1))
+                .duration(30).EUt(VA[HV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
                 .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)
