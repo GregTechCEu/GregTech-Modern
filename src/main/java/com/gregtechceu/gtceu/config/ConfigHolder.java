@@ -457,7 +457,7 @@ public class ConfigHolder {
         public boolean hazardsEnabled = true;
         @Configurable
         @Configurable.Comment({ "Whether hazards are applied to all valid items, or just GT's.",
-                "true == all, false == GT only.", "Default: true" })
+                "true = all, false = GT only.", "Default: true" })
         public boolean universalHazards = true;
     }
 

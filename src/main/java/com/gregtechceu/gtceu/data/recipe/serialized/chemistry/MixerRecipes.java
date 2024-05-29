@@ -583,6 +583,7 @@ public class MixerRecipes {
                 .inputItems(dust, PotassiumIodide, 5)
                 .inputItems(dust, PrussianBlue, 3)
                 .inputItems(dust, DiethylenetriaminepentaaceticAcid, 10)
+                .outputItems(dust, RadAway, 48)
                 .duration(60).EUt(VA[HV]).save(provider);
     }
 }

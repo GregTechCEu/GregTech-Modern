@@ -1196,6 +1196,13 @@ public class FirstDegreeMaterials {
                 .components(Iron, 1, Chlorine, 3)
                 .buildAndRegister();
 
+        Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
+                .fluid()
+                .color(0xe8e0be)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Iron, 1, Chlorine, 2)
+                .buildAndRegister();
+
         UraniumHexafluoride = new Material.Builder(GTCEu.id("uranium_hexafluoride"))
                 .gas()
                 .color(0x42D126)
@@ -1627,6 +1634,27 @@ public class FirstDegreeMaterials {
                 .color(0x8187a6)
                 .components(Hydrogen, 1, Iodine, 1)
                 .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        DiethylenetriaminePentaacetonitrile = new Material.Builder(GTCEu.id("diethylenetriamine_pentaacetonitrile"))
+                .liquid()
+                .color(0xcbbfd6)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 14, Hydrogen, 18, Nitrogen, 8)
+                .buildAndRegister();
+
+        DiethylenetriaminepentaaceticAcid = new Material.Builder(GTCEu.id("diethylenetriaminepentaacetic_acid"))
+                .dust()
+                .color(0xe8c93c).secondaryColor(0xc99118)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 14, Hydrogen, 23, Nitrogen, 3, Oxygen, 10)
+                .buildAndRegister();
+
+        SodiumNitrite = new Material.Builder(GTCEu.id("sodium_nitrite"))
+                .dust()
+                .color(0xcfbf65).secondaryColor(0x85600b)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Sodium, 1, Nitrogen, 1, Oxygen, 2)
                 .buildAndRegister();
     }
 }

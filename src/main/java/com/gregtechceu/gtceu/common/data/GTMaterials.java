@@ -591,6 +591,7 @@ public class GTMaterials {
     public static Material HydrofluoricAcid;
     public static Material NitricOxide;
     public static Material Iron3Chloride;
+    public static Material Iron2Chloride;
     public static Material UraniumHexafluoride;
     public static Material EnrichedUraniumHexafluoride;
     public static Material DepletedUraniumHexafluoride;
@@ -644,6 +645,9 @@ public class GTMaterials {
     public static Material PrussianBlue;
     public static Material Formaldehyde;
     public static Material Glycolonitrile;
+    public static Material DiethylenetriaminePentaacetonitrile;
+    public static Material DiethylenetriaminepentaaceticAcid;
+    public static Material SodiumNitrite;
 
     public static Material AcidicBromineSolution;
     public static Material ConcentratedBromineSolution;
@@ -955,8 +959,6 @@ public class GTMaterials {
     public static Material Fireclay;
     public static Material Diorite;
 
-    public static Material DiethylenetriaminePentaacetonitrile;
-    public static Material DiethylenetriaminepentaaceticAcid;
     public static Material HotBrine;
     public static Material HotChlorinatedBrominatedBrine;
     public static Material HotDebrominatedBrine;

@@ -193,20 +193,6 @@ public class HigherDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
-        DiethylenetriaminePentaacetonitrile = new Material.Builder(GTCEu.id("diethylenetriamine_pentaacetonitrile"))
-                .liquid()
-                .color(0xcbbfd6)
-                .flags(DISABLE_DECOMPOSITION)
-                .components(Carbon, 14, Hydrogen, 18, Nitrogen, 8)
-                .buildAndRegister();
-
-        DiethylenetriaminepentaaceticAcid = new Material.Builder(GTCEu.id("diethylenetriaminepentaacetic_acid"))
-                .dust()
-                .color(0xe8c93c).secondaryColor(0xc99118)
-                .flags(DISABLE_DECOMPOSITION)
-                .components(Carbon, 14, Hydrogen, 23, Nitrogen, 3, Oxygen, 10)
-                .buildAndRegister();
-
         BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1400))

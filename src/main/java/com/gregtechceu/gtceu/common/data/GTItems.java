@@ -2241,12 +2241,12 @@ public class GTItems {
     public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
             .lang("Paracetamol Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehaviour(100, HazardProperty.HazardType.ALL)))
+            .onRegister(attach(new AntidoteBehavior(100, HazardProperty.HazardType.ALL)))
             .register();
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehaviour(5000, HazardProperty.HazardType.RADIOACTIVE)))
+            .onRegister(attach(new AntidoteBehavior(-1, HazardProperty.HazardType.RADIOACTIVE)))
             .register();
 
     public static ItemEntry<Item> NANO_SABER;

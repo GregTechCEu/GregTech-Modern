@@ -142,6 +142,15 @@ public class ReactorRecipes {
                 .duration(400).EUt(VA[LV])
                 .save(provider);
 
+        CHEMICAL_RECIPES.recipeBuilder("iron_2_chloride")
+                .inputFluids(Iron3Chloride.getFluid(2000))
+                .inputFluids(Chlorobenzene.getFluid(1000))
+                .outputFluids(Iron2Chloride.getFluid(2000))
+                .outputFluids(HydrochloricAcid.getFluid(1000))
+                .outputFluids(Dichlorobenzene.getFluid(1000))
+                .duration(400).EUt(VA[MV])
+                .save(provider);
+
         CHEMICAL_RECIPES.recipeBuilder("chloromethane_from_methane")
                 .circuitMeta(3)
                 .inputFluids(Chlorine.getFluid(2000))
@@ -726,161 +735,5 @@ public class ReactorRecipes {
                 .outputFluids(PolychlorinatedBiphenyl.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(200).EUt(VH[HV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("acetic_anhydride")
-                .inputFluids(Ethenone.getFluid(1000))
-                .inputFluids(AceticAcid.getFluid(1000))
-                .outputFluids(AceticAnhydride.getFluid(1000))
-                .duration(200).EUt(VH[LV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("aminophenol")
-                .inputFluids(Phenol.getFluid(1000))
-                .inputFluids(NitrationMixture.getFluid(1000))
-                .notConsumable(dust, Iron)
-                .outputFluids(AminoPhenol.getFluid(1000))
-                .outputFluids(DilutedSulfuricAcid.getFluid(1000))
-                .duration(300).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("paracetamol")
-                .inputFluids(AceticAnhydride.getFluid(1000))
-                .inputFluids(AminoPhenol.getFluid(1000))
-                .outputItems(dust, Paracetamol, 1)
-                .outputFluids(AceticAcid.getFluid(1000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("potassium_hydroxide")
-                .inputItems(dust, RockSalt, 1)
-                .inputFluids(Water.getFluid(1000))
-                .outputItems(dust, PotassiumHydroxide, 1)
-                .outputFluids(Chlorine.getFluid(1000))
-                .outputFluids(Hydrogen.getFluid(1000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("potassium_iodide")
-                .inputItems(dust, PotassiumHydroxide, 1)
-                .inputItems(dust, Iodine, 1)
-                .outputItems(dust, PotassiumIodide, 1)
-                .outputFluids(Oxygen.getFluid(1000))
-                .outputFluids(Hydrogen.getFluid(1000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("calcium_hydroxide")
-                .inputItems(dust, Quicklime, 1)
-                .inputFluids(Water.getFluid(1000))
-                .outputItems(dust, CalciumHydroxide, 2)
-                .duration(100).EUt(VHA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("formic_acid")
-                .inputFluids(CarbonDioxide.getFluid(1000))
-                .inputFluids(Water.getFluid(1000))
-                .outputFluids(FormicAcid.getFluid(1000))
-                .outputFluids(Oxygen.getFluid(1000))
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("ammonium_formate")
-                .inputFluids(Ammonia.getFluid(1000))
-                .inputFluids(FormicAcid.getFluid(1000))
-                .outputFluids(AmmoniumFormate.getFluid(2000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("potassium_cyanide")
-                .inputItems(dust, PotassiumHydroxide, 1)
-                .inputFluids(Formamide.getFluid(1000))
-                .outputItems(dust, PotassiumCyanide, 1)
-                .outputFluids(Water.getFluid(1000))
-                .duration(100).EUt(VHA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("hydrogen_cyanide")
-                .inputItems(dust, PotassiumCyanide, 6)
-                .inputFluids(SulfuricAcid.getFluid(1000))
-                .outputFluids(HydrogenCyanide.getFluid(1000))
-                .outputFluids(PotassiumSulfate.getFluid(1000))
-                .duration(100).EUt(VHA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("potassium_carbonate")
-                .inputItems(dust, Saltpeter, 1)
-                .inputItems(dust, Carbon, 1)
-                .outputItems(dust, PotassiumCarbonate, 1)
-                .outputFluids(Nitrogen.getFluid(2000))
-                .outputFluids(Oxygen.getFluid(3000))
-                .duration(100).EUt(VHA[MV]).save(provider);
-
-        LARGE_CHEMICAL_RECIPES.recipeBuilder("calcium_ferrocyanide")
-                .inputFluids(HydrogenCyanide.getFluid(6000))
-                .inputFluids(Iron3Chloride.getFluid(1000))
-                .inputItems(dust, CalciumHydroxide, 2)
-                .outputItems(dust, CalciumFerrocyanide, 1)
-                .outputFluids(Water.getFluid(4000))
-                .outputFluids(Chlorine.getFluid(3000))
-                .outputFluids(Hydrogen.getFluid(2000))
-                .duration(300).EUt(VA[HV]).save(provider);
-
-        LARGE_CHEMICAL_RECIPES.recipeBuilder("potassium_ferrocyanide")
-                .inputItems(dust, CalciumFerrocyanide, 1)
-                .inputItems(dust, PotassiumCarbonate, 2)
-                .outputItems(dust, CalciumCarbonate, 1)
-                .outputFluids(PotassiumFerrocyanide.getFluid(1000))
-                .outputFluids(CarbonDioxide.getFluid(1000))
-                .outputFluids(Oxygen.getFluid(1000))
-                .duration(300).EUt(VA[HV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("prussian_blue")
-                .inputItems(dust, PotassiumFerrocyanide, 3)
-                .inputFluids(Iron3Chloride.getFluid(4000))
-                .outputItems(dust, PrussianBlue, 1)
-                .outputItems(dust, RockSalt, 12)
-                .duration(500).EUt(VA[HV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("dichloroethane")
-                .inputFluids(Ethylene.getFluid(1000))
-                .inputFluids(Chlorine.getFluid(2000))
-                .notConsumableFluid(Iron3Chloride.getFluid(100))
-                .outputFluids(Dichloroethane.getFluid(1000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine")
-                .inputFluids(Dichloroethane.getFluid(2000))
-                .inputFluids(Ammonia.getFluid(3000))
-                .outputFluids(Diethylenetriamine.getFluid(1000))
-                .outputFluids(HydrochloricAcid.getFluid(4000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("formaldehyde")
-                .inputFluids(Methanol.getFluid(1000))
-                .inputFluids(Oxygen.getFluid(1000))
-                .outputFluids(Formaldehyde.getFluid(1000))
-                .outputFluids(Water.getFluid(4000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("glycolonitrile")
-                .inputFluids(Formaldehyde.getFluid(1000))
-                .inputFluids(HydrogenCyanide.getFluid(1000))
-                .outputFluids(Glycolonitrile.getFluid(1000))
-                .outputFluids(Water.getFluid(4000))
-                .duration(100).EUt(VA[MV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine_pentaacetonitrile")
-                .inputFluids(Diethylenetriamine.getFluid(1000))
-                .inputFluids(Glycolonitrile.getFluid(5000))
-                .outputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
-                .outputFluids(Water.getFluid(5000))
-                .duration(100).EUt(VA[HV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine_pentaacetonitrile")
-                .inputFluids(Diethylenetriamine.getFluid(1000))
-                .inputFluids(Glycolonitrile.getFluid(5000))
-                .outputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
-                .outputFluids(Water.getFluid(5000))
-                .duration(100).EUt(VA[HV]).save(provider);
-
-        LARGE_CHEMICAL_RECIPES.recipeBuilder("diethylenetriaminepentaacetic_acid")
-                .inputItems(dust, SodiumHydroxide, 5)
-                .inputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
-                .inputFluids(Water.getFluid(5000))
-                .inputFluids(Hydrogen.getFluid(5000))
-                .outputItems(dust, DiethylenetriaminepentaaceticAcid, 1)
-                .outputItems(dust, Sodium, 5)
-                .outputFluids(Ammonia.getFluid(5000))
-                .duration(100).EUt(VA[EV]).save(provider);
     }
 }

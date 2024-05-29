@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
  * @param types        the type of the hazard to remove
  * @param timeToRemove the time to remove from the chosen hazard. -1 for all.
  */
-public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeToRemove)
+public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int timeToRemove)
         implements IInteractionItem, IAddInformation {
 
-    public AntidoteBehaviour(int timeToRemove, HazardProperty.HazardType... types) {
+    public AntidoteBehavior(int timeToRemove, HazardProperty.HazardType... types) {
         this(Arrays.stream(types).collect(Collectors.toSet()), timeToRemove);
     }
 
@@ -50,9 +50,6 @@ public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeTo
                     if (timeToRemove == -1) {
                         effectTimes.removeInt(effect);
                     } else {
-                        if (!effectTimes.containsKey(effect)) {
-                            continue;
-                        }
                         int effectTime = effectTimes.getInt(effect);
                         effectTimes.put(effect, Math.max(0, effectTime - this.timeToRemove));
                         if (effectTimes.getInt(effect) == 0) {

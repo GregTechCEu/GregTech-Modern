@@ -32,8 +32,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.wireGtDouble;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Kanthal;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
 
 public class MetaTileEntityLoader {
@@ -571,7 +569,7 @@ public class MetaTileEntityLoader {
                 'F', GTItems.ELECTRIC_PUMP_HV);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "evaporation_plant",
                 GTMachines.EVAPORATION_PLANT.asStack(), "CBC", "FMF", "CBC", 'M', GTMachines.HULL[HV].asStack(),
-                'B', new UnificationEntry(wireGtDouble, Kanthal), 'C', CustomTags.HV_CIRCUITS,
+                'B', new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal), 'C', CustomTags.HV_CIRCUITS,
                 'F', GTItems.ELECTRIC_PUMP_HV);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cracking_unit", GTMachines.CRACKER.asStack(), "CEC", "PHP",
                 "CEC", 'C', GTBlocks.COIL_CUPRONICKEL.asStack(), 'E', GTItems.ELECTRIC_PUMP_HV.asStack(), 'P',

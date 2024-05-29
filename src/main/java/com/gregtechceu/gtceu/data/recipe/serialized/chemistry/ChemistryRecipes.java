@@ -34,6 +34,7 @@ public class ChemistryRecipes {
         ReactorRecipes.init(provider);
         SeparationRecipes.init(provider);
         BrineRecipes.init(provider);
+        AntidoteRecipes.init(provider);
 
         // A Few Random Recipes
         FLUID_HEATER_RECIPES.recipeBuilder("ethenone")
@@ -46,11 +47,6 @@ public class ChemistryRecipes {
                 .circuitMeta(1)
                 .inputFluids(DissolvedCalciumAcetate.getFluid(200))
                 .outputFluids(Acetone.getFluid(200))
-                .duration(16).EUt(VA[LV]).save(provider);
-
-        FLUID_HEATER_RECIPES.recipeBuilder("formamide")
-                .inputFluids(AmmoniumFormate.getFluid(100))
-                .outputFluids(Formamide.getFluid(100))
                 .duration(16).EUt(VA[LV]).save(provider);
 
         VACUUM_RECIPES.recipeBuilder("ice")

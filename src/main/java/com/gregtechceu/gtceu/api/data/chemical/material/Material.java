@@ -1298,9 +1298,9 @@ public class Material implements Comparable<Material> {
             if (!properties.hasProperty(HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
                     Material material = materialStack.material();
-                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives() &&
-                            !properties.hasProperty(HAZARD)) {
+                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives()) {
                         properties.setProperty(HAZARD, material.getProperty(HAZARD));
+                        break;
                     }
                 }
             }
