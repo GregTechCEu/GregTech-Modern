@@ -68,27 +68,26 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
-    public enum HazardType {
+    public record HazardType(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
+            implements StringRepresentable {
 
-        INHALATION_POISON(ProtectionType.MASK, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny,
-                TagPrefix.dustPure, TagPrefix.dustImpure),
-        CONTACT_POISON(ProtectionType.FULL),
-        RADIOACTIVE(ProtectionType.FULL),
-        CORROSIVE(ProtectionType.HANDS, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny),
-        NONE(ProtectionType.FULL);
+        public static final Map<String, HazardType> ALL_HAZARDS = new HashMap<>();
 
-        public static final HazardType[] ALL = { INHALATION_POISON, CONTACT_POISON, RADIOACTIVE, CORROSIVE };
+        public static final HazardType INHALATION_POISON = new HazardType("inhalation_poison", ProtectionType.MASK,
+                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
+        public static final HazardType CONTACT_POISON = new HazardType("contacy_poison", ProtectionType.FULL);
+        public static final HazardType RADIOACTIVE = new HazardType("radioactive", ProtectionType.FULL);
+        public static final HazardType CORROSIVE = new HazardType("corrosive", ProtectionType.HANDS,
+                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
+        public static final HazardType NONE = new HazardType("none", ProtectionType.NONE);
 
-        private final Set<TagPrefix> affectedTagPrefixes = new HashSet<>();
-        @Getter
-        private final ProtectionType protectionType;
+        public HazardType {
+            ALL_HAZARDS.put(name, this);
+        }
 
-        HazardType(ProtectionType protectionType, TagPrefix... tagPrefixes) {
-            this.protectionType = protectionType;
+        public HazardType(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
+            this(name, protectionType, new HashSet<>());
             affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
-            if (tagPrefixes.length > 0)
-                affectedTagPrefixes.add(null); // add a null for fluid, because they don't have a prefix but still need
-                                               // to always be harmful.
         }
 
         public boolean isAffected(TagPrefix prefix) {
@@ -106,7 +105,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
         MASK(ArmorItem.Type.HELMET),
         HANDS(ArmorItem.Type.CHESTPLATE),
-        FULL(ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS);
+        FULL(ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS),
+        NONE();
 
         @Getter
         private final Set<ArmorItem.Type> equipmentTypes;
@@ -116,6 +116,9 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         }
 
         public boolean isProtected(LivingEntity livingEntity) {
+            if (this == NONE) {
+                return true;
+            }
             Set<ArmorItem.Type> correctArmorItems = new HashSet<>();
             for (ArmorItem.Type equipmentType : equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
