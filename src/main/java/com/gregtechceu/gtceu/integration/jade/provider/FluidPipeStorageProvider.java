@@ -13,7 +13,8 @@ import snownee.jade.api.view.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPipeBlockEntity,CompoundTag>, IClientExtensionProvider<CompoundTag, FluidView> {
+public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPipeBlockEntity,CompoundTag>,
+                                                IClientExtensionProvider<CompoundTag, FluidView> {
     INSTANCE;
 
     @Override
@@ -30,9 +31,11 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor,
                                                             FluidPipeBlockEntity pipe) {
         List<ViewGroup<CompoundTag>> tanks = new ArrayList<>();
-        for(var tank : pipe.getFluidTanks()) {
-            tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(JadeFluidObject.of(tank.getFluid().getFluid(),
-                tank.getFluidAmount()), tank.getCapacity()))));
+        for (var tank : pipe.getFluidTanks()) {
+            if (tank.getFluidAmount() > 0) {
+                tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(
+                        JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
+            }
         }
         return tanks;
     }
