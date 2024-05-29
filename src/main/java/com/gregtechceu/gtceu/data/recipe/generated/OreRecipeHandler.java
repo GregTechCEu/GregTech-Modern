@@ -197,7 +197,8 @@ public class OreRecipeHandler {
 
     public static void processRawOre(TagPrefix orePrefix, Material material, OreProperty property,
                                      RecipeOutput provider) {
-        ItemStack crushedStack = ChemicalHelper.get(crushed, material);
+        ItemStack crushedStack = ChemicalHelper.get(crushed, material,
+                material.getProperty(PropertyKey.ORE).getOreMultiplier());
         ItemStack ingotStack;
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
@@ -224,7 +225,7 @@ public class OreRecipeHandler {
             }
             builder.save(provider);
 
-            MACERATOR_RECIPES
+            GTRecipeBuilder builder2 = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + orePrefix.name + "_" + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(orePrefix, material)
                     .outputItems(GTUtil.copyAmount(crushedStack.getCount() * 2, crushedStack))
@@ -255,10 +256,12 @@ public class OreRecipeHandler {
             float xp = Math.round(((1 + property.getOreMultiplier() * 0.33f) / 3) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_" + orePrefix.name + "_" + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    ChemicalHelper.getTag(orePrefix, material), GTUtil.copyAmount(ingotStack.getCount(), ingotStack),
+                    xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
                     "smelt_" + orePrefix.name + "_" + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    ChemicalHelper.getTag(orePrefix, material), GTUtil.copyAmount(ingotStack.getCount(), ingotStack),
+                    xp);
         }
 
         if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
