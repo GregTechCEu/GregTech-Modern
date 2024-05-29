@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -21,7 +22,8 @@ public class OverlayedFluidHandler {
 
     public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
-        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
+        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
+                .toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
             FluidStorage storage = new FluidStorage(tank.getTankCapacity(i));
             storage.setFluid(entries[i]);

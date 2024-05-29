@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability;
 
-
 public interface IElectricItem {
 
     /**
@@ -80,5 +79,4 @@ public interface IElectricItem {
      * @return The tier of the item.
      */
     int getTier();
-
 }

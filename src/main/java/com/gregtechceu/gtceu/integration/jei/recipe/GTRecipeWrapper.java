@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
 
@@ -13,5 +14,4 @@ public class GTRecipeWrapper extends ModularWrapper<Widget> {
         super(new GTRecipeWidget(recipe));
         this.recipe = recipe;
     }
-
 }

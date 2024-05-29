@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.lowdragmc.lowdraglib.LDLib;
+
+import net.minecraft.network.FriendlyByteBuf;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.lowdragmc.lowdraglib.LDLib;
-import net.minecraft.network.FriendlyByteBuf;
 
 public interface IContentSerializer<T> {
 

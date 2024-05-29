@@ -13,19 +13,21 @@ import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ItemNetHandler implements IItemTransfer {
@@ -104,7 +106,8 @@ public class ItemNetHandler implements IItemTransfer {
         if (cover instanceof ItemFilterCover filter) {
             return (filter.getFilterMode() != ItemFilterMode.FILTER_BOTH &&
                     (filter.getFilterMode() != ItemFilterMode.FILTER_INSERT || !onPipe) &&
-                    (filter.getFilterMode() != ItemFilterMode.FILTER_EXTRACT || onPipe)) || filter.getItemFilter().test(stack);
+                    (filter.getFilterMode() != ItemFilterMode.FILTER_EXTRACT || onPipe)) ||
+                    filter.getItemFilter().test(stack);
         }
         return true;
     }
@@ -300,18 +303,20 @@ public class ItemNetHandler implements IItemTransfer {
 
     public ItemStack insert(ItemRoutePath routePath, ItemStack stack, boolean simulate, boolean ignoreLimit) {
         int allowed = ignoreLimit ? stack.getCount() :
-            checkTransferable(routePath.getProperties().getTransferRate(), stack.getCount(), simulate);
+                checkTransferable(routePath.getProperties().getTransferRate(), stack.getCount(), simulate);
         if (allowed == 0 || !routePath.matchesFilters(stack)) {
             return stack;
         }
-        CoverBehavior pipeCover = routePath.getTargetPipe().getCoverContainer().getCoverAtSide(routePath.getTargetFacing());
-        CoverBehavior tileCover = getCoverOnNeighbour(routePath.getTargetPipe().getPipePos(), routePath.getTargetFacing());
+        CoverBehavior pipeCover = routePath.getTargetPipe().getCoverContainer()
+                .getCoverAtSide(routePath.getTargetFacing());
+        CoverBehavior tileCover = getCoverOnNeighbour(routePath.getTargetPipe().getPipePos(),
+                routePath.getTargetFacing());
 
         if (pipeCover != null) {
             testHandler.setStackInSlot(0, stack.copy());
             IItemTransfer itemHandler = pipeCover.getItemTransferCap(testHandler);
             if (itemHandler == null || (itemHandler != testHandler &&
-                (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
+                    (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
                 testHandler.setStackInSlot(0, ItemStack.EMPTY);
                 return stack;
             }
@@ -349,14 +354,16 @@ public class ItemNetHandler implements IItemTransfer {
     public CoverBehavior getCoverOnNeighbour(BlockPos pos, Direction handlerFacing) {
         BlockEntity tile = pipe.getLevel().getBlockEntity(pos.relative(handlerFacing));
         if (tile != null) {
-            ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing), handlerFacing.getOpposite());
+            ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
+                    handlerFacing.getOpposite());
             if (coverable == null) return null;
             return coverable.getCoverAtSide(handlerFacing.getOpposite());
         }
         return null;
     }
 
-    public ItemStack insertOverRobotArm(IItemTransfer handler, RobotArmCover arm, ItemStack stack, boolean simulate, int allowed, boolean ignoreLimit) {
+    public ItemStack insertOverRobotArm(IItemTransfer handler, RobotArmCover arm, ItemStack stack, boolean simulate,
+                                        int allowed, boolean ignoreLimit) {
         int rate;
         boolean isStackSpecific = false;
         rate = arm.getFilterHandler().getFilter().testItemCount(stack);
@@ -449,20 +456,18 @@ public class ItemNetHandler implements IItemTransfer {
     }
 
     @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
-    }
+    public void restoreFromSnapshot(Object snapshot) {}
 
     private void transferTo(ItemRoutePath handler, boolean simulate, int amount) {
         if (simulate)
             simulatedTransfersGlobalRoundRobin.merge(handler.toFacingPos(), amount, Integer::sum);
         else
             pipe.getTransferred().merge(handler.toFacingPos(), amount, Integer::sum);
-
     }
 
     private boolean contains(ItemRoutePath handler, boolean simulate) {
-        return simulate ? simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos()) : pipe.getTransferred().containsKey(handler.toFacingPos());
+        return simulate ? simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos()) :
+                pipe.getTransferred().containsKey(handler.toFacingPos());
     }
 
     private int didTransferTo(ItemRoutePath handler, boolean simulate) {
@@ -485,6 +490,7 @@ public class ItemNetHandler implements IItemTransfer {
     }
 
     private static class EnhancedRoundRobinData {
+
         private final ItemRoutePath routePath;
         private final int maxInsertable;
         private int transferred;

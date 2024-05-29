@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
+import net.minecraft.world.item.enchantment.Enchantment;
+
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -158,7 +160,8 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
     }
 
     public ToolProperty removeTypes(GTToolType... types) {
-        this.types = Arrays.stream(this.types).filter(type -> !ArrayUtils.contains(types, type)).toArray(GTToolType[]::new);
+        this.types = Arrays.stream(this.types).filter(type -> !ArrayUtils.contains(types, type))
+                .toArray(GTToolType[]::new);
         return this;
     }
 
@@ -167,7 +170,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         private final ToolProperty toolProperty;
 
         public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
-            return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[]{
+            return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[] {
                     SWORD,
                     PICKAXE,
                     SHOVEL,
@@ -177,17 +180,17 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SPADE,
                     SAW,
                     HARD_HAMMER,
-//                    SOFT_MALLET,
+                    // SOFT_MALLET,
                     WRENCH,
                     FILE,
                     CROWBAR,
                     SCREWDRIVER,
-//                    MORTAR,
+                    // MORTAR,
                     WIRE_CUTTER,
                     SCYTHE,
                     KNIFE,
                     BUTCHERY_KNIFE,
-//                    PLUNGER,
+                    // PLUNGER,
                     DRILL_LV,
                     DRILL_MV,
                     DRILL_HV,
@@ -202,7 +205,8 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
             });
         }
 
-        public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType... types) {
+        public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel,
+                                 GTToolType... types) {
             return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, types);
         }
 

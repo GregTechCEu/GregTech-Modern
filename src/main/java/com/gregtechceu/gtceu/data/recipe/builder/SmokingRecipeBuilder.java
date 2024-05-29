@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+
+import com.google.gson.JsonObject;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -27,6 +30,7 @@ import java.util.function.Consumer;
  */
 @Accessors(chain = true, fluent = true)
 public class SmokingRecipeBuilder {
+
     private Ingredient input;
     @Setter
     protected String group;
@@ -48,9 +52,9 @@ public class SmokingRecipeBuilder {
     }
 
     public SmokingRecipeBuilder input(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
+        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
             input = NBTIngredient.createNBTIngredient(itemStack);
-        }else {
+        } else {
             input = Ingredient.of(itemStack);
         }
         return this;
@@ -117,6 +121,7 @@ public class SmokingRecipeBuilder {
 
     public void save(Consumer<FinishedRecipe> consumer) {
         consumer.accept(new FinishedRecipe() {
+
             @Override
             public void serializeRecipeData(JsonObject pJson) {
                 toJson(pJson);

@@ -9,7 +9,8 @@ public class RedstoneUtil {
      * @param maxValue   the max that the value can be
      * @param minValue   the min that the value can be
      * @param isInverted whether to invert the logic of this method
-     * @return an int from 0 (value <= min) to 15 (value >= max) normally, with a ratio when the value is between min and max
+     * @return an int from 0 (value <= min) to 15 (value >= max) normally, with a ratio when the value is between min
+     *         and max
      */
     public static int computeRedstoneBetweenValues(long value, float maxValue, float minValue, boolean isInverted) {
         if (value >= maxValue) {
@@ -37,7 +38,8 @@ public class RedstoneUtil {
      * @param output   the output value the function modifies
      * @return returns the modified output value
      */
-    public static int computeLatchedRedstoneBetweenValues(float value, float maxValue, float minValue, boolean isInverted, int output) {
+    public static int computeLatchedRedstoneBetweenValues(float value, float maxValue, float minValue,
+                                                          boolean isInverted, int output) {
         if (value >= maxValue) {
             output = !isInverted ? 0 : 15; // value above maxValue should normally be 0, otherwise 15
         } else if (value <= minValue) {

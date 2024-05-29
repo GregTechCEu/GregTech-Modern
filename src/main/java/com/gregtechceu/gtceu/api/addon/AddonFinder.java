@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.addon;
 
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class AddonFinder {
+
     private static final Logger LOGGER = LogManager.getLogger();
     protected static List<IGTAddon> cache = null;
     protected static Map<String, IGTAddon> modIdMap = new HashMap<>();

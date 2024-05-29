@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import lombok.Getter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -22,6 +22,8 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +44,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
  */
 @SuppressWarnings("unused")
 public class GTOres {
+
     /**
      * The size of the largest registered vein.
      * This becomes available after all veins have been loaded.
@@ -61,9 +64,9 @@ public class GTOres {
     }
 
     //////////////////////////////////////
-    //********     End Vein    *********//
+    // ******** End Vein *********//
     //////////////////////////////////////
-    public static RuleTest[] END_RULES = new RuleTest[]{WorldGeneratorUtils.END_ORE_REPLACEABLES};
+    public static RuleTest[] END_RULES = new RuleTest[] { WorldGeneratorUtils.END_ORE_REPLACEABLES };
 
     public static final GTOreDefinition BAUXITE_VEIN_END = create("bauxite_vein_end", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.3f).weight(40)
@@ -76,13 +79,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Bauxite).size(1, 4))
                             .layer(l -> l.weight(1).mat(Ilmenite).size(1, 2))
                             .layer(l -> l.weight(1).mat(Aluminium).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Bauxite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition MAGNETITE_VEIN_END = create("magnetite_vein_end", vein -> vein
             .clusterSize(UniformInt.of(38, 44)).density(0.15f).weight(30)
@@ -95,13 +95,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(VanadiumMagnetite).size(1, 2))
                             .layer(l -> l.weight(2).mat(Chromite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gold).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Magnetite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition NAQUADAH_VEIN = create("naquadah_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(30)
@@ -112,18 +109,15 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Naquadah, 3))
                     .rareBlock(new VeinBlockDefinition(Plutonium239, 1))
                     .rareBlockChance(0.25f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Naquadah)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition PITCHBLENDE_VEIN = create("pitchblende_vein_end", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(1.0f).weight(30)
@@ -134,34 +128,28 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Pitchblende, 3))
                     .rareBlock(new VeinBlockDefinition(Uraninite, 2))
                     .rareBlockChance(0.33f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Pitchblende)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SCHEELITE_VEIN = create("scheelite_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.7f).weight(20)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 60)
             .biomes(BiomeTags.IS_END)
             .dikeVeinGenerator(generator -> generator
                     .withBlock(new DikeBlockDefinition(Scheelite, 3, 20, 60))
                     .withBlock(new DikeBlockDefinition(Tungstate, 2, 35, 55))
-                    .withBlock(new DikeBlockDefinition(Lithium, 1, 20, 40))
-            )
+                    .withBlock(new DikeBlockDefinition(Lithium, 1, 20, 40)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Scheelite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SHELDONITE_VEIN = create("sheldonite_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.2f).weight(10)
@@ -174,18 +162,15 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Cooperite).size(1, 1))
                             .layer(l -> l.weight(2).mat(Platinum).size(1, 1))
                             .layer(l -> l.weight(1).mat(Palladium).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Platinum)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     //////////////////////////////////////
-    //******     Nether Vein     *******//
+    // ****** Nether Vein *******//
     //////////////////////////////////////
-    public static RuleTest[] NETHER_RULES = new RuleTest[]{new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES)};
+    public static RuleTest[] NETHER_RULES = new RuleTest[] { new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES) };
 
     public static final GTOreDefinition BANDED_IRON_VEIN = create("banded_iron_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(30)
@@ -198,34 +183,28 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .rareBlock(new VeinBlockDefinition(Gold, 1))
                     .rareBlockChance(0.075f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Goethite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition BERYLLIUM_VEIN = create("beryllium_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(30)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 30)
             .biomes(BiomeTags.IS_NETHER)
             .dikeVeinGenerator(generator -> generator
                     .withBlock(new DikeBlockDefinition(Beryllium, 3, 5, 30))
                     .withBlock(new DikeBlockDefinition(Emerald, 2, 5, 19))
-                    .withBlock(new DikeBlockDefinition(Emerald, 2, 16, 30))
-            )
+                    .withBlock(new DikeBlockDefinition(Emerald, 2, 16, 30)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Beryllium)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition CERTUS_QUARTZ_VEIN = create("certus_quartz", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(40)
@@ -237,29 +216,23 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Quartzite).size(2, 4))
                             .layer(l -> l.weight(2).mat(CertusQuartz).size(1, 1))
                             .layer(l -> l.weight(1).mat(Barite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(CertusQuartz)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
             .biomes(BiomeTags.IS_NETHER)
             .dikeVeinGenerator(generator -> generator
                     .withBlock(new DikeBlockDefinition(Grossular, 3, 20, 30))
                     .withBlock(new DikeBlockDefinition(Pyrolusite, 2, 20, 26))
-                    .withBlock(new DikeBlockDefinition(Tantalite, 1, 24, 30))
-            )
+                    .withBlock(new DikeBlockDefinition(Tantalite, 1, 24, 30)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition MOLYBDENUM_VEIN = create("molybdenum_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(5)
@@ -273,13 +246,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Molybdenite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Molybdenum).size(1, 1))
                             .layer(l -> l.weight(1).mat(Powellite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Molybdenum)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition MONAZITE_VEIN = create("monazite_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(30)
@@ -292,13 +262,10 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Bastnasite).size(2, 4))
                             .layer(l -> l.weight(1).mat(Molybdenum).size(1, 1))
                             .layer(l -> l.weight(1).mat(Neodymium).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Bastnasite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition NETHER_QUARTZ_VEIN = create("nether_quartz_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
@@ -307,16 +274,13 @@ public class GTOres {
             .biomes(BiomeTags.IS_NETHER)
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState).size(2, 4))
+                            // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState).size(2, 4))
                             .layer(l -> l.weight(3).mat(NetherQuartz).size(2, 4))
                             .layer(l -> l.weight(1).mat(Quartzite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(NetherQuartz)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition REDSTONE_VEIN = create("redstone_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(60)
@@ -329,13 +293,10 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Redstone).size(2, 4))
                             .layer(l -> l.weight(2).mat(Ruby).size(1, 1))
                             .layer(l -> l.weight(1).mat(Cinnabar).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Redstone)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SALTPETER_VEIN = create("saltpeter_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
@@ -349,13 +310,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Diatomite).size(1, 1))
                             .layer(l -> l.weight(2).mat(Electrotine).size(1, 1))
                             .layer(l -> l.weight(1).mat(Alunite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Saltpeter)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SULFUR_VEIN = create("sulfur_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(100)
@@ -368,13 +326,10 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Sulfur).size(2, 4))
                             .layer(l -> l.weight(2).mat(Pyrite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Sphalerite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Sulfur)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition TETRAHEDRITE_VEIN = create("tetrahedrite_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(70)
@@ -386,18 +341,15 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Copper, 2))
                     .rareBlock(new VeinBlockDefinition(Stibnite, 1))
                     .rareBlockChance(0.15f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Tetrahedrite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     public static final GTOreDefinition TOPAZ_VEIN = create("topaz_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(70)
@@ -411,22 +363,19 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Topaz).size(1, 1))
                             .layer(l -> l.weight(2).mat(Chalcocite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Bornite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Topaz)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     //////////////////////////////////////
-    //*****     Overworld Vein     *****//
+    // ***** Overworld Vein *****//
     //////////////////////////////////////
 
     //////////////////////////////////////
-    //*****          Stone         *****//
+    // ***** Stone *****//
     //////////////////////////////////////
-    public static RuleTest[] OVERWORLD_RULES = new RuleTest[]{new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES)};
+    public static RuleTest[] OVERWORLD_RULES = new RuleTest[] { new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) };
 
     public static final GTOreDefinition APATITE_VEIN = create("apatite_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
@@ -439,13 +388,10 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Apatite).size(2, 4))
                             .layer(l -> l.weight(2).mat(TricalciumPhosphate).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pyrochlore).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Apatite)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition CASSITERITE_VEIN = create("cassiterite_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(80)
@@ -456,17 +402,14 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Tin, 4))
                     .rareBlock(new VeinBlockDefinition(Cassiterite, 2))
                     .rareBlockChance(0.33f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Cassiterite)
-            )
-    );
+                    .surfaceRock(Cassiterite)));
 
     public static final GTOreDefinition COAL_VEIN = create("coal_vein", vein -> vein
             .clusterSize(UniformInt.of(38, 44)).density(0.25f).weight(80)
@@ -477,12 +420,9 @@ public class GTOres {
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(3).mat(Coal).size(2, 4))
                             .layer(l -> l.weight(3).mat(Coal).size(2, 4))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Coal)
-            )
-    );
+                    .surfaceRock(Coal)));
 
     public static final GTOreDefinition COPPER_TIN_VEIN = create("copper_tin_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(50)
@@ -495,17 +435,14 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Cassiterite, 2))
                     .rareBlock(new VeinBlockDefinition(Realgar, 1))
                     .rareBlockChance(0.05f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Chalcopyrite)
-            )
-    );
+                    .surfaceRock(Chalcopyrite)));
 
     public static final GTOreDefinition GALENA_VEIN = create("galena_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
@@ -518,15 +455,12 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Galena).size(2, 4))
                             .layer(l -> l.weight(2).mat(Silver).size(1, 1))
                             .layer(l -> l.weight(1).mat(Lead).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Galena)
-            )
-    );
+                    .surfaceRock(Galena)));
 
     public static final GTOreDefinition GARNET_TIN_VEIN = create("garnet_tin_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.4f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -537,15 +471,12 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(GarnetSand).size(1, 1))
                             .layer(l -> l.weight(2).mat(Asbestos).size(1, 1))
                             .layer(l -> l.weight(1).mat(Diatomite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(GarnetSand)
-            )
-    );
+                    .surfaceRock(GarnetSand)));
 
     public static final GTOreDefinition GARNET_VEIN = create("garnet_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -553,13 +484,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(GarnetRed, 3, -10, 50))
                     .withBlock(new DikeBlockDefinition(GarnetYellow, 2, -10, 50))
                     .withBlock(new DikeBlockDefinition(Amethyst, 2, -10, 22))
-                    .withBlock(new DikeBlockDefinition(Opal, 1, 18, 50))
-            )
+                    .withBlock(new DikeBlockDefinition(Opal, 1, 18, 50)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(GarnetRed)
-                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-            )
-    );
+                    .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition IRON_VEIN = create("iron_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(120)
@@ -571,17 +499,14 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .oreBlock(new VeinBlockDefinition(Malachite, 1))
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Goethite)
-            )
-    );
+                    .surfaceRock(Goethite)));
 
     public static final GTOreDefinition LUBRICANT_VEIN = create("lubricant_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(40)
@@ -594,12 +519,9 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Talc).size(1, 1))
                             .layer(l -> l.weight(2).mat(GlauconiteSand).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pentlandite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Talc)
-            )
-    );
+                    .surfaceRock(Talc)));
 
     public static final GTOreDefinition MAGNETITE_VEIN_OW = create("magnetite_vein_ow", vein -> vein
             .clusterSize(UniformInt.of(38, 44)).density(0.15f).weight(80)
@@ -611,12 +533,9 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Magnetite).size(2, 4))
                             .layer(l -> l.weight(2).mat(VanadiumMagnetite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gold).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Magnetite)
-            )
-    );
+                    .surfaceRock(Magnetite)));
 
     public static final GTOreDefinition MINERAL_SAND_VEIN = create("mineral_sand_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
@@ -630,12 +549,9 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(GraniticMineralSand).size(1, 1))
                             .layer(l -> l.weight(2).mat(FullersEarth).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gypsum).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(BasalticMineralSand)
-            )
-    );
+                    .surfaceRock(BasalticMineralSand)));
 
     public static final GTOreDefinition NICKEL_VEIN = create("nickel_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
@@ -649,12 +565,9 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Nickel).size(1, 1))
                             .layer(l -> l.weight(2).mat(Cobaltite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pentlandite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Nickel)
-            )
-    );
+                    .surfaceRock(Nickel)));
 
     public static final GTOreDefinition SALTS_VEIN = create("salts_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(50)
@@ -668,13 +581,9 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Salt).size(1, 1))
                             .layer(l -> l.weight(1).mat(Lepidolite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Spodumene).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Salt)
-            )
-    );
-
+                    .surfaceRock(Salt)));
 
     public static final GTOreDefinition OILSANDS_VEIN = create("oilsands_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.3f).weight(40)
@@ -687,17 +596,15 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Oilsands).size(1, 1))
                             .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
                             .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Oilsands)
-            )
-    );
+                    .surfaceRock(Oilsands)));
 
     //////////////////////////////////////
-    //*****        Deepslate       *****//
+    // ***** Deepslate *****//
     //////////////////////////////////////
-    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[]{new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES)};
+    public static RuleTest[] DEEPSLATE_RULES = new RuleTest[] {
+            new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) };
 
     public static final GTOreDefinition COPPER_VEIN = create("copper_vein", vein -> vein
             .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(80)
@@ -709,17 +616,14 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Iron, 2))
                     .oreBlock(new VeinBlockDefinition(Pyrite, 2))
                     .oreBlock(new VeinBlockDefinition(Copper, 2))
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f)
-            )
+                    .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Copper)
-            )
-    );
+                    .surfaceRock(Copper)));
 
     public static final GTOreDefinition DIAMOND_VEIN = create("diamond_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
@@ -731,18 +635,15 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Graphite).size(2, 4))
                             .layer(l -> l.weight(2).mat(Diamond).size(1, 1))
                             .layer(l -> l.weight(1).mat(Coal).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Diamond)
                     .density(0.1f)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-                    .radius(2)
-            )
-    );
+                    .radius(2)));
 
     public static final GTOreDefinition LAPIS_VEIN = create("lapis_vein", vein -> vein
-            .clusterSize(UniformInt.of(40, 52)).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(40, 52)).density(0.75f).weight(40)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-60, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -750,18 +651,15 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Lazurite, 3, -60, 10))
                     .withBlock(new DikeBlockDefinition(Sodalite, 2, -50, 0))
                     .withBlock(new DikeBlockDefinition(Lapis, 2, -50, 0))
-                    .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 10))
-            )
+                    .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 10)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Lapis)
                     .density(0.15f)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-                    .radius(3)
-            )
-    );
+                    .radius(3)));
 
     public static final GTOreDefinition MANGANESE_VEIN_OW = create("manganese_vein_ow", vein -> vein
-            .clusterSize(UniformInt.of(50, 64)).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-30, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -770,13 +668,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Spessartine, 2, -40, -15))
                     .withBlock(new DikeBlockDefinition(Pyrolusite, 2, -40, -15))
                     .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5))
-                    .minYLevel(-50).maxYLevel(-5)
-            )
+                    .minYLevel(-50).maxYLevel(-5))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
-                    .radius(3)
-            )
-    );
+                    .radius(3)));
 
     public static final GTOreDefinition MICA_VEIN = create("mica_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
@@ -790,13 +685,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Mica).size(1, 1))
                             .layer(l -> l.weight(2).mat(Bauxite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pollucite).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Mica)
-                    .radius(3)
-            )
-    );
+                    .radius(3)));
 
     public static final GTOreDefinition OLIVINE_VEIN = create("olivine_vein", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
@@ -810,14 +702,11 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Magnetite).size(1, 1))
                             .layer(l -> l.weight(2).mat(Olivine).size(1, 1))
                             .layer(l -> l.weight(1).mat(GlauconiteSand).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Olivine)
                     .density(0.15f)
-                    .radius(3)
-            )
-    );
+                    .radius(3)));
 
     public static final GTOreDefinition REDSTONE_VEIN_OW = create("redstone_vein_ow", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(60)
@@ -829,12 +718,9 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Redstone).size(2, 4))
                             .layer(l -> l.weight(2).mat(Ruby).size(1, 1))
                             .layer(l -> l.weight(1).mat(Cinnabar).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
-                    .surfaceRock(Redstone)
-            )
-    );
+                    .surfaceRock(Redstone)));
 
     public static final GTOreDefinition SAPPHIRE_VEIN = create("sapphire_vein", vein -> vein
             .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(60)
@@ -848,15 +734,12 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Pyrope).size(1, 1))
                             .layer(l -> l.weight(1).mat(Sapphire).size(1, 1))
                             .layer(l -> l.weight(1).mat(GreenSapphire).size(1, 1))
-                            .build())
-            )
+                            .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Sapphire)
                     .density(0.15f)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
-                    .radius(3)
-            )
-    );
+                    .radius(3)));
 
     private static GTOreDefinition create(String name, Consumer<GTOreDefinition> config) {
         return create(GTCEu.id(name), config);
@@ -883,7 +766,8 @@ public class GTOres {
             } else {
                 oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
-            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) : () -> Blocks.AIR;
+            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
+                    () -> Blocks.AIR;
         }
         return block;
     }
@@ -894,24 +778,24 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
-            .map(GTOreDefinition::clusterSize)
-            .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of min & max values.
-            .max(Integer::compareTo)
-            .orElse(0);
+                .map(GTOreDefinition::clusterSize)
+                .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of
+                                                                                                 // min & max values.
+                .max(Integer::compareTo)
+                .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
-                .flatMap(definition -> definition.indicatorGenerators().stream().map(indicatorGenerator ->
-                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))
-                ))
+                .flatMap(definition -> definition.indicatorGenerators().stream()
+                        .map(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
+                                (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))
                 .max(Integer::compareTo)
                 .orElse(0);
     }
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-            ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
-            HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-            0, null, null, null, null
-        );
+                ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
+                0, null, null, null, null);
     }
 }

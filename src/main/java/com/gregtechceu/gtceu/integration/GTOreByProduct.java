@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -12,12 +11,9 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.LDLib;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -26,6 +22,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,33 +59,32 @@ public class GTOreByProduct {
     public GTOreByProduct(Material material) {
         if (IN_PROCESSING_STEPS == null) {
             IN_PROCESSING_STEPS = ImmutableList.of(
-                TagPrefix.crushed,
-                TagPrefix.crushedPurified,
-                TagPrefix.dustImpure,
-                TagPrefix.dustPure,
-                TagPrefix.crushedRefined
-            );
+                    TagPrefix.crushed,
+                    TagPrefix.crushedPurified,
+                    TagPrefix.dustImpure,
+                    TagPrefix.dustPure,
+                    TagPrefix.crushedRefined);
         }
         if (ALWAYS_MACHINES == null) {
             ALWAYS_MACHINES = ImmutableList.of(
-                GTMachines.MACERATOR[GTValues.LV].asStack(),
-                GTMachines.MACERATOR[GTValues.LV].asStack(),
-                GTMachines.CENTRIFUGE[GTValues.LV].asStack(),
-                GTMachines.ORE_WASHER[GTValues.LV].asStack(),
-                GTMachines.THERMAL_CENTRIFUGE[GTValues.LV].asStack(),
-                GTMachines.MACERATOR[GTValues.LV].asStack(),
-                GTMachines.MACERATOR[GTValues.LV].asStack(),
-                GTMachines.CENTRIFUGE[GTValues.LV].asStack());
+                    GTMachines.MACERATOR[GTValues.LV].asStack(),
+                    GTMachines.MACERATOR[GTValues.LV].asStack(),
+                    GTMachines.CENTRIFUGE[GTValues.LV].asStack(),
+                    GTMachines.ORE_WASHER[GTValues.LV].asStack(),
+                    GTMachines.THERMAL_CENTRIFUGE[GTValues.LV].asStack(),
+                    GTMachines.MACERATOR[GTValues.LV].asStack(),
+                    GTMachines.MACERATOR[GTValues.LV].asStack(),
+                    GTMachines.CENTRIFUGE[GTValues.LV].asStack());
         }
         OreProperty property = material.getProperty(PropertyKey.ORE);
         int oreMultiplier = property.getOreMultiplier();
         int byproductMultiplier = property.getByProductMultiplier();
         currentSlot = 0;
         Material[] byproducts = new Material[] {
-            property.getOreByProduct(0, material),
-            property.getOreByProduct(1, material),
-            property.getOreByProduct(2, material),
-            property.getOreByProduct(3, material)
+                property.getOreByProduct(0, material),
+                property.getOreByProduct(1, material),
+                property.getOreByProduct(2, material),
+                property.getOreByProduct(3, material)
         };
 
         // "INPUTS"
@@ -154,7 +155,7 @@ public class GTOreByProduct {
         if (hasDirectSmelt) {
             ItemStack smeltingResult;
             Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
-                property.getDirectSmeltResult();
+                    property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
                 smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);
             } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
@@ -232,7 +233,7 @@ public class GTOreByProduct {
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 580);
             List<Pair<TagKey<Fluid>, Long>> washedFluid = new ArrayList<>();
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             washedFluid.add(Pair.of(washedIn.getFirst().getFluidTag(), (long) washedIn.getSecond()));
             fluidInputs.add(Either.left(washedFluid));
         } else {
@@ -243,12 +244,12 @@ public class GTOreByProduct {
 
         // electromagnetic separator
         if (hasSeparator) {
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             TagPrefix prefix = (separatedInto.get(separatedInto.size() - 1).getBlastTemperature() == 0 &&
-                separatedInto.get(separatedInto.size() - 1).hasProperty(PropertyKey.INGOT)) ? TagPrefix.nugget :
-                TagPrefix.dust;
+                    separatedInto.get(separatedInto.size() - 1).hasProperty(PropertyKey.INGOT)) ? TagPrefix.nugget :
+                            TagPrefix.dust;
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedInto.get(separatedInto.size() - 1),
-                prefix == TagPrefix.nugget ? 2 : 1);
+                    prefix == TagPrefix.nugget ? 2 : 1);
 
             addToOutputs(material, TagPrefix.dust, 1);
             addToOutputs(separatedInto.get(0), TagPrefix.dust, 1);

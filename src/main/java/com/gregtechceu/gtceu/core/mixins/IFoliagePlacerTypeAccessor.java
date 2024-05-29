@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
+
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

@@ -9,5 +9,4 @@ import java.util.function.Supplier;
  * @date 2023/3/3
  * @implNote ConfiguredSoundEvent
  */
-public record ConfiguredSoundEvent(Supplier<SoundEvent> event, float volume, float pitch) {
-}
+public record ConfiguredSoundEvent(Supplier<SoundEvent> event, float volume, float pitch) {}

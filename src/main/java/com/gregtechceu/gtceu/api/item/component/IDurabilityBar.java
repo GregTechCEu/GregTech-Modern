@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,5 +60,4 @@ public interface IDurabilityBar extends IItemComponent {
     default boolean showFullBar(ItemStack itemStack) {
         return true;
     }
-
 }

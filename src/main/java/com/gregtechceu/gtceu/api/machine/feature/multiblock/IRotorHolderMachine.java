@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -19,8 +20,9 @@ import java.util.List;
  * @implNote IRotorHolderMachine
  */
 public interface IRotorHolderMachine extends IMultiPart {
-   int SPEED_INCREMENT = 1;
-   int SPEED_DECREMENT = 3;
+
+    int SPEED_INCREMENT = 1;
+    int SPEED_DECREMENT = 3;
 
     /**
      * @return the base efficiency of the rotor holder in %
@@ -181,7 +183,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
     @Override
     default GTRecipe modifyRecipe(GTRecipe recipe) {
@@ -192,7 +194,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     }
 
     //////////////////////////////////////
-    //*******     FANCY GUI     ********//
+    // ******* FANCY GUI ********//
     //////////////////////////////////////
 
     @Override
@@ -204,9 +206,9 @@ public interface IRotorHolderMachine extends IMultiPart {
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 () -> !isFrontFaceFree(),
                 () -> null));
     }
-
 }

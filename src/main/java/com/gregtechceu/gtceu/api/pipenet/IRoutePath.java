@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +30,7 @@ public interface IRoutePath<T> {
     @Nullable
     default <I> I getTargetCapability(Capability<I> capability, Level level) {
         BlockEntity blockEntity = getTargetBlockEntity(level);
-        return blockEntity == null ? null : blockEntity.getCapability(capability, getTargetFacing().getOpposite()).resolve().orElse(null);
+        return blockEntity == null ? null :
+                blockEntity.getCapability(capability, getTargetFacing().getOpposite()).resolve().orElse(null);
     }
 }

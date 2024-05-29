@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote IMachineBlock
  */
 public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
+
     default Block self() {
         return (Block) this;
     }
@@ -30,7 +34,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
 
     RotationState getRotationState();
 
-    static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
+    static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
+                           int index) {
         if (level != null && pos != null) {
             var machine = MetaMachine.getMachine(level, pos);
             if (machine != null) {
@@ -48,7 +53,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
 
     @Nullable
     @Override
-    default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                   BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (state.getValue(BlockProperties.SERVER_TICK) && !level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
@@ -67,5 +73,4 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
         }
         return null;
     }
-
 }

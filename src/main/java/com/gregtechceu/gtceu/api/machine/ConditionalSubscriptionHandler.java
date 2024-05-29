@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
  * consume resources.
  */
 public class ConditionalSubscriptionHandler {
+
     private final ITickSubscription handler;
     private final Runnable runnable;
     private final Supplier<Boolean> condition;
@@ -27,7 +29,6 @@ public class ConditionalSubscriptionHandler {
         this.runnable = runnable;
         this.condition = condition;
     }
-
 
     /**
      * Initializes the subscription and, if the supplied level is server-side, adds it to the event loop.

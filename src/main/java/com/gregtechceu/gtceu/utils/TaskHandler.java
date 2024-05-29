@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskHandler {
+
     private static final Map<ResourceKey<Level>, List<RunnableEntry>> serverTasks = new HashMap<>();
     private static final Map<ResourceKey<Level>, List<RunnableEntry>> waitToAddTasks = new HashMap<>();
 
@@ -55,11 +57,13 @@ public class TaskHandler {
 
     public static void enqueueServerTask(ServerLevel level, Runnable task, int delay) {
         synchronized (waitToAddTasks) {
-            waitToAddTasks.computeIfAbsent(level.dimension(), key -> new ArrayList<>()).add(new RunnableEntry(task, delay));
+            waitToAddTasks.computeIfAbsent(level.dimension(), key -> new ArrayList<>())
+                    .add(new RunnableEntry(task, delay));
         }
     }
 
     private static class RunnableEntry {
+
         Runnable runnable;
         int delay;
 
@@ -68,5 +72,4 @@ public class TaskHandler {
             this.delay = delay;
         }
     }
-
 }

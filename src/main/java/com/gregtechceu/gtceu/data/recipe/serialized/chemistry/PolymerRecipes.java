@@ -22,7 +22,6 @@ public class PolymerRecipes {
     }
 
     private static void polyethyleneProcess(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("ethylene_from_ethanol")
                 .inputFluids(SulfuricAcid.getFluid(1000))
                 .inputFluids(Ethanol.getFluid(1000))
@@ -69,7 +68,6 @@ public class PolymerRecipes {
     }
 
     private static void polyvinylChlorideProcess(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("vinyl_chloride_from_hydrochloric")
                 .circuitMeta(3)
                 .inputFluids(Oxygen.getFluid(1000))
@@ -125,7 +123,6 @@ public class PolymerRecipes {
     }
 
     private static void ptfeProcess(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("chloroform")
                 .circuitMeta(1)
                 .inputFluids(Chlorine.getFluid(6000))
@@ -182,7 +179,6 @@ public class PolymerRecipes {
     }
 
     private static void epoxyProcess(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("glycerol_from_seed_oil_methanol")
                 .inputItems(dustTiny, SodiumHydroxide)
                 .inputFluids(SeedOil.getFluid(6000))
@@ -330,7 +326,6 @@ public class PolymerRecipes {
     }
 
     private static void styreneButadieneProcess(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("styrene_from_benzene")
                 .inputFluids(Ethylene.getFluid(1000))
                 .inputFluids(Benzene.getFluid(1000))

@@ -100,16 +100,21 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
         else if ("HIGHEST".equalsIgnoreCase(gasTierName)) return GasTier.HIGHEST;
         else {
             String message = "Gas Tier must be either \"LOW\", \"MID\", \"HIGH\", \"HIGHER\", or \"HIGHEST\"";
-            throw new IllegalArgumentException("Could not find valid gas tier for name: " + gasTierName + ". " + message);
+            throw new IllegalArgumentException(
+                    "Could not find valid gas tier for name: " + gasTierName + ". " + message);
         }
     }
 
     public enum GasTier {
+
         // Tiers used by GTCEu
-        LOW, MID, HIGH,
+        LOW,
+        MID,
+        HIGH,
 
         // Tiers reserved for addons
-        HIGHER, HIGHEST;
+        HIGHER,
+        HIGHEST;
 
         public static final GasTier[] VALUES = values();
     }

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability;
 
-
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 
 /**

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.misc;
 
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+
 import net.minecraft.core.Direction;
 
 import java.util.List;

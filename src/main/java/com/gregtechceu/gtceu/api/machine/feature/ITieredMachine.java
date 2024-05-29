@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-
 /**
  * @author KilaBash
  * @date 2023/2/18
@@ -16,5 +15,4 @@ public interface ITieredMachine extends IMachineFeature {
     default int getTier() {
         return self().getDefinition().getTier();
     }
-
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
@@ -68,7 +69,6 @@ public class PetrochemRecipes {
     }
 
     private static void desulfurizationRecipes(Consumer<FinishedRecipe> provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("desulfurize_heavy_fuel")
                 .inputFluids(SulfuricHeavyFuel.getFluid(8000))
                 .inputFluids(Hydrogen.getFluid(2000))
@@ -106,7 +106,6 @@ public class PetrochemRecipes {
     }
 
     private static void distillationRecipes(Consumer<FinishedRecipe> provider) {
-
         DISTILLATION_RECIPES.recipeBuilder("distill_refinery_gas")
                 .inputFluids(RefineryGas.getFluid(1000))
                 .outputFluids(Butane.getFluid(60))
@@ -427,7 +426,8 @@ public class PetrochemRecipes {
                 .duration(32).EUt(24).save(provider);
     }
 
-    private static void lightlyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked, Material steamCracked) {
+    private static void lightlyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked,
+                                     Material steamCracked) {
         CRACKING_RECIPES.recipeBuilder("lightly_hydro_crack_" + raw.getName())
                 .circuitMeta(1)
                 .inputFluids(raw.getFluid(1000))
@@ -457,7 +457,8 @@ public class PetrochemRecipes {
                 .duration(160).duration(VA[LV]).save(provider);
     }
 
-    private static void moderatelyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked, Material steamCracked) {
+    private static void moderatelyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked,
+                                        Material steamCracked) {
         CRACKING_RECIPES.recipeBuilder("hydro_crack_" + raw.getName())
                 .circuitMeta(2)
                 .inputFluids(raw.getFluid(1000))
@@ -487,7 +488,8 @@ public class PetrochemRecipes {
                 .duration(240).EUt(VA[LV]).save(provider);
     }
 
-    private static void severelyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked, Material steamCracked) {
+    private static void severelyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked,
+                                      Material steamCracked) {
         CRACKING_RECIPES.recipeBuilder("severely_hydro_crack_" + raw.getName())
                 .circuitMeta(2)
                 .inputFluids(raw.getFluid(1000))

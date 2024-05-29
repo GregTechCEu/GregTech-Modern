@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -28,11 +28,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import com.google.common.collect.Multimap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -52,8 +55,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     @Getter
     private IGTToolDefinition toolStats;
 
-
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
+    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
+                         Properties properties) {
         super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
         this.toolType = toolType;
         this.material = material;
@@ -65,7 +68,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         definition$init();
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material,
+                                    IGTToolDefinition definition, Properties properties) {
         return new GTToolItem(toolType, tier, material, definition, properties);
     }
 
@@ -145,7 +149,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         definition$appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 

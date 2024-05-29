@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+
 import com.lowdragmc.lowdraglib.gui.compass.CompassView;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +22,8 @@ public class TerminalBehavior implements IItemUIFactory {
         if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
             Level level = context.getLevel();
             BlockPos blockPos = context.getClickedPos();
-            if (context.getPlayer() != null && MetaMachine.getMachine(level, blockPos) instanceof IMultiController controller) {
+            if (context.getPlayer() != null &&
+                    MetaMachine.getMachine(level, blockPos) instanceof IMultiController controller) {
                 if (!controller.isFormed()) {
                     if (!level.isClientSide) {
                         controller.getPattern().autoBuild(context.getPlayer(), controller.getMultiblockState());
@@ -36,5 +39,4 @@ public class TerminalBehavior implements IItemUIFactory {
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         return new ModularUI(holder, entityPlayer).widget(new CompassView(GTCEu.MOD_ID));
     }
-
 }

@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.function.Consumer;
 
@@ -18,8 +20,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
 
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
 
-    protected TagItemFilter() {
-    }
+    protected TagItemFilter() {}
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));

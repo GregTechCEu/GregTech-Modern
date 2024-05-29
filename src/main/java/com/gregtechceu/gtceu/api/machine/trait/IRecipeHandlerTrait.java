@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 /**
@@ -10,6 +11,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
  * @implNote IRecipeHandlerTrait
  */
 public interface IRecipeHandlerTrait<K> extends IRecipeHandler<K> {
+
     IO getHandlerIO();
 
     /**

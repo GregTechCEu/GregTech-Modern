@@ -14,11 +14,11 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -28,24 +28,27 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -55,27 +58,40 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IUICover, IControllable {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class,
+            CoverBehavior.MANAGED_FIELD_HOLDER);
 
     protected static final long MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
 
     public final int tier;
     public final long maxMilliBucketsPerTick;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected long currentMilliBucketsPerTick;
-    @Persisted @DescSynced @Getter @RequireRerender
+    @Persisted
+    @DescSynced
+    @Getter
+    @RequireRerender
     protected IO io = IO.OUT;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected boolean isWorkingEnabled = true;
     protected long milliBucketsLeftToTransferLastSecond;
 
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Long> transferRateWidget;
@@ -110,11 +126,12 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide),
+                attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -167,9 +184,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     //////////////////////////////////////
-    //*****     Transfer Logic     *****//
+    // ***** Transfer Logic *****//
     //////////////////////////////////////
-
 
     public void setTransferRate(long milliBucketsPerTick) {
         this.currentMilliBucketsPerTick = Math.min(Math.max(milliBucketsPerTick, 0), maxMilliBucketsPerTick);
@@ -180,7 +196,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         var newMultiplier = bucketMode.multiplier;
 
         this.bucketMode = bucketMode;
-
 
         if (transferRateWidget == null) return;
 
@@ -229,17 +244,17 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             };
         }
         return 0;
-
     }
 
-    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
+    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination,
+                                            long platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
     protected long transferAny(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
-        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit,
+                filterHandler.getFilter());
     }
-
 
     protected enum TransferDirection {
         INSERT,
@@ -247,7 +262,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(
+                FluidStackHashStrategy.comparingAllButAmount());
 
         for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
             if (!canTransfer(fluidTransfer, direction, tank))
@@ -273,9 +289,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         };
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -291,8 +306,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         group.addWidget(new EnumSelectorWidget<>(
                 146, 20, 20, 20,
                 Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
-                bucketMode, this::setBucketMode
-        ).setTooltipSupplier(this::getBucketModeTooltip));
+                bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
 
@@ -310,8 +324,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
         return List.of(
-                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
-        );
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick")));
     }
 
     private long getCurrentBucketModeTransferRate() {
@@ -335,9 +348,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-
     /////////////////////////////////////
-    //***    CAPABILITY OVERRIDE    ***//
+    // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
     private CoverableFluidTransferWrapper fluidTransferWrapper;

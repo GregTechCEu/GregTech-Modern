@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
@@ -19,6 +21,7 @@ import java.util.function.BooleanSupplier;
  */
 @Accessors(chain = true)
 public class PredicatedImageWidget extends ImageWidget {
+
     @Setter
     private BooleanSupplier predicate;
     private boolean isVisible = true;
