@@ -121,7 +121,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IHazardEffectTracker getHazardEffectTracker(@NotNull Entity entity) {
-        return entity.getCapability(GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER, null).resolve().orElse(null);
+    public static IMedicalConditionTracker getHazardEffectTracker(@NotNull Entity entity) {
+        return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
     }
 }

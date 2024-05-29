@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -31,74 +31,18 @@ import java.util.Set;
  * @param removePercent the time to remove from the chosen hazard, as a percentage of the current time [0, 100].
  *                      -1 for all.
  */
-public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int removePercent)
+public record AntidoteBehavior(Set<HazardProperty.HazardTrigger> types, int removePercent)
         implements IInteractionItem, IAddInformation {
 
-    public AntidoteBehavior(int timeToRemove, HazardProperty.HazardType... types) {
+    public AntidoteBehavior(int timeToRemove, HazardProperty.HazardTrigger... types) {
         this(new HashSet<>(), timeToRemove);
         this.types.addAll(Arrays.asList(types));
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
-        ItemStack itemstack = IInteractionItem.super.finishUsingItem(stack, level, livingEntity);
-        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(livingEntity);
-        if (tracker == null) {
-            return itemstack;
-        }
-        var iterator = tracker.getCurrentHazards().object2IntEntrySet().iterator();
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
-            if (entry.getKey() == null) {
-                continue;
-            }
-            HazardProperty.HazardType type = getHazardTypeFromMaterial(entry.getKey());
-            if (type == null || !this.types.contains(type)) {
-                continue;
-            }
-            if (removePercent == -1) {
-                iterator.remove();
-            } else {
-                int time = entry.getIntValue();
-                float timeToRemove = time * (removePercent / 100.0f);
-                if (timeToRemove > 0.05f * time) {
-                    iterator.remove();
-                    continue;
-                }
-                entry.setValue((int) (time - timeToRemove));
-            }
-        }
-        return itemstack;
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        //TODO look at #1329
     }
 
-    @Nullable
-    public static HazardProperty.HazardType getHazardTypeFromMaterial(@NotNull Material material) {
-        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-        if (property == null) {
-            return null;
-        }
-        return property.getHazardType();
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
-
-        if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description_shift"));
-            for (var type : types) {
-                tooltipComponents.add(Component
-                        .translatable("gtceu.hazard." + type.getSerializedName()));
-            }
-            if (removePercent == -1) {
-                tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description.effect_removed.all"));
-            } else {
-                tooltipComponents
-                        .add(Component.translatable("gtceu.hazard.antidote.description.effect_removed", removePercent));
-            }
-            return;
-        }
-        tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description"));
-    }
+    //TODO needs pretty much an entire rewrite
 }

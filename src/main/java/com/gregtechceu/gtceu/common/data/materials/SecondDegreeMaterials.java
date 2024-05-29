@@ -322,7 +322,7 @@ public class SecondDegreeMaterials {
                 .color(0xa8aa9a).iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Asbestos, 4, Saltpeter, 1)
-                .hazard(HazardProperty.HazardType.NONE)
+                .hazard(HazardProperty.HazardTrigger.NONE)
                 .buildAndRegister();
 
         NaquadahAlloy = new Material.Builder(GTCEu.id("naquadah_alloy"))
@@ -408,7 +408,7 @@ public class SecondDegreeMaterials {
                 .color(0x4C3434)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(CarbonMonoxide, 78, HydrogenSulfide, 21, Neon, 9)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION)
                 .buildAndRegister();
 
         LiquidNetherAir = new Material.Builder(GTCEu.id("liquid_nether_air"))
@@ -499,7 +499,7 @@ public class SecondDegreeMaterials {
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         EXCLUDE_PLATE_COMPRESSOR_RECIPE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Silicon, 1, Pyrite, 5, Ruby, 1, Mercury, 3)
-                .hazard(HazardProperty.HazardType.NONE)
+                .hazard(HazardProperty.HazardTrigger.NONE)
                 .buildAndRegister();
 
         Dichloroethane = new Material.Builder(GTCEu.id("dichloroethane"))
@@ -514,7 +514,7 @@ public class SecondDegreeMaterials {
                 .color(0xa9d9a7)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardTrigger.ANY)
                 .buildAndRegister();
 
         RawBrine = new Material.Builder(GTCEu.id("raw_brine"))

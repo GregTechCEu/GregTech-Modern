@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -64,13 +64,13 @@ public class ServerCommands {
                                 .then(Commands.literal("clear")
                                         .executes(context -> {
                                             ServerPlayer target = context.getSource().getPlayerOrException();
-                                            IHazardEffectTracker tracker = GTCapabilityHelper
+                                            IMedicalConditionTracker tracker = GTCapabilityHelper
                                                     .getHazardEffectTracker(target);
                                             if (tracker == null) {
                                                 throw EntityArgument.NO_PLAYERS_FOUND.create();
                                             }
-                                            int count = tracker.getCurrentHazards().keySet().size();
-                                            tracker.getCurrentHazards().clear();
+                                            int count = tracker.getMedicalConditions().keySet().size();
+                                            tracker.getMedicalConditions().clear();
                                             return count;
                                         })
                                         .then(Commands.argument("targets", EntityArgument.players())
@@ -79,13 +79,13 @@ public class ServerCommands {
                                                             .getPlayers(context, "targets");
                                                     int count = 0;
                                                     for (ServerPlayer target : targets) {
-                                                        IHazardEffectTracker tracker = GTCapabilityHelper
+                                                        IMedicalConditionTracker tracker = GTCapabilityHelper
                                                                 .getHazardEffectTracker(target);
                                                         if (tracker == null) {
                                                             continue;
                                                         }
-                                                        count += tracker.getCurrentHazards().keySet().size();
-                                                        tracker.getCurrentHazards().clear();
+                                                        count += tracker.getMedicalConditions().keySet().size();
+                                                        tracker.getMedicalConditions().clear();
                                                     }
                                                     if (count == 0) {
                                                         throw ERROR_CLEAR_EVERYTHING_FAILED.create();
@@ -107,12 +107,13 @@ public class ServerCommands {
                                                                 throw ERROR_INVALID_MATERIAL.create();
                                                             }
                                                             for (ServerPlayer player : players) {
-                                                                IHazardEffectTracker tracker = GTCapabilityHelper
+                                                                IMedicalConditionTracker tracker = GTCapabilityHelper
                                                                         .getHazardEffectTracker(player);
                                                                 if (tracker == null) {
                                                                     continue;
                                                                 }
-                                                                tracker.getExtraHazards().add(material);
+                                                                //TODO associate material with specific condition
+                                                                //tracker.getMedicalConditions().put(material);
                                                                 success++;
                                                             }
                                                             if (success == 0) {

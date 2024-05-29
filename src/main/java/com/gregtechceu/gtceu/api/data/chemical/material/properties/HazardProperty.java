@@ -7,17 +7,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
-import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -45,11 +41,11 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     @Getter
     private final List<HazardProperty.HazardEffect> effects = new ArrayList<>();
     @Getter
-    private final HazardType hazardType;
+    private final HazardTrigger hazardType;
     @Getter
     private final boolean applyToDerivatives;
 
-    public HazardProperty(HazardType hazardType, @Nullable HazardProperty.HazardEffect effect,
+    public HazardProperty(HazardTrigger hazardType, @Nullable HazardProperty.HazardEffect effect,
                           @Nullable HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
         this.hazardType = hazardType;
         this.effects.add(effect);
@@ -57,7 +53,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         this.applyToDerivatives = applyToDerivatives;
     }
 
-    public HazardProperty(HazardType hazardType, List<HazardProperty.HazardEffect> effects,
+    public HazardProperty(HazardTrigger hazardType, List<HazardProperty.HazardEffect> effects,
                           @Nullable HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
         this.hazardType = hazardType;
         this.effects.addAll(effects);
@@ -68,24 +64,23 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
-    public record HazardType(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
+    public record HazardTrigger(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
             implements StringRepresentable {
 
-        public static final Map<String, HazardType> ALL_HAZARDS = new HashMap<>();
+        public static final Map<String, HazardTrigger> ALL_HAZARDS = new HashMap<>();
 
-        public static final HazardType INHALATION_POISON = new HazardType("inhalation_poison", ProtectionType.MASK,
+        public static final HazardTrigger INHALATION = new HazardTrigger("inhalation", ProtectionType.MASK,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
-        public static final HazardType CONTACT_POISON = new HazardType("contacy_poison", ProtectionType.FULL);
-        public static final HazardType RADIOACTIVE = new HazardType("radioactive", ProtectionType.FULL);
-        public static final HazardType CORROSIVE = new HazardType("corrosive", ProtectionType.HANDS,
+        public static final HazardTrigger ANY = new HazardTrigger("any", ProtectionType.FULL);
+        public static final HazardTrigger HANDS = new HazardTrigger("hands", ProtectionType.HANDS,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
-        public static final HazardType NONE = new HazardType("none", ProtectionType.NONE);
+        public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
 
-        public HazardType {
+        public HazardTrigger {
             ALL_HAZARDS.put(name, this);
         }
 
-        public HazardType(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
+        public HazardTrigger(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
             this(name, protectionType, new HashSet<>());
             affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
         }
@@ -132,47 +127,6 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         }
     }
 
-    public static HazardProperty.HazardEffect maxHealthLoweringEffect(int secondsToMax, int startTime, int modifier) {
-        return new HazardProperty.HazardEffect(secondsToMax, startTime,
-                Map.of(Attributes.MAX_HEALTH, new AttributeModifier(HazardProperty.HAZARD_MAX_HEALTH_UUID,
-                        HazardProperty.HAZARD_MAX_HEALTH_KEY, -modifier, AttributeModifier.Operation.ADDITION)));
-    }
-
-    public static HazardProperty.HazardEffect maxAirLoweringEffect(int secondsToMax, int startTime,
-                                                                   int newMaxAirSupply) {
-        return new HazardProperty.HazardEffect(secondsToMax, startTime, newMaxAirSupply);
-    }
-
-    public static HazardProperty.HazardEffect witherEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(MobEffects.WITHER, 1, amplifier));
-    }
-
-    public static HazardProperty.HazardEffect slownessEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1, amplifier));
-    }
-
-    public static HazardProperty.HazardEffect miningFautigueEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1, amplifier));
-    }
-
-    public static HazardProperty.HazardEffect poisonEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(GTMobEffects.WEAK_POISON.get(), 1, amplifier));
-    }
-
-    public static HazardProperty.HazardEffect weaknessEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(MobEffects.WEAKNESS, 1, amplifier));
-    }
-
-    public static HazardProperty.HazardEffect blindnessEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(MobEffects.BLINDNESS, 1, amplifier));
-    }
-
     @Nullable
     public static Material getValidHazardMaterial(ItemStack item) {
         Material material = null;
@@ -212,82 +166,17 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
      */
     public record HazardDamage(int damage, int delay) {}
 
-    /**
-     * A group of effects applied by a hazard.
-     * 
-     * @param duration          if this is a potion effect, the time (in ticks) the effect has. else it's the ramp-up
-     *                          time (in ticks) for the attribute modifiers.
-     * @param modifierStartTime the time (in seconds) before the modifier is applied at all.
-     * @param effects           the mob effects, if any.
-     * @param modifiers         the attribute modifiers, if any.
-     */
-    public record HazardEffect(int duration, int modifierStartTime, List<Supplier<MobEffectInstance>> effects,
-                               Map<Attribute, AttributeModifier> modifiers, int newMaxAirSupply) {
 
-        @SafeVarargs
-        public HazardEffect(int duration, Supplier<MobEffectInstance>... effects) {
-            this(duration, 0, Arrays.stream(effects).toList(), Object2ObjectMaps.emptyMap(), -1);
+    public record HazardEffect(int duration, int modifierStartTime,
+                               Map<Attribute, AttributeModifier> modifiers) {
+
+        public HazardEffect(int duration) {
+            this(duration, 0, Object2ObjectMaps.emptyMap());
         }
 
-        @SafeVarargs
-        public HazardEffect(int duration, int modifierStartTime, Supplier<MobEffectInstance>... effects) {
-            this(duration, modifierStartTime, Arrays.stream(effects).toList(), Object2ObjectMaps.emptyMap(), -1);
-        }
 
-        public HazardEffect(int secondsToMax, Map<Attribute, AttributeModifier> modifiers) {
-            this(secondsToMax, 0, List.of(), modifiers, -1);
-        }
 
-        public HazardEffect(int secondsToMax, int modifierStartTime, Map<Attribute, AttributeModifier> modifiers) {
-            this(secondsToMax, modifierStartTime, List.of(), modifiers, -1);
-        }
 
-        public HazardEffect(int secondsToMax, Map<Attribute, AttributeModifier> modifiers, int maxAirModifier) {
-            this(secondsToMax, 0, List.of(), modifiers, maxAirModifier);
-        }
 
-        public HazardEffect(int secondsToMax, int maxAirModifier) {
-            this(secondsToMax, 0, List.of(), Object2ObjectMaps.emptyMap(), maxAirModifier);
-        }
-
-        public HazardEffect(int secondsToMax, int modifierStartTime, int maxAirModifier) {
-            this(secondsToMax, modifierStartTime, List.of(), Object2ObjectMaps.emptyMap(), maxAirModifier);
-        }
-
-        public List<MobEffectInstance> getEffectInstancesAtTime(int timeFromStart) {
-            if (this.effects.isEmpty()) {
-                return List.of();
-            }
-            List<MobEffectInstance> effectInstances = new ArrayList<>();
-            for (Supplier<MobEffectInstance> effectSupplier : effects) {
-                MobEffectInstance effect = effectSupplier.get();
-                // the effects get stronger the longer you hold the item.
-                int effectDuration = duration == -1 ? -1 : effect.getDuration() * duration * timeFromStart / 500;
-                int effectAmplifier = effect.getAmplifier() * timeFromStart / 1000;
-                effectInstances.add(new MobEffectInstance(effect.getEffect(), effectDuration, effectAmplifier));
-            }
-            return effectInstances;
-        }
-
-        public Map<Attribute, AttributeModifier> getModifiersAtTime(int timeFromStart) {
-            if (this.modifiers.isEmpty()) {
-                return Object2ObjectMaps.emptyMap();
-            }
-            Map<Attribute, AttributeModifier> modifierMap = new HashMap<>();
-            for (var entry : this.modifiers.entrySet()) {
-                AttributeModifier modifier = entry.getValue();
-                double amount = modifier.getAmount() * (double) timeFromStart / Math.max(duration, 1);
-                modifierMap.put(entry.getKey(),
-                        new AttributeModifier(modifier.getId(), modifier.getName(), amount, modifier.getOperation()));
-            }
-            return modifierMap;
-        }
-
-        public int getNewMaxAirSupplyAtTime(int timeFromStart) {
-            if (newMaxAirSupply == -1) {
-                return -1;
-            }
-            return newMaxAirSupply / Math.max(Math.round((float) timeFromStart / Math.max(duration, 1)), 1);
-        }
     }
 }
