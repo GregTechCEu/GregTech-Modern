@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
@@ -401,13 +402,14 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.BLINDNESS))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 200, 3))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.CONFUSION))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON,
+                        new HazardProperty.HazardEffect(200, () -> new MobEffectInstance(MobEffects.CONFUSION, 1)))
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 
@@ -569,5 +571,42 @@ public class OrganicChemistryMaterials {
                 .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister()
                 .setFormula("(C6H4Cl)2", true);
+
+        AceticAnhydride = new Material.Builder(GTCEu.id("acetic_anhydride"))
+                .fluid()
+                .color(0xE0D182)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 4, Hydrogen, 6, Oxygen, 3)
+                .buildAndRegister()
+                .setFormula("(CH3CO)2O", true);
+
+        AminoPhenol = new Material.Builder(GTCEu.id("aminophenol"))
+                .fluid()
+                .color(0x784421)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 6, Hydrogen, 7, Nitrogen, 1, Oxygen, 1)
+                .buildAndRegister()
+                .setFormula("H2NC6H4OH", true);
+
+        Paracetamol = new Material.Builder(GTCEu.id("paracetamol"))
+                .dust()
+                .color(0xF2EDCB)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 8, Hydrogen, 9, Nitrogen, 1, Oxygen, 2)
+                .buildAndRegister();
+
+        AmmoniumFormate = new Material.Builder(GTCEu.id("ammonium_formate"))
+                .gas()
+                .color(0x93badb)
+                .components(Carbon, 1, Hydrogen, 5, Nitrogen, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
+
+        Formamide = new Material.Builder(GTCEu.id("formamide"))
+                .liquid()
+                .color(0x5cccb6)
+                .components(Carbon, 1, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
     }
 }

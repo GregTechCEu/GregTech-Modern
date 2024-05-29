@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
@@ -220,6 +221,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTFluidState", FluidState.class);
         event.add("PropertyKey", PropertyKey.class);
         event.add("ToolProperty", ToolProperty.class);
+        event.add("HazardProperty", HazardProperty.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
 

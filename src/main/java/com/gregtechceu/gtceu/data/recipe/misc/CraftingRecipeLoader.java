@@ -200,6 +200,8 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rotor", SHAPE_EXTRUDER_ROTOR.asStack(),
                 "   ", " S ", "x  ", 'S', SHAPE_EMPTY.asStack());
 
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pill", SHAPE_MOLD_PILL.asStack(), "  h",
+                "  S", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_rotor", SHAPE_MOLD_ROTOR.asStack(), "  h",
                 " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_gear_small", SHAPE_MOLD_GEAR_SMALL.asStack(),
@@ -308,6 +310,11 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE",
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium),
                 'P', new UnificationEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "face_mask", FACE_MASK.asStack(), "S S", "PPP", 'S', Items.STRING,
+                'P', Items.PAPER);
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_gloves", RUBBER_GLOVES.asStack(), "P P", 'P',
+                new UnificationEntry(plate, Rubber));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP",
                 "GGG", "PGP",

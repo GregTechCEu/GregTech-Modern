@@ -42,4 +42,18 @@ public class GTArmorMaterials {
                 map.put(ArmorItem.Type.CHESTPLATE, 0);
                 map.put(ArmorItem.Type.HELMET, 0);
             }), 0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 5.0F, 0.0F));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BAD_PPE_EQUIPMENT = ARMOR_MATERIALS
+            .register("bad_ppe_equipment", () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 1);
+        map.put(ArmorItem.Type.LEGGINGS, 2);
+        map.put(ArmorItem.Type.CHESTPLATE, 3);
+        map.put(ArmorItem.Type.HELMET, 1);
+    }), 10, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> GOOD_PPE_EQUIPMENT = ARMOR_MATERIALS
+            .register("good_ppe_equipment", () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 2);
+        map.put(ArmorItem.Type.LEGGINGS, 5);
+        map.put(ArmorItem.Type.CHESTPLATE, 6);
+        map.put(ArmorItem.Type.HELMET, 2);
+    }), 10, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
 }

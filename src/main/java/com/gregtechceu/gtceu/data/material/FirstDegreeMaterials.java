@@ -8,10 +8,11 @@ import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasTier;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -878,7 +879,9 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2,1))
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
+                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -931,7 +934,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xFFE4E1)
                 .components(Chromium, 1, Oxygen, 3)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .irritantHazard(true)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder(GTCEu.id("antimony_trioxide"))
@@ -987,7 +990,9 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE, new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2, 1))
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
+                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
@@ -1189,6 +1194,13 @@ public class FirstDegreeMaterials {
                 .color(0x060B0B)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Iron, 1, Chlorine, 3)
+                .buildAndRegister();
+
+        Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
+                .fluid()
+                .color(0xe8e0be)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Iron, 1, Chlorine, 2)
                 .buildAndRegister();
 
         UraniumHexafluoride = new Material.Builder(GTCEu.id("uranium_hexafluoride"))
@@ -1488,8 +1500,161 @@ public class FirstDegreeMaterials {
         Pyrochlore = new Material.Builder(GTCEu.id("pyrochlore"))
                 .dust().ore()
                 .color(0x5b4838).secondaryColor(0x331400).iconSet(METALLIC)
-                .flags()
                 .components(Calcium, 2, Niobium, 2, Oxygen, 7)
+                .buildAndRegister();
+
+        PotassiumHydroxide = new Material.Builder(GTCEu.id("potassium_hydroxide"))
+                .dust(1)
+                .color(0xd1c299).secondaryColor(0x85623a).iconSet(METALLIC)
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
+                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .components(Potassium, 1, Oxygen, 1, Hydrogen, 1)
+                .buildAndRegister();
+
+        PotassiumIodide = new Material.Builder(GTCEu.id("potassium_iodide"))
+                .dust()
+                .color(0xa66c71).secondaryColor(0x802d67).iconSet(METALLIC)
+                .components(Potassium, 1, Iodine, 1)
+                .buildAndRegister();
+
+        PotassiumCarbonate = new Material.Builder(GTCEu.id("potassium_carbonate"))
+                .dust()
+                .color(0xa66c71).secondaryColor(0x802d67).iconSet(METALLIC)
+                .components(Potassium, 2, Carbon, 1, Oxygen, 3)
+                .buildAndRegister();
+
+        PotassiumFerrocyanide = new Material.Builder(GTCEu.id("potassium_ferrocyanide"))
+                .dust()
+                .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
+                .components(Potassium, 4, Iron, 1, Carbon, 6, Nitrogen, 6)
+                .buildAndRegister()
+                .setFormula("K4[Fe(CN)6]", true);
+
+        CalciumFerrocyanide = new Material.Builder(GTCEu.id("calcium_ferrocyanide"))
+                .dust()
+                .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
+                .components(Calcium, 2, Iron, 1, Carbon, 6, Nitrogen, 6)
+                .buildAndRegister()
+                .setFormula("Ca2[Fe(CN)6]", true);
+
+        CalciumHydroxide = new Material.Builder(GTCEu.id("calcium_hydroxide"))
+                .dust()
+                .color(0x72dbd4).secondaryColor(0x138a80).iconSet(ROUGH)
+                .components(Calcium, 1, Oxygen, 2, Hydrogen, 2)
+                .buildAndRegister()
+                .setFormula("Ca(OH)2", true);
+
+        CalciumCarbonate = new Material.Builder(GTCEu.id("calcium_carbonate"))
+                .dust()
+                .color(0xd9ca9c).secondaryColor(0xad913b)
+                .components(Calcium, 2, Carbon, 1, Oxygen, 3)
+                .buildAndRegister();
+
+        PotassiumCyanide = new Material.Builder(GTCEu.id("potassium_cyanide"))
+                .dust()
+                .color(0x93badb).secondaryColor(0x0c5696).iconSet(ROUGH)
+                .components(Potassium, 1, Carbon, 1, Nitrogen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .buildAndRegister();
+
+        HydrogenCyanide = new Material.Builder(GTCEu.id("hydrogen_cyanide"))
+                .gas()
+                .color(0x72dbd4)
+                .components(Hydrogen, 1, Carbon, 1, Nitrogen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .buildAndRegister();
+
+        FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
+                .gas()
+                .color(0xa6a6a6)
+                .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
+
+        PotassiumSulfate = new Material.Builder(GTCEu.id("potassium_sulfate"))
+                .dust()
+                .color(0xebab34).secondaryColor(0xb5570e)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Potassium, 1, Sulfur, 1, Oxygen, 4)
+                .buildAndRegister();
+
+        PrussianBlue = new Material.Builder(GTCEu.id("prussian_blue"))
+                .dust()
+                .color(0x102e5e).secondaryColor(0x010c42)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Iron, 7, Carbon, 18, Nitrogen, 18)
+                .buildAndRegister()
+                .setFormula("Fe4[Fe(CN)6]3", true);
+
+        Formaldehyde = new Material.Builder(GTCEu.id("formaldehyde"))
+                .liquid()
+                .color(0xddeced)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Carbon, 1, Hydrogen, 2, Oxygen, 1)
+                .buildAndRegister();
+
+        Glycolonitrile = new Material.Builder(GTCEu.id("glycolonitrile"))
+                .liquid()
+                .color(0x5b8c8f)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 2, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
+                .buildAndRegister();
+
+        AcidicBromineSolution = new Material.Builder(GTCEu.id("acidic_bromine_solution"))
+                .liquid()
+                .color(0xc49b52)
+                .components(Chlorine, 1, Bromine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        ConcentratedBromineSolution = new Material.Builder(GTCEu.id("concentrated_bromine_solution"))
+                .liquid()
+                .color(0x91481e)
+                .components(Bromine, 2, Chlorine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        Iodide = new Material.Builder(GTCEu.id("iodide"))
+                .liquid()
+                .color(0x5f6173)
+                .components(Iodine, 2)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        IodineSolution = new Material.Builder(GTCEu.id("iodine_solution"))
+                .liquid()
+                .color(0x9194a3)
+                .components(Hydrogen, 1, Iodine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        DiluteIodineSolution = new Material.Builder(GTCEu.id("dilute_iodine_solution"))
+                .liquid()
+                .color(0x8187a6)
+                .components(Hydrogen, 1, Iodine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        DiethylenetriaminePentaacetonitrile = new Material.Builder(GTCEu.id("diethylenetriamine_pentaacetonitrile"))
+                .liquid()
+                .color(0xcbbfd6)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 14, Hydrogen, 18, Nitrogen, 8)
+                .buildAndRegister();
+
+        DiethylenetriaminepentaaceticAcid = new Material.Builder(GTCEu.id("diethylenetriaminepentaacetic_acid"))
+                .dust()
+                .color(0xe8c93c).secondaryColor(0xc99118)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 14, Hydrogen, 23, Nitrogen, 3, Oxygen, 10)
+                .buildAndRegister();
+
+        SodiumNitrite = new Material.Builder(GTCEu.id("sodium_nitrite"))
+                .dust()
+                .color(0xcfbf65).secondaryColor(0x85600b)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Sodium, 1, Nitrogen, 1, Oxygen, 2)
                 .buildAndRegister();
     }
 }
