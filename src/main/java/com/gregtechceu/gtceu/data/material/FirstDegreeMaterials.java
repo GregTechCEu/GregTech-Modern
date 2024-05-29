@@ -1592,6 +1592,7 @@ public class FirstDegreeMaterials {
                 .color(0xddeced)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Glycolonitrile = new Material.Builder(GTCEu.id("glycolonitrile"))
