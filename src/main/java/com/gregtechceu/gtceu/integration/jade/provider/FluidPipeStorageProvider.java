@@ -33,7 +33,8 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(ServerPlayer serverPlayer, ServerLevel serverLevel, FluidPipeBlockEntity pipe, boolean showDetails) {
         List<ViewGroup<CompoundTag>> tanks = new ArrayList<>();
         for(var tank : pipe.getFluidTanks()) {
-            tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
+            if(tank.getFluidAmount() > 0)
+                tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
         }
         return tanks;
     }
