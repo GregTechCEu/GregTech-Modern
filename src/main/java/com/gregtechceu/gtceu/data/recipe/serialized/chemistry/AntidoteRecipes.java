@@ -33,14 +33,14 @@ public class AntidoteRecipes {
                 .notConsumable(dust, Iron)
                 .outputFluids(AminoPhenol.getFluid(1000))
                 .outputFluids(DilutedSulfuricAcid.getFluid(1000))
-                .duration(300).EUt(VA[MV]).save(provider);
+                .duration(300).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("paracetamol")
                 .inputFluids(AceticAnhydride.getFluid(1000))
                 .inputFluids(AminoPhenol.getFluid(1000))
                 .outputItems(dust, Paracetamol, 1)
                 .outputFluids(AceticAcid.getFluid(1000))
-                .duration(100).EUt(VA[MV]).save(provider);
+                .duration(100).EUt(VA[LV]).save(provider);
     }
 
     private static void potassiumHydroxideProcess(Consumer<FinishedRecipe> provider) {
