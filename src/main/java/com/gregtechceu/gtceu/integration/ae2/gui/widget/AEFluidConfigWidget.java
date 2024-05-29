@@ -20,7 +20,7 @@ public class AEFluidConfigWidget extends AEConfigWidget {
         int line;
         this.displayList = new IConfigurableSlot[this.config.length];
         this.cached = new IConfigurableSlot[this.config.length];
-        for (int index = 0; index < this.config.length; index ++) {
+        for (int index = 0; index < this.config.length; index++) {
             this.displayList[index] = new MEInputHatchPartMachine.ExportOnlyAEFluid();
             this.cached[index] = new MEInputHatchPartMachine.ExportOnlyAEFluid();
             line = index / 8;

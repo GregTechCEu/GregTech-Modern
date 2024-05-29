@@ -3,12 +3,15 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.world.level.material.Fluid;
 
 /**
  * Interface for FluidHandlerItemStacks which handle GT's unique fluid mechanics
+ * 
  * @see FluidAttribute
  * @see FluidAttributes
  * @see IAttributedFluid
@@ -31,13 +34,13 @@ public interface IThermalFluidHandlerItemStack {
         if (FluidHelper.isLighterThanAir(stack) && !isGasProof()) return false;
 
         // TODO custom fluid
-//        for (RegistryEntry<Fluid> entry : GTRegistries.REGISTRATE.getAll(Registry.FLUID_REGISTRY)) {
-//            if (entry.get() == fluid) {
-//                FluidType fluidType = ((MaterialFluid) fluid).getFluidType();
-//                if (fluidType == FluidTypes.ACID && !isAcidProof()) return false;
-//                if (fluidType == FluidTypes.PLASMA && !isPlasmaProof()) return false;
-//            }
-//        }
+        // for (RegistryEntry<Fluid> entry : GTRegistries.REGISTRATE.getAll(Registry.FLUID_REGISTRY)) {
+        // if (entry.get() == fluid) {
+        // FluidType fluidType = ((MaterialFluid) fluid).getFluidType();
+        // if (fluidType == FluidTypes.ACID && !isAcidProof()) return false;
+        // if (fluidType == FluidTypes.PLASMA && !isPlasmaProof()) return false;
+        // }
+        // }
         return true;
     }
 

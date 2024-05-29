@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,8 @@ import org.jetbrains.annotations.Nullable;
 public interface ITickSubscription {
 
     /**
-     * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link BlockEntity#clearRemoved()} event.
+     * For initialization. To get level and property fields after auto sync, you can subscribe it in
+     * {@link BlockEntity#clearRemoved()} event.
      */
     @Nullable
     TickableSubscription subscribeServerTick(Runnable runnable);
@@ -27,5 +29,4 @@ public interface ITickSubscription {
         }
         return last;
     }
-
 }

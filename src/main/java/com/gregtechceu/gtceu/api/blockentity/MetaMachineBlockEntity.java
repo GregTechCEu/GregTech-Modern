@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.capabilities.Capabilities;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
@@ -20,6 +18,7 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
@@ -28,7 +27,7 @@ import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +41,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +59,7 @@ import java.util.Set;
  * @implNote MetaMachineBlockEntity
  */
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
+
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
@@ -66,12 +70,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         this.metaMachine = getDefinition().createMetaMachine(this);
     }
 
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos,
+                                                           BlockState blockState) {
         return new MetaMachineBlockEntity(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {
-    }
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {}
 
     @Override
     public MultiManagedStorage getRootStorage() {
@@ -88,7 +92,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         }
         return false;
     }
-
 
     @Override
     public long getOffset() {
@@ -131,7 +134,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Nullable
-    public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
+    public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
+                                                    @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
@@ -166,23 +170,28 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyContainer.class);
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
         } else if (cap == GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER) {
             if (machine instanceof IEnergyInfoProvider energyInfoProvider) {
-                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap, LazyOptional.of(() -> energyInfoProvider));
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> energyInfoProvider));
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyInfoProvider.class);
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
             }
         } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
-                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
+                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap,
+                        LazyOptional.of(() -> cleanroomReceiver));
             }
         } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
             if (machine instanceof IMaintenanceMachine maintenanceMachine) {
-                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap, LazyOptional.of(() -> maintenanceMachine));
+                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> maintenanceMachine));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (machine instanceof LDItemEndpointMachine fluidEndpointMachine) {
@@ -190,16 +199,17 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
                 if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                IItemTransfer transfer = ItemTransferHelperImpl.getItemTransfer(machine.getLevel(),
+                        endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
                 if (transfer != null) {
-                    return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() ->
-                        ItemTransferHelperImpl.toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(transfer))
-                    ));
+                    return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl
+                            .toItemHandler(new LDItemEndpointMachine.ItemHandlerWrapper(transfer))));
                 }
             }
             var transfer = machine.getItemTransferCap(side, true);
             if (transfer != null) {
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap,
+                        LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (machine instanceof LDFluidEndpointMachine fluidEndpointMachine) {
@@ -207,25 +217,28 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 ILDEndpoint endpoint = fluidEndpointMachine.getLink();
                 if (endpoint == null) return null;
                 Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(machine.getLevel(), endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(machine.getLevel(),
+                        endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
                 if (transfer != null) {
-                    return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() ->
-                        FluidTransferHelperImpl.toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer))
-                    ));
+                    return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl
+                            .toFluidHandler(new LDFluidEndpointMachine.FluidHandlerWrapper(transfer))));
                 }
             }
             var transfer = machine.getFluidTransferCap(side, true);
             if (transfer != null) {
-                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap,
+                        LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
             if (machine instanceof IPlatformEnergyStorage platformEnergyStorage) {
-                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage)));
+                return ForgeCapabilities.ENERGY.orEmpty(cap,
+                        LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage)));
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IPlatformEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
-                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
+                return ForgeCapabilities.ENERGY.orEmpty(cap,
+                        LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {
@@ -233,11 +246,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, ILaserContainer.class);
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
         } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
             if (machine instanceof IOpticalComputationProvider computationProvider) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> computationProvider));
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IOpticalComputationProvider.class);
             if (!list.isEmpty()) {
@@ -267,7 +282,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         return null;
     }
 
-    public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide, Class<T> capability) {
+    public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide,
+                                                        Class<T> capability) {
         if (traits.isEmpty()) return Collections.emptyList();
         List<T> list = new ArrayList<>();
         for (MachineTrait trait : traits) {
@@ -289,7 +305,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         if (instance != null) {
             IRenderer renderer = instance.getRenderer(this);
             if (renderer != null) {
-                if (renderer.getViewDistance() == 64 /*the default*/) {
+                if (renderer.getViewDistance() == 64 /* the default */) {
                     return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
                 }
 

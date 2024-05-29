@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
@@ -33,7 +35,8 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
         ICoverable coverable = GTCapabilityHelper.getCoverable(level, pos, face);
         if (coverable != null) {
             var coverSide = ICoverable.rayTraceCoverableSide(coverable, player);
-            if (coverSide != null && coverable.getCoverAtSide(coverSide) == null && coverable.canPlaceCoverOnSide(coverDefinition, coverSide)) {
+            if (coverSide != null && coverable.getCoverAtSide(coverSide) == null &&
+                    coverable.canPlaceCoverOnSide(coverDefinition, coverSide)) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     boolean result = coverable.placeCoverOnSide(coverSide, itemStack, coverDefinition, serverPlayer);
                     if (result && !player.isCreative()) {
@@ -47,7 +50,8 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
         return InteractionResult.PASS;
     }
 
-    public static boolean isCoverBehaviorItem(ItemStack itemStack, @Nullable BooleanSupplier hasCoverSupplier, @Nullable Predicate<CoverDefinition> canPlaceCover) {
+    public static boolean isCoverBehaviorItem(ItemStack itemStack, @Nullable BooleanSupplier hasCoverSupplier,
+                                              @Nullable Predicate<CoverDefinition> canPlaceCover) {
         Item item = itemStack.getItem();
         if (item instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
@@ -57,10 +61,11 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
                     }
                 }
             }
-        } else if (GTToolType.CROWBAR.itemTags.stream().anyMatch(itemStack::is) || GTToolType.SOFT_MALLET.itemTags.stream().anyMatch(itemStack::is) || GTToolType.SCREWDRIVER.itemTags.stream().anyMatch(itemStack::is)) {
-            return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();
-        }
+        } else if (GTToolType.CROWBAR.itemTags.stream().anyMatch(itemStack::is) ||
+                GTToolType.SOFT_MALLET.itemTags.stream().anyMatch(itemStack::is) ||
+                GTToolType.SCREWDRIVER.itemTags.stream().anyMatch(itemStack::is)) {
+                    return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();
+                }
         return false;
     }
-
 }

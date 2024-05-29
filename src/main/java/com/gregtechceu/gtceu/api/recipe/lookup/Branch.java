@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class Branch {
             return Stream.empty();
         }
         if (filterHidden) {
-            //stream = stream.filter(t -> !t.isHidden());
+            // stream = stream.filter(t -> !t.isHidden());
         }
         return stream;
     }

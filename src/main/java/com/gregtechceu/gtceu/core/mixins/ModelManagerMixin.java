@@ -7,11 +7,13 @@ import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTModels;
+
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.fml.ModLoader;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,8 +24,12 @@ import java.util.concurrent.Executor;
 
 @Mixin(value = ModelManager.class)
 public abstract class ModelManagerMixin {
+
     @Inject(method = "reload", at = @At(value = "HEAD"))
-    private void gtceu$loadDynamicModels(PreparableReloadListener.PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+    private void gtceu$loadDynamicModels(PreparableReloadListener.PreparationBarrier preparationBarrier,
+                                         ResourceManager resourceManager, ProfilerFiller preparationsProfiler,
+                                         ProfilerFiller reloadProfiler, Executor backgroundExecutor,
+                                         Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
         if (!ModLoader.isLoadingStateValid()) return;
 
         long startTime = System.currentTimeMillis();

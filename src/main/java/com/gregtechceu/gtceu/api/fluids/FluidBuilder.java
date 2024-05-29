@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.fluids;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
@@ -12,18 +10,21 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,9 +60,11 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
-    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation still = null;
-    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;
@@ -117,6 +120,7 @@ public class FluidBuilder {
 
     /**
      * Converts a density value in g/cm^3 to an MC fluid density by comparison to air's density.
+     * 
      * @param density the density to convert
      * @return the MC integer density
      */
@@ -160,6 +164,7 @@ public class FluidBuilder {
 
     /**
      * Converts viscosity in Poise to MC viscosity
+     * 
      * @param viscosity the viscosity to convert
      * @return the converted value
      */
@@ -180,13 +185,14 @@ public class FluidBuilder {
      * @param attributes the attributes to add
      * @return this
      */
-    public @NotNull FluidBuilder attributes(@NotNull FluidAttribute @NotNull ... attributes) {
+    public @NotNull FluidBuilder attributes(@NotNull FluidAttribute @NotNull... attributes) {
         Collections.addAll(this.attributes, attributes);
         return this;
     }
 
     /**
      * Mark this fluid as having a custom still texture
+     * 
      * @return this
      */
     public @NotNull FluidBuilder customStill() {
@@ -204,7 +210,7 @@ public class FluidBuilder {
     }
 
     /**
-     * @param hasCustomStill if the fluid has a custom still texture
+     * @param hasCustomStill   if the fluid has a custom still texture
      * @param hasCustomFlowing if the fluid has a custom flowing texture
      * @return this
      */
@@ -235,7 +241,8 @@ public class FluidBuilder {
         return this;
     }
 
-    public @NotNull Supplier<? extends Fluid> build(@NotNull String modid, Material material, FluidStorageKey key, GTRegistrate registrate) {
+    public @NotNull Supplier<? extends Fluid> build(@NotNull String modid, Material material, FluidStorageKey key,
+                                                    GTRegistrate registrate) {
         determineName(material, key);
         determineTextures(material, key, modid);
 
@@ -256,7 +263,9 @@ public class FluidBuilder {
         determineDensity();
         determineLuminosity(material);
         determineViscosity(material);
-        IGTFluidBuilder builder = registrate.createFluid(name, this.translation != null ? this.translation : key.getTranslationKeyFor(material), material, this.still, this.flowing)
+        IGTFluidBuilder builder = registrate
+                .createFluid(name, this.translation != null ? this.translation : key.getTranslationKeyFor(material),
+                        material, this.still, this.flowing)
                 .temperature(this.temperature)
                 .density(this.density)
                 .luminance(this.luminosity)
@@ -319,7 +328,8 @@ public class FluidBuilder {
                     }
                     case GAS -> ROOM_TEMPERATURE;
                     case PLASMA -> {
-                        if (material.hasFluid() && material.getFluidBuilder() != null && material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
+                        if (material.hasFluid() && material.getFluidBuilder() != null &&
+                                material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
                             yield BASE_PLASMA_TEMPERATURE + material.getFluidBuilder().temperature;
                         }
                         yield BASE_PLASMA_TEMPERATURE;

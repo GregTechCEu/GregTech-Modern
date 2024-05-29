@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
+
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,5 +40,4 @@ public class RTTTree {
     public void addNode(BlockPos node) {
         this.nodes.add(node);
     }
-
 }

@@ -3,19 +3,23 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -25,6 +29,7 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleFluidFilter implements FluidFilter {
+
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -80,7 +85,6 @@ public class SimpleFluidFilter implements FluidFilter {
         return tag;
     }
 
-
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
@@ -101,7 +105,10 @@ public class SimpleFluidFilter implements FluidFilter {
                 fluidStorageSlots[index] = new FluidStorage(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
-                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18, () -> fluidStorageSlots[index].getFluid(), (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
+                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
+                        () -> fluidStorageSlots[index].getFluid(),
+                        (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
+
                     @Override
                     public void updateScreen() {
                         super.updateScreen();

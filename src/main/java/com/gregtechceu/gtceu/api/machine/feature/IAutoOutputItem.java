@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -26,5 +27,4 @@ public interface IAutoOutputItem extends IMachineFeature {
     default boolean hasAutoOutputItem() {
         return true;
     }
-
 }

@@ -29,7 +29,8 @@ public interface IRedstoneSignalMachine extends IMachineFeature {
 
     /**
      * Call to update output signal.
-     * also see {@link IRedstoneSignalMachine#getOutputSignal(Direction)} and {@link IRedstoneSignalMachine#getOutputDirectSignal(Direction)}
+     * also see {@link IRedstoneSignalMachine#getOutputSignal(Direction)} and
+     * {@link IRedstoneSignalMachine#getOutputDirectSignal(Direction)}
      */
     default void updateSignal() {
         var level = self().getLevel();
@@ -37,5 +38,4 @@ public interface IRedstoneSignalMachine extends IMachineFeature {
             self().notifyBlockUpdate();
         }
     }
-
 }

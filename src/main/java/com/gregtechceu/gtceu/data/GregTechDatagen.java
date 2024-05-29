@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
+
 import com.tterrag.registrate.providers.ProviderType;
 
 /**
@@ -11,6 +12,7 @@ import com.tterrag.registrate.providers.ProviderType;
  * @implNote GregTechDatagen
  */
 public class GregTechDatagen {
+
     public static void init() {
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, TagsHandler::initItem);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, TagsHandler::initBlock);

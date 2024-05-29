@@ -56,9 +56,10 @@ dependencies {
 
     // AE2
     modImplementation(forge.ae2) { transitive = false }
+    modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     //AlmostUnified
-    modImplementation(forge.almostUnified.forge)
+    modCompileOnly(forge.almostUnified.forge)
 
     // KJS
     modImplementation forge.kubejs

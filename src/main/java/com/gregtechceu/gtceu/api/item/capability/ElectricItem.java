@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
-
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,8 +16,8 @@ public class ElectricItem implements IElectricItem {
     protected final boolean chargeable;
     protected final boolean canProvideEnergyExternally;
 
-
-    public ElectricItem(ItemStack itemStack, long maxCharge, int tier, boolean chargeable, boolean canProvideEnergyExternally) {
+    public ElectricItem(ItemStack itemStack, long maxCharge, int tier, boolean chargeable,
+                        boolean canProvideEnergyExternally) {
         this.itemStack = itemStack;
         this.maxCharge = maxCharge;
         this.tier = tier;
@@ -91,11 +91,13 @@ public class ElectricItem implements IElectricItem {
     }
 
     @Override
-    public long discharge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate) {
+    public long discharge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally,
+                          boolean simulate) {
         if (itemStack.getCount() != 1) {
             return 0L;
         }
-        if ((canProvideEnergyExternally || !externally || amount == Long.MAX_VALUE) && (chargerTier >= tier) && amount > 0L) {
+        if ((canProvideEnergyExternally || !externally || amount == Long.MAX_VALUE) && (chargerTier >= tier) &&
+                amount > 0L) {
             if (!ignoreTransferLimit) {
                 amount = Math.min(amount, getTransferLimit());
             }
@@ -113,5 +115,4 @@ public class ElectricItem implements IElectricItem {
     public int getTier() {
         return tier;
     }
-
 }

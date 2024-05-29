@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.function.Consumer;
 
@@ -16,10 +19,10 @@ import java.util.function.Consumer;
  * @implNote TagFluidFilter
  */
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
+
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
 
-    protected TagFluidFilter() {
-    }
+    protected TagFluidFilter() {}
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
         return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));

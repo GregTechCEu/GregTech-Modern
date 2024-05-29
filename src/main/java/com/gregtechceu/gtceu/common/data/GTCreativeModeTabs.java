@@ -3,19 +3,19 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -27,10 +27,12 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
  */
 @SuppressWarnings("Convert2MethodRef")
 public class GTCreativeModeTabs {
+
     public static RegistryEntry<CreativeModeTab> MATERIAL_FLUID = REGISTRATE.defaultCreativeTab("material_fluid",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_fluid", REGISTRATE))
                     .icon(() -> GTItems.FLUID_CELL.asStack())
-                    .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_fluid"), GTCEu.NAME + " Material Fluid Containers"))
+                    .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_fluid"),
+                            GTCEu.NAME + " Material Fluid Containers"))
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab> MATERIAL_ITEM = REGISTRATE.defaultCreativeTab("material_item",
@@ -76,9 +78,7 @@ public class GTCreativeModeTabs {
                     .build())
             .register();
 
-    public static void init() {
-
-    }
+    public static void init() {}
 
     public static class RegistrateDisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
 
@@ -91,7 +91,8 @@ public class GTCreativeModeTabs {
         }
 
         @Override
-        public void accept(@NotNull CreativeModeTab.ItemDisplayParameters itemDisplayParameters, @NotNull CreativeModeTab.Output output) {
+        public void accept(@NotNull CreativeModeTab.ItemDisplayParameters itemDisplayParameters,
+                           @NotNull CreativeModeTab.Output output) {
             var tab = registrate.get(name, Registries.CREATIVE_MODE_TAB);
             for (var entry : registrate.getAll(Registries.BLOCK)) {
                 if (!registrate.isInCreativeTab(entry, tab))
@@ -103,7 +104,7 @@ public class GTCreativeModeTabs {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
-                }  else if (item instanceof IGTTool tool) {
+                } else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
@@ -131,5 +132,4 @@ public class GTCreativeModeTabs {
             }
         }
     }
-
 }

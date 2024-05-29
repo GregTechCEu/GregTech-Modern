@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.function.Consumer;

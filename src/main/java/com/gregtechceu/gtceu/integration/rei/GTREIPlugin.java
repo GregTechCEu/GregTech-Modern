@@ -6,23 +6,25 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
+
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +38,12 @@ import static me.shedaniel.rei.plugin.common.BuiltinPlugin.SMELTING;
  * @implNote REIPlugin
  */
 public class GTREIPlugin implements REIClientPlugin {
+
     @Override
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new MultiblockInfoDisplayCategory());
-        registry.add(new GTOreProcessingDisplayCategory());
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            registry.add(new GTOreProcessingDisplayCategory());
         registry.add(new GTOreVeinDisplayCategory());
         registry.add(new GTBedrockFluidDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -52,7 +56,8 @@ public class GTREIPlugin implements REIClientPlugin {
         // workstations
         MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
-        GTOreProcessingDisplayCategory.registerWorkstations(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerWorkstations(registry);
         GTOreVeinDisplayCategory.registerWorkstations(registry);
         GTBedrockFluidDisplayCategory.registerWorkstations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -70,7 +75,8 @@ public class GTREIPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         GTRecipeTypeDisplayCategory.registerDisplays(registry);
         MultiblockInfoDisplayCategory.registerDisplays(registry);
-        GTOreProcessingDisplayCategory.registerDisplays(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerDisplays(registry);
         GTOreVeinDisplayCategory.registerDisplays(registry);
         GTBedrockFluidDisplayCategory.registerDisplays(registry);
     }
@@ -79,7 +85,9 @@ public class GTREIPlugin implements REIClientPlugin {
     @SuppressWarnings("UnstableApiUsage")
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            registry.group(GTCEu.id("tool/" + toolType.name), Component.translatable("gtceu.tool.class." + toolType.name), EntryIngredients.ofItemTag(toolType.itemTags.get(0)));
+            registry.group(GTCEu.id("tool/" + toolType.name),
+                    Component.translatable("gtceu.tool.class." + toolType.name),
+                    EntryIngredients.ofItemTag(toolType.itemTags.get(0)));
             // EntryIngredients.ofItemStacks(GTItems.TOOL_ITEMS.column(toolType).values().stream().filter(Objects::nonNull).map(ItemProviderEntry::get).map(IGTTool::get).collect(Collectors.toSet()))
         }
 
@@ -92,8 +100,8 @@ public class GTREIPlugin implements REIClientPlugin {
             for (var t : value.entrySet()) {
                 var name = t.getKey().name;
                 if (Objects.equals(name, TagPrefix.frameGt.name) ||
-                    Objects.equals(name, TagPrefix.block.name) ||
-                    Objects.equals(name, TagPrefix.rawOreBlock.name))
+                        Objects.equals(name, TagPrefix.block.name) ||
+                        Objects.equals(name, TagPrefix.rawOreBlock.name))
                     continue;
 
                 items.add(t.getValue());
@@ -101,7 +109,8 @@ public class GTREIPlugin implements REIClientPlugin {
 
             var name = material.getName();
             var label = ToUpperAllWords(name.replace("_", " "));
-            registry.group(GTCEu.id("ore/" + name), Component.translatable("tagprefix.stone", label), EntryIngredients.ofItems(items));
+            registry.group(GTCEu.id("ore/" + name), Component.translatable("tagprefix.stone", label),
+                    EntryIngredients.ofItems(items));
         }
     }
 
@@ -109,7 +118,7 @@ public class GTREIPlugin implements REIClientPlugin {
         StringBuilder result = new StringBuilder();
         result.append(text.substring(0, 1).toUpperCase());
         for (int i = 1; i < text.length(); i++) {
-            if (" ".equals(text.substring(i-1, i)))
+            if (" ".equals(text.substring(i - 1, i)))
                 result.append(text.substring(i, i + 1).toUpperCase());
             else
                 result.append(text.charAt(i));

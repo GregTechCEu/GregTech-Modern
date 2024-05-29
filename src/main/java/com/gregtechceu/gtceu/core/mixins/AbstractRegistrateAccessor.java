@@ -12,8 +12,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(value = AbstractRegistrate.class, remap = false)
 public interface AbstractRegistrateAccessor {
+
     @Accessor
     ListMultimap<ProviderType<?>, @NonnullType NonNullConsumer<? extends RegistrateProvider>> getDatagens();
+
     @Accessor
     NonNullSupplier<Boolean> getDoDatagen();
 }

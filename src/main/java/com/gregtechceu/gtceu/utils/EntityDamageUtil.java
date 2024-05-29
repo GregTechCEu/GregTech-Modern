@@ -2,20 +2,16 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
+
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.PolarBear;
-import net.minecraft.world.entity.animal.SnowGolem;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
+
 import org.jetbrains.annotations.NotNull;
 
 public class EntityDamageUtil {
@@ -58,9 +54,9 @@ public class EntityDamageUtil {
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
 
         entity.hurt(GTDamageTypes.HEAT.source(entity.level()), damage);
-        //TODO advancements
-        //if (entity instanceof ServerPlayer serverPlayer)
-        //    AdvancementTriggers.HEAT_DEATH.trigger(serverPlayer);
+        // TODO advancements
+        // if (entity instanceof ServerPlayer serverPlayer)
+        // AdvancementTriggers.HEAT_DEATH.trigger(serverPlayer);
     }
 
     /**
@@ -86,9 +82,9 @@ public class EntityDamageUtil {
 
         entity.hurt(entity.damageSources().freeze(), damage);
         // TODO advancements
-        //if (entity instanceof ServerPlayer) {
-        //    AdvancementTriggers.COLD_DEATH.trigger((EntityPlayerMP) entity);
-        //}
+        // if (entity instanceof ServerPlayer) {
+        // AdvancementTriggers.COLD_DEATH.trigger((EntityPlayerMP) entity);
+        // }
     }
 
     /**
@@ -106,6 +102,6 @@ public class EntityDamageUtil {
         entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);
         entity.addEffect(new MobEffectInstance(MobEffects.POISON, damage * 100, 1));
         // TODO advancements
-        //if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((EntityPlayerMP) entity);
+        // if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((EntityPlayerMP) entity);
     }
 }

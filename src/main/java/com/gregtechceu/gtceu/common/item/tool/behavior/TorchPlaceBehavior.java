@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +94,8 @@ public class TorchPlaceBehavior implements IToolBehavior {
                         if (slotItemBlock.place(blockPlaceContext).consumesAction()) {
                             slotState = context.getLevel().getBlockState(pos);
                             SoundType soundtype = slotState.getBlock().getSoundType(slotState);
-                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(), SoundSource.BLOCKS,
+                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(),
+                                    SoundSource.BLOCKS,
                                     (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                             if (!context.getPlayer().isCreative()) slotStack.shrink(1);
                             return true;

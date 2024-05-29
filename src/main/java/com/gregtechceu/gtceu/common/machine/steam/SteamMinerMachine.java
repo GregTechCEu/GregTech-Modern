@@ -16,10 +16,9 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -30,8 +29,7 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -43,19 +41,27 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine, IUIMachine, IMachineModifyDrops, IDataInfoProvider {
-    @Getter @Setter
-    @Persisted @DescSynced
+public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine,
+                               IUIMachine, IMachineModifyDrops, IDataInfoProvider {
+
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
     private boolean needsVenting;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -77,14 +83,16 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
-        if (args.length > 2 && args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
+        if (args.length > 2 && args[args.length - 3] instanceof Integer fortune &&
+                args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
             return new SteamMinerLogic(this, fortune, speed, maxRadius);
         }
-        throw new IllegalArgumentException("MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
+        throw new IllegalArgumentException(
+                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
 
     @Override
@@ -137,11 +145,12 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     //////////////////////////////////////
-    //**********     LOGIC    **********//
+    // ********** LOGIC **********//
     //////////////////////////////////////
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getFrontFacing();
-        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
+        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(),
+                getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -157,7 +166,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
     @Override
     public ModularUI createUI(Player entityPlayer) {
@@ -165,7 +174,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
         ModularUI builder = new ModularUI(175, 176, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(false));
-        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(false), 7, 94, true));
+        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(false), 7,
+                94, true));
 
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
@@ -184,7 +194,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         builder.widget(new ComponentPanelWidget(70, 19, this::addDisplayText2)
                 .setMaxWidthLimit(84));
 
-
         return builder;
     }
 
@@ -195,13 +204,16 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         textList.add(Component.translatable("gtceu.machine.miner.startz", this.getRecipeLogic().getZ()));
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         if (this.getRecipeLogic().isDone())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.done").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
+            textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
         else if (this.getRecipeLogic().isWorking())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.working").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
+            textList.add(Component.translatable("gtceu.multiblock.large_miner.working")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         else if (!this.isWorkingEnabled())
             textList.add(Component.translatable("gtceu.multiblock.work_paused"));
         if (getRecipeLogic().isInventoryFull())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
     }
 
     void addDisplayText2(List<Component> textList) {
@@ -214,7 +226,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drain(energyPerTick, false);
+                steamTank.drainInternal(energyPerTick, false);
             return true;
         }
         return false;
@@ -238,10 +250,11 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
+                mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }

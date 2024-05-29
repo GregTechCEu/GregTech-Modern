@@ -19,5 +19,4 @@ public interface IWorkable extends IControllable {
      * @return true is machine is active
      */
     boolean isActive();
-
 }
