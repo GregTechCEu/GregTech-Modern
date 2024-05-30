@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
-
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -17,6 +17,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
  * @implNote GTSounds
  */
 public class GTSoundEntries {
+
     static {
         GTRegistries.SOUNDS.unfreeze();
     }
@@ -76,5 +77,4 @@ public class GTSoundEntries {
             entry.register(soundEvent -> ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent));
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.damagesource;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,11 +24,13 @@ import java.util.stream.Stream;
 
 /**
  * An extension of {@link DamageType} that contains extra data, functionality, and utility.
+ * 
  * @see DamageType
  * @see DamageSource
  * @see DamageSources
  */
 public class DamageTypeData {
+
     private static final List<DamageTypeData> ALL = new ArrayList<>();
 
     public final ResourceKey<DamageType> key;
@@ -35,7 +39,6 @@ public class DamageTypeData {
     public final Collection<TagKey<DamageType>> tags;
 
     private Holder<DamageType> holder;
-
 
     protected DamageTypeData(ResourceKey<DamageType> key, DamageType type, Collection<TagKey<DamageType>> tags) {
         this.key = key;
@@ -85,6 +88,7 @@ public class DamageTypeData {
     }
 
     public static class Builder {
+
         // required
         private String msgId;
         private ResourceLocation location;
@@ -131,7 +135,8 @@ public class DamageTypeData {
         }
 
         /**
-         * Set the exhaustion of this type. This is the amount of hunger that will be consumed when an entity is damaged.
+         * Set the exhaustion of this type. This is the amount of hunger that will be consumed when an entity is
+         * damaged.
          */
         public DamageTypeData.Builder exhaustion(float exhaustion) {
             this.exhaustion = exhaustion;
@@ -157,9 +162,10 @@ public class DamageTypeData {
         /**
          * Set the death message type of this damage type. This determines how a death message lang key is assembled.
          * <ul>
-         *     <li>{@link DeathMessageType#DEFAULT}: {@link DamageSource#getLocalizedDeathMessage}</li>
-         *     <li>{@link DeathMessageType#FALL_VARIANTS}: {@link CombatTracker#getFallMessage(CombatEntry, Entity)}</li>
-         *     <li>{@link DeathMessageType#INTENTIONAL_GAME_DESIGN}: "death.attack." + msgId, wrapped in brackets, linking to MCPE-28723</li>
+         * <li>{@link DeathMessageType#DEFAULT}: {@link DamageSource#getLocalizedDeathMessage}</li>
+         * <li>{@link DeathMessageType#FALL_VARIANTS}: {@link CombatTracker#getFallMessage(CombatEntry, Entity)}</li>
+         * <li>{@link DeathMessageType#INTENTIONAL_GAME_DESIGN}: "death.attack." + msgId, wrapped in brackets, linking
+         * to MCPE-28723</li>
          * </ul>
          */
         @SuppressWarnings("JavadocReference")
@@ -185,8 +191,7 @@ public class DamageTypeData {
             DamageTypeData data = new DamageTypeData(
                     ResourceKey.create(Registries.DAMAGE_TYPE, location),
                     new DamageType(msgId, scaling, exhaustion, effects, deathMessageType),
-                    tags
-            );
+                    tags);
             ALL.add(data);
             return data;
         }

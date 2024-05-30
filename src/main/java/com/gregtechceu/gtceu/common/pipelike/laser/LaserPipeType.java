@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
 public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepresentable {
+
     NORMAL;
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("laser");

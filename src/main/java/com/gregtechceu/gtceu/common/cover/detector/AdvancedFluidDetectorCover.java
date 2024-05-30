@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -22,32 +23,39 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IUICover {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedFluidDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            AdvancedFluidDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
-
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private long minValue, maxValue;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
 
     public AdvancedFluidDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -87,7 +95,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
                 storedFluid += content.getAmount();
         }
 
-        setRedstoneSignalOutput(RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
+        setRedstoneSignalOutput(
+                RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
     }
 
     public void setMinValue(long minValue) {
@@ -98,9 +107,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         this.maxValue = Math.max(maxValue, 0);
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -117,18 +125,16 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         group.addWidget(new LongInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
         group.addWidget(new LongInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
 
-
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(
                 9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted
-        ) {
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+
             @Override
             public void updateScreen() {
                 super.updateScreen();
                 setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_fluid_detector.invert." + (isPressed ? "enabled" : "disabled")
-                )));
+                        "cover.advanced_fluid_detector.invert." + (isPressed ? "enabled" : "disabled"))));
             }
         });
 

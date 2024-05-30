@@ -5,24 +5,28 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.Action;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.AnimationFrame;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.BlockAnima;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.CompassScene;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.XmlUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.w3c.dom.Element;
 
 import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Element;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class MultiblockAction extends Action {
+
     private final BlockAnima animation;
     @Nullable
     private final MultiblockMachineDefinition machineDefinition;
@@ -36,7 +40,8 @@ public class MultiblockAction extends Action {
         shapeIndex = XmlUtils.getAsInt(element, "shape-index", 0);
         facing = XmlUtils.getAsEnum(element, "facing", Direction.class, Direction.NORTH);
         isFormed = XmlUtils.getAsBoolean(element, "formed", true);
-        animation = new BlockAnima(blockPos, XmlUtils.getAsVec3(element, "offset", new Vec3(0, 0.7, 0)), XmlUtils.getAsInt(element, "duration", 15));
+        animation = new BlockAnima(blockPos, XmlUtils.getAsVec3(element, "offset", new Vec3(0, 0.7, 0)),
+                XmlUtils.getAsInt(element, "duration", 15));
         if (ResourceLocation.isValidResourceLocation(machineName)) {
             var definition = GTRegistries.MACHINES.get(new ResourceLocation(machineName));
             if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
@@ -71,8 +76,8 @@ public class MultiblockAction extends Action {
                         for (int z = 0; z < column.length; z++) {
                             BlockState blockState = column[z].getBlockState();
                             BlockPos pos = animation.pos().offset(x, y, z);
-                            if (column[z].getBlockEntity(pos) instanceof IMachineBlockEntity holder
-                                    && holder.getMetaMachine() instanceof IMultiController) {
+                            if (column[z].getBlockEntity(pos) instanceof IMachineBlockEntity holder &&
+                                    holder.getMetaMachine() instanceof IMultiController) {
                                 offset = pos;
                             }
                             blockMap.put(pos, BlockInfo.fromBlockState(blockState));
@@ -80,7 +85,8 @@ public class MultiblockAction extends Action {
                     }
                 }
                 BlockPos finalOffset = offset;
-                blockMap.forEach((pos, blockInfo) -> scene.addBlock(pos.subtract(finalOffset).offset(animation.pos()), blockInfo, anima ? animation : null));
+                blockMap.forEach((pos, blockInfo) -> scene.addBlock(pos.subtract(finalOffset).offset(animation.pos()),
+                        blockInfo, anima ? animation : null));
             }
         }
     }

@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
      * ONLY TO BE USED FOR FLUID MATCHING! All other functionality will throw an exception.
      */
     FluidFilter EMPTY = new FluidFilter() {
+
         @Override
         public boolean test(FluidStack fluidStack) {
             return true;

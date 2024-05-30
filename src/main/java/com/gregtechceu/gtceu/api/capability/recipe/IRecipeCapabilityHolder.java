@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.google.common.collect.Table;
-
 import org.jetbrains.annotations.NotNull;
-import java.util.List;
 
+import java.util.List;
 
 public interface IRecipeCapabilityHolder {
 
@@ -22,5 +21,4 @@ public interface IRecipeCapabilityHolder {
     default int getChanceTier() {
         return 0;
     }
-
 }

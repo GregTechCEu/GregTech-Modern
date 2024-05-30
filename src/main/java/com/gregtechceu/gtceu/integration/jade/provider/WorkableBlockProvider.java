@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
@@ -39,7 +41,8 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
     }
 
     @Override
-    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("Active")) return;
 
         int currentProgress = capData.getInt("Progress");
@@ -47,9 +50,9 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         Component text;
 
         if (block.getBlockEntity() instanceof IMachineBlockEntity mbe &&
-            mbe.getMetaMachine() instanceof IRecipeLogicMachine rlm &&
-            rlm.getRecipeLogic().getLastRecipe() != null &&
-            rlm.getRecipeLogic().getLastRecipe().data.getBoolean("duration_is_total_cwu")) {
+                mbe.getMetaMachine() instanceof IRecipeLogicMachine rlm &&
+                rlm.getRecipeLogic().getLastRecipe() != null &&
+                rlm.getRecipeLogic().getLastRecipe().data.getBoolean("duration_is_total_cwu")) {
             // show as total computation instead
             int color = rlm.getRecipeLogic().isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
             tooltip.add(tooltip.getElementHelper().progress(
@@ -64,7 +67,8 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         if (maxProgress < 20) {
             text = Component.translatable("gtceu.jade.progress_tick", currentProgress, maxProgress);
         } else {
-            text = Component.translatable("gtceu.jade.progress_sec", Math.round(currentProgress / 20.0F), Math.round(maxProgress / 20.0F));
+            text = Component.translatable("gtceu.jade.progress_sec", Math.round(currentProgress / 20.0F),
+                    Math.round(maxProgress / 20.0F));
         }
 
         if (maxProgress > 0) {
@@ -75,9 +79,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                             text,
                             tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
                             Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
-                            true
-                    )
-            );
+                            true));
         }
     }
 }

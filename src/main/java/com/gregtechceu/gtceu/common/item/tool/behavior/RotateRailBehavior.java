@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -10,9 +11,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +30,8 @@ public class RotateRailBehavior implements IToolBehavior {
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (state.getBlock() instanceof BaseRailBlock) {
-            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
+            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90),
+                    Block.UPDATE_ALL)) {
                 ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
                 return InteractionResult.SUCCESS;
             }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

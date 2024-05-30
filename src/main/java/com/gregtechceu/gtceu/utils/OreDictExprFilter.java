@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,7 +92,8 @@ public class OreDictExprFilter {
      * @return if any of the items oreDicts matches the rules
      */
     public static boolean matchesOreDict(List<MatchRule> rules, ItemStack stack) {
-        Set<String> oreDicts = stack.getTags().map(TagKey::location).map(ResourceLocation::getPath).collect(Collectors.toSet());
+        Set<String> oreDicts = stack.getTags().map(TagKey::location).map(ResourceLocation::getPath)
+                .collect(Collectors.toSet());
         if (oreDicts.isEmpty())
             return false;
 
@@ -105,7 +108,8 @@ public class OreDictExprFilter {
     }
 
     public static boolean matchesOreDict(List<MatchRule> rules, FluidStack stack) {
-        Set<String> oreDicts = stack.getFluid().defaultFluidState().getTags().map(TagKey::location).map(ResourceLocation::getPath).collect(Collectors.toSet());
+        Set<String> oreDicts = stack.getFluid().defaultFluidState().getTags().map(TagKey::location)
+                .map(ResourceLocation::getPath).collect(Collectors.toSet());
         if (oreDicts.size() == 0)
             return false;
 
@@ -243,6 +247,7 @@ public class OreDictExprFilter {
     }
 
     public static class MatchRule {
+
         public final MatchLogic logic;
         public final String expression;
         private final List<MatchRule> subRules;
@@ -289,6 +294,10 @@ public class OreDictExprFilter {
     }
 
     public enum MatchLogic {
-        OR, AND, XOR, NOT, ANY
+        OR,
+        AND,
+        XOR,
+        NOT,
+        ANY
     }
 }

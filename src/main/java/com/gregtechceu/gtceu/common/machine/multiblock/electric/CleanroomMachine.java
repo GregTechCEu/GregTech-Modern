@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -37,11 +35,11 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -57,18 +55,27 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.states;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CleanroomMachine extends WorkableElectricMultiblockMachine implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+public class CleanroomMachine extends WorkableElectricMultiblockMachine
+                              implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
+            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     public static final int CLEAN_AMOUNT_THRESHOLD = 90;
     public static final int MIN_CLEAN_AMOUNT = 0;
@@ -82,19 +89,20 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     private CleanroomType cleanroomType = null;
     @Persisted
     private int cleanAmount;
-    //runtime
-    @Getter @Nullable
+    // runtime
+    @Getter
+    @Nullable
     private EnergyContainerList inputEnergyContainers;
-    @Getter @Nullable
+    @Getter
+    @Nullable
     private Collection<ICleanroomReceiver> cleanroomReceivers;
-
 
     public CleanroomMachine(IMachineBlockEntity metaTileEntityId) {
         super(metaTileEntityId);
     }
 
     //////////////////////////////////////
-    //******    Initialization    ******//
+    // ****** Initialization ******//
     //////////////////////////////////////
 
     @Override
@@ -113,7 +121,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     }
 
     //////////////////////////////////////
-    //***    Multiblock LifeCycle    ***//
+    // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
 
     @Override
@@ -132,14 +140,16 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(null));
             this.cleanroomReceivers = null;
         }
-        Set<ICleanroomReceiver> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
+        Set<ICleanroomReceiver> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver",
+                Sets::newHashSet);
         this.cleanroomReceivers = ImmutableSet.copyOf(receivers);
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(this));
 
         // max progress is based on the dimensions of the structure: (x^3)-(x^2)
         // taller cleanrooms take longer than wider ones
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-        this.getRecipeLogic().setDuration((Math.max(100, ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1)))));
+        this.getRecipeLogic().setDuration((Math.max(100,
+                ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1)))));
     }
 
     @Override
@@ -174,7 +184,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                if (handler.getCapability() == EURecipeCapability.CAP &&
+                        handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
                 }
             }
@@ -252,7 +263,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
      * @param direction the direction to move
      * @return if a block is a valid wall block at pos moved in direction
      */
-    public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos, @NotNull Direction direction) {
+    public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
+                               @NotNull Direction direction) {
         return world.getBlockState(pos.move(direction)) == GTBlocks.PLASTCRETE.getDefaultState();
     }
 
@@ -262,8 +274,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
      * @param direction the direction to move
      * @return if a block is a valid floor block at pos moved in direction
      */
-    public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos, @NotNull Direction direction) {
-        return isBlockEdge(world, pos, direction) || world.getBlockState(pos) == GTBlocks.CLEANROOM_GLASS.getDefaultState();
+    public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
+                                @NotNull Direction direction) {
+        return isBlockEdge(world, pos, direction) ||
+                world.getBlockState(pos) == GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
     @NotNull
@@ -289,7 +303,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         // build each row of the structure
         StringBuilder borderBuilder = new StringBuilder();     // BBBBB
         StringBuilder wallBuilder = new StringBuilder();       // BXXXB
-        StringBuilder insideBuilder = new StringBuilder();     // X   X
+        StringBuilder insideBuilder = new StringBuilder();     // X X
         StringBuilder roofBuilder = new StringBuilder();       // BFFFB
         StringBuilder controllerBuilder = new StringBuilder(); // BFSFB
         StringBuilder centerBuilder = new StringBuilder();     // BXKXB
@@ -344,12 +358,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         wall[0] = borderBuilder.toString();
         wall[wall.length - 1] = borderBuilder.toString();
 
-        String[] slice = new String[hDist + 1]; // "BXXXB", "X   X", "X   X", "X   X", "BFFFB"
+        String[] slice = new String[hDist + 1]; // "BXXXB", "X X", "X X", "X X", "BFFFB"
         Arrays.fill(slice, insideBuilder.toString());
         slice[0] = wallBuilder.toString();
         slice[slice.length - 1] = roofBuilder.toString();
 
-        String[] center = Arrays.copyOf(slice, slice.length); // "BXKXB", "X   X", "X   X", "X   X", "BFSFB"
+        String[] center = Arrays.copyOf(slice, slice.length); // "BXKXB", "X X", "X X", "X X", "BFSFB"
         if (this.getFrontFacing() == Direction.NORTH || this.getFrontFacing() == Direction.SOUTH) {
             center[0] = centerBuilder.reverse().toString();
             center[center.length - 1] = controllerBuilder.reverse().toString();
@@ -374,7 +388,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
                 .where('X', wallPredicate.or(basePredicate)
                         .or(doorPredicate().setMaxGlobalLimited(8))
                         .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30)))
-                .where('K', wallPredicate) // the block beneath the controller must only be a casing for structure dimension checks
+                .where('K', wallPredicate) // the block beneath the controller must only be a casing for structure
+                                           // dimension checks
                 .where('F', Predicates.cleanroomFilters())
                 .where(' ', innerPredicate())
                 .build();
@@ -394,13 +409,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     @NotNull
     protected static TraceabilityPredicate doorPredicate() {
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock,
-                () -> new BlockInfo[]{new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))});
+                () -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
+                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER)) });
     }
 
     @NotNull
     protected TraceabilityPredicate innerPredicate() {
         return new TraceabilityPredicate(blockWorldState -> {
-            Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
+            Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
+                    Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
             if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
@@ -410,13 +427,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
                 }
             }
             if (blockEntity != null) {
-                var receiver = GTCapabilityHelper.getCleanroomReceiver(blockWorldState.getWorld(), blockWorldState.getPos(), null);
+                var receiver = GTCapabilityHelper.getCleanroomReceiver(blockWorldState.getWorld(),
+                        blockWorldState.getPos(), null);
                 if (receiver != null) {
                     receivers.add(receiver);
                 }
             }
             return true;
         }, null) {
+
             @Override
             public boolean isAny() {
                 return true;
@@ -435,10 +454,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         if (metaTileEntity instanceof IMufflerMachine) return true;
         if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
         // todo: enable checks when these are added?
-//        if (metaTileEntity instanceof FuelMultiblockController) return true;
+        // if (metaTileEntity instanceof FuelMultiblockController) return true;
         if (metaTileEntity instanceof LargeMinerMachine) return true;
         if (metaTileEntity instanceof FluidDrillMachine) return true;
-//        if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
+        // if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
         if (metaTileEntity instanceof CokeOvenMachine) return true;
         if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;
         return metaTileEntity instanceof PrimitivePumpMachine;
@@ -469,14 +488,16 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
             }
 
             if (recipeLogic.isWaiting()) {
-                textList.add(Component.translatable("gtceu.multiblock.waiting").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                textList.add(Component.translatable("gtceu.multiblock.waiting")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
 
             if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
         } else {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip").withStyle(ChatFormatting.GRAY);
+            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                    .withStyle(ChatFormatting.GRAY);
             textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
                     .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
@@ -506,8 +527,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
-            return Collections.singletonList(Component.translatable(isClean() ? "gtceu.multiblock.cleanroom.clean_state" : "gtceu.multiblock.cleanroom.dirty_state"));
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
+                mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            return Collections.singletonList(Component.translatable(
+                    isClean() ? "gtceu.multiblock.cleanroom.clean_state" : "gtceu.multiblock.cleanroom.dirty_state"));
         }
         return new ArrayList<>();
     }
@@ -517,5 +540,4 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         if (inputEnergyContainers == null) return GTValues.LV;
         return inputEnergyContainers.getInputVoltage();
     }
-
 }

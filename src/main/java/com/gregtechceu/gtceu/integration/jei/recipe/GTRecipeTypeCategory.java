@@ -4,7 +4,16 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+
 import lombok.Getter;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -12,22 +21,17 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
-    public static final Function<GTRecipeType, RecipeType<GTRecipeWrapper>> TYPES = Util.memoize(recipeMap -> new RecipeType<>(recipeMap.registryName, GTRecipeWrapper.class));
+
+    public static final Function<GTRecipeType, RecipeType<GTRecipeWrapper>> TYPES = Util
+            .memoize(recipeMap -> new RecipeType<>(recipeMap.registryName, GTRecipeWrapper.class));
 
     private final GTRecipeType recipeType;
     @Getter
@@ -64,18 +68,18 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 if (gtRecipeType.getRecipeUI().isJEIVisible()) {
                     registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
-                        Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType)
-                            .stream()
-                            .map(GTRecipeWrapper::new)
-                            .collect(Collectors.toList()));
+                            Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType)
+                                    .stream()
+                                    .map(GTRecipeWrapper::new)
+                                    .collect(Collectors.toList()));
 
                     if (gtRecipeType.isScanner()) {
                         List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
                         if (!scannerRecipes.isEmpty()) {
                             registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
-                                scannerRecipes.stream()
-                                    .map(GTRecipeWrapper::new)
-                                    .collect(Collectors.toList()));
+                                    scannerRecipes.stream()
+                                            .map(GTRecipeWrapper::new)
+                                            .collect(Collectors.toList()));
                         }
                     }
                 }
@@ -87,9 +91,10 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
             for (MachineDefinition machine : GTRegistries.MACHINES) {
                 if (machine.getRecipeTypes() != null) {
-                    for (GTRecipeType type : machine.getRecipeTypes()){
+                    for (GTRecipeType type : machine.getRecipeTypes()) {
                         if (type == gtRecipeType) {
-                            registration.addRecipeCatalyst(machine.asStack(), GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
+                            registration.addRecipeCatalyst(machine.asStack(),
+                                    GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
                         }
                     }
                 }

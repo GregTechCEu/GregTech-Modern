@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.test;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.test.api.machine.trait.ParallelLogicTest;
 import com.gregtechceu.gtceu.test.api.machine.trait.RecipeLogicTest;
-import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
+
+import com.mojang.datafixers.util.Pair;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -15,6 +17,7 @@ import java.util.Comparator;
 import java.util.stream.Stream;
 
 public class GTGameTests {
+
     private static final Class<?>[] testHolders = {
             RecipeLogicTest.class,
             ParallelLogicTest.class
@@ -33,7 +36,8 @@ public class GTGameTests {
                 .map(method -> Pair.of(method, method.getAnnotation(GameTest.class)))
                 .map(method -> new TestFunction(
                         "gtceu",
-                         GTCEu.MOD_ID + "." + method.getFirst().getDeclaringClass().getSimpleName() + "." + method.getFirst().getName(),
+                        GTCEu.MOD_ID + "." + method.getFirst().getDeclaringClass().getSimpleName() + "." +
+                                method.getFirst().getName(),
                         method.getSecond().template(),
                         Rotation.NONE,
                         method.getSecond().timeoutTicks(),

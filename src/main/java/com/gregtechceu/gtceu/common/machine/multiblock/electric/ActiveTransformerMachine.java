@@ -15,8 +15,10 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+
 import net.minecraft.world.level.block.Block;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,8 +28,8 @@ import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
-public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine implements IControllable, IExplosionMachine {
-
+public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
+                                      implements IControllable, IExplosionMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -38,12 +40,14 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
 
-        this.converterSubscription = new ConditionalSubscriptionHandler(this, this::convertEnergyTick, this::isSubscriptionActive);
+        this.converterSubscription = new ConditionalSubscriptionHandler(this, this::convertEnergyTick,
+                this::isSubscriptionActive);
     }
 
     public void convertEnergyTick() {
-        if(isWorkingEnabled()){
-            getRecipeLogic().setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.SUSPEND);
+        if (isWorkingEnabled()) {
+            getRecipeLogic()
+                    .setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.SUSPEND);
         }
         if (isWorkingEnabled()) {
             long canDrain = powerInput.getEnergyStored();
@@ -62,7 +66,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         if (powerOutput.getEnergyStored() >= powerOutput.getEnergyCapacity()) return false;
 
         return true;
-
     }
 
     @Override
@@ -80,7 +83,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
                 var handlerIO = handler.getHandlerIO();
                 // If IO not compatible
                 if (io != IO.BOTH && handlerIO != IO.BOTH && io != handlerIO) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                if (handler.getCapability() == EURecipeCapability.CAP &&
+                        handler instanceof IEnergyContainer container) {
                     if (handlerIO == IO.IN) {
                         powerInput.add(container);
                     } else if (handlerIO == IO.OUT) {
@@ -124,7 +128,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     @Override
     public void onStructureInvalid() {
-        if((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers){
+        if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
+                !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();
@@ -136,10 +141,10 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     public static TraceabilityPredicate getHatchPredicates() {
         return abilities(PartAbility.INPUT_ENERGY).setPreviewCount(1)
-            .or(abilities(PartAbility.OUTPUT_ENERGY).setPreviewCount(2))
-            .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).setPreviewCount(1))
-            .or(abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY).setPreviewCount(1))
-            .or(abilities(PartAbility.INPUT_LASER).setPreviewCount(1))
-            .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
+                .or(abilities(PartAbility.OUTPUT_ENERGY).setPreviewCount(2))
+                .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).setPreviewCount(1))
+                .or(abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY).setPreviewCount(1))
+                .or(abilities(PartAbility.INPUT_LASER).setPreviewCount(1))
+                .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
     }
 }

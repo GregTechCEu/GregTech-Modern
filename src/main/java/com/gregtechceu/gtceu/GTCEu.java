@@ -5,16 +5,20 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mod(GTCEu.MOD_ID)
 public class GTCEu {
+
     public static final String MOD_ID = "gtceu";
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
@@ -38,7 +42,7 @@ public class GTCEu {
     }
 
     public static ResourceLocation appendId(String id) {
-        String[] strings = new String[]{"gtceu", id};
+        String[] strings = new String[] { "gtceu", id };
         int i = id.indexOf(':');
         if (i >= 0) {
             strings[1] = id.substring(i + 1);
@@ -62,7 +66,8 @@ public class GTCEu {
     }
 
     public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_SODIUM) || LDLib.isModLoaded(GTValues.MODID_RUBIDIUM) ||LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
+        return LDLib.isModLoaded(GTValues.MODID_SODIUM) || LDLib.isModLoaded(GTValues.MODID_RUBIDIUM) ||
+                LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
     }
 
     public static boolean isRebornEnergyLoaded() {

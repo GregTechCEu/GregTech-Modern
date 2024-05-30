@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
+
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 
@@ -12,12 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapIntersectionIngredient extends AbstractMapIngredient {
+
     protected IntersectionIngredient intersectionIngredient;
     protected List<Ingredient> ingredients;
 
     public MapIntersectionIngredient(IntersectionIngredient ingredient) {
         this.intersectionIngredient = ingredient;
-        this.ingredients = new ArrayList<>(((IntersectionIngredientAccessor)ingredient).getChildren());
+        this.ingredients = new ArrayList<>(((IntersectionIngredientAccessor) ingredient).getChildren());
         this.ingredients.sort(IngredientEquality.INGREDIENT_COMPARATOR);
     }
 
@@ -25,11 +27,11 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
     protected int hash() {
         int hash = 31;
         for (Ingredient ingredient : ingredients) {
-            for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
+            for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
                 if (value instanceof Ingredient.TagValue tagValue) {
-                    hash *= 31 * ((TagValueAccessor)tagValue).getTag().location().hashCode();
+                    hash *= 31 * ((TagValueAccessor) tagValue).getTag().location().hashCode();
                 } else {
-                    hash *= 31 * ((ItemValueAccessor)value).getItem().getItem().hashCode();
+                    hash *= 31 * ((ItemValueAccessor) value).getItem().getItem().hashCode();
                 }
             }
         }

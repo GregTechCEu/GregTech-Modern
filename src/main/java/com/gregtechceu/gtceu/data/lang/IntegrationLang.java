@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOres;
+
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class IntegrationLang {

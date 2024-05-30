@@ -1,28 +1,21 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.*;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
+
+import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -32,6 +25,7 @@ import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
 public class FluidVeinBuilderJS {
+
     private final ResourceLocation id;
     @Setter
     private int weight; // weight value for determining which vein will appear
@@ -57,7 +51,6 @@ public class FluidVeinBuilderJS {
         return minimumYield(min).maximumYield(max);
     }
 
-
     public FluidVeinBuilderJS addSpawnDimension(ResourceLocation... dimensions) {
         for (ResourceLocation dimension : dimensions) {
             this.dimensions.add(ResourceKey.create(Registries.DIMENSION, dimension));
@@ -69,8 +62,10 @@ public class FluidVeinBuilderJS {
         Registry<Biome> registry = GTRegistries.builtinRegistry().registry(Registries.BIOME).get();
         this.biomes.add(
                 new BiomeWeightModifier(() -> biomes.startsWith("#") ?
-                        registry.getOrCreateTag(TagKey.create(Registries.BIOME, new ResourceLocation(biomes.substring(1)))) :
-                        (HolderSet.direct(registry.getHolderOrThrow(ResourceKey.create(Registries.BIOME, new ResourceLocation(biomes))))),
+                        registry.getOrCreateTag(
+                                TagKey.create(Registries.BIOME, new ResourceLocation(biomes.substring(1)))) :
+                        (HolderSet.direct(registry
+                                .getHolderOrThrow(ResourceKey.create(Registries.BIOME, new ResourceLocation(biomes))))),
                         weight));
         return this;
     }
@@ -81,15 +76,17 @@ public class FluidVeinBuilderJS {
         for (String biome : biomes) {
             biomeKeys.add(biome.startsWith("#") ?
                     registry.getOrCreateTag(TagKey.create(Registries.BIOME, new ResourceLocation(biome.substring(1)))) :
-                    HolderSet.direct(registry.getHolderOrThrow(ResourceKey.create(Registries.BIOME, new ResourceLocation(biome))))
-            );
+                    HolderSet.direct(registry
+                            .getHolderOrThrow(ResourceKey.create(Registries.BIOME, new ResourceLocation(biome)))));
         }
-        this.biomes.add(new BiomeWeightModifier(() -> HolderSet.direct(biomeKeys.stream().flatMap(HolderSet::stream).toList()), weight));
+        this.biomes.add(new BiomeWeightModifier(
+                () -> HolderSet.direct(biomeKeys.stream().flatMap(HolderSet::stream).toList()), weight));
         return this;
     }
 
     @HideFromJS
     public BedrockFluidDefinition build() {
-        return new BedrockFluidDefinition(id, weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, fluid, biomes, dimensions);
+        return new BedrockFluidDefinition(id, weight, minimumYield, maximumYield, depletionAmount, depletionChance,
+                depletedYield, fluid, biomes, dimensions);
     }
 }

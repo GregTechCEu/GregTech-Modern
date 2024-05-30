@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import net.minecraft.network.FriendlyByteBuf;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.math.BigInteger;
 
@@ -11,7 +12,7 @@ import java.math.BigInteger;
  * @date 2022/06/22
  * @implNote SerializerBigInteger
  */
-public class SerializerBigInteger implements IContentSerializer<BigInteger>{
+public class SerializerBigInteger implements IContentSerializer<BigInteger> {
 
     public static SerializerBigInteger INSTANCE = new SerializerBigInteger();
 
@@ -53,5 +54,4 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger>{
     public BigInteger defaultValue() {
         return BigInteger.ZERO;
     }
-
 }

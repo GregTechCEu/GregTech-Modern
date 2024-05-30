@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public record MaterialStack(Material material, long amount) {
+
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialStack copy(long amount) {
@@ -76,5 +77,4 @@ public record MaterialStack(Material material, long amount) {
         }
         return string;
     }
-
 }

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
+
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;

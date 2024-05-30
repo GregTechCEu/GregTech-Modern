@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
+
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -17,7 +18,7 @@ public class FluidPipeNet extends PipeNet<FluidPipeProperties> {
     }
 
     /////////////////////////////////////
-    //***********    NBT    ***********//
+    // *********** NBT ***********//
     /////////////////////////////////////
 
     @Override
@@ -40,6 +41,7 @@ public class FluidPipeNet extends PipeNet<FluidPipeProperties> {
         boolean cryoProof = tagCompound.getBoolean("cryo_proof");
         boolean plasmaProof = tagCompound.getBoolean("plasma_proof");
         int channels = tagCompound.getInt("channels");
-        return new FluidPipeProperties(maxTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, channels);
+        return new FluidPipeProperties(maxTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof,
+                channels);
     }
 }

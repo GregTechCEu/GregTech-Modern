@@ -12,7 +12,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class PlatGroupMetalsRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         // Primary Chain
 
         // Platinum Group Sludge Production
@@ -71,16 +70,16 @@ public class PlatGroupMetalsRecipes {
         // MODIFY THIS RECIPE TO RE-BALANCE THE LINE
         //
         // Current Losses of Materials per recipe (update this if rebalanced):
-        // H:  Loses
-        // N:  Loses
-        // O:  Loses
+        // H: Loses
+        // N: Loses
+        // O: Loses
         // Cl: Perfectly Conserved
         //
         // If modified, this is how much 1 of each product will change the above losses by:
-        // Pt:    266L of Cl
+        // Pt: 266L of Cl
         //
         // These numbers are not correct:
-        // Pd:    200L of N, 600L of H
+        // Pd: 200L of N, 600L of H
         // Ru/Rh: 667L of O
         // Ir/Os: 620L of O, 100L of H
         //
@@ -96,7 +95,6 @@ public class PlatGroupMetalsRecipes {
                 .outputItems(dust, PlatinumSludgeResidue, 2)
                 .save(provider);
 
-
         // PLATINUM
 
         ELECTROLYZER_RECIPES.recipeBuilder("raw_platinum_separation").duration(100).EUt(VA[MV])
@@ -104,7 +102,6 @@ public class PlatGroupMetalsRecipes {
                 .outputItems(dust, Platinum)
                 .outputFluids(Chlorine.getFluid(800))
                 .save(provider);
-
 
         // PALLADIUM
 
@@ -114,7 +111,6 @@ public class PlatGroupMetalsRecipes {
                 .outputItems(dust, Palladium)
                 .outputItems(dust, AmmoniumChloride, 2)
                 .save(provider);
-
 
         // RHODIUM / RUTHENIUM
 
@@ -139,7 +135,6 @@ public class PlatGroupMetalsRecipes {
                 .outputItems(dust, Ruthenium)
                 .outputFluids(CarbonDioxide.getFluid(2000))
                 .save(provider);
-
 
         // OSMIUM / IRIDIUM
 

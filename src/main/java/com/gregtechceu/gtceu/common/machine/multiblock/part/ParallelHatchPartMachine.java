@@ -9,19 +9,21 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.util.Mth;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import java.util.function.Function;
-import java.util.function.IntSupplier;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine, IParallelHatch {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ParallelHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            ParallelHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     private static final int MIN_PARALLEL = 1;
 
     private final int maxParallel;

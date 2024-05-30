@@ -4,27 +4,32 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
-import lombok.Getter;
-import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
-import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 
+import lombok.Getter;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Function;
 
 public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
-    public static final Function<GTRecipeType, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util.memoize(recipeType -> CategoryIdentifier.of(recipeType.registryName));
+
+    public static final Function<GTRecipeType, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util
+            .memoize(recipeType -> CategoryIdentifier.of(recipeType.registryName));
 
     private final GTRecipeType recipeType;
     @Getter
@@ -76,14 +81,14 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
             for (MachineDefinition machine : GTRegistries.MACHINES) {
                 if (machine.getRecipeTypes() != null) {
-                    for (GTRecipeType type : machine.getRecipeTypes()){
+                    for (GTRecipeType type : machine.getRecipeTypes()) {
                         if (type == gtRecipeType) {
-                            registry.addWorkstations(GTRecipeTypeDisplayCategory.CATEGORIES.apply(gtRecipeType), EntryStacks.of(machine.asStack()));
+                            registry.addWorkstations(GTRecipeTypeDisplayCategory.CATEGORIES.apply(gtRecipeType),
+                                    EntryStacks.of(machine.asStack()));
                         }
                     }
                 }
             }
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.gui;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.world.entity.player.Inventory;
 
 /**
@@ -11,7 +12,9 @@ import net.minecraft.world.entity.player.Inventory;
  * @implNote UITemplate
  */
 public class UITemplate {
-    public static WidgetGroup bindPlayerInventory(Inventory inventoryPlayer, IGuiTexture imageLocation, int x, int y, boolean addHotbar) {
+
+    public static WidgetGroup bindPlayerInventory(Inventory inventoryPlayer, IGuiTexture imageLocation, int x, int y,
+                                                  boolean addHotbar) {
         WidgetGroup group = new WidgetGroup(x, y, 162, 54 + (addHotbar ? 22 : 0));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -29,5 +32,4 @@ public class UITemplate {
         }
         return group;
     }
-
 }

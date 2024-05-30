@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -26,9 +26,10 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -46,12 +47,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author h3tr
@@ -60,8 +64,11 @@ import java.util.function.BiFunction;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IControllable {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+public class BlockBreakerMachine extends TieredEnergyMachine
+                                 implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IControllable {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -102,12 +109,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         this.energyPerTick = GTValues.V[tier - 1];
         setOutputFacingItems(getFrontFacing().getOpposite());
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
-
     }
 
     public static float getEfficiencyMultiplier(int tier) {
         float efficiencyMultiplier = 1.0f - 0.2f * (tier - 1.0f);
-        //Clamp efficiencyMultiplier
+        // Clamp efficiencyMultiplier
         if (efficiencyMultiplier > 1.0f)
             efficiencyMultiplier = 1.0f;
         else if (efficiencyMultiplier < .1f)
@@ -117,7 +123,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
 
     @Override
@@ -179,11 +185,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //*********     Logic     **********//
+    // ********* Logic **********//
     //////////////////////////////////////
 
     public void updateBreakerSubscription() {
-        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() && isWorkingEnabled) {
+        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() &&
+                isWorkingEnabled) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
             blockBreakProgress = 0;
@@ -246,7 +253,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     private List<ItemStack> tryDestroyBlockAndGetDrops(BlockPos pos) {
-        List<ItemStack> drops = Block.getDrops(getLevel().getBlockState(pos), (ServerLevel) getLevel(), pos, null, null, ItemStack.EMPTY);
+        List<ItemStack> drops = Block.getDrops(getLevel().getBlockState(pos), (ServerLevel) getLevel(), pos, null, null,
+                ItemStack.EMPTY);
         getLevel().destroyBlock(pos, false);
         return drops;
     }
@@ -271,7 +279,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //*******     Auto Output    *******//
+    // ******* Auto Output *******//
     //////////////////////////////////////
     @Override
     public void setAutoOutputItems(boolean allow) {
@@ -285,8 +293,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     @Override
-    public void setAllowInputFromOutputSideItems(boolean allow) {
-    }
+    public void setAllowInputFromOutputSideItems(boolean allow) {}
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
@@ -296,8 +303,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null
-                && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null)
+        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
+                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing),
+                        outputFacing.getOpposite()) != null)
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -346,36 +354,38 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-        var template = createTemplate(inventorySize).createDefault();
-        var energyBar = createEnergyBar().createDefault();
-        var batterySlot = createBatterySlot().createDefault();
-        var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-        batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-        energyGroup.addWidget(energyBar);
-        energyGroup.addWidget(batterySlot);
-        var group = new WidgetGroup(0, 0,
-            Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-            Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-        var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+                var template = createTemplate(inventorySize).createDefault();
+                var energyBar = createEnergyBar().createDefault();
+                var batterySlot = createBatterySlot().createDefault();
+                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
+                batterySlot.setSelfPosition(
+                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
+                energyGroup.addWidget(energyBar);
+                energyGroup.addWidget(batterySlot);
+                var group = new WidgetGroup(0, 0,
+                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
+                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
+                var size = group.getSize();
+                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
-        template.setSelfPosition(new Position(
-            (size.width - 4 - template.getSize().width) / 2 + 4,
-            (size.height - template.getSize().height) / 2));
+                template.setSelfPosition(new Position(
+                        (size.width - 4 - template.getSize().width) / 2 + 4,
+                        (size.height - template.getSize().height) / 2));
 
-        group.addWidget(energyGroup);
-        group.addWidget(template);
-        return group;
-    }, (template, machine) -> {
-        if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
-            createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
-            createEnergyBar().setupUI(template, blockBreakerMachine);
-            createBatterySlot().setupUI(template, blockBreakerMachine);
-        }
-    }));
+                group.addWidget(energyGroup);
+                group.addWidget(template);
+                return group;
+            }, (template, machine) -> {
+                if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
+                    createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
+                    createEnergyBar().setupUI(template, blockBreakerMachine);
+                    createBatterySlot().setupUI(template, blockBreakerMachine);
+                }
+            }));
 
     protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
@@ -386,7 +396,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
         });
     }
 
@@ -420,7 +431,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
@@ -437,10 +448,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     //////////////////////////////////////
-    //*******    Interactions   ********//
+    // ******* Interactions ********//
     //////////////////////////////////////
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
@@ -464,13 +476,14 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     }
 
     @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
             }
             return InteractionResult.CONSUME;
         }

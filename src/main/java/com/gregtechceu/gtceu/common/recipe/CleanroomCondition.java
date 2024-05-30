@@ -1,26 +1,29 @@
 package com.gregtechceu.gtceu.common.recipe;
 
-import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
-import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
+
+import com.google.gson.JsonObject;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class CleanroomCondition extends RecipeCondition {
+
     public final static CleanroomCondition INSTANCE = new CleanroomCondition();
 
     @Getter
@@ -33,7 +36,8 @@ public class CleanroomCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return cleanroom == null ? null : Component.translatable("gtceu.recipe.cleanroom", Component.translatable(cleanroom.getTranslationKey()));
+        return cleanroom == null ? null :
+                Component.translatable("gtceu.recipe.cleanroom", Component.translatable(cleanroom.getTranslationKey()));
     }
 
     @Override
@@ -62,7 +66,7 @@ public class CleanroomCondition extends RecipeCondition {
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        this. cleanroom = CleanroomType.getByNameOrDefault(GsonHelper.getAsString(config, "cleanroom", "cleanroom"));
+        this.cleanroom = CleanroomType.getByNameOrDefault(GsonHelper.getAsString(config, "cleanroom", "cleanroom"));
         return this;
     }
 

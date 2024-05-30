@@ -1,28 +1,32 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+
 import java.util.Arrays;
 import java.util.Collections;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -32,7 +36,9 @@ import java.util.Collections;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamLiquidBoilerMachine.class, SteamBoilerMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            SteamLiquidBoilerMachine.class, SteamBoilerMachine.MANAGED_FIELD_HOLDER);
     public static final Object2BooleanMap<Fluid> FUEL_CACHE = new Object2BooleanOpenHashMap<>();
 
     @Persisted
@@ -41,11 +47,12 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.fuelTank = createFuelTank(args).setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
-            if (isRemote())  return true;
+            if (isRemote()) return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
                 if (!list.isEmpty()) {
-                    return Arrays.stream(FluidRecipeCapability.CAP.of(list.get(0).content).getStacks()).anyMatch(stack -> stack.getFluid() == f);
+                    return Arrays.stream(FluidRecipeCapability.CAP.of(list.get(0).content).getStacks())
+                            .anyMatch(stack -> stack.getFluid() == f);
                 }
                 return false;
             });
@@ -53,7 +60,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -82,7 +89,8 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     protected void randomDisplayTick(RandomSource random, float x, float y, float z) {
         super.randomDisplayTick(random, x, y, z);
         if (random.nextFloat() < 0.3F) {
-            getLevel().addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y, z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+            getLevel().addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y, z + random.nextFloat(), 0.0F, 0.0F,
+                    0.0F);
         }
     }
 }

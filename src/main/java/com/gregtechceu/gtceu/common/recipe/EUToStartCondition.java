@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.gson.JsonObject;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition {
+
     public static final EUToStartCondition INSTANCE = new EUToStartCondition();
 
     private long euToStart;
