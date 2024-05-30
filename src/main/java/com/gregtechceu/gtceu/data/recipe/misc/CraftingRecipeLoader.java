@@ -121,10 +121,9 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "minecart_wheels_steel", STEEL_MINECART_WHEELS.asStack(), " h ",
                 "RSR", " w ", 'R', new UnificationEntry(ring, Steel), 'S', new UnificationEntry(rod, Steel));
 
-        // todo nanosaber
-        // VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC", "XEX", 'P',
-        // new UnificationEntry(plate, Platinum), 'I', new UnificationEntry(plate, Ruridit), 'C',
-        // CARBON_FIBER_PLATE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV), 'E', ENERGIUM_CRYSTAL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC",
+                "XEX", 'P', new UnificationEntry(plate, Platinum), 'I', new UnificationEntry(plate, Ruridit), 'C',
+                CARBON_FIBER_PLATE.asStack(), 'X', CustomTags.EV_CIRCUITS, 'E', ENERGIUM_CRYSTAL.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC",
                 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P',
