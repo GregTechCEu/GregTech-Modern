@@ -17,6 +17,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.ToggleKeyMapping;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,8 +35,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.naming.ldap.LdapContext;
 
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getMaxAoEDefinition;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.LAST_CRAFTING_USE_KEY;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTOmniToolItem extends GTToolItem implements IGTTool {
@@ -74,10 +77,19 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (entity instanceof Player player && KeyBind.QUARK_TOOL_MODE_SWITCH.isKeyDown(player)){
+        CompoundTag data = stack.getOrCreateTag();
+        byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
+
+        if (entity instanceof Player player && KeyBind.QUARK_TOOL_MODE_SWITCH.isKeyDown(player) && toggleTimer == 0){
+            toggleTimer = 20;
             var tagCompound = getBehaviorsTag(stack);
             tagCompound.putByte("OmniToolMode", (byte) ((tagCompound.getByte("OmniToolMode") + 1) % ToolModeSwitchBehavior.OmniModeType.values().length));
             player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode", ToolModeSwitchBehavior.OmniModeType.values()[tagCompound.getByte("OmniToolMode")].getName()), true);
+            setLastCraftingSoundTime(stack);
+        }
+        if (!level.isClientSide && toggleTimer > 0) {
+            --toggleTimer;
+            data.putByte("toggleTimer", toggleTimer);
         }
     }
 
@@ -98,10 +110,12 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool {
     public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
         CompoundTag tag = getBehaviorsTag(holder.getHeld());
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
-        return new ModularUI(450, 300, holder, entityPlayer).background(GuiTextures.BACKGROUND)
-            .widget(new LabelWidget(6, 10, "FUCK"))
-            .widget(new LabelWidget(49, 10, "SHIT"))
-            .widget(new LabelWidget(79, 10, "PISS"))
+        return new ModularUI(140, 120, holder, entityPlayer).background(GuiTextures.BACKGROUND)
+            .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
+            .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
+            .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
+            .widget(new LabelWidget(6, 85, "item.gtceu.tool.treefeller.mode"))
+            .widget(new LabelWidget(6, 105, "item.gtceu.tool.scythe.mode"))
             .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
                 AoESymmetrical.increaseColumn(tag, defaultDefinition);
                 holder.markAsDirty();
