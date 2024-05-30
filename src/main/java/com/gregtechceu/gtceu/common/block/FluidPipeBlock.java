@@ -13,20 +13,27 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -148,12 +155,11 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                     int minTemperature = Integer.MAX_VALUE;
                     for (var tank : pipe.getFluidTanks()) {
                         FluidStack stack = tank.getFluid();
-                        net.minecraftforge.fluids.FluidStack forgeStack = FluidHelperImpl.toFluidStack(stack);
                         if (tank.getFluid() != null && tank.getFluid().getAmount() > 0) {
                             maxTemperature = Math.max(maxTemperature,
-                                    stack.getFluid().getFluidType().getTemperature(forgeStack));
+                                    stack.getFluid().getFluidType().getTemperature(stack));
                             minTemperature = Math.min(minTemperature,
-                                    stack.getFluid().getFluidType().getTemperature(forgeStack));
+                                    stack.getFluid().getFluidType().getTemperature(stack));
                         }
                     }
                     if (maxTemperature != Integer.MIN_VALUE) {
@@ -167,9 +173,8 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                     if (tank.getFluid() != null && tank.getFluid().getAmount() > 0) {
                         // Apply temperature damage for the pipe (single fluid pipes)
                         FluidStack stack = tank.getFluid();
-                        net.minecraftforge.fluids.FluidStack forgeStack = FluidHelperImpl.toFluidStack(stack);
                         EntityDamageUtil.applyTemperatureDamage(livingEntity,
-                                stack.getFluid().getFluidType().getTemperature(forgeStack), 1.0F, 20);
+                                stack.getFluid().getFluidType().getTemperature(stack), 1.0F, 20);
                     }
                 }
             }
