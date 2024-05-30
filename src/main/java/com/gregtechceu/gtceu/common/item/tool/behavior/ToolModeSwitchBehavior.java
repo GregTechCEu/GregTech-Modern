@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.nbt.CompoundTag;
@@ -65,6 +66,20 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         private final Component name;
 
         private ModeType(Component name) {
+            this.name = name;
+        }
+    }
+    public static enum OmniModeType {
+        DRILL(Component.translatable("gtceu.mode.drill")),
+        CUTTER(Component.translatable("gtceu.mode.cutter")),
+        WRENCH(Component.translatable("gtceu.mode.wrench")),
+        SCREWDRIVER(Component.translatable("gtceu.mode.screwdriver")),
+        BLADE(Component.translatable("gtceu.mode.blade"));
+
+        @Getter
+        private final Component name;
+
+        private OmniModeType(Component name) {
             this.name = name;
         }
     }

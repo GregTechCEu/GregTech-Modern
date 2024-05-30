@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.item.tool.behavior.*;
 
@@ -151,6 +153,22 @@ public class GTToolType {
             .sound(GTSoundEntries.WRENCH_TOOL)
             .symbol('w')
             .build();
+    public static final GTToolType QUARKTECH_OMNITOOL = GTToolType.builder("quarktech_omnitool")
+        //TODO: Custom Mode Swapping Behavior
+        .toolTag(TagUtil.createItemTag("tools/quarktech_omnitools", false))
+        .toolTag(TagUtil.createItemTag("tools/quarktech_omnitool", false))
+        .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
+        .harvestTag(TagUtil.createBlockTag("mineable/wire_cutter", false))
+        .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
+        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+        .harvestTag(TagUtil.createBlockTag("mineable/hoe", true))
+        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+        .toolStats(b -> b.blockBreaking().aoe(5, 5, 5)
+            .attackDamage(1.0F).attackSpeed(1.0F))
+        .sound(GTSoundEntries.QUARKTECH_TOOL)
+        .constructor(GTOmniToolItem::create)
+//        .modelLocation(GTItems.modelPredicate(GTCEu.id("omnitool"),ToolModeSwitchBehavior::getStoredPredicate))
+        .build();
     public static final GTToolType FILE = GTToolType.builder("file")
             .toolTag(TagUtil.createItemTag("tools/files", false))
             .toolStats(b -> b.crafting().damagePerCraftingAction(4)

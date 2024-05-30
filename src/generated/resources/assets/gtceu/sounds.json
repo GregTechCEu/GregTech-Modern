@@ -260,6 +260,15 @@
     ],
     "subtitle": "gtceu.subtitle.portal_opening"
   },
+  "quarktech_tool": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:quarktech_tool"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.quarktech_tool"
+  },
   "replicator": {
     "sounds": [
       {

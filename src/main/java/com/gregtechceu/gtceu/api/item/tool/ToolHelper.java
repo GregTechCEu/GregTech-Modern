@@ -523,6 +523,9 @@ public class ToolHelper {
     public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos,
                                              boolean playSound) {
         state = state == null ? world.getBlockState(pos) : state;
+        if (state.isAir()) {
+            return true;
+        }
         state.getBlock().playerWillDestroy(world, pos, state, player);
 
         boolean successful = world.removeBlock(pos, false);

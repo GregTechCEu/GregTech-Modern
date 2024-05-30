@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_quarktech_omnitool"
+  },
+  "items": [
+    "#forge:tools/quarktech_omnitools"
+  ],
+  "page": "gtceu:tools/quarktech_omnitool",
+  "position": [
+    -250,
+    250
+  ],
+  "section": "gtceu:tools"
+}

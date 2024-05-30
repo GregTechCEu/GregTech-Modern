@@ -208,6 +208,9 @@ public class ToolRecipeHandler {
             addToolRecipe(provider, material, GTToolType.WRENCH, false,
                     "PhP", " P ", " P ",
                     'P', plate);
+            addToolRecipe(provider, material, GTToolType.QUARKTECH_OMNITOOL, false,
+                "PhP", " P ", " P ",
+                'P', plate);
         }
 
         if (material.hasFlag(GENERATE_ROD)) {
