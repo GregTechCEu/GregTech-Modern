@@ -2,19 +2,20 @@ package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
+
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class NoOpFluidTransfer implements IFluidTransfer {
+
     public static final NoOpFluidTransfer INSTANCE = new NoOpFluidTransfer();
 
-    private NoOpFluidTransfer() {
-    }
+    private NoOpFluidTransfer() {}
 
     @Override
     public int getTanks() {
@@ -28,8 +29,7 @@ public class NoOpFluidTransfer implements IFluidTransfer {
     }
 
     @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-    }
+    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
 
     @Override
     public long getTankCapacity(int tank) {
@@ -69,7 +69,5 @@ public class NoOpFluidTransfer implements IFluidTransfer {
     }
 
     @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
-    }
+    public void restoreFromSnapshot(Object snapshot) {}
 }

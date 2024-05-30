@@ -11,24 +11,18 @@ jobs:
     env:
       GITHUB_ACTION_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
       GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2.4.2
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: build
 
@@ -36,12 +30,19 @@ jobs:
         id: var
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
-          echo version=$MESSAGE >> $GITHUB_OUTPUT
+          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
 
-      - name: release
+      - name: Release
+        id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            build/libs/!(*-@(dev|sources|javadoc)).jar
+
+      - name: Print Output
+        run: |
+          echo "Release tag: ${{ steps.release.outputs.github-tag }}"
+          echo "Release URL: ${{ steps.release.outputs.github-url }}"
+          echo "Released files: ${{ steps.release.outputs.github-files }}"

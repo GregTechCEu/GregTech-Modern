@@ -5,14 +5,15 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import lombok.val;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
+import lombok.val;
+
 import java.util.List;
 
 public interface IMufflerMachine extends IMultiPart {
@@ -27,7 +28,7 @@ public interface IMufflerMachine extends IMultiPart {
         return self().getLevel().getBlockState(frontPos).isAir();
     }
 
-     default void emitPollutionParticles() {
+    default void emitPollutionParticles() {
         var pos = self().getPos();
         var facing = self().getFrontFacing();
         float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.25F;
@@ -51,7 +52,6 @@ public interface IMufflerMachine extends IMultiPart {
                 yPos + GTValues.RNG.nextFloat() * 0.5F,
                 zPos + GTValues.RNG.nextFloat() * 0.5F,
                 xSpd, ySpd, zSpd);
-
     }
 
     @Override
@@ -72,7 +72,7 @@ public interface IMufflerMachine extends IMultiPart {
     }
 
     //////////////////////////////////////
-    //*******     FANCY GUI     ********//
+    // ******* FANCY GUI ********//
     //////////////////////////////////////
 
     @Override
@@ -84,7 +84,8 @@ public interface IMufflerMachine extends IMultiPart {
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed").setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 () -> !isFrontFaceFree(),
                 () -> null));
     }

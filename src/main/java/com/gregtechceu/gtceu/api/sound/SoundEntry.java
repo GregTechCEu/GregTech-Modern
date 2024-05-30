@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -13,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.google.gson.JsonObject;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -102,10 +103,10 @@ public abstract class SoundEntry {
     public abstract void playAt(Level world, double x, double y, double z, float volume, float pitch, boolean fade);
 
     @OnlyIn(Dist.CLIENT)
-    public AutoReleasedSound playAutoReleasedSound(BooleanSupplier predicate, BlockPos pos, boolean loop, int delay, float volume, float pitch) {
+    public AutoReleasedSound playAutoReleasedSound(BooleanSupplier predicate, BlockPos pos, boolean loop, int delay,
+                                                   float volume, float pitch) {
         var sound = new AutoReleasedSound(this, predicate, pos, loop, delay, volume, pitch);
         Minecraft.getInstance().getSoundManager().play(sound);
         return sound;
     }
-
 }

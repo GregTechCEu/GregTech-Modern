@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -17,20 +19,23 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ConverterMachine extends TieredEnergyMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
         super(holder, tier, args, amps);
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -46,25 +51,32 @@ public class ConverterMachine extends TieredEnergyMachine {
     }
 
     public ConverterTrait getConverterTrait() {
-        return (ConverterTrait)energyContainer;
+        return (ConverterTrait) energyContainer;
     }
 
     //////////////////////////////////////
-    //******      Interaction     ******//
+    // ****** Interaction ******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction facing, BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction facing,
+                                               BlockHitResult hitResult) {
         if (!isRemote()) {
             if (getConverterTrait().isFeToEu()) {
                 setFeToEu(false);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
-                        getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
-                        PlatformEnergyCompat.toNativeLong(getConverterTrait().getVoltage() * getConverterTrait().getAmps(), PlatformEnergyCompat.ratio(false))));
+                playerIn.sendSystemMessage(
+                        Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
+                                getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
+                                PlatformEnergyCompat.toNativeLong(
+                                        getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
+                                        PlatformEnergyCompat.ratio(false))));
             } else {
                 setFeToEu(true);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
-                        PlatformEnergyCompat.toNativeLong(getConverterTrait().getVoltage() * getConverterTrait().getAmps(), PlatformEnergyCompat.ratio(true)),
-                        getConverterTrait().getAmps(), getConverterTrait().getVoltage()));
+                playerIn.sendSystemMessage(
+                        Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
+                                PlatformEnergyCompat.toNativeLong(
+                                        getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
+                                        PlatformEnergyCompat.ratio(true)),
+                                getConverterTrait().getAmps(), getConverterTrait().getVoltage()));
             }
         }
         return InteractionResult.CONSUME;

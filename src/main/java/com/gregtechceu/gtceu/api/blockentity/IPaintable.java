@@ -10,6 +10,7 @@ public interface IPaintable {
     /**
      * Get painting color.
      * It's not the real color of this block.
+     * 
      * @return -1 - non painted.
      */
     int getPaintingColor();

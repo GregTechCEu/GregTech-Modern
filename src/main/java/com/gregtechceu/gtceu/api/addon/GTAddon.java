@@ -1,4 +1,3 @@
 package com.gregtechceu.gtceu.api.addon;
 
-public @interface GTAddon {
-}
+public @interface GTAddon {}

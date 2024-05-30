@@ -34,5 +34,4 @@ public class ContentModifier {
         }
         return number.doubleValue() * multiplier + addition;
     }
-
 }

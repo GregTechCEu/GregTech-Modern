@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.data.loader;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -12,11 +8,11 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.script.ScriptType;
+
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -25,6 +21,13 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
 import net.minecraftforge.fml.ModLoader;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +35,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class OreDataLoader extends SimpleJsonResourceReloadListener {
+
     public static OreDataLoader INSTANCE;
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
     private static final String FOLDER = "gtceu/ore_veins";
@@ -43,7 +47,8 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
+    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager,
+                         ProfilerFiller profiler) {
         // Check condition in cause of reload failing which makes the registry not freeze.
         if (GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.unfreeze();
@@ -58,11 +63,12 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         }
 
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        for(Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
+        for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
 
             try {
-                GTOreDefinition ore = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                GTOreDefinition ore = fromJson(location,
+                        GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (ore == null) {
                     LOGGER.info("Skipping loading ore vein {} as it's serializer returned null", location);
                 } else if (ore.veinGenerator() instanceof NoopVeinGenerator) {
@@ -83,6 +89,8 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         if (!GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.freeze();
         }
+
+        GTNetwork.NETWORK.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
     }
 
     public static void buildVeinGenerator() {
@@ -105,6 +113,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
      * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+
         public static void fireKJSEvent() {
             GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
         }

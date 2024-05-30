@@ -3,15 +3,18 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +26,7 @@ import java.util.List;
  * @implNote ThermalFluidStats
  */
 public class ThermalFluidStats implements IItemComponent, IComponentCapability, IAddInformation {
+
     public final int capacity;
     public final int maxFluidTemperature;
     public final boolean gasProof;
@@ -31,7 +35,8 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     public final boolean plasmaProof;
     public final boolean allowPartialFill;
 
-    protected ThermalFluidStats(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
+    protected ThermalFluidStats(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof,
+                                boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
         this.capacity = capacity;
         this.maxFluidTemperature = maxFluidTemperature;
         this.gasProof = gasProof;
@@ -41,8 +46,10 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         this.allowPartialFill = allowPartialFill;
     }
 
-    public static ThermalFluidStats create(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
-        return new ThermalFluidStats(capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof, allowPartialFill);
+    public static ThermalFluidStats create(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof,
+                                           boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
+        return new ThermalFluidStats(capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof,
+                allowPartialFill);
     }
 
     @Override
@@ -50,19 +57,23 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
                 if (allowPartialFill) {
-                    return new ThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof);
+                    return new ThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
+                            acidProof, cryoProof, plasmaProof);
                 }
-                return new SimpleThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof);
+                return new SimpleThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
+                        acidProof, cryoProof, plasmaProof);
             }));
         }
         return LazyOptional.empty();
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         if (stack.hasTag()) {
             FluidStack tank = FluidTransferHelper.getFluidContained(stack);
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(), tank.getAmount()));
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
+                    tank.getAmount()));
         }
     }
 }

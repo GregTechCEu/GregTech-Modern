@@ -10,6 +10,7 @@ import net.minecraftforge.common.crafting.StrictNBTIngredient;
  * @implNote NBTIngredient
  */
 public class NBTIngredient {
+
     public static Ingredient createNBTIngredient(ItemStack itemStack) {
         return StrictNBTIngredient.of(itemStack);
     }

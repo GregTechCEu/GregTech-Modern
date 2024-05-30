@@ -17,32 +17,39 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
-import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.gregtechceu.gtceu.utils.ResearchManager;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DataAccessHatchMachine extends TieredPartMachine implements IMachineModifyDrops, IDataAccessHatch, IDataInfoProvider {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+public class DataAccessHatchMachine extends TieredPartMachine
+                                    implements IMachineModifyDrops, IDataAccessHatch, IDataInfoProvider {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     private final Set<GTRecipe> recipes;
     @Getter
@@ -70,10 +77,11 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
             @NotNull
             @Override
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                var controller = DataAccessHatchMachine.this.getControllers().isEmpty() ? null : DataAccessHatchMachine.this.getControllers().get(0);
+                var controller = DataAccessHatchMachine.this.getControllers().isEmpty() ? null :
+                        DataAccessHatchMachine.this.getControllers().get(0);
                 boolean isDataBank = controller instanceof DataBankMachine;
                 if (ResearchManager.isStackDataItem(stack, isDataBank) &&
-                    ResearchManager.hasResearchTag(stack)) {
+                        ResearchManager.hasResearchTag(stack)) {
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
@@ -86,13 +94,13 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
         int rowSize = (int) Math.sqrt(getInventorySize());
         int xOffset = 18 * rowSize / 2;
         WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
-        
+
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 group.addWidget(new SlotWidget(importItems, index,
-                    rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-                    .setBackgroundTexture(GuiTextures.SLOT));
+                        rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
+                        .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
         return group;
@@ -137,7 +145,8 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
     @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_RECIPE_INFO) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
+                mode == PortableScannerBehavior.DisplayMode.SHOW_RECIPE_INFO) {
             if (recipes.isEmpty())
                 return Collections.emptyList();
             List<Component> list = new ArrayList<>();
@@ -146,7 +155,8 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
             list.add(Component.empty());
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
             for (GTRecipe recipe : recipes) {
-                ItemStack stack = ItemRecipeCapability.CAP.of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                ItemStack stack = ItemRecipeCapability.CAP
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
                     list.add(Component.translatable("behavior.data_item.assemblyline.data", stack.getDisplayName()));

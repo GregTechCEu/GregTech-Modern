@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
+
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -35,14 +37,15 @@ public interface IUICover extends IUIHolder {
     }
 
     @Override
-    default ModularUI createUI(Player entityPlayer){
+    default ModularUI createUI(Player entityPlayer) {
         var widget = createUIWidget();
         var size = widget.getSize();
         widget.setSelfPosition(new Position((176 - size.width) / 2, 0));
         return new ModularUI(176, size.height + 82, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(widget)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),  GuiTextures.SLOT, 7, size.height, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, size.height,
+                        true));
     }
 
     Widget createUIWidget();

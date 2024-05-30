@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ public final class DummyCleanroom implements ICleanroomProvider {
 
     /**
      * Create a Dummy Cleanroom that provides specific types
+     * 
      * @param types the types to provide
      */
     @NotNull
@@ -40,10 +42,8 @@ public final class DummyCleanroom implements ICleanroomProvider {
         return true;
     }
 
-
     @Override
     public Set<CleanroomType> getTypes() {
         return allowsAllTypes ? CleanroomType.getAllTypes() : new HashSet<>(allowedTypes);
     }
-
 }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import com.lowdragmc.lowdraglib.Platform;
 
 import java.util.*;
@@ -10,8 +11,7 @@ public class MaterialProperties {
 
     private static final Set<PropertyKey<?>> baseTypes = new HashSet<>(Arrays.asList(
             PropertyKey.FLUID, PropertyKey.DUST,
-            PropertyKey.INGOT, PropertyKey.GEM, PropertyKey.EMPTY
-    ));
+            PropertyKey.INGOT, PropertyKey.GEM, PropertyKey.EMPTY));
 
     @SuppressWarnings("unused")
     public static void addBaseType(PropertyKey<?> baseTypeKey) {
@@ -45,6 +45,14 @@ public class MaterialProperties {
         propertyMap.remove(PropertyKey.EMPTY);
     }
 
+    public <T extends IMaterialProperty<T>> void removeProperty(PropertyKey<T> property) {
+        if (!hasProperty(property))
+            throw new IllegalArgumentException("Material Property " + property.toString() + " not present!");
+        propertyMap.remove(property);
+        if (propertyMap.isEmpty())
+            propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
+    }
+
     public <T extends IMaterialProperty<T>> void ensureSet(PropertyKey<T> key, boolean verify) {
         if (!hasProperty(key)) {
             propertyMap.put(key, key.constructDefault());
@@ -70,7 +78,8 @@ public class MaterialProperties {
                     GTCEu.LOGGER.debug("Creating empty placeholder Material {}", material);
                 }
                 propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
-            } else throw new IllegalArgumentException("Material must have at least one of: " + baseTypes + " specified!");
+            } else
+                throw new IllegalArgumentException("Material must have at least one of: " + baseTypes + " specified!");
         }
     }
 

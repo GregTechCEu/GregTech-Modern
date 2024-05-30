@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,7 +78,8 @@ public class GrassPathBehavior implements IToolBehavior {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            BlockState newState = getFlattened(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)));
+            BlockState newState = getFlattened(level.getBlockState(blockPos),
+                    new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)));
             if (newState == null) {
                 continue;
             }
@@ -100,10 +103,12 @@ public class GrassPathBehavior implements IToolBehavior {
 
     public static Set<BlockPos> getPathConvertibleBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                                          Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, GrassPathBehavior.INSTANCE::isBlockPathConvertible);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult,
+                GrassPathBehavior.INSTANCE::isBlockPathConvertible);
     }
 
-    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
+    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos,
+                                             UseOnContext context) {
         if (level.getBlockState(pos.above()).isAir()) {
             BlockState state = level.getBlockState(pos);
             BlockState newState = state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
@@ -117,7 +122,8 @@ public class GrassPathBehavior implements IToolBehavior {
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable Level Level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level Level, @NotNull List<Component> tooltip,
+                               @NotNull TooltipFlag flag) {
         tooltip.add(Component.translatable("item.gtceu.tool.behavior.grass_path"));
     }
 }

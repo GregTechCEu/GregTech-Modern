@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
-import com.google.common.collect.Multimaps;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -38,22 +37,18 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
-import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.RegistrateProvider;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -68,10 +63,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
 
+import com.google.common.collect.Multimaps;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.providers.RegistrateProvider;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommonProxy {
+
     public CommonProxy() {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -85,6 +86,8 @@ public class CommonProxy {
 
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
+        GTCommandArguments.init(eventBus);
+        GTMobEffects.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
@@ -121,7 +124,6 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
-        GTOreVeinWidget.init();
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
@@ -130,23 +132,26 @@ public class CommonProxy {
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getRegistries().forEach(registry -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor)registry.getRegistrate();
+            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registry.getRegistrate();
             if (accessor.getDoDatagen().get()) {
-                //noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens()).get(ProviderType.LANG);
+                // noinspection UnstableApiUsage
+                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
+                        .get(ProviderType.LANG);
                 if (providers.isEmpty()) {
-                    providers.add((provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
+                    providers.add(
+                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
                 } else {
-                    providers.add(0, (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
+                    providers.add(0,
+                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
                 }
             }
 
             registry.getRegistrate()
-                .registerEventListeners(ModList.get().getModContainerById(registry.getModid())
-                    .filter(FMLModContainer.class::isInstance)
-                    .map(FMLModContainer.class::cast)
-                    .map(FMLModContainer::getEventBus)
-                    .orElse(FMLJavaModLoadingContext.get().getModEventBus()));
+                    .registerEventListeners(ModList.get().getModContainerById(registry.getModid())
+                            .filter(FMLModContainer.class::isInstance)
+                            .map(FMLModContainer.class::cast)
+                            .map(FMLModContainer::getEventBus)
+                            .orElse(FMLJavaModLoadingContext.get().getModEventBus()));
         });
 
         WorldGenLayers.registerAll();
@@ -168,8 +173,8 @@ public class CommonProxy {
         GTCEu.LOGGER.info("Registering GTCEu Materials");
         GTMaterials.init();
         MaterialRegistryManager.getInstance()
-            .getRegistry(GTCEu.MOD_ID)
-            .setFallbackMaterial(GTMaterials.Aluminium);
+                .getRegistry(GTCEu.MOD_ID)
+                .setFallbackMaterial(GTMaterials.Aluminium);
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
@@ -234,10 +239,9 @@ public class CommonProxy {
             GTDynamicResourcePack.clearClient();
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_assets",
-                event.getPackType(),
-                Pack.Position.BOTTOM,
-                GTDynamicResourcePack::new)
-            );
+                    event.getPackType(),
+                    Pack.Position.BOTTOM,
+                    GTDynamicResourcePack::new));
         } else {
             // Clear old data
             GTDynamicDataPack.clearServer();
@@ -251,14 +255,14 @@ public class CommonProxy {
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
-                event.getPackType(),
-                Pack.Position.BOTTOM,
-                GTDynamicDataPack::new)
-            );
+                    event.getPackType(),
+                    Pack.Position.BOTTOM,
+                    GTDynamicDataPack::new));
         }
     }
 
     public static final class KJSEventWrapper {
+
         public static void materialRegistry() {
             GTRegistryInfo.registerFor(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).getRegistryName());
         }

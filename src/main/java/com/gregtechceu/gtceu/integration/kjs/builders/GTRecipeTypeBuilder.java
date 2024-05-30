@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -14,18 +15,21 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
+
     public transient String name, category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
@@ -68,8 +72,10 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     }
 
     public GTRecipeTypeBuilder setMaxIOSize(int maxInputs, int maxOutputs, int maxFluidInputs, int maxFluidOutputs) {
-        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs).setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
-                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxOutputs).setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
+        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs)
+                .setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
+                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxOutputs)
+                .setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
     }
 
     public GTRecipeTypeBuilder setEUIO(IO io) {
@@ -100,16 +106,19 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     }
 
     public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
-        return this.setSlotOverlay(isOutput, isFluid, false, slotOverlay).setSlotOverlay(isOutput, isFluid, true, slotOverlay);
+        return this.setSlotOverlay(isOutput, isFluid, false, slotOverlay).setSlotOverlay(isOutput, isFluid, true,
+                slotOverlay);
     }
 
-    public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, IGuiTexture slotOverlay) {
+    public GTRecipeTypeBuilder setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast,
+                                              IGuiTexture slotOverlay) {
         this.slotOverlays.put((byte) ((isOutput ? 2 : 0) + (isFluid ? 1 : 0) + (isLast ? 4 : 0)), slotOverlay);
         return this;
     }
 
     public GTRecipeTypeBuilder setProgressBar(ResourceTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.progressBarTexture = new ProgressTexture(progressBar.getSubTexture(0, 0, 1, 0.5), progressBar.getSubTexture(0, 0.5, 1, 0.5)).setFillDirection(moveType);
+        this.progressBarTexture = new ProgressTexture(progressBar.getSubTexture(0, 0, 1, 0.5),
+                progressBar.getSubTexture(0, 0.5, 1, 0.5)).setFillDirection(moveType);
         return this;
     }
 

@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
 import com.gregtechceu.gtceu.utils.OverlayedFluidHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
+
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -24,14 +25,16 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -75,14 +78,16 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(FluidStack.create(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                        ingredients.add(new MapFluidIngredient(
+                                FluidStack.create(fluid, ingredient.getAmount(), ingredient.getNbt())));
                     }
                 }
             }
         } else if (obj instanceof FluidStack stack) {
             ingredients.add(new MapFluidIngredient(stack));
-            //noinspection deprecation
-            stack.getFluid().builtInRegistryHolder().tags().forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
+            // noinspection deprecation
+            stack.getFluid().builtInRegistryHolder().tags()
+                    .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
         }
 
         return ingredients;
@@ -142,19 +147,24 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         int maxMultiplier = multiplier;
 
         OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidTransferList(
-            Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP), Collections::emptyList)
-                .stream()
-                .filter(IFluidTransfer.class::isInstance)
-                .map(IFluidTransfer.class::cast)
-                .toList()
-        ));
+                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
+                        Collections::emptyList)
+                        .stream()
+                        .filter(IFluidTransfer.class::isInstance)
+                        .map(IFluidTransfer.class::cast)
+                        .toList()));
 
         while (minMultiplier != maxMultiplier) {
             overlayedFluidHandler.reset();
 
             long amountLeft = 0;
 
-            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream().map(FluidRecipeCapability.CAP::of).map(ingredient -> ingredient.getStacks()[0]).toList()) {
+            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP)
+                    .stream()
+                    .map(FluidRecipeCapability.CAP::of)
+                    .filter(ingredient -> !ingredient.isEmpty())
+                    .map(ingredient -> ingredient.getStacks()[0])
+                    .toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
@@ -183,11 +193,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
-        Map<FluidKey, Long> fluidStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
-            .stream()
-            .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance).map(FluidStack.class::cast).toList())
-            .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum, Object2LongLinkedOpenHashMap::new));
+        Map<FluidKey, Long> fluidStacks = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
+                        .map(FluidStack.class::cast).toList())
+                .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
+                        Object2LongLinkedOpenHashMap::new));
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe input fluids to account for duplicated fluids,
@@ -199,11 +213,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             long fluidAmount = fluidInput.getAmount();
             if (content.chance == 0.0f) {
                 notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
-                    (k, v) -> v + fluidAmount);
+                        (k, v) -> v + fluidAmount);
                 notConsumableMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
             } else {
                 fluidCountMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
-                    (k, v) -> v + fluidAmount);
+                        (k, v) -> v + fluidAmount);
                 fluidCountMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
             }
         }
@@ -273,14 +287,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
         return contents.stream().map(content -> content.content)
-            .map(this::of)
-            .map(FluidRecipeCapability::mapFluid)
-            .collect(Collectors.toList());
+                .map(this::of)
+                .map(FluidRecipeCapability::mapFluid)
+                .collect(Collectors.toList());
     }
 
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
-        //noinspection unchecked
+        // noinspection unchecked
         return new TagOrCycleFluidTransfer((List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>>) contents);
     }
 
@@ -322,7 +336,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 tank.setXEIChance(content.chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >= recipe.getOutputContents(this).size()) {
+                    if (index >=
+                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
@@ -346,7 +361,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         }
         if (!tags.isEmpty()) {
             return Either.left(tags);
-        }else {
+        } else {
             return Either.right(fluids);
         }
     }

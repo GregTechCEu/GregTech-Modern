@@ -19,5 +19,4 @@ public interface IConfigurableSlot {
     void setStock(GenericStack val);
 
     IConfigurableSlot copy();
-
 }

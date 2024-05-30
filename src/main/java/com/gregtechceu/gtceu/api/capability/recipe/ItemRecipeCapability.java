@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
@@ -28,12 +29,7 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -43,6 +39,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -71,7 +74,10 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public Ingredient copyWithModifier(Ingredient content, ContentModifier modifier) {
-        return content instanceof SizedIngredient sizedIngredient ? SizedIngredient.create(sizedIngredient.getInner(), modifier.apply(sizedIngredient.getAmount()).intValue()) : SizedIngredient.create(content, modifier.apply(1).intValue());
+        return content instanceof SizedIngredient sizedIngredient ?
+                SizedIngredient.create(sizedIngredient.getInner(),
+                        modifier.apply(sizedIngredient.getAmount()).intValue()) :
+                SizedIngredient.create(content, modifier.apply(1).intValue());
     }
 
     @Override
@@ -92,9 +98,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
                     ingredients.add(new MapIntersectionIngredient(intersection));
                 } else {
-                    for (Ingredient.Value value : ((IngredientAccessor)sized.getInner()).getValues()) {
+                    for (Ingredient.Value value : ((IngredientAccessor) sized.getInner()).getValues()) {
                         if (value instanceof Ingredient.TagValue tagValue) {
-                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
+                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
                         } else {
                             Collection<ItemStack> stacks = value.getItems();
                             for (ItemStack stack : stacks) {
@@ -106,9 +112,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             } else if (ingredient instanceof IntersectionIngredient intersection) {
                 ingredients.add(new MapIntersectionIngredient(intersection));
             } else {
-                for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
+                for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
-                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
+                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
                     } else {
                         Collection<ItemStack> stacks = value.getItems();
                         for (ItemStack stack : stacks) {
@@ -125,12 +131,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
             }
             if (stack.getShareTag() != null) {
-                ingredients.add(new MapItemStackPartialNBTIngredient(stack, PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
+                ingredients.add(new MapItemStackPartialNBTIngredient(stack,
+                        PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
                 Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
-                ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
+                ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(
+                        Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
             }
         }
         return ingredients;
@@ -158,11 +166,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 if (isEqual) continue;
                 if (ingredient instanceof IntCircuitIngredient) {
                     list.add(0, ingredient);
-                } else if (ingredient instanceof SizedIngredient sized && sized.getInner() instanceof IntCircuitIngredient) {
-                    list.add(0, ingredient);
-                } else {
-                    list.add(ingredient);
-                }
+                } else if (ingredient instanceof SizedIngredient sized &&
+                        sized.getInner() instanceof IntCircuitIngredient) {
+                            list.add(0, ingredient);
+                        } else {
+                            list.add(ingredient);
+                        }
             } else if (item instanceof ItemStack stack) {
                 boolean isEqual = false;
                 for (Object obj : list) {
@@ -196,20 +205,20 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         int maxMultiplier = multiplier;
 
         OverlayedItemHandler itemHandler = new OverlayedItemHandler(new ItemTransferList(
-            Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP), Collections::emptyList)
-                .stream()
-                .filter(IItemTransfer.class::isInstance)
-                .map(IItemTransfer.class::cast)
-                .toList()
-        ));
+                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP),
+                        Collections::emptyList)
+                        .stream()
+                        .filter(IItemTransfer.class::isInstance)
+                        .map(IItemTransfer.class::cast)
+                        .toList()));
 
-        Object2IntMap<ItemStack> recipeOutputs = GTHashMaps.fromItemStackCollection(recipe.getOutputContents(ItemRecipeCapability.CAP)
-            .stream()
-            .map(ItemRecipeCapability.CAP::of)
-            .filter(ingredient -> !ingredient.isEmpty())
-            .map(ingredient -> ingredient.getItems()[0])
-            .toList()
-        );
+        Object2IntMap<ItemStack> recipeOutputs = GTHashMaps
+                .fromItemStackCollection(recipe.getOutputContents(ItemRecipeCapability.CAP)
+                        .stream()
+                        .map(ItemRecipeCapability.CAP::of)
+                        .filter(ingredient -> !ingredient.isEmpty())
+                        .map(ingredient -> ingredient.getItems()[0])
+                        .toList());
 
         while (minMultiplier != maxMultiplier) {
             itemHandler.reset();
@@ -242,11 +251,16 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        Object2IntMap<ItemStack> ingredientStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
-            .stream()
-            .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance).map(ItemStack.class::cast).toList())
-            .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum, () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+        Object2IntMap<ItemStack> ingredientStacks = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .filter(handler -> !handler.isProxy())
+                .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
+                        .map(ItemStack.class::cast).toList())
+                .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
+                        () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -255,7 +269,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         Object2IntOpenHashMap<Ingredient> countableMap = new Object2IntOpenHashMap<>();
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
             Ingredient recipeIngredient = ItemRecipeCapability.CAP.of(content.content);
-            int ingredientCount = recipeIngredient instanceof SizedIngredient sizedIngredient ? sizedIngredient.getAmount() : 1;
+            int ingredientCount = recipeIngredient instanceof SizedIngredient sizedIngredient ?
+                    sizedIngredient.getAmount() : 1;
             if (content.chance == 0.0f) {
                 notConsumableMap.computeIfPresent(recipeIngredient, (k, v) -> v + ingredientCount);
                 notConsumableMap.putIfAbsent(recipeIngredient, ingredientCount);
@@ -327,9 +342,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
         var outputStacks = contents.stream().map(content -> content.content)
-            .map(this::of)
-            .map(ItemRecipeCapability::mapItem)
-            .collect(Collectors.toList());
+                .map(this::of)
+                .map(ItemRecipeCapability::mapItem)
+                .collect(Collectors.toList());
 
         List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
@@ -341,21 +356,24 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 if (researchData != null) break;
             }
             if (researchData != null) {
-                Collection<GTRecipe> possibleRecipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> possibleRecipes = researchData.getFirst()
+                        .getDataStickEntry(researchData.getSecond());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
-                        ItemStack researchItem = ItemRecipeCapability.CAP.of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        ItemStack researchItem = ItemRecipeCapability.CAP
+                                .of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
                         researchItem = researchItem.copy();
                         researchItem.setCount(1);
                         boolean didMatch = false;
                         for (Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> stacks : scannerPossibilities) {
                             for (ItemStack stack : stacks.map(
-                                tag -> tag
-                                    .stream()
-                                    .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
-                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.get())))
-                                    .collect(Collectors.toList()),
-                                Function.identity())) {
+                                    tag -> tag
+                                            .stream()
+                                            .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                            .flatMap(holders -> holders.stream()
+                                                    .map(holder -> new ItemStack(holder.get())))
+                                            .collect(Collectors.toList()),
+                                    Function.identity())) {
                                 if (ItemStack.isSameItem(stack, researchItem)) {
                                     didMatch = true;
                                     break;
@@ -379,8 +397,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
-        //noinspection unchecked
-        return new TagOrCycleItemStackTransfer((List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>>) contents);
+        // noinspection unchecked
+        return new TagOrCycleItemStackTransfer(
+                (List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>>) contents);
     }
 
     @NotNull
@@ -419,12 +438,15 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 // If in a recipe viewer and a research slot can be added, add it.
                 if (isXEI && recipeType.isHasResearchSlot() && index == items.getSlots()) {
                     if (ConfigHolder.INSTANCE.machines.enableResearch) {
-                        ResearchCondition condition = recipeHolder.conditions().stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+                        ResearchCondition condition = recipeHolder.conditions().stream()
+                                .filter(ResearchCondition.class::isInstance).findAny()
+                                .map(ResearchCondition.class::cast).orElse(null);
                         if (condition != null) {
                             List<ItemStack> dataItems = new ArrayList<>();
                             for (ResearchData.ResearchEntry entry : condition.data) {
                                 ItemStack dataStick = entry.getDataItem().copy();
-                                ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), recipeType);
+                                ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(),
+                                        recipeType);
                                 dataItems.add(dataStick);
                             }
                             CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
@@ -440,7 +462,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 slot.setXEIChance(content.chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >= recipe.getOutputContents(this).size()) {
+                    if (index >=
+                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
@@ -454,16 +477,18 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
             if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
-                List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+                List<Ingredient> children = ((IntersectionIngredientAccessor) intersection).getChildren();
                 if (children.isEmpty()) {
                     return Either.right(null);
                 }
                 var childEither = mapItem(children.get(0));
                 return Either.right(childEither.map(tags -> {
                     List<ItemStack> tagItems = tags.stream()
-                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
-                        .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
-                        .collect(Collectors.toList());
+                            .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
+                                    pair.getSecond()))
+                            .flatMap(pair -> pair.getFirst().flatMap(
+                                    tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                            .collect(Collectors.toList());
                     ListIterator<ItemStack> iterator = tagItems.listIterator();
                     while (iterator.hasNext()) {
                         var item = iterator.next();
@@ -491,21 +516,24 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     }
                     return items;
                 }));
-            } else if (((IngredientAccessor)sizedIngredient.getInner()).getValues().length > 0 && ((IngredientAccessor)sizedIngredient.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), amount)));
-            }
+            } else if (((IngredientAccessor) sizedIngredient.getInner()).getValues().length > 0 &&
+                    ((IngredientAccessor) sizedIngredient.getInner())
+                            .getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                                return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), amount)));
+                            }
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             // Map intersection ingredients to the items inside, as recipe viewers don't support them.
-            List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+            List<Ingredient> children = ((IntersectionIngredientAccessor) intersection).getChildren();
             if (children.isEmpty()) {
                 return Either.right(null);
             }
             var childEither = mapItem(children.get(0));
             return Either.right(childEither.map(tags -> {
                 List<ItemStack> tagItems = tags.stream()
-                    .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
-                    .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
-                    .collect(Collectors.toList());
+                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .flatMap(pair -> pair.getFirst().flatMap(
+                                tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                        .collect(Collectors.toList());
                 ListIterator<ItemStack> iterator = tagItems.listIterator();
                 while (iterator.hasNext()) {
                     var item = iterator.next();
@@ -531,9 +559,10 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
                 return items;
             }));
-        } else if (((IngredientAccessor)ingredient).getValues().length > 0 && ((IngredientAccessor)ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-            return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), 1)));
-        }
+        } else if (((IngredientAccessor) ingredient).getValues().length > 0 &&
+                ((IngredientAccessor) ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                    return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), 1)));
+                }
         return Either.right(Arrays.stream(ingredient.getItems()).toList());
     }
 }

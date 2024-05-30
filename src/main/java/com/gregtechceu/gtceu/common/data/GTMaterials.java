@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -11,19 +10,19 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-
 
 /**
  * Material Registration.
@@ -31,14 +30,14 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
  * All Material Builders should follow this general formatting:
  * <p>
  * material = new MaterialBuilder(id, name)
- * .ingot().fluid().ore()                <--- types
- * .color().iconSet()                    <--- appearance
- * .flags()                              <--- special generation
- * .element() / .components()            <--- composition
- * .toolStats()                          <---
- * .oreByProducts()                         | additional properties
- * ...                                   <---
- * .blastTemp()                          <--- blast temperature
+ * .ingot().fluid().ore() <--- types
+ * .color().iconSet() <--- appearance
+ * .flags() <--- special generation
+ * .element() / .components() <--- composition
+ * .toolStats() <---
+ * .oreByProducts() | additional properties
+ * ... <---
+ * .blastTemp() <--- blast temperature
  * .build();
  * <p>
  * Use defaults to your advantage! Some defaults:
@@ -49,8 +48,8 @@ public class GTMaterials {
 
     public static Material[] CHEMICAL_DYES;
     public static Material[] VOLTAGE_COMMON_MATERIALS;
-    public static void init() {
 
+    public static void init() {
         MarkerMaterials.register();
 
         ElementMaterials.register();
@@ -60,7 +59,7 @@ public class GTMaterials {
         SecondDegreeMaterials.register();
         HigherDegreeMaterials.register();
 
-        //Gregicality Multiblocks
+        // Gregicality Multiblocks
         GCyMMaterials.register();
 
         /*
@@ -68,7 +67,7 @@ public class GTMaterials {
          */
         MaterialFlagAddition.register();
 
-        CHEMICAL_DYES = new Material[]{
+        CHEMICAL_DYES = new Material[] {
                 DyeWhite, DyeOrange,
                 DyeMagenta, DyeLightBlue,
                 DyeYellow, DyeLime,
@@ -149,8 +148,10 @@ public class GTMaterials {
         block.setIgnored(Bone, Blocks.BONE_BLOCK);
         block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
         block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
-                Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
+        block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE,
+                Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
+                Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE,
+                Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
@@ -182,8 +183,10 @@ public class GTMaterials {
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
         toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));
-        toolHeadChainsaw.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4 + ring.materialAmount() * 2));
-        toolHeadWrench.addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
+        toolHeadChainsaw
+                .addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4 + ring.materialAmount() * 2));
+        toolHeadWrench
+                .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
 
         pipeTinyFluid.setIgnored(Wood);
         pipeHugeFluid.setIgnored(Wood);
@@ -501,7 +504,6 @@ public class GTMaterials {
     public static Material Tantalite;
     public static Material Coke;
 
-
     public static Material SolderingAlloy;
     public static Material Spessartine;
     public static Material Sphalerite;
@@ -589,6 +591,7 @@ public class GTMaterials {
     public static Material HydrofluoricAcid;
     public static Material NitricOxide;
     public static Material Iron3Chloride;
+    public static Material Iron2Chloride;
     public static Material UraniumHexafluoride;
     public static Material EnrichedUraniumHexafluoride;
     public static Material DepletedUraniumHexafluoride;
@@ -628,6 +631,29 @@ public class GTMaterials {
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
     public static Material Pyrochlore;
+    public static Material PotassiumHydroxide;
+    public static Material PotassiumIodide;
+    public static Material PotassiumFerrocyanide;
+    public static Material CalciumFerrocyanide;
+    public static Material CalciumHydroxide;
+    public static Material CalciumCarbonate;
+    public static Material PotassiumCyanide;
+    public static Material PotassiumCarbonate;
+    public static Material HydrogenCyanide;
+    public static Material FormicAcid;
+    public static Material PotassiumSulfate;
+    public static Material PrussianBlue;
+    public static Material Formaldehyde;
+    public static Material Glycolonitrile;
+    public static Material DiethylenetriaminePentaacetonitrile;
+    public static Material DiethylenetriaminepentaaceticAcid;
+    public static Material SodiumNitrite;
+
+    public static Material AcidicBromineSolution;
+    public static Material ConcentratedBromineSolution;
+    public static Material Iodide;
+    public static Material IodineSolution;
+    public static Material DiluteIodineSolution;
 
     /**
      * Organic chemistry
@@ -711,6 +737,11 @@ public class GTMaterials {
     public static Material PolyvinylButyral;
     public static Material Biphenyl;
     public static Material PolychlorinatedBiphenyl;
+    public static Material AceticAnhydride;
+    public static Material AminoPhenol;
+    public static Material Paracetamol;
+    public static Material AmmoniumFormate;
+    public static Material Formamide;
 
     /**
      * Not possible to determine exact Components
@@ -874,6 +905,7 @@ public class GTMaterials {
     public static Material Pitchblende;
     public static Material Monazite;
     public static Material Mirabilite;
+    public static Material ActivatedCarbon;
     public static Material Trona;
     public static Material Gypsum;
     public static Material Zeolite;
@@ -900,6 +932,13 @@ public class GTMaterials {
     public static Material SaltWater;
     public static Material Clay;
     public static Material Redstone;
+    public static Material Dichloroethane;
+    public static Material Diethylenetriamine;
+
+    public static Material RawBrine;
+    public static Material DebrominatedBrine;
+    public static Material BrominatedChlorineVapor;
+    public static Material AcidicBromineExhaust;
 
     /**
      * Third Degree Materials
@@ -920,6 +959,11 @@ public class GTMaterials {
     public static Material Fireclay;
     public static Material Diorite;
 
+    public static Material HotBrine;
+    public static Material HotChlorinatedBrominatedBrine;
+    public static Material HotDebrominatedBrine;
+    public static Material HotAlkalineDebrominatedBrine;
+
     /**
      * Fourth Degree Materials
      */
@@ -928,6 +972,7 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+    public static Material RadAway;
 
     /**
      * GCyM Materials
@@ -944,6 +989,4 @@ public class GTMaterials {
     public static Material TitaniumCarbide;
     public static Material TitaniumTungstenCarbide;
     public static Material HastelloyC276;
-
-
 }

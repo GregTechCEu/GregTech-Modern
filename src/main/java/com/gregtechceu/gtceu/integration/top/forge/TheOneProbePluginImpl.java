@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.top.forge;
 
 import com.gregtechceu.gtceu.integration.top.TheOneProbePlugin;
+
 import mcjty.theoneprobe.TheOneProbe;
 
 /**
@@ -9,6 +10,7 @@ import mcjty.theoneprobe.TheOneProbe;
  * @implNote TheOneProbePluginImpl
  */
 public class TheOneProbePluginImpl {
+
     public static void init() {
         TheOneProbePlugin.init(TheOneProbe.theOneProbeImp);
     }

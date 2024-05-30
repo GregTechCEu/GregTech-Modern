@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 
@@ -22,7 +23,6 @@ public class FluidKey {
     public FluidKey copy() {
         return new FluidKey(FluidStack.create(getFluid(), this.amount, tag));
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -9,6 +9,7 @@ import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 public record MaterialStackWrapper(Supplier<Material> material, long amount) {
+
     private static final Map<String, MaterialStackWrapper> PARSE_CACHE = new WeakHashMap<>();
 
     public static MaterialStackWrapper fromString(CharSequence str) {

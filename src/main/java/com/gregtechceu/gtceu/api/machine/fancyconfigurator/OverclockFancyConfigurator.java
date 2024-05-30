@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -13,6 +14,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -28,6 +30,7 @@ import java.util.function.Consumer;
  * @implNote OverclockFancyConfigurator
  */
 public class OverclockFancyConfigurator implements IFancyConfigurator {
+
     protected IOverclockMachine overclockMachine;
     // runtime
     protected int currentTier;
@@ -43,7 +46,8 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public IGuiTexture getIcon() {
-        return currentTier <= GTValues.UV ? GuiTextures.TIER[currentTier].copy().scale(1.2f) : new TextTexture(GTValues.VNF[this.currentTier]).setDropShadow(false);
+        return currentTier <= GTValues.UV ? GuiTextures.TIER[currentTier].copy().scale(1.2f) :
+                new TextTexture(GTValues.VNF[this.currentTier]).setDropShadow(false);
     }
 
     @Override
@@ -76,23 +80,28 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
     @Override
     public Widget createConfigurator() {
         return new WidgetGroup(0, 0, 120, 40) {
+
             final Map<Integer, WidgetGroup> lightGroups = new HashMap<>();
 
             @Override
             public void initWidget() {
                 super.initWidget();
                 setBackground(GuiTextures.BACKGROUND_INVERSE);
-                addWidget(new PredicatedButtonWidget(5, 5, 10, 20, new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), cd -> {
-                    if (!cd.isRemote) {
-                        overclockMachine.setOverclockTier(currentTier - 1);
-                    }
-                }, () -> currentTier > overclockMachine.getMinOverclockTier()));
-                addWidget(new ImageWidget(20, 5, 120 - 5 - 10 - 5 - 20, 20, () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME, new TextTexture(GTValues.VNF[currentTier]))));
-                addWidget(new PredicatedButtonWidget(120 -5 - 10, 5, 10, 20, new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), cd -> {
-                    if (!cd.isRemote) {
-                        overclockMachine.setOverclockTier(currentTier + 1);
-                    }
-                }, () -> currentTier < overclockMachine.getMaxOverclockTier()));
+                addWidget(new PredicatedButtonWidget(5, 5, 10, 20,
+                        new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), cd -> {
+                            if (!cd.isRemote) {
+                                overclockMachine.setOverclockTier(currentTier - 1);
+                            }
+                        }, () -> currentTier > overclockMachine.getMinOverclockTier()));
+                addWidget(new ImageWidget(20, 5, 120 - 5 - 10 - 5 - 20, 20,
+                        () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME,
+                                new TextTexture(GTValues.VNF[currentTier]))));
+                addWidget(new PredicatedButtonWidget(120 - 5 - 10, 5, 10, 20,
+                        new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), cd -> {
+                            if (!cd.isRemote) {
+                                overclockMachine.setOverclockTier(currentTier + 1);
+                            }
+                        }, () -> currentTier < overclockMachine.getMaxOverclockTier()));
             }
 
             @Override
@@ -121,7 +130,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
                 }
                 lightGroups.clear();
                 int x = 5;
-                for (int tier = min; tier <= max ; tier++) {
+                for (int tier = min; tier <= max; tier++) {
                     int finalTier = tier;
                     var lightGroup = new WidgetGroup(x, 27, 8, 8);
                     lightGroup.addWidget(new ButtonWidget(0, 0, 8, 8, null, cd -> {
@@ -129,7 +138,8 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
                             overclockMachine.setOverclockTier(finalTier);
                         }
                     }));
-                    lightGroup.addWidget(new ImageWidget(0, 0, 8, 8, () -> currentTier >= finalTier ? GuiTextures.LIGHT_ON : GuiTextures.LIGHT_OFF));
+                    lightGroup.addWidget(new ImageWidget(0, 0, 8, 8,
+                            () -> currentTier >= finalTier ? GuiTextures.LIGHT_ON : GuiTextures.LIGHT_OFF));
                     lightGroups.put(tier, lightGroup);
                     addWidget(lightGroup);
                     x += 10;
@@ -176,6 +186,9 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public List<Component> getTooltips() {
-        return List.of(getTitle(), Component.translatable("gtceu.gui.overclock.range", GTValues.VNF[overclockMachine.getMinOverclockTier()], GTValues.VNF[overclockMachine.getMaxOverclockTier()]));
+        return List.of(getTitle(),
+                Component.translatable("gtceu.gui.overclock.range",
+                        GTValues.VNF[overclockMachine.getMinOverclockTier()],
+                        GTValues.VNF[overclockMachine.getMaxOverclockTier()]));
     }
 }

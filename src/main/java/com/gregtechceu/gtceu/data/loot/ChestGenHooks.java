@@ -1,24 +1,16 @@
 package com.gregtechceu.gtceu.data.loot;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -35,6 +27,13 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,7 +70,7 @@ public final class ChestGenHooks {
                 }
 
                 try {
-                    LootPoolEntryContainer[] entries = ((LootPoolAccessor)mainPool).getEntries();
+                    LootPoolEntryContainer[] entries = ((LootPoolAccessor) mainPool).getEntries();
                     entries = ArrayUtils.add(entries, entry);
                     ((LootPoolAccessor) mainPool).setEntries(entries);
                 } catch (RuntimeException e) {
@@ -83,7 +82,8 @@ public final class ChestGenHooks {
         if (rollValues.containsKey(event.getName())) {
             NumberProvider rangeAdd = rollValues.get(event.getName());
             NumberProvider range = mainPool.getRolls();
-            //mainPool.setRolls(UniformGenerator.between(range.getMin() + rangeAdd.getMin(), range.getMax() + rangeAdd.getMax())); TODO additional rolls
+            // mainPool.setRolls(UniformGenerator.between(range.getMin() + rangeAdd.getMin(), range.getMax() +
+            // rangeAdd.getMax())); TODO additional rolls
         }
     }
 
@@ -132,7 +132,9 @@ public final class ChestGenHooks {
     }
 
     public static class RandomWeightLootFunction extends LootItemConditionalFunction implements LootItemFunction {
-        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
+
+        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE,
+                GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
 
         private final ItemStack stack;
         @Getter
@@ -172,28 +174,34 @@ public final class ChestGenHooks {
                 return itemStack;
             }
 
-            int count = Math.min(minAmount + context.getRandom().nextInt(maxAmount - minAmount + 1), stack.getMaxStackSize());
+            int count = Math.min(minAmount + context.getRandom().nextInt(maxAmount - minAmount + 1),
+                    stack.getMaxStackSize());
             itemStack.setCount(count);
             return itemStack;
         }
 
         public static class Serializer extends LootItemConditionalFunction.Serializer<RandomWeightLootFunction> {
+
             /**
              * Serialize the {@link SetItemCountFunction} by putting its data into the JsonObject.
              */
-            public void serialize(JsonObject json, RandomWeightLootFunction setItemCountFunction, JsonSerializationContext serializationContext) {
+            public void serialize(JsonObject json, RandomWeightLootFunction setItemCountFunction,
+                                  JsonSerializationContext serializationContext) {
                 super.serialize(json, setItemCountFunction, serializationContext);
                 json.add("min", serializationContext.serialize(setItemCountFunction.minAmount));
                 json.add("max", serializationContext.serialize(setItemCountFunction.maxAmount));
                 JsonObject stack = new JsonObject();
-                stack.addProperty("item", ForgeRegistries.ITEMS.getKey(setItemCountFunction.stack.getItem()).toString());
+                stack.addProperty("item",
+                        ForgeRegistries.ITEMS.getKey(setItemCountFunction.stack.getItem()).toString());
                 stack.addProperty("count", setItemCountFunction.stack.getCount());
                 if (setItemCountFunction.stack.hasTag())
                     stack.addProperty("nbt", setItemCountFunction.stack.getTag().toString());
                 json.add("stack", stack);
             }
 
-            public RandomWeightLootFunction deserialize(JsonObject object, JsonDeserializationContext deserializationContext, LootItemCondition[] conditions) {
+            public RandomWeightLootFunction deserialize(JsonObject object,
+                                                        JsonDeserializationContext deserializationContext,
+                                                        LootItemCondition[] conditions) {
                 ItemStack stack = CraftingHelper.getItemStack(object.getAsJsonObject("stack"), true);
                 int min = GsonHelper.getAsInt(object, "min");
                 int max = GsonHelper.getAsInt(object, "max");

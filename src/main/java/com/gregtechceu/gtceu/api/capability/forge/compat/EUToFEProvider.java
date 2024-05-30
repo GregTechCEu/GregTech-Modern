@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,11 +33,15 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
-        if (!ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative || capability != GTCapability.CAPABILITY_ENERGY_CONTAINER)
+        if (!ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative ||
+                capability != GTCapability.CAPABILITY_ENERGY_CONTAINER)
             return LazyOptional.empty();
 
         LazyOptional<IEnergyStorage> energyStorage = getUpvalueCapability(ForgeCapabilities.ENERGY, facing);
-        return energyStorage.isPresent() ? GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(capability, LazyOptional.of(() -> new GTEnergyWrapper(energyStorage.resolve().get()))) : LazyOptional.empty();
+        return energyStorage.isPresent() ?
+                GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(capability,
+                        LazyOptional.of(() -> new GTEnergyWrapper(energyStorage.resolve().get()))) :
+                LazyOptional.empty();
     }
 
     public class GTEnergyWrapper implements IEnergyContainer {
@@ -49,7 +54,6 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
         @Override
         public long acceptEnergyFromNetwork(Direction facing, long voltage, long amperage) {
-
             long receive = 0;
 
             // Try to use the internal buffer before consuming a new packet
@@ -156,9 +160,12 @@ public class EUToFEProvider extends CapabilityCompatProvider {
         }
 
         /**
-         * Most RF/FE cables blindly try to insert energy without checking if there is space, since the receiving IEnergyStorage should handle it.
-         * This simulates that behavior in most places by allowing our "is there space" checks to pass and letting the cable attempt to insert energy.
-         * If the wrapped TE actually cannot accept any more energy, the energy transfer will return 0 before any changes to our internal rf buffer.
+         * Most RF/FE cables blindly try to insert energy without checking if there is space, since the receiving
+         * IEnergyStorage should handle it.
+         * This simulates that behavior in most places by allowing our "is there space" checks to pass and letting the
+         * cable attempt to insert energy.
+         * If the wrapped TE actually cannot accept any more energy, the energy transfer will return 0 before any
+         * changes to our internal rf buffer.
          */
         @Override
         public long getEnergyCanBeInserted() {
@@ -175,7 +182,8 @@ public class EUToFEProvider extends CapabilityCompatProvider {
             long maxInput = energyStorage.insert(Integer.MAX_VALUE, true);
 
             if (maxInput == 0) return 0;
-            return GTValues.V[GTUtil.getTierByVoltage(PlatformEnergyCompat.toEu(maxInput, PlatformEnergyCompat.ratio(false)))];
+            return GTValues.V[GTUtil
+                    .getTierByVoltage(PlatformEnergyCompat.toEu(maxInput, PlatformEnergyCompat.ratio(false)))];
         }
 
         @Override

@@ -9,8 +9,10 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
+
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -28,6 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
+
     public ClientProxy() {
         super();
         init();

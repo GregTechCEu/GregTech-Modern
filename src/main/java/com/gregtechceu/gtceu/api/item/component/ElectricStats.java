@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +30,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IComponentCapability {
+public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle,
+                           IComponentCapability {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -51,7 +55,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
         if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
-            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
+            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability,
+                    LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
         }
         return LazyOptional.empty();
     }
@@ -65,7 +70,6 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         return 0;
     }
 
-
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
@@ -74,7 +78,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
                 String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
-                player.sendSystemMessage(Component.translatable(locale));
+                player.displayClientMessage(Component.translatable(locale), true);
                 setInDischargeMode(itemStack, !isInDischargeMode);
             }
             return InteractionResultHolder.success(itemStack);
@@ -129,7 +133,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
             addTotalChargeTooltip(tooltipComponents, electricItem.getMaxCharge(), electricItem.getTier());

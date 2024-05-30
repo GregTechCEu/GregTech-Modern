@@ -1,19 +1,22 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,19 +32,26 @@ import java.util.function.Consumer;
  */
 @Getter
 public class TabsWidget extends Widget {
+
     protected final Consumer<IFancyUIProvider> onTabClick;
     protected IFancyUIProvider mainTab;
     protected List<IFancyUIProvider> subTabs;
     @Nullable
     protected IFancyUIProvider selectedTab;
     @Setter
-    protected IGuiTexture leftButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), leftButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    protected IGuiTexture leftButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)),
+            leftButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON,
+                    Icons.LEFT.copy().setColor(0xffaaaaaa).scale(0.7f));
     @Setter
-    protected IGuiTexture rightButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), rightButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    protected IGuiTexture rightButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)),
+            rightButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON,
+                    Icons.RIGHT.copy().setColor(0xffaaaaaa).scale(0.7f));
     @Setter
-    protected IGuiTexture tabTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f, 0, 1 / 3f, 0.5f);
+    protected IGuiTexture tabTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f,
+            0, 1 / 3f, 0.5f);
     @Setter
-    protected IGuiTexture tabHoverTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f, 0.5f, 1 / 3f, 0.5f);
+    protected IGuiTexture tabHoverTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png")
+            .getSubTexture(1 / 3f, 0.5f, 1 / 3f, 0.5f);
     @Setter
     protected IGuiTexture tabPressedTexture = tabHoverTexture;
     @Getter
@@ -117,7 +127,8 @@ public class TabsWidget extends Widget {
                     onTabSwitch.accept(selectedTab, hoveredTab);
                 }
                 selectedTab = hoveredTab;
-                writeClientAction(0, buf -> buf.writeVarInt(selectedTab == mainTab ? -1 : subTabs.indexOf(selectedTab)));
+                writeClientAction(0,
+                        buf -> buf.writeVarInt(selectedTab == mainTab ? -1 : subTabs.indexOf(selectedTab)));
                 onTabClick.accept(selectedTab);
                 playButtonClickSound();
             }
@@ -163,7 +174,8 @@ public class TabsWidget extends Widget {
                 leftButtonTexture.draw(graphics, mouseX, mouseY, position.x + 8 + 24 + 4, position.y, 16, 24);
             }
             if (isHoverRightButton(mouseX, mouseY)) {
-                rightButtonHoverTexture.draw(graphics, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
+                rightButtonHoverTexture.draw(graphics, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16,
+                        24);
             } else {
                 rightButtonTexture.draw(graphics, mouseX, mouseY, position.x + size.width - 8 - 16, position.y, 16, 24);
             }
@@ -176,7 +188,8 @@ public class TabsWidget extends Widget {
             graphics.disableScissor();
         } else {
             for (int i = subTabs.size() - 1; i >= 0; i--) {
-                drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x + size.width - 8 - 24 * (subTabs.size() - i), position.y, 24, 24, hoveredTab);
+                drawTab(subTabs.get(i), graphics, mouseX, mouseY,
+                        position.x + size.width - 8 - 24 * (subTabs.size() - i), position.y, 24, 24, hoveredTab);
             }
         }
     }
@@ -186,7 +199,8 @@ public class TabsWidget extends Widget {
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         if (hoveredTab != null && gui != null && gui.getModularUIGui() != null) {
-            gui.getModularUIGui().setHoverTooltip(hoveredTab.getTabTooltips(), ItemStack.EMPTY, null, hoveredTab.getTabTooltipComponent());
+            gui.getModularUIGui().setHoverTooltip(hoveredTab.getTabTooltips(), ItemStack.EMPTY, null,
+                    hoveredTab.getTabTooltipComponent());
         }
         super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
     }
@@ -215,24 +229,24 @@ public class TabsWidget extends Widget {
             if (hasButton()) { // need a scrollable bar
                 var sx = position.x + 8 + 24 + 4 + 16;
                 if (isMouseOver(sx, position.y, getSubTabsWidth(), 24, mouseX, mouseY)) {
-                    var i = ((int)mouseX - sx + getOffset()) / 24;
+                    var i = ((int) mouseX - sx + getOffset()) / 24;
                     if (i < subTabs.size()) {
                         return subTabs.get(i);
                     }
                 }
             } else {
-                int i = (position.x + size.width - 8 - (int)mouseX) / 24;
+                int i = (position.x + size.width - 8 - (int) mouseX) / 24;
                 if (i < subTabs.size()) {
                     return subTabs.get(subTabs.size() - 1 - i);
                 }
             }
         }
         return null;
-
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTab(IFancyUIProvider tab, @NotNull GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, IFancyUIProvider hoveredTab) {
+    public void drawTab(IFancyUIProvider tab, @NotNull GuiGraphics graphics, int mouseX, int mouseY, int x, int y,
+                        int width, int height, IFancyUIProvider hoveredTab) {
         // render background
         if (tab == selectedTab) {
             tabPressedTexture.draw(graphics, mouseX, mouseY, x, y, width, height);

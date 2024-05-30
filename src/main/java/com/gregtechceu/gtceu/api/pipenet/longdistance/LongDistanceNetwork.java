@@ -1,13 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,9 +12,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,7 +153,8 @@ public class LongDistanceNetwork {
      */
     protected void mergePipeNet(LongDistanceNetwork network) {
         if (getPipeType() != network.getPipeType()) {
-            throw new IllegalStateException("Can't merge unequal pipe types, " + getPipeType().getName() + " and " + network.getPipeType().getName() + " !");
+            throw new IllegalStateException("Can't merge unequal pipe types, " + getPipeType().getName() + " and " +
+                    network.getPipeType().getName() + " !");
         }
         for (BlockPos pos : network.longDistancePipeBlocks) {
             this.world.putNetwork(pos, this);
@@ -252,9 +255,9 @@ public class LongDistanceNetwork {
                 continue;
             }
             if (endpoint != other &&
-                (other.isOutput() || other.isInput()) &&
-                other.isInput() != endpoint.isInput() &&
-                this.pipeType.satisfiesMinLength(endpoint, other)) {
+                    (other.isOutput() || other.isInput()) &&
+                    other.isInput() != endpoint.isInput() &&
+                    this.pipeType.satisfiesMinLength(endpoint, other)) {
                 // found valid endpoint with minimum distance
                 return i;
             }
@@ -263,9 +266,9 @@ public class LongDistanceNetwork {
     }
 
     public boolean isIOIndexInvalid() {
-        return (this.activeInputIndex >= 0 && this.activeInputIndex >= this.endpoints.size())
-                || (this.activeOutputIndex >= 0 && this.activeOutputIndex >= this.endpoints.size())
-                || this.activeInputIndex < 0 != this.activeOutputIndex < 0;
+        return (this.activeInputIndex >= 0 && this.activeInputIndex >= this.endpoints.size()) ||
+                (this.activeOutputIndex >= 0 && this.activeOutputIndex >= this.endpoints.size()) ||
+                this.activeInputIndex < 0 != this.activeOutputIndex < 0;
     }
 
     public ILDEndpoint getActiveInputIndex() {
@@ -327,7 +330,8 @@ public class LongDistanceNetwork {
 
         public static WorldData get(LevelAccessor level) {
             if (level instanceof ServerLevel serverLevel) {
-                return serverLevel.getDataStorage().computeIfAbsent((tag) -> WorldData.load(tag, serverLevel), () -> WorldData.create(serverLevel), "gtceu_long_dist_pipe");
+                return serverLevel.getDataStorage().computeIfAbsent((tag) -> WorldData.load(tag, serverLevel),
+                        () -> WorldData.create(serverLevel), "gtceu_long_dist_pipe");
             }
             return null;
         }

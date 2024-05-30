@@ -1,15 +1,17 @@
 # ChangeLog
 
-Version: 1.2.2.a
+Version: 1.2.3.a
 
 ### ADDITIONS:
-- added NO_ORE_SMELTING material flag for stopping ore/raw ore -> dust/ingot/gem smelting
+- Added in-world machine configuration using tools
+- Active Transformers now explode when they're being mined while transferring energy
+  - A new `harmlessActiveTransformers` config option was added to optionally disable this feature
 
 ### CHANGES:
 
 ### FIXES:
-- Fixed raw diamonds not being smeltable into diamonds, raw coal not being smeltable into coal
-- fixed rubber & treated wood slab tags
-- fixed addon turbine rotors using the wrong material
-- fixed hardWoodRecipes not applying to bamboo
-- fixed transformers not having enough input storage
+- Fixed steam miners not using steam
+- Fixed emerald/beryllium derivate toxicity
+- Increased performance for unification entry lookups in larger modpacks
+- Fixed steam ovens not parallelizing
+- Fixed bedrock ore veins not being registered

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import org.jetbrains.annotations.NotNull;
 
 public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {

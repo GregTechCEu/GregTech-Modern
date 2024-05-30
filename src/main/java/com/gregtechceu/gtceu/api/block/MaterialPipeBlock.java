@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,7 +27,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
+public abstract class MaterialPipeBlock<
+        PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType,
+        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>>
+                                       extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
 
     public final Material material;
     public final PipeBlockRenderer renderer;
@@ -41,8 +46,9 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     @OnlyIn(Dist.CLIENT)
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
-            if (blockState.getBlock() instanceof MaterialPipeBlock<?,?,?> block) {
-                if (blockPos != null && level != null && level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?,?> pipe && pipe.isPainted()) {
+            if (blockState.getBlock() instanceof MaterialPipeBlock<?, ?, ?> block) {
+                if (blockPos != null && level != null &&
+                        level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe && pipe.isPainted()) {
                     return pipe.getRealColor();
                 }
                 return block.tinted(blockState, level, blockPos, index);
@@ -51,7 +57,8 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
         };
     }
 
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
+    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
+                      @Nullable BlockPos blockPos, int index) {
         return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
     }
 
@@ -68,7 +75,8 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     @Override
     public NodeDataType createProperties(IPipeNode<PipeType, NodeDataType> pipeTile) {
         PipeType pipeType = pipeTile.getPipeType();
-        Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile.getPipeBlock()).material;
+        Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
+                .getPipeBlock()).material;
         if (pipeType == null || material == null) {
             return getFallbackType();
         }

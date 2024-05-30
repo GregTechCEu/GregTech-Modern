@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -15,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -43,12 +46,15 @@ public class SimpleCoverRenderer implements ICoverRenderer {
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
             register.accept(texture);
             emissiveTexture = new ResourceLocation(texture.getNamespace(), texture.getPath() + "_emissive");
-            if (ResourceHelper.isTextureExist(emissiveTexture)) register.accept(emissiveTexture); else emissiveTexture = null;
+            if (ResourceHelper.isTextureExist(emissiveTexture)) register.accept(emissiveTexture);
+            else emissiveTexture = null;
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState) {
+    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
+                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
+                            BlockAndTintGetter level, ModelState modelState) {
         if (side == coverBehavior.attachedSide && modelFacing != null) {
             quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
             if (emissiveTexture != null) {
@@ -56,5 +62,4 @@ public class SimpleCoverRenderer implements ICoverRenderer {
             }
         }
     }
-
 }

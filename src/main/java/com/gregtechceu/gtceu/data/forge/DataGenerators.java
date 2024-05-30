@@ -10,13 +10,11 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
-import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
+
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.worldgen.biome.BiomeData;
-import net.minecraft.world.level.biome.BiomeSources;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -44,13 +42,14 @@ public class DataGenerators {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             generator.addProvider(true, new DatapackBuiltinEntriesProvider(
-                packOutput, registries, new RegistrySetBuilder()
-                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
+                    packOutput, registries, new RegistrySetBuilder()
+                            .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
-                .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, registries)), set));
+                            .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
+                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                    set));
         }
     }
 }

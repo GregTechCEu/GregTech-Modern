@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
@@ -25,7 +26,6 @@ public class BatteryRecipes {
     }
 
     private static void standardBatteries(Consumer<FinishedRecipe> provider) {
-
         // Tantalum Battery (since it doesn't fit elsewhere)
         ASSEMBLER_RECIPES.recipeBuilder("tantalum_capacitor")
                 .inputItems(dust, Tantalum)
@@ -218,29 +218,41 @@ public class BatteryRecipes {
                 .outputItems(BATTERY_UV_NAQUADRIA)
                 .duration(300).EUt(VA[IV]).save(provider);
 
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_cadmium_battery").inputItems(BATTERY_LV_CADMIUM)
+                .outputItems(BATTERY_HULL_LV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_lithium_battery").inputItems(BATTERY_LV_LITHIUM)
+                .outputItems(BATTERY_HULL_LV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_sodium_battery").inputItems(BATTERY_LV_SODIUM)
+                .outputItems(BATTERY_HULL_LV).save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_cadmium_battery").inputItems(BATTERY_LV_CADMIUM).outputItems(BATTERY_HULL_LV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_lithium_battery").inputItems(BATTERY_LV_LITHIUM).outputItems(BATTERY_HULL_LV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_lv_sodium_battery").inputItems(BATTERY_LV_SODIUM).outputItems(BATTERY_HULL_LV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_cadmium_battery").inputItems(BATTERY_MV_CADMIUM)
+                .outputItems(BATTERY_HULL_MV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_lithium_battery").inputItems(BATTERY_MV_LITHIUM)
+                .outputItems(BATTERY_HULL_MV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_sodium_battery").inputItems(BATTERY_MV_SODIUM)
+                .outputItems(BATTERY_HULL_MV).save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_cadmium_battery").inputItems(BATTERY_MV_CADMIUM).outputItems(BATTERY_HULL_MV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_lithium_battery").inputItems(BATTERY_MV_LITHIUM).outputItems(BATTERY_HULL_MV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_mv_sodium_battery").inputItems(BATTERY_MV_SODIUM).outputItems(BATTERY_HULL_MV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_cadmium_battery").inputItems(BATTERY_HV_CADMIUM)
+                .outputItems(BATTERY_HULL_HV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_lithium_battery").inputItems(BATTERY_HV_LITHIUM)
+                .outputItems(BATTERY_HULL_HV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_sodium_battery").inputItems(BATTERY_HV_SODIUM)
+                .outputItems(BATTERY_HULL_HV).save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_cadmium_battery").inputItems(BATTERY_HV_CADMIUM).outputItems(BATTERY_HULL_HV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_lithium_battery").inputItems(BATTERY_HV_LITHIUM).outputItems(BATTERY_HULL_HV).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_hv_sodium_battery").inputItems(BATTERY_HV_SODIUM).outputItems(BATTERY_HULL_HV).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_ev_vanadium_battery").inputItems(BATTERY_EV_VANADIUM)
+                .outputItems(BATTERY_HULL_SMALL_VANADIUM).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_iv_vanadium_battery").inputItems(BATTERY_IV_VANADIUM)
+                .outputItems(BATTERY_HULL_MEDIUM_VANADIUM).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_luv_vanadium_battery").inputItems(BATTERY_LUV_VANADIUM)
+                .outputItems(BATTERY_HULL_LARGE_VANADIUM).save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_ev_vanadium_battery").inputItems(BATTERY_EV_VANADIUM).outputItems(BATTERY_HULL_SMALL_VANADIUM).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_iv_vanadium_battery").inputItems(BATTERY_IV_VANADIUM).outputItems(BATTERY_HULL_MEDIUM_VANADIUM).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_luv_vanadium_battery").inputItems(BATTERY_LUV_VANADIUM).outputItems(BATTERY_HULL_LARGE_VANADIUM).save(provider);
-
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_zpm_naquadria_battery").inputItems(BATTERY_ZPM_NAQUADRIA).outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_uv_naquadria_battery").inputItems(BATTERY_UV_NAQUADRIA).outputItems(BATTERY_HULL_LARGE_NAQUADRIA).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_zpm_naquadria_battery").inputItems(BATTERY_ZPM_NAQUADRIA)
+                .outputItems(BATTERY_HULL_MEDIUM_NAQUADRIA).save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_uv_naquadria_battery").inputItems(BATTERY_UV_NAQUADRIA)
+                .outputItems(BATTERY_HULL_LARGE_NAQUADRIA).save(provider);
     }
 
     private static void gemBatteries(Consumer<FinishedRecipe> provider) {
-
         // Energy Crystal
         MIXER_RECIPES.recipeBuilder("energium_dust")
                 .inputItems(dust, Redstone, 5)
@@ -424,7 +436,6 @@ public class BatteryRecipes {
     }
 
     private static void batteryBlocks(Consumer<FinishedRecipe> provider) {
-
         // Empty Tier I
         ASSEMBLER_RECIPES.recipeBuilder("empty_tier_1_battery")
                 .inputItems(frameGt, Ultimet)

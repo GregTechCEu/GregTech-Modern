@@ -8,11 +8,14 @@ import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +26,7 @@ import java.util.*;
  * Used to detect whether a machine has a certain capability.
  */
 public abstract class RecipeCapability<T> {
+
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;
@@ -31,7 +35,8 @@ public abstract class RecipeCapability<T> {
     public final int sortIndex;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex, IContentSerializer<T> serializer) {
+    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
+                               IContentSerializer<T> serializer) {
         this.name = name;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
@@ -51,7 +56,7 @@ public abstract class RecipeCapability<T> {
     /**
      * deep copy and modify the size attribute for those Content that have the size attribute.
      */
-    public T copyWithModifier(T content, ContentModifier modifier){
+    public T copyWithModifier(T content, ContentModifier modifier) {
         return copyInner(content);
     }
 
@@ -90,6 +95,7 @@ public abstract class RecipeCapability<T> {
 
     /**
      * Convert the passed object to a list of recipe lookup filters.
+     *
      * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
      * @return a list of recipe lookup filters.
      */
@@ -124,11 +130,13 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
-     * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input inventories
+     * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input
+     * inventories
      *
-     * @param holder           The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
-     * @param recipe           The {@link GTRecipe} for which to find the maximum that can be run simultaneously
-     * @param parallelAmount   The limit on the amount of recipes that can be performed at one time
+     * @param holder         The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the
+     *                       machine.
+     * @param recipe         The {@link GTRecipe} for which to find the maximum that can be run simultaneously
+     * @param parallelAmount The limit on the amount of recipes that can be performed at one time
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
@@ -140,9 +148,8 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
-
-    }
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
+                           boolean isInput, MutableInt yOffset) {}
 
     @NotNull
     public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
@@ -172,11 +179,9 @@ public abstract class RecipeCapability<T> {
                                 @NotNull GTRecipeType recipeType,
                                 @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage) {
+                                @Nullable Object storage) {}
 
-    }
-
-     //TODO
+    // TODO
     public double calculateAmount(List<T> left) {
         return 1;
     }

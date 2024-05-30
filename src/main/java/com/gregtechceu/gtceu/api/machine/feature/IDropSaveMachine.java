@@ -20,6 +20,7 @@ public interface IDropSaveMachine extends IMachineFeature {
     default boolean savePickClone() {
         return true;
     }
+
     /**
      * Saves the contents of the block entity to a compound tag.
      *
@@ -35,5 +36,4 @@ public interface IDropSaveMachine extends IMachineFeature {
     default void loadFromItem(CompoundTag tag) {
         self().holder.loadManagedPersistentData(tag);
     }
-
 }

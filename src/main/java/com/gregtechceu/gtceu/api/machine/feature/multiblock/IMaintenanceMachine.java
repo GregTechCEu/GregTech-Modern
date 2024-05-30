@@ -6,14 +6,17 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import lombok.val;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
+import lombok.val;
+
 import java.util.ArrayList;
 
 public interface IMaintenanceMachine extends IMultiPart {
+
     int MINIMUM_MAINTENANCE_TIME = 3456000; // 48 real-life hours = 3456000 ticks
     byte ALL_PROBLEMS = 0;
     byte NO_PROBLEMS = 0b111111;
@@ -25,6 +28,7 @@ public interface IMaintenanceMachine extends IMultiPart {
 
     /**
      * Sets this Maintenance Hatch as being duct taped
+     * 
      * @param isTaped is the state of the hatch being taped or not
      */
     void setTaped(boolean isTaped);
@@ -39,7 +43,8 @@ public interface IMaintenanceMachine extends IMultiPart {
     /**
      * This value stores whether each of the 5 maintenance problems have been fixed.
      * A value of 0 means the problem is not fixed, else it is fixed
-     * Value positions correspond to the following from left to right: 0=Wrench, 1=Screwdriver, 2=Soft Mallet, 3=Hard Hammer, 4=Wire Cutter, 5=Crowbar
+     * Value positions correspond to the following from left to right: 0=Wrench, 1=Screwdriver, 2=Soft Mallet, 3=Hard
+     * Hammer, 4=Wire Cutter, 5=Crowbar
      */
     byte getMaintenanceProblems();
 
@@ -119,7 +124,8 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     default void causeRandomMaintenanceProblems() {
-        setMaintenanceProblems((byte) (getMaintenanceProblems() & (byte) ~(1 << ((int) (GTValues.RNG.nextFloat() * 5)))));
+        setMaintenanceProblems(
+                (byte) (getMaintenanceProblems() & (byte) ~(1 << ((int) (GTValues.RNG.nextFloat() * 5)))));
     }
 
     @Override
@@ -136,7 +142,7 @@ public interface IMaintenanceMachine extends IMultiPart {
 
     @Override
     default GTRecipe modifyRecipe(GTRecipe recipe) {
-        if  (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (hasMaintenanceProblems()) {
                 return null;
             }
@@ -150,7 +156,7 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     //////////////////////////////////////
-    //*******     FANCY GUI     ********//
+    // ******* FANCY GUI ********//
     //////////////////////////////////////
 
     @Override
@@ -163,7 +169,8 @@ public interface IMaintenanceMachine extends IMultiPart {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(() -> GuiTextures.MAINTENANCE_ICON, () -> {
                 val tooltips = new ArrayList<Component>();
-                tooltips.add(Component.translatable("gtceu.multiblock.universal.has_problems_header").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                tooltips.add(Component.translatable("gtceu.multiblock.universal.has_problems_header")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 
                 if ((getMaintenanceProblems() & 1) == 0)
                     tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench", "\n"));

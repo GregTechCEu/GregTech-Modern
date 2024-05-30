@@ -1,17 +1,13 @@
 package com.gregtechceu.gtceu.data.pack;
 
-import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.Platform;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
@@ -21,10 +17,16 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
+
+import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,11 +37,13 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Map<ResourceLocation, JsonObject> DATA = new HashMap<>();
+    protected static final Map<ResourceLocation, byte[]> DATA = new HashMap<>();
 
     private final String name;
 
@@ -70,22 +74,24 @@ public class GTDynamicDataPack implements PackResources {
         if (DATA.containsKey(recipeId)) {
             GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
         }
-        DATA.put(getRecipeLocation(recipeId), recipeJson);
+        DATA.put(getRecipeLocation(recipeId), recipeJson.toString().getBytes(StandardCharsets.UTF_8));
         if (recipe.serializeAdvancement() != null) {
             JsonObject advancement = recipe.serializeAdvancement();
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(recipe.getAdvancementId(), "advancements", parent, advancement);
             }
-            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())), advancement);
+            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())),
+                    advancement.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
 
     /**
      * if subdir is null, no file ending is appended.
-     * @param id the resource location of the file to be written.
+     * 
+     * @param id     the resource location of the file to be written.
      * @param subdir a nullable subdirectory for the data.
      * @param parent the parent folder where to write data to.
-     * @param json the json to write.
+     * @param json   the json to write.
      */
     @ApiStatus.Internal
     public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, JsonElement json) {
@@ -94,10 +100,11 @@ public class GTDynamicDataPack implements PackResources {
             if (subdir != null) {
                 file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
+                                                                                // if a full path is given.
             }
             Files.createDirectories(file.getParent());
-            try(OutputStream output = Files.newOutputStream(file)) {
+            try (OutputStream output = Files.newOutputStream(file)) {
                 output.write(json.toString().getBytes());
             }
         } catch (IOException e) {
@@ -108,7 +115,7 @@ public class GTDynamicDataPack implements PackResources {
     public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
         ResourceLocation l = getAdvancementLocation(loc);
         synchronized (DATA) {
-            DATA.put(l, obj);
+            DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -121,8 +128,9 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
-            if (DATA.containsKey(location))
-                return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
+            var byteArray = DATA.get(location);
+            if (byteArray != null)
+                return () -> new ByteArrayInputStream(byteArray);
             else return null;
         } else {
             return null;
@@ -134,12 +142,13 @@ public class GTDynamicDataPack implements PackResources {
         if (packType == PackType.SERVER_DATA) {
             if (!path.endsWith("/")) path += "/";
             final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
-                IoSupplier<InputStream> resource = this.getResource(packType, id);
-                if (resource != null) {
-                    resourceOutput.accept(id, resource);
-                }
-            });
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath))
+                    .forEach((id) -> {
+                        IoSupplier<InputStream> resource = this.getResource(packType, id);
+                        if (resource != null) {
+                            resourceOutput.accept(id, resource);
+                        }
+                    });
         }
     }
 
@@ -151,8 +160,9 @@ public class GTDynamicDataPack implements PackResources {
     @Nullable
     @Override
     public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if(metaReader == PackMetadataSection.TYPE) {
-            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+        if (metaReader == PackMetadataSection.TYPE) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"),
+                    SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
         } else if (metaReader.getMetadataSectionName().equals("filter")) {
             JsonObject filter = new JsonObject();
             JsonArray block = new JsonArray();
@@ -175,7 +185,7 @@ public class GTDynamicDataPack implements PackResources {
 
     @Override
     public void close() {
-        //NOOP
+        // NOOP
     }
 
     public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
@@ -183,10 +193,12 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {
-        return new ResourceLocation(advancementId.getNamespace(), String.join("", "advancements/", advancementId.getPath(), ".json"));
+        return new ResourceLocation(advancementId.getNamespace(),
+                String.join("", "advancements/", advancementId.getPath(), ".json"));
     }
 
     public static ResourceLocation getTagLocation(String identifier, ResourceLocation tagId) {
-        return new ResourceLocation(tagId.getNamespace(), String.join("", "tags/", identifier, "/", tagId.getPath(), ".json"));
+        return new ResourceLocation(tagId.getNamespace(),
+                String.join("", "tags/", identifier, "/", tagId.getPath(), ".json"));
     }
 }

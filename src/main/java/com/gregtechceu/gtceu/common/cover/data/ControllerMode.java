@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-import lombok.Getter;
 import net.minecraft.core.Direction;
 
+import lombok.Getter;
+
 public enum ControllerMode {
+
     MACHINE("cover.machine_controller.mode.machine", null),
     COVER_UP("cover.machine_controller.mode.cover_up", Direction.UP),
     COVER_DOWN("cover.machine_controller.mode.cover_down", Direction.DOWN),

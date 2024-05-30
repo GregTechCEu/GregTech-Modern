@@ -5,22 +5,28 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
 import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import lombok.Getter;
 
 public class ConverterTrait extends NotifiableEnergyContainer implements IPlatformEnergyStorage {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class, NotifiableEnergyContainer.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class,
+            NotifiableEnergyContainer.MANAGED_FIELD_HOLDER);
 
     /**
      * If TRUE, the front facing of the machine will OUTPUT EU, other sides INPUT FE.
      * If FALSE, the front facing of the machine will OUTPUT FE, other sides INPUT EU.
      */
-    @Getter @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private boolean feToEu;
     @Getter
     private final int amps;
@@ -28,7 +34,8 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
     private final long voltage;
 
     public ConverterTrait(ConverterMachine machine, int amps) {
-        super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps, GTValues.V[machine.getTier()], amps);
+        super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
+                GTValues.V[machine.getTier()], amps);
         this.amps = amps;
         this.voltage = GTValues.V[machine.getTier()];
         setSideInputCondition(side -> !this.feToEu && side != this.getMachine().getFrontFacing());
@@ -36,7 +43,7 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -49,7 +56,7 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
     }
 
     //////////////////////////////////////
-    //*********      logic     *********//
+    // ********* logic *********//
     //////////////////////////////////////
     public void checkOutputSubscription() {
         outputSubs = getMachine().subscribeServerTick(outputSubs, this::serverTick);
@@ -61,9 +68,11 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
             super.serverTick();
         } else { // output fe
             var fontFacing = machine.getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getPlatformEnergy(machine.getLevel(), machine.getPos().relative(fontFacing), fontFacing.getOpposite());
+            var energyContainer = GTCapabilityHelper.getPlatformEnergy(machine.getLevel(),
+                    machine.getPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.supportsInsertion()) {
-                var energyUsed = PlatformEnergyCompat.insertEu(energyContainer, Math.min(getEnergyStored(), voltage * amps));
+                var energyUsed = PlatformEnergyCompat.insertEu(energyContainer,
+                        Math.min(getEnergyStored(), voltage * amps));
                 if (energyUsed > 0) {
                     setEnergyStored(getEnergyStored() - energyUsed);
                 }
@@ -72,7 +81,7 @@ public class ConverterTrait extends NotifiableEnergyContainer implements IPlatfo
     }
 
     //////////////////////////////////////
-    //****      PlatformEnergy     *****//
+    // **** PlatformEnergy *****//
     //////////////////////////////////////
     @Override
     public boolean supportsInsertion() {

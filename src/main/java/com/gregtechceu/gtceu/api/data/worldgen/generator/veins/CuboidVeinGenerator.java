@@ -7,11 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -23,6 +19,12 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,16 +34,17 @@ import java.util.stream.Stream;
 
 @AllArgsConstructor
 public class CuboidVeinGenerator extends VeinGenerator {
-    public static final Codec<Either<List<OreConfiguration.TargetBlockState>, Material>> LAYER_CODEC = Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec());
+
+    public static final Codec<Either<List<OreConfiguration.TargetBlockState>, Material>> LAYER_CODEC = Codec
+            .either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec());
 
     public static final Codec<CuboidVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        LAYER_CODEC.fieldOf("top").forGetter(val -> val.top),
-        LAYER_CODEC.fieldOf("middle").forGetter(val -> val.middle),
-        LAYER_CODEC.fieldOf("bottom").forGetter(val -> val.bottom),
-        LAYER_CODEC.fieldOf("spread").forGetter(val -> val.spread),
-        Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
-        Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)
-    ).apply(instance, CuboidVeinGenerator::new));
+            LAYER_CODEC.fieldOf("top").forGetter(val -> val.top),
+            LAYER_CODEC.fieldOf("middle").forGetter(val -> val.middle),
+            LAYER_CODEC.fieldOf("bottom").forGetter(val -> val.bottom),
+            LAYER_CODEC.fieldOf("spread").forGetter(val -> val.spread),
+            Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
+            Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)).apply(instance, CuboidVeinGenerator::new));
 
     private Either<List<OreConfiguration.TargetBlockState>, Material> top;
     private Either<List<OreConfiguration.TargetBlockState>, Material> middle;
@@ -60,21 +63,22 @@ public class CuboidVeinGenerator extends VeinGenerator {
         // Entries' values are counted based on how many layers the entry is in.
         top.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                 material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, 2)));
+                .forEach(entry -> result.add(Map.entry(entry, 2)));
         middle.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                 material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, 3)));
+                .forEach(entry -> result.add(Map.entry(entry, 3)));
         bottom.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                 material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, 4)));
+                .forEach(entry -> result.add(Map.entry(entry, 4)));
         spread.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                 material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, 7)));
+                .forEach(entry -> result.add(Map.entry(entry, 7)));
         return result;
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                                  BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
         int size = entry.clusterSize().sample(random);
@@ -108,7 +112,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
 
                     int localDensity = (int) Math.max(1, entry.density() * volume);
                     int weightX = Math.max(1, Math.max(Mth.abs(westBound - x), Mth.abs(eastBound - x)) / localDensity);
-                    int weightZ = Math.max(1, Math.max(Mth.abs(southBound - z), Mth.abs(northBound - z)) / localDensity);
+                    int weightZ = Math.max(1,
+                            Math.max(Mth.abs(southBound - z), Mth.abs(northBound - z)) / localDensity);
 
                     BlockPos pos = new BlockPos(x, layer, z);
                     if (layerOffset <= 1) {
@@ -155,7 +160,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
             }
         }
 
-         return generatedBlocks;
+        return generatedBlocks;
     }
 
     /**
@@ -192,8 +197,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @return if the ore was placed
      */
     private boolean placeMiddle(Map<BlockPos, OreBlockPlacer> generatedBlocks, GTOreDefinition entry,
-                             long randomSeed, BlockPos pos,
-                             RandomSource random, int weightX, int weightZ) {
+                                long randomSeed, BlockPos pos,
+                                RandomSource random, int weightX, int weightZ) {
         var middle = this.middle;
         if (random.nextInt(2) == 0 && shouldPlaceOre(random, weightX, weightZ)) {
             generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, middle, entry));
@@ -234,7 +239,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
         return false;
     }
 
-    public void placeOre(BulkSectionAccess access, LevelChunkSection section, BlockPos pos, long randomSeed, Either<List<OreConfiguration.TargetBlockState>, Material> ore, GTOreDefinition entry) {
+    public void placeOre(BulkSectionAccess access, LevelChunkSection section, BlockPos pos, long randomSeed,
+                         Either<List<OreConfiguration.TargetBlockState>, Material> ore, GTOreDefinition entry) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         int x = SectionPos.sectionRelative(pos.getX());
         int y = SectionPos.sectionRelative(pos.getY());

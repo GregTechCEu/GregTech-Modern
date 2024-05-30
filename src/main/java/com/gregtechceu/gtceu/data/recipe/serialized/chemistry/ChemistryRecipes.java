@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -16,7 +17,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class ChemistryRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         AcidRecipes.init(provider);
         BrewingRecipes.init(provider);
         ChemicalBathRecipes.init(provider);
@@ -33,7 +33,8 @@ public class ChemistryRecipes {
         PolymerRecipes.init(provider);
         ReactorRecipes.init(provider);
         SeparationRecipes.init(provider);
-
+        BrineRecipes.init(provider);
+        AntidoteRecipes.init(provider);
 
         // A Few Random Recipes
         FLUID_HEATER_RECIPES.recipeBuilder("ethenone")
@@ -129,6 +130,21 @@ public class ChemistryRecipes {
                 .outputItems(dust, SodaAsh, 6)
                 .outputFluids(Water.getFluid(1000))
                 .duration(80).EUt(VA[HV])
+                .save(provider);
+
+        PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_carbon").circuitMeta(1)
+                .inputItems(dust, Carbon)
+                .inputFluids(Nitrogen.getFluid(2000))
+                .outputItems(dust, ActivatedCarbon)
+                .duration(320).EUt(64)
+                .save(provider);
+
+        PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_charcoal").circuitMeta(1)
+                .inputItems(dust, Charcoal)
+                .inputFluids(Nitrogen.getFluid(2000))
+                .outputItems(dust, ActivatedCarbon)
+                .chancedOutput(dust, Ash, 2000, 0)
+                .duration(640).EUt(64)
                 .save(provider);
     }
 }

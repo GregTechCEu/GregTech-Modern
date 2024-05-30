@@ -14,19 +14,23 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.Iterator;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ResearchStationMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver {
+
     @Getter
     private IOpticalComputationProvider computationProvider;
     @Getter
@@ -50,13 +54,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            IOpticalComputationProvider provider = part.self().holder.self().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER).resolve().orElse(null);
+            IOpticalComputationProvider provider = part.self().holder.self()
+                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER).resolve().orElse(null);
             if (provider != null) {
                 this.computationProvider = provider;
             }
             if (part instanceof IObjectHolder objectHolder) {
                 this.objectHolder = objectHolder;
-                this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP, Collections.singletonList(objectHolder.getAsHandler()));
+                this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP,
+                        Collections.singletonList(objectHolder.getAsHandler()));
             }
         }
 
@@ -116,10 +122,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
                 if (recipe.isFuel) return false;
                 if (!holder.hasProxies()) return false;
-                var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs, false);
+                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs);
                 if (!result.isSuccess()) return false;
                 if (recipe.hasTick()) {
-                    result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs, false);
+                    result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs);
                     return result.isSuccess();
                 }
                 return true;
@@ -147,7 +153,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
             var modified = machine.fullModifyRecipe(match);
             if (modified != null) {
-                if (!modified.inputs.containsKey(CWURecipeCapability.CAP) && !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
+                if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
+                        !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                     return true;
                 }
                 // skip "can fit" checks, it can always fit
@@ -167,7 +174,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
         public GTRecipe.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-            var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs, false);
+            var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs);
             if (!result.isSuccess()) return result;
             return GTRecipe.ActionResult.SUCCESS;
         }
@@ -175,7 +182,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         public GTRecipe.ActionResult matchTickRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (recipe.hasTick()) {
                 if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-                var result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs, false);
+                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs);
                 if (!result.isSuccess()) return result;
             }
             return GTRecipe.ActionResult.SUCCESS;
@@ -213,7 +220,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
             ItemStack outputItem = ItemStack.EMPTY;
             if (lastRecipe.getOutputContents(ItemRecipeCapability.CAP).size() >= 1) {
-                outputItem = ItemRecipeCapability.CAP.of(getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                outputItem = ItemRecipeCapability.CAP
+                        .of(getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
             }
             holder.setDataItem(outputItem);
             holder.setLocked(false);
