@@ -135,7 +135,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
             }
         }
         if (found) return;
-        items.add(new ItemStack(this));
+        super.fillItemCategory(category, items);
     }
 
     @Override
