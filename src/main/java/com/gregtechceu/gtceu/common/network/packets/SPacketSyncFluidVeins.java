@@ -1,17 +1,18 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.networking.IHandlerContext;
-import com.lowdragmc.lowdraglib.networking.IPacket;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,10 +20,14 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class SPacketSyncFluidVeins implements IPacket {
+public class SPacketSyncFluidVeins implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE = new CustomPacketPayload.Type<>(GTCEu.id("sync_bedrock_ore_veins"));
+    public static final StreamCodec<FriendlyByteBuf, SPacketSyncFluidVeins> CODEC =
+            StreamCodec.ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
 
     private final Map<ResourceLocation, BedrockFluidDefinition> veins;
 
@@ -30,7 +35,6 @@ public class SPacketSyncFluidVeins implements IPacket {
         this.veins = new HashMap<>();
     }
 
-    @Override
     public void encode(FriendlyByteBuf buf) {
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
         int size = veins.size();
@@ -38,24 +42,22 @@ public class SPacketSyncFluidVeins implements IPacket {
         for (var entry : veins.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
             CompoundTag tag = (CompoundTag) BedrockFluidDefinition.FULL_CODEC.encodeStart(ops, entry.getValue())
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow();
             buf.writeNbt(tag);
         }
     }
 
-    @Override
-    public void decode(FriendlyByteBuf buf) {
+    public static SPacketSyncFluidVeins decode(FriendlyByteBuf buf) {
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
-        Stream.generate(() -> {
+        var veins = Stream.generate(() -> {
             ResourceLocation id = buf.readResourceLocation();
-            CompoundTag tag = buf.readAnySizeNbt();
-            BedrockFluidDefinition def = BedrockFluidDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(false,
-                    GTCEu.LOGGER::error);
+            CompoundTag tag = buf.readNbt();
+            BedrockFluidDefinition def = BedrockFluidDefinition.FULL_CODEC.parse(ops, tag).getOrThrow();
             return Map.entry(id, def);
-        }).limit(buf.readVarInt()).forEach(entry -> veins.put(entry.getKey(), entry.getValue()));
+        }).limit(buf.readVarInt()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return new SPacketSyncFluidVeins(veins);
     }
 
-    @Override
     public void execute(IHandlerContext handler) {
         if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
@@ -68,4 +70,10 @@ public class SPacketSyncFluidVeins implements IPacket {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
         }
     }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 }

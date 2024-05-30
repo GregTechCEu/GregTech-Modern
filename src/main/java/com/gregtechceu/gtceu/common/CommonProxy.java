@@ -187,7 +187,6 @@ public class CommonProxy {
         GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
-        GTOreVeinWidget.init();
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
