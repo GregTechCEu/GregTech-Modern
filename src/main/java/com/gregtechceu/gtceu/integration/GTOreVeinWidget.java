@@ -1,15 +1,10 @@
 package com.gregtechceu.gtceu.integration;
 
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
-import com.gregtechceu.gtceu.common.data.GTOres;
-import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -158,21 +153,5 @@ public class GTOreVeinWidget extends WidgetGroup {
     public String getFluidName(BedrockFluidDefinition fluid) {
         ResourceLocation id = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid);
         return id.getPath();
-    }
-
-    public static void init() {
-        if (GTRegistries.ORE_VEINS.values().isEmpty()) {
-            GTRegistries.ORE_VEINS.unfreeze();
-            GTOres.init();
-            AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
-            OreDataLoader.buildVeinGenerator();
-            GTRegistries.ORE_VEINS.freeze();
-        }
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.values().isEmpty()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
-            GTBedrockFluids.init();
-            AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
     }
 }
