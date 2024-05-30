@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +21,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @implNote MachineUIFactory
  */
 public class MachineUIFactory extends UIFactory<MetaMachine> {
-    public static final MachineUIFactory INSTANCE  = new MachineUIFactory();
+
+    public static final MachineUIFactory INSTANCE = new MachineUIFactory();
 
     public MachineUIFactory() {
         super(GTCEu.id("machine"));

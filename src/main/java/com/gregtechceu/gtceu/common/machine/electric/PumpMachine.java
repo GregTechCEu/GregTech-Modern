@@ -12,9 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -24,9 +24,9 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,10 +35,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -48,18 +52,26 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IUIMachine, IMachineLife {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public static final int BASE_PUMP_RANGE = 32;
     public static final int EXTRA_PUMP_RANGE = 8;
     public static final int PUMP_SPEED_BASE = 80;
     private final Deque<BlockPos> fluidSourceBlocks = new ArrayDeque<>();
     private final Deque<BlockPos> blocksToCheck = new ArrayDeque<>();
     private boolean initializedQueue = false;
-    @Getter @Persisted
+    @Getter
+    @Persisted
     private int pumpHeadY;
-    @Getter @Setter @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected boolean autoOutputFluids;
-    @Persisted @DropSaved
+    @Persisted
+    @DropSaved
     protected final NotifiableFluidTank cache;
 
     public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
@@ -68,7 +80,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -85,8 +97,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {
-    }
+    public void setAllowInputFromOutputSideFluids(boolean allow) {}
 
     @Override
     public Direction getOutputFacingFluids() {
@@ -110,7 +121,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     //////////////////////////////////////
-    //*********     Logic     **********//
+    // ********* Logic **********//
     //////////////////////////////////////
     private int getMaxPumpRange() {
         return BASE_PUMP_RANGE + EXTRA_PUMP_RANGE * getTier();
@@ -152,19 +163,20 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                     var downBlock = getLevel().getBlockState(downPos);
                     if (downBlock.getBlock() instanceof LiquidBlock) {
                         this.pumpHeadY++;
-                        if (getLevel() instanceof ServerLevel serverLevel && serverLevel.getBlockState(selfPos).isAir()) {
+                        if (getLevel() instanceof ServerLevel serverLevel &&
+                                serverLevel.getBlockState(selfPos).isAir()) {
                             serverLevel.setBlockAndUpdate(selfPos, GTBlocks.MINER_PIPE.getDefaultState());
                         }
                     }
                 }
 
-                //schedule queue rebuild because we changed our position and no fluid is available
+                // schedule queue rebuild because we changed our position and no fluid is available
                 this.initializedQueue = false;
             }
 
             if (!initializedQueue || getOffsetTimer() % 6000 == 0) {
                 this.initializedQueue = true;
-                //just add ourselves to check list and see how this will go
+                // just add ourselves to check list and see how this will go
                 this.blocksToCheck.add(selfPos);
             }
         }
@@ -185,7 +197,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         var blockHere = getLevel().getBlockState(checkPos);
         boolean shouldCheckNeighbours = isStraightInPumpRange(checkPos);
 
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock && liquidBlock.getFluidState(blockHere).isSource()) {
+        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
+                liquidBlock.getFluidState(blockHere).isSource()) {
             var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), checkPos);
             FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, true);
             if (!drainStack.isEmpty()) {
@@ -199,7 +212,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             for (var facing : GTUtil.DIRECTIONS) {
                 BlockPos offsetPos = checkPos.relative(facing);
                 if (offsetPos.distSqr(pumpHeadPos) > maxPumpRange * maxPumpRange)
-                    continue; //do not add blocks outside bounds
+                    continue; // do not add blocks outside bounds
                 if (!fluidSourceBlocks.contains(offsetPos) &&
                         !blocksToCheck.contains(offsetPos)) {
                     this.blocksToCheck.add(offsetPos);
@@ -212,7 +225,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         BlockPos fluidBlockPos = fluidSourceBlocks.poll();
         if (fluidBlockPos == null) return;
         var blockHere = getLevel().getBlockState(fluidBlockPos);
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock && liquidBlock.getFluidState(blockHere).isSource()) {
+        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
+                liquidBlock.getFluidState(blockHere).isSource()) {
             var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), fluidBlockPos);
             FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, true);
             if (!drainStack.isEmpty() && cache.fillInternal(drainStack, true) == drainStack.getAmount()) {
@@ -230,7 +244,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             cache.exportToNearby(getOutputFacingFluids());
         }
 
-        //do not do anything without enough energy supplied
+        // do not do anything without enough energy supplied
         if (energyContainer.getEnergyStored() < GTValues.V[getTier()] * 2) {
             return;
         }
@@ -245,7 +259,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     //////////////////////////////////////
-    //**********     Gui     ***********//
+    // ********** Gui ***********//
     //////////////////////////////////////
     @Override
     public ModularUI createUI(Player entityPlayer) {
@@ -253,7 +267,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                 .background(GuiTextures.BACKGROUND)
                 .widget(new ImageWidget(7, 16, 81, 55, GuiTextures.DISPLAY))
                 .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
-                .widget(new LabelWidget(11, 30, () -> cache.getFluidInTank(0).getAmount() + "").setTextColor(-1).setDropShadow(true))
+                .widget(new LabelWidget(11, 30, () -> cache.getFluidInTank(0).getAmount() + "").setTextColor(-1)
+                        .setDropShadow(true))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
                 .widget(new TankWidget(cache.getStorages()[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
@@ -265,7 +280,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
@@ -278,5 +293,4 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         }
         return super.sideTips(player, toolTypes, side);
     }
-
 }

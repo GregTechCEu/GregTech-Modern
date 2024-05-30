@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import net.minecraft.network.FriendlyByteBuf;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.network.FriendlyByteBuf;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -52,5 +53,4 @@ public class SerializerLong implements IContentSerializer<Long> {
     public Long defaultValue() {
         return 0L;
     }
-
 }

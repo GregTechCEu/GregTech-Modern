@@ -1,18 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.TagParser;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 
-import java.util.Objects;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
+import net.minecraft.network.FriendlyByteBuf;
+
+import com.google.gson.JsonElement;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.utils.TaskHandler;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,12 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeFellingHelper {
 
-    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos, LivingEntity miner) {
+    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos,
+                                LivingEntity miner) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
         Queue<BlockPos> checking = new ArrayDeque<>();
@@ -56,7 +59,8 @@ public class TreeFellingHelper {
         }
     }
 
-    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList, Block originBlock) {
+    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList,
+                                          Block originBlock) {
         for (int i = 0; i < posList.size(); i++) {
             int delayTick = i * 2; // 1 block per 2 tick
             BlockPos pos = posList.get(i);

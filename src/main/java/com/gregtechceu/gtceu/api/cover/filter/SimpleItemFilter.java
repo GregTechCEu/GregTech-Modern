@@ -2,20 +2,24 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -25,6 +29,7 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
+
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -37,7 +42,6 @@ public class SimpleItemFilter implements ItemFilter {
 
     @Getter
     protected int maxStackSize;
-
 
     protected SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
@@ -80,7 +84,6 @@ public class SimpleItemFilter implements ItemFilter {
         return tag;
     }
 
-
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
@@ -100,6 +103,7 @@ public class SimpleItemFilter implements ItemFilter {
                 var handler = new ItemStackTransfer(matches[index]);
 
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+
                     @Override
                     public void updateScreen() {
                         super.updateScreen();

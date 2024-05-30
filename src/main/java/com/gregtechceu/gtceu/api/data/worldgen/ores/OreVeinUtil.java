@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
@@ -22,24 +18,29 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OreVeinUtil {
-    private OreVeinUtil() {
-    }
 
+    private OreVeinUtil() {}
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
-                                      RandomSource pRandom, GTOreDefinition entry, OreConfiguration.TargetBlockState pTargetState,
+                                      RandomSource pRandom, GTOreDefinition entry,
+                                      OreConfiguration.TargetBlockState pTargetState,
                                       BlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
@@ -67,7 +68,8 @@ public class OreVeinUtil {
     /**
      * Resolves a vein's center for the supplied chunk position.
      * 
-     * <p>Note that depending on the config value for the random vein offset, its actual
+     * <p>
+     * Note that depending on the config value for the random vein offset, its actual
      * center may be outside the supplied chunk.
      * 
      * @return The origin of the vein to be generated.<br>
@@ -88,8 +90,7 @@ public class OreVeinUtil {
         return Optional.of(chunkCenter.offset(
                 random.nextInt(-randomOffset, +randomOffset),
                 0,
-                random.nextInt(-randomOffset, +randomOffset)
-        ));
+                random.nextInt(-randomOffset, +randomOffset)));
     }
 
     /**
@@ -128,7 +129,8 @@ public class OreVeinUtil {
             return new JsonPrimitive(biomes.get(0));
 
         if (biomes.stream().anyMatch(filter -> filter.startsWith("#")))
-            throw new IllegalStateException("Cannot resolve biomes: You may use either a single tag or multiple individual biomes.");
+            throw new IllegalStateException(
+                    "Cannot resolve biomes: You may use either a single tag or multiple individual biomes.");
 
         var jsonArray = new JsonArray();
         biomes.forEach(jsonArray::add);

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -21,14 +22,17 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeProperties, LevelItemPipeNet> {
+
     public ItemPipeBlock(Properties properties, ItemPipeType itemPipeType, Material material) {
         super(properties, itemPipeType, material);
     }
@@ -59,14 +63,17 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
+                                TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
         ItemPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         if (properties.getTransferRate() % 1 != 0) {
-            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", (int) ((properties.getTransferRate() * 64) + 0.5)));
+            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate",
+                    (int) ((properties.getTransferRate() * 64) + 0.5)));
         } else {
-            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", (int) properties.getTransferRate()));
+            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks",
+                    (int) properties.getTransferRate()));
         }
 
         tooltip.add(Component.translatable("gtceu.item_pipe.priority", properties.getPriority()));
@@ -82,6 +89,6 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null &&
-            tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
+                tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
     }
 }

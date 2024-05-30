@@ -18,6 +18,7 @@ public class SupplierMemoizer {
     }
 
     public static class MemoizedSupplier<T> implements Supplier<T> {
+
         transient T value;
         transient volatile boolean initialized;
         final Supplier<T> delegate;
@@ -44,15 +45,15 @@ public class SupplierMemoizer {
 
         @Override
         public String toString() {
-            return "SupplierMemoizer.memoize("
-                + (initialized ? "<supplier that returned " + value + ">" : delegate)
-                + ")";
+            return "SupplierMemoizer.memoize(" + (initialized ? "<supplier that returned " + value + ">" : delegate) +
+                    ")";
         }
     }
 
     /**
      * A variant of the memoized supplier that stores a block explicitly.
-     * Use this to save blocks to {@link com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper#registerUnificationItems(com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry, Supplier[])}
+     * Use this to save blocks to
+     * {@link com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper#registerUnificationItems(com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry, Supplier[])}
      */
     public static class MemoizedBlockSupplier<T extends Block> extends MemoizedSupplier<T> {
 
@@ -62,9 +63,8 @@ public class SupplierMemoizer {
 
         @Override
         public String toString() {
-            return "SupplierMemoizer.memoizeBlockSupplier("
-                + (initialized ? "<supplier that returned " + value + ">" : delegate)
-                + ")";
+            return "SupplierMemoizer.memoizeBlockSupplier(" +
+                    (initialized ? "<supplier that returned " + value + ">" : delegate) + ")";
         }
     }
 }

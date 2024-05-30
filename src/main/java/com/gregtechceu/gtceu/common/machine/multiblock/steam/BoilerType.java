@@ -39,7 +39,6 @@ public enum BoilerType {
                BlockState casingState,
                BlockState fireboxState,
                BlockState pipeState) {
-
         this.steamPerTick = steamPerTick;
         this.ticksToBoiling = ticksToBoiling;
 

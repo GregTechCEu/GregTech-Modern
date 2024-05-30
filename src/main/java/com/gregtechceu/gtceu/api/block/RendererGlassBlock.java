@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -15,6 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * @implNote RendererGlassBlock
  */
 public class RendererGlassBlock extends RendererBlock {
+
     public RendererGlassBlock(Properties properties, IRenderer renderer) {
         super(properties, renderer);
     }

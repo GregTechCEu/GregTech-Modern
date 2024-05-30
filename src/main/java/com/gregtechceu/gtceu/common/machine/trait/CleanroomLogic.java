@@ -8,25 +8,33 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.network.chat.Component;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class,
+            RecipeLogic.MANAGED_FIELD_HOLDER);
     public static final int BASE_CLEAN_AMOUNT = 5;
-    @Setter @Nullable
+    @Setter
+    @Nullable
     private IMaintenanceMachine maintenanceMachine;
-    @Setter @Nullable
+    @Setter
+    @Nullable
     private IEnergyContainer energyContainer;
     /**
      * whether the cleanroom was active and needs an update
      */
-    @Getter @Setter @Persisted
+    @Getter
+    @Setter
+    @Persisted
     private boolean isActiveAndNeedsUpdate;
 
     public CleanroomLogic(CleanroomMachine machine) {
@@ -66,7 +74,8 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                         adjustCleanAmount(true);
                     }
 
-                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getName()));
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                            .append(EURecipeCapability.CAP.getName()));
                     return;
                 }
                 // increase progress
@@ -85,7 +94,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
             } else {
                 // has all maintenance problems
                 if (progress > 0) {
-                    progress --;
+                    progress--;
                 }
                 if (machine.self().getOffsetTimer() % duration == 0) {
                     adjustCleanAmount(true);
@@ -117,7 +126,8 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
     protected boolean consumeEnergy() {
         var cleanroom = getMachine();
-        long energyToDrain = cleanroom.isClean() ? (long) Math.min(4, Math.pow(4, cleanroom.getTier())) : GTValues.VA[cleanroom.getTier()];
+        long energyToDrain = cleanroom.isClean() ? (long) Math.min(4, Math.pow(4, cleanroom.getTier())) :
+                GTValues.VA[cleanroom.getTier()];
         if (energyContainer != null) {
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;
             if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
@@ -133,10 +143,11 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         return getMachine().getTier() - minEnergyTier;
     }
 
-    /** max progress is based on the dimensions of the structure: (x^3)-(x^2)
-    /* taller cleanrooms take longer than wider ones
-    /*  minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-    **/
+    /**
+     * max progress is based on the dimensions of the structure: (x^3)-(x^2)
+     * /* taller cleanrooms take longer than wider ones
+     * /* minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
+     **/
     public void setDuration(int max) {
         this.duration = max;
     }

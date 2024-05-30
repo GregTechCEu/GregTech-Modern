@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 
 public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceMachine {
@@ -11,8 +11,7 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
     }
 
     @Override
-    public void setTaped(boolean ignored) {
-    }
+    public void setTaped(boolean ignored) {}
 
     @Override
     public boolean isTaped() {
@@ -35,9 +34,7 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
     }
 
     @Override
-    public void setMaintenanceProblems(byte problems) {
-
-    }
+    public void setMaintenanceProblems(byte problems) {}
 
     @Override
     public int getTimeActive() {
@@ -45,8 +42,5 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
     }
 
     @Override
-    public void setTimeActive(int time) {
-
-    }
-
+    public void setTimeActive(int time) {}
 }

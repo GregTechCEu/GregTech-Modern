@@ -1,24 +1,22 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
-import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.Nullable;
 
 public class CoverSolarPanel extends CoverBehavior {
+
     private final long EUt;
     protected TickableSubscription subscription;
 
@@ -46,7 +44,6 @@ public class CoverSolarPanel extends CoverBehavior {
         return attachedSide == Direction.UP && getEnergyContainer() != null;
     }
 
-
     protected void update() {
         Level level = coverHolder.getLevel();
         BlockPos blockPos = coverHolder.getPos();
@@ -56,7 +53,6 @@ public class CoverSolarPanel extends CoverBehavior {
                 energyContainer.acceptEnergyFromNetwork(null, EUt, 1);
             }
         }
-
     }
 
     @Nullable

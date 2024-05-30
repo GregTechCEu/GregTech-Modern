@@ -37,7 +37,7 @@ public class MaterialFlags {
     }
 
     /////////////////
-    //   GENERIC   //
+    // GENERIC //
     /////////////////
 
     /**
@@ -48,12 +48,14 @@ public class MaterialFlags {
     /**
      * Enables electrolyzer decomposition recipe generation
      */
-    public static final MaterialFlag DECOMPOSITION_BY_ELECTROLYZING = new MaterialFlag.Builder("decomposition_by_electrolyzing").build();
+    public static final MaterialFlag DECOMPOSITION_BY_ELECTROLYZING = new MaterialFlag.Builder(
+            "decomposition_by_electrolyzing").build();
 
     /**
      * Enables centrifuge decomposition recipe generation
      */
-    public static final MaterialFlag DECOMPOSITION_BY_CENTRIFUGING = new MaterialFlag.Builder("decomposition_by_centrifuging").build();
+    public static final MaterialFlag DECOMPOSITION_BY_CENTRIFUGING = new MaterialFlag.Builder(
+            "decomposition_by_centrifuging").build();
 
     /**
      * Disables decomposition recipe generation for this material
@@ -81,7 +83,7 @@ public class MaterialFlags {
     public static final MaterialFlag PHOSPHORESCENT = new MaterialFlag.Builder("phosphorescent").build();
 
     //////////////////
-    //     DUST     //
+    // DUST //
     //////////////////
 
     /**
@@ -95,9 +97,9 @@ public class MaterialFlags {
             .build();
 
     public static final MaterialFlag GENERATE_DENSE = new MaterialFlag.Builder("generate_dense")
-        .requireFlags(GENERATE_PLATE)
-        .requireProps(PropertyKey.DUST)
-        .build();
+            .requireFlags(GENERATE_PLATE)
+            .requireProps(PropertyKey.DUST)
+            .build();
 
     public static final MaterialFlag GENERATE_ROD = new MaterialFlag.Builder("generate_rod")
             .requireProps(PropertyKey.DUST)
@@ -131,11 +133,13 @@ public class MaterialFlags {
      * This will prevent material from creating Shapeless recipes for dust to block and vice versa
      * Also preventing extruding and alloy smelting recipes via SHAPE_EXTRUDING/MOLD_BLOCK
      */
-    public static final MaterialFlag EXCLUDE_BLOCK_CRAFTING_RECIPES = new MaterialFlag.Builder("exclude_block_crafting_recipes")
+    public static final MaterialFlag EXCLUDE_BLOCK_CRAFTING_RECIPES = new MaterialFlag.Builder(
+            "exclude_block_crafting_recipes")
             .requireProps(PropertyKey.DUST)
             .build();
 
-    public static final MaterialFlag EXCLUDE_PLATE_COMPRESSOR_RECIPE = new MaterialFlag.Builder("exclude_plate_compressor_recipe")
+    public static final MaterialFlag EXCLUDE_PLATE_COMPRESSOR_RECIPE = new MaterialFlag.Builder(
+            "exclude_plate_compressor_recipe")
             .requireFlags(GENERATE_PLATE)
             .requireProps(PropertyKey.DUST)
             .build();
@@ -143,7 +147,8 @@ public class MaterialFlags {
     /**
      * This will prevent material from creating Shapeless recipes for dust to block and vice versa
      */
-    public static final MaterialFlag EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES = new MaterialFlag.Builder("exclude_block_crafting_by_hand_recipes")
+    public static final MaterialFlag EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES = new MaterialFlag.Builder(
+            "exclude_block_crafting_by_hand_recipes")
             .requireProps(PropertyKey.DUST)
             .build();
 
@@ -152,7 +157,8 @@ public class MaterialFlags {
             .build();
 
     /**
-     * Add to material if it cannot be worked by any other means, than smashing or smelting. This is used for coated Materials.
+     * Add to material if it cannot be worked by any other means, than smashing or smelting. This is used for coated
+     * Materials.
      */
     public static final MaterialFlag NO_WORKING = new MaterialFlag.Builder("no_working")
             .requireProps(PropertyKey.DUST)
@@ -176,21 +182,23 @@ public class MaterialFlags {
      * Add to material if it's impossible to smelt it from an ore.
      */
     public static final MaterialFlag NO_ORE_SMELTING = new MaterialFlag.Builder("no_ore_smelting")
-        .requireProps(PropertyKey.DUST)
-        .build();
+            .requireProps(PropertyKey.DUST)
+            .build();
 
     /**
-     * Add this to your Material if you want to have its Ore Calcite heated in a Blast Furnace for more output. Already listed are:
+     * Add this to your Material if you want to have its Ore Calcite heated in a Blast Furnace for more output. Already
+     * listed are:
      * Iron, Pyrite, PigIron, WroughtIron.
      */
-    public static final MaterialFlag BLAST_FURNACE_CALCITE_DOUBLE = new MaterialFlag.Builder("blast_furnace_calcite_double")
+    public static final MaterialFlag BLAST_FURNACE_CALCITE_DOUBLE = new MaterialFlag.Builder(
+            "blast_furnace_calcite_double")
             .requireProps(PropertyKey.DUST)
             .build();
 
-    public static final MaterialFlag BLAST_FURNACE_CALCITE_TRIPLE = new MaterialFlag.Builder("blast_furnace_calcite_triple")
+    public static final MaterialFlag BLAST_FURNACE_CALCITE_TRIPLE = new MaterialFlag.Builder(
+            "blast_furnace_calcite_triple")
             .requireProps(PropertyKey.DUST)
             .build();
-
 
     // GCyM
     /**
@@ -209,7 +217,7 @@ public class MaterialFlags {
             .build();
 
     /////////////////
-    //    FLUID    //
+    // FLUID //
     /////////////////
 
     public static final MaterialFlag SOLDER_MATERIAL = new MaterialFlag.Builder("solder_material")
@@ -225,7 +233,7 @@ public class MaterialFlags {
             .build();
 
     /////////////////
-    //    INGOT    //
+    // INGOT //
     /////////////////
 
     public static final MaterialFlag GENERATE_FOIL = new MaterialFlag.Builder("generate_foil")
@@ -275,7 +283,7 @@ public class MaterialFlags {
             .build();
 
     /////////////////
-    //     GEM     //
+    // GEM //
     /////////////////
 
     /**
@@ -291,7 +299,7 @@ public class MaterialFlags {
             .build();
 
     /////////////////
-    //     ORE     //
+    // ORE //
     /////////////////
 
     public static final MaterialFlag HIGH_SIFTER_OUTPUT = new MaterialFlag.Builder("high_sifter_output")

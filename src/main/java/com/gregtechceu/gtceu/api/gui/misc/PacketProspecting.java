@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import java.lang.reflect.Array;
 
 public class PacketProspecting {
+
     public int chunkX;
     public int chunkZ;
     public ProspectorMode mode;
@@ -42,5 +43,4 @@ public class PacketProspecting {
             }
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -12,17 +11,18 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.data.recipes.FinishedRecipe;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FINE_WIRE;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_WORKING;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_PLATE;
-
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_WORKING;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -34,10 +34,10 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
  * - Rubber: This can be used for any cable EV-tier or lower. After that it is unavailable.
  * <br>
  * - Silicone Rubber: This can be used for any cable tier, saving the amount of fluid needed. However, at IV,
- *                    it will require a Foil of the cable material as well, making it undesirable.
+ * it will require a Foil of the cable material as well, making it undesirable.
  * <br>
  * - Styrene-Butadiene Rubber (SBR): This can be used for any cable tier, and is the most optimal cable-covering
- *                                   fluid available.
+ * fluid available.
  * <br>
  * Extra Materials for Cable Covering:
  * - Polyphenylene Sulfide (PPS): At LuV, this foil is required to cover cables. Lower tiers will not use it.
@@ -51,13 +51,11 @@ public class WireRecipeHandler {
             cableGtDouble, 1,
             cableGtQuadruple, 2,
             cableGtOctal, 3,
-            cableGtHex, 5
-    );
+            cableGtHex, 5);
 
-    private static final TagPrefix[] wireSizes = {wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex};
+    private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
         // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
         // Wiremill: 1x Wire -> Fine
@@ -73,9 +71,10 @@ public class WireRecipeHandler {
         wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
     }
 
-
-    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
-        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot : material.hasProperty(PropertyKey.GEM) ? gem : dust;
+    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
+                                    Consumer<FinishedRecipe> provider) {
+        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
+                material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
                 .inputItems(prefix, material)
@@ -86,32 +85,32 @@ public class WireRecipeHandler {
                 .save(provider);
 
         WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire")
-            .inputItems(prefix, material)
-            .circuitMeta(1)
-            .outputItems(wireGtSingle, material, 2)
-            .duration((int) material.getMass())
-            .EUt(getVoltageMultiplier(material))
-            .save(provider);
+                .inputItems(prefix, material)
+                .circuitMeta(1)
+                .outputItems(wireGtSingle, material, 2)
+                .duration((int) material.getMass())
+                .EUt(getVoltageMultiplier(material))
+                .save(provider);
 
         for (TagPrefix wireSize : wireSizes) {
             final int multiplier = (int) (wireSize.getMaterialAmount(material) / GTValues.M);
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_" + (multiplier * 2))
-                .inputItems(prefix, material, multiplier)
-                .circuitMeta(multiplier * 2)
-                .outputItems(wireSize, material)
-                .duration((int) material.getMass() * multiplier)
-                .EUt(getVoltageMultiplier(material))
-                .save(provider);
+                    .inputItems(prefix, material, multiplier)
+                    .circuitMeta(multiplier * 2)
+                    .outputItems(wireSize, material)
+                    .duration((int) material.getMass() * multiplier)
+                    .EUt(getVoltageMultiplier(material))
+                    .save(provider);
         }
 
         if (material.hasFlag(GENERATE_FINE_WIRE)) {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_fine")
-                .inputItems(prefix, material, 1)
-                .circuitMeta(3)
-                .outputItems(wireFine, material, 8)
-                .duration((int) material.getMass() * 3)
-                .EUt(getVoltageMultiplier(material))
-                .save(provider);
+                    .inputItems(prefix, material, 1)
+                    .circuitMeta(3)
+                    .outputItems(wireFine, material, 8)
+                    .duration((int) material.getMass() * 3)
+                    .EUt(getVoltageMultiplier(material))
+                    .save(provider);
         }
 
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
@@ -121,8 +120,8 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
-
+    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property,
+                                             Consumer<FinishedRecipe> provider) {
         // Superconductors have no Cables, so exit early
         if (property.isSuperconductor()) return;
 
@@ -138,7 +137,8 @@ public class WireRecipeHandler {
 
         // Rubber Recipe (ULV-EV cables)
         if (voltageTier <= EV) {
-            GTRecipeBuilder builder = ASSEMBLER_RECIPES.recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_rubber")
+            GTRecipeBuilder builder = ASSEMBLER_RECIPES
+                    .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_rubber")
                     .EUt(VA[ULV]).duration(100)
                     .inputItems(wirePrefix, material)
                     .outputItems(cablePrefix, material)
@@ -151,7 +151,8 @@ public class WireRecipeHandler {
         }
 
         // Silicone Rubber Recipe (all cables)
-        GTRecipeBuilder builder = ASSEMBLER_RECIPES.recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_silicone")
+        GTRecipeBuilder builder = ASSEMBLER_RECIPES
+                .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_silicone")
                 .EUt(VA[ULV]).duration(100)
                 .inputItems(wirePrefix, material)
                 .outputItems(cablePrefix, material);
@@ -170,7 +171,8 @@ public class WireRecipeHandler {
                 .save(provider);
 
         // Styrene Butadiene Rubber Recipe (all cables)
-        builder = ASSEMBLER_RECIPES.recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_styrene_butadiene")
+        builder = ASSEMBLER_RECIPES
+                .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_styrene_butadiene")
                 .EUt(VA[ULV]).duration(100)
                 .inputItems(wirePrefix, material)
                 .outputItems(cablePrefix, material);
@@ -189,7 +191,8 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix, int cableAmount, Consumer<FinishedRecipe> provider) {
+    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix,
+                                             int cableAmount, Consumer<FinishedRecipe> provider) {
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new UnificationEntry(wirePrefix, material);
@@ -198,8 +201,7 @@ public class WireRecipeHandler {
         }
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_cable_%d", material.getName(), cableAmount),
                 ChemicalHelper.get(cablePrefix, material),
-                ingredients
-        );
+                ingredients);
 
         PACKER_RECIPES.recipeBuilder("cover_" + material.getName() + "_" + wirePrefix)
                 .inputItems(wirePrefix, material)

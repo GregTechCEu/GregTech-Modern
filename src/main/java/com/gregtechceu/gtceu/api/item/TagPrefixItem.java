@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
@@ -25,10 +27,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -38,6 +40,7 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TagPrefixItem extends Item {
+
     public final TagPrefix tagPrefix;
     public final Material material;
 
@@ -55,9 +58,7 @@ public class TagPrefixItem extends Item {
         return getItemBurnTime();
     }
 
-    public void onRegister() {
-
-    }
+    public void onRegister() {}
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor tintColor() {
@@ -70,12 +71,13 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
-        GTUtil.appendHazardTooltips(material,tooltipComponents);
+        GTUtil.appendHazardTooltips(material, tooltipComponents);
     }
 
     @Override
@@ -103,12 +105,8 @@ public class TagPrefixItem extends Item {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
-
-
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
-                    GTUtil.applyHazardEffects(material, livingEntity, () -> material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
+                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST))
                     return;
-                }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
@@ -126,7 +124,8 @@ public class TagPrefixItem extends Item {
 
     public int getItemBurnTime() {
         DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
-        if (property != null) return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
+        if (property != null)
+            return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;
     }
 

@@ -7,5 +7,4 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
  * @date 2023/7/2
  * @implNote IWorkableMultiController
  */
-public interface IWorkableMultiController extends IMultiController, IRecipeLogicMachine {
-}
+public interface IWorkableMultiController extends IMultiController, IRecipeLogicMachine {}

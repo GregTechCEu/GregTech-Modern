@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +74,10 @@ public class LogStripBehavior implements IToolBehavior {
 
         boolean stripped = false;
         for (BlockPos blockPos : blocks) {
-            stripped |= level.setBlock(blockPos, getStripped(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            stripped |= level.setBlock(blockPos,
+                    getStripped(level.getBlockState(blockPos),
+                            new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))),
+                    Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
             }
@@ -92,10 +97,12 @@ public class LogStripBehavior implements IToolBehavior {
 
     public static Set<BlockPos> getStrippableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
                                                     Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult, LogStripBehavior.INSTANCE::isBlockStrippable);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
+                LogStripBehavior.INSTANCE::isBlockStrippable);
     }
 
-    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
+    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos,
+                                        UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
         return newState != null && newState != state;

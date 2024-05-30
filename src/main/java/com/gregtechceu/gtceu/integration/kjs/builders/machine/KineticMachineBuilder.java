@@ -15,11 +15,13 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 
 import java.util.Locale;
 import java.util.function.BiConsumer;
@@ -36,11 +38,15 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  * @implNote MachineBuilder
  */
 public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefinition> {
+
     public transient Int2LongFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
     private final Object[] passedArguments;
 
     public KineticMachineBuilder(String name, boolean isSource, int tier, Object... args) {
-        super(GTRegistration.REGISTRATE, name, (id) -> new KineticMachineDefinition(id, isSource, GTValues.V[tier]), (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier, GTMachines.defaultTankSizeFunction, args), KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create);
+        super(GTRegistration.REGISTRATE, name, (id) -> new KineticMachineDefinition(id, isSource, GTValues.V[tier]),
+                (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier, GTMachines.defaultTankSizeFunction,
+                        args),
+                KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create);
         this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
         this.passedArguments = args;
     }
@@ -53,7 +59,8 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
     @SuppressWarnings("unused") // Accessed via reflection
     public KineticMachineBuilder tankScalingFunction(Function<Object, Double> tankScalingFunction) {
         this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).longValue();
-        this.metaMachine((holder) -> new SimpleKineticElectricWorkableMachine(holder, tier(), this.tankScalingFunction, passedArguments));
+        this.metaMachine((holder) -> new SimpleKineticElectricWorkableMachine(holder, tier(), this.tankScalingFunction,
+                passedArguments));
         return this;
     }
 
@@ -77,10 +84,12 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
                                                           Integer... tiers) {
         KineticMachineBuilder[] builders = new KineticMachineBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            var register = new KineticMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, false, tier)
+            var register = new KineticMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, false,
+                    tier)
                     .tier(tier)
                     .hasTESR(true)
-                    .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type, () -> SplitShaftInstance::new, false));
+                    .onBlockEntityRegister(type -> KineticMachineBlockEntity.onBlockEntityRegister(type,
+                            () -> SplitShaftInstance::new, false));
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }
@@ -90,17 +99,24 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
     private static void simple(MachineBuilder<KineticMachineDefinition> builder, int tier) {
         builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.id.getPath()), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
-                //.editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(builder.id.getPath()), recipeType))
+                // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(builder.id.getPath()),
+                // recipeType))
                 .blockProp(BlockBehaviour.Properties::dynamicShape)
                 .blockProp(BlockBehaviour.Properties::noOcclusion)
                 .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier, GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + builder.id.getPath())))
+                .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
+                        GTCEu.id("block/machine/kinetic_electric_machine"),
+                        GTCEu.id("block/machines/" + builder.id.getPath())))
                 .tooltips(explosion());
-                //.tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, defaultTankSizeFunction.apply(tier), true));
+        // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+        // defaultTankSizeFunction.apply(tier), true));
     }
 
     public static MachineBuilder<KineticMachineDefinition> createAll(String name, Object... args) {
-        KineticMachineBuilder[] builders = tieredMachines(name, KineticMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
-        return MachineFunctionPresets.builder(name, builders, KineticMachineBuilder.class, (id) -> new KineticMachineDefinition(id, false, 0), KineticMachineBlock::new, KineticMachineBlockEntity::create);
+        KineticMachineBuilder[] builders = tieredMachines(name, KineticMachineBuilder::simple,
+                MachineFunctionPresets.mapTierArray(args));
+        return MachineFunctionPresets.builder(name, builders, KineticMachineBuilder.class,
+                (id) -> new KineticMachineDefinition(id, false, 0), KineticMachineBlock::new,
+                KineticMachineBlockEntity::create);
     }
 }

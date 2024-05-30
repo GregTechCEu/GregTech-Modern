@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -27,8 +29,7 @@ public class SteamHullMachineRenderer extends MachineRenderer {
         setTextureOverride(Map.of(
                 "bottom", GTCEu.id("block/casings/steam/%s/bottom".formatted(name)),
                 "top", GTCEu.id("block/casings/steam/%s/top".formatted(name)),
-                "side", GTCEu.id("block/casings/steam/%s/side".formatted(name))
-        ));
+                "side", GTCEu.id("block/casings/steam/%s/side".formatted(name))));
     }
 
     @NotNull

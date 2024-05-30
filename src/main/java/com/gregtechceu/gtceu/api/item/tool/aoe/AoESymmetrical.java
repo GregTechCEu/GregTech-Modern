@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.item.tool.aoe;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 public class AoESymmetrical {

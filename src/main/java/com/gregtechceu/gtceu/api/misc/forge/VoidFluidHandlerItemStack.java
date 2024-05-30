@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.misc.forge;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+
 import org.jetbrains.annotations.NotNull;
 
 /**

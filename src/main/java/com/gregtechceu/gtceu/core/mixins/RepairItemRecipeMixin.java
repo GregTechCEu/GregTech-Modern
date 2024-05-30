@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +12,9 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,6 +31,7 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
 
     /**
      * It's a hack to prevent the tool from being returned
+     * 
      * @param container the input inventory
      */
     @Override
@@ -43,10 +46,11 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     @Inject(
-        method = "matches(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/world/level/Level;)Z",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;", ordinal = 0),
-        cancellable = true
-    )
+            method = "matches(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/world/level/Level;)Z",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;",
+                     ordinal = 0),
+            cancellable = true)
     public void gtceu$matches(CraftingContainer inv, Level worldIn, CallbackInfoReturnable<Boolean> cir,
                               @Local(ordinal = 0) ItemStack itemstack,
                               @Local(ordinal = 1) ItemStack itemstack1) {
@@ -63,10 +67,11 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     @Inject(
-        method = "assemble(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/core/RegistryAccess;)Lnet/minecraft/world/item/ItemStack;",
-        at = @At(value = "RETURN", ordinal = 1), cancellable = true
-    )
-    public void gtceu$assemble(CraftingContainer container, RegistryAccess registryAccess, CallbackInfoReturnable<ItemStack> cir,
+            method = "assemble(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/core/RegistryAccess;)Lnet/minecraft/world/item/ItemStack;",
+            at = @At(value = "RETURN", ordinal = 1),
+            cancellable = true)
+    public void gtceu$assemble(CraftingContainer container, RegistryAccess registryAccess,
+                               CallbackInfoReturnable<ItemStack> cir,
                                @Local(ordinal = 1) ItemStack itemstack3,
                                @Local(ordinal = 2) LocalRef<ItemStack> itemstack2,
                                @Local(ordinal = 3) int i1,
