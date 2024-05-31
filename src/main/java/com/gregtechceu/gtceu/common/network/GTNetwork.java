@@ -15,8 +15,8 @@ public class GTNetwork {
 
     public static void init() {
         NETWORK.registerC2S(CPacketKeysPressed.class);
-        NETWORK.registerC2S(SPacketSyncOreVeins.class);
-        NETWORK.registerC2S(SPacketSyncFluidVeins.class);
-        NETWORK.registerC2S(SPacketSyncBedrockOreVeins.class);
+        NETWORK.registerS2C(SPacketSyncOreVeins.class);
+        NETWORK.registerS2C(SPacketSyncFluidVeins.class);
+        NETWORK.registerS2C(SPacketSyncBedrockOreVeins.class);
     }
 }
