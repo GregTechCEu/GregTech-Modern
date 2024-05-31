@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -81,7 +82,8 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
         }
 
         if (Platform.getMinecraftServer() != null) {
-            GTNetwork.NETWORK.sendToAll(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
+            GTNetwork.NETWORK
+                    .sendToAll(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
         }
     }
 

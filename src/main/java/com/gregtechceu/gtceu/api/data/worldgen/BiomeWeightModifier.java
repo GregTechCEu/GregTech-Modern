@@ -9,7 +9,6 @@ import net.minecraft.world.level.biome.Biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
