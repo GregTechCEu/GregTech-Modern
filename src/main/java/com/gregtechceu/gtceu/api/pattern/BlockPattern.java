@@ -119,7 +119,7 @@ public class BlockPattern {
                         worldState.setError(null);
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
                         BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
-                            .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (!worldState.update(pos, predicate)) {
                             return false;
                         }
@@ -560,7 +560,8 @@ public class BlockPattern {
         consumer.accept(blockState.setValue(property, found));
     }
 
-    private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing, boolean isFlipped) {
+    private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
+                                             boolean isFlipped) {
         int[] c0 = new int[] { x, y, z }, c1 = new int[3];
         if (facing == Direction.UP || facing == Direction.DOWN) {
             Direction of = facing == Direction.DOWN ? upwardsFacing : upwardsFacing.getOpposite();
@@ -605,10 +606,12 @@ public class BlockPattern {
                 }
             }
             if (upwardsFacing == Direction.WEST || upwardsFacing == Direction.EAST) {
-                int xOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepX() : facing.getClockWise().getOpposite().getStepX();
-                int zOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepZ() : facing.getClockWise().getOpposite().getStepZ();
+                int xOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepX() :
+                        facing.getClockWise().getOpposite().getStepX();
+                int zOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepZ() :
+                        facing.getClockWise().getOpposite().getStepZ();
                 int tmp;
-                if(xOffset == 0) {
+                if (xOffset == 0) {
                     tmp = c1[2];
                     c1[2] = zOffset > 0 ? -c1[1] : c1[1];
                     c1[1] = zOffset > 0 ? tmp : -tmp;

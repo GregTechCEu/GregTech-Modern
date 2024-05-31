@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -61,10 +59,14 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @UpdateListener(methodName = "onPartsUpdated")
     private BlockPos[] partPositions = new BlockPos[0];
     @Getter
-    @Persisted @DescSynced @RequireRerender
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected boolean isFormed;
-    @Getter @Setter
-    @Persisted @DescSynced
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
     protected boolean isFlipped;
 
     public MultiblockControllerMachine(IMachineBlockEntity holder) {
@@ -231,7 +233,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     public Direction getUpwardsFacing() {
-        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) : Direction.NORTH;
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) :
+                Direction.NORTH;
     }
 
     public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
@@ -241,21 +244,25 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             return;
         }
         BlockState blockState = getBlockState();
-        if(blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock && blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getPos(), blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+        if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock &&
+                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+            getLevel().setBlockAndUpdate(getPos(),
+                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
-                //checkPattern();
+                // checkPattern();
                 checkPatternWithTryLock();
             }
         }
     }
 
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() : getUpwardsFacing().getClockWise());
+            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
+                    getUpwardsFacing().getClockWise());
             return InteractionResult.CONSUME;
         }
         if (playerIn.isShiftKeyDown()) {
@@ -274,7 +281,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     public void setFrontFacing(Direction facing) {
         Direction oldFacing = getFrontFacing();
 
-        if(allowExtendedFacing()) {
+        if (allowExtendedFacing()) {
             Direction newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
             setUpwardsFacing(newUpwardsFacing);
         }

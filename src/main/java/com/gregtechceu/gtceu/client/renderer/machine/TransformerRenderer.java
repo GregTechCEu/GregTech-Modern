@@ -77,9 +77,11 @@ public class TransformerRenderer extends TieredHullMachineRenderer {
         }
 
         if (side == frontFacing && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, 2));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState,
+                    2));
         } else if (side != null && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState, 3));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState,
+                    3));
         }
     }
 

@@ -106,7 +106,8 @@ public class MultiblockInWorldPreviewRenderer {
      * @param shapeInfo the shape info of the multiblock
      * @param duration  the duration of the preview. in ticks.
      */
-    public static void showPreview(BlockPos pos, Direction front, Direction up, MultiblockShapeInfo shapeInfo, int duration) {
+    public static void showPreview(BlockPos pos, Direction front, Direction up, MultiblockShapeInfo shapeInfo,
+                                   int duration) {
         front = front.getStepY() == 0 ? front : front.getStepY() < 0 ? up : up.getOpposite();
 
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();

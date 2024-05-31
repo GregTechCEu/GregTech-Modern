@@ -181,12 +181,15 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+
     public static MachineDefinition getBuilt() {
         return STATE.get();
     }
+
     public static void setBuilt(MachineDefinition state) {
         STATE.set(state);
     }
+
     public static void clearBuilt() {
         STATE.remove();
     }

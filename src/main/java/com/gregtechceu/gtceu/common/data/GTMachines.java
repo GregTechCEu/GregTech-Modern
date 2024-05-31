@@ -2274,7 +2274,7 @@ public class GTMachines {
                 .tooltips(
                         Component.translatable("gtceu.machine.multiblock.tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity))
-                .rotationState(RotationState.NON_Y_AXIS)
+                .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
                 .pattern(definition -> FactoryBlockPattern.start()
                         .aisle("CCC", "CCC", "CCC")

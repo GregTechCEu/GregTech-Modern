@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -31,11 +33,15 @@ import net.minecraftforge.client.model.SimpleModelState;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -145,8 +151,8 @@ public class WorkableOverlayModel {
                                      boolean isActive, boolean isWorkingEnabled) {
         var quads = new ArrayList<BakedQuad>();
 
-        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 : upwardsFacing == Direction.SOUTH ? 2 :
-                upwardsFacing == Direction.WEST ? 1 : 0);
+        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 :
+                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? 1 : 0);
 
         Matrix4f matrix = new Matrix4f();
 
@@ -156,12 +162,13 @@ public class WorkableOverlayModel {
             matrix.rotate(worldUp);
         } else {
             matrix.rotate(Mth.HALF_PI, frontFacing.getStepY(), 0, 0);
-            if(upwardsFacing.getAxis() == Direction.Axis.Z) {
+            if (upwardsFacing.getAxis() == Direction.Axis.Z) {
                 matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
             }
         }
 
-        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0, frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
+        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0,
+                frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
         matrix.rotate(rot);
 
         var rotation = new SimpleModelState(new Transformation(matrix));

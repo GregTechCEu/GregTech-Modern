@@ -47,9 +47,11 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
             frontFaceTexture = converter.isFeToEu() ? ENERGY_OUT : frontFaceTexture;
         }
         if (side == frontFacing && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
         } else if (side != null && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
         }
     }
 

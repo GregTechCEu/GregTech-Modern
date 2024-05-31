@@ -50,7 +50,8 @@ public class WorkableSidedCasingMachineRenderer extends MachineRenderer {
             upwardsFacing = multi.self().getUpwardsFacing();
         }
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(), workable.isWorkingEnabled()));
+            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
+                    workable.isWorkingEnabled()));
         } else {
             quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
         }

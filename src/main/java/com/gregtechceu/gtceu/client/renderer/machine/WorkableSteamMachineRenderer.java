@@ -52,13 +52,15 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
             upwardsFacing = multi.self().getUpwardsFacing();
         }
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(), workable.isWorkingEnabled()));
+            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
+                    workable.isWorkingEnabled()));
         } else {
             quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
         }
         if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
             if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
+                quads.add(
+                        StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
             }
         }
     }

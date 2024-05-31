@@ -58,7 +58,8 @@ public class SimpleCoverRenderer implements ICoverRenderer {
         if (side == coverBehavior.attachedSide && modelFacing != null) {
             quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
             if (emissiveTexture != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(emissiveTexture), modelState));
+                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(emissiveTexture),
+                        modelState));
             }
         }
     }

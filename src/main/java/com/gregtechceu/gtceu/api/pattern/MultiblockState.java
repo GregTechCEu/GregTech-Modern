@@ -47,7 +47,8 @@ public class MultiblockState {
     public TraceabilityPredicate predicate;
     public IO io;
     public PatternError error;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean neededFlip = false;
     public final Level world;
     public final BlockPos controllerPos;

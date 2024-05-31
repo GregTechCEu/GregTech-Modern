@@ -76,7 +76,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         this.definition = definition;
         this.rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
-            BlockState defaultState = this.defaultBlockState().setValue(rotationState.property, rotationState.defaultDirection);
+            BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
+                    rotationState.defaultDirection);
             if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
                 defaultState = defaultState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, Direction.NORTH);
             }
@@ -90,7 +91,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         RotationState rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
             pBuilder.add(rotationState.property);
-            if (MachineDefinition.getBuilt() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+            if (MachineDefinition.getBuilt() instanceof MultiblockMachineDefinition multi &&
+                    multi.isAllowExtendedFacing()) {
                 pBuilder.add(IMachineBlock.UPWARDS_FACING_PROPERTY);
             }
         }

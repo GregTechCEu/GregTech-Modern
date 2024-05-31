@@ -80,7 +80,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private Comparator<IMultiPart> partSorter = (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
-    @Getter @Setter
+    @Getter
+    @Setter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
     protected MultiblockMachineBuilder(Registrate registrate, String name,
