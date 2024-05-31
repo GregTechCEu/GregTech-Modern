@@ -34,6 +34,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import com.mojang.serialization.MapCodec;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -113,6 +114,7 @@ public final class GTRegistries {
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 
+    @Nullable
     public static RegistryAccess builtinRegistry() {
         return Platform.getFrozenRegistry();
     }

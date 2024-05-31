@@ -76,7 +76,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
         public static final HazardType INHALATION_POISON = new HazardType("inhalation_poison", ProtectionType.MASK,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
-        public static final HazardType CONTACT_POISON = new HazardType("contacy_poison", ProtectionType.FULL);
+        public static final HazardType CONTACT_POISON = new HazardType("contact_poison", ProtectionType.FULL);
         public static final HazardType RADIOACTIVE = new HazardType("radioactive", ProtectionType.FULL);
         public static final HazardType CORROSIVE = new HazardType("corrosive", ProtectionType.HANDS,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);

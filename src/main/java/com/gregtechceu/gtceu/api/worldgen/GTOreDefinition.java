@@ -70,9 +70,9 @@ public class GTOreDefinition {
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure")
                             .forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registries.BIOME).optionalFieldOf("biomes", null)
-                            .forGetter(ext -> ext.biomes == null ? null : ext.biomes.get()),
-                    BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", null)
+                    RegistryCodecs.homogeneousList(Registries.BIOME).optionalFieldOf("biomes", HolderSet.direct())
+                            .forGetter(ext -> ext.biomes == null ? HolderSet.direct() : ext.biomes.get()),
+                    BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY)
                             .forGetter(ext -> ext.biomeWeightModifier),
                     VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator),
                     Codec.list(IndicatorGenerator.DIRECT_CODEC).fieldOf("indicators")
@@ -81,7 +81,7 @@ public class GTOreDefinition {
                             (clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure,
                              biomes, biomeWeightModifier, veinGenerator, indicatorGenerators) -> new GTOreDefinition(
                                      clusterSize, density, weight, layer, new HashSet<>(dimensionFilter), range,
-                                     discardChanceOnAirExposure, biomes == null ? null : () -> biomes,
+                                     discardChanceOnAirExposure, biomes == null ? HolderSet::direct : () -> biomes,
                                      biomeWeightModifier, veinGenerator, indicatorGenerators)));
 
     private final InferredProperties inferredProperties = new InferredProperties();
@@ -107,7 +107,7 @@ public class GTOreDefinition {
     private Supplier<HolderSet<Biome>> biomes;
     @Getter
     @Setter
-    private BiomeWeightModifier biomeWeightModifier;
+    private BiomeWeightModifier biomeWeightModifier = BiomeWeightModifier.EMPTY;
 
     @Getter
     @Setter
