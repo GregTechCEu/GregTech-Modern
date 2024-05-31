@@ -139,12 +139,8 @@ public class WorkableOverlayModel {
         this.location = location;
         if (LDLib.isClient()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
-            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
         }
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
 
     @OnlyIn(Dist.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, Direction upwardsFacing,
@@ -234,9 +230,6 @@ public class WorkableOverlayModel {
         ResourceManager resManager = Minecraft.getInstance().getResourceManager();
 
         sprites.clear();
-        synchronized (caches) {
-            caches.clear();
-        }
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
 
