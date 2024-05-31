@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.utils.input.IKeyPressedListener;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -17,11 +18,10 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.ToggleKeyMapping;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -33,14 +33,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.naming.ldap.LdapContext;
 
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.LAST_CRAFTING_USE_KEY;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getMaxAoEDefinition;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTOmniToolItem extends GTToolItem implements IGTTool {
+public class GTOmniToolItem extends GTToolItem implements IGTTool, IKeyPressedListener {
     @Getter
     private final GTToolType toolType;
     @Getter
@@ -49,7 +48,7 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool {
     private final int electricTier;
     @Getter
     private final IGTToolDefinition omniToolStats;
-
+    private static boolean onInit = false;
     protected GTOmniToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(toolType, tier, material ,toolStats, properties);
         this.material = material;
@@ -73,24 +72,26 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool {
     public static GTOmniToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties){
         return new GTOmniToolItem(toolType, tier, material, toolStats, properties);
     }
-
+    @Override
+    public void onKeyPressed(ServerPlayer player, KeyBind keyPressed) {
+        if (keyPressed.isPressed()){
+            var stackHand = player.getMainHandItem();
+            CompoundTag data = stackHand.getOrCreateTag();
+            var tagCompound = getBehaviorsTag(stackHand);
+            tagCompound.putByte("OmniToolMode", (byte) ((tagCompound.getByte("OmniToolMode") + 1) % ToolModeSwitchBehavior.OmniModeType.values().length));
+            player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode", ToolModeSwitchBehavior.OmniModeType.values()[tagCompound.getByte("OmniToolMode")].getName()), true);
+            setLastCraftingSoundTime(stackHand);
+        }
+    }
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        CompoundTag data = stack.getOrCreateTag();
-        byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
+        if (!onInit){
+            //Registers the listener then stops after the first tick. This is kinda hacky but it works.
+            KeyBind.QUARK_TOOL_MODE_SWITCH.registerListener((ServerPlayer) entity,this);
+            onInit = true;
+        }
 
-        if (entity instanceof Player player && KeyBind.QUARK_TOOL_MODE_SWITCH.isKeyDown(player) && toggleTimer == 0){
-            toggleTimer = 20;
-            var tagCompound = getBehaviorsTag(stack);
-            tagCompound.putByte("OmniToolMode", (byte) ((tagCompound.getByte("OmniToolMode") + 1) % ToolModeSwitchBehavior.OmniModeType.values().length));
-            player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode", ToolModeSwitchBehavior.OmniModeType.values()[tagCompound.getByte("OmniToolMode")].getName()), true);
-            setLastCraftingSoundTime(stack);
-        }
-        if (!level.isClientSide && toggleTimer > 0) {
-            --toggleTimer;
-            data.putByte("toggleTimer", toggleTimer);
-        }
     }
 
     @Override
@@ -147,4 +148,6 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool {
             .widget(new LabelWidget(93, 65, () ->
                 Integer.toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
     }
+
+
 }
