@@ -2363,7 +2363,7 @@
     "gtceu.chemical_reactor": "化学反応器",
     "gtceu.circuit_assembler": "回路組立機",
     "gtceu.coke_oven": "コークス炉",
-    "gtceu.combustion_generator": "Combustion Generator",
+    "gtceu.combustion_generator": "燃焼発電機",
     "gtceu.command.copy.click_to_copy": "クリックでコピー",
     "gtceu.command.copy.copied_and_click": "をクリップボードにコピーします。クリックで再びコピーします",
     "gtceu.command.copy.copied_end": "] をコピーしました",
