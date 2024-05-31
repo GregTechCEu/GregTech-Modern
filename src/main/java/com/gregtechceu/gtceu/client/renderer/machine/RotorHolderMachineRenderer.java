@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -59,8 +58,9 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                             modelState, -101, 15, true, false));
                     if (rotorHolderMachine.hasRotor()) {
                         if (rotorHolderMachine.isRotorSpinning()) {
-                            quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
-                                    modelState, 2, 0, true, true));
+                            quads.add(
+                                    StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
+                                            modelState, 2, 0, true, true));
                         } else {
                             quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE),
                                     modelState, 2, 0, true, true));

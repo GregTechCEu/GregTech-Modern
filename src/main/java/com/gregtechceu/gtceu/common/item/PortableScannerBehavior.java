@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -200,11 +199,15 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
 
-                if (machine.getDefinition() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+                if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&
+                        multi.isAllowExtendedFacing()) {
                     list.add(Component.translatable("behavior.portable_scanner.divider"));
 
-                    list.add(Component.translatable("behavior.portable_scanner.machine_front_facing", machine.getFrontFacing().getSerializedName()));
-                    list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing", machineBlockEntity.self().getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY).getSerializedName()));
+                    list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",
+                            machine.getFrontFacing().getSerializedName()));
+                    list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing",
+                            machineBlockEntity.self().getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY)
+                                    .getSerializedName()));
                 }
 
                 // Fluid tanks

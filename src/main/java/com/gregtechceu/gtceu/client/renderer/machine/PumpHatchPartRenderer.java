@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -45,8 +44,9 @@ public class PumpHatchPartRenderer extends CTMModelRenderer {
         if (state.getBlock() instanceof MetaMachineBlock machineBlock && side == machineBlock.getFrontFacing(state)) {
             var quads = new ArrayList<>(super.renderModel(level, pos, state, side, rand));
             quads.add(StaticFaceBakery.bakeFace(side, ModelFactory.getBlockSprite(PIPE_OUT)));
-            quads.add(StaticFaceBakery.bakeFace(side, ModelFactory.getBlockSprite(FLUID_HATCH), BlockModelRotation.X0_Y0,
-                    -101, 15));
+            quads.add(
+                    StaticFaceBakery.bakeFace(side, ModelFactory.getBlockSprite(FLUID_HATCH), BlockModelRotation.X0_Y0,
+                            -101, 15));
             return quads;
         }
         return super.renderModel(level, pos, state, side, rand);

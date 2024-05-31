@@ -52,7 +52,8 @@ public class ConveyorCoverRenderer implements ICoverRenderer {
                             BlockAndTintGetter level, ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof ConveyorCover conveyor &&
                 modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CONVEYOR_OVERLAY), modelState));
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CONVEYOR_OVERLAY), modelState));
             quads.add(StaticFaceBakery.bakeFace(modelFacing,
                     ModelFactory
                             .getBlockSprite(conveyor.getIo() == IO.OUT ? CONVEYOR_OVERLAY_OUT : CONVEYOR_OVERLAY_IN),

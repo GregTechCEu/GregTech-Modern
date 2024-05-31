@@ -117,7 +117,7 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         quads.add(
-                                StaticFaceBakery.bakeFace(modelFacing,ModelFactory.getBlockSprite(PIPE_OVERLAY),
+                                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
                                         modelState));
                     }
                 }

@@ -40,7 +40,7 @@ public class MaintenanceHatchPartRenderer extends OverlayTieredMachineRenderer {
         if (side == frontFacing && modelFacing != null && machine instanceof IMaintenanceMachine maintenanceHatch &&
                 maintenanceHatch.isTaped()) {
             quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(MAINTENANCE_OVERLAY_TAPED),
-                            modelState));
+                    modelState));
         }
     }
 
