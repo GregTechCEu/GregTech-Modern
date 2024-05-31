@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 
@@ -166,8 +165,8 @@ public class WorkableOverlayModel {
             if (predicate != null) {
                 var texture = predicate.getSprite(isActive, isWorkingEnabled);
                 if (texture != null) {
-                    var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                            true);
+                    var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                            rotation, -1, 0, true, true);
                     if (quad.getDirection() == side) {
                         quads.add(quad);
                     }
@@ -176,14 +175,14 @@ public class WorkableOverlayModel {
                 texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                 if (texture != null) {
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15,
-                                true, false);
+                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                                rotation, -101, 15, true, false);
                         if (quad.getDirection() == side) {
                             quads.add(quad);
                         }
                     } else {
-                        var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                                true);
+                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                                rotation, -1, 0, true, true);
                         if (quad.getDirection() == side) {
                             quads.add(quad);
                         }
