@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -24,8 +25,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
@@ -1054,7 +1053,25 @@ public class Material implements Comparable<Material> {
 
         // Tons of shortcut functions for adding various hazard effects.
 
-        //TODO remove generic hazards in favour or specific or generalized MedicalConditions
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition){
+            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,1, false));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, float progressionMultiplier){
+            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,progressionMultiplier, false));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, float progressionMultiplier, boolean applyToDerivatives){
+            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,progressionMultiplier, applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, boolean applyToDerivatives){
+            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,1, applyToDerivatives));
+            return this;
+        }
 
 
         public Builder ore() {
@@ -1183,14 +1200,14 @@ public class Material implements Comparable<Material> {
             if (!properties.hasProperty(HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
                     Material material = materialStack.material();
-                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives()) {
+                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).applyToDerivatives) {
                         properties.setProperty(HAZARD, material.getProperty(HAZARD));
                         break;
                     }
                 }
             }
             if (properties.hasProperty(HAZARD) &&
-                    properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardTrigger.NONE) {
+                    properties.getProperty(HAZARD).hazardTrigger == HazardProperty.HazardTrigger.NONE) {
                 properties.removeProperty(HAZARD);
             }
 

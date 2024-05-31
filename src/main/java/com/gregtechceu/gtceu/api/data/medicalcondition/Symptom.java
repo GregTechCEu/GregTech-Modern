@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -13,9 +15,9 @@ import java.util.UUID;
 public class Symptom {
 
     public static final UUID SYMPTOM_HEALTH_DEBUFF_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");
-    public static final UUID SYMPTOM_ATTACK_SPEED_DEBUFF_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");//TODO
-    public static final UUID SYMPTOM_WEAKNESS_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");//TODO
-    public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");//TODO
+    public static final UUID SYMPTOM_ATTACK_SPEED_DEBUFF_UUID = UUID.fromString("f2378ee6-3427-45b5-8440-4b797f7b664a");
+    public static final UUID SYMPTOM_WEAKNESS_UUID = UUID.fromString("482e64e0-de77-49cd-b9bc-96b7e7eb16db");
+    public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("b3ac6b40-2d30-419f-9cac-5b2cf998ad72");
 
     public static final Symptom DEATH = new Symptom(defaultKey("death"),1,0,
             ((hazardEffectTracker, damageSource, modifier) -> hazardEffectTracker.getPlayer().die(damageSource)));
@@ -25,6 +27,9 @@ public class Symptom {
     public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"),7,0,.05f,Attributes.MOVEMENT_SPEED, SYMPTOM_SLOWNESS_UUID);
     public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"),10,0,
             (hazardEffectTracker, damageSource, modifier) -> hazardEffectTracker.setMaxAirSupply(hazardEffectTracker.getMaxAirSupply()+10*modifier));
+    public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"),10,0, MobEffects.BLINDNESS);
+    public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"),10,0, MobEffects.DIG_SLOWDOWN);
+
 
 
     public final String name;
@@ -50,11 +55,54 @@ public class Symptom {
                 hazardEffectTracker.getPlayer().getAttribute(attribute).addPermanentModifier(new AttributeModifier(uuid, name, modifier*multiplier, AttributeModifier.Operation.ADDITION))));
     }
 
+    /**
+     * @param mobEffect MobEffect to apply
+     * @param amplifiermultiplier amplifier added to MobEffect every progression
+     */
+    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect, int amplifiermultiplier) {
+        this(name, defaultStages, defaultProgressionThreshold, ((hazardEffectTracker, damageSource, modifier) ->
+                hazardEffectTracker.setMobEffect(mobEffect,amplifiermultiplier*modifier)));
+    }
+
+
+    /**
+     * @param mobEffect MobEffect to apply
+     */
+    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect) {
+        this(name, defaultStages, defaultProgressionThreshold, ((hazardEffectTracker, damageSource, modifier) ->
+                hazardEffectTracker.setMobEffect(mobEffect,modifier)));
+    }
+
+
     public void applyProgression(MedicalConditionTracker subject, @Nullable DamageSource source, int modifier){
         progressionEffect.accept(subject, source, modifier);
     }
 
-    public record ConfiguredSymptom(Symptom symptom, int stages, float progressionThreshold){}
+    public static class ConfiguredSymptom{
+        public final Symptom symptom;
+        public final int stages;
+        public final float progressionThreshold;
+        public final float relativeHarshness;
+
+        ConfiguredSymptom(Symptom symptom, int stages, float progressionThreshold){
+            this.symptom = symptom;
+            this.stages = stages;
+            this.progressionThreshold = progressionThreshold;
+            this.relativeHarshness = (float)stages/symptom.defaultStages;
+        }
+
+        ConfiguredSymptom(Symptom symptom){
+            this(symptom,symptom.defaultStages,symptom.defaultProgressionThreshold);
+        }
+
+        ConfiguredSymptom(Symptom symptom, int stages){
+            this(symptom,stages,symptom.defaultProgressionThreshold);
+        }
+
+        ConfiguredSymptom(Symptom symptom, float progressionThreshold){
+            this(symptom,symptom.defaultStages,progressionThreshold);
+        }
+    }
 
 
     private static String defaultKey(String name){

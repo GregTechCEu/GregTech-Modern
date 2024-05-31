@@ -104,7 +104,7 @@ public class ForgeCommonEventListener {
     public static void registerEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player entity) {
             final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
-            event.addCapability(GTCEu.id("hazard_tracker"), new ICapabilitySerializable<CompoundTag>() {
+            event.addCapability(GTCEu.id("medical_condition_tracker"), new ICapabilitySerializable<CompoundTag>() {
 
                 @Override
                 public CompoundTag serializeNBT() {
@@ -138,34 +138,34 @@ public class ForgeCommonEventListener {
         }
         Player player = event.player;
         IMedicalConditionTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
-        tracker.tick();
         IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
 
         if (tracker == null || inventory == null) {
             return;
         }
-
-        for (int i = 0; i < inventory.getSlots(); ++i) {
-            ItemStack stack = inventory.getStackInSlot(i);
-            Material material = HazardProperty.getValidHazardMaterial(stack);
-            if (material == null) {
-                continue;
-            }
-            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-            if (property.getHazardType().protectionType().isProtected(player)) {
-                // entity has proper safety equipment, so damage it per material every 5 seconds.
-                if (player.level().getGameTime() % 100 == 0) {
-                    for (ArmorItem.Type type : property.getHazardType().protectionType().getEquipmentTypes()) {
-                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
-                                p -> p.broadcastBreakEvent(type.getSlot()));
-                    }
+        tracker.tick();
+        if (player.level().getGameTime() % 20 == 0) {
+            for (int i = 0; i < inventory.getSlots(); ++i) {
+                ItemStack stack = inventory.getStackInSlot(i);
+                Material material = HazardProperty.getValidHazardMaterial(stack);
+                if (material == null) {
+                    continue;
                 }
-                return;
-                //don't progress material condition
+                HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+                if (property.hazardTrigger.protectionType().isProtected(player)) {
+                    // entity has proper safety equipment, so damage it per material every 5 seconds.
+                    if (player.level().getGameTime() % 100 == 0) {
+                        for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
+                            player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
+                                    p -> p.broadcastBreakEvent(type.getSlot()));
+                        }
+                    }
+                    return;
+                    //don't progress material condition
+                }
+                tracker.progressRelatedCondition(material);
             }
-            tracker.progressRelatedCondition(material);
         }
-
 
     }
 

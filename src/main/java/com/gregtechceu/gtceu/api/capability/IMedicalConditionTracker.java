@@ -3,14 +3,16 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.world.effect.MobEffect;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public interface IMedicalConditionTracker {
 
 
 
-    Object2IntMap<MedicalCondition> getMedicalConditions();
+    Map<MedicalCondition,Float> getMedicalConditions();
 
     /**
      * @return the maximum air supply for the entity this is attached to.
@@ -22,5 +24,9 @@ public interface IMedicalConditionTracker {
     void tick();
 
     void progressRelatedCondition(@NotNull Material material);
+
+    void heal(MedicalCondition condition, int progression);
+
+    void setMobEffect(MobEffect effect, int amplifier);
 
 }

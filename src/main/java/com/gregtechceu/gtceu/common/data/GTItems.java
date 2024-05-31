@@ -2244,7 +2244,7 @@ public class GTItems {
             .onRegister(attach(new AntidoteBehavior(15,
                     HazardProperty.HazardTrigger.ANY,
                     HazardProperty.HazardTrigger.INHALATION,
-                    HazardProperty.HazardTrigger.HANDS)))
+                    HazardProperty.HazardTrigger.SKIN_CONTACT)))
             .register();
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
