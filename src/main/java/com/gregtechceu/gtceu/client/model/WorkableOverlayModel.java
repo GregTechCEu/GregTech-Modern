@@ -150,42 +150,19 @@ public class WorkableOverlayModel {
 
         Matrix4f matrix = new Matrix4f();
 
-        Quaternionf diff = Direction.NORTH.getRotation().difference(frontFacing.getRotation());
-        Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepX(), frontFacing.getStepY(),
-                frontFacing.getStepZ());
-
-        if(frontFacing.getAxis() != Direction.Axis.Y) {
+        if (frontFacing.getAxis() != Direction.Axis.Y) {
             double rotationRad = Math.toRadians(frontFacing.toYRot());
             Quaternionf worldUp = new Quaternionf().rotationAxis(Mth.PI - (float) rotationRad, 0, 1, 0);
             matrix.rotate(worldUp);
+        } else {
+            matrix.rotate(Mth.HALF_PI, frontFacing.getStepY(), 0, 0);
+            if(upwardsFacing.getAxis() == Direction.Axis.Z) {
+                matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
+            }
         }
 
-        if (frontFacing == Direction.DOWN && upwardsFacing.getAxis() == Direction.Axis.Z) {
-            matrix.rotate(new Quaternionf().rotationAxis(Mth.PI, 0, 1, 0));
-        }
-        if(frontFacing.getAxis() == Direction.Axis.X) {
-            Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepZ(),
-                0,
-                frontFacing.getStepX());
-            matrix.rotate(rot);
-        }
-        if(frontFacing.getAxis() == Direction.Axis.Y) {
-            matrix.rotate((frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1) * Mth.HALF_PI, 1, 0, 0);
-
-            Quaternionf rot = new Quaternionf().rotationAxis(degree, 0,
-                frontFacing.getStepY(),
-                0);
-            matrix.rotate(rot);
-        }
-        if(frontFacing.getAxis() == Direction.Axis.Z) {
-            Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepX(),
-                0,
-                frontFacing.getStepZ());
-            matrix.rotate(rot);
-        }
-
-        //matrix.scale(1.0000f);
-        //matrix.translate(0.5f, 0.5f, 0.5f);
+        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0, frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
+        matrix.rotate(rot);
 
         var rotation = new SimpleModelState(new Transformation(matrix));
 
