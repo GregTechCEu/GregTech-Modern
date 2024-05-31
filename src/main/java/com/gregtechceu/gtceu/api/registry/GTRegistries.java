@@ -34,6 +34,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import com.mojang.serialization.MapCodec;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
