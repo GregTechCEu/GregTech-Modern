@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 
+import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -90,7 +91,9 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
             GTRegistries.ORE_VEINS.freeze();
         }
 
-        GTNetwork.NETWORK.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
+        if (Platform.getMinecraftServer() != null) {
+            GTNetwork.NETWORK.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
+        }
     }
 
     public static void buildVeinGenerator() {
