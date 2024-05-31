@@ -251,8 +251,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
-                // checkPattern();
-                checkPatternWithTryLock();
+                checkPattern();
             }
         }
     }

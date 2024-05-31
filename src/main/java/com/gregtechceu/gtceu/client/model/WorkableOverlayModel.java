@@ -136,8 +136,8 @@ public class WorkableOverlayModel {
                                      boolean isActive, boolean isWorkingEnabled) {
         var quads = new ArrayList<BakedQuad>();
 
-        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 :
-                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? 1 : 0);
+        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? 1 :
+                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? -1 : 0);
 
         Matrix4f matrix = new Matrix4f();
 
