@@ -4,6 +4,10 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -13,7 +17,9 @@ import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -56,6 +62,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -285,6 +292,36 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         ItemStack itemStack = player.getItemInHand(hand);
         BlockEntity entity = level.getBlockEntity(pos);
 
+        PipeBlockEntity<?, ?> pipeBlockEntity = null;
+        if(entity instanceof PipeBlockEntity<?, ?> pbe) { pipeBlockEntity = pbe; }
+        if(pipeBlockEntity == null) {
+            return InteractionResult.FAIL;
+        }
+
+        if(pipeBlockEntity.getFrameMaterial() == null && pipeType.getThickness() < 1) {
+            var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
+            if(frameBlock != null) {
+                pipeBlockEntity.setFrameMaterial(frameBlock.material);
+
+                return InteractionResult.CONSUME;
+            }
+        }
+
+        if(itemStack.getItem() instanceof PipeBlockItem) {
+            BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
+            BlockState stateAtSide = level.getBlockState(offsetPos);
+            if(stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
+                PipeBlockItem itemPipe = (PipeBlockItem)itemStack.getItem();
+                if(itemPipe.getBlock().pipeType == pipeType) {
+                    boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack, hit);
+                    if(wasPlaced) {
+                        pipeBlockEntity.setConnection(hit.getDirection(), true, false);
+                    }
+                    return wasPlaced ? InteractionResult.CONSUME : InteractionResult.FAIL;
+                }
+            }
+        }
+
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (entity instanceof IToolable toolable && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
             var result = toolable.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
@@ -310,6 +347,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         var pipeNode = getPipeTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
+            if(pipeNode.getFrameMaterial() != null) {
+                return Shapes.block();
+            }
             connections = pipeNode.getVisualConnections();
             VoxelShape shape = getPipeModel().getShapes(connections);
             shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
@@ -369,11 +409,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
+            if (pipeTile.getFrameMaterial() != null) {
+                drops.addAll(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()).getDefaultState().getDrops(builder));
+            }
             for (Direction direction : GTUtil.DIRECTIONS) {
                 pipeTile.getCoverContainer().removeCover(direction, null);
             }
         }
-        return super.getDrops(state, builder);
+        return drops;
     }
 }

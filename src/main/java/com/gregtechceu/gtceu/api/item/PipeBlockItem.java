@@ -38,7 +38,7 @@ public class PipeBlockItem extends BlockItem {
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+    public boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();

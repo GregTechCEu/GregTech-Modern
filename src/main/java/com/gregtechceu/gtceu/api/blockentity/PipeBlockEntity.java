@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -94,10 +95,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Setter
     private int paintingColor = -1;
 
-    @Persisted
-    @DescSynced
     @RequireRerender
-    private String frameMaterial;
+    @DescSynced
+    @Persisted
+    @Getter
+    @Setter
+    @Nullable
+    private Material frameMaterial = null;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -407,12 +411,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public int getDefaultPaintingColor() {
         return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?, ?> materialPipeBlock ?
                 materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
-    }
-
-    @Nullable
-    @Override
-    public Material getFrameMaterial() {
-        return frameMaterial == null ? null : GTCEuAPI.materialManager.getMaterial(frameMaterial);
     }
 
     public void doExplosion(float explosionPower) {
