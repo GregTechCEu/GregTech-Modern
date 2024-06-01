@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,7 +26,7 @@ public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[
         this.put(capability, ArrayUtils.add(this.get(capability), value));
     }
 
-    public boolean isInput(RecipeJS recipe, ReplacementMatch match) {
+    public boolean isInput(KubeRecipe recipe, ReplacementMatch match) {
         AtomicBoolean returnValue = new AtomicBoolean(false);
         this.forEach((key, values) -> {
             var pair = GTRecipeComponents.VALID_CAPS.get(key);
@@ -49,7 +49,7 @@ public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[
         return returnValue.get();
     }
 
-    public boolean isOutput(RecipeJS recipe, ReplacementMatch match) {
+    public boolean isOutput(KubeRecipe recipe, ReplacementMatch match) {
         AtomicBoolean returnValue = new AtomicBoolean(false);
         this.forEach((key, values) -> {
             var pair = GTRecipeComponents.VALID_CAPS.get(key);
@@ -73,7 +73,7 @@ public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[
     }
 
     @Override
-    public CapabilityMap replaceInput(RecipeJS recipe, ReplacementMatch match, InputReplacement with) {
+    public CapabilityMap replaceInput(KubeRecipe recipe, ReplacementMatch match, InputReplacement with) {
         AtomicBoolean changed = new AtomicBoolean(false);
         this.forEach((key, values) -> {
             var pair = GTRecipeComponents.VALID_CAPS.get(key);
@@ -101,7 +101,7 @@ public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[
     }
 
     @Override
-    public CapabilityMap replaceOutput(RecipeJS recipe, ReplacementMatch match, OutputReplacement with) {
+    public CapabilityMap replaceOutput(KubeRecipe recipe, ReplacementMatch match, OutputReplacement with) {
         AtomicBoolean changed = new AtomicBoolean(false);
         this.forEach((key, values) -> {
             var pair = GTRecipeComponents.VALID_CAPS.get(key);

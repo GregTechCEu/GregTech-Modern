@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.commands.arguments.MaterialArgument;
 
@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.Recipe;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,12 +49,12 @@ public class ServerCommands {
                         .then(Commands.literal("check_recipes_valid")
                                 .requires(cs -> cs.hasPermission(0))
                                 .executes(context -> {
-                                    for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()
+                                    for (RecipeHolder<?> recipe : context.getSource().getServer().getRecipeManager()
                                             .getRecipes()) {
-                                        if (recipe instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
+                                        if (recipe.value() instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
                                             context.getSource().sendSuccess(
                                                     () -> Component
-                                                            .literal("recipe %s is invalid".formatted(gtRecipe.id)),
+                                                            .literal("recipe %s is invalid".formatted(recipe.id())),
                                                     false);
                                         }
                                     }

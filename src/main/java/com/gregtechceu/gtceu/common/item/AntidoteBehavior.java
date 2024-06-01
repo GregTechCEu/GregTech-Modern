@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -43,7 +44,10 @@ public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int removeP
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         ItemStack itemstack = IInteractionItem.super.finishUsingItem(stack, level, livingEntity);
-        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(livingEntity);
+        IHazardEffectTracker tracker = null;
+        if (livingEntity instanceof Player player) {
+            tracker = GTCapabilityHelper.getHazardEffectTracker(player);
+        }
         if (tracker == null) {
             return itemstack;
         }

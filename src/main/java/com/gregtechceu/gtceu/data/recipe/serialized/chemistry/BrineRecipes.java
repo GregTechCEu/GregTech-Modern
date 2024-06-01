@@ -1,23 +1,20 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import net.minecraft.data.recipes.FinishedRecipe;
-
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class BrineRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         bromineProcess(provider);
         iodineProcess(provider);
     }
 
-    private static void bromineProcess(Consumer<FinishedRecipe> provider) {
+    private static void bromineProcess(RecipeOutput provider) {
         EVAPORATION_RECIPES.recipeBuilder("brine_evaporation")
                 .inputFluids(SaltWater.getFluid(20000))
                 .outputFluids(RawBrine.getFluid(1000))
@@ -78,7 +75,7 @@ public class BrineRecipes {
                 .duration(100).EUt(VA[HV]).save(provider);
     }
 
-    public static void iodineProcess(Consumer<FinishedRecipe> provider) {
+    public static void iodineProcess(RecipeOutput provider) {
         CHEMICAL_RECIPES.recipeBuilder("brine_acidification")
                 .inputFluids(HotBrine.getFluid(1000))
                 .inputFluids(HydrochloricAcid.getFluid(1000))

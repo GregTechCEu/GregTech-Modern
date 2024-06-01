@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
+import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -102,7 +103,8 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                         (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
                 builders = tieredMultis(name,
-                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP, BiFunction.class, machineFunction), tiers);
+                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(),
+                                TypeInfo.of(BiFunction.class), machineFunction), tiers);
             } else {
                 builders = tieredMultis(name, TieredWorkableElectricMultiblockMachine::new, tiers);
             }
@@ -112,7 +114,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                         (Function<IMachineBlockEntity, MultiblockControllerMachine>) machineFunction);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
                 return new CustomMultiblockBuilder(name,
-                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP, Function.class, machineFunction));
+                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(), TypeInfo.of(Function.class), machineFunction));
             } else {
                 return new CustomMultiblockBuilder(name, WorkableElectricMultiblockMachine::new);
             }

@@ -2269,7 +2269,8 @@ public class GTMachines {
         String name = io == IO.IN ? "target" : "source";
         return registerTieredMachines(amperage + "a_laser_" + name + "_hatch",
                     (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
-                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers                          FormattingUtil.toEnglishName(name) + " Hatch")
+                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " +
+                                FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
                         .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),

@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -27,12 +27,12 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     }
 
     @Override
-    public boolean isOutput(RecipeJS recipe, CapabilityMap value, ReplacementMatch match) {
+    public boolean isOutput(KubeRecipe recipe, CapabilityMap value, ReplacementMatch match) {
         return isOutput && value.isOutput(recipe, match);
     }
 
     @Override
-    public boolean isInput(RecipeJS recipe, CapabilityMap value, ReplacementMatch match) {
+    public boolean isInput(KubeRecipe recipe, CapabilityMap value, ReplacementMatch match) {
         return !isOutput && value.isInput(recipe, match);
     }
 
@@ -42,19 +42,19 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     }
 
     @Override
-    public CapabilityMap replaceInput(RecipeJS recipe, CapabilityMap original, ReplacementMatch match,
+    public CapabilityMap replaceInput(KubeRecipe recipe, CapabilityMap original, ReplacementMatch match,
                                       InputReplacement with) {
         return isInput(recipe, original, match) ? read(recipe, original.replaceInput(recipe, match, with)) : original;
     }
 
     @Override
-    public CapabilityMap replaceOutput(RecipeJS recipe, CapabilityMap original, ReplacementMatch match,
+    public CapabilityMap replaceOutput(KubeRecipe recipe, CapabilityMap original, ReplacementMatch match,
                                        OutputReplacement with) {
         return isOutput(recipe, original, match) ? read(recipe, original.replaceOutput(recipe, match, with)) : original;
     }
 
     @Override
-    public JsonElement write(RecipeJS recipe, CapabilityMap map) {
+    public JsonElement write(KubeRecipe recipe, CapabilityMap map) {
         JsonObject json = new JsonObject();
         map.forEach((key, value) -> {
             JsonArray array = new JsonArray();
@@ -68,7 +68,7 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
     }
 
     @Override
-    public CapabilityMap read(RecipeJS recipe, Object from) {
+    public CapabilityMap read(KubeRecipe recipe, Object from) {
         if (from instanceof CapabilityMap map) return map;
         CapabilityMap map = new CapabilityMap();
         if (from instanceof JsonObject json) {

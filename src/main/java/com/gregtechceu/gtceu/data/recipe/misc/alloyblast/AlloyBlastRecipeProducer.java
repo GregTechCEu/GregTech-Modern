@@ -7,7 +7,8 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -133,7 +134,7 @@ public class AlloyBlastRecipeProducer {
         // build the gas recipe if it exists
         if (property.getGasTier() != null) {
             GTRecipeBuilder builderGas = builder.copy(builder.id.getPath() + "_gas");
-            FluidIngredient gas = CraftingComponent.EBF_GASES.get(property.getGasTier()).copy();
+            SizedTagFluidIngredient gas = CraftingComponent.EBF_GASES.get(property.getGasTier()).copy();
             gas.setAmount(gas.getAmount() * outputAmount);
             builderGas.circuitMeta(getGasCircuitNum(componentAmount))
                     .inputFluids(gas)

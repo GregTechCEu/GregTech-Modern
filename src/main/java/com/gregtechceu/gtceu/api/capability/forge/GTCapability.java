@@ -44,10 +44,6 @@ public class GTCapability {
     public static final BlockCapability<IDataAccessHatch, Direction> CAPABILITY_DATA_ACCESS = BlockCapability
             .createSided(GTCEu.id("data_access"), IDataAccessHatch.class);
 
-
-    public static final EntityCapability<IHazardEffectTracker, Void> CAPABILITY_HAZARD_EFFECT_TRACKER = EntityCapability
-            .createVoid(GTCEu.id("hazard_tracker"), IHazardEffectTracker.class);
-
     /*
      * public static void register(RegisterCapabilitiesEvent event) {
      * event.register(IEnergyContainer.class);

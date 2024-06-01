@@ -4,16 +4,15 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.data.block.GTOres;
 
+import dev.latvian.mods.kubejs.event.KubeEvent;
 import net.minecraft.resources.ResourceLocation;
-
-import dev.latvian.mods.kubejs.event.EventJS;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-public class GTOreVeinEventJS extends EventJS {
+public class GTOreVeinEventJS implements KubeEvent {
 
     public GTOreVeinEventJS() {}
 

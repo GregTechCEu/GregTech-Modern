@@ -25,12 +25,12 @@ public class SerializableGenericStackInv extends GenericStackInv
 
     @Override
     public ListTag serializeNBT(HolderLookup.Provider provider) {
-        return super.writeToTag();
+        return super.writeToTag(provider);
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, ListTag tags) {
-        super.readFromTag(tags);
+        super.readFromTag(tags, provider);
     }
 
     @Override

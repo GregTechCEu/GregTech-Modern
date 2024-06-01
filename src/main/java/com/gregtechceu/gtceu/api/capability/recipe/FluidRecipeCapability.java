@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
@@ -25,8 +28,6 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -37,6 +38,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -59,36 +62,35 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public FluidIngredient copyInner(FluidIngredient content) {
-        return content.copy();
+        if (content instanceof SizedTagFluidIngredient tag) {
+            return tag.copy();
+        }
+        return super.copyInner(content);
     }
 
     @Override
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
-        if (content.isEmpty()) return content.copy();
-        FluidIngredient copy = content.copy();
-        copy.setAmount(modifier.apply(copy.getAmount()).intValue());
-        return copy;
+        if (content.isEmpty()) return FluidIngredient.empty();
+        if (content instanceof SizedTagFluidIngredient tagFluidIngredient) {
+            return new SizedTagFluidIngredient(tagFluidIngredient.tag(),
+                    modifier.apply(tagFluidIngredient.getAmount()).intValue());
+        }
+        return super.copyWithModifier(content, modifier);
     }
 
     @Override
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
         if (obj instanceof FluidIngredient ingredient) {
-            for (FluidIngredient.Value value : ingredient.values) {
-                if (value instanceof FluidIngredient.TagValue tagValue) {
-                    ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
-                } else {
-                    Collection<Holder<Fluid>> fluids = value.getFluids();
-                    for (Holder<Fluid> fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(
-                                new FluidStack(fluid, ingredient.getAmount(), ingredient.getComponents().asPatch())));
-                    }
-                }
+            if (ingredient instanceof TagFluidIngredient tag) {
+                ingredients.add(new MapFluidTagIngredient(tag.tag()));
+            } else if (ingredient instanceof SingleFluidIngredient single) {
+                ingredients.add(new MapFluidIngredient(single.getStacks()[0]));
             }
+            // TODO support other fluid ingredient types.
         } else if (obj instanceof FluidStack stack) {
             ingredients.add(new MapFluidIngredient(stack));
-            // noinspection deprecation
-            stack.getFluid().builtInRegistryHolder().tags()
+            stack.getFluidHolder().tags()
                     .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
         }
 
@@ -209,7 +211,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         Map<FluidKey, Long> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
-            long fluidAmount = fluidInput.getAmount();
+            final long fluidAmount;
+            if (fluidInput instanceof SizedTagFluidIngredient tag) {
+                fluidAmount = tag.getAmount();
+            } else if (fluidInput instanceof SizedSingleFluidIngredient single) {
+                fluidAmount = single.getAmount();
+            } else {
+                fluidAmount = FluidType.BUCKET_VOLUME;
+            }
             if (content.chance == 0.0f) {
                 notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
                         (k, v) -> v + fluidAmount);
@@ -347,23 +356,16 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     // Maps fluids to Either<(tag with count), FluidStack>s
     public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
-        int amount = ingredient.getAmount();
-        PatchedDataComponentMap components = ingredient.getComponents();
-
-        List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
-        List<FluidStack> fluids = new ArrayList<>();
-        for (FluidIngredient.Value value : ingredient.values) {
-            if (value instanceof FluidIngredient.TagValue tagValue) {
-                tags.add(Pair.of(tagValue.getTag(), amount));
-            } else {
-                fluids.addAll(value.getFluids().stream()
-                        .map(fluid -> new FluidStack(fluid, amount, components.asPatch())).toList());
-            }
-        }
-        if (!tags.isEmpty()) {
+        if (ingredient instanceof SizedTagFluidIngredient tag) {
+            List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
+            tags.add(Pair.of(tag.tag(), tag.getAmount()));
+            return Either.left(tags);
+        } else if (ingredient instanceof TagFluidIngredient tag) {
+            List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
+            tags.add(Pair.of(tag.tag(), FluidType.BUCKET_VOLUME));
             return Either.left(tags);
         } else {
-            return Either.right(fluids);
+            return Either.right(Arrays.asList(ingredient.getStacks()));
         }
     }
 }

@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.material.material.Material;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.Set;
 
-public interface IHazardEffectTracker {
+public interface IHazardEffectTracker extends INBTSerializable<CompoundTag> {
 
     /**
      * @return a set of hazard effect to how long it's been applied for.

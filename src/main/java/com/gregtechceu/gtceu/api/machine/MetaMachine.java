@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -75,6 +76,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -397,9 +399,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 return InteractionResult.CONSUME;
             var itemStack = playerIn.getItemInHand(hand);
             var tagCompound = getBehaviorsComponent(itemStack);
-            ToolModeSwitchBehavior.ModeType type = tagCompound.behaviors().stream()
-                .filter(ToolModeSwitchBehavior.class::isInstance).findAny().map(ToolModeSwitchBehavior::getType)
-                .orElse(BOTH);
+            ToolModeSwitchBehavior.ModeType type = Optional.ofNullable(tagCompound.getBehavior(GTToolBehaviors.MODE_SWITCH))
+                .map(ToolModeSwitchBehavior::getModeType).orElse(BOTH);
 
             if (type == ToolModeSwitchBehavior.ModeType.ITEM || type == ToolModeSwitchBehavior.ModeType.BOTH) {
                 if (this instanceof IAutoOutputItem autoOutputItem && (!hasFrontFacing() || gridSide != getFrontFacing())) {

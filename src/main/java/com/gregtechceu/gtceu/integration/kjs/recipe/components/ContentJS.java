@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
+import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
@@ -28,7 +28,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     }
 
     @Override
-    public JsonElement write(RecipeJS recipe, Content value) {
+    public JsonElement write(KubeRecipe recipe, Content value) {
         JsonObject object = new JsonObject();
         object.add("content", baseComponent.write(recipe, baseComponent.read(recipe, value.content)));
         object.addProperty("chance", value.chance);
@@ -43,7 +43,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     }
 
     @Override
-    public Content read(RecipeJS recipe, Object from) {
+    public Content read(KubeRecipe recipe, Object from) {
         if (from instanceof Content) return (Content) from;
         else if (from instanceof JsonObject json) {
             Object content = baseComponent.read(recipe, json.get("content"));
@@ -57,24 +57,24 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     }
 
     @Override
-    public boolean isInput(RecipeJS recipe, Content value, ReplacementMatch match) {
+    public boolean isInput(KubeRecipe recipe, Content value, ReplacementMatch match) {
         return !isOutput && baseComponent.isInput(recipe, baseComponent.read(recipe, value.content), match);
     }
 
     @Override
-    public boolean isOutput(RecipeJS recipe, Content value, ReplacementMatch match) {
+    public boolean isOutput(KubeRecipe recipe, Content value, ReplacementMatch match) {
         return isOutput && baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content), match);
     }
 
     @Override
-    public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
+    public Content replaceInput(KubeRecipe recipe, Content original, ReplacementMatch match, InputReplacement with) {
         return isInput(recipe, original, match) ? new Content(
                 baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with),
                 original.chance, original.tierChanceBoost, original.slotName, original.uiName) : original;
     }
 
     @Override
-    public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
+    public Content replaceOutput(KubeRecipe recipe, Content original, ReplacementMatch match, OutputReplacement with) {
         return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with), original.chance,
                 original.tierChanceBoost, original.slotName, original.uiName) : original;
     }

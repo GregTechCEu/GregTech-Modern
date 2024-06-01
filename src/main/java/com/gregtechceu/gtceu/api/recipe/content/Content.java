@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -84,7 +84,7 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.getAmount();
+            long amount = ingredient.isEmpty() ? 0 : ingredient.getStacks()[0].getAmount();
             String s;
             if (amount >= 1000) {
                 amount /= 1000;

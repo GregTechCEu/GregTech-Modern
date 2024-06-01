@@ -36,6 +36,11 @@ public record ToolBehaviorsComponent(List<IToolBehavior<?>> behaviors) {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends IToolBehavior<T>> T getBehavior(ToolBehaviorType<T> type) {
+        return (T) this.behaviors.stream().filter(behavior -> behavior.getType() == type).findAny().orElse(null);
+    }
+
     public ToolBehaviorsComponent withBehavior(IToolBehavior<?> behavior) {
         List<IToolBehavior<?>> behaviors = new ArrayList<>(this.behaviors);
         behaviors.removeIf(b -> b.getType() == behavior.getType());

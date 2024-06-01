@@ -132,7 +132,8 @@ public class ToolEventHandlers {
                     ItemEntity drop = new ItemEntity(EntityType.ITEM, world);
                     drop.setItem(dropStack);
 
-                    if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
+                    if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
+                        EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
                         dropItr.remove();
                     }
                 }
@@ -141,8 +142,8 @@ public class ToolEventHandlers {
         return drops;
     }
 
-    public static int fireItemPickupEvent(ItemEntity drop, Player player) {
-        return EventHooks.onItemPickup(drop, player);
+    public static boolean fireItemPickupEvent(ItemEntity drop, Player player) {
+        return !EventHooks.fireItemPickupPre(drop, player).canPickup().isFalse();
     }
 
     /**

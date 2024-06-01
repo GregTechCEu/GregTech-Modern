@@ -4,7 +4,8 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
@@ -69,15 +70,15 @@ public class CraftingComponent {
     public static Component VOLTAGE_COIL;
     public static Component SPRING;
 
-    public static final Map<BlastProperty.GasTier, FluidIngredient> EBF_GASES = new EnumMap<>(
+    public static final Map<BlastProperty.GasTier, SizedTagFluidIngredient> EBF_GASES = new EnumMap<>(
             BlastProperty.GasTier.class);
 
     static {
-        EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(1000, GTMaterials.Nitrogen.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.MID, FluidIngredient.of(100, GTMaterials.Helium.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGH, FluidIngredient.of(50, GTMaterials.Argon.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHER, FluidIngredient.of(25, GTMaterials.Neon.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, FluidIngredient.of(10, GTMaterials.Krypton.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.LOW, GTMaterials.Nitrogen.asFluidIngredient(1000));
+        EBF_GASES.put(BlastProperty.GasTier.MID, GTMaterials.Helium.asFluidIngredient(1000));
+        EBF_GASES.put(BlastProperty.GasTier.HIGH, GTMaterials.Argon.asFluidIngredient(1000));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHER, GTMaterials.Neon.asFluidIngredient(1000));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, GTMaterials.Krypton.asFluidIngredient(1000));
     }
 
     public static void initializeComponents() {

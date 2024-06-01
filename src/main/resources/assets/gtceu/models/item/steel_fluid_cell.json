@@ -1,5 +1,5 @@
 {
-  "loader": "forge:fluid_container",
+  "loader": "neoforge:fluid_container",
   "parent": "forge:item/default",
   "textures": {
     "base": "gtceu:item/steel_fluid_cell/base",

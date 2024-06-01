@@ -91,7 +91,7 @@ public class GTRegistryInfo<K, V> {
 
     public static <K, V> GTRegistryInfo<K, V> add(GTRegistry<K, V> key, Class<?> baseClass) {
         ResourceLocation id = key.getRegistryName();
-        var types = new GTRegistryInfo<>(id, key::registry, UtilsJS.cast(baseClass));
+        var types = new GTRegistryInfo<>(id, key::registry, (Class<V>) baseClass);
 
         if (MAP.put(id, types) != null) {
             throw new IllegalStateException("Registry with id '" + id + "' already exists!");
@@ -104,7 +104,7 @@ public class GTRegistryInfo<K, V> {
 
     public static <K, V> GTRegistryInfo<K, V> add(ResourceLocation id, Supplier<Map<K, V>> registryValues,
                                                   Class<?> baseClass) {
-        var types = new GTRegistryInfo<>(id, registryValues, UtilsJS.cast(baseClass));
+        var types = new GTRegistryInfo<>(id, registryValues, (Class<V>) baseClass);
 
         if (MAP.put(id, types) != null || !EXTRA_IDS.add(id)) {
             throw new IllegalStateException("Registry with id '" + id + "' already exists!");

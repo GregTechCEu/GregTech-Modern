@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -38,13 +39,13 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         long sum = left.stream().reduce(0L, Long::sum);
         int realSum = (int) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
-            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) :
-                    FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+            var steam = io == IO.IN ? GTMaterials.Steam.asFluidIngredient(realSum) :
+                    GTMaterials.Steam.asSingleFluidIngredient(realSum);
             var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
-            sum = (long) (leftSteam.get(0).getAmount() / conversionRate);
+            sum = (long) (((ISizedFluidIngredient)leftSteam.get(0)).getAmount() / conversionRate);
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
     }

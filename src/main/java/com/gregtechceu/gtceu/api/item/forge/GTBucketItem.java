@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
-import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -10,8 +10,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -76,8 +74,8 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         GTUtil.appendHazardTooltips(material,tooltipComponents);
     }
 
@@ -96,14 +94,6 @@ public class GTBucketItem extends BucketItem {
             }
         }
         return 0;
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0)
-           GTUtil.applyHazardEffects(material, livingEntity, () -> true);
-
     }
 
     @Override

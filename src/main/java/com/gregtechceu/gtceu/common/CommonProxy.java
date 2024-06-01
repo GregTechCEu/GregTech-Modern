@@ -28,8 +28,9 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
-import com.gregtechceu.gtceu.common.data.GTCommandArguments;
-import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.data.attachment.GTAttachmentTypes;
+import com.gregtechceu.gtceu.data.command.GTCommandArguments;
+import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -82,6 +83,7 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.EventPriority;
@@ -131,6 +133,7 @@ public class CommonProxy {
         GTFeatures.init(modBus);
         GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
+        GTAttachmentTypes.init(modBus);
         // init common features
         if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {
@@ -188,6 +191,7 @@ public class CommonProxy {
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
+        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate(modBus);

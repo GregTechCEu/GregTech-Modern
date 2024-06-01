@@ -28,7 +28,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<CompoundTag> {
+public class HazardEffectTracker implements IHazardEffectTracker {
 
     @Getter
     @Setter

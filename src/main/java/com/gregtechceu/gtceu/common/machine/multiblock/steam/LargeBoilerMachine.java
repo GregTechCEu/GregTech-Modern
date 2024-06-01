@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -117,7 +119,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             // drain water
             int maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
                     (STEAM_PER_WATER * 100000);
-            var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
+            List<FluidIngredient> drainWater = List.of(new SizedSingleFluidIngredient(Fluids.WATER.builtInRegistryHolder(), maxDrain));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
                 inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));
@@ -131,7 +133,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 if (drainWater == null) break;
             }
             var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                    maxDrain - drainWater.get(0).getAmount();
+                    maxDrain - ((ISizedFluidIngredient)drainWater.get(0)).getAmount();
 
             boolean hasDrainedWater = drained > 0;
             steamGenerated = drained * STEAM_PER_WATER;

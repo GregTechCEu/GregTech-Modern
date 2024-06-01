@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.networking.IHandlerContext;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -17,6 +16,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.RequiredArgsConstructor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class SPacketSyncFluidVeins implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE = new CustomPacketPayload.Type<>(GTCEu.id("sync_bedrock_ore_veins"));
+    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE =
+            new CustomPacketPayload.Type<>(GTCEu.id("sync_bedrock_fluid_veins"));
     public static final StreamCodec<FriendlyByteBuf, SPacketSyncFluidVeins> CODEC =
             StreamCodec.ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
 
@@ -58,12 +59,12 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
         return new SPacketSyncFluidVeins(veins);
     }
 
-    public void execute(IHandlerContext handler) {
+    public static void execute(SPacketSyncFluidVeins packet, IPayloadContext handler) {
         if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
         }
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
-        for (var entry : veins.entrySet()) {
+        for (var entry : packet.veins.entrySet()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
         }
         if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
