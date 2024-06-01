@@ -87,7 +87,7 @@ public class GTOmniToolItem extends GTToolItem implements IGTTool, IKeyPressedLi
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (!onInit){
-            //Registers the listener then stops after the first tick. This is kinda hacky but it works.
+            //Registers the listener then stops after the first tick.
             KeyBind.QUARK_TOOL_MODE_SWITCH.registerListener((ServerPlayer) entity,this);
             onInit = true;
         }
