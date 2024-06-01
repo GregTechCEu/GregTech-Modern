@@ -29,4 +29,6 @@ public interface IMedicalConditionTracker {
 
     void setMobEffect(MobEffect effect, int amplifier);
 
+    void removeMedicalCondition(MedicalCondition condition);
+
 }

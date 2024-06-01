@@ -29,12 +29,12 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Getter
     private final Map<MedicalCondition,Float> medicalConditions = new HashMap<>();
-
     private final Map<MedicalCondition,Material> medicalConditionTriggerMap = new HashMap<>();
-
     private final Object2IntMap<Symptom.ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
-
     private final Object2IntMap<MobEffect> activeMobEffects = new Object2IntOpenHashMap<>();
+
+    private final HashSet<MedicalCondition> flaggedForRemoval = new HashSet<>();
+
 
     @Setter
     private int maxAirSupply = -1; // -1 for default (300).
@@ -60,14 +60,15 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
                if(condition.idleProgressionType == MedicalCondition.IdleProgressionType.NONE){
                    continue;
                }
-               int multiplier = (condition.idleProgressionType == MedicalCondition.IdleProgressionType.HEAL)?1:-1;
+               int multiplier = (condition.idleProgressionType == MedicalCondition.IdleProgressionType.HEAL)?-1:1;
                medicalConditions.replace(condition,medicalConditions.get(condition)+condition.idleProgressionRate*multiplier);
+               evaluateMedicalCondition(condition);
+               System.err.println(medicalConditions.get(condition));
+
            }
             if(!medicalConditions.isEmpty()) {
                 updateActiveSymptoms();
-
             }
-
         }
     }
 
@@ -76,9 +77,10 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
         if(!medicalConditions.containsKey(materialHazard.condition)){
             medicalConditions.put(materialHazard.condition,materialHazard.progressionMultiplier);
+            medicalConditionTriggerMap.put(materialHazard.condition,material);
         }
         if(medicalConditions.containsKey(materialHazard.condition)){
-            medicalConditions.replace(materialHazard.condition,medicalConditions.get(materialHazard.condition)+materialHazard.progressionMultiplier);
+            medicalConditions.replace(materialHazard.condition,Math.min(medicalConditions.get(materialHazard.condition)+materialHazard.progressionMultiplier,materialHazard.condition.maxProgression));
         }
 
         updateActiveSymptoms();
@@ -90,36 +92,60 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         for(MedicalCondition condition: medicalConditions.keySet()){
             for(Symptom.ConfiguredSymptom symptom: condition.symptoms.values()){
                 int stage = calculateStage(condition,symptom);
+                if(stage==0) {
+                    continue;
+                }
                 Optional<Symptom.ConfiguredSymptom> currentSymptom = activeSymptoms.keySet().stream().filter(symptom1 -> symptom1.symptom==symptom.symptom).findFirst();
                 if(currentSymptom.isEmpty()){
                     activeSymptoms.put(symptom, stage);
-                    symptom.symptom.applyProgression(this,condition.getDamageSource(this),-stage);
+                    symptom.symptom.applyProgression(this,condition,stage);
                     continue;
                 }
                 if(currentSymptom.get()==symptom&&stage>activeSymptoms.getOrDefault(symptom,-1)){
-                    symptom.symptom.applyProgression(this,condition.getDamageSource(this),activeSymptoms.getOrDefault(symptom,0));
+                    symptom.symptom.applyProgression(this,condition,activeSymptoms.getOrDefault(symptom,0));
                     activeSymptoms.replace(symptom,stage);
-                    symptom.symptom.applyProgression(this,condition.getDamageSource(this),-stage);
+                    symptom.symptom.applyProgression(this,condition,stage);
                     continue;
                 }
                 if(symptom.relativeHarshness*stage>currentSymptom.get().relativeHarshness*activeSymptoms.getOrDefault(currentSymptom,0)){
-                    currentSymptom.get().symptom.applyProgression(this,condition.getDamageSource(this),activeSymptoms.getOrDefault( currentSymptom.get(),0));
+                    currentSymptom.get().symptom.applyProgression(this,condition,activeSymptoms.getOrDefault(currentSymptom.get(),0));
                     activeSymptoms.removeInt(currentSymptom);
                     activeSymptoms.put(symptom,stage);
-                    symptom.symptom.applyProgression(this,condition.getDamageSource(this),-stage);
+                    symptom.symptom.applyProgression(this,condition,stage);
 
                 }
 
             }
-            System.err.println(activeSymptoms.values().toArray()[0]);
-
-
 
         }
+        if(flaggedForRemoval.isEmpty()) {
+            return;
+        }
+        for(MedicalCondition condition: flaggedForRemoval){
+            for(Symptom.ConfiguredSymptom configuredSymptom: activeSymptoms.keySet().stream().filter(symptom -> condition.symptoms.values().contains(symptom)).toList()){ //reset all symptom effects for this condition
+                configuredSymptom.symptom.applyProgression(this,condition,0);
+            }
+            medicalConditions.remove(condition);
+        }
+        flaggedForRemoval.clear();
+        updateActiveSymptoms();
+
+    }
+
+    @Override
+    public void removeMedicalCondition(MedicalCondition condition){
+        flaggedForRemoval.add(condition);
     }
 
     private int calculateStage(MedicalCondition condition, Symptom.ConfiguredSymptom symptom){
-        return (int) (condition.maxProgression/(condition.maxProgression-symptom.progressionThreshold*condition.maxProgression)*symptom.stages);
+        return (int) Math.floor(medicalConditions.get(condition)/(condition.maxProgression-symptom.progressionThreshold*condition.maxProgression)*symptom.stages);
+    }
+
+    //removes MedicalConditions without progression
+    private void evaluateMedicalCondition(MedicalCondition condition){
+        if(medicalConditions.get(condition)<=0){
+            medicalConditions.remove(condition);
+        }
     }
 
     /**
@@ -181,8 +207,10 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
                 continue;
             }
             Material material = GTCEuAPI.materialManager.getMaterial(compoundTag.getString("material"));
-            int progression = compoundTag.getInt("progression");
-            //TODO associate material with specific condition
+            float progression = compoundTag.getFloat("progression");
+
+            medicalConditions.put(material.getProperty(PropertyKey.HAZARD).condition,progression);
+            medicalConditionTriggerMap.put(material.getProperty(PropertyKey.HAZARD).condition,material);
         }
     }
 }

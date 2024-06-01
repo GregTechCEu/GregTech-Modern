@@ -425,7 +425,7 @@ public class GTUtil {
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("gtceu.hazard.description_shift"));
             tooltipComponents.add(Component
-                    .translatable("gtceu.hazard." + material.getProperty(HAZARD).hazardTrigger.name().toLowerCase()));
+                    .translatable("gtceu.hazard." + material.getProperty(HAZARD).hazardTrigger.name().toLowerCase()).append(Component.translatable("")));
             return;
         }
         tooltipComponents.add(Component.translatable("gtceu.hazard.description"));

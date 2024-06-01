@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.medicalcondition;
 
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -9,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.util.TriConsumer;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Symptom {
@@ -20,13 +18,18 @@ public class Symptom {
     public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("b3ac6b40-2d30-419f-9cac-5b2cf998ad72");
 
     public static final Symptom DEATH = new Symptom(defaultKey("death"),1,0,
-            ((hazardEffectTracker, damageSource, modifier) -> hazardEffectTracker.getPlayer().die(damageSource)));
+            ((medicalConditionTracker, condition, modifier) -> {
+                if(modifier!=0) {
+                    medicalConditionTracker.getPlayer().die(condition.getDamageSource(medicalConditionTracker));
+                    medicalConditionTracker.removeMedicalCondition(condition);
+                }
+            }));
     public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"),10,0, 1,Attributes.MAX_HEALTH, SYMPTOM_HEALTH_DEBUFF_UUID);
     public static final Symptom ATTACK_SPEED_DEBUFF = new Symptom(defaultKey("attack_speed_debuff"),10,0,.2f,Attributes.ATTACK_SPEED, SYMPTOM_ATTACK_SPEED_DEBUFF_UUID);
     public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"),10,0,.1f,Attributes.ATTACK_DAMAGE, SYMPTOM_WEAKNESS_UUID);
-    public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"),7,0,.05f,Attributes.MOVEMENT_SPEED, SYMPTOM_SLOWNESS_UUID);
+    public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"),7,0,.005f,Attributes.MOVEMENT_SPEED, SYMPTOM_SLOWNESS_UUID);
     public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"),10,0,
-            (hazardEffectTracker, damageSource, modifier) -> hazardEffectTracker.setMaxAirSupply(hazardEffectTracker.getMaxAirSupply()+10*modifier));
+            (hazardEffectTracker, damageSource, modifier) -> hazardEffectTracker.setMaxAirSupply(300-10*modifier));
     public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"),10,0, MobEffects.BLINDNESS);
     public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"),10,0, MobEffects.DIG_SLOWDOWN);
 
@@ -35,9 +38,11 @@ public class Symptom {
     public final String name;
     public final int defaultStages;
     public final float defaultProgressionThreshold;
-    private final TriConsumer<MedicalConditionTracker, DamageSource, Integer> progressionEffect;
 
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, TriConsumer<MedicalConditionTracker, DamageSource, Integer> progressionEffect) {
+    // integer corresponds to symptom stage, if integer is 0 symptom effects should be removed
+    private final TriConsumer<MedicalConditionTracker, MedicalCondition, Integer> progressionEffect;
+
+    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, TriConsumer<MedicalConditionTracker, MedicalCondition, Integer> progressionEffect) {
         this.name = name;
         this.defaultStages = defaultStages;
         this.defaultProgressionThreshold = defaultProgressionThreshold;
@@ -51,8 +56,13 @@ public class Symptom {
      * @param uuid AttributeModifier UUID
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier, Attribute attribute, UUID uuid) {
-        this(name, defaultStages, defaultProgressionThreshold, ((hazardEffectTracker, damageSource, modifier) ->
-                hazardEffectTracker.getPlayer().getAttribute(attribute).addPermanentModifier(new AttributeModifier(uuid, name, modifier*multiplier, AttributeModifier.Operation.ADDITION))));
+        this(name, defaultStages, defaultProgressionThreshold, ((medicalConditionTracker, condition, modifier) ->{
+            medicalConditionTracker.getPlayer().getAttribute(attribute).removeModifier(uuid);
+            if(modifier!=0) {
+                medicalConditionTracker.getPlayer().getAttribute(attribute).addPermanentModifier(new AttributeModifier(uuid, name, -modifier*multiplier, AttributeModifier.Operation.ADDITION));
+            }
+            System.err.println(-modifier*multiplier);
+        }));
     }
 
     /**
@@ -70,12 +80,12 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold, ((hazardEffectTracker, damageSource, modifier) ->
-                hazardEffectTracker.setMobEffect(mobEffect,modifier)));
+            hazardEffectTracker.setMobEffect(mobEffect,modifier)));
     }
 
 
-    public void applyProgression(MedicalConditionTracker subject, @Nullable DamageSource source, int modifier){
-        progressionEffect.accept(subject, source, modifier);
+    public void applyProgression(MedicalConditionTracker subject, MedicalCondition condition, int modifier){
+        progressionEffect.accept(subject, condition, modifier);
     }
 
     public static class ConfiguredSymptom{

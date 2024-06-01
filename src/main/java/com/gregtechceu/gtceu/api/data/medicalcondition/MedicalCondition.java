@@ -1,16 +1,12 @@
 package com.gregtechceu.gtceu.api.data.medicalcondition;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageTypeData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+
 
 public class MedicalCondition {
     //General Conditions
@@ -21,7 +17,7 @@ public class MedicalCondition {
             new Symptom.ConfiguredSymptom(Symptom.DEATH),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS));
 
-    //Compound specific Conditions
+    //Material specific Conditions
     public static final MedicalCondition ASBESTOSIS = new MedicalCondition("asbestosis",5000, IdleProgressionType.UNTREATED_PROGRESSION,1,
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF,.3f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF,.1f));
@@ -32,14 +28,18 @@ public class MedicalCondition {
     public final String name;
     public final float maxProgression; //amount of seconds until maximum progression is reached
     public final HashMap<Symptom,Symptom.ConfiguredSymptom> symptoms = new HashMap<>();
-    private final ResourceKey<DamageType> damageTypeKey; //TODO register these fuckers
+    private final DamageTypeData damageTypeData; //TODO register these fuckers
     public final IdleProgressionType idleProgressionType;
     public final float idleProgressionRate;
 
     public MedicalCondition(String name, int maxProgression, IdleProgressionType idleProgressionType, float idleProgressionRate, Symptom.ConfiguredSymptom... symptoms) {
         this.name = name;
         this.maxProgression = maxProgression;
-        this.damageTypeKey = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(GTCEu.MOD_ID,name));
+        this.damageTypeData = new DamageTypeData.Builder()
+                .simpleId("medical_condition/"+name)
+                .tag(DamageTypeTags.BYPASSES_ARMOR)
+                .build();
+
         for(Symptom.ConfiguredSymptom symptom: symptoms){
             this.symptoms.put(symptom.symptom,symptom);
         }
@@ -56,7 +56,7 @@ public class MedicalCondition {
     }
 
     public DamageSource getDamageSource(MedicalConditionTracker tracker){
-       return new DamageSource(tracker.getPlayer().level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageTypeKey));
+       return damageTypeData.source(tracker.getPlayer().level());
     }
 
 
@@ -65,4 +65,6 @@ public class MedicalCondition {
         HEAL,
         NONE
     }
+
+    public static void init(){} //initialize damagetypedata
 }

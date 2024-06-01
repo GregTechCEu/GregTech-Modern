@@ -48,7 +48,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
-                //TODO .hazard(HazardProperty.HazardTrigger.INHALATION)
+                .hazard(HazardProperty.HazardTrigger.INHALATION,MedicalCondition.ASBESTOSIS)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
