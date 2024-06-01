@@ -419,15 +419,20 @@ public class ToolHelper {
         }
     }
 
+    public static final ThreadLocal<Boolean> isAoeBreakingBlocks = ThreadLocal.withInitial(() -> false);
+
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
+
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
             return false;
         }
         Level world = player.level();
 
+        isAoeBreakingBlocks.set(true);
         boolean canBreak = onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
         if (!canBreak) {
+            isAoeBreakingBlocks.set(false);
             return false;
         } else {
             BlockState state = world.getBlockState(pos);
@@ -455,13 +460,14 @@ public class ToolHelper {
                     block.playerDestroy(world, player, pos, state, tile, copiedTool);
                 }
 
+                isAoeBreakingBlocks.set(false);
                 return successful;
             }
         }
     }
 
     public static boolean onBlockBreakEvent(Level level, GameType gameType, ServerPlayer player, BlockPos pos) {
-        return CommonHooks.onBlockBreakEvent(level, gameType, player, pos) != -1;
+        return CommonHooks.fireBlockBreak(level, gameType, player, pos, level.getBlockState(pos)) != -1;
     }
 
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
@@ -470,10 +476,6 @@ public class ToolHelper {
 
     public static double getPlayerBlockReach(@NotNull Player player) {
         return player.blockInteractionRange();
-    }
-
-    public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-        return itemstack.onBlockStartBreak(pos, player);
     }
 
     public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos,

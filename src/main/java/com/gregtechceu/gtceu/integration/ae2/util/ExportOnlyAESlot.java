@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @author GlodBlock
- * @Description A export only slot to hold {@link appeng.api.stacks.GenericStack}
+ * @implNote An export only slot to hold {@link appeng.api.stacks.GenericStack}
  * @date 2023/4/22-13:42
  */
 public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag>,
@@ -84,11 +84,11 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         if (this.config != null) {
-            CompoundTag configTag = GenericStack.writeTag(this.config);
+            CompoundTag configTag = GenericStack.writeTag(provider, this.config);
             tag.put(CONFIG_TAG, configTag);
         }
         if (this.stock != null) {
-            CompoundTag stockTag = GenericStack.writeTag(this.stock);
+            CompoundTag stockTag = GenericStack.writeTag(provider, this.stock);
             tag.put(STOCK_TAG, stockTag);
         }
         return tag;
@@ -97,10 +97,10 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(CONFIG_TAG)) {
-            this.config = GenericStack.readTag(tag.getCompound(CONFIG_TAG));
+            this.config = GenericStack.readTag(provider, tag.getCompound(CONFIG_TAG));
         }
         if (tag.contains(STOCK_TAG)) {
-            this.stock = GenericStack.readTag(tag.getCompound(STOCK_TAG));
+            this.stock = GenericStack.readTag(provider, tag.getCompound(STOCK_TAG));
         }
     }
 

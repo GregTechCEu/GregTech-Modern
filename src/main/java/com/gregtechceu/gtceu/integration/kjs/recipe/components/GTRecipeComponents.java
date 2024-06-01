@@ -4,10 +4,15 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 
+import dev.latvian.mods.kubejs.fluid.FluidWrapper;
+import dev.latvian.mods.kubejs.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +25,6 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
-import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -30,7 +34,6 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
-import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;
 
@@ -49,13 +52,13 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, CompoundTag value) {
+        public JsonElement write(KubeRecipe recipe, CompoundTag value) {
             return NBTUtils.toJson(value);
         }
 
         @Override
-        public CompoundTag read(RecipeJS recipe, Object from) {
-            return NBTUtils.toTagCompound(from);
+        public CompoundTag read(KubeRecipe recipe, Object from) {
+            return NBTUtils.toTagCompound(null, from);
         }
     };
     public static final RecipeComponent<ResourceLocation> RESOURCE_LOCATION = new RecipeComponent<>() {
@@ -76,12 +79,12 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, ResourceLocation value) {
+        public JsonElement write(KubeRecipe recipe, ResourceLocation value) {
             return new JsonPrimitive(value.toString());
         }
 
         @Override
-        public ResourceLocation read(RecipeJS recipe, Object from) {
+        public ResourceLocation read(KubeRecipe recipe, Object from) {
             return from instanceof CharSequence c ? ResourceLocation.tryParse(c.toString()) :
                     ResourceLocation.tryParse(String.valueOf(from));
         }
@@ -105,7 +108,7 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, RecipeCondition value) {
+        public JsonElement write(KubeRecipe recipe, RecipeCondition value) {
             JsonObject object = new JsonObject();
             object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
             object.add("data", value.serialize());
@@ -113,7 +116,7 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public RecipeCondition read(RecipeJS recipe, Object from) {
+        public RecipeCondition read(KubeRecipe recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
                 var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
@@ -165,17 +168,17 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public boolean isInput(RecipeJS recipe, FluidIngredientJS value, ReplacementMatch match) {
+        public boolean isInput(KubeRecipe recipe, FluidIngredientJS value, ReplacementMatch match) {
             return match instanceof FluidLike m && value.matches(m);
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
+        public JsonElement write(KubeRecipe recipe, FluidIngredientJS value) {
             return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
-        public FluidIngredientJS read(RecipeJS recipe, Object from) {
+        public FluidIngredientJS read(KubeRecipe recipe, Object from) {
             return FluidIngredientJS.of(from);
         }
     };
@@ -197,17 +200,17 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public boolean isOutput(RecipeJS recipe, FluidIngredientJS value, ReplacementMatch match) {
+        public boolean isOutput(KubeRecipe recipe, FluidIngredientJS value, ReplacementMatch match) {
             return match instanceof FluidLike m && value.matches(m);
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
+        public JsonElement write(KubeRecipe recipe, FluidIngredientJS value) {
             return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
-        public FluidIngredientJS read(RecipeJS recipe, Object from) {
+        public FluidIngredientJS read(KubeRecipe recipe, Object from) {
             return FluidIngredientJS.of(from);
         }
     };
@@ -265,26 +268,27 @@ public class GTRecipeComponents {
 
         @Override
         public long kjs$getAmount() {
-            return ingredient.getAmount();
+            return ((ISizedFluidIngredient)ingredient).getAmount();
         }
 
         @Override
         public FluidIngredientJS kjs$copy(long amount) {
-            FluidIngredient ingredient1 = ingredient.copy();
-            ingredient1.setAmount((int) amount);
+            FluidIngredient ingredient1 = ingredient;
+            if (ingredient1 instanceof SizedSingleFluidIngredient sized) {
+                ingredient1 = sized.copy();
+            } else if (ingredient1 instanceof SizedTagFluidIngredient sized) {
+                ingredient1 = sized.copy();
+            }
+            ((ISizedFluidIngredient)ingredient1).setAmount((int) amount);
             return new FluidIngredientJS(ingredient1);
         }
 
         @Override
         public boolean matches(FluidLike other) {
-            if (other instanceof FluidStackJS fluidStack) {
-                // TODO fix nbt once KubeJS 1.20.5 is out
-                return ingredient.test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount()/*
-                                                                                                          * ,
-                                                                                                          * fluidStack.
-                                                                                                          * getNbt()
-                                                                                                          */));
-            }
+            // if (other instanceof FluidStack fluidStack) {
+            //     // TODO fix nbt once KubeJS 1.21 is out
+            //     return ingredient.test(fluidStack);
+            // }
             return other.matches(this);
         }
 
@@ -294,27 +298,24 @@ public class GTRecipeComponents {
             } else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
-                return new FluidIngredientJS(FluidIngredient.fromJson(json));
-            } else if (o instanceof FluidStackJS fluidStackJS) {
-                // TODO fix nbt once KubeJS 1.20.5 is out
-                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(fluidStackJS.getFluid(),
-                        (int) fluidStackJS.getAmount()/* , fluidStackJS.getNbt() */)));
+                return new FluidIngredientJS(FluidIngredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow());
+            } else if (o instanceof FluidStack fluidStack) {
+                return new FluidIngredientJS(FluidIngredient.of(fluidStack));
             }
 
             var list = ListJS.of(o);
             if (list != null && !list.isEmpty()) {
                 List<FluidStack> stacks = new ArrayList<>();
                 for (var object : list) {
-                    FluidStackJS stackJS = FluidStackJS.of(object);
-                    // TODO fix nbt once KubeJS 1.20.5 is out
-                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount()/* , stackJS.getNbt() */));
+                    FluidStack stack = FluidWrapper.wrap(object);
+                    stacks.add(stack);
                 }
                 return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
             } else {
-                FluidStackJS stackJS = FluidStackJS.of(o);
+                FluidStack stack = FluidWrapper.wrap(o);
                 // TODO fix nbt once KubeJS 1.20.5 is out
                 return new FluidIngredientJS(FluidIngredient
-                        .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount()/* , stackJS.getNbt() */)));
+                        .of(stack));
             }
         }
     }

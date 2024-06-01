@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -131,11 +132,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     }
                     if (!found) continue;
                     var copy = foundStack.copy();
-                    copy.setAmount(fluidStack.getAmount());
+                    copy.setAmount(((ISizedFluidIngredient)fluidStack).getAmount());
                     FluidStack drained = capability.drain(copy, FluidAction.EXECUTE);
 
-                    fluidStack.setAmount(fluidStack.getAmount() - drained.getAmount());
-                    if (fluidStack.getAmount() <= 0) {
+                    ((ISizedFluidIngredient)fluidStack).setAmount(((ISizedFluidIngredient)fluidStack).getAmount() - drained.getAmount());
+                    if (((ISizedFluidIngredient)fluidStack).getAmount() <= 0) {
                         iterator.remove();
                     }
                 }
@@ -154,9 +155,9 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     FluidStack output = fluids[0];
                     int filled = capability.fill(output.copy(), FluidAction.EXECUTE);
                     if (!fluidStack.isEmpty()) {
-                        fluidStack.setAmount(fluidStack.getAmount() - filled);
+                        ((ISizedFluidIngredient)fluidStack).setAmount(((ISizedFluidIngredient)fluidStack).getAmount() - filled);
                     }
-                    if (fluidStack.getAmount() <= 0) {
+                    if (((ISizedFluidIngredient)fluidStack).getAmount() <= 0) {
                         iterator.remove();
                     }
                 }

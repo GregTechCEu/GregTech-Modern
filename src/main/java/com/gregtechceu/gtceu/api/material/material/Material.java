@@ -12,12 +12,15 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -38,6 +41,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -260,6 +264,15 @@ public class Material implements Comparable<Material> {
      */
     public TagKey<Fluid> getFluidTag() {
         return TagUtil.createFluidTag(this.getName());
+    }
+
+    public SizedTagFluidIngredient asFluidIngredient(int amount) {
+        return new SizedTagFluidIngredient(getFluidTag(), amount);
+    }
+
+    public SizedSingleFluidIngredient asSingleFluidIngredient(int amount) {
+        //noinspection deprecation
+        return new SizedSingleFluidIngredient(getFluid().builtInRegistryHolder(), amount);
     }
 
     /**
@@ -1114,14 +1127,14 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Holder<Attribute> attribute,
                               AttributeModifier maxModifier) {
             properties.setProperty(HAZARD, new HazardProperty(hazardType,
                     new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier)), null, true));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Holder<Attribute> attribute,
                               AttributeModifier maxModifier, boolean applyToDerivatives) {
             properties.setProperty(HAZARD,
                     new HazardProperty(hazardType,
@@ -1130,7 +1143,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Holder<Attribute> attribute,
                               AttributeModifier maxModifier, int maxAirModifier) {
             properties.setProperty(HAZARD, new HazardProperty(hazardType,
                     new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier), maxAirModifier), null,
@@ -1138,7 +1151,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute,
+        public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Holder<Attribute> attribute,
                               AttributeModifier maxModifier, int maxAirModifier, boolean applyToDerivatives) {
             properties.setProperty(HAZARD, new HazardProperty(hazardType,
                     new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier), maxAirModifier), null,

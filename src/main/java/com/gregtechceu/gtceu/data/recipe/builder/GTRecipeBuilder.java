@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
@@ -43,6 +45,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -495,7 +498,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
-        return input(FluidRecipeCapability.CAP, FluidIngredient.of(
+        return input(FluidRecipeCapability.CAP, new SizedTagFluidIngredient(
                 TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
     }
 
@@ -506,7 +509,7 @@ public class GTRecipeBuilder {
                                                                            // function as water when placed.
                 return FluidIngredient.of(fluid);
             } else {
-                return FluidIngredient.of(
+                return new SizedTagFluidIngredient(
                         TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()),
                         fluid.getAmount());
             }
@@ -523,7 +526,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputFluids(FluidStack... outputs) {
         return output(FluidRecipeCapability.CAP,
-                Arrays.stream(outputs).map(FluidIngredient::of).toArray(FluidIngredient[]::new));
+                Arrays.stream(outputs).map(SizedSingleFluidIngredient::new).toArray(FluidIngredient[]::new));
     }
 
     public GTRecipeBuilder outputFluids(FluidIngredient... outputs) {

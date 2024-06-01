@@ -17,6 +17,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.RequiredArgsConstructor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,12 +59,12 @@ public class SPacketSyncBedrockOreVeins implements CustomPacketPayload {
         return new SPacketSyncBedrockOreVeins(veins);
     }
 
-    public void execute(IHandlerContext handler) {
+    public static void execute(SPacketSyncBedrockOreVeins packet, IPayloadContext handler) {
         if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
         }
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
-        for (var entry : veins.entrySet()) {
+        for (var entry : packet.veins.entrySet()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
         }
         if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {

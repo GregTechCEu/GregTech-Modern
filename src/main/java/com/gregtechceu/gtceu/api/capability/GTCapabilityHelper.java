@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
+import com.gregtechceu.gtceu.data.attachment.GTAttachmentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -118,8 +120,9 @@ public class GTCapabilityHelper {
         return null;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Nullable
-    public static IHazardEffectTracker getHazardEffectTracker(@NotNull Entity entity) {
-        return entity.getCapability(GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER, null).resolve().orElse(null);
+    public static IHazardEffectTracker getHazardEffectTracker(@NotNull Player entity) {
+        return entity.getData(GTAttachmentTypes.HAZARD_TRACKER);
     }
 }

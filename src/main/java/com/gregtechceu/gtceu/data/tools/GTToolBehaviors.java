@@ -49,6 +49,8 @@ public class GTToolBehaviors {
             new ToolBehaviorType<>(TreeFellingBehavior.CODEC, TreeFellingBehavior.STREAM_CODEC));
     public static final ToolBehaviorType<WaxOffBehavior> WAX_OFF = GTRegistries.TOOL_BEHAVIORS
             .register(GTCEu.id("wax_off"), new ToolBehaviorType<>(WaxOffBehavior.CODEC, WaxOffBehavior.STREAM_CODEC));
+    public static final ToolBehaviorType<ToolModeSwitchBehavior> MODE_SWITCH = GTRegistries.TOOL_BEHAVIORS
+            .register(GTCEu.id("mode_switch"), new ToolBehaviorType<>(ToolModeSwitchBehavior.CODEC, ToolModeSwitchBehavior.STREAM_CODEC));
 
     public static void init() {
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TOOL_BEHAVIORS));

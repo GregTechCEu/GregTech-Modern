@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
@@ -2395,7 +2396,7 @@ public class GTItems {
 
     public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE
             .item("nightvision_goggles",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES.getDelegate(), ArmorItem.Type.HELMET, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES, ArmorItem.Type.HELMET, p)
                             .setArmorLogic(new NightvisionGoggles(2,
                                     80_000L * (long) Math.max(1,
                                             Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
@@ -2405,7 +2406,7 @@ public class GTItems {
 
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE
             .item("nanomuscle_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2416,7 +2417,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE
             .item("nanomuscle_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2427,7 +2428,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE
             .item("nanomuscle_boots",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2438,7 +2439,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE
             .item("nanomuscle_helmet",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2497,7 +2498,7 @@ public class GTItems {
 
     public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE
             .item("quarktech_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
                                     8192,
                                     100_000_000L * (long) Math.max(1,
@@ -2509,7 +2510,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE
             .item("quarktech_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
                             .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
                                     8192,
                                     100_000_000L * (long) Math.max(1,
@@ -2521,7 +2522,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE
             .item("quarktech_boots",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
                             .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
                                     8192,
                                     100_000_000L * (long) Math.max(1,
@@ -2533,7 +2534,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE
             .item("quarktech_helmet",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
                             .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
                                     8192,
                                     100_000_000L * (long) Math.max(1,
@@ -2546,14 +2547,14 @@ public class GTItems {
 
     public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE
             .item("liquid_fuel_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new PowerlessJetpack()))
             .lang("Liquid Fuel Jetpack")
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .register();
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
             .item("electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new Jetpack(30,
                                     1_000_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
@@ -2566,7 +2567,7 @@ public class GTItems {
 
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
             .item("advanced_electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new AdvancedJetpack(512,
                                     6_400_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
@@ -2576,7 +2577,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
             .item("avanced_nanomuscle_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new AdvancedNanoMuscleSuite(512,
                                     12_800_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
@@ -2586,7 +2587,7 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .register();
     public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(),
+            .item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR,
                     ArmorItem.Type.CHESTPLATE, p)
                     .setArmorLogic(new AdvancedQuarkTechSuite(8192,
                             1_000_000_000L *

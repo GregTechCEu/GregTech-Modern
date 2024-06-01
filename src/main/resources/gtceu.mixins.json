@@ -21,6 +21,7 @@
     "ChunkGeneratorMixin",
     "ChunkMixin",
     "EntityMixin",
+    "FluidIngredientMixin",
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",

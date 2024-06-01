@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -31,6 +33,7 @@ public class RecipeHelper {
     }
 
     public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
-        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
+        int amount = ((ISizedFluidIngredient)fluidStack).getAmount();
+        return amount % divisor == 0 && amount / divisor >= 25;
     }
 }

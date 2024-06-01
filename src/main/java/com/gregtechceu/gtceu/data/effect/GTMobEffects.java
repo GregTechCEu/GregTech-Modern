@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.data.effect;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.effect.GTPoisonEffect;

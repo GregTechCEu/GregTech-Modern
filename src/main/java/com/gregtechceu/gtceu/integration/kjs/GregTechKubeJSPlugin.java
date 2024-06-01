@@ -64,9 +64,15 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponent
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import dev.latvian.mods.kubejs.event.EventGroupRegistry;
+import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
+import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
+import dev.latvian.mods.kubejs.script.WrapperRegistry;
+import dev.latvian.mods.kubejs.util.NBTUtils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.NbtOps;
@@ -82,7 +88,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
@@ -90,7 +95,6 @@ import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.Wrapper;
-import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,16 +108,10 @@ import java.util.stream.Stream;
  * @date 2023/3/26
  * @implNote GregTechKubeJSPlugin
  */
-public class GregTechKubeJSPlugin extends KubeJSPlugin {
+public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
-    public void initStartup() {
-        super.initStartup();
-    }
-
-    @Override
-    public void init() {
-        super.init();
+    public void registerBuilderTypes(BuilderTypeRegistry registry) {
         GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
 
         GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
@@ -145,30 +143,27 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
-        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
-        RegistryInfo.BLOCK.addType("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
-        RegistryInfo.BLOCK.addType("gtceu:renderer_glass", RendererGlassBlockBuilder.class,
-                RendererGlassBlockBuilder::new);
+        registry.of(Registries.BLOCK, reg -> {
+            reg.add("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
+            reg.add("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
+            reg.add("gtceu:renderer_glass", RendererGlassBlockBuilder.class, RendererGlassBlockBuilder::new);
+        });
     }
 
     @Override
-    public void registerEvents() {
-        super.registerEvents();
-        GTCEuStartupEvents.GROUP.register();
-        GTCEuServerEvents.GROUP.register();
+    public void registerEvents(EventGroupRegistry registry) {
+        registry.register(GTCEuStartupEvents.GROUP);
+        registry.register(GTCEuServerEvents.GROUP);
     }
 
     @Override
     public void registerClasses(ScriptType type, ClassFilter filter) {
-        super.registerClasses(type, filter);
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
     }
 
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
-        super.registerRecipeSchemas(event);
-
         for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
             event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
         }
@@ -200,7 +195,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
-        super.registerBindings(event);
         event.add("GTRegistries", GTRegistries.class);
         event.add("GTMaterials", GTMaterials.class);
         event.add("GTElements", GTElements.class);
@@ -253,9 +247,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     }
 
     @Override
-    public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
-        super.registerTypeWrappers(type, typeWrappers);
-        typeWrappers.register(GTRecipeType.class, (ctx, o) -> {
+    public void registerTypeWrappers(WrapperRegistry registry) {
+        KubeJSPlugin.super.registerTypeWrappers(registry);
+        registry.register(GTRecipeType.class, (ctx, o) -> {
             if (o instanceof Wrapper w) {
                 o = w.unwrap();
             }
@@ -264,28 +258,28 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
-        typeWrappers.register(Element.class, (ctx, o) -> {
+        registry.register(Element.class, (ctx, o) -> {
             if (o instanceof Element element) return element;
             if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
             return null;
         });
-        typeWrappers.register(Material.class, (ctx, o) -> {
+        registry.register(Material.class, (ctx, o) -> {
             if (o instanceof Material material) return material;
             if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
             return null;
         });
-        typeWrappers.register(MachineDefinition.class, (ctx, o) -> {
+        registry.register(MachineDefinition.class, (ctx, o) -> {
             if (o instanceof MachineDefinition definition) return definition;
             if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
             return null;
         });
 
-        typeWrappers.register(TagPrefix.class, (ctx, o) -> {
+        registry.register(TagPrefix.class, (ctx, o) -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        typeWrappers.register(UnificationEntry.class, (ctx, o) -> {
+        registry.register(UnificationEntry.class, (ctx, o) -> {
             if (o instanceof UnificationEntry entry) return entry;
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
@@ -298,24 +292,24 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
             return null;
         });
-        typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
+        registry.register(RecipeCapability.class, (ctx, o) -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
             return null;
         });
 
-        typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
+        registry.register(MaterialIconSet.class, (ctx, o) -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
             if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
             return null;
         });
-        typeWrappers.register(MaterialStack.class, (ctx, o) -> {
+        registry.register(MaterialStack.class, (ctx, o) -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        typeWrappers.register(MaterialStackWrapper.class, (ctx, o) -> {
+        registry.register(MaterialStackWrapper.class, (ctx, o) -> {
             if (o instanceof MaterialStackWrapper wrapper) return wrapper;
             if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
             if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
@@ -323,59 +317,59 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
-        typeWrappers.register(IWorldGenLayer.class, (ctx, o) -> {
+        registry.register(IWorldGenLayer.class, (ctx, o) -> {
             if (o instanceof IWorldGenLayer layer) return layer;
             if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
             return null;
         });
-        typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
+        registry.register(HeightRangePlacement.class, (ctx, o) -> {
             if (o instanceof HeightRangePlacement placement) return placement;
-            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
                     .map(tag -> HeightRangePlacement.CODEC.codec().parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(BiomeWeightModifier.class, (ctx, o) -> {
+        registry.register(BiomeWeightModifier.class, (ctx, o) -> {
             if (o instanceof BiomeWeightModifier modifier) return modifier;
-            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
                     .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(VeinGenerator.class, (ctx, o) -> {
+        registry.register(VeinGenerator.class, (ctx, o) -> {
             if (o instanceof VeinGenerator generator) return generator;
-            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(IndicatorGenerator.class, (ctx, o) -> {
+        registry.register(IndicatorGenerator.class, (ctx, o) -> {
             if (o instanceof IndicatorGenerator generator) return generator;
-            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
                     .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(IndicatorPlacement.class, (ctx, o) -> {
+        registry.register(IndicatorPlacement.class, (ctx, o) -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
             return null;
         });
         // jank because Rhino doesn't agree that it's an interface
-        typeWrappers.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
+        registry.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
-            return () -> BlockStatePredicate.ruleTestOf(o);
+            return () -> BlockStatePredicate.ruleTestOf(ctx, o);
         });
-        typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
+        registry.register(GTRecipeComponents.FluidIngredientJS.class,
                 GTRecipeComponents.FluidIngredientJS::of);
     }
 
     @Override
-    public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager,
+    public void injectRuntimeRecipes(RecipesKubeEvent event, RecipeManager manager,
                                      Map<ResourceLocation, RecipeHolder<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
-        RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
-            if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
+        RecipesKubeEvent.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
+            if (recipe instanceof GTRecipeSchema.GTKubeRecipe gtRecipe) {
                 // get the recipe ID without the leading type path
                 GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
                         .recipeBuilder(gtRecipe.idWithoutType());

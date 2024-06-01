@@ -5,12 +5,16 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +44,16 @@ public class DecompositionRecipeHandler {
             return;
 
         List<ItemStack> outputs = new ArrayList<>();
-        List<FluidStack> fluidOutputs = new ArrayList<>();
+        List<FluidIngredient> fluidOutputs = new ArrayList<>();
         int totalInputAmount = 0;
 
         // compute outputs
         for (MaterialStack component : material.getMaterialComponents()) {
-            totalInputAmount += component.amount();
+            totalInputAmount += (int) component.amount();
             if (component.material().hasProperty(PropertyKey.DUST)) {
                 outputs.add(ChemicalHelper.get(dust, component.material(), (int) component.amount()));
             } else if (component.material().hasProperty(PropertyKey.FLUID)) {
-                fluidOutputs.add(component.material().getFluid((int) (1000 * component.amount())));
+                fluidOutputs.add(component.material().asSingleFluidIngredient((int) (1000 * component.amount())));
             }
         }
 
@@ -59,7 +63,7 @@ public class DecompositionRecipeHandler {
             List<Integer> materialAmounts = new ArrayList<>();
             materialAmounts.add(totalInputAmount);
             outputs.forEach(itemStack -> materialAmounts.add(itemStack.getCount()));
-            fluidOutputs.forEach(fluidStack -> materialAmounts.add((int) (fluidStack.getAmount() / 1000)));
+            fluidOutputs.forEach(fluidStack -> materialAmounts.add((int) (((ISizedFluidIngredient)fluidStack).getAmount() / 1000)));
 
             int highestDivisor = 1;
 
@@ -79,11 +83,17 @@ public class DecompositionRecipeHandler {
                     reducedOutputs.add(reducedStack);
                 }
 
-                List<FluidStack> reducedFluidOutputs = new ArrayList<>();
+                List<FluidIngredient> reducedFluidOutputs = new ArrayList<>();
 
-                for (FluidStack fluidStack : fluidOutputs) {
-                    FluidStack reducedFluidStack = fluidStack.copy();
-                    reducedFluidStack.setAmount(reducedFluidStack.getAmount() / highestDivisor);
+                for (FluidIngredient fluidStack : fluidOutputs) {
+                    FluidIngredient reducedFluidStack = fluidStack;
+                    if (reducedFluidStack instanceof SizedSingleFluidIngredient sized) {
+                        reducedFluidStack = sized.copy();
+                    } else if (reducedFluidStack instanceof SizedTagFluidIngredient sized) {
+                        reducedFluidStack = sized.copy();
+                    }
+                    ((ISizedFluidIngredient)reducedFluidStack)
+                            .setAmount(((ISizedFluidIngredient)reducedFluidStack).getAmount() / highestDivisor);
                     reducedFluidOutputs.add(reducedFluidStack);
                 }
 
@@ -105,13 +115,13 @@ public class DecompositionRecipeHandler {
                     .EUt(VA[LV]);
         }
         builder.outputItems(outputs.toArray(ItemStack[]::new));
-        builder.outputFluids(fluidOutputs.toArray(FluidStack[]::new));
+        builder.outputFluids(fluidOutputs.toArray(FluidIngredient[]::new));
 
         // finish builder
         if (decomposePrefix != null) {
             builder.inputItems(decomposePrefix, material, totalInputAmount);
         } else {
-            builder.inputFluids(material.getFluid(1000));
+            builder.inputFluids(material.asFluidIngredient(1000));
         }
 
         // register recipe

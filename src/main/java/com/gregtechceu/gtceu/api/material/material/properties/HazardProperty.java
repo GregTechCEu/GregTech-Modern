@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
-import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -161,7 +161,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
     public static HazardProperty.HazardEffect poisonEffect(int duration, int startTime, int amplifier) {
         return new HazardProperty.HazardEffect(duration, startTime,
-                () -> new MobEffectInstance(GTMobEffects.WEAK_POISON.getDelegate(), 1, amplifier));
+                () -> new MobEffectInstance(GTMobEffects.WEAK_POISON, 1, amplifier));
     }
 
     public static HazardProperty.HazardEffect weaknessEffect(int duration, int startTime, int amplifier) {

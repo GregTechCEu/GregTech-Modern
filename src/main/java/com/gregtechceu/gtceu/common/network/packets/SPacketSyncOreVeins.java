@@ -28,9 +28,9 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class SPacketSyncOreVeins implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE = new CustomPacketPayload.Type<>(GTCEu.id("sync_bedrock_ore_veins"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncFluidVeins> CODEC =
-            StreamCodec.ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
+    public static final CustomPacketPayload.Type<SPacketSyncOreVeins> TYPE = new CustomPacketPayload.Type<>(GTCEu.id("sync_ore_veins"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncOreVeins> CODEC =
+            StreamCodec.ofMember(SPacketSyncOreVeins::encode, SPacketSyncOreVeins::decode);
 
     private final Map<ResourceLocation, GTOreDefinition> veins;
 
@@ -61,12 +61,12 @@ public class SPacketSyncOreVeins implements CustomPacketPayload {
         return new SPacketSyncOreVeins(veins);
     }
 
-    public void execute(IPayloadContext handler) {
+    public static void execute(SPacketSyncOreVeins packet, IPayloadContext handler) {
         if (GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.unfreeze();
         }
         GTRegistries.ORE_VEINS.registry().clear();
-        for (var entry : veins.entrySet()) {
+        for (var entry : packet.veins.entrySet()) {
             GTRegistries.ORE_VEINS.registerOrOverride(entry.getKey(), entry.getValue());
         }
         if (!GTRegistries.ORE_VEINS.isFrozen()) {

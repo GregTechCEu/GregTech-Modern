@@ -11,12 +11,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
+import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
@@ -559,10 +563,22 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        FluidIngredient dividedInputFluid = input.copy();
-                        dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
-                        FluidIngredient dividedOutputFluid = output.copy();
-                        dividedOutputFluid.setAmount(Math.max(1, dividedOutputFluid.getAmount() / ratio));
+                        FluidIngredient dividedInputFluid = input;
+                        if (dividedInputFluid instanceof SizedTagFluidIngredient sized) {
+                            dividedInputFluid = sized.copy();
+                        } else if (dividedInputFluid instanceof SizedSingleFluidIngredient sized) {
+                            dividedInputFluid = sized.copy();
+                        }
+                        ((ISizedFluidIngredient)dividedInputFluid).setAmount(Math.max(1,
+                                ((ISizedFluidIngredient)dividedInputFluid).getAmount() / ratio));
+                        FluidIngredient dividedOutputFluid = output;
+                        if (dividedOutputFluid instanceof SizedTagFluidIngredient sized) {
+                            dividedOutputFluid = sized.copy();
+                        } else if (dividedOutputFluid instanceof SizedSingleFluidIngredient sized) {
+                            dividedOutputFluid = sized.copy();
+                        }
+                        ((ISizedFluidIngredient)dividedOutputFluid).setAmount(Math.max(1,
+                                ((ISizedFluidIngredient)dividedInputFluid).getAmount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.chance(inputContent.chance)
