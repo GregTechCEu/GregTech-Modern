@@ -149,8 +149,8 @@ public class ComponentItem extends Item
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         for (IItemComponent component : components) {
-            if (component instanceof IItemAttributes interactionItem) {
-                var result = interactionItem.getAttributeModifiers(slot, stack);
+            if (component instanceof IItemAttributes itemAttributes) {
+                var result = itemAttributes.getAttributeModifiers(slot, stack);
                 if (result != null && !result.isEmpty()) {
                     return result;
                 }
@@ -162,8 +162,8 @@ public class ComponentItem extends Item
     @Override
     public boolean isEnchantable(ItemStack stack) {
         for (IItemComponent component : components) {
-            if (component instanceof IEnchantableItem interactionItem) {
-                return interactionItem.isEnchantable(stack);
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.isEnchantable(stack);
             }
         }
         return super.isEnchantable(stack);
@@ -172,8 +172,8 @@ public class ComponentItem extends Item
     @Override
     public int getEnchantmentValue(ItemStack stack) {
         for (IItemComponent component : components) {
-            if (component instanceof IEnchantableItem interactionItem) {
-                return interactionItem.getEnchantmentValue(stack);
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.getEnchantmentValue(stack);
             }
         }
         return super.getEnchantmentValue(stack);
@@ -182,8 +182,8 @@ public class ComponentItem extends Item
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         for (IItemComponent component : components) {
-            if (component instanceof IEnchantableItem interactionItem) {
-                return interactionItem.canApplyAtEnchantingTable(stack, enchantment);
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.canApplyAtEnchantingTable(stack, enchantment);
             }
         }
         return super.canApplyAtEnchantingTable(stack, enchantment);
