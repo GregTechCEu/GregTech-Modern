@@ -76,7 +76,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
     public List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
     public List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
     @Setter
-    public BlockState fillerBlock;
+    public BlockState fillerBlock = Blocks.AIR.defaultBlockState();
     @Setter
     public int minYLevel;
     @Setter

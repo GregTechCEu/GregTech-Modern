@@ -16,12 +16,17 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
+import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
+import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
@@ -51,6 +56,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -192,6 +198,17 @@ public class ForgeCommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()), serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()),
+                    serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(
+                    new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), serverPlayer);
         }
     }
 

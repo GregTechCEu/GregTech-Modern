@@ -7,8 +7,12 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
+
+import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -78,6 +82,10 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
         if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
+        }
+
+        if (Platform.getMinecraftServer() != null) {
+            GTNetwork.NETWORK.sendToAll(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
         }
     }
 
