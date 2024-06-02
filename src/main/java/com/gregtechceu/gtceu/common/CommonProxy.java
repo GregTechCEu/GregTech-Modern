@@ -191,7 +191,6 @@ public class CommonProxy {
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
-        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate(modBus);

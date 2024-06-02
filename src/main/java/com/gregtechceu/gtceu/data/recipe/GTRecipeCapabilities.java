@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,7 +19,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 public class GTRecipeCapabilities {
 
     public final static RecipeCapability<SizedIngredient> ITEM = ItemRecipeCapability.CAP;
-    public final static RecipeCapability<FluidIngredient> FLUID = FluidRecipeCapability.CAP;
+    public final static RecipeCapability<SizedFluidIngredient> FLUID = FluidRecipeCapability.CAP;
     public final static RecipeCapability<BlockState> BLOCK_STATE = BlockStateRecipeCapability.CAP;
     public final static RecipeCapability<Long> EU = EURecipeCapability.CAP;
     public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;

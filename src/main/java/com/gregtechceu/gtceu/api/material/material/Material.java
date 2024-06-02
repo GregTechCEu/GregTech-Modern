@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -42,6 +40,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -266,13 +265,12 @@ public class Material implements Comparable<Material> {
         return TagUtil.createFluidTag(this.getName());
     }
 
-    public SizedTagFluidIngredient asFluidIngredient(int amount) {
-        return new SizedTagFluidIngredient(getFluidTag(), amount);
+    public SizedFluidIngredient asFluidIngredient(int amount) {
+        return SizedFluidIngredient.of(getFluidTag(), amount);
     }
 
-    public SizedSingleFluidIngredient asSingleFluidIngredient(int amount) {
-        //noinspection deprecation
-        return new SizedSingleFluidIngredient(getFluid().builtInRegistryHolder(), amount);
+    public SizedFluidIngredient asSingleFluidIngredient(int amount) {
+        return SizedFluidIngredient.of(getFluid(), amount);
     }
 
     /**

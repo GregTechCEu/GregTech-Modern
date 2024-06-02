@@ -5,12 +5,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidSingleIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -52,7 +49,7 @@ import java.util.stream.Collectors;
  * @date 2023/2/20
  * @implNote FluidRecipeCapability
  */
-public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
+public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient> {
 
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
@@ -61,35 +58,27 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public FluidIngredient copyInner(FluidIngredient content) {
-        if (content instanceof SizedTagFluidIngredient tag) {
-            return tag.copy();
-        }
-        return super.copyInner(content);
+    public SizedFluidIngredient copyInner(SizedFluidIngredient content) {
+        return new SizedFluidIngredient(content.ingredient(), content.amount());
     }
 
     @Override
-    public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
-        if (content.isEmpty()) return FluidIngredient.empty();
-        if (content instanceof SizedTagFluidIngredient tagFluidIngredient) {
-            return new SizedTagFluidIngredient(tagFluidIngredient.tag(),
-                    modifier.apply(tagFluidIngredient.getAmount()).intValue());
-        }
-        return super.copyWithModifier(content, modifier);
+    public SizedFluidIngredient copyWithModifier(SizedFluidIngredient content, ContentModifier modifier) {
+        return new SizedFluidIngredient(content.ingredient(), modifier.apply(content.amount()).intValue());
     }
 
     @Override
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
-        if (obj instanceof FluidIngredient ingredient) {
-            if (ingredient instanceof TagFluidIngredient tag) {
+        if (obj instanceof SizedFluidIngredient ingredient) {
+            if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
                 ingredients.add(new MapFluidTagIngredient(tag.tag()));
-            } else if (ingredient instanceof SingleFluidIngredient single) {
-                ingredients.add(new MapFluidIngredient(single.getStacks()[0]));
+            } else if (ingredient.ingredient() instanceof SingleFluidIngredient single) {
+                ingredients.add(new MapFluidSingleIngredient(single.getStacks()[0]));
             }
             // TODO support other fluid ingredient types.
         } else if (obj instanceof FluidStack stack) {
-            ingredients.add(new MapFluidIngredient(stack));
+            ingredients.add(new MapFluidSingleIngredient(stack));
             stack.getFluidHolder().tags()
                     .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
         }
@@ -101,10 +90,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
-            if (item instanceof FluidIngredient fluid) {
+            if (item instanceof SizedFluidIngredient fluid) {
                 boolean isEqual = false;
                 for (Object obj : list) {
-                    if (obj instanceof FluidIngredient fluidIngredient) {
+                    if (obj instanceof SizedFluidIngredient fluidIngredient) {
                         if (fluid.equals(fluidIngredient)) {
                             isEqual = true;
                             break;
@@ -121,7 +110,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             } else if (item instanceof FluidStack fluidStack) {
                 boolean isEqual = false;
                 for (Object obj : list) {
-                    if (obj instanceof FluidIngredient fluidIngredient) {
+                    if (obj instanceof SizedFluidIngredient fluidIngredient) {
                         if (fluidIngredient.test(fluidStack)) {
                             isEqual = true;
                             break;
@@ -164,8 +153,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             int amountLeft = 0;
 
             for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
-                .map(FluidRecipeCapability.CAP::of).filter(ingredient -> !ingredient.isEmpty())
-                .map(ingredient -> ingredient.getStacks()[0]).toList()) {
+                .map(FluidRecipeCapability.CAP::of).filter(ingredient -> !ingredient.ingredient().hasNoFluids())
+                .map(ingredient -> ingredient.getFluids()[0]).toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
@@ -210,23 +199,16 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         Map<FluidKey, Long> fluidCountMap = new HashMap<>();
         Map<FluidKey, Long> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
-            FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
-            final long fluidAmount;
-            if (fluidInput instanceof SizedTagFluidIngredient tag) {
-                fluidAmount = tag.getAmount();
-            } else if (fluidInput instanceof SizedSingleFluidIngredient single) {
-                fluidAmount = single.getAmount();
-            } else {
-                fluidAmount = FluidType.BUCKET_VOLUME;
-            }
+            SizedFluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
+            final long fluidAmount = fluidInput.amount();
             if (content.chance == 0.0f) {
-                notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
+                notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getFluids()[0]),
                         (k, v) -> v + fluidAmount);
-                notConsumableMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
+                notConsumableMap.putIfAbsent(new FluidKey(fluidInput.getFluids()[0]), fluidAmount);
             } else {
-                fluidCountMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
+                fluidCountMap.computeIfPresent(new FluidKey(fluidInput.getFluids()[0]),
                         (k, v) -> v + fluidAmount);
-                fluidCountMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
+                fluidCountMap.putIfAbsent(new FluidKey(fluidInput.getFluids()[0]), fluidAmount);
             }
         }
 
@@ -355,17 +337,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     // Maps fluids to Either<(tag with count), FluidStack>s
-    public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
-        if (ingredient instanceof SizedTagFluidIngredient tag) {
+    public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(SizedFluidIngredient ingredient) {
+        if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
             List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
-            tags.add(Pair.of(tag.tag(), tag.getAmount()));
+            tags.add(Pair.of(tag.tag(), ingredient.amount()));
             return Either.left(tags);
-        } else if (ingredient instanceof TagFluidIngredient tag) {
-            List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
-            tags.add(Pair.of(tag.tag(), FluidType.BUCKET_VOLUME));
-            return Either.left(tags);
-        } else {
-            return Either.right(Arrays.asList(ingredient.getStacks()));
+        }  else {
+            return Either.right(Arrays.asList(ingredient.getFluids()));
         }
     }
 }

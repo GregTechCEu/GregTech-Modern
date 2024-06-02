@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
@@ -189,7 +189,8 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
+            SizedFluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier);
+            gas = new SizedFluidIngredient(gas.ingredient(), gas.amount());
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)

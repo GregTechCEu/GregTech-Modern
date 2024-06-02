@@ -237,7 +237,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     public FluidStack getFuel() {
         if (currentRecipe != null) {
             return FluidRecipeCapability.CAP.of(currentRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
-                    .getStacks()[0];
+                    .getFluids()[0];
         }
 
         return FluidStack.EMPTY;

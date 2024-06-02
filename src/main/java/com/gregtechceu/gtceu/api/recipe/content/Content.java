@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -80,11 +80,11 @@ public class Content {
 
     @OnlyIn(Dist.CLIENT)
     public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof FluidIngredient ingredient) {
+        if (content instanceof SizedFluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.isEmpty() ? 0 : ingredient.getStacks()[0].getAmount();
+            long amount = ingredient.ingredient().hasNoFluids() ? 0 : ingredient.getFluids()[0].getAmount();
             String s;
             if (amount >= 1000) {
                 amount /= 1000;

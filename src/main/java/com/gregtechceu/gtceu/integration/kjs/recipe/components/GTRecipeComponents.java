@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedSingleFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
-import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 
@@ -174,7 +172,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(KubeRecipe recipe, FluidIngredientJS value) {
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
+            return SizedFluidIngredient.NESTED_CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
@@ -206,7 +204,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(KubeRecipe recipe, FluidIngredientJS value) {
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
+            return SizedFluidIngredient.NESTED_CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
@@ -260,26 +258,20 @@ public class GTRecipeComponents {
 
     public static class FluidIngredientJS implements InputFluid, OutputFluid {
 
-        private final FluidIngredient ingredient;
+        private final SizedFluidIngredient ingredient;
 
-        public FluidIngredientJS(FluidIngredient ingredient) {
+        public FluidIngredientJS(SizedFluidIngredient ingredient) {
             this.ingredient = ingredient;
         }
 
         @Override
         public long kjs$getAmount() {
-            return ((ISizedFluidIngredient)ingredient).getAmount();
+            return ingredient.amount();
         }
 
         @Override
         public FluidIngredientJS kjs$copy(long amount) {
-            FluidIngredient ingredient1 = ingredient;
-            if (ingredient1 instanceof SizedSingleFluidIngredient sized) {
-                ingredient1 = sized.copy();
-            } else if (ingredient1 instanceof SizedTagFluidIngredient sized) {
-                ingredient1 = sized.copy();
-            }
-            ((ISizedFluidIngredient)ingredient1).setAmount((int) amount);
+            SizedFluidIngredient ingredient1 = new SizedFluidIngredient(ingredient.ingredient(), (int) amount);
             return new FluidIngredientJS(ingredient1);
         }
 
@@ -295,12 +287,12 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
-            } else if (o instanceof FluidIngredient ingredient) {
+            } else if (o instanceof SizedFluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
-                return new FluidIngredientJS(FluidIngredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow());
+                return new FluidIngredientJS(SizedFluidIngredient.NESTED_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow());
             } else if (o instanceof FluidStack fluidStack) {
-                return new FluidIngredientJS(FluidIngredient.of(fluidStack));
+                return new FluidIngredientJS(SizedFluidIngredient.of(fluidStack));
             }
 
             var list = ListJS.of(o);
@@ -310,12 +302,12 @@ public class GTRecipeComponents {
                     FluidStack stack = FluidWrapper.wrap(object);
                     stacks.add(stack);
                 }
-                return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
+                return new FluidIngredientJS(new SizedFluidIngredient(FluidIngredient.of(stacks.toArray(FluidStack[]::new)),
+                        stacks.get(0).getAmount()));
             } else {
                 FluidStack stack = FluidWrapper.wrap(o);
                 // TODO fix nbt once KubeJS 1.20.5 is out
-                return new FluidIngredientJS(FluidIngredient
-                        .of(stack));
+                return new FluidIngredientJS(SizedFluidIngredient.of(stack));
             }
         }
     }
