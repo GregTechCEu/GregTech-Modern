@@ -55,7 +55,8 @@ public class CustomTieredMachineBuilder extends SimpleMachineBuilder {
                 // machineFunction), MachineFunctionPresets.mapTierArray(tiers));
                 builders = customTiered(name,
                         UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(),
-                                TypeInfo.of(BiFunction.class), machineFunction), tiers);
+                                TypeInfo.of(BiFunction.class), machineFunction),
+                        tiers);
             }
         }
         return MachineFunctionPresets.builder(name, builders, CustomTieredMachineBuilder.class,

@@ -4,18 +4,16 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 
-import dev.latvian.mods.kubejs.fluid.FluidWrapper;
-import dev.latvian.mods.kubejs.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +21,7 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
+import dev.latvian.mods.kubejs.fluid.FluidWrapper;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -32,6 +31,7 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.util.NBTUtils;
 
 import java.util.*;
 
@@ -278,8 +278,8 @@ public class GTRecipeComponents {
         @Override
         public boolean matches(FluidLike other) {
             // if (other instanceof FluidStack fluidStack) {
-            //     // TODO fix nbt once KubeJS 1.21 is out
-            //     return ingredient.test(fluidStack);
+            // // TODO fix nbt once KubeJS 1.21 is out
+            // return ingredient.test(fluidStack);
             // }
             return other.matches(this);
         }
@@ -290,7 +290,8 @@ public class GTRecipeComponents {
             } else if (o instanceof SizedFluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
-                return new FluidIngredientJS(SizedFluidIngredient.NESTED_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow());
+                return new FluidIngredientJS(
+                        SizedFluidIngredient.NESTED_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow());
             } else if (o instanceof FluidStack fluidStack) {
                 return new FluidIngredientJS(SizedFluidIngredient.of(fluidStack));
             }
@@ -302,8 +303,9 @@ public class GTRecipeComponents {
                     FluidStack stack = FluidWrapper.wrap(object);
                     stacks.add(stack);
                 }
-                return new FluidIngredientJS(new SizedFluidIngredient(FluidIngredient.of(stacks.toArray(FluidStack[]::new)),
-                        stacks.get(0).getAmount()));
+                return new FluidIngredientJS(
+                        new SizedFluidIngredient(FluidIngredient.of(stacks.toArray(FluidStack[]::new)),
+                                stacks.get(0).getAmount()));
             } else {
                 FluidStack stack = FluidWrapper.wrap(o);
                 // TODO fix nbt once KubeJS 1.20.5 is out

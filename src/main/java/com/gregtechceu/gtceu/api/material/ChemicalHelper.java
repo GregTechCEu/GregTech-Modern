@@ -25,7 +25,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.mojang.datafixers.util.Pair;
@@ -261,17 +260,18 @@ public class ChemicalHelper {
 
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
         if (TAG_UNIFICATION_ENTRY.isEmpty()) {
-            // If the map is empty, resolve all possible tags to their values in an attempt to save time on later lookups.
+            // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
+            // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                     Arrays.stream(prefix.getItemTags(material))
-                        .filter(allItemTags::contains)
-                        .forEach(tagKey -> {
-                            // remove the tag so that the next iteration is faster.
-                            allItemTags.remove(tagKey);
-                            TAG_UNIFICATION_ENTRY.put(tagKey, new UnificationEntry(prefix, material));
-                        });
+                            .filter(allItemTags::contains)
+                            .forEach(tagKey -> {
+                                // remove the tag so that the next iteration is faster.
+                                allItemTags.remove(tagKey);
+                                TAG_UNIFICATION_ENTRY.put(tagKey, new UnificationEntry(prefix, material));
+                            });
                 }
             }
         }

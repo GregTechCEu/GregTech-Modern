@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -27,11 +26,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
@@ -43,7 +42,6 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -242,7 +240,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
-                                            int tierChanceBoost) {
+                                              int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -542,18 +540,18 @@ public interface GTRecipeSchema {
         }
 
         /*
-        @Override
-        public JsonElement writeInputFluid(InputFluid value) {
-            var fluid = ((FluidStack) value).getFluidStack();
-            FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
-        }
-
-        @Override
-        public InputFluid readInputFluid(Object from) {
-            return super.readInputFluid(from);
-        }
-        */
+         * @Override
+         * public JsonElement writeInputFluid(InputFluid value) {
+         * var fluid = ((FluidStack) value).getFluidStack();
+         * FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
+         * return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
+         * }
+         * 
+         * @Override
+         * public InputFluid readInputFluid(Object from) {
+         * return super.readInputFluid(from);
+         * }
+         */
     }
 
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");
@@ -569,7 +567,8 @@ public interface GTRecipeSchema {
     RecipeKey<CapabilityMap> ALL_OUTPUTS = GTRecipeComponents.OUT.key("outputs").defaultOptional();
     RecipeKey<CapabilityMap> ALL_TICK_OUTPUTS = GTRecipeComponents.TICK_OUT.key("tickOutputs").defaultOptional();
 
-    RecipeSchema SCHEMA = new RecipeSchema(GTKubeRecipe.class, GTKubeRecipe::new, DURATION, DATA, CONDITIONS, ALL_INPUTS,
+    RecipeSchema SCHEMA = new RecipeSchema(GTKubeRecipe.class, GTKubeRecipe::new, DURATION, DATA, CONDITIONS,
+            ALL_INPUTS,
             ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
             .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);

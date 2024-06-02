@@ -131,18 +131,18 @@ public class ChemistryRecipes {
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_carbon").circuitMeta(1)
-            .inputItems(dust, Carbon)
-            .inputFluids(Nitrogen.getFluid(2000))
-            .outputItems(dust,ActivatedCarbon)
-            .duration(320).EUt(64)
-            .save(provider);
+                .inputItems(dust, Carbon)
+                .inputFluids(Nitrogen.getFluid(2000))
+                .outputItems(dust, ActivatedCarbon)
+                .duration(320).EUt(64)
+                .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_charcoal").circuitMeta(1)
-            .inputItems(dust, Charcoal)
-            .inputFluids(Nitrogen.getFluid(2000))
-            .outputItems(dust,ActivatedCarbon)
-            .chancedOutput(dust, Ash, 2000, 0)
-            .duration(640).EUt(64)
-            .save(provider);
+                .inputItems(dust, Charcoal)
+                .inputFluids(Nitrogen.getFluid(2000))
+                .outputItems(dust, ActivatedCarbon)
+                .chancedOutput(dust, Ash, 2000, 0)
+                .duration(640).EUt(64)
+                .save(provider);
     }
 }

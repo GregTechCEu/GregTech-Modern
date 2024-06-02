@@ -17,6 +17,7 @@ public class GTNetwork {
         registar.playToServer(CPacketKeysPressed.TYPE, CPacketKeysPressed.CODEC, CPacketKeysPressed::execute);
         registar.playToClient(SPacketSyncOreVeins.TYPE, SPacketSyncOreVeins.CODEC, SPacketSyncOreVeins::execute);
         registar.playToClient(SPacketSyncFluidVeins.TYPE, SPacketSyncFluidVeins.CODEC, SPacketSyncFluidVeins::execute);
-        registar.playToClient(SPacketSyncBedrockOreVeins.TYPE, SPacketSyncBedrockOreVeins.CODEC, SPacketSyncBedrockOreVeins::execute);
+        registar.playToClient(SPacketSyncBedrockOreVeins.TYPE, SPacketSyncBedrockOreVeins.CODEC,
+                SPacketSyncBedrockOreVeins::execute);
     }
 }

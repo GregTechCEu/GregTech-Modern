@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -29,7 +28,8 @@ import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.abilities;
 
-public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine implements IControllable, IExplosionMachine {
+public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
+                                      implements IControllable, IExplosionMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -45,8 +45,9 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
     }
 
     public void convertEnergyTick() {
-        if(isWorkingEnabled()){
-            getRecipeLogic().setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.SUSPEND);
+        if (isWorkingEnabled()) {
+            getRecipeLogic()
+                    .setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.SUSPEND);
         }
         if (isWorkingEnabled()) {
             long canDrain = powerInput.getEnergyStored();
@@ -127,7 +128,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     @Override
     public void onStructureInvalid() {
-        if((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers){
+        if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
+                !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();

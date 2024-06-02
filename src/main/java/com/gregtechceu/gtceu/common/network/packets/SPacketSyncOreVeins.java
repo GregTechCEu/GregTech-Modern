@@ -2,24 +2,19 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
-import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.networking.IHandlerContext;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import lombok.RequiredArgsConstructor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +23,11 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class SPacketSyncOreVeins implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SPacketSyncOreVeins> TYPE = new CustomPacketPayload.Type<>(GTCEu.id("sync_ore_veins"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncOreVeins> CODEC =
-            StreamCodec.ofMember(SPacketSyncOreVeins::encode, SPacketSyncOreVeins::decode);
+
+    public static final CustomPacketPayload.Type<SPacketSyncOreVeins> TYPE = new CustomPacketPayload.Type<>(
+            GTCEu.id("sync_ore_veins"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncOreVeins> CODEC = StreamCodec
+            .ofMember(SPacketSyncOreVeins::encode, SPacketSyncOreVeins::decode);
 
     private final Map<ResourceLocation, GTOreDefinition> veins;
 
@@ -78,5 +75,4 @@ public class SPacketSyncOreVeins implements CustomPacketPayload {
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
-
 }

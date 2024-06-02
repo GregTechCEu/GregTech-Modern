@@ -143,7 +143,7 @@ public class ConfigHolder {
         public boolean hideFilledCellsInJEI = true;
 
         @Configurable
-        @Configurable.Comment({"Whether to hide the ore processing diagrams in JEI", "Default: false"})
+        @Configurable.Comment({ "Whether to hide the ore processing diagrams in JEI", "Default: false" })
         public boolean hideOreProcessingDiagrams = false;
 
         @Configurable
@@ -288,7 +288,7 @@ public class ConfigHolder {
         public int energyUsageMultiplier = 100;
 
         @Configurable
-        @Configurable.Comment({ "Energy use multiplier for prospectors.", "Default: 100"})
+        @Configurable.Comment({ "Energy use multiplier for prospectors.", "Default: 100" })
         public int prospectorEnergyUseMultiplier = 100;
         @Configurable
         @Configurable.Comment({ "Whether machines or boilers damage the terrain when they explode.",
@@ -296,7 +296,8 @@ public class ConfigHolder {
                 "Default: true" })
         public boolean doesExplosionDamagesTerrain = true;
         @Configurable
-        @Configurable.Comment({ "Enables Safe Active Transformers, removing their ability to explode if unformed while transmitting/receiving power.",
+        @Configurable.Comment({
+                "Enables Safe Active Transformers, removing their ability to explode if unformed while transmitting/receiving power.",
                 "Default: false" })
         public boolean harmlessActiveTransformers = false;
         @Configurable
@@ -440,7 +441,7 @@ public class ConfigHolder {
             public double nanoSaberBaseDamage = 5;
             @Configurable
             @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?",
-                "Default: true" })
+                    "Default: true" })
             public boolean zombieSpawnWithSabers = true;
             @Configurable
             @Configurable.Range(min = 1, max = 512)
@@ -450,6 +451,7 @@ public class ConfigHolder {
     }
 
     public static class GameplayConfigs {
+
         @Configurable
         @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
         public boolean hazardsEnabled = true;
@@ -487,7 +489,7 @@ public class ConfigHolder {
         public String defaultUIColor = "#FFFFFF";
         @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
-            "Disable if you have issues with rendering multiblocks.", "Default: true" })
+                "Disable if you have issues with rendering multiblocks.", "Default: true" })
         public boolean useVBO = true;
         @Configurable
         @Configurable.Comment({ "Duration of the multiblock in-world preview (s)", "Default: 10" })
@@ -522,7 +524,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Debug general events? (will print recipe conficts etc. to server's debug.log)",
-            "Default: false" })
+                "Default: false" })
         public boolean debug = false;
         @Configurable
         @Configurable.Comment({ "Debug ore vein placement? (will print placed veins to server's debug.log)",

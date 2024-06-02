@@ -422,7 +422,6 @@ public class ToolHelper {
     public static final ThreadLocal<Boolean> isAoeBreakingBlocks = ThreadLocal.withInitial(() -> false);
 
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
             return false;

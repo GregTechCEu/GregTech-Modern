@@ -20,11 +20,11 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModLoader;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,7 +80,8 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         }
 
         if (Platform.getMinecraftServer() != null) {
-            PacketDistributor.sendToAllPlayers(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
+            PacketDistributor
+                    .sendToAllPlayers(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
         }
     }
 
