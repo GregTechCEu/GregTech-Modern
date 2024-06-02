@@ -24,7 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.DevProperties;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import dev.latvian.mods.kubejs.util.UtilsJS;
 
 import java.util.*;
 import java.util.function.Supplier;

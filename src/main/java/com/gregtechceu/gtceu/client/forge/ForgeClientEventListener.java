@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.client.ClientCommands;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
-
 import com.gregtechceu.gtceu.data.block.GTOres;
 import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

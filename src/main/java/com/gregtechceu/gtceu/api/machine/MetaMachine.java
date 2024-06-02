@@ -21,12 +21,10 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
-import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -376,9 +374,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (isRemote())
                 return InteractionResult.CONSUME;
             var itemStack = playerIn.getItemInHand(hand);
-            var tagCompound = getBehaviorsTag(itemStack);
-            ToolModeSwitchBehavior.ModeType type = ToolModeSwitchBehavior.ModeType.values()[tagCompound
-                    .getByte("Mode")];
+            var tagCompound = getBehaviorsComponent(itemStack);
+            ToolModeSwitchBehavior.ModeType type = Optional
+                    .ofNullable(tagCompound.getBehavior(GTToolBehaviors.MODE_SWITCH))
+                    .map(ToolModeSwitchBehavior::getModeType).orElse(BOTH);
 
             if (type == ToolModeSwitchBehavior.ModeType.ITEM || type == ToolModeSwitchBehavior.ModeType.BOTH) {
                 if (this instanceof IAutoOutputItem autoOutputItem &&
@@ -389,26 +388,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (type == ToolModeSwitchBehavior.ModeType.FLUID || type == ToolModeSwitchBehavior.ModeType.BOTH) {
                 if (this instanceof IAutoOutputFluid autoOutputFluid &&
                         (!hasFrontFacing() || gridSide != getFrontFacing())) {
-                    autoOutputFluid.setOutputFacingFluids(gridSide);
-                }
-            }
-            return InteractionResult.CONSUME;
-        }
-        else {
-            if(isRemote())
-                return InteractionResult.CONSUME;
-            var itemStack = playerIn.getItemInHand(hand);
-            var tagCompound = getBehaviorsComponent(itemStack);
-            ToolModeSwitchBehavior.ModeType type = Optional.ofNullable(tagCompound.getBehavior(GTToolBehaviors.MODE_SWITCH))
-                .map(ToolModeSwitchBehavior::getModeType).orElse(BOTH);
-
-            if (type == ToolModeSwitchBehavior.ModeType.ITEM || type == ToolModeSwitchBehavior.ModeType.BOTH) {
-                if (this instanceof IAutoOutputItem autoOutputItem && (!hasFrontFacing() || gridSide != getFrontFacing())) {
-                    autoOutputItem.setOutputFacingItems(gridSide);
-                }
-            }
-            if (type == ToolModeSwitchBehavior.ModeType.FLUID || type == ToolModeSwitchBehavior.ModeType.BOTH) {
-                if (this instanceof IAutoOutputFluid autoOutputFluid && (!hasFrontFacing() || gridSide != getFrontFacing())) {
                     autoOutputFluid.setOutputFacingFluids(gridSide);
                 }
             }
@@ -433,7 +412,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
         var itemStack = playerIn.getItemInHand(hand);
-        if(isRemote())
+        if (isRemote())
             return InteractionResult.CONSUME;
         if (playerIn.isShiftKeyDown()) {
             boolean flag = false;
@@ -441,17 +420,18 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 if (autoOutputItem.getOutputFacingItems() == gridSide) {
                     autoOutputItem.setAllowInputFromOutputSideItems(!autoOutputItem.isAllowInputFromOutputSideItems());
                     playerIn.displayClientMessage(Component.translatable("gtceu.machine.basic.input_from_output_side." +
-                        (autoOutputItem.isAllowInputFromOutputSideItems() ? "allow" : "disallow"))
-                        .append(Component.translatable("gtceu.creative.chest.item")), true);
+                            (autoOutputItem.isAllowInputFromOutputSideItems() ? "allow" : "disallow"))
+                            .append(Component.translatable("gtceu.creative.chest.item")), true);
                     flag = true;
                 }
             }
             if (this instanceof IAutoOutputFluid autoOutputFluid) {
                 if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
-                    autoOutputFluid.setAllowInputFromOutputSideFluids(!autoOutputFluid.isAllowInputFromOutputSideFluids());
+                    autoOutputFluid
+                            .setAllowInputFromOutputSideFluids(!autoOutputFluid.isAllowInputFromOutputSideFluids());
                     playerIn.displayClientMessage(Component.translatable("gtceu.machine.basic.input_from_output_side." +
-                        (autoOutputFluid.isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
-                        .append(Component.translatable("gtceu.creative.tank.fluid")), true);
+                            (autoOutputFluid.isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
+                            .append(Component.translatable("gtceu.creative.tank.fluid")), true);
                     flag = true;
                 }
             }

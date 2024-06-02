@@ -76,7 +76,7 @@ public class TagPrefixItem extends Item {
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
-        GTUtil.appendHazardTooltips(material,tooltipComponents);
+        GTUtil.appendHazardTooltips(material, tooltipComponents);
     }
 
     @Override

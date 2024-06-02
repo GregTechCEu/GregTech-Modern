@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.Nullable;
 

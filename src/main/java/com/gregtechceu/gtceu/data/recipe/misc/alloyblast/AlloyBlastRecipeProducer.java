@@ -19,8 +19,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.ingotHot;

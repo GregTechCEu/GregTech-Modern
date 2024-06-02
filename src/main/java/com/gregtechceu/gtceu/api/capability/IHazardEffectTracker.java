@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import java.util.Set;
 

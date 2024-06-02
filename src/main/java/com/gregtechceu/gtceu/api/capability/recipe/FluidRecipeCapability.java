@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidSingleIngredient;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidSingleIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -30,13 +29,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -153,8 +153,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             int amountLeft = 0;
 
             for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
-                .map(FluidRecipeCapability.CAP::of).filter(ingredient -> !ingredient.ingredient().hasNoFluids())
-                .map(ingredient -> ingredient.getFluids()[0]).toList()) {
+                    .map(FluidRecipeCapability.CAP::of).filter(ingredient -> !ingredient.ingredient().hasNoFluids())
+                    .map(ingredient -> ingredient.getFluids()[0]).toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
@@ -184,14 +184,14 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
         Map<FluidKey, Long> fluidStacks = Objects
-            .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
-                Collections::<IRecipeHandler<?>>emptyList)
-            .stream()
-            .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
-                .map(FluidStack.class::cast).toList())
-            .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
-                Object2LongLinkedOpenHashMap::new));
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
+                        .map(FluidStack.class::cast).toList())
+                .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
+                        Object2LongLinkedOpenHashMap::new));
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe input fluids to account for duplicated fluids,
@@ -342,7 +342,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
             tags.add(Pair.of(tag.tag(), ingredient.amount()));
             return Either.left(tags);
-        }  else {
+        } else {
             return Either.right(Arrays.asList(ingredient.getFluids()));
         }
     }

@@ -11,11 +11,11 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -448,10 +448,10 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         CANNER_RECIPES.recipeBuilder("mask_filter")
-            .inputItems(plate, Polyethylene,4)
-            .inputItems(dust, ActivatedCarbon, 2)
-            .outputItems(MASK_FILTER)
-            .duration(100).EUt(2).save(provider);
+                .inputItems(plate, Polyethylene, 4)
+                .inputItems(dust, ActivatedCarbon, 2)
+                .outputItems(MASK_FILTER)
+                .duration(100).EUt(2).save(provider);
 
         CANNER_RECIPES.recipeBuilder("pack_paracetamol")
                 .inputItems(dust, Paracetamol, 16)

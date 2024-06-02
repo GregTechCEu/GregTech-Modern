@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,9 +14,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import lombok.RequiredArgsConstructor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +25,11 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class SPacketSyncFluidVeins implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE =
-            new CustomPacketPayload.Type<>(GTCEu.id("sync_bedrock_fluid_veins"));
-    public static final StreamCodec<FriendlyByteBuf, SPacketSyncFluidVeins> CODEC =
-            StreamCodec.ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
+
+    public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE = new CustomPacketPayload.Type<>(
+            GTCEu.id("sync_bedrock_fluid_veins"));
+    public static final StreamCodec<FriendlyByteBuf, SPacketSyncFluidVeins> CODEC = StreamCodec
+            .ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
 
     private final Map<ResourceLocation, BedrockFluidDefinition> veins;
 
@@ -76,5 +77,4 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
-
 }

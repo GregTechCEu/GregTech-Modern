@@ -5,20 +5,11 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import lombok.Getter;
-import lombok.val;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -27,6 +18,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import lombok.Getter;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,31 +33,34 @@ import java.util.List;
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsComponent;
 
 public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehavior> {
+
     public static final ToolModeSwitchBehavior INSTANCE = new ToolModeSwitchBehavior(ModeType.BOTH);
 
     public static final MapCodec<ToolModeSwitchBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ModeType.CODEC.lenientOptionalFieldOf("mode_type", ModeType.BOTH)
-                    .forGetter(val -> val.modeType)
-    ).apply(instance, ToolModeSwitchBehavior::new));
+                    .forGetter(val -> val.modeType))
+            .apply(instance, ToolModeSwitchBehavior::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ToolModeSwitchBehavior> STREAM_CODEC = StreamCodec.composite(
-            ModeType.STREAM_CODEC, ToolModeSwitchBehavior::getModeType,
-            ToolModeSwitchBehavior::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ToolModeSwitchBehavior> STREAM_CODEC = StreamCodec
+            .composite(
+                    ModeType.STREAM_CODEC, ToolModeSwitchBehavior::getModeType,
+                    ToolModeSwitchBehavior::new);
 
     @Getter
     private final ToolModeSwitchBehavior.ModeType modeType;
-
 
     protected ToolModeSwitchBehavior(ToolModeSwitchBehavior.ModeType type) {
         this.modeType = type;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player,
+                                                                        @NotNull InteractionHand hand) {
         var itemStack = player.getItemInHand(hand);
         var component = getBehaviorsComponent(itemStack);
         if (player.isShiftKeyDown()) {
-            ToolModeSwitchBehavior.ModeType type = ModeType.values()[(this.modeType.ordinal() + 1) & ModeType.values().length];
+            ToolModeSwitchBehavior.ModeType type = ModeType.values()[(this.modeType.ordinal() + 1) &
+                    ModeType.values().length];
             itemStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(new ArrayList<>()),
                     behavior -> behavior.withBehavior(new ToolModeSwitchBehavior(type)));
 
@@ -86,6 +87,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
     }
 
     public enum ModeType implements StringRepresentable {
+
         ITEM("item", Component.translatable("gtceu.mode.item")),
         FLUID("fluid", Component.translatable("gtceu.mode.fluid")),
         BOTH("both", Component.translatable("gtceu.mode.both"));

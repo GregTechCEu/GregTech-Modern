@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -40,6 +39,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.simibubi.create.AllBlocks;
 import org.jetbrains.annotations.Nullable;
@@ -560,10 +560,12 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        SizedFluidIngredient dividedInputFluid = new SizedFluidIngredient(input.ingredient(), Math.max(1,
-                                input.amount() / ratio));
-                        SizedFluidIngredient dividedOutputFluid = new SizedFluidIngredient(output.ingredient(), Math.max(1,
-                                output.amount() / ratio));
+                        SizedFluidIngredient dividedInputFluid = new SizedFluidIngredient(input.ingredient(),
+                                Math.max(1,
+                                        input.amount() / ratio));
+                        SizedFluidIngredient dividedOutputFluid = new SizedFluidIngredient(output.ingredient(),
+                                Math.max(1,
+                                        output.amount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.chance(inputContent.chance)

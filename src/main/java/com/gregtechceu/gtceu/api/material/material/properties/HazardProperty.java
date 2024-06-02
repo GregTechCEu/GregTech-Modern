@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
-import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.Holder;
@@ -239,7 +239,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
             this(secondsToMax, 0, List.of(), modifiers, -1);
         }
 
-        public HazardEffect(int secondsToMax, int modifierStartTime, Map<Holder<Attribute>, AttributeModifier> modifiers) {
+        public HazardEffect(int secondsToMax, int modifierStartTime,
+                            Map<Holder<Attribute>, AttributeModifier> modifiers) {
             this(secondsToMax, modifierStartTime, List.of(), modifiers, -1);
         }
 

@@ -131,7 +131,6 @@ public class LangHandler {
         provider.add("gtceu.hazard.antidote.description.effect_removed.all",
                 "Removes all of current ailments' effects");
 
-
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
