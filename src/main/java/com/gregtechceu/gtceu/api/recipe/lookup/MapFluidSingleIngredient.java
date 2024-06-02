@@ -1,33 +1,32 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
 
-public class MapFluidIngredient extends AbstractMapIngredient {
+public class MapFluidSingleIngredient extends AbstractMapIngredient {
 
     public final Fluid fluid;
     public final DataComponentPatch components;
 
-    public MapFluidIngredient(FluidStack fluidStack) {
+    public MapFluidSingleIngredient(FluidStack fluidStack) {
         this.fluid = fluidStack.getFluid();
         this.components = fluidStack.getComponentsPatch();
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull SizedFluidIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (FluidStack s : r.getStacks()) {
-            list.add(new MapFluidIngredient(s));
+        for (FluidStack s : r.getFluids()) {
+            list.add(new MapFluidSingleIngredient(s));
         }
         return list;
     }
@@ -46,7 +45,7 @@ public class MapFluidIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
-            MapFluidIngredient other = (MapFluidIngredient) o;
+            MapFluidSingleIngredient other = (MapFluidSingleIngredient) o;
             // the Fluid registered to the fluidName on game load might not be the same Fluid after loading the world,
             // but will still have the same fluidName.
             if (this.fluid.isSame(other.fluid)) {
@@ -58,7 +57,7 @@ public class MapFluidIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapFluidIngredient{" +
+        return "MapFluidSingleIngredient{" +
                 "{fluid=" + BuiltInRegistries.FLUID.getKey(fluid) + "} {tag=" + components + "}";
     }
 }

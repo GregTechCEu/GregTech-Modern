@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
+public class FluidRecipeHandler implements IRecipeHandler<SizedFluidIngredient> {
 
     @Getter
     public final IO handlerIO;
@@ -37,7 +37,7 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         return NotifiableFluidTank.handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }
@@ -72,7 +72,7 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     }
 
     @Override
-    public RecipeCapability<FluidIngredient> getCapability() {
+    public RecipeCapability<SizedFluidIngredient> getCapability() {
         return FluidRecipeCapability.CAP;
     }
 }

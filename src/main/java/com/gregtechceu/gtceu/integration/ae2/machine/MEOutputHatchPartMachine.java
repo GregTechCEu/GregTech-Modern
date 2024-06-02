@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
@@ -130,7 +130,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+        public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
                                                        @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, this.handlerIO,
                     Stream.generate(() -> new CustomFluidTank(0) {

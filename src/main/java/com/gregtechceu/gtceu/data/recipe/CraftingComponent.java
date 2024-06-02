@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedTagFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
@@ -14,6 +12,7 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class CraftingComponent {
     public static Component VOLTAGE_COIL;
     public static Component SPRING;
 
-    public static final Map<BlastProperty.GasTier, SizedTagFluidIngredient> EBF_GASES = new EnumMap<>(
+    public static final Map<BlastProperty.GasTier, SizedFluidIngredient> EBF_GASES = new EnumMap<>(
             BlastProperty.GasTier.class);
 
     static {

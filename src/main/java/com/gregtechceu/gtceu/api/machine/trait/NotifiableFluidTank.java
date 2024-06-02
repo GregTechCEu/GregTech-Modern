@@ -5,8 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.core.ISizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -35,7 +34,7 @@ import java.util.function.Predicate;
  * @date 2023/2/20
  * @implNote NotifiableFluidTank
  */
-public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
+public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class,
@@ -100,23 +99,23 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storages);
     }
 
     @Nullable
-    public static List<FluidIngredient> handleIngredient(IO io, GTRecipe recipe, List<FluidIngredient> left,
+    public static List<SizedFluidIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
                                                          boolean simulate, IO handlerIO, CustomFluidTank[] storages) {
         if (io != handlerIO) return left;
         var capabilities = simulate ?
                 Arrays.stream(storages).map(CustomFluidTank::copy).toArray(CustomFluidTank[]::new) : storages;
         for (CustomFluidTank capability : capabilities) {
-            Iterator<FluidIngredient> iterator = left.iterator();
+            Iterator<SizedFluidIngredient> iterator = left.iterator();
             if (io == IO.IN) {
                 while (iterator.hasNext()) {
-                    FluidIngredient fluidStack = iterator.next();
-                    if (fluidStack.isEmpty()) {
+                    SizedFluidIngredient fluidStack = iterator.next();
+                    if (fluidStack.ingredient().hasNoFluids()) {
                         iterator.remove();
                         continue;
                     }
@@ -132,32 +131,28 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     }
                     if (!found) continue;
                     var copy = foundStack.copy();
-                    copy.setAmount(((ISizedFluidIngredient)fluidStack).getAmount());
+                    copy.setAmount(fluidStack.amount());
                     FluidStack drained = capability.drain(copy, FluidAction.EXECUTE);
 
-                    ((ISizedFluidIngredient)fluidStack).setAmount(((ISizedFluidIngredient)fluidStack).getAmount() - drained.getAmount());
-                    if (((ISizedFluidIngredient)fluidStack).getAmount() <= 0) {
+                    if (fluidStack.amount() - drained.getAmount() <= 0) {
                         iterator.remove();
                     }
                 }
             } else if (io == IO.OUT) {
                 while (iterator.hasNext()) {
-                    FluidIngredient fluidStack = iterator.next();
-                    if (fluidStack.isEmpty()) {
+                    SizedFluidIngredient fluidStack = iterator.next();
+                    if (fluidStack.ingredient().hasNoFluids()) {
                         iterator.remove();
                         continue;
                     }
-                    var fluids = fluidStack.getStacks();
+                    var fluids = fluidStack.getFluids();
                     if (fluids.length == 0) {
                         iterator.remove();
                         continue;
                     }
                     FluidStack output = fluids[0];
                     int filled = capability.fill(output.copy(), FluidAction.EXECUTE);
-                    if (!fluidStack.isEmpty()) {
-                        ((ISizedFluidIngredient)fluidStack).setAmount(((ISizedFluidIngredient)fluidStack).getAmount() - filled);
-                    }
-                    if (((ISizedFluidIngredient)fluidStack).getAmount() <= 0) {
+                    if (fluidStack.amount() - filled <= 0) {
                         iterator.remove();
                     }
                 }
@@ -168,7 +163,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public boolean test(FluidIngredient ingredient) {
+    public boolean test(SizedFluidIngredient ingredient) {
         return !this.isLocked() || ingredient.test(this.lockedFluid.getFluid());
     }
 
@@ -218,7 +213,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public RecipeCapability<FluidIngredient> getCapability() {
+    public RecipeCapability<SizedFluidIngredient> getCapability() {
         return FluidRecipeCapability.CAP;
     }
 
