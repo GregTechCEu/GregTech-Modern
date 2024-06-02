@@ -9,7 +9,7 @@
     "GuiGraphicsAccessor",
     "GuiGraphicsMixin",
     "GuiHeartTypeMixin",
-    "LDLibClientEventListenerMixin",
+    "CompassManagerMixin",
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
