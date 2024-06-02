@@ -109,10 +109,10 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(
-                        StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, Direction.NORTH,
-                                ModelFactory.getBlockSprite(texture), modelState, -1, 0, true,
-                                true));
+                quads.add(StaticFaceBakery.bakeFace(
+                        StaticFaceBakery.SLIGHTLY_OVER_BLOCK, Direction.NORTH,
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true
+                ));
             }
         }
     }
