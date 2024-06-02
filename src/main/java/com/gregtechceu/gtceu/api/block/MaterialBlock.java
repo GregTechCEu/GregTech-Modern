@@ -21,15 +21,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +41,10 @@ import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -77,6 +85,16 @@ public class MaterialBlock extends AppearanceBlock {
             }
             return -1;
         };
+    }
+
+    public static VoxelShape COLLISION_BOX = Shapes.box(0.05, 0.0, 0.05, 0.95, 1.0, 0.95);
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if(this.tagPrefix == TagPrefix.frameGt) {
+            return COLLISION_BOX;
+        }
+        return super.getCollisionShape(state, level, pos, context);
     }
 
     /** Start falling ore stuff */
@@ -243,5 +261,30 @@ public class MaterialBlock extends AppearanceBlock {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if(this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity le) {
+            double currentAccel = 0.15D * (le.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
+            double currentSpeedVertical = 0.9D * (le.isInWater() ? 0.4D : 1.0D);
+            Vec3 deltaMovement = le.getDeltaMovement();
+            le.resetFallDistance();
+            float f = 0.15F;
+            double d0 = Mth.clamp(deltaMovement.x, -f, f);
+            double d1 = Mth.clamp(deltaMovement.z, -f, f);
+            double d2 = Math.max(deltaMovement.y, -f);
+            if (d2 < 0.0 && !le.getFeetBlockState().isScaffolding(le) && le.isSuppressingSlidingDownLadder() && le instanceof Player) {
+                d2 = Math.min(deltaMovement.y + currentAccel, 0.0D);
+            }
+            if(le.horizontalCollision) {
+                d2 = 0.3;
+            }
+
+            deltaMovement = new Vec3(d0, d2, d1);
+
+            entity.setDeltaMovement(deltaMovement);
+        }
+        //super.entityInside(state, level, pos, entity);
     }
 }

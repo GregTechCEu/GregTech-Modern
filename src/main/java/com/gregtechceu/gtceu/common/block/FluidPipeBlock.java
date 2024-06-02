@@ -156,5 +156,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                 }
             }
         }
+        super.entityInside(state, level, pos, entity);
     }
 }

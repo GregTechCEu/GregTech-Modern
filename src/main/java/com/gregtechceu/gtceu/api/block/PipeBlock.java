@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -338,8 +339,32 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        var pipeNode = getPipeTile(level, pos);
+        if(pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()).getDefaultState();
+            MaterialBlock frameBlock = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()).get();
+            frameBlock.entityInside(frameState, level, pos, entity);
+        }
+        super.entityInside(state, level, pos, entity);
+    }
+
+    @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        var pipeNode = getPipeTile(level, pos);
+        if(pipeNode != null && pipeNode.getFrameMaterial() != null) {
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var pipeNode = getPipeTile(level, pos);
+        if(pipeNode != null && pipeNode.getFrameMaterial() != null) {
+            return MaterialBlock.COLLISION_BOX;
+        }
+        return super.getCollisionShape(state, level, pos, context);
     }
 
     @Override
