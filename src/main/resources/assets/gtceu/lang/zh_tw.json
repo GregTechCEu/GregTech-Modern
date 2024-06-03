@@ -2908,7 +2908,7 @@
     "gtceu.machine.large_turbine.gas.tooltip":"並不是噴氣發動機",
     "gtceu.machine.large_turbine.plasma.tooltip":"電漿能量虹吸器",
     "gtceu.machine.large_turbine.steam.tooltip":"別把頭伸進去",
-    "gtceu.machine.laser_hatch.both.tooltip":"§c激光傳導線纜必須直線擺放！§7",
+    "gtceu.machine.laser_hatch.both.tooltip":"§c雷射傳導線纜必須直線擺放！§7",
     "gtceu.machine.laser_hatch.source.tooltip":"§7遠距離發射能量",
     "gtceu.machine.laser_hatch.target.tooltip":"§7遠距離接收能量",
     "gtceu.machine.laser_source_hatch.tooltip.0":"遠距離發射能量",
