@@ -165,6 +165,10 @@ public final class WoodTypeEntry {
         }
     }
 
+    public Item[] getLogs() {
+        return new Item[] { this.log, this.wood, this.strippedWood, this.strippedLog };
+    }
+
     public static class Builder {
 
         private final String modid;
