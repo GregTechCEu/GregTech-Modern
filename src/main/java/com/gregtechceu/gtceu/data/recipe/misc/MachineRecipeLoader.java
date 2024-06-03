@@ -253,8 +253,9 @@ public class MachineRecipeLoader {
     }
 
     private static void registerCokeOvenRecipes(RecipeOutput provider) {
-        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(ItemTags.LOGS).outputItems(gem, Charcoal)
-                .outputFluids(Creosote.getFluid(250)).duration(900).save(provider);
+        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(ItemTags.LOGS_THAT_BURN)
+                .outputItems(gem, Charcoal).outputFluids(Creosote.getFluid(250))
+                .duration(900).save(provider);
         COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke").inputItems(gem, Coal).outputItems(gem, Coke)
                 .outputFluids(Creosote.getFluid(500)).duration(900).save(provider);
         COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block").inputItems(block, Coal).outputItems(block, Coke)
