@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.utils;
+package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -10,8 +10,9 @@ import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import com.google.common.collect.Lists;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-public class IngredientEquality {
+public class ItemIngredientEquality {
 
     public static final Comparator<ItemStack> STACK_COMPARATOR = Comparator
             .comparing(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()));
@@ -95,11 +96,12 @@ public class IngredientEquality {
             if (first.isCustom() || second.isCustom()) {
                 ICustomIngredient firstCustom = first.getCustomIngredient();
                 ICustomIngredient secondCustom = second.getCustomIngredient();
-                if (firstCustom.getItems().count() != secondCustom.getItems().count())
-                    return 1;
-                ItemStack[] values1 = firstCustom.getItems().toArray(ItemStack[]::new);
-                ItemStack[] values2 = firstCustom.getItems().toArray(ItemStack[]::new);
-                if (values1.length != values2.length) return 1;
+                ItemStack[] values1 = (firstCustom == null ? Stream.<ItemStack>empty() : firstCustom.getItems())
+                        .toArray(ItemStack[]::new);
+                ItemStack[] values2 = (secondCustom == null ? Stream.<ItemStack>empty() : secondCustom.getItems())
+                        .toArray(ItemStack[]::new);
+                if (values1.length != values2.length)
+                    return values1.length - values2.length;
 
                 Arrays.parallelSort(values1, ITEM_STACK_COMPARATOR);
                 Arrays.parallelSort(values2, ITEM_STACK_COMPARATOR);

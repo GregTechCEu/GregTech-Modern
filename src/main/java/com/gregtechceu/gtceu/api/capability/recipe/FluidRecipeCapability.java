@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidSingleIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
@@ -29,9 +28,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.*;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -71,14 +68,29 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
         if (obj instanceof SizedFluidIngredient ingredient) {
-            if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
-                ingredients.add(new MapFluidTagIngredient(tag.tag()));
-            } else if (ingredient.ingredient() instanceof SingleFluidIngredient single) {
-                ingredients.add(new MapFluidSingleIngredient(single.getStacks()[0]));
+            switch (ingredient.ingredient()) {
+                case TagFluidIngredient tag -> ingredients.add(new MapFluidTagIngredient(tag.tag()));
+                case SingleFluidIngredient single -> ingredients
+                        .add(new MapFluidStackIngredient(single.getStacks()[0]));
+                case DataComponentFluidIngredient component when component.isStrict() -> ingredients
+                        .addAll(MapFluidStackDataComponentIngredient.from(ingredient.ingredient()));
+                case DataComponentFluidIngredient component when !component.isStrict() -> ingredients
+                        .addAll(MapFluidStackWeakDataComponentIngredient.from(ingredient.ingredient()));
+                case IntersectionFluidIngredient intersection -> ingredients
+                        .add(new MapFluidIntersectionIngredient(intersection));
+                case CompoundFluidIngredient compound -> {
+                    for (FluidIngredient inner : compound.children()) {
+                        ingredients.addAll(convertToMapIngredient(inner));
+                    }
+                }
+                default -> {
+                    for (FluidStack fluid : ingredient.getFluids()) {
+                        ingredients.add(new MapFluidStackIngredient(fluid));
+                    }
+                }
             }
-            // TODO support other fluid ingredient types.
         } else if (obj instanceof FluidStack stack) {
-            ingredients.add(new MapFluidSingleIngredient(stack));
+            ingredients.add(new MapFluidStackIngredient(stack));
             stack.getFluidHolder().tags()
                     .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
         }

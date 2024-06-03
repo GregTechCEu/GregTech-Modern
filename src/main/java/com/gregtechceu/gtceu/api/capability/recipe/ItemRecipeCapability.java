@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.*;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -95,7 +96,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 case IntCircuitIngredient circuit -> ingredients
                         .addAll(MapItemStackDataComponentIngredient.from(circuit));
                 case IntersectionIngredient intersection -> ingredients
-                        .add(new MapIntersectionIngredient(intersection));
+                        .add(new MapItemIntersectionIngredient(intersection));
                 case CompoundIngredient compound -> {
                     for (Ingredient inner : compound.children()) {
                         ingredients.addAll(convertToMapIngredient(inner));
@@ -127,7 +128,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
                 Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
-                ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient
+                ingredients.add(new MapItemIntersectionIngredient((IntersectionIngredient) IntersectionIngredient
                         .of(Ingredient.of(prefix.getItemTags(material)[0]),
                                 Ingredient.of(prefix.getItemParentTags()[0]))
                         .getCustomIngredient()));

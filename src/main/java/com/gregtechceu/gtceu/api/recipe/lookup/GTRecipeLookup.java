@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.MapFluidIntersectionIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.MapItemIntersectionIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -19,6 +21,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -385,10 +388,16 @@ public class GTRecipeLookup {
                 cache.put(mappedIngredient, new WeakReference<>(mappedIngredient));
             }
 
-            // hardcode a tree specialization for the intersection ingredient
-            if (mappedIngredient instanceof MapIntersectionIngredient intersection) {
-                for (Ingredient inner : intersection.ingredients) {
+            // hardcode a tree specialization for the intersection ingredients
+            if (mappedIngredient instanceof MapItemIntersectionIngredient intersection) {
+                for (Ingredient inner : intersection.getIngredients()) {
                     List<AbstractMapIngredient> converted = ItemRecipeCapability.CAP.convertToMapIngredient(inner);
+                    retrieveCachedIngredient(list, converted, cache);
+                }
+                added = true;
+            } else if (mappedIngredient instanceof MapFluidIntersectionIngredient intersection) {
+                for (FluidIngredient inner : intersection.getIngredients()) {
+                    List<AbstractMapIngredient> converted = FluidRecipeCapability.CAP.convertToMapIngredient(inner);
                     retrieveCachedIngredient(list, converted, cache);
                 }
                 added = true;
