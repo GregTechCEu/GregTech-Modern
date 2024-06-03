@@ -38,8 +38,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public static final MapCodec<LayeredVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns")
-                    .forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns :
-                            ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList())))
+                    .forGetter(LayeredVeinGenerator::getLayerPatterns))
             .apply(instance, LayeredVeinGenerator::new));
 
     private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
