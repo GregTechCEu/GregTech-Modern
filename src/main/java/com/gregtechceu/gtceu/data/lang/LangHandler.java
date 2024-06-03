@@ -711,8 +711,10 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.eu_per_sec", "Average (last second): %s EU/t");
         provider.add("behavior.portable_scanner.amp_per_sec", "Average (last second): %s A");
         provider.add("behavior.portable_scanner.machine_disabled", "Disabled.");
+        provider.add("behavior.portable_scanner.machine_front_facing", "Front Facing: %s");
         provider.add("behavior.portable_scanner.machine_power_loss", "Shut down due to power loss.");
         provider.add("behavior.portable_scanner.machine_progress", "Progress/Load: %s / %s");
+        provider.add("behavior.portable_scanner.machine_upwards_facing", "Upwards Facing: %s");
         provider.add("behavior.portable_scanner.muffled", "Muffled.");
         provider.add("behavior.portable_scanner.multiblock_energy_input", "Max Energy Income: %s EU/t Tier: %s");
         provider.add("behavior.portable_scanner.multiblock_energy_output", "Max Energy Output: %s EU/t Tier: %s");

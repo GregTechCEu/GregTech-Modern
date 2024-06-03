@@ -38,6 +38,14 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     @Getter
     private Supplier<List<MultiblockShapeInfo>> shapes;
+    /** Whether this multi can be rotated or face upwards. */
+    @Getter
+    @Setter
+    private boolean allowExtendedFacing;
+    /** Set this to false only if your multiblock is set up such that it could have a wall-shared controller. */
+    @Getter
+    @Setter
+    private boolean allowFlip;
     @Setter
     @Getter
     @Nullable

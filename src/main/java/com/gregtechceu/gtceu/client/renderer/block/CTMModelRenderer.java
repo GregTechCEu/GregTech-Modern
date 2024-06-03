@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
-import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -18,7 +14,8 @@ import java.util.function.Supplier;
  */
 public class CTMModelRenderer extends IModelRenderer {
 
-    public static Supplier<Boolean> LOW_PRECISION = SupplierMemoizer.memoize(GTCEu::isSodiumRubidiumEmbeddiumLoaded);
+    public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f, 1.001f, 1.001f,
+            1.001f);
 
     public CTMModelRenderer(ResourceLocation modelLocation) {
         super(modelLocation);
@@ -32,6 +29,6 @@ public class CTMModelRenderer extends IModelRenderer {
 
     @Override
     public float reBakeCustomQuadsOffset() {
-        return LOW_PRECISION.get() ? 0.008f : 0.002f;
+        return 0.000f;
     }
 }
