@@ -130,11 +130,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
-        return false;
-    }
-
-    @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity player,
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {

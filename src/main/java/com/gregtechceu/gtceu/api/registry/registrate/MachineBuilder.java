@@ -323,8 +323,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
         var blockBuilder = registrate.block(name, properties -> {
             RotationState.set(rotationState);
+            MachineDefinition.setBuilt(definition);
             var b = blockFactory.apply(properties, definition);
             RotationState.clear();
+            MachineDefinition.clearBuilt();
             return b.self();
         })
                 .color(() -> () -> IMachineBlock::colorTinted)

@@ -74,7 +74,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     MACERATOR_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(MACERATOR_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -104,7 +104,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     ORE_WASHER_RECIPES.getName(), CHEMICAL_BATH_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -136,7 +136,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     CENTRIFUGE_RECIPES.getName(), THERMAL_CENTRIFUGE_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -167,7 +167,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     MIXER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(MIXER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -200,7 +200,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     ELECTROLYZER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(ELECTROLYZER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -229,7 +229,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     ELECTROMAGNETIC_SEPARATOR_RECIPES.getName(),
                     POLARIZER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -257,7 +257,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     PACKER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PACKER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -287,7 +287,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     ASSEMBLER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -318,7 +318,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     CIRCUIT_ASSEMBLER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -353,7 +353,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     ARC_FURNACE_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(ARC_FURNACE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -385,7 +385,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     LASER_ENGRAVER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -417,7 +417,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     SIFTER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(SIFTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -447,7 +447,7 @@ public class GCyMMachines {
             .langValue("Alloy Blast Smelter")
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     ALLOY_BLAST_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(ALLOY_BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
@@ -503,7 +503,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     AUTOCLAVE_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(AUTOCLAVE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -534,7 +534,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_4.tooltip",
                     BENDER_RECIPES.getName(), COMPRESSOR_RECIPES.getName(),
                     FORGE_HAMMER_RECIPES.getName(), FORMING_PRESS_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -564,7 +564,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_3.tooltip",
                     BREWING_RECIPES.getName(), FERMENTING_RECIPES.getName(),
                     FLUID_HEATER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -597,7 +597,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     CUTTER_RECIPES.getName(), LATHE_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -669,7 +669,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     EXTRACTOR_RECIPES.getName(), CANNER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -697,7 +697,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     EXTRUDER_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(EXTRUDER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -729,7 +729,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     FLUID_SOLIDFICATION_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(FLUID_SOLIDFICATION_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -760,7 +760,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     WIREMILL_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(WIREMILL_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -788,7 +788,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     BLAST_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
@@ -952,7 +952,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     VACUUM_RECIPES.getName()))
-            .rotationState(RotationState.NON_Y_AXIS)
+            .rotationState(RotationState.ALL)
             .recipeType(VACUUM_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))

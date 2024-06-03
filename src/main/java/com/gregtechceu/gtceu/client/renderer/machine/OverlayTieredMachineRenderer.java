@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -51,7 +54,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
     @OnlyIn(Dist.CLIENT)
     public BakedModel getRotatedModel(Direction frontFacing) {
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBaker(),
+                ModelFactory.getModelBaker(),
                 new SpriteOverrider(override),
                 ModelFactory.getRotation(facing),
                 modelLocation));

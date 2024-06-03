@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,7 +14,8 @@ import net.neoforged.api.distmarker.OnlyIn;
  */
 public class CTMModelRenderer extends IModelRenderer {
 
-    public static Supplier<Boolean> LOW_PRECISION = SupplierMemoizer.memoize(GTCEu::isSodiumRubidiumEmbeddiumLoaded);
+    public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f, 1.001f, 1.001f,
+            1.001f);
 
     public CTMModelRenderer(ResourceLocation modelLocation) {
         super(modelLocation);

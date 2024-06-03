@@ -50,8 +50,9 @@ public class ConveyorCoverRenderer implements ICoverRenderer {
                             ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof ConveyorCover conveyor &&
                 modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CONVEYOR_OVERLAY), modelState));
-            quads.add(FaceQuad.bakeFace(modelFacing,
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CONVEYOR_OVERLAY), modelState));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing,
                     ModelFactory
                             .getBlockSprite(conveyor.getIo() == IO.OUT ? CONVEYOR_OVERLAY_OUT : CONVEYOR_OVERLAY_IN),
                     modelState, -101, 15));

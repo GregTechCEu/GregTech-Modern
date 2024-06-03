@@ -41,7 +41,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * <br>
      * you should always use {@link IMultiController#checkPatternWithLock()} and
      * {@link IMultiController#checkPatternWithTryLock()} instead.
-     * 
+     *
      * @return whether it can be formed.
      */
     default boolean checkPattern() {
@@ -62,7 +62,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     /**
      * Check pattern with a try lock
-     * 
+     *
      * @return false - checking failed or cant get the lock.
      */
     default boolean checkPatternWithTryLock() {
@@ -101,7 +101,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     /**
      * Called in an async thread. It's unsafe, Don't modify anything of world but checking information.
      * It will be called per 5 tick.
-     * 
+     *
      * @param periodID period Tick
      */
     void asyncCheckPattern(long periodID);
@@ -175,7 +175,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
                                     BlockHitResult hit) {
         if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (world.isClientSide()) {
-                MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(),
+                MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getUpwardsFacing(),
                         self().getDefinition().getMatchingShapes().get(0),
                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }

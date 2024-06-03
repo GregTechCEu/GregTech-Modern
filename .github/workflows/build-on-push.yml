@@ -21,7 +21,7 @@ jobs:
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: assemble
           
       - name: Upload Artifact
         if: steps.filter.outputs.code == 'true'

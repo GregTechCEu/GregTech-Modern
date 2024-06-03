@@ -372,6 +372,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         definition.setPatternFactory(SupplierMemoizer.memoize(() -> pattern.apply(definition)));
         definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
                 .flatMap(Collection::stream).toList());
+        definition.setAllowExtendedFacing(allowExtendedFacing);
+        definition.setAllowFlip(allowFlip);
         if (!recoveryItems.isEmpty()) {
             definition.setRecoveryItems(
                     () -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));

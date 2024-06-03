@@ -100,7 +100,7 @@ public class MultiblockInWorldPreviewRenderer {
 
     /**
      * Show the multiblock preview in the world by the given pos, side, and shape info.
-     * 
+     *
      * @param pos       the pos of the controller
      * @param front     the front of the controller
      * @param shapeInfo the shape info of the multiblock
@@ -235,11 +235,11 @@ public class MultiblockInWorldPreviewRenderer {
                         if (tile != null) {
                             poseStack.pushPose();
                             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                            BlockEntityRenderer<BlockEntity> tileentityrenderer = Minecraft.getInstance()
+                            BlockEntityRenderer<BlockEntity> ber = Minecraft.getInstance()
                                     .getBlockEntityRenderDispatcher().getRenderer(tile);
-                            if (tileentityrenderer != null) {
+                            if (ber != null) {
                                 if (tile.hasLevel() && tile.getType().isValid(tile.getBlockState())) {
-                                    tileentityrenderer.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
+                                    ber.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
                                             OverlayTexture.NO_OVERLAY);
                                 }
                             }

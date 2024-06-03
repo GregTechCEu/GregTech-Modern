@@ -98,18 +98,19 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                             hpca.isFlipped());
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
-                        -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, facing,
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
                 if (emissiveTexture != null) {
-                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
+                    quads.add(FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, facing,
+                            ModelFactory.getBlockSprite(emissiveTexture),
                             modelState, -101, 15, true, false));
                 }
             }
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
-                        modelState, -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, Direction.NORTH,
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
             }
         }
     }

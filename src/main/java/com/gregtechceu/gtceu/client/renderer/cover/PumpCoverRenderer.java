@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -44,7 +45,7 @@ public class PumpCoverRenderer implements ICoverRenderer {
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
                             @NotNull CoverBehavior coverBehavior, Direction modelFacing, ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof PumpCover pump && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing,
+            quads.add(StaticFaceBakery.bakeFace(modelFacing,
                     ModelFactory.getBlockSprite(pump.getIo() == IO.OUT ? PUMP_OVERLAY_OUT : PUMP_OVERLAY_IN),
                     modelState));
         }

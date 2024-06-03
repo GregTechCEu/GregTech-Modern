@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;

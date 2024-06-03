@@ -65,7 +65,7 @@ public class ChargerRenderer extends TieredHullMachineRenderer {
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
                         bakedFaces.add(
                                 FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
-                                        modelState, -101, 15, true, false));
+                                modelState, -101, 15, true, false));
                     }
                 }
                 case FINISHED -> {
@@ -74,7 +74,7 @@ public class ChargerRenderer extends TieredHullMachineRenderer {
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
                         bakedFaces.add(
                                 FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
-                                        modelState, -101, 15, true, false));
+                                modelState, -101, 15, true, false));
                     }
                 }
             }

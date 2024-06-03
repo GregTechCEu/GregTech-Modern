@@ -251,7 +251,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         if (getLevel().isClientSide) {
             if (isFormed) {
                 hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
-                        Direction.NORTH, false);
+                        this.getUpwardsFacing(), this.isFlipped);
             } else {
                 hpcaHandler.clearClientComponents();
             }
@@ -318,20 +318,20 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.YELLOW,
      * "gtceu.multiblock.hpca.warning_temperature"));
-     * 
+     *
      * // Active cooler overdrive warning
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.GRAY,
      * "gtceu.multiblock.hpca.warning_temperature_active_cool"));
      * }
-     * 
+     *
      * // Structure warnings
      * hpcaHandler.addWarnings(tl);
      * }
      * })
      * .addMaintenanceProblemLines(getMaintenanceProblems());
      * }
-     * 
+     *
      * @Override
      * protected void addErrorText(List<Component> textList) {
      * super.addErrorText(textList);
@@ -342,7 +342,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * hpcaHandler.addErrors(textList);
      * }
      * }
-     * 
+     *
      * @Override
      * public void addBarHoverText(List<Component> hoverList, int index) {
      * if (index == 0) {

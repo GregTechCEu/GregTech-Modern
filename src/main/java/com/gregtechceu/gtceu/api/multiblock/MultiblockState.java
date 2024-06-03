@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

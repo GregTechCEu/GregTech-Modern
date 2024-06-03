@@ -44,8 +44,8 @@ public class RobotArmCoverRenderer implements ICoverRenderer {
                             ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof RobotArmCover robotArm &&
                 modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ARM_OVERLAY), modelState));
-            quads.add(FaceQuad.bakeFace(modelFacing,
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ARM_OVERLAY), modelState));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing,
                     ModelFactory.getBlockSprite(robotArm.getIo() == IO.OUT ? ARM_OVERLAY_OUT : AR_OVERLAY_IN),
                     modelState, -101, 15));
         }
