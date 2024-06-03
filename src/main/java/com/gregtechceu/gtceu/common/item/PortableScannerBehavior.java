@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -196,6 +198,17 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
+
+                if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&
+                        multi.isAllowExtendedFacing()) {
+                    list.add(Component.translatable("behavior.portable_scanner.divider"));
+
+                    list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",
+                            machine.getFrontFacing().getSerializedName()));
+                    list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing",
+                            machineBlockEntity.self().getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY)
+                                    .getSerializedName()));
+                }
 
                 // Fluid tanks
                 Optional<IFluidHandler> fluidCap = tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).resolve();

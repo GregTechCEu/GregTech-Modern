@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 
@@ -18,16 +18,19 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.SimpleModelState;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -125,61 +128,69 @@ public class WorkableOverlayModel {
         this.location = location;
         if (LDLib.isClient()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
-            this.caches = Tables.newCustomTable(new EnumMap<>(Direction.class), () -> new EnumMap<>(Direction.class));
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public Table<Direction, Direction, List<BakedQuad>[][]> caches;
+    public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, Direction upwardsFacing,
+                                     boolean isActive, boolean isWorkingEnabled) {
+        var quads = new ArrayList<BakedQuad>();
 
-    @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, boolean isActive,
-                                     boolean isWorkingEnabled) {
-        synchronized (caches) {
-            if (side == null) return Collections.emptyList();
-            if (!caches.contains(side, frontFacing)) {
-                caches.put(side, frontFacing, new List[2][2]);
+        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? 1 :
+                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? -1 : 0);
+
+        Matrix4f matrix = new Matrix4f();
+
+        if (frontFacing.getAxis() != Direction.Axis.Y) {
+            double rotationRad = Math.toRadians(frontFacing.toYRot());
+            Quaternionf worldUp = new Quaternionf().rotationAxis(Mth.PI - (float) rotationRad, 0, 1, 0);
+            matrix.rotate(worldUp);
+        } else {
+            matrix.rotate(Mth.HALF_PI, frontFacing.getStepY(), 0, 0);
+            if (upwardsFacing.getAxis() == Direction.Axis.Z) {
+                matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
             }
-            var cache = caches.get(side, frontFacing);
-            assert cache != null;
-            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
-                var quads = new ArrayList<BakedQuad>();
-                for (Direction renderSide : GTUtil.DIRECTIONS) {
-                    var rotation = ModelFactory.getRotation(frontFacing);
-                    ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
-                    if (predicate != null) {
-                        var texture = predicate.getSprite(isActive, isWorkingEnabled);
-                        if (texture != null) {
-                            var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                                    true);
-                            if (quad.getDirection() == side) {
-                                quads.add(quad);
-                            }
-                        }
+        }
 
-                        texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
-                        if (texture != null) {
-                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15,
-                                        true, false);
-                                if (quad.getDirection() == side) {
-                                    quads.add(quad);
-                                }
-                            } else {
-                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                                        true);
-                                if (quad.getDirection() == side) {
-                                    quads.add(quad);
-                                }
-                            }
+        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0,
+                frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
+        matrix.rotate(rot);
+
+        var rotation = new SimpleModelState(new Transformation(matrix));
+
+        for (Direction renderSide : GTUtil.DIRECTIONS) {
+            // construct a rotation matrix from front & up rotation
+
+            ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
+            if (predicate != null) {
+                var texture = predicate.getSprite(isActive, isWorkingEnabled);
+                if (texture != null) {
+                    var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                            rotation, -1, 0, true, true);
+                    if (quad.getDirection() == side) {
+                        quads.add(quad);
+                    }
+                }
+
+                texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
+                if (texture != null) {
+                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                                rotation, -101, 15, true, false);
+                        if (quad.getDirection() == side) {
+                            quads.add(quad);
+                        }
+                    } else {
+                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                                rotation, -1, 0, true, true);
+                        if (quad.getDirection() == side) {
+                            quads.add(quad);
                         }
                     }
                 }
-                // return quads;
-                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
             }
-            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
         }
+        return quads;
     }
 
     @NotNull
@@ -198,7 +209,8 @@ public class WorkableOverlayModel {
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
                 combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, false, false));
+                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, Direction.NORTH,
+                        false, false));
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -207,9 +219,6 @@ public class WorkableOverlayModel {
         ResourceManager resManager = Minecraft.getInstance().getResourceManager();
 
         sprites.clear();
-        synchronized (caches) {
-            caches.clear();
-        }
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
 

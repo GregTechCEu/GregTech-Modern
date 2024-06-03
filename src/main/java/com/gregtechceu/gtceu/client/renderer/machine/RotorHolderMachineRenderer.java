@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -47,20 +47,22 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                               @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY), modelState));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY),
+                    modelState));
             if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
                 var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
                 if (!rotorHolderMachine.getControllers().isEmpty()) {
-                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING), modelState,
-                            -101, 15, true, false));
-                    quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG), modelState,
-                            -101, 15, true, false));
+                    quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING),
+                            modelState, -101, 15, true, false));
+                    quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
+                            modelState, -101, 15, true, false));
                     if (rotorHolderMachine.hasRotor()) {
                         if (rotorHolderMachine.isRotorSpinning()) {
-                            quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
-                                    modelState, 2, 0, true, true));
+                            quads.add(
+                                    StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
+                                            modelState, 2, 0, true, true));
                         } else {
-                            quads.add(FaceQuad.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE),
+                            quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE),
                                     modelState, 2, 0, true, true));
                         }
                     }
