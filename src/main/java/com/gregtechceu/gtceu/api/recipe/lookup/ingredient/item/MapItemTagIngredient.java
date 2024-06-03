@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
+
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

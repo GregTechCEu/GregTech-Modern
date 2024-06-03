@@ -1,35 +1,33 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
-import com.gregtechceu.gtceu.utils.IngredientEquality;
+import com.gregtechceu.gtceu.api.recipe.ingredient.ItemIngredientEquality;
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapIntersectionIngredient extends AbstractMapIngredient {
+public class MapItemIntersectionIngredient extends AbstractMapIngredient {
 
     protected IntersectionIngredient intersectionIngredient;
+    @Getter
     protected List<Ingredient> ingredients;
 
-    public MapIntersectionIngredient(IntersectionIngredient ingredient) {
+    public MapItemIntersectionIngredient(IntersectionIngredient ingredient) {
         this.intersectionIngredient = ingredient;
         this.ingredients = new ArrayList<>(ingredient.children());
-        this.ingredients.sort(IngredientEquality.INGREDIENT_COMPARATOR);
+        this.ingredients.sort(ItemIngredientEquality.INGREDIENT_COMPARATOR);
     }
 
     @Override
     protected int hash() {
         int hash = 31;
         for (Ingredient ingredient : ingredients) {
-            for (Ingredient.Value value : ingredient.getValues()) {
-                if (value instanceof Ingredient.TagValue tagValue) {
-                    hash *= 31 * tagValue.tag().location().hashCode();
-                } else if (value instanceof Ingredient.ItemValue itemValue) {
-                    hash *= 31 * itemValue.item().getItem().hashCode();
-                }
-            }
+            hash *= 31 * ingredient.hashCode();
         }
         return hash;
     }
@@ -37,7 +35,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
-            MapIntersectionIngredient other = (MapIntersectionIngredient) o;
+            MapItemIntersectionIngredient other = (MapItemIntersectionIngredient) o;
             if (this.ingredients != null) {
                 if (other.ingredients != null) {
                     if (this.ingredients.size() != other.ingredients.size()) return false;
@@ -59,6 +57,6 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapIntersectionIngredient{" + "ingredient=" + intersectionIngredient + "}";
+        return "MapItemIntersectionIngredient{" + "ingredient=" + intersectionIngredient + "}";
     }
 }
