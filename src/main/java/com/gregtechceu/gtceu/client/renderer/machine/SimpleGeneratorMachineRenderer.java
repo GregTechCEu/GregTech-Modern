@@ -35,8 +35,7 @@ public class SimpleGeneratorMachineRenderer extends WorkableTieredHullMachineRen
         if (side == frontFacing && modelFacing != null) {
             quads.add(StaticFaceBakery.bakeFace(
                     modelFacing, ModelFactory.getBlockSprite(TransformerRenderer.ENERGY_OUT),
-                    modelState, 2
-            ));
+                    modelState, 2));
         }
     }
 }

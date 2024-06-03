@@ -111,8 +111,7 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
             if (texture != null) {
                 quads.add(StaticFaceBakery.bakeFace(
                         StaticFaceBakery.SLIGHTLY_OVER_BLOCK, Direction.NORTH,
-                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true
-                ));
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
             }
         }
     }

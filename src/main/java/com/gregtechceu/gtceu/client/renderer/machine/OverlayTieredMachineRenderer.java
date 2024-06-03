@@ -57,8 +57,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
                 ModelFactory.getModeBaker(),
                 new SpriteOverrider(override),
                 ModelFactory.getRotation(facing),
-                modelLocation
-        ));
+                modelLocation));
     }
 
     public float reBakeOverlayQuadsOffset() {
