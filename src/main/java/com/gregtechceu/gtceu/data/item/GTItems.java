@@ -53,6 +53,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -2258,11 +2259,27 @@ public class GTItems {
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehavior(75, HazardProperty.HazardType.RADIOACTIVE)))
+            .onRegister(attach(new AntidoteBehavior(50, HazardProperty.HazardType.RADIOACTIVE)))
             .register();
 
-    public static ItemEntry<Item> NANO_SABER;
-    public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("lv_prospector", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_SABER = REGISTRATE.item("nano_saber", ComponentItem::create)
+            .lang("Nano Saber")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new NanoSaberBehavior(), ElectricStats.createElectricItem(4_000_000L, GTValues.HV)))
+            .model((ctx, prov) -> {
+                var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/nano_saber/normal"));
+                prov.getBuilder("item/nano_saber/active")
+                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                        .texture("layer0", prov.modLoc("item/nano_saber/active"));
+
+                rootModel.override().predicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION, 1.0f)
+                        .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/nano_saber/active")))
+                        .end();
+            })
+            .onRegister(modelPredicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION,
+                    (stack, level, entity, layer) -> NanoSaberBehavior.isItemActive(stack) ? 1.0f : 0.0f))
+            .register();
+    public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("lv_prospector", ComponentItem::create)
             .lang("Ore Prospector (LV)")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
@@ -2701,6 +2718,16 @@ public class GTItems {
         return item -> {
             if (LDLib.isClient()) {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
+            }
+        };
+    }
+
+    @SuppressWarnings("deprecation")
+    public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
+                                                                     ItemPropertyFunction property) {
+        return item -> {
+            if (LDLib.isClient()) {
+                ItemProperties.register(item, predicate, property);
             }
         };
     }

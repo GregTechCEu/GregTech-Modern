@@ -1173,9 +1173,9 @@ public class Material implements Comparable<Material> {
             properties.setProperty(HAZARD, new HazardProperty(
                     HazardProperty.HazardType.RADIOACTIVE,
                     List.of(
-                            HazardProperty.slownessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
-                            HazardProperty.weaknessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
-                            HazardProperty.miningFautigueEffect(-1, (int) (3000 / multiplier), effectAmplifier),
+                            HazardProperty.slownessEffect(4000, (int) (2000 / multiplier), effectAmplifier),
+                            HazardProperty.weaknessEffect(4000, (int) (2000 / multiplier), effectAmplifier),
+                            HazardProperty.miningFautigueEffect(4000, (int) (3000 / multiplier), effectAmplifier),
                             HazardProperty.maxAirLoweringEffect(1000, (int) (4000 / multiplier),
                                     (int) (100 / multiplier)),
                             HazardProperty.maxHealthLoweringEffect(4000, (int) (6000 / multiplier), 10),
