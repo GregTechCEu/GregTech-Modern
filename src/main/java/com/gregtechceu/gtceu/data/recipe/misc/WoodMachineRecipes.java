@@ -372,7 +372,7 @@ public class WoodMachineRecipes {
                 // log -> plank saw crafting
                 VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
                         new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                            "s", "L", 'L', log_);
+                        "s", "L", 'L', log_);
 
                 // log -> plank cutting
                 CUTTER_RECIPES.recipeBuilder(name + "_planks")
