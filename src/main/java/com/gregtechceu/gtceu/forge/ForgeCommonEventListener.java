@@ -12,9 +12,12 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
+import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
@@ -23,7 +26,10 @@ import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
@@ -33,6 +39,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -156,6 +163,20 @@ public class ForgeCommonEventListener {
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntitySpawn(MobSpawnEvent event) {
+        Mob entity = event.getEntity();
+        Difficulty difficulty = entity.level().getDifficulty();
+        if (difficulty == Difficulty.HARD && entity.getRandom().nextFloat() <= 0.03f) {
+            if (entity instanceof Zombie zombie && ConfigHolder.INSTANCE.tools.nanoSaber.zombieSpawnWithSabers) {
+                ItemStack itemStack = GTItems.NANO_SABER.get().getInfiniteChargedStack();
+                ToggleEnergyConsumerBehavior.setItemActive(itemStack, true);
+                entity.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
+                zombie.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
+            }
         }
     }
 }
