@@ -21,10 +21,12 @@ import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
@@ -35,8 +37,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,6 +55,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -227,6 +233,20 @@ public class ForgeCommonEventListener {
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntitySpawn(MobSpawnEvent.FinalizeSpawn event) {
+        Mob entity = event.getEntity();
+        Difficulty difficulty = entity.level().getDifficulty();
+        if (difficulty == Difficulty.HARD && entity.getRandom().nextFloat() <= 0.03f) {
+            if (entity instanceof Zombie zombie && ConfigHolder.INSTANCE.tools.nanoSaber.zombieSpawnWithSabers) {
+                ItemStack itemStack = GTItems.NANO_SABER.get().getInfiniteChargedStack();
+                ToggleEnergyConsumerBehavior.setItemActive(itemStack, true);
+                entity.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
+                zombie.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
+            }
         }
     }
 

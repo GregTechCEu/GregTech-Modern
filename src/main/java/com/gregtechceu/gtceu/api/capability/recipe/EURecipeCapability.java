@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -42,10 +41,10 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
         long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof IOverclockMachine overclockMachine) {
+        if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = tieredMachine.getMaxVoltage();
+        } else if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
-        } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = GTValues.V[tieredMachine.getTier()];
         }
 
         long recipeEUt = RecipeHelper.getOutputEUt(recipe);
@@ -58,10 +57,10 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof IOverclockMachine overclockMachine) {
+        if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = tieredMachine.getMaxVoltage();
+        } else if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
-        } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = GTValues.V[tieredMachine.getTier()];
         }
 
         long recipeEUt = RecipeHelper.getInputEUt(recipe);
