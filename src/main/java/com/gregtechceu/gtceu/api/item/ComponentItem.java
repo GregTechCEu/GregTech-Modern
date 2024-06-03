@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 
@@ -17,7 +18,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -25,10 +29,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import com.google.common.collect.Multimap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -138,6 +144,49 @@ public class ComponentItem extends Item
             }
         }
         return super.useOn(context);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IItemAttributes itemAttributes) {
+                var result = itemAttributes.getAttributeModifiers(slot, stack);
+                if (result != null && !result.isEmpty()) {
+                    return result;
+                }
+            }
+        }
+        return super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.isEnchantable(stack);
+            }
+        }
+        return super.isEnchantable(stack);
+    }
+
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.getEnchantmentValue(stack);
+            }
+        }
+        return super.getEnchantmentValue(stack);
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        for (IItemComponent component : components) {
+            if (component instanceof IEnchantableItem enchantableItem) {
+                return enchantableItem.canApplyAtEnchantingTable(stack, enchantment);
+            }
+        }
+        return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
@@ -303,6 +352,16 @@ public class ComponentItem extends Item
             throw new IllegalStateException("Not an electric item.");
         }
         electricItem.charge(chargeAmount, Integer.MAX_VALUE, true, false);
+        return itemStack;
+    }
+
+    public ItemStack getInfiniteChargedStack() {
+        ItemStack itemStack = getDefaultInstance();
+        IElectricItem iElectricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        if (!(iElectricItem instanceof ElectricItem electricItem)) {
+            throw new IllegalStateException("Not a supported electric item.");
+        }
+        electricItem.setInfiniteCharge(true);
         return itemStack;
     }
 }
