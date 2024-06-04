@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,7 @@ import java.util.List;
 public class TreeFellingBehavior implements IToolBehavior<TreeFellingBehavior> {
 
     public static final TreeFellingBehavior INSTANCE = new TreeFellingBehavior();
-    public static final MapCodec<TreeFellingBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<TreeFellingBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, TreeFellingBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

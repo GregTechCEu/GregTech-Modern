@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class GrassPathBehavior implements IToolBehavior<GrassPathBehavior> {
 
     public static final GrassPathBehavior INSTANCE = create();
-    public static final MapCodec<GrassPathBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<GrassPathBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, GrassPathBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

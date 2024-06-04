@@ -114,11 +114,11 @@ public class ToolHelper {
     }
 
     public static ToolBehaviorsComponent getBehaviorsComponent(ItemStack stack) {
-        return stack.get(GTDataComponents.TOOL_BEHAVIOURS);
+        return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY);
     }
 
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIOURS);
+        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {

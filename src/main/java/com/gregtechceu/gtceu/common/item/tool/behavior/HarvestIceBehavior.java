@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -22,7 +23,7 @@ import java.util.List;
 public class HarvestIceBehavior implements IToolBehavior<HarvestIceBehavior> {
 
     public static final HarvestIceBehavior INSTANCE = new HarvestIceBehavior();
-    public static final MapCodec<HarvestIceBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<HarvestIceBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, HarvestIceBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

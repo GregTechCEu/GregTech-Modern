@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -40,7 +41,7 @@ import java.util.List;
 public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavior> {
 
     public static final BlockRotatingBehavior INSTANCE = new BlockRotatingBehavior();
-    public static final MapCodec<BlockRotatingBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<BlockRotatingBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockRotatingBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

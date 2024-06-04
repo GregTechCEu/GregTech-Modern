@@ -222,37 +222,37 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public int getBaseDurability(ItemStack stack) {
+            public int getBaseDurability() {
                 return baseDurability;
             }
 
             @Override
-            public float getDurabilityMultiplier(ItemStack stack) {
+            public float getDurabilityMultiplier() {
                 return durabilityMultiplier;
             }
 
             @Override
-            public int getBaseQuality(ItemStack stack) {
+            public int getBaseQuality() {
                 return baseQuality;
             }
 
             @Override
-            public float getBaseDamage(ItemStack stack) {
+            public float getBaseDamage() {
                 return attackDamage;
             }
 
             @Override
-            public float getBaseEfficiency(ItemStack stack) {
+            public float getBaseEfficiency() {
                 return baseEfficiency;
             }
 
             @Override
-            public float getEfficiencyMultiplier(ItemStack stack) {
+            public float getEfficiencyMultiplier() {
                 return efficiencyMultiplier;
             }
 
             @Override
-            public boolean isEnchantable(ItemStack stack) {
+            public boolean isEnchantable() {
                 return isEnchantable;
             }
 
@@ -262,7 +262,7 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public Object2IntMap<Enchantment> getDefaultEnchantments(ItemStack stack) {
+            public Object2IntMap<Enchantment> getDefaultEnchantments() {
                 return Object2IntMaps.unmodifiable(this.defaultEnchantments);
             }
 
@@ -277,7 +277,7 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public AoESymmetrical getAoEDefinition(ItemStack stack) {
+            public AoESymmetrical getAoEDefinition() {
                 return aoeSymmetrical;
             }
         };

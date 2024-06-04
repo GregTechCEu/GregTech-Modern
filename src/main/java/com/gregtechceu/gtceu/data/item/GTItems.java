@@ -16,12 +16,14 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
@@ -51,6 +53,8 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -59,9 +63,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Unit;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.Unbreakable;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
@@ -80,6 +88,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -168,10 +177,10 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
-        for (GTToolType toolType : GTToolType.getTypes().values()) {
+        for (final GTToolType toolType : GTToolType.getTypes().values()) {
             for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
                 GTRegistrate registrate = registry.getRegistrate();
-                for (Material material : registry.getAllMaterials()) {
+                for (final Material material : registry.getAllMaterials()) {
                     if (material.hasProperty(PropertyKey.TOOL)) {
                         var property = material.getProperty(PropertyKey.TOOL);
 
@@ -191,14 +200,58 @@ public class GTItems {
                                                     .component(DataComponents.TOOL,
                                                             new Tool(rules, tool.defaultMiningSpeed(),
                                                                     tool.damagePerBlock()))
-                                                    .component(GTDataComponents.TOOL_BEHAVIOURS,
+                                                    .component(GTDataComponents.TOOL_BEHAVIORS,
                                                             new ToolBehaviorsComponent(
                                                                     toolType.toolDefinition.getBehaviors())))
                                             .properties(p -> {
-                                                if (toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY) !=
+                                                if (toolType.toolDefinition.getAoEDefinition() !=
                                                         AoESymmetrical.none()) {
                                                     p.component(GTDataComponents.AOE,
-                                                            toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY));
+                                                            toolType.toolDefinition.getAoEDefinition());
+                                                }
+                                                return p;
+                                            })
+                                            .properties(p -> {
+                                                IGTToolDefinition toolStats = toolType.toolDefinition;
+                                                // Set other tool stats (durability)
+                                                ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
+
+                                                // Durability formula we are working with:
+                                                // Final Durability = (material durability * material durability multiplier) + (tool definition durability *
+                                                // definition durability multiplier) - 1
+                                                // Subtracts 1 internally since Minecraft treats "0" as a valid durability, but we don't want to display this.
+
+                                                int durability = toolProperty.getDurability() * toolProperty.getDurabilityMultiplier();
+
+                                                // Most Tool Definitions do not set a base durability, which will lead to ignoring the multiplier if present. So
+                                                // apply the multiplier to the material durability if that would happen
+                                                if (toolStats.getBaseDurability() == 0) {
+                                                    durability *= (int) toolStats.getDurabilityMultiplier();
+                                                } else {
+                                                    durability += (int) (toolStats.getBaseDurability() * toolStats.getDurabilityMultiplier());
+                                                }
+
+                                                p.component(DataComponents.MAX_DAMAGE, durability - 1);
+                                                p.component(DataComponents.DAMAGE, 0);
+                                                if (toolProperty.isUnbreakable()) {
+                                                    p.component(DataComponents.UNBREAKABLE, new Unbreakable(true));
+                                                }
+
+                                                // Set tool and material enchantments
+                                                Object2IntMap<Enchantment> enchantmentLevels = new Object2IntOpenHashMap<>(toolProperty.getEnchantments());
+                                                enchantmentLevels.putAll(toolStats.getDefaultEnchantments());
+                                                ItemEnchantments.Mutable enchantments =
+                                                        new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+                                                enchantmentLevels.forEach((enchantment, level) -> {
+                                                    if (toolType.itemTags.contains(enchantment.getSupportedItems())) {
+                                                        enchantments.set(enchantment, level);
+                                                    }
+                                                });
+                                                p.component(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
+
+                                                // Set behaviours
+                                                if (toolProperty.isMagnetic()) {
+                                                    p.component(GTDataComponents.RELOCATE_MINED_BLOCKS, Unit.INSTANCE);
                                                 }
                                                 return p;
                                             })

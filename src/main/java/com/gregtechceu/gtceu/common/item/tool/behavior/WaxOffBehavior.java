@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
 
     public static final WaxOffBehavior INSTANCE = create();
-    public static final MapCodec<WaxOffBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<WaxOffBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, WaxOffBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected WaxOffBehavior() {/**/}

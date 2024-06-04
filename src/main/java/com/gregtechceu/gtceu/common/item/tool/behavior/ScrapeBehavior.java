@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
 
     public static final ScrapeBehavior INSTANCE = create();
-    public static final MapCodec<ScrapeBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<ScrapeBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, ScrapeBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected ScrapeBehavior() {/**/}

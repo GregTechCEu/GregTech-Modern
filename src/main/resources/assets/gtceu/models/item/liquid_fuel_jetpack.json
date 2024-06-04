@@ -1,6 +1,6 @@
 {
   "loader": "neoforge:fluid_container",
-  "parent": "forge:item/default",
+  "parent": "neoforge:item/default",
   "textures": {
     "base": "gtceu:item/liquid_fuel_jetpack/base",
     "fluid": "gtceu:item/liquid_fuel_jetpack/overlay",

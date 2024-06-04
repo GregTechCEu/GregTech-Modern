@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Add to tools to have them deal bonus damage to specific mobs.
@@ -36,7 +37,7 @@ import java.util.Objects;
  */
 public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior> {
 
-    public static final MapCodec<EntityDamageBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<EntityDamageBehavior> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.lenientOptionalFieldOf("mob_type", "")
                     .forGetter(val -> val.mobType == null ? "" : val.mobType),
             Codec.unboundedMap(TagKey.codec(Registries.ENTITY_TYPE), Codec.FLOAT).fieldOf("bonus_list")
@@ -47,7 +48,7 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
             .map(rl -> TagKey.create(Registries.ENTITY_TYPE, rl), TagKey::location);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityDamageBehavior> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.stringUtf8(128), val -> val.mobType,
+            ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(128)), val -> Optional.ofNullable(val.mobType),
             ByteBufCodecs.map(Object2FloatOpenHashMap::new, TAG_KEY_STREAM_CODEC, ByteBufCodecs.FLOAT),
             val -> val.bonusList,
             EntityDamageBehavior::new);
@@ -61,7 +62,7 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
     }
 
     public EntityDamageBehavior(Map<TagKey<EntityType<?>>, Float> entities) {
-        this(null, entities);
+        this((String) null, entities);
     }
 
     public EntityDamageBehavior(String mobType, float bonus, TagKey<EntityType<?>>... entities) {
@@ -73,6 +74,11 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
 
     public EntityDamageBehavior(String mobType, Map<TagKey<EntityType<?>>, Float> entities) {
         this.mobType = mobType == null || mobType.isEmpty() ? null : mobType;
+        bonusList.putAll(entities);
+    }
+
+    public EntityDamageBehavior(Optional<String> mobType, Map<TagKey<EntityType<?>>, Float> entities) {
+        this.mobType = mobType.orElse(null);
         bonusList.putAll(entities);
     }
 

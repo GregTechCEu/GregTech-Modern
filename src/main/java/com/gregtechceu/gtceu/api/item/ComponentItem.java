@@ -26,6 +26,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -143,16 +144,16 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IItemAttributes itemAttributes) {
-                var result = itemAttributes.getAttributeModifiers(slot, stack);
-                if (result != null && !result.isEmpty()) {
+                var result = itemAttributes.getAttributeModifiers(stack);
+                if (result != null && !result.modifiers().isEmpty()) {
                     return result;
                 }
             }
         }
-        return super.getAttributeModifiers(slot, stack);
+        return super.getAttributeModifiers(stack);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,7 +21,7 @@ import java.util.List;
 public class DisableShieldBehavior implements IToolBehavior<DisableShieldBehavior> {
 
     public static final DisableShieldBehavior INSTANCE = new DisableShieldBehavior();
-    public static final MapCodec<DisableShieldBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<DisableShieldBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, DisableShieldBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

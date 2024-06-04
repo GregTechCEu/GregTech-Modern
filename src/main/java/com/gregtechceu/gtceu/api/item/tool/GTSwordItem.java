@@ -65,11 +65,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     }
 
     @Override
-    public ItemStack getDefaultInstance() {
-        return get();
-    }
-
-    @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         return definition$onItemUseFirst(itemStack, context);
     }
