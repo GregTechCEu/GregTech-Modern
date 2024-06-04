@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -33,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

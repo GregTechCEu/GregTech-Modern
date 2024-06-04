@@ -1,25 +1,28 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.mojang.datafixers.util.Function8;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.datafixers.util.Function8;
+import io.netty.buffer.ByteBuf;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class StreamCodecUtils {
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     public static <B extends ByteBuf, K, V, M extends Map<K, V>> StreamCodec<B, M> dispatchMap(
-            final IntFunction<? extends M> mapCreationFunction, final StreamCodec<? super B, K> keyCodec,
-            final Function<K, StreamCodec<? super B, V>> valueFunction
-    ) {
+                                                                                               final IntFunction<? extends M> mapCreationFunction,
+                                                                                               final StreamCodec<? super B, K> keyCodec,
+                                                                                               final Function<K, StreamCodec<? super B, V>> valueFunction) {
         return new StreamCodec<>() {
+
             public void encode(B buf, M val) {
                 ByteBufCodecs.writeCount(buf, val.size(), Integer.MAX_VALUE);
                 val.forEach((key, value) -> {
@@ -44,23 +47,23 @@ public class StreamCodecUtils {
     }
 
     public static <B, C, T1, T2, T3, T4, T5, T6, T7, T8> StreamCodec<B, C> composite(
-            final StreamCodec<? super B, T1> codec1,
-            final Function<C, T1> getter1,
-            final StreamCodec<? super B, T2> codec2,
-            final Function<C, T2> getter2,
-            final StreamCodec<? super B, T3> codec3,
-            final Function<C, T3> getter3,
-            final StreamCodec<? super B, T4> codec4,
-            final Function<C, T4> getter4,
-            final StreamCodec<? super B, T5> codec5,
-            final Function<C, T5> getter5,
-            final StreamCodec<? super B, T6> codec6,
-            final Function<C, T6> getter6,
-            final StreamCodec<? super B, T7> codec7,
-            final Function<C, T7> getter7,
-            final StreamCodec<? super B, T8> codec8,
-            final Function<C, T8> getter8,
-            final Function8<T1, T2, T3, T4, T5, T6, T7, T8, C> p_331335_) {
+                                                                                     final StreamCodec<? super B, T1> codec1,
+                                                                                     final Function<C, T1> getter1,
+                                                                                     final StreamCodec<? super B, T2> codec2,
+                                                                                     final Function<C, T2> getter2,
+                                                                                     final StreamCodec<? super B, T3> codec3,
+                                                                                     final Function<C, T3> getter3,
+                                                                                     final StreamCodec<? super B, T4> codec4,
+                                                                                     final Function<C, T4> getter4,
+                                                                                     final StreamCodec<? super B, T5> codec5,
+                                                                                     final Function<C, T5> getter5,
+                                                                                     final StreamCodec<? super B, T6> codec6,
+                                                                                     final Function<C, T6> getter6,
+                                                                                     final StreamCodec<? super B, T7> codec7,
+                                                                                     final Function<C, T7> getter7,
+                                                                                     final StreamCodec<? super B, T8> codec8,
+                                                                                     final Function<C, T8> getter8,
+                                                                                     final Function8<T1, T2, T3, T4, T5, T6, T7, T8, C> p_331335_) {
         return new StreamCodec<>() {
 
             @Override

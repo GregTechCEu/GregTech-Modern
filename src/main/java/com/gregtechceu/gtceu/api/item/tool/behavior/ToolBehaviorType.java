@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
