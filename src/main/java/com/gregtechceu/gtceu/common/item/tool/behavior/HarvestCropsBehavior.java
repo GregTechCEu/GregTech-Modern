@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -40,7 +41,7 @@ import java.util.Set;
 public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior> {
 
     public static final HarvestCropsBehavior INSTANCE = new HarvestCropsBehavior();
-    public static final MapCodec<HarvestCropsBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<HarvestCropsBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, HarvestCropsBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

@@ -695,7 +695,7 @@ public class TagPrefix {
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefix rock = new TagPrefix("rock")
-            .defaultTagPath("%s")
+            .defaultTagPath("%ss")
             .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)

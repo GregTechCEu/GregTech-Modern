@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.codecs.CompoundListFunctionCodec;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -18,7 +17,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -26,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Used to detect whether a machine has a certain capability.
@@ -34,19 +31,9 @@ import java.util.stream.Collectors;
 public abstract class RecipeCapability<T> implements GenericRecipeCapability {
 
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
-    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new CompoundListFunctionCodec<>(
+    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = Codec.dispatchedMap(
             RecipeCapability.DIRECT_CODEC,
-            RecipeCapability::contentCodec)
-            .xmap(list -> list
-                    .stream()
-                    .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)),
-                    contentList -> contentList
-                            .entrySet()
-                            .stream()
-                            .<List<Pair<RecipeCapability<?>, List<Content>>>>collect(
-                                    ArrayList::new,
-                                    (list, entry) -> list.add(Pair.of(entry.getKey(), entry.getValue())),
-                                    List::addAll));
+            RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;

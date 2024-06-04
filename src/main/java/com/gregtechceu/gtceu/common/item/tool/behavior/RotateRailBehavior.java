@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +27,7 @@ import java.util.List;
 public class RotateRailBehavior implements IToolBehavior<RotateRailBehavior> {
 
     public static final RotateRailBehavior INSTANCE = new RotateRailBehavior();
-    public static final MapCodec<RotateRailBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<RotateRailBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, RotateRailBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

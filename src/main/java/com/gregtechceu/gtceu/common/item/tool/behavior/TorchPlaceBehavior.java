@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ import java.util.List;
 public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
 
     public static final TorchPlaceBehavior INSTANCE = new TorchPlaceBehavior();
-    public static final MapCodec<TorchPlaceBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<TorchPlaceBehavior> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("cache_slot_key", false).forGetter(val -> val.cacheSlotKey),
             Codec.INT.optionalFieldOf("cached_torch_slot", 0).forGetter(val -> val.cachedTorchSlot))
             .apply(instance, TorchPlaceBehavior::new));
@@ -75,7 +74,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().offhand.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()),
+                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
                         val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
                 return InteractionResult.SUCCESS;
             }
@@ -84,7 +83,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().items.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()),
+                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
                         val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
                 return InteractionResult.SUCCESS;
             }

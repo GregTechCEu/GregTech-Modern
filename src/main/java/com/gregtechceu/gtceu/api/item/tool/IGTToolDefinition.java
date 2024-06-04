@@ -52,44 +52,44 @@ public interface IGTToolDefinition {
     /**
      * Tool Stat
      */
-    default int getBaseDurability(ItemStack stack) {
+    default int getBaseDurability() {
         return 0;
     }
 
-    default float getDurabilityMultiplier(ItemStack stack) {
+    default float getDurabilityMultiplier() {
         return 1f;
     }
 
-    default int getBaseQuality(ItemStack stack) {
+    default int getBaseQuality() {
         return 0;
     }
 
-    default float getBaseDamage(ItemStack stack) {
+    default float getBaseDamage() {
         return 1.0F;
     }
 
-    default float getBaseEfficiency(ItemStack stack) {
+    default float getBaseEfficiency() {
         return 1.0F;
     }
 
-    default float getEfficiencyMultiplier(ItemStack stack) {
+    default float getEfficiencyMultiplier() {
         return 1.0F;
     }
 
-    default AoESymmetrical getAoEDefinition(ItemStack stack) {
+    default AoESymmetrical getAoEDefinition() {
         return AoESymmetrical.none();
     }
 
     /**
      * Enchantments
      */
-    default boolean isEnchantable(ItemStack stack) {
+    default boolean isEnchantable() {
         return true;
     }
 
     boolean canApplyEnchantment(ItemStack stack, Enchantment enchantment);
 
-    Object2IntMap<Enchantment> getDefaultEnchantments(ItemStack stack);
+    Object2IntMap<Enchantment> getDefaultEnchantments();
 
     /**
      * Misc

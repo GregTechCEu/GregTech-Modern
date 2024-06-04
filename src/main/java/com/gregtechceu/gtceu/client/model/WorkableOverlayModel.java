@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -36,6 +35,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer.SLIGHTLY_OVER_BLOCK;
 
 /**
  * @author KilaBash
@@ -165,7 +166,7 @@ public class WorkableOverlayModel {
             if (predicate != null) {
                 var texture = predicate.getSprite(isActive, isWorkingEnabled);
                 if (texture != null) {
-                    var quad = FaceQuad.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                    var quad = FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, renderSide, texture,
                             rotation, -1, 0, true, true);
                     if (quad.getDirection() == side) {
                         quads.add(quad);
@@ -175,13 +176,13 @@ public class WorkableOverlayModel {
                 texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                 if (texture != null) {
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        var quad = FaceQuad.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                        var quad = FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, renderSide, texture,
                                 rotation, -101, 15, true, false);
                         if (quad.getDirection() == side) {
                             quads.add(quad);
                         }
                     } else {
-                        var quad = FaceQuad.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
+                        var quad = FaceQuad.bakeFace(SLIGHTLY_OVER_BLOCK, renderSide, texture,
                                 rotation, -1, 0, true, true);
                         if (quad.getDirection() == side) {
                             quads.add(quad);

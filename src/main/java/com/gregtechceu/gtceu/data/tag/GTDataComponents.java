@@ -28,8 +28,8 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTTool>> GT_TOOL = DATA_COMPONENTS
             .registerComponentType("gt_tool",
                     builder -> builder.persistent(GTTool.CODEC).networkSynchronized(GTTool.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ToolBehaviorsComponent>> TOOL_BEHAVIOURS = DATA_COMPONENTS
-            .registerComponentType("tool_behaviours", builder -> builder.persistent(ToolBehaviorsComponent.CODEC)
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ToolBehaviorsComponent>> TOOL_BEHAVIORS = DATA_COMPONENTS
+            .registerComponentType("tool_behaviors", builder -> builder.persistent(ToolBehaviorsComponent.CODEC)
                     .networkSynchronized(ToolBehaviorsComponent.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> AOE = DATA_COMPONENTS
             .registerComponentType("aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
@@ -40,6 +40,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> RELOCATE_MINED_BLOCKS = DATA_COMPONENTS
             .registerComponentType("relocate_mined_blocks", builder -> builder.persistent(Codec.unit(Unit.INSTANCE))
                     .networkSynchronized(StreamCodec.unit(Unit.INSTANCE)));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE = DATA_COMPONENTS
+            .registerComponentType("active", builder -> builder.persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
 
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<IMaterialPartItem.PartStats>> PART_STATS = DATA_COMPONENTS

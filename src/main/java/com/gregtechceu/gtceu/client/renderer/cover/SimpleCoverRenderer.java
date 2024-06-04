@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 
@@ -53,9 +53,9 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
                             @NotNull CoverBehavior coverBehavior, Direction modelFacing, ModelState modelState) {
         if (side == coverBehavior.attachedSide && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
+            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
             if (emissiveTexture != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(emissiveTexture),
+                quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(emissiveTexture),
                         modelState));
             }
         }

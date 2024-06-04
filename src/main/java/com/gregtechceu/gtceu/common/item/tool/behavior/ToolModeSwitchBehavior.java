@@ -20,14 +20,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
-import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsComponent;
@@ -36,7 +33,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
 
     public static final ToolModeSwitchBehavior INSTANCE = new ToolModeSwitchBehavior(ModeType.BOTH);
 
-    public static final MapCodec<ToolModeSwitchBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<ToolModeSwitchBehavior> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ModeType.CODEC.lenientOptionalFieldOf("mode_type", ModeType.BOTH)
                     .forGetter(val -> val.modeType))
             .apply(instance, ToolModeSwitchBehavior::new));
@@ -57,16 +54,15 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
     public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player,
                                                                         @NotNull InteractionHand hand) {
         var itemStack = player.getItemInHand(hand);
-        var component = getBehaviorsComponent(itemStack);
         if (player.isShiftKeyDown()) {
-            ToolModeSwitchBehavior.ModeType type = ModeType.values()[(this.modeType.ordinal() + 1) &
+            ToolModeSwitchBehavior.ModeType type = ModeType.values()[(this.modeType.ordinal() + 1) %
                     ModeType.values().length];
-            itemStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(new ArrayList<>()),
+            itemStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
                     behavior -> behavior.withBehavior(new ToolModeSwitchBehavior(type)));
 
             player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode", type.getName()),
                     true);
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResultHolder.success(itemStack.copy());
         }
 
         return IToolBehavior.super.onItemRightClick(world, player, hand);
@@ -80,8 +76,8 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
     @Override
     public void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
-        var tagCompound = getBehaviorsComponent(stack);
-        ToolModeSwitchBehavior behavior = tagCompound.getBehavior(GTToolBehaviors.MODE_SWITCH);
+        var component = getBehaviorsComponent(stack);
+        ToolModeSwitchBehavior behavior = component.getBehavior(GTToolBehaviors.MODE_SWITCH);
         tooltip.add(Component.translatable("metaitem.machine_configuration.mode",
                 (behavior != null ? behavior.modeType : ModeType.BOTH).getName()));
     }

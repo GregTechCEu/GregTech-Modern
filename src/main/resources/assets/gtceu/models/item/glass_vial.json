@@ -1,6 +1,6 @@
 {
   "loader": "neoforge:fluid_container",
-  "parent": "forge:item/default",
+  "parent": "neoforge:item/default",
   "textures": {
     "base": "gtceu:item/glass_vial/base",
     "fluid": "gtceu:item/glass_vial/overlay",

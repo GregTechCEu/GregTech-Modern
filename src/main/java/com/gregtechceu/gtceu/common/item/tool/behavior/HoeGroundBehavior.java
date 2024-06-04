@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,7 +44,7 @@ import java.util.Set;
 public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {
 
     public static final HoeGroundBehavior INSTANCE = create();
-    public static final MapCodec<HoeGroundBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<HoeGroundBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, HoeGroundBehavior> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 

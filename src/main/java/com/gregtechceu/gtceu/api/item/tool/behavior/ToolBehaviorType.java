@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -11,7 +12,7 @@ import lombok.Getter;
 public class ToolBehaviorType<T extends IToolBehavior<T>> {
 
     @Getter
-    public final MapCodec<T> codec;
+    public final Codec<T> codec;
     @Getter
-    public final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+    public final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
 }

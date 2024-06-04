@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -33,7 +34,7 @@ import java.util.List;
 public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, IComponentCapability, IInteractionItem {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
-    public static final MapCodec<PlungerBehavior> CODEC = MapCodec.unit(INSTANCE);
+    public static final Codec<PlungerBehavior> CODEC = Codec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, PlungerBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     protected PlungerBehavior() {/**/}

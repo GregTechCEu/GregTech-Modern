@@ -38,6 +38,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -85,7 +86,7 @@ public class ForgeCommonEventListener {
             return;
         }
 
-        ItemStack toolStack = event.getPlayer().getItemInHand(event.getPlayer().swingingArm);
+        ItemStack toolStack = event.getPlayer().getItemInHand(event.getPlayer().getUsedItemHand());
         if (toolStack.getItem() instanceof IGTTool tool) {
             if (tool.definition$onBlockStartBreak(toolStack, event.getPos(), event.getPlayer())) {
                 event.setCanceled(true);
@@ -167,7 +168,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onEntitySpawn(MobSpawnEvent event) {
+    public static void onEntitySpawn(FinalizeSpawnEvent event) {
         Mob entity = event.getEntity();
         Difficulty difficulty = entity.level().getDifficulty();
         if (difficulty == Difficulty.HARD && entity.getRandom().nextFloat() <= 0.03f) {
