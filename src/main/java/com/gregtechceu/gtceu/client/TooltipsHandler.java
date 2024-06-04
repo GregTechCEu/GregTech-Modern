@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
@@ -29,17 +28,6 @@ public class TooltipsHandler {
     private static final String BLOCK_PREFIX = "block." + GTCEu.MOD_ID;
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
-        // Energy Item
-        var energyItem = GTCapabilityHelper.getElectricItem(stack);
-        if (energyItem != null) {
-            tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
-                    energyItem.getCharge(),
-                    energyItem.getMaxCharge(),
-                    Component
-                            .literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge()))
-                            .withStyle(ChatFormatting.GREEN)));
-        }
-
         // Formula
         var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
         if (unificationEntry != null && unificationEntry.material != null) {

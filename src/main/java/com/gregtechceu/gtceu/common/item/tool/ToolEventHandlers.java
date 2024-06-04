@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
@@ -28,13 +29,20 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
 
     /**
@@ -161,5 +169,27 @@ public class ToolEventHandlers {
             }
         }
         return true;
+    }
+
+    @SubscribeEvent
+    public static void onPlayerDestroyItem(@NotNull PlayerDestroyItemEvent event) {
+        ToolEventHandlers.onPlayerDestroyItem(event.getOriginal(), event.getHand(), event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void onPlayerEntityInteract(@NotNull PlayerInteractEvent.EntityInteract event) {
+        InteractionResult result = ToolEventHandlers.onPlayerEntityInteract(event.getEntity(), event.getHand(),
+                event.getTarget());
+        if (result != InteractionResult.PASS) {
+            event.setCanceled(true);
+            event.setCancellationResult(result);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAnvilUpdateEvent(@NotNull AnvilUpdateEvent event) {
+        if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
+            event.setCanceled(true);
+        }
     }
 }
