@@ -1,12 +1,12 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:mega_blast_furnace"
+    "res": "gtceu:rotary_hearth_furnace"
   },
   "items": [
-    "gtceu:mega_blast_furnace"
+    "gtceu:rotary_hearth_furnace"
   ],
-  "page": "gtceu:luv/mega_blast_furnace",
+  "page": "gtceu:luv/rotary_hearth_furnace",
   "position": [
     -150,
     50

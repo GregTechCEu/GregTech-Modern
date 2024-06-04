@@ -37,14 +37,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public final boolean chargeable;
     public final boolean dischargeable;
 
-    protected ElectricStats(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    protected ElectricStats(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         this.maxCharge = maxCharge;
-        this.tier = (int) tier;
+        this.tier = tier;
         this.chargeable = chargeable;
         this.dischargeable = dischargeable;
     }
 
-    public static ElectricStats create(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    public static ElectricStats create(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         return new ElectricStats(maxCharge, tier, chargeable, dischargeable);
     }
 
@@ -134,7 +134,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     private static void addTotalChargeTooltip(List<Component> tooltip, long maxCharge, int tier) {
         Instant start = Instant.now();
-        Instant end = Instant.now().plusSeconds((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20));
+        Instant end = Instant.now().plusSeconds(Math.clamp((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20), 0L,
+                Instant.MAX.getEpochSecond() - start.getEpochSecond()));
         Duration duration = Duration.between(start, end);
 
         long chargeTime;

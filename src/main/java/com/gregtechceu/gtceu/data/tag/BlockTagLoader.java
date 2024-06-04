@@ -36,6 +36,7 @@ public class BlockTagLoader {
                 CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
         create(provider, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL,
                 CustomTags.NEEDS_NEUTRONIUM_TOOL);
+        create(provider, CustomTags.INCORRECT_FOR_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
 
         create(provider, BlockTags.REPLACEABLE,
                 GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),

@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -287,13 +288,13 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
                                                BlockHitResult hit) {
         var machine = getMachine(world, pos);
-        ItemStack itemStack = player.getItemInHand(player.getUsedItemHand());
+        ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         boolean shouldOpenUi = true;
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
             var result = machine.onToolClick(types, itemStack,
-                    new UseOnContext(player, player.getUsedItemHand(), hit));
+                    new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
@@ -305,20 +306,20 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
 
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
-            return itemStack.getItem().use(world, player, player.getUsedItemHand()).getResult();
+            return itemStack.getItem().use(world, player, InteractionHand.MAIN_HAND).getResult();
         }
 
         if (itemStack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem
-                    .definition$shouldOpenUIAfterUse(new UseOnContext(player, player.getUsedItemHand(), hit));
+                    .definition$shouldOpenUIAfterUse(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
         }
 
         if (machine instanceof IInteractedMachine interactedMachine) {
-            var result = interactedMachine.onUse(state, world, pos, player, player.getUsedItemHand(), hit);
+            var result = interactedMachine.onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
             if (result != InteractionResult.PASS) return result;
         }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
-            return uiMachine.tryToOpenUI(player, player.getUsedItemHand(), hit);
+            return uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }

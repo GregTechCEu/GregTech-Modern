@@ -28,21 +28,26 @@ public class ElectricItem implements IElectricItem {
                         boolean canProvideEnergyExternally) {
         componentType = GTDataComponents.ENERGY_CONTENT;
         this.container = container;
-        this.maxCharge = maxCharge;
-        this.tier = tier;
+        if (container.has(componentType)) {
+            this.maxCharge = getMaxCharge();
+            this.tier = getTier();
+        } else {
+            this.maxCharge = maxCharge;
+            this.tier = tier;
+            // do this here to force the max charge to be set on the stats
+            setMaxChargeOverride(maxCharge);
+        }
         this.chargeable = chargeable;
         this.canProvideEnergyExternally = canProvideEnergyExternally;
-        // do this here to force the max charge to be set on the stats-
-        setMaxChargeOverride(maxCharge);
     }
 
     public void setCharge(long change) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+        container.update(componentType, new SimpleEnergyContent(maxCharge, 0),
                 content -> content.withCharge(change));
     }
 
     public void setMaxChargeOverride(long maxCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+        container.update(componentType, new SimpleEnergyContent(maxCharge, 0),
                 content -> content.withMaxCharge(maxCharge));
     }
 
@@ -53,21 +58,21 @@ public class ElectricItem implements IElectricItem {
 
     @Override
     public long getMaxCharge() {
-        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+        if (!container.has(componentType)) {
             return maxCharge;
         }
-        return container.get(GTDataComponents.ENERGY_CONTENT).maxCharge();
+        return container.get(componentType).maxCharge();
     }
 
     public long getCharge() {
-        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+        if (!container.has(componentType)) {
             return 0;
         }
-        return container.get(GTDataComponents.ENERGY_CONTENT).charge();
+        return container.get(componentType).charge();
     }
 
     public void setInfiniteCharge(boolean infiniteCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+        container.update(componentType, new SimpleEnergyContent(maxCharge, 0),
                 content -> content.withInfinite(infiniteCharge));
     }
 
@@ -83,15 +88,15 @@ public class ElectricItem implements IElectricItem {
 
     @Override
     public boolean isDischargeMode() {
-        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+        if (!container.has(componentType)) {
             return false;
         }
-        return container.get(GTDataComponents.ENERGY_CONTENT).dischargeMode();
+        return container.get(componentType).dischargeMode();
     }
 
     @Override
     public void setDischargeMode(boolean dischargeMode) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+        container.update(componentType, new SimpleEnergyContent(maxCharge, 0),
                 content -> content.withDischargeMode(dischargeMode));
     }
 
