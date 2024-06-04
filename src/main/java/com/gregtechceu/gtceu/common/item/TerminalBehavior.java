@@ -44,7 +44,8 @@ public class TerminalBehavior implements IItemUIFactory {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         if (!ConfigHolder.INSTANCE.gameplay.enableCompass) {
             ItemStack heldItem = player.getItemInHand(usedHand);
             return InteractionResultHolder.pass(heldItem);

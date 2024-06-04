@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.model;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -22,10 +22,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.SimpleModelState;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
-import net.neoforged.neoforge.client.model.SimpleModelState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;

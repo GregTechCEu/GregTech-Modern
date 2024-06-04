@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;

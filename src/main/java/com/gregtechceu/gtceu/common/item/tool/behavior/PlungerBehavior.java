@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +25,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

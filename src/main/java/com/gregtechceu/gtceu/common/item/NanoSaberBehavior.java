@@ -35,10 +35,12 @@ public class NanoSaberBehavior extends ToggleEnergyConsumerBehavior implements I
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_SPEED,
                         new AttributeModifier(Item.BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.0,
-                        AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.HAND)
+                                AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.HAND)
                 .add(Attributes.ATTACK_DAMAGE,
                         new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, "Weapon Modifier", attackDamage,
-                                AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.HAND)
+                                AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.HAND)
                 .build();
     }
 

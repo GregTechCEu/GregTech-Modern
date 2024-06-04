@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -282,14 +281,15 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     default boolean definition$hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         getBehaviorsComponent(stack).behaviors()
-                        .forEach((key, behavior) -> behavior.hitEntity(stack, target, attacker));
+                .forEach((key, behavior) -> behavior.hitEntity(stack, target, attacker));
         damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
         return true;
     }
 
     default boolean definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         if (player.level().isClientSide) return false;
-        getBehaviorsComponent(stack).behaviors().forEach((type, behavior) -> behavior.onBlockStartBreak(stack, pos, player));
+        getBehaviorsComponent(stack).behaviors()
+                .forEach((type, behavior) -> behavior.onBlockStartBreak(stack, pos, player));
 
         if (!player.isCrouching()) {
             ServerPlayer playerMP = (ServerPlayer) player;
@@ -443,7 +443,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default boolean definition$onEntitySwing(LivingEntity entityLiving, ItemStack stack) {
-        getBehaviorsComponent(stack).behaviors().forEach((key, behavior) -> behavior.onEntitySwing(entityLiving, stack));
+        getBehaviorsComponent(stack).behaviors()
+                .forEach((key, behavior) -> behavior.onEntitySwing(entityLiving, stack));
         return false;
     }
 
