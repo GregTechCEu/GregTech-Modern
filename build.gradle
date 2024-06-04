@@ -19,6 +19,10 @@ base {
 // Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+// Formats the mod version to include the loader, Minecraft version, and build number (if present)
+String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
+version = "${mod_version}" + (buildNumber != null ? "-build_${System.getenv("GITHUB_RUN_NUMBER")}" : "")
+
 apply from: "$rootDir/gradle/scripts/neogradle.gradle"
 apply from: "$rootDir/gradle/scripts/capabilities.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
