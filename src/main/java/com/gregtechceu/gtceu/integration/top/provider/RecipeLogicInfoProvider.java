@@ -62,7 +62,7 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
                     if (machine instanceof SteamMachine) {
-                        text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " L/t " +
+                        text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " mb/t " +
                                 LocalizationUtils.format("material.steam");
                     }
                 }
