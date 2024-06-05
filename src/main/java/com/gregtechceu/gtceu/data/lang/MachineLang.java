@@ -411,7 +411,7 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.component_type.cooler_passive", "§bCooler Type: §fPassive");
         provider.add("gtceu.machine.hpca.component_type.cooler_active", "§bCooler Type: §fActive");
         provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%d mb/t %s");
+        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%d mB/t %s");
         provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%d CWU/t");
         provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%d Cooling");
         provider.add("gtceu.machine.hpca.component_type.bridge", "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
@@ -439,7 +439,7 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.per_block", "§7takes §f%ds §7per Block");
         provider.add("gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
         provider.add("gtceu.machine.miner.multi.production", "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
-        provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mb/t §7of §f%s§7, doubled per overclock.");
+        provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
         provider.add("gtceu.machine.miner.startx", "sX: %d");
@@ -783,7 +783,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_boiler.max_temperature", "Max Temperature: %dK, Steam Production: %dmB/t");
         provider.add("gtceu.multiblock.large_boiler.efficiency", "Efficiency: %s");
         provider.add("gtceu.multiblock.large_boiler.temperature", "Temperature: %sK / %sK");
-        provider.add("gtceu.multiblock.large_boiler.steam_output", "Steam Output: %s mb/t");
+        provider.add("gtceu.multiblock.large_boiler.steam_output", "Steam Output: %s mB/t");
         provider.add("gtceu.multiblock.large_boiler.throttle", "Throttle: %d");
         provider.add("gtceu.multiblock.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");

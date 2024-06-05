@@ -624,7 +624,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             return maxCooling;
         }
 
-        /** How much coolant this HPCA can consume in a tick, in mb/t. */
+        /** How much coolant this HPCA can consume in a tick, in mB/t. */
         public int getMaxCoolantDemand() {
             int maxCoolant = 0;
             for (var coolantProvider : coolantProviders) {

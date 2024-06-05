@@ -819,7 +819,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
                 "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
         provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
-        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mb/t");
+        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
@@ -828,13 +828,13 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
-        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mb/t §7of Steam while working");
+        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of Steam while working");
         provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant", "Uses §f%d L/hr §7of Lubricant while working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
-        provider.add("gtceu.universal.tooltip.base_production_fluid", "§eBase Production: §f%d mb/t");
-        provider.add("gtceu.universal.tooltip.produces_fluid", "§eProduces: §f%d mb/t");
+        provider.add("gtceu.universal.tooltip.base_production_fluid", "§eBase Production: §f%d mB/t");
+        provider.add("gtceu.universal.tooltip.produces_fluid", "§eProduces: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.terrain_resist",
                 "This Machine will not explode when exposed to the Elements");
         provider.add("gtceu.universal.tooltip.requires_redstone", "§4Requires Redstone power");
