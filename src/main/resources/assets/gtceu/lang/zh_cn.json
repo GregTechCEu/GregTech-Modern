@@ -1404,7 +1404,7 @@
     "block.gtceu.uxv_input_bus":"§eUXV§r输入总线",
     "block.gtceu.uxv_input_hatch":"§eUXV§r输入仓",
     "block.gtceu.uxv_input_hatch_4x":"§eUXV§r四重输入仓",
-    "block.gtceu.uxv_input_hatch_9x":"§eUXV§r九重输出仓",
+    "block.gtceu.uxv_input_hatch_9x":"§eUXV§r九重输入仓",
     "block.gtceu.uxv_item_passthrough_hatch":"§eUXV§r物品通行仓",
     "block.gtceu.uxv_laser_engraver":"§e史诗激光蚀刻机 IV§r",
     "block.gtceu.uxv_lathe":"§e史诗车床 IV§r",
