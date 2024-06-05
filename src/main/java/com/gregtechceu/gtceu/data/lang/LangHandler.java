@@ -362,8 +362,8 @@ public class LangHandler {
         provider.add("cover.pump.mode.export", "Mode: Export");
         provider.add("cover.pump.mode.import", "Mode: Import");
         provider.add("cover.pump.fluid_filter.title", "Fluid Filter");
-        provider.add("cover.bucket.mode.bucket", "kL");
-        provider.add("cover.bucket.mode.milli_bucket", "L");
+        provider.add("cover.bucket.mode.bucket", "B");
+        provider.add("cover.bucket.mode.milli_bucket", "mB");
         provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
         multilineLang(provider, "cover.fluid_regulator.transfer_mode.description",
                 "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
@@ -411,13 +411,13 @@ public class LangHandler {
                 "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
 
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
+        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum";
         multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
         multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled",
                 "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
-        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (L)");
-        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (L)");
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (mB)");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (mB)");
 
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
         var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
@@ -692,7 +692,7 @@ public class LangHandler {
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
         provider.add("metaitem.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode§r");
         provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
+        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");  
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
@@ -728,7 +728,7 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.multiblock_parallel", "Multi Processing: %s");
         provider.add("behavior.portable_scanner.position", "----- X: %s Y: %s Z: %s D: %s -----");
         provider.add("behavior.portable_scanner.state", "%s: %s");
-        provider.add("behavior.portable_scanner.tank", "Tank %s: %s L / %s L %s");
+        provider.add("behavior.portable_scanner.tank", "Tank %s: %s mB / %s mB %s");
         provider.add("behavior.portable_scanner.tanks_empty", "All Tanks Empty");
         provider.add("behavior.portable_scanner.workable_consumption", "Probably Uses: %s EU/t at %s A");
         provider.add("behavior.portable_scanner.workable_production", "Probably Produces: %s EU/t at %s A");
@@ -796,6 +796,7 @@ public class LangHandler {
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
         provider.add("gtceu.universal.liters", "%s L");
         provider.add("gtceu.universal.kiloliters", "%s kL");
+        // Not sure if the Liter is still wanted? I'll keep these as Liter given they're named properly
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -815,10 +816,9 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
         provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
@@ -829,7 +829,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of Steam while working");
-        provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant", "Uses §f%d L/hr §7of Lubricant while working");
+        provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant", "Uses §f%d mB/hr §7of Lubricant while working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
@@ -890,7 +890,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
-        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d L");
+        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
@@ -980,7 +980,7 @@ public class LangHandler {
         provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
         provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d L");
+        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
@@ -1065,7 +1065,7 @@ public class LangHandler {
         provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
         provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
         provider.add("gtceu.command.hand.electric", "Electric Info: %d / %d EU - Tier: %d; Is Battery: %s");
-        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d L; Can Fill: %s; Can Drain: %s");
+        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d mB; Can Fill: %s; Can Drain: %s");
         provider.add("gtceu.command.hand.fluid2", "Fluid Id:");
         provider.add("gtceu.command.hand.material", "Material Id:");
         provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
