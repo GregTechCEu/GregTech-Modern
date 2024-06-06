@@ -1,15 +1,24 @@
 package com.gregtechceu.gtceu.integration.jade;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import snownee.jade.addon.harvest.HarvestToolProvider;
+import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
+
+import java.util.List;
+import java.util.Objects;
 
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {
@@ -34,21 +43,19 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
 
-    /*
-     * TODO fix once Jade 1.20.5 is out
-     * static {
-     * GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-     * if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
-     * HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
-     * .values()
-     * .stream()
-     * .filter(Objects::nonNull)
-     * .filter(ItemProviderEntry::isBound)
-     * .map(ItemProviderEntry::asItem)
-     * .map(Item::getDefaultInstance)
-     * .toList()
-     * ));
-     * });
-     * }
-     */
+    static {
+        GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+            if (type.toolDefinition.getTool().rules().isEmpty() || map.isEmpty()) return;
+
+            List<Item> tools = map
+                    .values()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(ItemProviderEntry::isBound)
+                    .map(ItemProviderEntry::asItem)
+                    .toList();
+            if (tools.isEmpty()) return;
+            HarvestToolProvider.registerHandler(SimpleToolHandler.create(GTCEu.id(type.name), true, tools));
+        });
+    }
 }

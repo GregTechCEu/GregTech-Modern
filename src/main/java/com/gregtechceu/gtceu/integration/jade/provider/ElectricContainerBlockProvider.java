@@ -18,6 +18,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.IElementHelper;
 
 public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEnergyContainer> {
 
@@ -44,7 +45,7 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
         if (maxStorage == 0) return; // do not add empty max storage progress bar
 
         long stored = capData.getLong("Energy");
-        var helper = tooltip.getElementHelper();
+        var helper = IElementHelper.get();
 
         tooltip.add(
                 helper.progress(
