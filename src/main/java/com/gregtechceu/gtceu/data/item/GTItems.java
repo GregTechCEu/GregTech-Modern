@@ -2335,7 +2335,7 @@ public class GTItems {
                         .end();
             })
             .onRegister(modelPredicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION,
-                    (stack, level, entity, layer) -> NanoSaberBehavior.isItemActive(stack) ? 1.0f : 0.0f))
+                    () -> () -> (stack, level, entity, layer) -> NanoSaberBehavior.isItemActive(stack) ? 1.0f : 0.0f))
             .register();
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("lv_prospector", ComponentItem::create)
             .lang("Ore Prospector (LV)")
@@ -2783,10 +2783,10 @@ public class GTItems {
 
     @SuppressWarnings("deprecation")
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
-                                                                     ItemPropertyFunction property) {
+                                                                     Supplier<Supplier<ItemPropertyFunction>> property) {
         return item -> {
             if (LDLib.isClient()) {
-                ItemProperties.register(item, predicate, property);
+                ItemProperties.register(item, predicate, property.get().get());
             }
         };
     }
