@@ -2,58 +2,52 @@ dependencies {
     implementation forge.neoForge
 
     // LDLib
-    implementation(forge.ldlib.neoforge) { transitive = false }
+    api(forge.ldlib.neoforge)
     jarJar(forge.ldlib.neoforge)
 
     // Registrate
-    implementation("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
+    api("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
     jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
 
     // Create and its dependencies
-    compileOnly("com.simibubi.create:create-${libs.versions.minecraftVeryOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    compileOnly forge.flywheel
+    createCompileOnly("com.simibubi.create:create-${libs.versions.minecraftVeryOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    createCompileOnly forge.flywheel
 
     // JEI
-    compileOnly(forge.jei.common.api) { transitive = false }
-    compileOnly(forge.jei.forge.api) { transitive = false }
-    compileOnly(forge.jei.forge.impl) { transitive = false }
+    jeiCompileOnly(forge.jei.common.api) { transitive = false }
+    jeiCompileOnly(forge.jei.forge.api) { transitive = false }
+    jeiCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
-    compileOnly forge.rei.plugin
-    compileOnly forge.rei.api
-    compileOnly forge.rei.forge
+    reiCompileOnly forge.rei.plugin
+    reiCompileOnly forge.rei.api
+    reiCompileOnly forge.rei.forge
 
     // EMI
-    compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    implementation forge.emi
+    emiCompileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
+    emiImplementation forge.emi
 
     // TOP
-    compileOnly(forge.theoneprobe) { transitive = false }
+    topCompileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
-    compileOnly(forge.jade)
+    jadeImplementation(forge.jade)
 
     // AE2
-    implementation(forge.ae2) { transitive = false }
+    ae2Implementation(forge.ae2) { transitive = false }
     compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
-    //AlmostUnified
-    compileOnly(forge.almostUnified.forge)
-
     // KJS
-    compileOnly forge.kubejs
+    kjsCompileOnly forge.kubejs
 
     // Configuration
-    implementation(forge.configuration)
+    api(forge.configuration)
     jarJar(forge.configuration)
 
     // Shimmer
-    compileOnly(forge.shimmer.forge) { transitive = false }
-    compileOnly("maven.modrinth:embeddium:0.2.10+mc1.20.1")
-    compileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
-
-    // Runtime only testing mods
-    //runtimeOnly(forge.worldStripper)
+    shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
+    shimmerCompileOnly("maven.modrinth:embeddium:0.2.10+mc1.20.1")
+    shimmerCompileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
 
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'

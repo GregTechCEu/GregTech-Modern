@@ -3,7 +3,7 @@ java {
 }
 
 tasks.jar {
-    archiveClassifier.set("slim")
+    archiveClassifier = "slim"
 }
 
 tasks.jarJar {
