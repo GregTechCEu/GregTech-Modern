@@ -50,7 +50,8 @@ public class LangHandler {
         provider.add("recipe.capability.item.name", "Item");
         provider.add("recipe.capability.su.name", "Create Stress");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
-                "Right click to decrease the OC", "Middle click to reset the OC", "Hold Shift to change by Perfect OC");
+                "Right click to decrease the OC", "Middle click to reset the OC",
+                "Hold Shift to change by Perfect OC");
 
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
@@ -78,7 +79,8 @@ public class LangHandler {
         provider.add("gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
         provider.add("gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
         provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
-        provider.add("gtceu.tooltip.tool_fluid_hold_shift", "§7Hold SHIFT to show Fluid Containment and Tool Info");
+        provider.add("gtceu.tooltip.tool_fluid_hold_shift",
+                "§7Hold SHIFT to show Fluid Containment and Tool Info");
         provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
         provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU (%s)");
@@ -126,7 +128,8 @@ public class LangHandler {
         provider.add("gtceu.hazard.none", "§2Not Dangerous");
         provider.add("gtceu.hazard.antidote.description", "§aAntidote §7Hold Shift to show details");
         provider.add("gtceu.hazard.antidote.description_shift", "§aCures types:");
-        provider.add("gtceu.hazard.antidote.description.effect_removed", "Removes %s%% of current ailments' effects");
+        provider.add("gtceu.hazard.antidote.description.effect_removed",
+                "Removes %s%% of current ailments' effects");
         provider.add("gtceu.hazard.antidote.description.effect_removed.all",
                 "Removes all of current ailments' effects");
 
@@ -179,7 +182,8 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.ev_drill", "%s Drill (EV)");
         replace(provider, "item.gtceu.tool.iv_drill", "%s Drill (IV)");
         replace(provider, "item.gtceu.tool.mining_hammer", "%s Mining Hammer");
-        provider.add("item.gtceu.tool.mining_hammer.tooltip", "§8Mines a large area at once (unless you're crouching)");
+        provider.add("item.gtceu.tool.mining_hammer.tooltip",
+                "§8Mines a large area at once (unless you're crouching)");
         replace(provider, "item.gtceu.tool.spade", "%s Spade");
         provider.add("item.gtceu.tool.spade.tooltip", "§8Mines a large area at once (unless you're crouching)");
         replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
@@ -205,7 +209,8 @@ public class LangHandler {
         provider.add("item.gtceu.tool.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("item.gtceu.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gtceu.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dNetherite",
+        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond",
+                "§dNetherite",
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
@@ -275,11 +280,13 @@ public class LangHandler {
         provider.add("metaarmor.energy_share.enable", "Energy Supply: Gadgets charging enabled");
         provider.add("metaarmor.energy_share.disable", "Energy Supply: Gadgets charging disabled");
         provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
-        provider.add("metaarmor.energy_share.tooltip.guide", "To change mode shift-right click when holding item");
+        provider.add("metaarmor.energy_share.tooltip.guide",
+                "To change mode shift-right click when holding item");
         provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
-        provider.add("gui.widget.incrementButton.default_tooltip", "Hold Shift, Ctrl or both to change the amount");
+        provider.add("gui.widget.incrementButton.default_tooltip",
+                "Hold Shift, Ctrl or both to change the amount");
         provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
@@ -350,7 +357,8 @@ public class LangHandler {
         multilineLang(provider, "cover.universal.manual_import_export.mode.description",
                 "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
-        multiLang(provider, "cover.conveyor.ore_dictionary.title", "Ore Dictionary Name", "(use * for wildcard)");
+        multiLang(provider, "cover.conveyor.ore_dictionary.title", "Ore Dictionary Name",
+                "(use * for wildcard)");
         provider.add("cover.robotic_arm.title", "Robotic Arm Settings (%s)");
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
@@ -430,7 +438,8 @@ public class LangHandler {
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
-        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on 1.19...
+        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
+                                                                                     // 1.19...
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
@@ -469,21 +478,25 @@ public class LangHandler {
                 "Lightly Hydro-Cracked Heavy Fuel");
         replace(provider, GTMaterials.LightlyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Hydro-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(), "Lightly Hydro-Cracked Naphtha");
+        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(),
+                "Lightly Hydro-Cracked Naphtha");
         replace(provider, GTMaterials.LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
         replace(provider, GTMaterials.LightlySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Heavy Fuel");
         replace(provider, GTMaterials.LightlySteamCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(), "Lightly Steam-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(), "Severely Hydro-Cracked Gas");
+        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(),
+                "Lightly Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(),
+                "Severely Hydro-Cracked Gas");
         replace(provider, GTMaterials.SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Heavy Fuel");
         replace(provider, GTMaterials.SeverelyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Light Fuel");
         replace(provider, GTMaterials.SeverelyHydroCrackedNaphtha.getUnlocalizedName(),
                 "Severely Hydro-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(), "Severely Steam-Cracked Gas");
+        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(),
+                "Severely Steam-Cracked Gas");
         replace(provider, GTMaterials.SeverelySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Steam-Cracked Heavy Fuel");
         replace(provider, GTMaterials.SeverelySteamCrackedLightFuel.getUnlocalizedName(),
@@ -676,7 +689,8 @@ public class LangHandler {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
         provider.add("enchantment.damage.disjunction", "Disjunction");
-        provider.add("enchantment.gtceu.disjunction.desc", "Applies Weakness and Slowness to Ender-related mobs.");
+        provider.add("enchantment.gtceu.disjunction.desc",
+                "Applies Weakness and Slowness to Ender-related mobs.");
         provider.add("enchantment.hard_hammer", "Hammering");
         provider.add("enchantment.gtceu.hard_hammer.desc",
                 "Breaks blocks as if they were mined with a GregTech Hammer.");
@@ -692,7 +706,7 @@ public class LangHandler {
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
         provider.add("metaitem.prospector.mode.bedrock_ore", "§bBedrock Ore Prospection Mode§r");
         provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
-        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");  
+        provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
@@ -708,7 +722,8 @@ public class LangHandler {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =", " null!");
+        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =",
+                " null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
         provider.add("behavior.portable_scanner.divider", "=========================");
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");
@@ -722,8 +737,10 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.machine_progress", "Progress/Load: %s / %s");
         provider.add("behavior.portable_scanner.machine_upwards_facing", "Upwards Facing: %s");
         provider.add("behavior.portable_scanner.muffled", "Muffled.");
-        provider.add("behavior.portable_scanner.multiblock_energy_input", "Max Energy Income: %s EU/t Tier: %s");
-        provider.add("behavior.portable_scanner.multiblock_energy_output", "Max Energy Output: %s EU/t Tier: %s");
+        provider.add("behavior.portable_scanner.multiblock_energy_input",
+                "Max Energy Income: %s EU/t Tier: %s");
+        provider.add("behavior.portable_scanner.multiblock_energy_output",
+                "Max Energy Output: %s EU/t Tier: %s");
         provider.add("behavior.portable_scanner.multiblock_maintenance", "Problems: %s");
         provider.add("behavior.portable_scanner.multiblock_parallel", "Multi Processing: %s");
         provider.add("behavior.portable_scanner.position", "----- X: %s Y: %s Z: %s D: %s -----");
@@ -749,7 +766,8 @@ public class LangHandler {
         provider.add("metaitem.terminal.tooltip", "Sharp tools make good work");
         provider.add("metaitem.terminal.tooltip.creative", "§bCreative Mode");
         provider.add("metaitem.terminal.tooltip.hardware", "§aHardware: %d");
-        provider.add("metaitem.plugin.tooltips.1", "Plugins can be added to the screen for more functionality.");
+        provider.add("metaitem.plugin.tooltips.1",
+                "Plugins can be added to the screen for more functionality.");
         provider.add("metaitem.plugin.proxy.tooltips.1", "(Please adjust to proxy mode in the screen)");
         provider.add("metaitem.cover.digital.tooltip",
                 "Connects machines over §fPower Cables§7 to the §fCentral Monitor§7 as §fCover§7.");
@@ -771,13 +789,15 @@ public class LangHandler {
 
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
         provider.add("gtceu.machine.basic.input_from_output_side.allow", "Allow Input from Output Side: ");
-        provider.add("gtceu.machine.basic.input_from_output_side.disallow", "Disallow Input from Output Side: ");
+        provider.add("gtceu.machine.basic.input_from_output_side.disallow",
+                "Disallow Input from Output Side: ");
         provider.add("gtceu.machine.muffle.on", "Sound Muffling: Enabled");
         provider.add("gtceu.machine.muffle.off", "Sound Muffling: Disabled");
         provider.add("gtceu.machine.perfect_oc", "Does not lose energy efficiency when overclocked.");
         provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
 
-        provider.add("gtceu.machine.multiblock.tank.tooltip", "Fill and drain through the controller or tank valves.");
+        provider.add("gtceu.machine.multiblock.tank.tooltip",
+                "Fill and drain through the controller or tank valves.");
         provider.add("gtceu.machine.tank_valve.tooltip",
                 "Use to fill and drain multiblock tanks. Auto outputs when facing down.");
 
@@ -794,9 +814,8 @@ public class LangHandler {
 
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
-        provider.add("gtceu.universal.liters", "%s L");
-        provider.add("gtceu.universal.kiloliters", "%s kL");
-        // Not sure if the Liter is still wanted? I'll keep these as Liter given they're named properly
+        provider.add("gtceu.universal.liters", "%s B");
+        provider.add("gtceu.universal.kiloliters", "%s mB");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -817,7 +836,8 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
         provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
         provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
@@ -829,7 +849,8 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of Steam while working");
-        provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant", "Uses §f%d mB/hr §7of Lubricant while working");
+        provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant",
+                "Uses §f%d mB/hr §7of Lubricant while working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
@@ -872,11 +893,13 @@ public class LangHandler {
         provider.add("gtceu.tool_action.screwdriver.toggle_mode_covers",
                 "§8Use Screwdriver to toggle Modes or access Covers");
         provider.add("gtceu.tool_action.screwdriver.access_covers", "§8Use Screwdriver to access Covers");
-        provider.add("gtceu.tool_action.screwdriver.auto_collapse", "§8Use Screwdriver to toggle Item collapsing");
+        provider.add("gtceu.tool_action.screwdriver.auto_collapse",
+                "§8Use Screwdriver to toggle Item collapsing");
         provider.add("gtceu.tool_action.screwdriver.auto_output", "§8Use Screwdriver to toggle Auto-Output");
         provider.add("gtceu.tool_action.screwdriver.toggle_mode", "§8Use Screwdriver to toggle Modes");
         provider.add("gtceu.tool_action.wrench.set_facing", "§8Use Wrench to set Facing");
-        provider.add("gtceu.tool_action.wrench.connect", "§8Use Wrench to set Connections, sneak to block Connections");
+        provider.add("gtceu.tool_action.wrench.connect",
+                "§8Use Wrench to set Connections, sneak to block Connections");
         provider.add("gtceu.tool_action.wire_cutter.connect", "§8Use Wire Cutters to set Connections");
         provider.add("gtceu.tool_action.soft_mallet.reset", "§8Use Soft Mallet to toggle Working");
         provider.add("gtceu.tool_action.soft_mallet.toggle_mode", "§8Use Soft Mallet to toggle Modes");
@@ -951,7 +974,8 @@ public class LangHandler {
         provider.add("gtceu.jei.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
         provider.add("gtceu.jei.ore.ore_weight", "Weight in vein: %d%%");
         multiLang(provider, "gtceu.jei.ore.primary", "Top Ore", "Spawns in the top %d layers of the vein");
-        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore", "Spawns in the bottom %d layers of the vein");
+        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore",
+                "Spawns in the bottom %d layers of the vein");
         multiLang(provider, "gtceu.jei.ore.between", "Between Ore",
                 "Spawns in the middle %d layers of the vein, with other ores");
         multiLang(provider, "gtceu.jei.ore.sporadic", "Sporadic Ore", "Spawns anywhere in the vein");
@@ -965,12 +989,15 @@ public class LangHandler {
         provider.add("gtceu.jei.fluid.dimension", "Dimensions:");
         provider.add("gtceu.jei.fluid.weight_hover",
                 "The Weight of the vein. Hover over the fluid to see any possible biome modifications");
-        provider.add("gtceu.jei.fluid.min_hover", "The minimum yield that any fluid vein of this fluid can have");
-        provider.add("gtceu.jei.fluid.max_hover", "The maximum yield that any fluid vein of this fluid can have");
+        provider.add("gtceu.jei.fluid.min_hover",
+                "The minimum yield that any fluid vein of this fluid can have");
+        provider.add("gtceu.jei.fluid.max_hover",
+                "The maximum yield that any fluid vein of this fluid can have");
         provider.add("gtceu.jei.fluid.dep_chance_hover",
                 "The percentage chance for the vein to be depleted upon harvest");
         provider.add("gtceu.jei.fluid.dep_amount_hover", "The amount the vein will be depleted by");
-        provider.add("gtceu.jei.fluid.dep_yield_hover", "The maximum yield of the vein when it is fully depleted");
+        provider.add("gtceu.jei.fluid.dep_yield_hover",
+                "The maximum yield of the vein when it is fully depleted");
         provider.add("gtceu.jei.materials.average_mass", "Average mass: %d");
         provider.add("gtceu.jei.materials.average_protons", "Average protons: %d");
         provider.add("gtceu.jei.materials.average_neutrons", "Average neutrons: %d");
@@ -1013,11 +1040,16 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.has_problems_header",
                 "Fix the following issues in a Maintenance Hatch:");
         provider.add("gtceu.multiblock.universal.problem.wrench", "%s§7Pipe is loose. (§aWrench§7)");
-        provider.add("gtceu.multiblock.universal.problem.screwdriver", "%s§7Screws are loose. (§aScrewdriver§7)");
-        provider.add("gtceu.multiblock.universal.problem.soft_mallet", "%s§7Something is stuck. (§aSoft Mallet§7)");
-        provider.add("gtceu.multiblock.universal.problem.hard_hammer", "%s§7Plating is dented. (§aHard Hammer§7)");
-        provider.add("gtceu.multiblock.universal.problem.wire_cutter", "%s§7Wires burned out. (§aWire Cutter§7)");
-        provider.add("gtceu.multiblock.universal.problem.crowbar", "%s§7That doesn't belong there. (§aCrowbar§7)");
+        provider.add("gtceu.multiblock.universal.problem.screwdriver",
+                "%s§7Screws are loose. (§aScrewdriver§7)");
+        provider.add("gtceu.multiblock.universal.problem.soft_mallet",
+                "%s§7Something is stuck. (§aSoft Mallet§7)");
+        provider.add("gtceu.multiblock.universal.problem.hard_hammer",
+                "%s§7Plating is dented. (§aHard Hammer§7)");
+        provider.add("gtceu.multiblock.universal.problem.wire_cutter",
+                "%s§7Wires burned out. (§aWire Cutter§7)");
+        provider.add("gtceu.multiblock.universal.problem.crowbar",
+                "%s§7That doesn't belong there. (§aCrowbar§7)");
         provider.add("gtceu.multiblock.universal.muffler_obstructed", "Muffler Hatch is Obstructed!");
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
@@ -1031,7 +1063,8 @@ public class LangHandler {
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
         provider.add("gtceu.multiblock.multiple_recipemaps_recipes.tooltip", "Machine Modes: §e%s§r");
-        provider.add("gtceu.multiblock.multiple_recipemaps.switch_message", "The machine must be off to switch modes!");
+        provider.add("gtceu.multiblock.multiple_recipemaps.switch_message",
+                "The machine must be off to switch modes!");
         provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
         provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
@@ -1060,7 +1093,8 @@ public class LangHandler {
         provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
         provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
         provider.add("gtceu.command.worldgen.reload.success", "Worldgen successfully reloaded from config.");
-        provider.add("gtceu.command.worldgen.reload.failed", "Worldgen reload failed. Check console for errors.");
+        provider.add("gtceu.command.worldgen.reload.failed",
+                "Worldgen reload failed. Check console for errors.");
         provider.add("gtceu.command.hand.groovy", "Consider using §6/gs hand");
         provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
         provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
@@ -1091,12 +1125,17 @@ public class LangHandler {
                 "Monitoring Normal Electricity Storage");
         provider.add("gtceu.cover.energy_detector.message_electricity_storage_inverted",
                 "Monitoring Inverted Electricity Storage");
-        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_normal", "Monitoring Normal Fluid Storage");
-        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_inverted", "Monitoring Inverted Fluid Storage");
+        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_normal",
+                "Monitoring Normal Fluid Storage");
+        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_inverted",
+                "Monitoring Inverted Fluid Storage");
         provider.add("gtceu.cover.item_detector.message_item_storage_normal", "Monitoring Normal Item Storage");
-        provider.add("gtceu.cover.item_detector.message_item_storage_inverted", "Monitoring Inverted Item Storage");
-        provider.add("gtceu.cover.activity_detector.message_activity_normal", "Monitoring Normal Activity Status");
-        provider.add("gtceu.cover.activity_detector.message_activity_inverted", "Monitoring Inverted Activity Status");
+        provider.add("gtceu.cover.item_detector.message_item_storage_inverted",
+                "Monitoring Inverted Item Storage");
+        provider.add("gtceu.cover.activity_detector.message_activity_normal",
+                "Monitoring Normal Activity Status");
+        provider.add("gtceu.cover.activity_detector.message_activity_inverted",
+                "Monitoring Inverted Activity Status");
         provider.add("gtceu.cover.activity_detector_advanced.message_activity_normal",
                 "Monitoring Normal Progress Status");
         provider.add("gtceu.cover.activity_detector_advanced.message_activity_inverted",
@@ -1136,10 +1175,14 @@ public class LangHandler {
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
         multiLang(provider, "gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
-        provider.add("gtceu.gui.item_auto_output.allow_input.enabled", "allow items input from the output side");
-        provider.add("gtceu.gui.item_auto_output.allow_input.disabled", "disable items input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled", "allow fluids input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled", "disable fluids input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.enabled",
+                "allow items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
+                "disable items input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
+                "allow fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
+                "disable fluids input from the output side");
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
@@ -1219,7 +1262,8 @@ public class LangHandler {
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
      *
-     * In situations requiring a large number of generated translations, the following could be used instead, which
+     * In situations requiring a large number of generated translations, the
+     * following could be used instead, which
      * generates translations for 100 tiers:
      *
      * <pre>
@@ -1231,8 +1275,10 @@ public class LangHandler {
      * </pre>
      *
      * @param provider The provider to add to.
-     * @param key      Base key of the key-value-pairs. The real key for each translation will be appended by ".0" for
-     *                 the first, ".1" for the second, etc. This ensures that the keys are unique.
+     * @param key      Base key of the key-value-pairs. The real key for each
+     *                 translation will be appended by ".0" for
+     *                 the first, ".1" for the second, etc. This ensures that the
+     *                 keys are unique.
      * @param values   All translation values.
      */
     protected static void multiLang(RegistrateLangProvider provider, String key, String... values) {
@@ -1280,7 +1326,8 @@ public class LangHandler {
     }
 
     /**
-     * Gets all translation components from a multi lang's sub-keys. Supports additional arguments for the translation
+     * Gets all translation components from a multi lang's sub-keys. Supports
+     * additional arguments for the translation
      * components.<br>
      * E.g., given a multi lang:
      *
@@ -1319,7 +1366,8 @@ public class LangHandler {
     }
 
     /**
-     * See {@link #getMultiLang(String)}. If no multiline key is available, get single instead.
+     * See {@link #getMultiLang(String)}. If no multiline key is available, get
+     * single instead.
      *
      * @param key Base key of the multi lang. E.g. "terminal.fluid_prospector.tier".
      * @return Returns all translation components from a multi lang's sub-keys.
@@ -1338,7 +1386,8 @@ public class LangHandler {
      * Gets a single translation from a multi lang.
      *
      * @param key   Base key of the multi lang. E.g. "gtceu.gui.overclock.enabled".
-     * @param index Index of the single translation. E.g. 3 would return "gtceu.gui.overclock.enabled.3".
+     * @param index Index of the single translation. E.g. 3 would return
+     *              "gtceu.gui.overclock.enabled.3".
      * @return Returns a single translation from a multi lang.
      */
     public static MutableComponent getFromMultiLang(String key, int index) {
@@ -1346,10 +1395,12 @@ public class LangHandler {
     }
 
     /**
-     * Gets a single translation from a multi lang. Supports additional arguments for the translation component.
+     * Gets a single translation from a multi lang. Supports additional arguments
+     * for the translation component.
      *
      * @param key   Base key of the multi lang. E.g. "gtceu.gui.overclock.enabled".
-     * @param index Index of the single translation. E.g. 3 would return "gtceu.gui.overclock.enabled.3".
+     * @param index Index of the single translation. E.g. 3 would return
+     *              "gtceu.gui.overclock.enabled.3".
      * @return Returns a single translation from a multi lang.
      */
     public static MutableComponent getFromMultiLang(String key, int index, Object... args) {
@@ -1357,7 +1408,8 @@ public class LangHandler {
     }
 
     /**
-     * Adds one key-value-pair to the given lang provider per line in the given multiline (a multiline is a String
+     * Adds one key-value-pair to the given lang provider per line in the given
+     * multiline (a multiline is a String
      * containing newline characters).<br>
      * Example:
      *
@@ -1373,9 +1425,12 @@ public class LangHandler {
      * </pre>
      *
      * @param provider  The provider to add to.
-     * @param key       Base key of the key-value-pair. The real key for each line will be appended by ".0" for the
-     *                  first line, ".1" for the second, etc. This ensures that the keys are unique.
-     * @param multiline The multiline string. It is a multiline because it contains at least one newline character '\n'.
+     * @param key       Base key of the key-value-pair. The real key for each line
+     *                  will be appended by ".0" for the
+     *                  first line, ".1" for the second, etc. This ensures that the
+     *                  keys are unique.
+     * @param multiline The multiline string. It is a multiline because it contains
+     *                  at least one newline character '\n'.
      */
     protected static void multilineLang(RegistrateLangProvider provider, String key, String multiline) {
         var lines = multiline.split("\n");
@@ -1389,7 +1444,8 @@ public class LangHandler {
      * @param key      the key for the value
      * @param value    the value to use in place of the old one
      */
-    public static void replace(@NotNull RegistrateLangProvider provider, @NotNull String key, @NotNull String value) {
+    public static void replace(@NotNull RegistrateLangProvider provider, @NotNull String key,
+                               @NotNull String value) {
         try {
             // the regular lang mappings
             Field field = LanguageProvider.class.getDeclaredField("data");
@@ -1404,7 +1460,8 @@ public class LangHandler {
             // noinspection unchecked
             map = (Map<String, String>) field.get(upsideDownField.get(provider));
 
-            Method toUpsideDown = RegistrateLangProvider.class.getDeclaredMethod("toUpsideDown", String.class);
+            Method toUpsideDown = RegistrateLangProvider.class.getDeclaredMethod("toUpsideDown",
+                    String.class);
             toUpsideDown.setAccessible(true);
 
             map.put(key, (String) toUpsideDown.invoke(provider, value));
