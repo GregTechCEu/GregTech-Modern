@@ -20,6 +20,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.IElementHelper;
 
 public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
 
@@ -55,10 +56,10 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                 rlm.getRecipeLogic().getLastRecipe().data.getBoolean("duration_is_total_cwu")) {
             // show as total computation instead
             int color = rlm.getRecipeLogic().isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
-            tooltip.add(tooltip.getElementHelper().progress(
+            tooltip.add(IElementHelper.get().progress(
                     currentProgress,
                     Component.translatable("gtceu.jade.progress_computation", currentProgress, maxProgress),
-                    tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
+                    IElementHelper.get().progressStyle().color(color).textColor(-1),
                     Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX,
                             style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555 }),
                     true));
@@ -75,10 +76,10 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         if (maxProgress > 0) {
             int color = capData.getBoolean("WorkingEnabled") ? 0xFF4CBB17 : 0xFFBB1C28;
             tooltip.add(
-                    tooltip.getElementHelper().progress(
+                    IElementHelper.get().progress(
                             getProgress(currentProgress, maxProgress),
                             text,
-                            tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
+                            IElementHelper.get().progressStyle().color(color).textColor(-1),
                             Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX,
                                     style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555,
                                             0xFF555555 }),

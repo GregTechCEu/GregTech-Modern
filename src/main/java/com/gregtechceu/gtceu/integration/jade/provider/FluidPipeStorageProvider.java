@@ -7,7 +7,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.view.*;
@@ -15,7 +17,7 @@ import snownee.jade.api.view.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPipeBlockEntity, CompoundTag>,
+public enum FluidPipeStorageProvider implements IServerExtensionProvider<CompoundTag>,
         IClientExtensionProvider<CompoundTag, FluidView> {
 
     INSTANCE;
@@ -31,9 +33,12 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
     }
 
     @Override
-    public @Nullable List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor,
-                                                            FluidPipeBlockEntity pipe) {
+    public @NotNull List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
         List<ViewGroup<CompoundTag>> tanks = new ArrayList<>();
+        if (!(accessor.getTarget() instanceof FluidPipeBlockEntity pipe)) {
+            return tanks;
+        }
+
         for (var tank : pipe.getFluidTanks()) {
             if (tank.getFluidAmount() > 0) {
                 tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(
@@ -41,6 +46,16 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
             }
         }
         return tanks;
+    }
+
+    @Override
+    public boolean shouldRequestData(Accessor<?> accessor) {
+        if (!(accessor.getHitResult() instanceof BlockHitResult blockHitResult)) {
+            return false;
+        }
+
+        BlockEntity be = accessor.getLevel().getBlockEntity(blockHitResult.getBlockPos());
+        return be instanceof FluidPipeBlockEntity;
     }
 
     @Override
