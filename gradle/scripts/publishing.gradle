@@ -1,20 +1,17 @@
+artifacts {
+    archives tasks.jar
+    archives tasks.jarJar
+    archives tasks.sourcesJar
+}
+
 publishing {
     publications {
-        mavenForge(MavenPublication) {
-            artifact(shadowJar) {
-                artifactId = archivesBaseName
-                builtBy shadowJar
-            }
-            artifact(sourcesJar) {
-                artifactId = archivesBaseName
-                builtBy sourcesJar
-            }
-            /*
-            artifact(slimJar) {
-                artifactId = archivesBaseName
-                builtBy slimJar
-            }
-            */
+        mavenJava(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = project.archivesBaseName
+            version = project.mod_version
+
+            from components.java
         }
     }
 
@@ -28,5 +25,35 @@ publishing {
                 password System.getenv("MAVEN_PASS")
             }
         }
+    }
+}
+
+java {
+    registerFeature("create") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("jei") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("rei") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("emi") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("top") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("jade") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("ae2") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("kjs") {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature("shimmer") {
+        usingSourceSet(sourceSets.main)
     }
 }
