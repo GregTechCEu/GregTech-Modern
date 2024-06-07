@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -245,7 +246,6 @@ public class Material implements Comparable<Material> {
     }
 
     /**
-     *
      * @param key    the key for the fluid
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
@@ -1053,26 +1053,42 @@ public class Material implements Comparable<Material> {
 
         // Tons of shortcut functions for adding various hazard effects.
 
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition){
-            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,1, false));
+        public Builder removeHazard() {
+            properties.setProperty(HAZARD,
+                    new HazardProperty(HazardProperty.HazardTrigger.NONE, GTMedicalConditions.NONE,
+                            0, false));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, float progressionMultiplier){
-            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,progressionMultiplier, false));
+        public Builder radioactiveHazard(int multiplier) {
+            properties.setProperty(HAZARD, new HazardProperty(HazardProperty.HazardTrigger.ANY,
+                    GTMedicalConditions.CARCINOGEN, multiplier, true));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, float progressionMultiplier, boolean applyToDerivatives){
-            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,progressionMultiplier, applyToDerivatives));
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, false));
             return this;
         }
 
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition, boolean applyToDerivatives){
-            properties.setProperty(HAZARD,new HazardProperty(trigger,condition,1, applyToDerivatives));
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                              float progressionMultiplier) {
+            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, progressionMultiplier, false));
             return this;
         }
 
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                              float progressionMultiplier, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD,
+                    new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                              boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
+            return this;
+        }
 
         public Builder ore() {
             properties.ensureSet(PropertyKey.ORE);

@@ -249,10 +249,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         // we need to know what components we have on the client
         if (getLevel().isClientSide) {
-            // TODO swap Direction.NORTH to getUpwardsFacing() when free multiblock rotation is added
             if (isFormed) {
                 hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
-                        Direction.NORTH, false);
+                        this.getUpwardsFacing(), this.isFlipped);
             } else {
                 hpcaHandler.clearClientComponents();
             }
@@ -319,20 +318,20 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.YELLOW,
      * "gtceu.multiblock.hpca.warning_temperature"));
-     * 
+     *
      * // Active cooler overdrive warning
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.GRAY,
      * "gtceu.multiblock.hpca.warning_temperature_active_cool"));
      * }
-     * 
+     *
      * // Structure warnings
      * hpcaHandler.addWarnings(tl);
      * }
      * })
      * .addMaintenanceProblemLines(getMaintenanceProblems());
      * }
-     * 
+     *
      * @Override
      * protected void addErrorText(List<Component> textList) {
      * super.addErrorText(textList);
@@ -343,7 +342,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * hpcaHandler.addErrors(textList);
      * }
      * }
-     * 
+     *
      * @Override
      * public void addBarHoverText(List<Component> hoverList, int index) {
      * if (index == 0) {
@@ -625,7 +624,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             return maxCooling;
         }
 
-        /** How much coolant this HPCA can consume in a tick, in L/t. */
+        /** How much coolant this HPCA can consume in a tick, in mB/t. */
         public int getMaxCoolantDemand() {
             int maxCoolant = 0;
             for (var coolantProvider : coolantProviders) {
@@ -721,12 +720,12 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
-                        BlockEntity te = world.getBlockEntity(tempPos);
-                        if (te instanceof IHPCAComponentHatch hatch) {
+                        BlockEntity be = world.getBlockEntity(tempPos);
+                        if (be instanceof IHPCAComponentHatch hatch) {
                             components.add(hatch);
-                        } else if (te instanceof IMachineBlockEntity igtte) {
-                            MetaMachine mte = igtte.getMetaMachine();
-                            if (mte instanceof IHPCAComponentHatch hatch) {
+                        } else if (be instanceof IMachineBlockEntity machineBE) {
+                            MetaMachine machine = machineBE.getMetaMachine();
+                            if (machine instanceof IHPCAComponentHatch hatch) {
                                 components.add(hatch);
                             }
                         }

@@ -29,10 +29,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -85,16 +91,21 @@ public class BlockPattern {
         Direction frontFacing = controller.self().getFrontFacing();
         Direction[] facings = controller.hasFrontFacing() ? new Direction[] { frontFacing } :
                 new Direction[] { Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST };
-        for (Direction facing : facings) {
-            if (checkPatternAt(worldState, centerPos, facing, savePredicate)) {
+        Direction upwardsFacing = controller.self().getUpwardsFacing();
+        boolean allowsFlip = controller.self().allowFlip();
+        for (Direction direction : facings) {
+            boolean result = checkPatternAt(worldState, centerPos, direction, upwardsFacing, false, savePredicate);
+            if (result) {
                 return true;
+            } else if (allowsFlip) {
+                return checkPatternAt(worldState, centerPos, direction, upwardsFacing, true, savePredicate);
             }
         }
         return false;
     }
 
-    public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction facing,
-                                  boolean savePredicate) {
+    public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
+                                  Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
         boolean findFirstAisle = false;
         int minZ = -centerOffset[4];
         worldState.clean();
@@ -113,8 +124,8 @@ public class BlockPattern {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         worldState.setError(null);
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing).offset(centerPos.getX(),
-                                centerPos.getY(), centerPos.getZ());
+                        BlockPos pos = setActualRelativeOffset(x, y, z, frontFacing, upwardsFacing, isFlipped)
+                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (!worldState.update(pos, predicate)) {
                             return false;
                         }
@@ -187,6 +198,7 @@ public class BlockPattern {
         }
 
         worldState.setError(null);
+        worldState.setNeededFlip(isFlipped);
         return true;
     }
 
@@ -197,6 +209,8 @@ public class BlockPattern {
         IMultiController controller = worldState.getController();
         BlockPos centerPos = controller.self().getPos();
         Direction facing = controller.self().getFrontFacing();
+        Direction upwardsFacing = controller.self().getUpwardsFacing();
+        boolean isFlipped = controller.self().isFlipped();
         Map<SimplePredicate, Integer> cacheGlobal = worldState.getGlobalCount();
         Map<SimplePredicate, Integer> cacheLayer = worldState.getLayerCount();
         Map<BlockPos, Object> blocks = new HashMap<>();
@@ -208,8 +222,8 @@ public class BlockPattern {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing).offset(centerPos.getX(),
-                                centerPos.getY(), centerPos.getZ());
+                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isFlipped)
+                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         worldState.update(pos, predicate);
                         if (!world.isEmptyBlock(pos)) {
                             blocks.put(pos, world.getBlockState(pos));
@@ -294,16 +308,15 @@ public class BlockPattern {
 
                             // check inventory
                             ItemStack found = null;
-                            ItemStack originalItemStack = null;
+                            int foundSlot = -1;
+                            IItemHandler handler = null;
                             if (!player.isCreative()) {
-                                for (ItemStack itemStack : player.getInventory().items) {
-                                    if (candidates.stream().anyMatch(
-                                            candidate -> ItemStack.isSameItemSameTags(candidate, itemStack)) &&
-                                            !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
-                                        found = itemStack.copy();
-                                        originalItemStack = itemStack;
-                                        break;
-                                    }
+                                var foundHandler = getMatchStackWithHandler(candidates,
+                                        player.getCapability(ForgeCapabilities.ITEM_HANDLER));
+                                if (foundHandler != null) {
+                                    foundSlot = foundHandler.getFirst();
+                                    handler = foundHandler.getSecond();
+                                    found = handler.getStackInSlot(foundSlot).copy();
                                 }
                             } else {
                                 for (ItemStack candidate : candidates) {
@@ -321,8 +334,8 @@ public class BlockPattern {
                             InteractionResult interactionResult = itemBlock.place(context);
                             if (interactionResult != InteractionResult.FAIL) {
                                 placeBlockPos.add(pos);
-                                if (originalItemStack != null) {
-                                    originalItemStack.setCount(originalItemStack.getCount() - 1);
+                                if (handler != null) {
+                                    handler.extractItem(foundSlot, 1, false);
                                 }
                             }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
@@ -482,7 +495,7 @@ public class BlockPattern {
                             }
                         }
                         BlockInfo info = infos == null || infos.length == 0 ? BlockInfo.EMPTY : infos[0];
-                        BlockPos pos = setActualRelativeOffset(z, y, x, Direction.NORTH);
+                        BlockPos pos = setActualRelativeOffset(z, y, x, Direction.NORTH, Direction.UP, false);
 
                         blocks.put(pos, info);
                         minX = Math.min(pos.getX(), minX);
@@ -552,18 +565,111 @@ public class BlockPattern {
         consumer.accept(blockState.setValue(property, found));
     }
 
-    private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing) {
+    private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
+                                             boolean isFlipped) {
         int[] c0 = new int[] { x, y, z }, c1 = new int[3];
-        for (int i = 0; i < 3; i++) {
-            switch (structureDir[i].getActualFacing(facing)) {
-                case UP -> c1[1] = c0[i];
-                case DOWN -> c1[1] = -c0[i];
-                case WEST -> c1[0] = -c0[i];
-                case EAST -> c1[0] = c0[i];
-                case NORTH -> c1[2] = -c0[i];
-                case SOUTH -> c1[2] = c0[i];
+        if (facing == Direction.UP || facing == Direction.DOWN) {
+            Direction of = facing == Direction.DOWN ? upwardsFacing : upwardsFacing.getOpposite();
+            for (int i = 0; i < 3; i++) {
+                switch (structureDir[i].getActualFacing(of)) {
+                    case UP -> c1[1] = c0[i];
+                    case DOWN -> c1[1] = -c0[i];
+                    case WEST -> c1[0] = -c0[i];
+                    case EAST -> c1[0] = c0[i];
+                    case NORTH -> c1[2] = -c0[i];
+                    case SOUTH -> c1[2] = c0[i];
+                }
+            }
+            int xOffset = upwardsFacing.getStepX();
+            int zOffset = upwardsFacing.getStepZ();
+            int tmp;
+            if (xOffset == 0) {
+                tmp = c1[2];
+                c1[2] = zOffset > 0 ? c1[1] : -c1[1];
+                c1[1] = zOffset > 0 ? -tmp : tmp;
+            } else {
+                tmp = c1[0];
+                c1[0] = xOffset > 0 ? c1[1] : -c1[1];
+                c1[1] = xOffset > 0 ? -tmp : tmp;
+            }
+            if (isFlipped) {
+                if (upwardsFacing == Direction.NORTH || upwardsFacing == Direction.SOUTH) {
+                    c1[0] = -c1[0]; // flip X-axis
+                } else {
+                    c1[2] = -c1[2]; // flip Z-axis
+                }
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                switch (structureDir[i].getActualFacing(facing)) {
+                    case UP -> c1[1] = c0[i];
+                    case DOWN -> c1[1] = -c0[i];
+                    case WEST -> c1[0] = -c0[i];
+                    case EAST -> c1[0] = c0[i];
+                    case NORTH -> c1[2] = -c0[i];
+                    case SOUTH -> c1[2] = c0[i];
+                }
+            }
+            if (upwardsFacing == Direction.WEST || upwardsFacing == Direction.EAST) {
+                int xOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepX() :
+                        facing.getClockWise().getOpposite().getStepX();
+                int zOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepZ() :
+                        facing.getClockWise().getOpposite().getStepZ();
+                int tmp;
+                if (xOffset == 0) {
+                    tmp = c1[2];
+                    c1[2] = zOffset > 0 ? -c1[1] : c1[1];
+                    c1[1] = zOffset > 0 ? tmp : -tmp;
+                } else {
+                    tmp = c1[0];
+                    c1[0] = xOffset > 0 ? -c1[1] : c1[1];
+                    c1[1] = xOffset > 0 ? tmp : -tmp;
+                }
+            } else if (upwardsFacing == Direction.SOUTH) {
+                c1[1] = -c1[1];
+                if (facing.getStepX() == 0) {
+                    c1[0] = -c1[0];
+                } else {
+                    c1[2] = -c1[2];
+                }
+            }
+            if (isFlipped) {
+                if (upwardsFacing == Direction.NORTH || upwardsFacing == Direction.SOUTH) {
+                    if (facing == Direction.NORTH || facing == Direction.SOUTH) {
+                        c1[0] = -c1[0]; // flip X-axis
+                    } else {
+                        c1[2] = -c1[2]; // flip Z-axis
+                    }
+                } else {
+                    c1[1] = -c1[1]; // flip Y-axis
+                }
             }
         }
         return new BlockPos(c1[0], c1[1], c1[2]);
+    }
+
+    @Nullable
+    private static Pair<Integer, IItemHandler> getMatchStackWithHandler(
+                                                                        List<ItemStack> candidates,
+                                                                        LazyOptional<IItemHandler> cap) {
+        IItemHandler handler = cap.orElse(null);
+        if (handler == null) {
+            return null;
+        }
+        for (int i = 0; i < handler.getSlots(); i++) {
+            @NotNull
+            ItemStack stack = handler.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            @NotNull
+            LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            if (stackCap.isPresent()) {
+                return getMatchStackWithHandler(candidates, stackCap);
+            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
+                    !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                        return Pair.of(i, handler);
+                    }
+        }
+        return null;
     }
 }

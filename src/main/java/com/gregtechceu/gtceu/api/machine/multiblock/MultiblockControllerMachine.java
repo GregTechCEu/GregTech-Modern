@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -7,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -18,9 +22,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -54,6 +63,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @DescSynced
     @RequireRerender
     protected boolean isFormed;
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean isFlipped;
 
     public MultiblockControllerMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -202,6 +216,80 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
             mwsd.removeMapping(getMultiblockState());
             mwsd.addAsyncLogic(this);
+        }
+    }
+
+    public boolean allowExtendedFacing() {
+        return getDefinition().isAllowExtendedFacing();
+    }
+
+    public boolean allowFlip() {
+        return getDefinition().isAllowFlip();
+    }
+
+    @Override
+    public boolean isFacingValid(Direction facing) {
+        return allowExtendedFacing() || super.isFacingValid(facing);
+    }
+
+    public Direction getUpwardsFacing() {
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) :
+                Direction.NORTH;
+    }
+
+    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+        if (!getDefinition().isAllowExtendedFacing()) return;
+        if (upwardsFacing == null || upwardsFacing == Direction.UP || upwardsFacing == Direction.DOWN) {
+            GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
+            return;
+        }
+        BlockState blockState = getBlockState();
+        if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock &&
+                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+            getLevel().setBlockAndUpdate(getPos(),
+                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+            if (getLevel() != null && !getLevel().isClientSide) {
+                notifyBlockUpdate();
+                markDirty();
+                checkPattern();
+            }
+        }
+    }
+
+    @Override
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
+        if (gridSide == getFrontFacing() && allowExtendedFacing()) {
+            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
+                    getUpwardsFacing().getClockWise());
+            return InteractionResult.CONSUME;
+        }
+        if (playerIn.isShiftKeyDown()) {
+            if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
+                return InteractionResult.FAIL;
+            }
+            if (!isRemote()) {
+                setFrontFacing(gridSide);
+            }
+            return InteractionResult.CONSUME;
+        }
+        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    public void setFrontFacing(Direction facing) {
+        Direction oldFacing = getFrontFacing();
+
+        if (allowExtendedFacing()) {
+            Direction newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
+            setUpwardsFacing(newUpwardsFacing);
+        }
+        super.setFrontFacing(facing);
+
+        if (getLevel() != null && !getLevel().isClientSide) {
+            notifyBlockUpdate();
+            markDirty();
+            checkPattern();
         }
     }
 }

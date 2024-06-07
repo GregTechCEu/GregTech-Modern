@@ -59,7 +59,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         }
 
         var machine = capability.machine;
-        // TODO if(machine instanceof SteamMachine), display steam usage in L/t
+        // TODO if(machine instanceof SteamMachine), display steam usage in mB/t
         // (could probably also be done clientside actually, since we have access to the BlockEntity there)
     }
 

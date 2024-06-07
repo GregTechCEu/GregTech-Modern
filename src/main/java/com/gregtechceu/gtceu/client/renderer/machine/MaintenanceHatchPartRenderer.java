@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -39,8 +39,9 @@ public class MaintenanceHatchPartRenderer extends OverlayTieredMachineRenderer {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null && machine instanceof IMaintenanceMachine maintenanceHatch &&
                 maintenanceHatch.isTaped()) {
-            quads.add(
-                    FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MAINTENANCE_OVERLAY_TAPED), modelState));
+            quads.add(StaticFaceBakery.bakeFace(
+                    StaticFaceBakery.SLIGHTLY_OVER_BLOCK, modelFacing,
+                    ModelFactory.getBlockSprite(MAINTENANCE_OVERLAY_TAPED), modelState, -1, 0, true, true));
         }
     }
 
