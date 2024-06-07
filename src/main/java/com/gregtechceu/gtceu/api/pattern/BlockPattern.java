@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -32,10 +33,17 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -302,16 +310,14 @@ public class BlockPattern {
 
                             // check inventory
                             ItemStack found = null;
-                            ItemStack originalItemStack = null;
+                            int foundSlot = -1;
+                            IItemHandler handler = null;
                             if (!player.isCreative()) {
-                                for (ItemStack itemStack : player.getInventory().items) {
-                                    if (candidates.stream().anyMatch(
-                                            candidate -> ItemStack.isSameItemSameTags(candidate, itemStack)) &&
-                                            !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
-                                        found = itemStack.copy();
-                                        originalItemStack = itemStack;
-                                        break;
-                                    }
+                                var founded = getMatchStackWithHandler(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER));
+                                if (founded != null) {
+                                    foundSlot = founded.getFirst();
+                                    handler = founded.getSecond();
+                                    found = handler.getStackInSlot(foundSlot);
                                 }
                             } else {
                                 for (ItemStack candidate : candidates) {
@@ -329,8 +335,8 @@ public class BlockPattern {
                             InteractionResult interactionResult = itemBlock.place(context);
                             if (interactionResult != InteractionResult.FAIL) {
                                 placeBlockPos.add(pos);
-                                if (originalItemStack != null) {
-                                    originalItemStack.setCount(originalItemStack.getCount() - 1);
+                                if (handler != null) {
+                                    handler.extractItem(foundSlot, 1, false);
                                 }
                             }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
@@ -641,5 +647,29 @@ public class BlockPattern {
             }
         }
         return new BlockPos(c1[0], c1[1], c1[2]);
+    }
+
+    @Nullable
+    private static Pair<Integer, IItemHandler> getMatchStackWithHandler(
+        List<ItemStack> candidates,
+        LazyOptional<IItemHandler> cap
+    ) throws RuntimeException {
+        IItemHandler handler = cap.orElseThrow(() -> new RuntimeException("No handler available"));
+
+        for (int i = 0; i < handler.getSlots(); i++) {
+            @NotNull ItemStack stack = handler.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            @NotNull LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            if (stackCap.isPresent()) {
+                return getMatchStackWithHandler(candidates, stackCap);
+            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack))
+                && !stack.isEmpty()
+                && stack.getItem() instanceof BlockItem
+            ) {
+                return Pair.of(i, handler);
+            }
+        }
+        return null;
     }
 }
