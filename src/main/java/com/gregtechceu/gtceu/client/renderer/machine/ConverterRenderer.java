@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -46,9 +46,11 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
             frontFaceTexture = converter.isFeToEu() ? ENERGY_OUT : frontFaceTexture;
         }
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
         } else if (side != null && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
+            quads.add(
+                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
         }
     }
 

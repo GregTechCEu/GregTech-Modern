@@ -520,34 +520,34 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ",
                 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
 
-        ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(1).inputItems(dust, Redstone)
+        ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(4).inputItems(dust, Redstone)
                 .inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1))
-                .duration(100).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("torch_sulfur").EUt(1).inputItems(new ItemStack(Items.STICK))
+                .circuitMeta(3).duration(100).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("torch_sulfur").EUt(4).inputItems(new ItemStack(Items.STICK))
                 .inputItems(dust, Sulfur).outputItems(new ItemStack(Blocks.TORCH, 2)).duration(100).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("torch_phosphorus").EUt(1).inputItems(new ItemStack(Items.STICK))
+        ASSEMBLER_RECIPES.recipeBuilder("torch_phosphorus").EUt(4).inputItems(new ItemStack(Items.STICK))
                 .inputItems(dust, Phosphorus).outputItems(new ItemStack(Blocks.TORCH, 6)).duration(100).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("oak_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.OAK_PLANKS, 6)).outputItems(new ItemStack(Blocks.OAK_STAIRS, 4))
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("spruce_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 6)).outputItems(new ItemStack(Blocks.SPRUCE_STAIRS, 4))
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("birch_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 6)).outputItems(new ItemStack(Blocks.BIRCH_STAIRS, 4))
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("jungle_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 6)).outputItems(new ItemStack(Blocks.JUNGLE_STAIRS, 4))
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("acacia_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 6)).outputItems(new ItemStack(Blocks.ACACIA_STAIRS, 4))
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_stairs").EUt(1).duration(100).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_stairs").EUt(4).duration(100).circuitMeta(7)
                 .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 6))
                 .outputItems(new ItemStack(Blocks.DARK_OAK_STAIRS, 4)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(1).duration(40).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(4).duration(40).circuitMeta(7)
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
