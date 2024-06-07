@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import snownee.jade.addon.harvest.HarvestToolProvider;
 import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.IWailaClientRegistration;

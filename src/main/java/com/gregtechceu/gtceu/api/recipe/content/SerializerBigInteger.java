@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Lifecycle;
 
 import java.math.BigInteger;
 
@@ -15,9 +15,23 @@ import java.math.BigInteger;
  */
 public class SerializerBigInteger implements IContentSerializer<BigInteger> {
 
+    public static final Codec<BigInteger> CODEC = Codec.STRING.comapFlatMap(str -> {
+        try {
+            return DataResult.success(new BigInteger(str), Lifecycle.stable());
+        } catch (Exception e) {
+            return DataResult.error(e::getMessage, Lifecycle.stable());
+        }
+    },
+            BigInteger::toString);
+
     public static SerializerBigInteger INSTANCE = new SerializerBigInteger();
 
     private SerializerBigInteger() {}
+
+    @Override
+    public Codec<BigInteger> codec() {
+        return CODEC;
+    }
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buf, BigInteger content) {
@@ -27,16 +41,6 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
     @Override
     public BigInteger fromNetwork(RegistryFriendlyByteBuf buf) {
         return new BigInteger(buf.readUtf());
-    }
-
-    @Override
-    public BigInteger fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return json.getAsBigInteger();
-    }
-
-    @Override
-    public JsonElement toJson(BigInteger content, HolderLookup.Provider provider) {
-        return new JsonPrimitive(content);
     }
 
     @Override

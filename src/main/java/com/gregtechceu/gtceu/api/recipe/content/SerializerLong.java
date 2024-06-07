@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -29,13 +27,8 @@ public class SerializerLong implements IContentSerializer<Long> {
     }
 
     @Override
-    public Long fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return json.getAsLong();
-    }
-
-    @Override
-    public JsonElement toJson(Long content, HolderLookup.Provider provider) {
-        return new JsonPrimitive(content);
+    public Codec<Long> codec() {
+        return Codec.LONG;
     }
 
     @Override

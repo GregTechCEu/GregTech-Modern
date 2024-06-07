@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.block.Block;
@@ -10,13 +9,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.Codec;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class SerializerBlockState implements IContentSerializer<BlockState> {
 
@@ -62,14 +58,8 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
     }
 
     @Override
-    public BlockState fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return BlockState.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
-    }
-
-    @Override
-    public JsonElement toJson(BlockState content, HolderLookup.Provider provider) {
-        return BlockState.CODEC.encodeStart(JsonOps.INSTANCE, content).mapOrElse(Function.identity(),
-                partial -> JsonNull.INSTANCE);
+    public Codec<BlockState> codec() {
+        return BlockState.CODEC;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,25 +12,25 @@ import com.mojang.serialization.*;
 public interface IContentSerializer<T> {
 
     default void toNetwork(RegistryFriendlyByteBuf buf, T content) {
-        buf.writeUtf(LDLib.GSON.toJson(toJson(content, buf.registryAccess())));
+        buf.writeUtf(codec().encodeStart(
+                buf.registryAccess().createSerializationContext(JsonOps.INSTANCE), content).getOrThrow().toString());
     }
 
     default T fromNetwork(RegistryFriendlyByteBuf buf) {
-        return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class), buf.registryAccess());
+        return codec().parse(buf.registryAccess().createSerializationContext(JsonOps.INSTANCE),
+                LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class)).getOrThrow();
     }
 
-    default Codec<T> codec() {
-        return Codec.PASSTHROUGH.flatXmap(
-                dynamic -> DataResult.success(
-                        fromJson(dynamic.convert(JsonOps.INSTANCE).getValue(), Platform.getFrozenRegistry()),
-                        Lifecycle.stable()),
-                json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json, Platform.getFrozenRegistry())),
-                        Lifecycle.stable()));
+    Codec<T> codec();
+
+    default T fromJson(JsonElement json, HolderLookup.Provider provider) {
+        return codec().parse(provider.createSerializationContext(JsonOps.INSTANCE), json).getOrThrow();
     }
 
-    T fromJson(JsonElement json, HolderLookup.Provider provider);
-
-    JsonElement toJson(T content, HolderLookup.Provider provider);
+    default JsonElement toJson(T content, HolderLookup.Provider provider) {
+        return codec().encodeStart(
+                provider.createSerializationContext(JsonOps.INSTANCE), content).getOrThrow();
+    }
 
     T of(Object o);
 

@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.NotNull;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.fluid.JadeFluidObject;

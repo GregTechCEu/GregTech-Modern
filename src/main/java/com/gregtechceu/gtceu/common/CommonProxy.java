@@ -341,13 +341,10 @@ public class CommonProxy {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
-            // Register recipes & unification data again
-            long startTime = System.currentTimeMillis();
             ChemicalHelper.reinitializeUnification();
             // recipes and loot tables have been moved to ReloadableServerResourcesMixin.
             // Initialize dungeon loot additions
             DungeonLootLoader.init();
-            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
                     event.getPackType(),
