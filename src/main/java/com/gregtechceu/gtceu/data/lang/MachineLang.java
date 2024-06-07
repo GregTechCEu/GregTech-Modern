@@ -17,7 +17,8 @@ public class MachineLang {
         replace(provider, "block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
 
         provider.add("gtceu.machine.lp_steam_solid_boiler.tooltip", "§7An early way to get Steam Power");
-        provider.add("gtceu.machine.hp_steam_solid_boiler.tooltip", "§7Faster than the Small Steam Solid Fuel Boiler");
+        provider.add("gtceu.machine.hp_steam_solid_boiler.tooltip",
+                "§7Faster than the Small Steam Solid Fuel Boiler");
         provider.add("gtceu.machine.lp_steam_solar_boiler.tooltip", "§7Steam Power by Sun");
         provider.add("gtceu.machine.hp_steam_solar_boiler.tooltip", "§7Steam Power by Sun");
         provider.add("gtceu.machine.lp_steam_liquid_boiler.tooltip", "§7A Boiler running off Liquids");
@@ -36,15 +37,18 @@ public class MachineLang {
         provider.add("gtceu.machine.hp_steam_furnace.tooltip", "§7Smelting things with compressed Steam");
         provider.add("gtceu.machine.lp_steam_alloy_smelter.tooltip", "§7Combination Smelter");
         provider.add("gtceu.machine.hp_steam_alloy_smelter.tooltip", "§7Combination Smelter");
-        provider.add("gtceu.machine.lp_steam_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("gtceu.machine.hp_steam_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
+        provider.add("gtceu.machine.lp_steam_rock_crusher.tooltip",
+                "§7Place Water and Lava horizontally adjacent");
+        provider.add("gtceu.machine.hp_steam_rock_crusher.tooltip",
+                "§7Place Water and Lava horizontally adjacent");
         provider.add("gtceu.machine.steam_miner.tooltip", "§7Mines ores below the Miner!");
 
         provider.add("gtceu.machine.combustion_generator.tooltip", "§7Requires flammable Liquids");
         provider.add("gtceu.machine.steam_turbine.tooltip", "§7Converts Steam into EU");
         provider.add("gtceu.machine.gas_turbine.tooltip", "§7Requires flammable Gases");
 
-        provider.add("gtceu.machine.block_breaker.tooltip", "§7Mines block on front face and collects its drops");
+        provider.add("gtceu.machine.block_breaker.tooltip",
+                "§7Mines block on front face and collects its drops");
         provider.add("gtceu.machine.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
 
         ///////////////////////////////////////////////////
@@ -298,7 +302,8 @@ public class MachineLang {
         provider.add("gtceu.creative_tooltip.1", "§7You just need");
         provider.add("gtceu.creative_tooltip.2", " Creative Mode");
         provider.add("gtceu.creative_tooltip.3", "§7 to use this");
-        provider.add("gtceu.machine.hull.tooltip", "§7You just need §5I§dm§4a§cg§ei§an§ba§3t§7i§1o§5n§7 to use this");
+        provider.add("gtceu.machine.hull.tooltip",
+                "§7You just need §5I§dm§4a§cg§ei§an§ba§3t§7i§1o§5n§7 to use this");
         provider.add("gtceu.battery_buffer.average_input", "Average input: %s EU/t");
         provider.add("gtceu.battery_buffer.average_output", "Average output: %s EU/t");
         provider.add("gtceu.machine.transformer.description", "§7Transforms Energy between voltage tiers");
@@ -314,8 +319,10 @@ public class MachineLang {
                 "Transforming Up, In: %d EU %dA, Out: %d EU %dA");
 
         provider.add("gtceu.machine.diode.message", "Max Amperage throughput: %s");
-        provider.add("gtceu.machine.diode.tooltip_tool_usage", "Hit with a Soft Mallet to change Amperage flow.");
-        provider.add("gtceu.machine.diode.tooltip_general", "Allows Energy Flow in one direction and limits Amperage");
+        provider.add("gtceu.machine.diode.tooltip_tool_usage",
+                "Hit with a Soft Mallet to change Amperage flow.");
+        provider.add("gtceu.machine.diode.tooltip_general",
+                "Allows Energy Flow in one direction and limits Amperage");
         provider.add("gtceu.machine.diode.tooltip_starts_at", "Starts as §f1A§7, use Soft Mallet to change");
         provider.add("gtceu.machine.energy_converter.description", "Converts Energy between EU and FE");
         provider.add("gtceu.machine.energy_converter.tooltip_tool_usage",
@@ -330,7 +337,8 @@ public class MachineLang {
                 "Converting EU, In: %dA %d EU, Out: %d Native");
         provider.add("gtceu.machine.pump.tooltip", "§7The best way to empty Oceans!");
         provider.add("gtceu.machine.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
-        provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect within an area of %sx%s blocks");
+        provider.add("gtceu.machine.item_collector.gui.collect_range",
+                "Collect within an area of %sx%s blocks");
         provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself");
         provider.add("gtceu.machine.quantum_chest.tooltip", "§7Better than Storage Drawers");
         provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount:");
@@ -381,12 +389,14 @@ public class MachineLang {
         // Fisher
         provider.add("gtceu.machine.fisher.tooltip", "Costs string to fish. Consumes one string each time.");
         provider.add("gtceu.machine.fisher.speed", "Catches something every %d ticks");
-        provider.add("gtceu.machine.fisher.requirement", "Requires a %dx%d centered square of water directly below.");
+        provider.add("gtceu.machine.fisher.requirement",
+                "Requires a %dx%d centered square of water directly below.");
         // World Accelerator
         provider.add("gtceu.machine.world_accelerator.description",
                 "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§7 or §fRandom Tick§7. Use Screwdriver to change mode.");
         provider.add("gtceu.machine.world_accelerator.working_area", "§bWorking Area:");
-        provider.add("gtceu.machine.world_accelerator.working_area_tile", "  Block Entity Mode:§f Adjacent Blocks");
+        provider.add("gtceu.machine.world_accelerator.working_area_tile",
+                "  Block Entity Mode:§f Adjacent Blocks");
         provider.add("gtceu.machine.world_accelerator.working_area_random", "  Random Tick Mode:§f %dx%d");
         provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
@@ -397,9 +407,11 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.active_cooler_component.tooltip", "Less free, more effective cooling");
         provider.add("gtceu.machine.hpca.computation_component.tooltip", "Baby's first computation");
         provider.add("gtceu.machine.hpca.advanced_computation_component.tooltip", "Computation big leagues");
-        provider.add("gtceu.machine.hpca.bridge_component.tooltip", "So that's where the \"Array\" in HPCA comes from");
+        provider.add("gtceu.machine.hpca.bridge_component.tooltip",
+                "So that's where the \"Array\" in HPCA comes from");
 
-        provider.add("gtceu.machine.hpca.computation_component.damaged.name", "Damaged HPCA Computation Component");
+        provider.add("gtceu.machine.hpca.computation_component.damaged.name",
+                "Damaged HPCA Computation Component");
         provider.add("gtceu.machine.hpca.computation_component.damaged.tooltip", "Free recyclable materials");
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.name",
                 "Damaged HPCA Advanced Computation Component");
@@ -411,10 +423,12 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.component_type.cooler_passive", "§bCooler Type: §fPassive");
         provider.add("gtceu.machine.hpca.component_type.cooler_active", "§bCooler Type: §fActive");
         provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%d L/t %s");
+        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant",
+                "§cRequires up to: §f%d mB/t %s");
         provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%d CWU/t");
         provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.bridge", "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
+        provider.add("gtceu.machine.hpca.component_type.bridge",
+                "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
         provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
 
         multiLang(provider, "gtceu.machine.electric_blast_furnace.tooltip",
@@ -428,18 +442,20 @@ public class MachineLang {
                 "You can fill and empty any fluid containers with the Fluid Canner (e.g. Buckets or Fluid Cells)");
 
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 L/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f20 mB/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 L/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f80 mB/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
 
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
-        provider.add("gtceu.machine.fusion_reactor.overclocking", "Overclocks double energy and halve duration.");
+        provider.add("gtceu.machine.fusion_reactor.overclocking",
+                "Overclocks double energy and halve duration.");
         // Miner
         provider.add("gtceu.machine.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
         provider.add("gtceu.machine.miner.per_block", "§7takes §f%ds §7per Block");
         provider.add("gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
-        provider.add("gtceu.machine.miner.multi.production", "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
-        provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d L/t §7of §f%s§7, doubled per overclock.");
+        provider.add("gtceu.machine.miner.multi.production",
+                "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
+        provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
         provider.add("gtceu.machine.miner.startx", "sX: %d");
@@ -451,12 +467,15 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
 
-        provider.add("gtceu.machine.fluid_drilling_rig.description", "§7Drills fluids from veins under bedrock.");
-        provider.add("gtceu.machine.fluid_drilling_rig.production", "§eProduction Multiplier: §f%dx, %fx overclocked");
+        provider.add("gtceu.machine.fluid_drilling_rig.description",
+                "§7Drills fluids from veins under bedrock.");
+        provider.add("gtceu.machine.fluid_drilling_rig.production",
+                "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("gtceu.machine.fluid_drilling_rig.depletion", "§bDepletion Rate: §f%s%%");
 
         provider.add("gtceu.machine.bedrock_ore_miner.description", "§7Drills ores from veins under bedrock.");
-        provider.add("gtceu.machine.bedrock_ore_miner.production", "§eProduction Multiplier: §f%dx, %fx overclocked");
+        provider.add("gtceu.machine.bedrock_ore_miner.production",
+                "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("gtceu.machine.bedrock_ore_miner.depletion", "§bDepletion Rate: §f%s%%");
 
         // Cleanroom
@@ -469,7 +488,8 @@ public class MachineLang {
                 "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
                 "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
                 "Send power through §fHulls §7or §fDiodes §7in the walls.");
-        provider.add("gtceu.machine.cleanroom.tooltip.hold_ctrl", "Hold CTRL to show additional Structure Information");
+        provider.add("gtceu.machine.cleanroom.tooltip.hold_ctrl",
+                "Hold CTRL to show additional Structure Information");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.channels",
                 "Send up to §f8 AE2 Channels §7through §fHulls§7 in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.no_channels",
@@ -478,9 +498,11 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
 
-        multiLang(provider, "gtceu.machine.charcoal_pile.tooltip", "Turns Logs into §aCharcoal§7 when §cignited§7.",
+        multiLang(provider, "gtceu.machine.charcoal_pile.tooltip",
+                "Turns Logs into §aCharcoal§7 when §cignited§7.",
                 "Right Click with fire-starting items to start.",
-                "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.", "Logs must be not be exposed to §eAir§7!");
+                "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
+                "Logs must be not be exposed to §eAir§7!");
         multilineLang(provider, "gtceu.multiblock.charcoal_pile.description",
                 "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
 
@@ -554,7 +576,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra1",
-                "Biome Coefficient:\n  Ocean, River: 1000 L/s\n  Swamp: 800 L/s\n  Jungle: 350 L/s\n  Snowy: 300 L/s\n  Plains, Forest: 250 L/s\n  Taiga: 175 L/s\n  Beach: 170 L/s\n  Other: 100 L/s");
+                "Biome Coefficient:\n  Ocean, River: 1000 mB/s\n  Swamp: 800 mB/s\n  Jungle: 350 mB/s\n  Snowy: 300 mB/s\n  Plains, Forest: 250 mB/s\n  Taiga: 175 mB/s\n  Beach: 170 mB/s\n  Other: 100 mB/s");
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2",
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.multiblock.processing_array.description",
@@ -562,11 +584,13 @@ public class MachineLang {
         provider.add("gtceu.multiblock.advanced_processing_array.description",
                 "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
         // Parallel
-        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip",
+                "Can parallelize with Parallel Control Hatches.");
         provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "Allows to run up to 4 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "Allows to run up to 16 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk8.tooltip", "Allows to run up to 256 recipes in parallel.");
+        provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
+                "Allows to run up to 256 recipes in parallel.");
 
         // More tooltips
         provider.add("gtceu.machine.primitive_water_pump.tooltip", "Endervoir at Home");
@@ -694,7 +718,8 @@ public class MachineLang {
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
-        provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip", "Multiple Ampere Energy Input for Multiblocks");
+        provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip",
+                "Multiple Ampere Energy Input for Multiblocks");
         provider.add("gtceu.machine.substation_hatch.input.tooltip", "Energy Input for the Power Substation");
         provider.add("gtceu.machine.energy_hatch.output.tooltip", "Energy Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.output_hi_amp.tooltip",
@@ -704,9 +729,11 @@ public class MachineLang {
         // ME parts
         provider.add("gtceu.machine.me.item_export.tooltip", "Stores items directly into an ME network.");
         provider.add("gtceu.machine.me.fluid_export.tooltip", "Stores fluids directly into an ME network.");
-        provider.add("gtceu.machine.me.fluid_import.tooltip", "Fetches fluids from an ME network automatically.");
+        provider.add("gtceu.machine.me.fluid_import.tooltip",
+                "Fetches fluids from an ME network automatically.");
         provider.add("gtceu.machine.me.item_import.tooltip", "Fetches items from an ME network automatically.");
-        provider.add("gtceu.machine.me.export.tooltip", "Has infinite capacity before connecting to ME network.");
+        provider.add("gtceu.machine.me.export.tooltip",
+                "Has infinite capacity before connecting to ME network.");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");
@@ -715,7 +742,8 @@ public class MachineLang {
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
         multilineLang(provider, "gtceu.machine.maintenance_hatch_configurable.tooltip",
                 "For finer control over Multiblocks\nStarts with no Maintenance problems!");
-        provider.add("gtceu.machine.maintenance_hatch_full_auto.tooltip", "For automatically maintaining Multiblocks");
+        provider.add("gtceu.machine.maintenance_hatch_full_auto.tooltip",
+                "For automatically maintaining Multiblocks");
         multiLang(provider, "gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip",
                 "For automatically maintaining Multiblocks with Cleaning!", "Cleans as:");
         provider.add("gtceu.machine.maintenance_hatch_tool_slot.tooltip",
@@ -738,11 +766,13 @@ public class MachineLang {
         provider.add("gtceu.muffler.recovery_tooltip", "§bRecovery Chance: §f%d%%");
         provider.add("gtceu.machine.pump_hatch.tooltip", "Primitive Fluid Output for Water Pump");
         provider.add("gtceu.machine.machine_hatch.locked", "Machine Interface Locked");
-        provider.add("gtceu.machine.machine_hatch.tooltip", "Specialized Access Bus that only holds valid items");
+        provider.add("gtceu.machine.machine_hatch.tooltip",
+                "Specialized Access Bus that only holds valid items");
         provider.add("gtceu.machine.machine_hatch.processing_array",
                 "When in the §eProcessing Array§7, only holds machines that work in the §eProcessing Array");
         provider.add("gtceu.machine.passthrough_hatch_item.tooltip", "Sends Items from one Side to the other");
-        provider.add("gtceu.machine.passthrough_hatch_fluid.tooltip", "Sends Fluids from one Side to the other");
+        provider.add("gtceu.machine.passthrough_hatch_fluid.tooltip",
+                "Sends Fluids from one Side to the other");
         provider.add("gtceu.machine.fluid_tank.max_multiblock", "Max Multiblock Size: %dx%dx%d");
         provider.add("gtceu.machine.fluid_tank.fluid", "Contains %s L of %s");
 
@@ -750,8 +780,10 @@ public class MachineLang {
                 "Adds §a%s§7 slots for Data Items");
         provider.add("gtceu.machine.data_receiver_hatch.tooltip", "Research Data Input for Multiblocks");
         provider.add("gtceu.machine.data_transmitter_hatch.tooltip", "Research Data Output for Multiblocks");
-        provider.add("gtceu.machine.computation_transmitter_hatch.tooltip", "Computation Data Output for Multiblocks");
-        provider.add("gtceu.machine.computation_receiver_hatch.tooltip", "Computation Data Input for Multiblocks");
+        provider.add("gtceu.machine.computation_transmitter_hatch.tooltip",
+                "Computation Data Output for Multiblocks");
+        provider.add("gtceu.machine.computation_receiver_hatch.tooltip",
+                "Computation Data Input for Multiblocks");
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
@@ -761,12 +793,15 @@ public class MachineLang {
         provider.add("gtceu.multiblock.distillation_tower.distilling_fluid", "Distilling %s");
         provider.add("gtceu.multiblock.large_combustion_engine.lubricant_amount", "Lubricant Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_amount", "Oxygen Amount: %sL");
-        provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_amount", "Liquid Oxygen Amount: %sL");
+        provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_amount",
+                "Liquid Oxygen Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
-        provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted", "§bLiquid Oxygen boosted.");
+        provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
+                "§bLiquid Oxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
                 "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
-        provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost", "Supply Oxygen to boost.");
+        provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
+                "Supply Oxygen to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
                 "Supply Liquid Oxygen to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
@@ -780,17 +815,20 @@ public class MachineLang {
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency§7.");
         provider.add("gtceu.multiblock.turbine.fuel_needed", "Consumes %s per %s ticks");
-        provider.add("gtceu.multiblock.large_boiler.max_temperature", "Max Temperature: %dK, Steam Production: %dmB/t");
+        provider.add("gtceu.multiblock.large_boiler.max_temperature",
+                "Max Temperature: %dK, Steam Production: %dmB/t");
         provider.add("gtceu.multiblock.large_boiler.efficiency", "Efficiency: %s");
         provider.add("gtceu.multiblock.large_boiler.temperature", "Temperature: %sK / %sK");
-        provider.add("gtceu.multiblock.large_boiler.steam_output", "Steam Output: %s L/t");
+        provider.add("gtceu.multiblock.large_boiler.steam_output", "Steam Output: %s mB/t");
         provider.add("gtceu.multiblock.large_boiler.throttle", "Throttle: %d");
         provider.add("gtceu.multiblock.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");
         provider.add("gtceu.multiblock.large_boiler.throttle_modify", "Modify Throttle:");
-        provider.add("gtceu.multiblock.large_boiler.rate_tooltip", "§7Produces §f%d L §7of Steam with §f1 Coal");
+        provider.add("gtceu.multiblock.large_boiler.rate_tooltip",
+                "§7Produces §f%d L §7of Steam with §f1 Coal");
         provider.add("gtceu.multiblock.large_boiler.heat_time_tooltip", "§7Takes §f%d seconds §7to boiling up");
-        provider.add("gtceu.multiblock.large_boiler.explosion_tooltip", "Will explode if provided Fuel with no Water");
+        provider.add("gtceu.multiblock.large_boiler.explosion_tooltip",
+                "Will explode if provided Fuel with no Water");
         provider.add("gtceu.multiblock.large_miner.done", "Done!");
         provider.add("gtceu.multiblock.large_miner.working", "Working...");
         provider.add("gtceu.multiblock.large_miner.invfull", "Inventory Full!");
@@ -827,14 +865,16 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.time_days", "%s Days");
         provider.add("gtceu.multiblock.power_substation.time_years", "%s Years");
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
-        provider.add("gtceu.multiblock.power_substation.under_one_hour_left", "Less than 1 hour until fully drained!");
+        provider.add("gtceu.multiblock.power_substation.under_one_hour_left",
+                "Less than 1 hour until fully drained!");
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
         provider.add("gtceu.multiblock.hpca.hover_for_info", "Hover for details");
         provider.add("gtceu.multiblock.hpca.error_damaged", "Damaged component in structure!");
-        provider.add("gtceu.multiblock.hpca.error_temperature", "Temperature above 100C, components may be damaged!");
+        provider.add("gtceu.multiblock.hpca.error_temperature",
+                "Temperature above 100C, components may be damaged!");
         provider.add("gtceu.multiblock.hpca.warning_temperature",
                 "Temperature above 50C, components may be damaged at 100C!");
         provider.add("gtceu.multiblock.hpca.warning_temperature_active_cool", "Fully utilizing active coolers");
@@ -865,7 +905,8 @@ public class MachineLang {
         provider.add("gtceu.creative.activity.off", "Not active");
     }
 
-    public static void standardTooltips(RegistrateLangProvider provider, String root, String machine, String lowTier,
+    public static void standardTooltips(RegistrateLangProvider provider, String root, String machine,
+                                        String lowTier,
                                         String midTier, String highTier) {
         provider.add("%s.%s_%s.tooltip".formatted(root, "lv", machine), "§7%s".formatted(lowTier));
         provider.add("%s.%s_%s.tooltip".formatted(root, "mv", machine), "§7%s".formatted(lowTier));
