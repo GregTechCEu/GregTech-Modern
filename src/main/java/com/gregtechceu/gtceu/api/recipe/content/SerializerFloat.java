@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class SerializerFloat implements IContentSerializer<Float> {
@@ -24,13 +22,8 @@ public class SerializerFloat implements IContentSerializer<Float> {
     }
 
     @Override
-    public Float fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return json.getAsFloat();
-    }
-
-    @Override
-    public JsonElement toJson(Float content, HolderLookup.Provider provider) {
-        return new JsonPrimitive(content);
+    public Codec<Float> codec() {
+        return Codec.FLOAT;
     }
 
     @Override

@@ -21,7 +21,7 @@ public interface IStepAssist {
     default void updateStepHeight(@NotNull Player player) {
         if (!player.isShiftKeyDown()) {
             if (player.maxUpStep() < MAGIC_STEP_HEIGHT) {
-                player.getAttribute(Attributes.STEP_HEIGHT).addPermanentModifier(STEP_ASSIST_MODIFIER);
+                player.getAttribute(Attributes.STEP_HEIGHT).addOrUpdateTransientModifier(STEP_ASSIST_MODIFIER);
             }
         } else if (player.maxUpStep() == MAGIC_STEP_HEIGHT) {
             player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(STEP_ASSIST_MODIFIER);

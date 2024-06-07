@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.Codec;
 
 public class SerializerFluidIngredient implements IContentSerializer<SizedFluidIngredient> {
 
@@ -26,16 +24,8 @@ public class SerializerFluidIngredient implements IContentSerializer<SizedFluidI
     }
 
     @Override
-    public SizedFluidIngredient fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return SizedFluidIngredient.NESTED_CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
-                .getOrThrow();
-    }
-
-    @Override
-    public JsonElement toJson(SizedFluidIngredient content, HolderLookup.Provider provider) {
-        return SizedFluidIngredient.NESTED_CODEC
-                .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), content)
-                .getOrThrow();
+    public Codec<SizedFluidIngredient> codec() {
+        return SizedFluidIngredient.NESTED_CODEC;
     }
 
     @Override

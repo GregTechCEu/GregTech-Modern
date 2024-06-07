@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -80,11 +81,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void onAnimalArmorTick(ItemStack stack, Level level, Mob horse) {
-        super.onAnimalArmorTick(stack, level, horse);
-    }
-
-    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         for (IItemComponent component : components) {
             if (component instanceof IItemLifeCycle lifeCycle) {
@@ -94,6 +90,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         if (slotId >= 36 && slotId <= 39 && entity instanceof Player player) {
             this.armorLogic.onArmorTick(level, player, stack);
         }
+    }
+
+    @Override
+    public Holder<SoundEvent> getEquipSound() {
+        return super.getEquipSound();
     }
 
     @Override
