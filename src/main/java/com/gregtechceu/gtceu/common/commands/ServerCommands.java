@@ -70,7 +70,8 @@ public class ServerCommands {
                                             if (count == 0) {
 
                                                 target.sendSystemMessage(
-                                                        Component.translatable("command.gtceu.medical_condition.get.empty",
+                                                        Component.translatable(
+                                                                "command.gtceu.medical_condition.get.empty",
                                                                 target.getName()));
                                             } else {
                                                 target.sendSystemMessage(
@@ -214,7 +215,8 @@ public class ServerCommands {
                                                                         if (tracker == null) {
                                                                             continue;
                                                                         }
-                                                                        tracker.progressCondition(condition, multiplier);
+                                                                        tracker.progressCondition(condition,
+                                                                                multiplier);
                                                                         success++;
                                                                     }
                                                                     if (success == 0) {

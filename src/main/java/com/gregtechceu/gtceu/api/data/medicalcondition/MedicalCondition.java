@@ -40,8 +40,8 @@ public class MedicalCondition {
         CONDITIONS.put(name, this);
     }
 
-    public MedicalCondition(String name, int maxProgression, IdleProgressionType progressionType, boolean canBePermanent,
-                            Symptom.ConfiguredSymptom... symptoms) {
+    public MedicalCondition(String name, int maxProgression, IdleProgressionType progressionType,
+                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
         this(name, maxProgression, progressionType, 1, canBePermanent, symptoms);
     }
 
