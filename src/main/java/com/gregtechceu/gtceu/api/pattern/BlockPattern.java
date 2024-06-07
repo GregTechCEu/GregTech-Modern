@@ -311,11 +311,11 @@ public class BlockPattern {
                             int foundSlot = -1;
                             IItemHandler handler = null;
                             if (!player.isCreative()) {
-                                var founded = getMatchStackWithHandler(candidates,
+                                var foundHandler = getMatchStackWithHandler(candidates,
                                         player.getCapability(ForgeCapabilities.ITEM_HANDLER));
-                                if (founded != null) {
-                                    foundSlot = founded.getFirst();
-                                    handler = founded.getSecond();
+                                if (foundHandler != null) {
+                                    foundSlot = foundHandler.getFirst();
+                                    handler = foundHandler.getSecond();
                                     found = handler.getStackInSlot(foundSlot).copy();
                                 }
                             } else {
@@ -651,9 +651,11 @@ public class BlockPattern {
     @Nullable
     private static Pair<Integer, IItemHandler> getMatchStackWithHandler(
                                                                         List<ItemStack> candidates,
-                                                                        LazyOptional<IItemHandler> cap) throws RuntimeException {
-        IItemHandler handler = cap.orElseThrow(() -> new RuntimeException("No handler available"));
-
+                                                                        LazyOptional<IItemHandler> cap) {
+        IItemHandler handler = cap.orElse(null);
+        if (handler == null) {
+            return null;
+        }
         for (int i = 0; i < handler.getSlots(); i++) {
             @NotNull
             ItemStack stack = handler.getStackInSlot(i);
