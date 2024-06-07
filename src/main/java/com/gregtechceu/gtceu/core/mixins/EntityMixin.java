@@ -48,8 +48,8 @@ public abstract class EntityMixin implements IFireImmuneEntity {
         if (!gtceu$isEntityInit) {
             return original;
         }
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getHazardEffectTracker((Entity) (Object) this);
-        if (tracker != null) {
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker((Entity) (Object) this);
+        if (tracker != null && tracker.getMaxAirSupply() != -1) {
             return tracker.getMaxAirSupply();
         }
         return original;

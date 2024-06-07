@@ -17,8 +17,9 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -149,36 +150,33 @@ public class ForgeCommonEventListener {
             return;
         }
         Player player = event.player;
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
-
         if (tracker == null || inventory == null) {
             return;
         }
         tracker.tick();
-        if (player.level().getGameTime() % 20 == 0) {
-            for (int i = 0; i < inventory.getSlots(); ++i) {
-                ItemStack stack = inventory.getStackInSlot(i);
-                Material material = HazardProperty.getValidHazardMaterial(stack);
-                if (material == null) {
-                    continue;
-                }
-                HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-                if (property.hazardTrigger.protectionType().isProtected(player)) {
-                    // entity has proper safety equipment, so damage it per material every 5 seconds.
-                    if (player.level().getGameTime() % 100 == 0) {
-                        for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
-                            player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
-                                    p -> p.broadcastBreakEvent(type.getSlot()));
-                        }
-                    }
-                    return;
-                    //don't progress material condition
-                }
-                tracker.progressRelatedCondition(material);
-            }
-        }
 
+        for (int i = 0; i < inventory.getSlots(); ++i) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            Material material = HazardProperty.getValidHazardMaterial(stack);
+            if (material == null || !material.hasProperty(PropertyKey.HAZARD)) {
+                continue;
+            }
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property.hazardTrigger.protectionType().isProtected(player)) {
+                // entity has proper safety equipment, so damage it per material every 5 seconds.
+                if (player.level().getGameTime() % 100 == 0) {
+                    for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
+                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
+                                p -> p.broadcastBreakEvent(type.getSlot()));
+                    }
+                }
+                // don't progress this material condition if entity is protected
+                continue;
+            }
+            tracker.progressRelatedCondition(material);
+        }
     }
 
     @SubscribeEvent
@@ -209,6 +207,7 @@ public class ForgeCommonEventListener {
     public static void levelTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
+            EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
         }
     }
 

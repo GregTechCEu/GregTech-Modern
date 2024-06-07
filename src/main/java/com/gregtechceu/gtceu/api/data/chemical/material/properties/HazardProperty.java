@@ -34,9 +34,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     public final boolean applyToDerivatives;
     public final float progressionMultiplier;
 
-
-
-    public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier, boolean applyToDerivatives) {
+    public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier,
+                          boolean applyToDerivatives) {
         this.hazardTrigger = hazardTrigger;
         this.condition = condition;
         this.applyToDerivatives = applyToDerivatives;
@@ -141,7 +140,4 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         }
         return material;
     }
-
-
-
 }

@@ -81,13 +81,6 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        GTUtil.appendHazardTooltips(material, tooltipComponents);
-    }
-
-    @Override
     public Component getName(ItemStack stack) {
         return this.getDescription();
     }

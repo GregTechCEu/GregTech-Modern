@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -2244,14 +2243,15 @@ public class GTItems {
             .lang("Paracetamol Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
             .onRegister(attach(new AntidoteBehavior(15,
-                    HazardProperty.HazardTrigger.ANY,
-                    HazardProperty.HazardTrigger.INHALATION,
-                    HazardProperty.HazardTrigger.SKIN_CONTACT)))
+                    GTMedicalConditions.WEAK_POISON,
+                    GTMedicalConditions.NAUSEA,
+                    GTMedicalConditions.IRRITANT,
+                    GTMedicalConditions.METHANOL_POISONING)))
             .register();
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehavior(50, HazardProperty.HazardTrigger.ANY)))
+            .onRegister(attach(new AntidoteBehavior(50, GTMedicalConditions.CARCINOGEN)))
             .register();
 
     public static ItemEntry<ComponentItem> NANO_SABER = REGISTRATE.item("nano_saber", ComponentItem::create)

@@ -54,11 +54,10 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public BedrockFluidVeinSavedData(ServerLevel serverLevel, CompoundTag nbt) {
         this(serverLevel);
         var list = nbt.getList("veinInfo", Tag.TAG_COMPOUND);
-        for (Tag tag : list) {
-            if (tag instanceof CompoundTag compoundTag) {
-                var chunkPos = new ChunkPos(compoundTag.getLong("p"));
-                veinFluids.put(chunkPos, FluidVeinWorldEntry.readFromNBT(compoundTag.getCompound("d")));
-            }
+        for (int i = 0; i < list.size(); ++i) {
+            CompoundTag compoundTag = list.getCompound(i);
+            var chunkPos = new ChunkPos(compoundTag.getLong("p"));
+            veinFluids.put(chunkPos, FluidVeinWorldEntry.readFromNBT(compoundTag.getCompound("d")));
         }
     }
 
