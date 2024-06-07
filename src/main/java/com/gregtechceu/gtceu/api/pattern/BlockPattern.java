@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -30,12 +29,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -311,7 +311,8 @@ public class BlockPattern {
                             int foundSlot = -1;
                             IItemHandler handler = null;
                             if (!player.isCreative()) {
-                                var founded = getMatchStackWithHandler(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER));
+                                var founded = getMatchStackWithHandler(candidates,
+                                        player.getCapability(ForgeCapabilities.ITEM_HANDLER));
                                 if (founded != null) {
                                     foundSlot = founded.getFirst();
                                     handler = founded.getSecond();
@@ -649,24 +650,23 @@ public class BlockPattern {
 
     @Nullable
     private static Pair<Integer, IItemHandler> getMatchStackWithHandler(
-        List<ItemStack> candidates,
-        LazyOptional<IItemHandler> cap
-    ) throws RuntimeException {
+                                                                        List<ItemStack> candidates,
+                                                                        LazyOptional<IItemHandler> cap) throws RuntimeException {
         IItemHandler handler = cap.orElseThrow(() -> new RuntimeException("No handler available"));
 
         for (int i = 0; i < handler.getSlots(); i++) {
-            @NotNull ItemStack stack = handler.getStackInSlot(i);
+            @NotNull
+            ItemStack stack = handler.getStackInSlot(i);
             if (stack.isEmpty()) continue;
 
-            @NotNull LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            @NotNull
+            LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
             if (stackCap.isPresent()) {
                 return getMatchStackWithHandler(candidates, stackCap);
-            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack))
-                && !stack.isEmpty()
-                && stack.getItem() instanceof BlockItem
-            ) {
-                return Pair.of(i, handler);
-            }
+            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
+                    !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                        return Pair.of(i, handler);
+                    }
         }
         return null;
     }
