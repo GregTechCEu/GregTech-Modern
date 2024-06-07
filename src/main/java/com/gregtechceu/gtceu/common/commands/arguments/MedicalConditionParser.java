@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -18,7 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class MaterialParser {
+public class MedicalConditionParser {
 
     private static final SimpleCommandExceptionType ERROR_NO_TAGS_ALLOWED = new SimpleCommandExceptionType(
             Component.translatable("argument.item.tag.disallowed"));
@@ -29,25 +27,22 @@ public class MaterialParser {
     private static final char SYNTAX_START_NBT = '{';
     private static final char SYNTAX_TAG = '#';
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
-    private final IMaterialRegistryManager materials;
     private final StringReader reader;
-    private Material result;
+    private MedicalCondition result;
     /**
      * Builder to be used when creating a list of suggestions
      */
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
-    private MaterialParser(IMaterialRegistryManager materials, StringReader reader) {
-        this.materials = materials;
+    private MedicalConditionParser(StringReader reader) {
         this.reader = reader;
     }
 
-    public static Material parseForMaterial(IMaterialRegistryManager registry,
-                                            StringReader reader) throws CommandSyntaxException {
+    public static MedicalCondition parseForMedicalCondition(StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
         try {
-            MaterialParser materialParser = new MaterialParser(registry, reader);
+            MedicalConditionParser materialParser = new MedicalConditionParser(reader);
             materialParser.parse();
             return materialParser.result;
         } catch (CommandSyntaxException var5) {
@@ -56,11 +51,10 @@ public class MaterialParser {
         }
     }
 
-    public static CompletableFuture<Suggestions> fillSuggestions(IMaterialRegistryManager lookup,
-                                                                 SuggestionsBuilder builder) {
+    public static CompletableFuture<Suggestions> fillSuggestions(SuggestionsBuilder builder) {
         StringReader stringReader = new StringReader(builder.getInput());
         stringReader.setCursor(builder.getStart());
-        MaterialParser materialParser = new MaterialParser(lookup, stringReader);
+        MedicalConditionParser materialParser = new MedicalConditionParser(stringReader);
 
         try {
             materialParser.parse();
@@ -69,23 +63,22 @@ public class MaterialParser {
         return materialParser.suggestions.apply(builder.createOffset(stringReader.getCursor()));
     }
 
-    private void readMaterial() throws CommandSyntaxException {
+    private void readMedicalCondition() throws CommandSyntaxException {
         int i = this.reader.getCursor();
-        ResourceLocation resourceLocation = ResourceLocation.read(this.reader);
-        Material material = this.materials.getRegistry(resourceLocation.getNamespace()).get(resourceLocation.getPath());
+        String name = reader.getString();
+        MedicalCondition material = MedicalCondition.CONDITIONS.get(name);
         this.result = Optional.ofNullable(material).orElseThrow(() -> {
             this.reader.setCursor(i);
-            return ERROR_UNKNOWN_ITEM.createWithContext(this.reader, resourceLocation);
+            return ERROR_UNKNOWN_ITEM.createWithContext(this.reader, name);
         });
     }
 
     private void parse() throws CommandSyntaxException {
-        this.suggestions = this::suggestMaterial;
-        this.readMaterial();
+        this.suggestions = this::suggestMedicalCondition;
+        this.readMedicalCondition();
     }
 
-    private CompletableFuture<Suggestions> suggestMaterial(SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(
-                this.materials.getRegisteredMaterials().stream().map(Material::getResourceLocation), builder);
+    private CompletableFuture<Suggestions> suggestMedicalCondition(SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggest(MedicalCondition.CONDITIONS.keySet(), builder);
     }
 }
