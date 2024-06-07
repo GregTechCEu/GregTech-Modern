@@ -36,14 +36,12 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -317,7 +315,7 @@ public class BlockPattern {
                                 if (founded != null) {
                                     foundSlot = founded.getFirst();
                                     handler = founded.getSecond();
-                                    found = handler.getStackInSlot(foundSlot);
+                                    found = handler.getStackInSlot(foundSlot).copy();
                                 }
                             } else {
                                 for (ItemStack candidate : candidates) {
