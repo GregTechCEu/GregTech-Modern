@@ -1,0 +1,27 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_air_scrubber"
+  },
+  "items": [
+    "gtceu:lv_air_scrubber",
+    "gtceu:mv_air_scrubber",
+    "gtceu:hv_air_scrubber",
+    "gtceu:ev_air_scrubber",
+    "gtceu:iv_air_scrubber",
+    "gtceu:luv_air_scrubber",
+    "gtceu:zpm_air_scrubber",
+    "gtceu:uv_air_scrubber",
+    "gtceu:uhv_air_scrubber",
+    "gtceu:uev_air_scrubber",
+    "gtceu:uiv_air_scrubber",
+    "gtceu:uxv_air_scrubber",
+    "gtceu:opv_air_scrubber"
+  ],
+  "page": "gtceu:machines/air_scrubber",
+  "position": [
+    -100,
+    200
+  ],
+  "section": "gtceu:machines"
+}

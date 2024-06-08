@@ -328,6 +328,21 @@ public class GTMachines {
                     .compassNode("rock_crusher")
                     .register(),
             ELECTRIC_TIERS);
+    public static final MachineDefinition[] AIR_SCRUBBER = registerTieredMachines("air_scrubber",
+            AirScrubberMachine::new, (tier, builder) -> builder
+                    .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
+                    .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("air_scrubber"),
+                            GTRecipeTypes.AIR_SCRUBBER_RECIPES))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
+                    .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                    .workableTieredHullRenderer(GTCEu.id("block/machines/air_scrubber"))
+                    .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
+                            GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.apply(tier), true))
+                    .tooltips(explosion())
+                    .compassNode("air_scrubber")
+                    .register(),
+            LOW_TIERS);
 
     //////////////////////////////////////
     // **** Simple Generator ****//
