@@ -29,7 +29,7 @@ public class Symptom {
                     medicalConditionTracker.removeMedicalCondition(condition);
                 }
             }));
-    public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 1, 1,
+    public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 10, 1,
             (medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {},
             (medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
                 int stages = configuredSymptom != null ? configuredSymptom.stages : baseSymptom.defaultStages;
@@ -58,6 +58,7 @@ public class Symptom {
             1, GTMobEffects.WEAK_POISON::get);
     public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10,
             1, MobEffects.POISON);
+    public static final Symptom HUNGER = new Symptom(defaultKey("hunger"), 5, 1, MobEffects.HUNGER);
 
     public final String name;
     public final int defaultStages;

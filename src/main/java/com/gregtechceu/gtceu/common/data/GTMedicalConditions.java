@@ -30,14 +30,16 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .75f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .5f),
             new Symptom.ConfiguredSymptom(Symptom.MINING_FATIGUE, .4f),
-            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, .3f),
-            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, .3f));
+            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, .4f),
+            new Symptom.ConfiguredSymptom(Symptom.HUNGER, .3f),
+            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, .2f));
 
     // Material specific Conditions
     public static final MedicalCondition ASBESTOSIS = new MedicalCondition("asbestosis", 5000,
             MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .6f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .3f),
+            new Symptom.ConfiguredSymptom(Symptom.HUNGER, .2f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, .2f));
     public static final MedicalCondition ARSENICOSIS = new MedicalCondition("arsenicosis", 1000,
             MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, 1, true,
@@ -45,6 +47,7 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .6f),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .3f),
+            new Symptom.ConfiguredSymptom(Symptom.HUNGER, 2, .2f),
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA, .1f));
     public static final MedicalCondition SILICOSIS = new MedicalCondition("silicosis", 15000,
             MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, .5f, true,
