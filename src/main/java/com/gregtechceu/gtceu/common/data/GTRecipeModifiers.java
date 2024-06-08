@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -16,9 +17,14 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,6 +51,29 @@ public class GTRecipeModifiers {
             .memoize(ElectricOverclockModifier::new);
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers
             .hatchParallel(machine, recipe, false).getFirst();
+    public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
+            .memoize((condition, maxAllowedAffectedBlocks) -> (machine, recipe) -> {
+                if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return recipe;
+                Level level = machine.getLevel();
+                if (!(level instanceof ServerLevel serverLevel)) {
+                    return null;
+                }
+                EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
+                BlockPos machinePos = machine.getPos();
+                var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
+                if (zone == null) {
+                    return recipe;
+                }
+                int strength = zone.strength();
+                if (strength < maxAllowedAffectedBlocks) {
+                    return recipe;
+                }
+                recipe = recipe.copy();
+                recipe.duration *= Math.max(1, maxAllowedAffectedBlocks / Math.max(strength, 1));
+                return recipe;
+            });
+    public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
+            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 500);
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
@@ -71,7 +101,7 @@ public class GTRecipeModifiers {
 
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。
-     * 
+     *
      * @param machine        recipe holder
      * @param recipe         current recipe
      * @param maxParallel    max parallel limited
@@ -94,7 +124,7 @@ public class GTRecipeModifiers {
 
     /**
      * Accurate parallel, always look for the maximum parallel value within maxParallel.
-     * 
+     *
      * @param machine        recipe holder
      * @param recipe         current recipe
      * @param maxParallel    max parallel limited

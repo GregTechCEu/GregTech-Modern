@@ -136,6 +136,7 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.silicosis", "§1Silicosis");
         provider.add("gtceu.medical_condition.berylliosis", "§5Berylliosis");
         provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
+        provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
@@ -724,6 +725,9 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
+        provider.add("behavior.portable_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
+        provider.add("behavior.portable_scanner.environmental_hazard.nothing",
+                "Environmental Hazard In Chunk: §6Nothing§r");
         provider.add("behavior.portable_scanner.block_hardness", "Hardness: %s Blast Resistance: %s");
         provider.add("behavior.portable_scanner.block_name", "Name: %s MetaData: %s");
         provider.add("behavior.portable_scanner.debug_cpu_load",
@@ -886,7 +890,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
-        provider.add("gtceu.recipe.environmental_hazard", "Area must be free of %s");
+        provider.add("gtceu.recipe.environmental_hazard.reverse", "Area must be free of %s");
+        provider.add("gtceu.recipe.environmental_hazard", "Area must have %s");
         provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
         provider.add("gtceu.recipe.research", "Requires Research");

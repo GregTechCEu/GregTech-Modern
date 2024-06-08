@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -408,16 +409,18 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 } else {
                     list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.nothing"));
                 }
-            }
 
-            // TODO When pollution is in
-            // Pollution
-            // if (GT_Pollution.hasPollution(currentChunk)) {
-            // list.add("Pollution in Chunk: " + ChatFormatting.RED +
-            // GTUtility.formatNumbers(GT_Pollution.getPollution(currentChunk)) + ChatFormatting.RESET + " gibbl");
-            // } else {
-            // list.add(ChatFormatting.GREEN + "No Pollution in Chunk! HAYO!" + ChatFormatting.RESET);
-            // }
+                // Pollution
+                var savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
+                var hazardZone = savedData.getZoneByContainedPos(pos);
+                if (hazardZone != null) {
+                    list.add(Component.translatable("behavior.portable_scanner.environmental_hazard",
+                            Component.translatable("gtceu.medical_condition." + hazardZone.condition().name),
+                            Component.literal(FormattingUtil.formatNumbers(hazardZone.strength()))));
+                } else {
+                    list.add(Component.translatable("behavior.portable_scanner.environmental_hazard.nothing"));
+                }
+            }
         }
 
         // Add optional debug info

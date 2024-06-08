@@ -9,6 +9,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +26,8 @@ public class Symptom {
     public static final Symptom DEATH = new Symptom(defaultKey("death"), 1, 1,
             ((medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
                 if (modifier > 0) {
-                    medicalConditionTracker.getPlayer().die(condition.getDamageSource(medicalConditionTracker));
-                    medicalConditionTracker.removeMedicalCondition(condition);
+                    Player player = medicalConditionTracker.getPlayer();
+                    player.hurt(condition.getDamageSource(medicalConditionTracker), player.getHealth());
                 }
             }));
     public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 10, 1,
@@ -90,7 +91,7 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier,
                    Attribute attribute, UUID uuid) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
+                ((medicalConditionTracker, $1, $2, $3, modifier) -> {
                     if (!medicalConditionTracker.getPlayer().getAttributes().hasAttribute(attribute)) {
                         return;
                     }
@@ -114,9 +115,8 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect,
                    int amplifierMultiplier) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
-                        .setMobEffect(mobEffect,
-                                amplifierMultiplier * modifier)));
+                (medicalConditionTracker, $1, $2, $3, modifier) -> medicalConditionTracker.setMobEffect(mobEffect,
+                        amplifierMultiplier * modifier));
     }
 
     /**
@@ -126,9 +126,8 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect,
                    int amplifierMultiplier) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
-                        .setMobEffect(mobEffect.get(),
-                                amplifierMultiplier * modifier)));
+                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
+                        amplifierMultiplier * modifier));
     }
 
     /**
@@ -136,9 +135,7 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
-                        .setMobEffect(mobEffect,
-                                modifier)));
+                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect, modifier));
     }
 
     /**
@@ -146,9 +143,8 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
-                        .setMobEffect(mobEffect.get(),
-                                modifier)));
+                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
+                        modifier));
     }
 
     public void applyProgression(MedicalConditionTracker subject, MedicalCondition condition,

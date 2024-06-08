@@ -21,10 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class EnvironmentalHazardSavedData extends SavedData {
+
+    public static final int MAX_POLLUTION_PER_CHUNK = 1000;
 
     private final ServerLevel serverLevel;
 
@@ -62,12 +66,37 @@ public class EnvironmentalHazardSavedData extends SavedData {
         }
 
         // tick full-chunk zones
+        Set<ChunkPos> zonesToSpread = new HashSet<>();
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
             Stream<ServerPlayer> playersInZone = serverLevel.players()
                     .stream()
-                    .filter(player -> new ChunkPos(BlockPos.containing(player.getEyePosition())).equals(entry.getKey()));
+                    .filter(player -> new ChunkPos(BlockPos.containing(player.getEyePosition()))
+                            .equals(entry.getKey()));
             tickPlayerHazards(zone, playersInZone);
+
+            if (zone.canSpread() && zone.strength() > MAX_POLLUTION_PER_CHUNK) {
+                zonesToSpread.add(entry.getKey());
+            }
+        }
+
+        for (ChunkPos pos : zonesToSpread) {
+            HazardZone zone = hazardZones.get(pos);
+            ChunkPos[] relativePositions = new ChunkPos[] {
+                    new ChunkPos(pos.x, pos.z - 1),
+                    new ChunkPos(pos.x, pos.z + 1),
+                    new ChunkPos(pos.x - 1, pos.z),
+                    new ChunkPos(pos.x + 1, pos.z)
+            };
+            int removedStrength = 0;
+            for (ChunkPos relativePos : relativePositions) {
+                hazardZones.compute(relativePos, (k, v) -> new HazardZone(20 + (v != null ? v.strength() : 0), true,
+                        zone.trigger(), zone.condition()));
+                removedStrength += 20;
+            }
+            hazardZones.replace(pos, new HazardZone(zone.strength - removedStrength, false,
+                    zone.trigger(), zone.condition()));
+            this.setDirty();
         }
     }
 
@@ -89,7 +118,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             if (tracker == null) {
                 return;
             }
-            tracker.progressCondition(zone.condition(), 10.0f);
+            tracker.progressCondition(zone.condition(), zone.strength() / 1000f);
         });
     }
 
@@ -100,7 +129,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
      * @return all zones that were found.
      */
     @Nullable
-    public HazardZone getZonesByContainedPos(BlockPos containedPos) {
+    public HazardZone getZoneByContainedPos(BlockPos containedPos) {
         return hazardZones.get(new ChunkPos(containedPos));
     }
 
@@ -111,13 +140,13 @@ public class EnvironmentalHazardSavedData extends SavedData {
      * @return all zones that were found.
      */
     @Nullable
-    public HazardZone getZonesByContainedPosAndCondition(BlockPos containedPos, MedicalCondition condition) {
+    public HazardZone getZoneByContainedPosAndCondition(BlockPos containedPos, MedicalCondition condition) {
         HazardZone zone = hazardZones.get(new ChunkPos(containedPos));
         return zone != null && zone.condition == condition ? zone : null;
     }
 
     public void removeZone(BlockPos source) {
-        this.hazardZones.remove(new ChunkPos(source));
+        this.removeZone(new ChunkPos(source));
     }
 
     public void removeZone(ChunkPos chunkPos) {
@@ -125,12 +154,22 @@ public class EnvironmentalHazardSavedData extends SavedData {
     }
 
     public void addZone(ChunkPos source, HazardZone zone) {
-        this.hazardZones.put(source, zone);
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+        if (this.hazardZones.containsKey(source) && this.hazardZones.get(source).condition == zone.condition) {
+            // noinspection DataFlowIssue
+            this.hazardZones.compute(source, (k, oldZone) -> new HazardZone(
+                    oldZone.strength() + zone.strength(), zone.canSpread(), zone.trigger(), zone.condition()));
+        } else if (!this.hazardZones.containsKey(source)) {
+            this.hazardZones.put(source, zone);
+        }
+        this.setDirty();
     }
 
-    public void addZone(ChunkPos source, int strength, boolean canSpread,
+    public void addZone(BlockPos source, int strength, boolean canSpread,
                         HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        this.hazardZones.put(source, new HazardZone(strength, canSpread, trigger, condition));
+        addZone(new ChunkPos(source), new HazardZone(strength, canSpread, trigger, condition));
     }
 
     @NotNull

@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.ChatFormatting;
@@ -16,7 +18,7 @@ import lombok.val;
 
 import java.util.List;
 
-public interface IMufflerMachine extends IMultiPart {
+public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter {
 
     void recoverItemsTable(ItemStack... recoveryItems);
 
@@ -63,7 +65,14 @@ public interface IMufflerMachine extends IMultiPart {
     }
 
     @Override
+    default int hazardStrengthPerOperation() {
+        int outputAmount = 25;
+        return this instanceof TieredPartMachine tiered ? outputAmount / Math.max(tiered.getTier(), 1) : outputAmount;
+    }
+
+    @Override
     default boolean afterWorking(IWorkableMultiController controller) {
+        spreadEnvironmentalHazard();
         val supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());

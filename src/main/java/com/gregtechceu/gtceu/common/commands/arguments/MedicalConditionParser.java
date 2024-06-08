@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
@@ -18,14 +18,8 @@ import java.util.function.Function;
 
 public class MedicalConditionParser {
 
-    private static final SimpleCommandExceptionType ERROR_NO_TAGS_ALLOWED = new SimpleCommandExceptionType(
-            Component.translatable("argument.item.tag.disallowed"));
     private static final DynamicCommandExceptionType ERROR_UNKNOWN_ITEM = new DynamicCommandExceptionType(
             id -> Component.translatable("argument.item.id.invalid", id));
-    private static final DynamicCommandExceptionType ERROR_UNKNOWN_TAG = new DynamicCommandExceptionType(
-            tag -> Component.translatable("arguments.item.tag.unknown", tag));
-    private static final char SYNTAX_START_NBT = '{';
-    private static final char SYNTAX_TAG = '#';
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
     private final StringReader reader;
     private MedicalCondition result;
@@ -65,7 +59,11 @@ public class MedicalConditionParser {
 
     private void readMedicalCondition() throws CommandSyntaxException {
         int i = this.reader.getCursor();
-        String name = reader.getString();
+
+        while (reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek())) {
+            reader.skip();
+        }
+        String name = reader.getString().substring(i, reader.getCursor());
         MedicalCondition material = MedicalCondition.CONDITIONS.get(name);
         this.result = Optional.ofNullable(material).orElseThrow(() -> {
             this.reader.setCursor(i);

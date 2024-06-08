@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -644,6 +645,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder rpm(float rpm) {
         return rpm(rpm, false);
+    }
+
+    public GTRecipeBuilder environmentalHazard(MedicalCondition condition, boolean reverse) {
+        return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder environmentalHazard(MedicalCondition condition) {
+        return environmentalHazard(condition, false);
     }
 
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

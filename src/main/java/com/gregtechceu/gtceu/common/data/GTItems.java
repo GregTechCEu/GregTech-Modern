@@ -2239,14 +2239,17 @@ public class GTItems {
             .lang("Gas Mask Filter")
             .properties(p -> p.stacksTo(1))
             .register();
+    // TODO add more medications for specific conditions & then remove them from paracetamol
     public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
             .lang("Paracetamol Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehavior(15,
+            .onRegister(attach(new AntidoteBehavior(10,
+                    GTMedicalConditions.CHEMICAL_BURNS,
                     GTMedicalConditions.WEAK_POISON,
                     GTMedicalConditions.NAUSEA,
                     GTMedicalConditions.IRRITANT,
-                    GTMedicalConditions.METHANOL_POISONING)))
+                    GTMedicalConditions.METHANOL_POISONING,
+                    GTMedicalConditions.CARBON_MONOXIDE_POISONING)))
             .register();
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
