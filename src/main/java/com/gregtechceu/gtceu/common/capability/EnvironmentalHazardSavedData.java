@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.capability;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
@@ -71,17 +72,18 @@ public class EnvironmentalHazardSavedData extends SavedData {
         Set<ChunkPos> zonesToSpread = new HashSet<>();
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
-            if (zone.strength() >= MAX_POLLUTION_PER_CHUNK / 5 &&
-                    serverLevel.getGameTime() % (5000 / zone.strength()) == 0) {
+            if (zone.strength() >= MAX_POLLUTION_PER_CHUNK / 5) {
                 ChunkPos chunkPos = entry.getKey();
                 BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
                 for (BlockPos pos : BlockPos.betweenClosed(
                         chunkPos.getMinBlockX(), source.getY() - 8, chunkPos.getMinBlockZ(),
                         chunkPos.getMaxBlockX(), source.getY() + 8, chunkPos.getMaxBlockZ())) {
-                    serverLevel.sendParticles(
-                            new DustParticleOptions(Vec3.fromRGB24(zone.condition.color).toVector3f(), 1),
-                            pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                            1, 0, 0.1, 0, 0.1);
+                    if (GTValues.RNG.nextInt(32000 / zone.strength()) == 0) {
+                        serverLevel.sendParticles(
+                                new DustParticleOptions(Vec3.fromRGB24(zone.condition.color).toVector3f(), 1),
+                                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                                1, 0, 0.1, 0, 0.1);
+                    }
                 }
             }
 

@@ -143,6 +143,10 @@
     "gtceu:turret_hazard_sign_block",
     "gtceu:void_hazard_sign_block",
     "gtceu:yellow_stripes_block_a",
-    "gtceu:yellow_stripes_block_b"
+    "gtceu:yellow_stripes_block_b",
+    "gtceu:small_duct_pipe",
+    "gtceu:normal_duct_pipe",
+    "gtceu:large_duct_pipe",
+    "gtceu:huge_duct_pipe"
   ]
 }

@@ -87,7 +87,7 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
 
     @Override
     public int hazardStrengthPerOperation() {
-        return 2;
+        return 1;
     }
 
     @Override
