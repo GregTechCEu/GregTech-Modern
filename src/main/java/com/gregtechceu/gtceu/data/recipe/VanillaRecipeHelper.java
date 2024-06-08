@@ -10,8 +10,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -455,5 +457,94 @@ public class VanillaRecipeHelper {
                                          @NotNull Char2IntFunction inputCountMap, @NotNull MaterialStack ms, char c) {
         long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
         materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);
+    }
+
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict,
+                                       @NotNull ResourceLocation regName, @NotNull ItemStack result, @NotNull FluidStack fluid,
+                                       @NotNull Object... recipe) {
+        var builder = new VanillaFluidCraftBuilder(regName).output(result).fluid(fluid);
+        builder.isStrict(isStrict);
+        CharSet set = new CharOpenHashSet();
+        for (int i = 0; i < recipe.length; i++) {
+            var o = recipe[i];
+            if (o instanceof String pattern) {
+                builder.pattern(pattern);
+                for (Character c : ToolHelper.getToolSymbols()) {
+                    if (pattern.indexOf(c) >= 0) {
+                        set.add(c.charValue());
+                    }
+                }
+                if (pattern.indexOf('l') >= 0) {
+                    builder.define('l', GTMachines.BRONZE_DRUM.asStack());
+                }
+            }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : ToolHelper.getToolSymbols()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
+                    }
+                    if (s.indexOf('l') >= 0) {
+                        builder.define('l', GTMachines.BRONZE_DRUM.asStack());
+                    }
+                }
+            }
+            if (o instanceof Character sign) {
+                var content = recipe[i + 1];
+                i++;
+                if (content instanceof Ingredient ingredient) {
+                    builder.define(sign, ingredient);
+                } else if (content instanceof ItemStack itemStack) {
+                    builder.define(sign, itemStack);
+                } else if (content instanceof TagKey<?> key) {
+                    builder.define(sign, (TagKey<Item>) key);
+                } else if (content instanceof TagPrefix prefix) {
+                    if (prefix.getItemParentTags().length > 0) {
+                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    }
+                } else if (content instanceof ItemLike itemLike) {
+                    builder.define(sign, itemLike);
+                } else if (content instanceof UnificationEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else if (content instanceof ItemProviderEntry<?> entry) {
+                    builder.define(sign, entry.asStack());
+                }
+            }
+        }
+        for (Character c : set) {
+            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+        }
+
+        builder.save(provider);
+
+        if (withUnificationData) {
+            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        }
+    }
+
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                       @NotNull String regName, @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+        addVanillaFluidRecipe(provider, withUnificationData, GTCEu.id(regName), result, fluid, recipe);
+    }
+
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                       @NotNull ResourceLocation regName, @NotNull ItemStack result, @NotNull FluidStack fluid,
+                                       @NotNull Object... recipe) {
+        addVanillaFluidRecipe(provider, withUnificationData, false, regName, result, fluid, recipe);
+    }
+
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                       @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+        addVanillaFluidRecipe(provider, GTCEu.id(regName), result, fluid, recipe);
+    }
+
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                       @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+        addVanillaFluidRecipe(provider, false, regName, result, fluid, recipe);
     }
 }
