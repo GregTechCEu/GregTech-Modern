@@ -1,20 +1,14 @@
 package com.gregtechceu.gtceu.common.capability;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.gregtechceu.gtceu.utils.FloodFiller3D;
-import it.unimi.dsi.fastutil.longs.Long2IntMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,13 +19,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EnvironmentalHazardSavedData extends SavedData {
@@ -99,7 +89,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             if (tracker == null) {
                 return;
             }
-            tracker.progressCondition(zone.condition(), zone.blocks().size() / 10.0f);
+            tracker.progressCondition(zone.condition(), 10.0f);
         });
     }
 
@@ -134,74 +124,13 @@ public class EnvironmentalHazardSavedData extends SavedData {
         this.hazardZones.remove(chunkPos);
     }
 
-    public void shrinkZone(BlockPos source, Direction side, int maxShrink) {
-        Set<BlockPos> toRemove = FloodFiller3D.run(serverLevel, source, side, maxShrink);
-        for (HazardZone zone : hazardZones.values()) {
-            zone.blocks().removeAll(toRemove);
-        }
-    }
-
-    public void addChunkZone(ChunkPos source, HazardZone zone) {
+    public void addZone(ChunkPos source, HazardZone zone) {
         this.hazardZones.put(source, zone);
     }
 
-    public void addSphericalZone(BlockPos source, int sphereRadius, boolean canSpread,
-                                 HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        Set<BlockPos> blocks = new HashSet<>();
-        for (int x = -sphereRadius; x < sphereRadius; x++) {
-            for (int y = -sphereRadius; y < sphereRadius; y++) {
-                for (int z = -sphereRadius; z < sphereRadius; z++) {
-                    float sizeFractionX = (float) x / sphereRadius;
-                    float sizeFractionY = (float) y / sphereRadius;
-                    float sizeFractionZ = (float) z / sphereRadius;
-                    if ((sizeFractionX * sizeFractionX) +
-                            (sizeFractionY * sizeFractionY) +
-                            (sizeFractionZ * sizeFractionZ) <= 1) {
-                        blocks.add(source.offset(x, y, z));
-                    }
-                }
-            }
-        }
-
-        this.hazardZones.put(source, new HazardZone(blocks, canSpread, trigger, condition));
-    }
-
-    public void addCuboidZone(BlockPos source, int sizeX, int sizeY, int sizeZ, boolean canSpread,
-                              HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        Set<BlockPos> blocks = new HashSet<>();
-        sizeX = sizeX / 2;
-        sizeY = sizeY / 2;
-        sizeZ = sizeZ / 2;
-        for (int x = -sizeX; x < sizeX; x++) {
-            for (int y = -sizeY; y < sizeY; y++) {
-                for (int z = -sizeZ; z < sizeZ; z++) {
-                    blocks.add(source.offset(x, y, z));
-                }
-            }
-        }
-
-        this.hazardZones.put(source, new HazardZone(blocks, canSpread, trigger, condition));
-    }
-
-    public void addCuboidZone(BlockPos source, int size, boolean canSpread,
-                              HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        Set<BlockPos> blocks = new HashSet<>();
-        size = size / 2;
-        for (int x = -size; x < size; x++) {
-            for (int y = -size; y < size; y++) {
-                for (int z = -size; z < size; z++) {
-                    blocks.add(source.offset(x, y, z));
-                }
-            }
-        }
-
-        this.hazardZones.put(source, new HazardZone(blocks, canSpread, trigger, condition));
-    }
-
-    public void addFloodFilledZone(BlockPos source, Direction side, int maxSize, boolean canSpread,
-                                   HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        Set<BlockPos> blocks = FloodFiller3D.run(serverLevel, source, side, maxSize);
-        this.hazardZones.put(source, new HazardZone(blocks, canSpread, trigger, condition));
+    public void addZone(ChunkPos source, int strength, boolean canSpread,
+                        HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+        this.hazardZones.put(source, new HazardZone(strength, canSpread, trigger, condition));
     }
 
     @NotNull
@@ -211,7 +140,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         for (var entry : hazardZones.entrySet()) {
             CompoundTag zoneTag = new CompoundTag();
 
-            zoneTag.put("source", NbtUtils.writeBlockPos(entry.getKey()));
+            zoneTag.putLong("pos", entry.getKey().toLong());
             entry.getValue().serializeNBT(zoneTag);
 
             hazardZonesTag.add(zoneTag);
@@ -220,16 +149,12 @@ public class EnvironmentalHazardSavedData extends SavedData {
         return compoundTag;
     }
 
-    public record HazardZone(Set<BlockPos> blocks, boolean canSpread, HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+    public record HazardZone(int strength, boolean canSpread,
+                             HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
 
         public CompoundTag serializeNBT(CompoundTag zoneTag) {
-            ListTag blocksTag = new ListTag();
-            blocks.stream()
-                    .map(NbtUtils::writeBlockPos)
-                    .forEach(blocksTag::add);
-            zoneTag.put("blocks", blocksTag);
+            zoneTag.putInt("strength", strength);
             zoneTag.putBoolean("can_spread", canSpread);
-
             zoneTag.putString("trigger", trigger.name());
             zoneTag.putString("condition", condition.name);
 
@@ -237,17 +162,13 @@ public class EnvironmentalHazardSavedData extends SavedData {
         }
 
         public static HazardZone deserializeNBT(CompoundTag zoneTag) {
-            Set<BlockPos> allBlocks = zoneTag.getList("blocks", Tag.TAG_COMPOUND).stream()
-                    .map(CompoundTag.class::cast)
-                    .map(NbtUtils::readBlockPos)
-                    .collect(Collectors.toSet());
+            int strength = zoneTag.getInt("strength");
             boolean canSpread = zoneTag.getBoolean("can_spread");
-
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition.CONDITIONS.get(zoneTag.getString("condition"));
+            MedicalCondition condition = MedicalCondition.CONDITIONS.get(zoneTag.getString("condition"));
 
-            return new HazardZone(allBlocks, canSpread, trigger, condition);
+            return new HazardZone(strength, canSpread, trigger, condition);
         }
     }
 }
