@@ -38,12 +38,14 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                     EnvironmentalHazardSavedData.HazardZone zone;
                     if (k.equals(pos)) {
                         zone = new EnvironmentalHazardSavedData.HazardZone(
+                                v.source(),
                                 v.strength() - CLEANING_PER_OPERATION * 2 * getTier(),
                                 v.canSpread(),
                                 v.trigger(),
                                 v.condition());
                     } else {
                         zone = new EnvironmentalHazardSavedData.HazardZone(
+                                v.source(),
                                 v.strength() - CLEANING_PER_OPERATION * getTier(),
                                 v.canSpread(),
                                 v.trigger(),

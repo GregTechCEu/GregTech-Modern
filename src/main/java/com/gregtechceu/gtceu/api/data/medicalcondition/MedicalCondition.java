@@ -15,6 +15,7 @@ public class MedicalCondition {
     public static final Map<String, MedicalCondition> CONDITIONS = new HashMap<>();
 
     public final String name;
+    public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached
     public final Set<Symptom.ConfiguredSymptom> symptoms = new HashSet<>();
     private final DamageTypeData damageTypeData;
@@ -22,9 +23,10 @@ public class MedicalCondition {
     public final float idleProgressionRate;
     public final boolean canBePermanent;
 
-    public MedicalCondition(String name, int maxProgression, IdleProgressionType idleProgressionType,
+    public MedicalCondition(String name, int color, int maxProgression, IdleProgressionType idleProgressionType,
                             float idleProgressionRate, boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
         this.name = name;
+        this.color = color;
         this.maxProgression = maxProgression;
         this.damageTypeData = new DamageTypeData.Builder()
                 .simpleId("medical_condition/" + name)
@@ -40,13 +42,13 @@ public class MedicalCondition {
         CONDITIONS.put(name, this);
     }
 
-    public MedicalCondition(String name, int maxProgression, IdleProgressionType progressionType,
+    public MedicalCondition(String name, int color, int maxProgression, IdleProgressionType progressionType,
                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        this(name, maxProgression, progressionType, 1, canBePermanent, symptoms);
+        this(name, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
     }
 
-    public MedicalCondition(String name, int maxProgression, Symptom.ConfiguredSymptom... symptoms) {
-        this(name, maxProgression, IdleProgressionType.NONE, 0, false, symptoms);
+    public MedicalCondition(String name, int color, int maxProgression, Symptom.ConfiguredSymptom... symptoms) {
+        this(name, color, maxProgression, IdleProgressionType.NONE, 0, false, symptoms);
     }
 
     public DamageSource getDamageSource(MedicalConditionTracker tracker) {
