@@ -1156,7 +1156,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x0E4880)
                 .components(Carbon, 1, Oxygen, 1)
-                // TODO CO Poisoning .hazard(HazardProperty.HazardTrigger.INHALATION)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARBON_MONOXIDE_POISONING)
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))

@@ -48,7 +48,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     public record HazardTrigger(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
             implements StringRepresentable {
 
-        public static final Map<String, HazardTrigger> ALL_HAZARDS = new HashMap<>();
+        public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
 
         public static final HazardTrigger INHALATION = new HazardTrigger("inhalation", ProtectionType.MASK,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
@@ -58,7 +58,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
 
         public HazardTrigger {
-            ALL_HAZARDS.put(name, this);
+            ALL_TRIGGERS.put(name, this);
         }
 
         public HazardTrigger(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {

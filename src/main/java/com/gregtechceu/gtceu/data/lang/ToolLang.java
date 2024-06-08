@@ -59,10 +59,11 @@ public class ToolLang {
         provider.add("death.attack.gtceu.medical_condition/carcinogen", "%s got leukemia");
         provider.add("death.attack.gtceu.medical_condition/irritant", "%s got a §n§lREALLY§r bad rash");
         provider.add("death.attack.gtceu.medical_condition/methanol_poisoning",
-                "%s tried to bootleg moonshine during the prohibition");
+                "%s tried to drink moonshine during the prohibition");
         provider.add("death.attack.gtceu.medical_condition/nausea", "%s died of nausea");
         provider.add("death.attack.gtceu.medical_condition/none", "%s died of... nothing?");
         provider.add("death.attack.gtceu.medical_condition/weak_poison", "%s ate lead (or mercury!)");
+        provider.add("death.attack.gtceu.medical_condition/carbon_monoxide_poisoning", "%s left the stove on");
     }
 
     private static void initToolInfo(RegistrateLangProvider provider) {}

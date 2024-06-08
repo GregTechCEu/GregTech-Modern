@@ -65,4 +65,10 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, .75f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .5f),
             new Symptom.ConfiguredSymptom(Symptom.BLINDNESS, 2, .25f));
+    public static final MedicalCondition CARBON_MONOXIDE_POISONING = new MedicalCondition("carbon_monoxide_poisoning",
+            2000, MedicalCondition.IdleProgressionType.HEAL, 1, true,
+            new Symptom.ConfiguredSymptom(Symptom.DEATH),
+            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, .75f),
+            new Symptom.ConfiguredSymptom(Symptom.NAUSEA, 2, .5f),
+            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .25f));
 }

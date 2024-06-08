@@ -886,6 +886,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
+        provider.add("gtceu.recipe.environmental_hazard", "Area must be free of %s");
         provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
         provider.add("gtceu.recipe.research", "Requires Research");
