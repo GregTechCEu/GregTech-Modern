@@ -21,7 +21,7 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId = "neoforge"
     type = "required"
-    versionRange = "[${forge_version},)"
+    versionRange = "[21.0.0-alpha,)"
     ordering = "NONE"
     side = "BOTH"
 

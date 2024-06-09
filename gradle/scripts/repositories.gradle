@@ -2,6 +2,14 @@ repositories {
     flatDir {
         dir "libs"
     }
+    maven {
+        name 'Maven for PR #1076' // https://github.com/neoforged/NeoForge/pull/1076
+        url 'https://prmaven.neoforged.net/NeoForge/pr1076'
+        content {
+            includeModule('net.neoforged', 'testframework')
+            includeModule('net.neoforged', 'neoforge')
+        }
+    }
     mavenCentral()
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
@@ -23,7 +31,7 @@ repositories {
     } // JEI mirror, AE2
     maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
     maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
-    maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+    //maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
     maven { // Flywheel
         url = "https://maven.tterrag.com/"
         content {
