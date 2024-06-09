@@ -351,8 +351,7 @@ public class GTToolType {
             .electric(GTValues.IV)
             .toolClasses(GTToolType.WRENCH)
             .build();
-    public static final GTToolType BUZZSAW_LV = GTToolType.builder("lv_buzzsaw")
-            .idFormat("lv_%s_buzzsaw")
+    public static final GTToolType BUZZSAW = GTToolType.builder("buzzsaw")
             .toolTag(TagUtil.createItemTag("tools/saws", false))
             .toolTag(TagUtil.createItemTag("tools/buzzsaws", false))
             .toolStats(b -> b.crafting().attackDamage(1.5F).attackSpeed(-3.2F)

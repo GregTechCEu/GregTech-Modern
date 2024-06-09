@@ -601,7 +601,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW)));
 
     // made of 1 Ingots.
     public static final TagPrefix toolHeadScrewdriver = new TagPrefix("screwdriverTip")

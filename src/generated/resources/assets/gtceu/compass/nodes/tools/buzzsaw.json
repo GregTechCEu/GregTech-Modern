@@ -1,14 +1,14 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:lv_aluminium_buzzsaw"
+    "res": "gtceu:aluminium_buzzsaw"
   },
   "items": [
     "#forge:tools/saws"
   ],
-  "page": "gtceu:tools/lv_buzzsaw",
+  "page": "gtceu:tools/buzzsaw",
   "position": [
-    -250,
+    -300,
     100
   ],
   "section": "gtceu:tools"
