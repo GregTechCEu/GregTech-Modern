@@ -28,7 +28,7 @@ public class MedicalConditionArgument implements ArgumentType<MedicalCondition> 
         return MedicalConditionParser.parseForMedicalCondition(reader);
     }
 
-    public static <S> MedicalCondition getMaterial(CommandContext<S> context, String name) {
+    public static <S> MedicalCondition getCondition(CommandContext<S> context, String name) {
         return context.getArgument(name, MedicalCondition.class);
     }
 

@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -208,6 +209,7 @@ public class ForgeCommonEventListener {
         if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
             EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
+            LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
         }
     }
 

@@ -46,7 +46,7 @@ public class AirScrubberRecipes {
         AIR_SCRUBBER_RECIPES.recipeBuilder("nausea")
                 .circuitMeta(5)
                 .inputFluids(Air.getFluid(10000))
-                .outputFluids(CarbonMonoxide.getFluid(100))
+                .outputFluids(CarbonMonoxide.getFluid(50))
                 .environmentalHazard(GTMedicalConditions.NAUSEA)
                 .duration(200).EUt(VHA[LV]).save(provider);
 
@@ -88,7 +88,7 @@ public class AirScrubberRecipes {
         AIR_SCRUBBER_RECIPES.recipeBuilder("methanol_poisoning")
                 .circuitMeta(11)
                 .inputFluids(Air.getFluid(10000))
-                .outputItems(dust, Beryllium, 8)
+                .outputFluids(Methanol.getFluid(1000))
                 .environmentalHazard(GTMedicalConditions.METHANOL_POISONING)
                 .duration(200).EUt(VHA[LV]).save(provider);
 

@@ -84,8 +84,7 @@ public class MachineRenderer extends TextureOverrideRenderer
 
                         @Override
                         @OnlyIn(Dist.CLIENT)
-                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state,
-                                                        @org.jetbrains.annotations.Nullable Direction direction,
+                        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction,
                                                         RandomSource random) {
                             List<BakedQuad> quads = new LinkedList<>();
                             renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random,
@@ -117,16 +116,18 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         quads.add(
-                                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
-                                        modelState));
+                                StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                                        modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
+                                        modelState, -1, 0, true, true));
                     }
                 }
                 if (machine instanceof IAutoOutputFluid autoOutputFluid) {
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         quads.add(
-                                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
-                                        modelState));
+                                StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                                        modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState,
+                                        -1, 0, true, true));
                     }
                 }
 
@@ -134,8 +135,9 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         if (autoOutputItem.isAutoOutputItems()) {
-                            quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                                    ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState, -101, 15));
+                            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                                    modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState,
+                                    -101, 15, true, true));
                         }
                     }
                 }
@@ -144,8 +146,9 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         if (autoOutputFluid.isAutoOutputFluids()) {
-                            quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                                    ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState, -101, 15));
+                            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                                    modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState,
+                                    -101, 15, true, true));
                         }
                     }
                 }

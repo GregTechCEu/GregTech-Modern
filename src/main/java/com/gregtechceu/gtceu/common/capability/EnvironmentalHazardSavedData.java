@@ -30,9 +30,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Full-chunk environmental hazards. e.g. pollution.
+ */
 public class EnvironmentalHazardSavedData extends SavedData {
 
-    public static final int MAX_POLLUTION_PER_CHUNK = 1000;
+    public static final int MIN_STRENGTH_FOR_SPREAD = 1000;
 
     private final ServerLevel serverLevel;
 
@@ -72,7 +75,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         Set<ChunkPos> zonesToSpread = new HashSet<>();
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
-            if (zone.strength() >= MAX_POLLUTION_PER_CHUNK / 5) {
+            if (zone.strength() >= MIN_STRENGTH_FOR_SPREAD / 5) {
                 ChunkPos chunkPos = entry.getKey();
                 BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
                 for (BlockPos pos : BlockPos.betweenClosed(
@@ -93,7 +96,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
                             .equals(entry.getKey()));
             tickPlayerHazards(zone, playersInZone);
 
-            if (zone.canSpread() && zone.strength() > MAX_POLLUTION_PER_CHUNK) {
+            if (zone.canSpread() && zone.strength() > MIN_STRENGTH_FOR_SPREAD) {
                 zonesToSpread.add(entry.getKey());
             }
         }
@@ -172,6 +175,13 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
     public void removeZone(BlockPos inChunkPos) {
         this.removeZone(new ChunkPos(inChunkPos));
+    }
+
+    public void removeZone(BlockPos inChunkPos, MedicalCondition condition) {
+        ChunkPos chunkPos = new ChunkPos(inChunkPos);
+        if (this.hazardZones.get(chunkPos).condition() == condition) {
+            this.hazardZones.remove(chunkPos);
+        }
     }
 
     public void removeZone(ChunkPos chunkPos) {

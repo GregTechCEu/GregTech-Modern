@@ -27,8 +27,8 @@ import static net.minecraft.client.renderer.block.model.FaceBakery.calculateFaci
 
 public class StaticFaceBakery {
 
-    public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f, 1.001f, 1.001f,
-            1.001f);
+    public static final AABB SLIGHTLY_OVER_BLOCK = new AABB(-0.001f, -0.001f, -0.001f,
+            1.001f, 1.001f, 1.001f);
 
     public static final int VERTEX_INT_SIZE = 8;
     private static final float RESCALE_22_5 = 1.0F / (float) Math.cos((float) (Math.PI / 8)) - 1.0F;
