@@ -33,7 +33,7 @@ public class RecipeRemoval {
 
     private static void generalRemovals(Consumer<ResourceLocation> registry) {
         if (ConfigHolder.INSTANCE.recipes.removeVanillaTNTRecipe)
-            registry.accept(new ResourceLocation("minecraft:tnt"));
+            registry.accept(ResourceLocation.withDefaultNamespace("tnt"));
 
         // todo
         /*
@@ -73,111 +73,111 @@ public class RecipeRemoval {
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:gold_block"));
-        registry.accept(new ResourceLocation("minecraft:gold_nugget"));
-        registry.accept(new ResourceLocation("minecraft:gold_ingot_from_gold_block"));
-        registry.accept(new ResourceLocation("minecraft:gold_ingot_from_nuggets"));
-        registry.accept(new ResourceLocation("minecraft:coal_block"));
-        registry.accept(new ResourceLocation("minecraft:coal"));
-        registry.accept(new ResourceLocation("minecraft:redstone_block"));
-        registry.accept(new ResourceLocation("minecraft:redstone"));
-        registry.accept(new ResourceLocation("minecraft:emerald_block"));
-        registry.accept(new ResourceLocation("minecraft:emerald"));
-        registry.accept(new ResourceLocation("minecraft:diamond_block"));
-        registry.accept(new ResourceLocation("minecraft:diamond"));
-        registry.accept(new ResourceLocation("minecraft:iron_block"));
-        registry.accept(new ResourceLocation("minecraft:iron_nugget"));
-        registry.accept(new ResourceLocation("minecraft:iron_ingot_from_iron_block"));
-        registry.accept(new ResourceLocation("minecraft:iron_ingot_from_nuggets"));
-        registry.accept(new ResourceLocation("minecraft:lapis_block"));
-        registry.accept(new ResourceLocation("minecraft:lapis_lazuli"));
-        registry.accept(new ResourceLocation("minecraft:quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:clay"));
-        registry.accept(new ResourceLocation("minecraft:nether_brick"));
-        registry.accept(new ResourceLocation("minecraft:glowstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("gold_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("gold_nugget"));
+        registry.accept(ResourceLocation.withDefaultNamespace("gold_ingot_from_gold_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("gold_ingot_from_nuggets"));
+        registry.accept(ResourceLocation.withDefaultNamespace("coal_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("coal"));
+        registry.accept(ResourceLocation.withDefaultNamespace("redstone_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("redstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("emerald_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("emerald"));
+        registry.accept(ResourceLocation.withDefaultNamespace("diamond_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("diamond"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_nugget"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_ingot_from_iron_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_ingot_from_nuggets"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lapis_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lapis_lazuli"));
+        registry.accept(ResourceLocation.withDefaultNamespace("quartz_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("clay"));
+        registry.accept(ResourceLocation.withDefaultNamespace("nether_brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("glowstone"));
         // TODO netherite material
-        // registry.accept(new ResourceLocation("minecraft:netherite_block"));
-        // registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("netherite_block"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:brick"));
-        registry.accept(new ResourceLocation("minecraft:bricks"));
-        registry.accept(new ResourceLocation("minecraft:nether_brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("nether_brick"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:ladder"));
-        registry.accept(new ResourceLocation("minecraft:bowl"));
-        registry.accept(new ResourceLocation("minecraft:chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("ladder"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bowl"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chest"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:cauldron"));
-        registry.accept(new ResourceLocation("minecraft:hopper"));
-        registry.accept(new ResourceLocation("minecraft:iron_bars"));
-        registry.accept(new ResourceLocation("minecraft:bucket"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cauldron"));
+        registry.accept(ResourceLocation.withDefaultNamespace("hopper"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_bars"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bucket"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:dispenser"));
-        registry.accept(new ResourceLocation("minecraft:sticky_piston"));
-        registry.accept(new ResourceLocation("minecraft:piston"));
-        registry.accept(new ResourceLocation("minecraft:lever"));
-        registry.accept(new ResourceLocation("minecraft:daylight_detector"));
-        registry.accept(new ResourceLocation("minecraft:redstone_lamp"));
-        registry.accept(new ResourceLocation("minecraft:tripwire_hook"));
-        registry.accept(new ResourceLocation("minecraft:dropper"));
-        registry.accept(new ResourceLocation("minecraft:observer"));
-        registry.accept(new ResourceLocation("minecraft:repeater"));
-        registry.accept(new ResourceLocation("minecraft:comparator"));
-        registry.accept(new ResourceLocation("minecraft:powered_rail"));
-        registry.accept(new ResourceLocation("minecraft:detector_rail"));
-        registry.accept(new ResourceLocation("minecraft:rail"));
-        registry.accept(new ResourceLocation("minecraft:activator_rail"));
-        registry.accept(new ResourceLocation("minecraft:redstone_torch"));
-        registry.accept(new ResourceLocation("minecraft:stone_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:oak_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:birch_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:spruce_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:jungle_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:acacia_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:crimson_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:warped_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:heavy_weighted_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:stone_button"));
-        registry.accept(new ResourceLocation("minecraft:oak_button"));
-        registry.accept(new ResourceLocation("minecraft:birch_button"));
-        registry.accept(new ResourceLocation("minecraft:spruce_button"));
-        registry.accept(new ResourceLocation("minecraft:jungle_button"));
-        registry.accept(new ResourceLocation("minecraft:acacia_button"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_button"));
-        registry.accept(new ResourceLocation("minecraft:crimson_button"));
-        registry.accept(new ResourceLocation("minecraft:warped_button"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_button"));
-        registry.accept(new ResourceLocation("minecraft:cherry_button"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dispenser"));
+        registry.accept(ResourceLocation.withDefaultNamespace("sticky_piston"));
+        registry.accept(ResourceLocation.withDefaultNamespace("piston"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lever"));
+        registry.accept(ResourceLocation.withDefaultNamespace("daylight_detector"));
+        registry.accept(ResourceLocation.withDefaultNamespace("redstone_lamp"));
+        registry.accept(ResourceLocation.withDefaultNamespace("tripwire_hook"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dropper"));
+        registry.accept(ResourceLocation.withDefaultNamespace("observer"));
+        registry.accept(ResourceLocation.withDefaultNamespace("repeater"));
+        registry.accept(ResourceLocation.withDefaultNamespace("comparator"));
+        registry.accept(ResourceLocation.withDefaultNamespace("powered_rail"));
+        registry.accept(ResourceLocation.withDefaultNamespace("detector_rail"));
+        registry.accept(ResourceLocation.withDefaultNamespace("rail"));
+        registry.accept(ResourceLocation.withDefaultNamespace("activator_rail"));
+        registry.accept(ResourceLocation.withDefaultNamespace("redstone_torch"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("oak_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("birch_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("spruce_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("jungle_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("acacia_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dark_oak_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("crimson_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("warped_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mangrove_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("heavy_weighted_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_weighted_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("oak_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("birch_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("spruce_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("jungle_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("acacia_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dark_oak_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("crimson_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("warped_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mangrove_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cherry_button"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bamboo_button"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:compass"));
-        registry.accept(new ResourceLocation("minecraft:fishing_rod"));
-        registry.accept(new ResourceLocation("minecraft:clock"));
-        registry.accept(new ResourceLocation("minecraft:shears"));
-        registry.accept(new ResourceLocation("minecraft:shield"));
+        registry.accept(ResourceLocation.withDefaultNamespace("compass"));
+        registry.accept(ResourceLocation.withDefaultNamespace("fishing_rod"));
+        registry.accept(ResourceLocation.withDefaultNamespace("clock"));
+        registry.accept(ResourceLocation.withDefaultNamespace("shears"));
+        registry.accept(ResourceLocation.withDefaultNamespace("shield"));
         for (String type : new String[] { "iron", "golden", "diamond" }) {
-            registry.accept(new ResourceLocation("minecraft:" + type + "_shovel"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_pickaxe"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_axe"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_sword"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_hoe"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_helmet"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_chestplate"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_leggings"));
-            registry.accept(new ResourceLocation("minecraft:" + type + "_boots"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_shovel"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_pickaxe"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_axe"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_sword"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_hoe"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_helmet"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_chestplate"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_leggings"));
+            registry.accept(ResourceLocation.withDefaultNamespace(type + "_boots"));
         }
     }
 
@@ -193,155 +193,155 @@ public class RecipeRemoval {
      * - Removes Vanilla Fire Charge recipe
      */
     private static void hardMiscRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:beacon"));
-        registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
-        registry.accept(new ResourceLocation("minecraft:golden_apple"));
-        registry.accept(new ResourceLocation("minecraft:book"));
-        registry.accept(new ResourceLocation("minecraft:brewing_stand"));
-        registry.accept(new ResourceLocation("minecraft:ender_eye"));
-        registry.accept(new ResourceLocation("minecraft:glistering_melon_slice"));
-        registry.accept(new ResourceLocation("minecraft:golden_carrot"));
-        registry.accept(new ResourceLocation("minecraft:magma_cream"));
-        registry.accept(new ResourceLocation("minecraft:enchanting_table"));
-        registry.accept(new ResourceLocation("minecraft:jukebox"));
-        registry.accept(new ResourceLocation("minecraft:note_block"));
-        registry.accept(new ResourceLocation("minecraft:furnace"));
-        registry.accept(new ResourceLocation("minecraft:crafting_table"));
-        registry.accept(new ResourceLocation("minecraft:polished_granite"));
-        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
-        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
-        registry.accept(new ResourceLocation("minecraft:lead"));
-        registry.accept(new ResourceLocation("minecraft:bow"));
-        registry.accept(new ResourceLocation("minecraft:item_frame"));
-        registry.accept(new ResourceLocation("minecraft:painting"));
-        registry.accept(new ResourceLocation("minecraft:chest_minecart"));
-        registry.accept(new ResourceLocation("minecraft:furnace_minecart"));
-        registry.accept(new ResourceLocation("minecraft:tnt_minecart"));
-        registry.accept(new ResourceLocation("minecraft:hopper_minecart"));
-        registry.accept(new ResourceLocation("minecraft:flower_pot"));
-        registry.accept(new ResourceLocation("minecraft:armor_stand"));
-        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
-        registry.accept(new ResourceLocation("minecraft:ender_chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("beacon"));
+        registry.accept(ResourceLocation.withDefaultNamespace("jack_o_lantern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("golden_apple"));
+        registry.accept(ResourceLocation.withDefaultNamespace("book"));
+        registry.accept(ResourceLocation.withDefaultNamespace("brewing_stand"));
+        registry.accept(ResourceLocation.withDefaultNamespace("ender_eye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("glistering_melon_slice"));
+        registry.accept(ResourceLocation.withDefaultNamespace("golden_carrot"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magma_cream"));
+        registry.accept(ResourceLocation.withDefaultNamespace("enchanting_table"));
+        registry.accept(ResourceLocation.withDefaultNamespace("jukebox"));
+        registry.accept(ResourceLocation.withDefaultNamespace("note_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("furnace"));
+        registry.accept(ResourceLocation.withDefaultNamespace("crafting_table"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_granite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_diorite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_andesite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lead"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bow"));
+        registry.accept(ResourceLocation.withDefaultNamespace("item_frame"));
+        registry.accept(ResourceLocation.withDefaultNamespace("painting"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chest_minecart"));
+        registry.accept(ResourceLocation.withDefaultNamespace("furnace_minecart"));
+        registry.accept(ResourceLocation.withDefaultNamespace("tnt_minecart"));
+        registry.accept(ResourceLocation.withDefaultNamespace("hopper_minecart"));
+        registry.accept(ResourceLocation.withDefaultNamespace("flower_pot"));
+        registry.accept(ResourceLocation.withDefaultNamespace("armor_stand"));
+        registry.accept(ResourceLocation.withDefaultNamespace("trapped_chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("ender_chest"));
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(color.getName() + "_bed"));
+            registry.accept(ResourceLocation.withDefaultNamespace(color.getName() + "_bed"));
         }
-        registry.accept(new ResourceLocation("minecraft:fermented_spider_eye"));
-        registry.accept(new ResourceLocation("minecraft:fire_charge"));
+        registry.accept(ResourceLocation.withDefaultNamespace("fermented_spider_eye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("fire_charge"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:glass"));
-        registry.accept(new ResourceLocation("minecraft:glass_bottle"));
-        registry.accept(new ResourceLocation("minecraft:glass_pane"));
+        registry.accept(ResourceLocation.withDefaultNamespace("glass"));
+        registry.accept(ResourceLocation.withDefaultNamespace("glass_bottle"));
+        registry.accept(ResourceLocation.withDefaultNamespace("glass_pane"));
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane",
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass_pane_from_glass_pane",
                     color.name().toLowerCase(Locale.ROOT))));
-            registry.accept(new ResourceLocation(
-                    String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(ResourceLocation.withDefaultNamespace(
+                    String.format("%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
         }
     }
 
     private static void nerfPaperCrafting(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:paper"));
-        registry.accept(new ResourceLocation("minecraft:sugar_from_sugar_cane"));
+        registry.accept(ResourceLocation.withDefaultNamespace("paper"));
+        registry.accept(ResourceLocation.withDefaultNamespace("sugar_from_sugar_cane"));
     }
 
     private static void hardAdvancedIronRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:iron_door"));
-        registry.accept(new ResourceLocation("minecraft:anvil"));
-        registry.accept(new ResourceLocation("minecraft:iron_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:minecart"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_door"));
+        registry.accept(ResourceLocation.withDefaultNamespace("anvil"));
+        registry.accept(ResourceLocation.withDefaultNamespace("iron_trapdoor"));
+        registry.accept(ResourceLocation.withDefaultNamespace("minecart"));
     }
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
             registry.accept(
-                    new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial.getName())));
+                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {
-                registry.accept(new ResourceLocation(String.format("minecraft:%s_wool", colorMaterial.getName())));
+                registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_wool", colorMaterial.getName())));
             }
         }
-        registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));
     }
 
     private static void flintAndSteelRequireSteel(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:flint_and_steel"));
+        registry.accept(ResourceLocation.withDefaultNamespace("flint_and_steel"));
     }
 
     private static void removeVanillaBlockRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:slime"));
-        registry.accept(new ResourceLocation("minecraft:slime_ball"));
-        registry.accept(new ResourceLocation("minecraft:melon_block"));
-        registry.accept(new ResourceLocation("minecraft:hay_block"));
-        registry.accept(new ResourceLocation("minecraft:wheat"));
-        registry.accept(new ResourceLocation("minecraft:magma"));
-        registry.accept(new ResourceLocation("minecraft:nether_wart_block"));
-        registry.accept(new ResourceLocation("minecraft:bone_block"));
-        registry.accept(new ResourceLocation("minecraft:bone_meal_from_block"));
-        registry.accept(new ResourceLocation("minecraft:purpur_block"));
-        registry.accept(new ResourceLocation("minecraft:prismarine_bricks"));
-        registry.accept(new ResourceLocation("minecraft:prismarine"));
-        registry.accept(new ResourceLocation("minecraft:snow"));
-        registry.accept(new ResourceLocation("minecraft:sandstone"));
-        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
-        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
-        registry.accept(new ResourceLocation("minecraft:polished_granite"));
-        registry.accept(new ResourceLocation("minecraft:coarse_dirt"));
-        registry.accept(new ResourceLocation("minecraft:smooth_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:stone_bricks"));
-        registry.accept(new ResourceLocation("minecraft:stone_bricks_from_stonecutting"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_stone_bricks"));
-        registry.accept(new ResourceLocation("minecraft:purpur_pillar"));
-        registry.accept(new ResourceLocation("minecraft:end_bricks"));
-        registry.accept(new ResourceLocation("minecraft:red_nether_brick"));
-        registry.accept(new ResourceLocation("minecraft:red_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_red_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:bookshelf"));
-        registry.accept(new ResourceLocation("minecraft:pillar_quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:sea_lantern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("slime"));
+        registry.accept(ResourceLocation.withDefaultNamespace("slime_ball"));
+        registry.accept(ResourceLocation.withDefaultNamespace("melon_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("hay_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("wheat"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magma"));
+        registry.accept(ResourceLocation.withDefaultNamespace("nether_wart_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bone_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bone_meal_from_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("purpur_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("prismarine_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("prismarine"));
+        registry.accept(ResourceLocation.withDefaultNamespace("snow"));
+        registry.accept(ResourceLocation.withDefaultNamespace("sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_andesite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_diorite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_granite"));
+        registry.accept(ResourceLocation.withDefaultNamespace("coarse_dirt"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_quartz_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_bricks_from_stonecutting"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_stone_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("purpur_pillar"));
+        registry.accept(ResourceLocation.withDefaultNamespace("end_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_nether_brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_red_sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_red_sandstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bookshelf"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pillar_quartz_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("sea_lantern"));
 
         // Slab replacement
-        registry.accept(new ResourceLocation("minecraft:stone_slab"));
-        registry.accept(new ResourceLocation("minecraft:smooth_stone_slab"));
-        registry.accept(new ResourceLocation("minecraft:andesite_slab"));
-        registry.accept(new ResourceLocation("minecraft:granite_slab"));
-        registry.accept(new ResourceLocation("minecraft:diorite_slab"));
-        registry.accept(new ResourceLocation("minecraft:polished_andesite_slab"));
-        registry.accept(new ResourceLocation("minecraft:polished_granite_slab"));
-        registry.accept(new ResourceLocation("minecraft:polished_diorite_slab"));
-        registry.accept(new ResourceLocation("minecraft:sandstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:smooth_sandstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:cobblestone_slab"));
-        registry.accept(new ResourceLocation("minecraft:blackstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:polished_blackstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:polished_blackstone_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:stone_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:mud_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:nether_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:red_nether_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:quartz_slab"));
-        registry.accept(new ResourceLocation("minecraft:smooth_quartz_slab"));
-        registry.accept(new ResourceLocation("minecraft:cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:exposed_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:oxidized_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:weathered_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:waxed_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper_slab"));
-        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));
-        registry.accept(new ResourceLocation("minecraft:purpur_slab"));
-        registry.accept(new ResourceLocation("minecraft:end_stone_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:prismarine_slab"));
-        registry.accept(new ResourceLocation("minecraft:prismarine_brick_slab"));
-        registry.accept(new ResourceLocation("minecraft:dark_prismarine_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_stone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("andesite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("granite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("diorite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_andesite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_granite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_diorite_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_red_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cobblestone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blackstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_blackstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_blackstone_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stone_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mud_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("nether_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_nether_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("quartz_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smooth_quartz_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("exposed_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("oxidized_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("weathered_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("waxed_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("waxed_exposed_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("waxed_oxidized_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("waxed_weathered_cut_copper_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("purpur_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("end_stone_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("prismarine_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("prismarine_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine_slab"));
     }
 }

@@ -206,23 +206,23 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static ResourceLocation getBlockStateLocation(ResourceLocation blockId) {
-        return new ResourceLocation(blockId.getNamespace(),
+        return ResourceLocation.fromNamespaceAndPath(blockId.getNamespace(),
                 String.join("", "blockstates/", blockId.getPath(), ".json"));
     }
 
     public static ResourceLocation getModelLocation(ResourceLocation blockId) {
-        return new ResourceLocation(blockId.getNamespace(), String.join("", "models/", blockId.getPath(), ".json"));
+        return ResourceLocation.fromNamespaceAndPath(blockId.getNamespace(), String.join("", "models/", blockId.getPath(), ".json"));
     }
 
     public static ResourceLocation getItemModelLocation(ResourceLocation itemId) {
-        return new ResourceLocation(itemId.getNamespace(), String.join("", "models/item/", itemId.getPath(), ".json"));
+        return ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), String.join("", "models/item/", itemId.getPath(), ".json"));
     }
 
     public static ResourceLocation getTextureLocation(@Nullable String path, ResourceLocation tagId) {
         if (path == null) {
-            return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", tagId.getPath(), ".png"));
+            return ResourceLocation.fromNamespaceAndPath(tagId.getNamespace(), String.join("", "textures/", tagId.getPath(), ".png"));
         }
-        return new ResourceLocation(tagId.getNamespace(),
+        return ResourceLocation.fromNamespaceAndPath(tagId.getNamespace(),
                 String.join("", "textures/", path, "/", tagId.getPath(), ".png"));
     }
 }

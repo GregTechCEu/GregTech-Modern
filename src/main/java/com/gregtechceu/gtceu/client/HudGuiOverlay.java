@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class HudGuiOverlay implements LayeredDraw.Layer {
 
     @Override
-    public void render(GuiGraphics guiGraphics, float partialTick) {
+    public void render(GuiGraphics guiGraphics, DeltaTracker tracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.isWindowActive() && mc.level != null && !mc.gui.getDebugOverlay().showDebugScreen() &&
                 !mc.options.hideGui) {

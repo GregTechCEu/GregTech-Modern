@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author KilaBash
@@ -21,7 +22,7 @@ public class GTFoods {
             .effect(() -> new MobEffectInstance(MobEffects.HEAL, 200, 1), 0.1f)
             .alwaysEdible().nutrition(4).saturationModifier(0.3F).build();
 
-    public static final FoodProperties ANTIDOTE = new FoodProperties(0, 0, true, 0.2f, List.of());
+    public static final FoodProperties ANTIDOTE = new FoodProperties(0, 0, true, 0.2f, Optional.empty(), List.of());
 
     public static void init() {}
 }

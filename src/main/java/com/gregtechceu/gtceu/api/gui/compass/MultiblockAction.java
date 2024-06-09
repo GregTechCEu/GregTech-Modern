@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;
@@ -41,10 +42,10 @@ public class MultiblockAction extends Action {
         shapeIndex = XmlUtils.getAsInt(element, "shape-index", 0);
         facing = XmlUtils.getAsEnum(element, "facing", Direction.class, Direction.NORTH);
         isFormed = XmlUtils.getAsBoolean(element, "formed", true);
-        animation = new BlockAnima(blockPos, XmlUtils.getAsVec3(element, "offset", new Vec3(0, 0.7, 0)),
+        animation = new BlockAnima(blockPos, XmlUtils.getAsVector3f(element, "offset", new Vector3f(0, 0.7f, 0)),
                 XmlUtils.getAsInt(element, "duration", 15));
-        if (ResourceLocation.isValidResourceLocation(machineName)) {
-            var definition = GTRegistries.MACHINES.get(new ResourceLocation(machineName));
+        if (ResourceLocation.isValidPath(machineName)) {
+            var definition = GTRegistries.MACHINES.get(ResourceLocation.parse(machineName));
             if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
                 machineDefinition = multiblockDefinition;
                 return;

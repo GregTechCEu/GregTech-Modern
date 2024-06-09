@@ -127,8 +127,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
      */
 
     @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                            EquipmentSlot equipmentSlot) {
+    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item != null) {
             item.discharge((long) energyPerUse / 10 * damage, item.getTier(), true, false, false);

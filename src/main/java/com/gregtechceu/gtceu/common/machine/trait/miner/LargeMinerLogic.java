@@ -9,6 +9,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -26,6 +27,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LargeMinerLogic extends MinerLogic {
 
@@ -122,10 +124,12 @@ public class LargeMinerLogic extends MinerLogic {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
                 if (getDropCountMultiplier() > 0) {
                     ItemStack fortunePick = pickaxeTool.copy();
-                    fortunePick.enchant(Enchantments.FORTUNE, getDropCountMultiplier());
-                    outputStack = ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE).build().apply(outputStack,
+                    var registry = builder.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+                    var holder = registry.getHolderOrThrow(Enchantments.FORTUNE);
+                    fortunePick.enchant(holder, getDropCountMultiplier());
+                    outputStack = ApplyBonusCount.addOreBonusCount(holder).build().apply(outputStack,
                             new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick)
-                                    .create(LootContextParamSets.BLOCK)).create(null));
+                                    .create(LootContextParamSets.BLOCK)).create(Optional.empty()));
                 }
             }
             blockDrops.add(outputStack);

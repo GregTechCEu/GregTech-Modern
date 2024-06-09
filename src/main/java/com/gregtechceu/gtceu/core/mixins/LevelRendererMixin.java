@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
@@ -59,7 +60,7 @@ public abstract class LevelRendererMixin {
     @Inject(method = "renderLevel",
             at = @At(value = "INVOKE",
                      target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;"))
-    private void renderLevel(float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera,
+    private void renderLevel(DeltaTracker partialTick, boolean renderBlockOutline, Camera camera,
                              GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f viewMatrix,
                              Matrix4f projectionMatrix, CallbackInfo ci,
                              @Local(ordinal = 0) PoseStack poseStack) {

@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -30,7 +31,9 @@ import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -47,7 +50,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
@@ -162,13 +165,7 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
-                int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, stack);
-                int negated = 0;
-                for (int k = 0; unbreakingLevel > 0 && k < damage; k++) {
-                    if (DigDurabilityEnchantment.shouldIgnoreDurabilityDrop(stack, unbreakingLevel, random)) {
-                        negated++;
-                    }
-                }
+                int negated = EnchantmentHelper.processDurabilityChange((ServerLevel) user.level(), stack, damage);
                 damage -= negated;
                 if (damage <= 0) {
                     return;
@@ -214,7 +211,8 @@ public class ToolHelper {
         if (toolProperty != null) {
             toolProperty.getEnchantments().forEach((enchantment, level) -> {
                 if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    stack.enchant(enchantment, level);
+                    Registry<Enchantment> registry = GTRegistries.builtinRegistry().registryOrThrow(Registries.ENCHANTMENT);
+                    stack.enchant(registry.getHolderOrThrow(enchantment), level);
                 }
             });
         }
@@ -466,7 +464,7 @@ public class ToolHelper {
     }
 
     public static boolean onBlockBreakEvent(Level level, GameType gameType, ServerPlayer player, BlockPos pos) {
-        return CommonHooks.fireBlockBreak(level, gameType, player, pos, level.getBlockState(pos)) != -1;
+        return !CommonHooks.fireBlockBreak(level, gameType, player, pos, level.getBlockState(pos)).isCanceled();
     }
 
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
@@ -659,9 +657,8 @@ public class ToolHelper {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof IShearable shearable) {
-                if (shearable.isShearable(tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
-                            tool.getEnchantmentLevel(Enchantments.FORTUNE));
+                if (shearable.isShearable(player, tool, world, pos)) {
+                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos);
                     boolean relocateMinedBlocks = tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
@@ -708,7 +705,9 @@ public class ToolHelper {
     @NotNull
     public static List<ItemStack> getSilkTouchDrop(ServerLevel world, BlockPos origin, @NotNull BlockState state) {
         ItemStack tool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
-        tool.enchant(Enchantments.SILK_TOUCH, 1);
+        tool.enchant(
+                world.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH),
+                1);
 
         return state.getDrops(new LootParams.Builder(world).withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(origin))

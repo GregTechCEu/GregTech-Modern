@@ -30,6 +30,6 @@ public class DummyArmorLogic implements IArmorLogic {
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
                                             ArmorMaterial.Layer layer) {
-        return new ResourceLocation("minecraft", "textures/armor/diamond_layer_0.png");
+        return ResourceLocation.fromNamespaceAndPath("minecraft", "textures/armor/diamond_layer_0.png");
     }
 }

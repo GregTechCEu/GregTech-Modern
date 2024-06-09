@@ -21,7 +21,7 @@ public abstract class MaterialRegistry extends GTRegistry.String<Material> {
     private final GTRegistrate registrate;
 
     public MaterialRegistry(java.lang.String modId) {
-        super(new ResourceLocation(modId, "material"));
+        super(ResourceLocation.fromNamespaceAndPath(modId, "material"));
         IGTAddon addon = AddonFinder.getAddon(modId);
         this.registrate = addon != null ? addon.getRegistrate() :
                 GTCEu.MOD_ID.equals(modId) ? GTRegistration.REGISTRATE : GTRegistrate.create(modId);

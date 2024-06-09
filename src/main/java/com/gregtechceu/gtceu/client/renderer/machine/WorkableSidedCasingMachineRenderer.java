@@ -31,7 +31,7 @@ public class WorkableSidedCasingMachineRenderer extends MachineRenderer {
     protected final WorkableOverlayModel overlayModel;
 
     public WorkableSidedCasingMachineRenderer(String basePath, ResourceLocation workableModel, boolean tint) {
-        super(tint ? GTCEu.id("block/cube_bottom_top_tintindex") : new ResourceLocation("block/cube_bottom_top"));
+        super(tint ? GTCEu.id("block/cube_bottom_top_tintindex") : ResourceLocation.withDefaultNamespace("block/cube_bottom_top"));
         setTextureOverride(Map.of(
                 "bottom", GTCEu.id(basePath + "/bottom"),
                 "top", GTCEu.id(basePath + "/top"),

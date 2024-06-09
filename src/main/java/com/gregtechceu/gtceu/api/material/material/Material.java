@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -1302,14 +1303,6 @@ public class Material implements Comparable<Material> {
 
         public Builder itemPipeProperties(int priority, float stacksPerSec) {
             properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperties(priority, stacksPerSec));
-            return this;
-        }
-
-        @Deprecated
-        public Builder addDefaultEnchant(Enchantment enchant, int level) {
-            if (!properties.hasProperty(PropertyKey.TOOL)) // cannot assign default here
-                throw new IllegalArgumentException("Material cannot have an Enchant without Tools!");
-            properties.getProperty(PropertyKey.TOOL).addEnchantmentForTools(enchant, level);
             return this;
         }
 

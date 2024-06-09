@@ -105,7 +105,7 @@ public class ShapedEnergyTransferRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped" + "/" + recipeId.getPath()), build(),
+        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "shaped" + "/" + recipeId.getPath()), build(),
                 null);
     }
 }

@@ -72,7 +72,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private static final ImmutableMap<DyeColor, Block> SEAT_MAP;
 
     private static ResourceLocation getId(String modid, DyeColor color, String postfix) {
-        return new ResourceLocation(modid, "%s_%s".formatted(color.getSerializedName(), postfix));
+        return ResourceLocation.fromNamespaceAndPath(modid, "%s_%s".formatted(color.getSerializedName(), postfix));
     }
 
     static {

@@ -27,7 +27,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     @NotNull
     public transient Supplier<@Nullable Material> material = () -> null;
     @Setter
-    public transient ResourceLocation texture = new ResourceLocation("missingno");
+    public transient ResourceLocation texture = ResourceLocation.withDefaultNamespace("missingno");
 
     public CoilBlockBuilder(ResourceLocation i) {
         super(i);

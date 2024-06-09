@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -39,10 +40,14 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -58,9 +63,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -76,8 +80,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
-import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
-import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
+import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_ID;
+import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_ID;
 
 public interface IGTTool extends IItemUIFactory, ItemLike {
 
@@ -378,11 +382,11 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     default ItemAttributeModifiers definition$getDefaultAttributeModifiers(ItemStack stack) {
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_DAMAGE,
-                        new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getTotalAttackDamage(stack),
+                        new AttributeModifier(BASE_ATTACK_DAMAGE_ID, getTotalAttackDamage(stack),
                                 AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED,
-                        new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier",
+                        new AttributeModifier(BASE_ATTACK_SPEED_ID,
                                 Math.max(-3.9D, getTotalAttackSpeed(stack)), AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
                 .build();
@@ -645,37 +649,27 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
     }
 
-    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {
+    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, ResourceKey<Enchantment> enchantment) {
         if (stack.isEmpty()) return false;
-
-        // special case enchants from other mods
-        switch (enchantment.getDescriptionId()) {
-            case "enchantment.cofhcore.smashing":
-                // block cofhcore smashing enchant from all tools
-                return false;
-            case "enchantment.autosmelt": // endercore
-            case "enchantment.cofhcore.smelting": // cofhcore
-            case "enchantment.as.smelting": // astral sorcery
-                // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition() == AoESymmetrical.none() &&
-                        !getBehaviorsComponent(stack).hasBehavior(GTToolBehaviors.TREE_FELLING);
-        }
 
         // Block Mending and Unbreaking on Electric tools
         if (isElectric() &&
-                (enchantment instanceof MendingEnchantment || enchantment instanceof DigDurabilityEnchantment)) {
+                (enchantment == Enchantments.MENDING ||
+                        enchantment == Enchantments.UNBREAKING)) {
             return false;
         }
 
+        /*
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
         // the Minecraft method takes an Item, and does not respect NBT nor meta.
-        if (enchantment.getSupportedItems() == ItemTags.MINING_ENCHANTABLE) {
+        if (enchantment.definition().supportedItems() == ItemTags.MINING_ENCHANTABLE) {
             return getToolStats().isSuitableForBlockBreak(stack);
         } else if (enchantment.getSupportedItems() == ItemTags.WEAPON_ENCHANTABLE) {
             return getToolStats().isSuitableForAttacking(stack);
         } else if (enchantment.getSupportedItems() == ItemTags.DURABILITY_ENCHANTABLE) {
             return !stack.has(DataComponents.UNBREAKABLE);
         }
+        */
 
         ToolProperty property = getToolProperty(stack);
         if (property == null) return false;

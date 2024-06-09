@@ -30,18 +30,14 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "getDamageAfterArmorAbsorb",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/damagesource/CombatRules;getDamageAfterAbsorb(FLnet/minecraft/world/damagesource/DamageSource;FF)F"))
+                     target = "Lnet/minecraft/world/damagesource/CombatRules;getDamageAfterAbsorb(Lnet/minecraft/world/entity/LivingEntity;FLnet/minecraft/world/damagesource/DamageSource;FF)F"))
     private void gtceu$adjustArmorAbsorption(DamageSource damageSource, float damageAmount,
                                              CallbackInfoReturnable<Float> cir) {
         float armorDamage = Math.max(1.0F, damageAmount / 4.0F);
         int i = 0;
         for (ItemStack itemStack : this.getArmorSlots()) {
             if (itemStack.getItem() instanceof ArmorComponentItem armorItem) {
-                EquipmentSlot slot = EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i);
-                armorItem.damageArmor((LivingEntity) (Object) this, itemStack, damageSource, (int) armorDamage, slot);
-                if (itemStack.getCount() == 0) {
-                    this.setItemSlot(slot, ItemStack.EMPTY);
-                }
+                armorItem.damageArmor((LivingEntity) (Object) this, itemStack, damageSource, (int) armorDamage);
             }
             ++i;
         }
@@ -55,7 +51,7 @@ public abstract class LivingEntityMixin {
         if (equipable == null && pSlot == EquipmentSlot.FEET &&
                 pOldItem.getItem() instanceof ArmorComponentItem) {
             AttributeInstance attribute = ((LivingEntity) (Object) this).getAttribute(Attributes.STEP_HEIGHT);
-            if (attribute != null && attribute.hasModifier(IStepAssist.STEP_ASSIST_MODIFIER)) {
+            if (attribute != null && attribute.hasModifier(IStepAssist.STEP_ASSIST_MODIFIER.id())) {
                 attribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
             }
         }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
+import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IStepAssist {
 
-    AttributeModifier STEP_ASSIST_MODIFIER = new AttributeModifier("Step Assist", 0.4023,
+    AttributeModifier STEP_ASSIST_MODIFIER = new AttributeModifier(GTCEu.id("step_assist"), 0.4023,
             AttributeModifier.Operation.ADD_VALUE);
 
     float MAGIC_STEP_HEIGHT = 1.0023f;

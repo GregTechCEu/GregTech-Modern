@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.data.jukebox.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.data.worldgen.GTPlacements;
@@ -47,7 +48,8 @@ public class DataGenerators {
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                             .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
                             .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
+                            .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap),
                     set));
         }
     }

@@ -163,7 +163,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                              BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                              BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                              TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(new ResourceLocation(registrate.getModid(), name));
+        super(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
         this.metaMachine = metaMachine;
@@ -202,17 +202,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> defaultModelRenderer() {
-        return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+        return modelRenderer(() -> ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/" + name));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
         return renderer(() -> new OverlayTieredMachineRenderer(tier,
-                new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name)));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullRenderer(String name) {
         return renderer(() -> new OverlaySteamMachineRenderer(
-                new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name)));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullRenderer(ResourceLocation workableModel) {
@@ -314,7 +314,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     protected DEFINITION createDefinition() {
-        return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
+        return definitionFactory.apply(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), name));
     }
 
     // @HideFromJS
@@ -398,7 +398,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setAfterWorking(this.afterWorking);
 
         if (renderer == null) {
-            renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+            renderer = () -> new MachineRenderer(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/" + name));
         }
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {

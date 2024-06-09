@@ -14,10 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,10 +41,10 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, @NotNull Level level) {
+    public boolean matches(CraftingInput inv, @NotNull Level level) {
         List<ItemStack> list = new ArrayList<>();
 
-        for (int i = 0; i < inv.getContainerSize(); i++) {
+        for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty()) {
                 list.add(stack);
@@ -80,10 +77,10 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         List<ItemStack> list = new ArrayList<>();
 
-        for (int i = 0; i < inv.getContainerSize(); i++) {
+        for (int i = 0; i < inv.size(); i++) {
             ItemStack itemstack = inv.getItem(i);
 
             if (!itemstack.isEmpty()) {
@@ -120,7 +117,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer container) {
+    public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingInput container) {
         var result = super.getRemainingItems(container);
         for (ItemStack stack : result) {
             if (stack.getItem() instanceof IGTTool) {

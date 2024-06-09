@@ -85,7 +85,7 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
                 this.customUICache = new CompoundTag();
             } else {
                 try {
-                    var resource = resourceManager.getResourceOrThrow(new ResourceLocation(uiPath.getNamespace(),
+                    var resource = resourceManager.getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(uiPath.getNamespace(),
                             "ui/machine/%s.mui".formatted(uiPath.getPath())));
                     try (InputStream inputStream = resource.open()) {
                         try (DataInputStream dataInputStream = new DataInputStream(inputStream);) {

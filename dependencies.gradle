@@ -25,16 +25,16 @@ dependencies {
 
     // EMI
     emiCompileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    emiImplementation forge.emi
+    emiCompileOnly forge.emi
 
     // TOP
     topCompileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
-    jadeImplementation(forge.jade)
+    jadeCompileOnly(forge.jade)
 
     // AE2
-    ae2Implementation(forge.ae2) { transitive = false }
+    ae2CompileOnly(forge.ae2) { transitive = false }
     compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS

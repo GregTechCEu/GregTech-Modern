@@ -19,7 +19,7 @@ public class RegistryUtil {
     public static <T> List<ResourceKey<T>> resolveResourceKeys(ResourceKey<Registry<T>> registryKey,
                                                                String... locations) {
         return Arrays.stream(locations)
-                .map(location -> ResourceKey.create(registryKey, new ResourceLocation(location)))
+                .map(location -> ResourceKey.create(registryKey, ResourceLocation.parse(location)))
                 .toList();
     }
 }

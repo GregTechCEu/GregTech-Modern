@@ -43,7 +43,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
             register.accept(texture);
-            emissiveTexture = new ResourceLocation(texture.getNamespace(), texture.getPath() + "_emissive");
+            emissiveTexture = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), texture.getPath() + "_emissive");
             if (ResourceHelper.isTextureExist(emissiveTexture)) register.accept(emissiveTexture);
             else emissiveTexture = null;
         }

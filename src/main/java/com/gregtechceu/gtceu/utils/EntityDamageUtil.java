@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -73,7 +74,9 @@ public class EntityDamageUtil {
         ItemStack stack = entity.getItemBySlot(EquipmentSlot.FEET);
         // check for empty in order to force damage to be applied if armor breaks
         if (!stack.isEmpty()) {
-            if (stack.getEnchantmentLevel(Enchantments.FROST_WALKER) > 0) {
+            var registry = entity.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+            var holder = registry.getHolderOrThrow(Enchantments.FROST_WALKER);
+            if (stack.getEnchantmentLevel(holder) > 0) {
                 stack.hurtAndBreak(1, entity, EquipmentSlot.FEET);
                 return;
             }

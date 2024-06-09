@@ -32,7 +32,7 @@ public class DimensionCondition extends RecipeCondition {
                     .apply(instance, DimensionCondition::new));
 
     public final static DimensionCondition INSTANCE = new DimensionCondition();
-    private ResourceLocation dimension = new ResourceLocation("dummy");
+    private ResourceLocation dimension = ResourceLocation.parse("dummy");
 
     public DimensionCondition(ResourceLocation dimension) {
         this.dimension = dimension;
@@ -84,7 +84,7 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        dimension = new ResourceLocation(
+        dimension = ResourceLocation.parse(
                 GsonHelper.getAsString(config, "dim", "dummy"));
         return this;
     }
@@ -92,7 +92,7 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        dimension = new ResourceLocation(buf.readUtf());
+        dimension = ResourceLocation.parse(buf.readUtf());
         return this;
     }
 

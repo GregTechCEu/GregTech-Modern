@@ -56,8 +56,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
                 ModelFactory.getModelBaker(),
                 new SpriteOverrider(override),
-                ModelFactory.getRotation(facing),
-                modelLocation));
+                ModelFactory.getRotation(facing)));
     }
 
     public float reBakeOverlayQuadsOffset() {

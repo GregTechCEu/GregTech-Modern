@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -37,8 +39,7 @@ import java.util.function.Supplier;
  */
 public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
-    public static final UUID HAZARD_MAX_HEALTH_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");
-    public static final String HAZARD_MAX_HEALTH_KEY = "gtceu.hazard.max_health";
+    public static final ResourceLocation HAZARD_MAX_HEALTH_ID = GTCEu.id("hazard_max_health_modifier");
 
     @Getter
     @Nullable
@@ -135,8 +136,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
     public static HazardProperty.HazardEffect maxHealthLoweringEffect(int secondsToMax, int startTime, int modifier) {
         return new HazardProperty.HazardEffect(secondsToMax, startTime,
-                Map.of(Attributes.MAX_HEALTH, new AttributeModifier(HazardProperty.HAZARD_MAX_HEALTH_UUID,
-                        HazardProperty.HAZARD_MAX_HEALTH_KEY, -modifier, AttributeModifier.Operation.ADD_VALUE)));
+                Map.of(Attributes.MAX_HEALTH, new AttributeModifier(HazardProperty.HAZARD_MAX_HEALTH_ID,
+                        -modifier, AttributeModifier.Operation.ADD_VALUE)));
     }
 
     public static HazardProperty.HazardEffect maxAirLoweringEffect(int secondsToMax, int startTime,
@@ -280,7 +281,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
                 AttributeModifier modifier = entry.getValue();
                 double amount = modifier.amount() * (double) timeFromStart / Math.max(duration, 1);
                 modifierMap.put(entry.getKey(),
-                        new AttributeModifier(modifier.id(), modifier.name(), amount, modifier.operation()));
+                        new AttributeModifier(modifier.id(), amount, modifier.operation()));
             }
             return modifierMap;
         }

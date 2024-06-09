@@ -58,7 +58,9 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
@@ -243,16 +245,13 @@ public class GTItems {
                                                 }
 
                                                 // Set tool and material enchantments
-                                                Object2IntMap<Enchantment> enchantmentLevels = new Object2IntOpenHashMap<>(
+                                                Object2IntMap<ResourceKey<Enchantment>> enchantmentLevels = new Object2IntOpenHashMap<>(
                                                         toolProperty.getEnchantments());
                                                 enchantmentLevels.putAll(toolStats.getDefaultEnchantments());
                                                 ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(
                                                         ItemEnchantments.EMPTY);
-                                                enchantmentLevels.forEach((enchantment, level) -> {
-                                                    if (toolType.itemTags.contains(enchantment.getSupportedItems())) {
-                                                        enchantments.set(enchantment, level);
-                                                    }
-                                                });
+                                                // TODO default enchantments are fucked
+                                                //enchantmentLevels.forEach((enchantment, level) -> enchantments.set(enchantment, level));
                                                 p.component(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
                                                 // Set behaviours
@@ -2684,9 +2683,10 @@ public class GTItems {
             .lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC))
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE
-            .item("sus_record", p -> new RecordItem(15, () -> GTSoundEntries.SUS_RECORD.getMainEvent(), p, 820))
+    public static ItemEntry<Item> SUS_RECORD = REGISTRATE
+            .item("sus_record", Item::new)
             .lang("Music Disc")
+            .properties(p -> p.jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, GTCEu.id("sus"))))
             .register();
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)
             .lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC))

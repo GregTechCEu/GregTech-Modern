@@ -9,7 +9,7 @@ import lombok.Getter;
 
 public enum BucketMode implements EnumSelectorWidget.SelectableEnum {
 
-    BUCKET("cover.bucket.mode.bucket", "minecraft:textures/item/water_bucket", 1000),
+    BUCKET("cover.bucket.mode.bucket", "textures/item/water_bucket", 1000),
     MILLI_BUCKET("cover.bucket.mode.milli_bucket", "gtceu:textures/gui/icon/bucket_mode/water_drop", 1);
 
     @Getter

@@ -37,9 +37,9 @@ public class StrictShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, Level level) {
-        for (int i = 0; i <= inv.getWidth() - this.getWidth(); ++i) {
-            for (int j = 0; j <= inv.getHeight() - this.getHeight(); ++j) {
+    public boolean matches(CraftingInput inv, Level level) {
+        for (int i = 0; i <= inv.width() - this.getWidth(); ++i) {
+            for (int j = 0; j <= inv.height() - this.getHeight(); ++j) {
                 if (this.matches(inv, i, j)) {
                     return true;
                 }
@@ -51,16 +51,16 @@ public class StrictShapedRecipe extends ShapedRecipe {
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
      */
-    private boolean matches(CraftingContainer craftingInventory, int width, int height) {
-        for (int i = 0; i < craftingInventory.getWidth(); ++i) {
-            for (int j = 0; j < craftingInventory.getHeight(); ++j) {
+    private boolean matches(CraftingInput craftingInventory, int width, int height) {
+        for (int i = 0; i < craftingInventory.width(); ++i) {
+            for (int j = 0; j < craftingInventory.height(); ++j) {
                 int k = i - width;
                 int l = j - height;
                 Ingredient ingredient = Ingredient.EMPTY;
                 if (k >= 0 && l >= 0 && k < this.getWidth() && l < this.getHeight()) {
                     ingredient = this.getIngredients().get(k + l * this.getWidth());
                 }
-                if (ingredient.test(craftingInventory.getItem(i + j * craftingInventory.getWidth()))) continue;
+                if (ingredient.test(craftingInventory.getItem(i + j * craftingInventory.width()))) continue;
                 return false;
             }
         }

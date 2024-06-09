@@ -9,8 +9,10 @@ import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -66,7 +68,8 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
                         itemNbt).getOrThrow();
                 int storedAmount = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag()
                         .getInt("storedAmount");
-                float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+                float tick = Minecraft.getInstance().level.getGameTime() +
+                        Minecraft.getInstance().getTimer().getGameTimeDeltaTicks();
                 // Don't need to handle locked items here since they don't get saved to the item
                 renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
 
@@ -123,7 +126,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
         new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
+                MultiBufferSource.immediate(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE))), 0, 0, 0, 24, 64, 28);
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }

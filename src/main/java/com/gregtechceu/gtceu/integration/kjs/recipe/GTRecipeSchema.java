@@ -77,10 +77,10 @@ public interface GTRecipeSchema {
         @HideFromJS
         @Override
         public GTKubeRecipe id(ResourceLocation _id) {
-            this.idWithoutType = new ResourceLocation(
+            this.idWithoutType = ResourceLocation.fromNamespaceAndPath(
                     _id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(),
                     _id.getPath());
-            this.id = new ResourceLocation(idWithoutType.getNamespace(),
+            this.id = ResourceLocation.fromNamespaceAndPath(idWithoutType.getNamespace(),
                     "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
             return this;
         }

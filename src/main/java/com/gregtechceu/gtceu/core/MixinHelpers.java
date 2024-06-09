@@ -19,6 +19,9 @@ import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,6 +35,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -44,6 +48,8 @@ import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -172,14 +178,16 @@ public class MixinHelpers {
         });
     }
 
-    private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot();
+    private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot(GTRegistries.builtinRegistry());
 
     public static void generateGTDynamicLoot(BiConsumer<ResourceLocation, LootTable> lootTables) {
+        Holder<Enchantment> fortune = GTRegistries.builtinRegistry().registryOrThrow(Registries.ENCHANTMENT)
+                        .getHolderOrThrow(Enchantments.FORTUNE);
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
-                    ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(),
+                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
@@ -193,7 +201,7 @@ public class MixinHelpers {
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
                     int oreMultiplier = type.isDoubleDrops() ? 2 : 1;
 
-                    LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
+                    LootTable.Builder builder = BLOCK_LOOT.createSilkTouchDispatchTable(block,
                             BLOCK_LOOT.applyExplosionDecay(block,
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction.setCount(
@@ -207,9 +215,9 @@ public class MixinHelpers {
                         if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
                             ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
-                                    .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
+                                    .when(hasSilkTouch(GTRegistries.builtinRegistry()).invert())
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.FORTUNE))
+                                    .apply(ApplyBonusCount.addUniformBonusCount(fortune))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
                             isEmpty = false;
@@ -236,12 +244,12 @@ public class MixinHelpers {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(),
+            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
                     "blocks/" + blockEntry.getId().getPath());
             LootTable.Builder builder = BLOCK_LOOT
                     .createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(),
                             UniformGenerator.between(3, 5))
-                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.FORTUNE));
+                    .apply(ApplyBonusCount.addUniformBonusCount(fortune));
             lootTables.accept(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
             ((BlockBehaviourAccessor) blockEntry.get())
                     .setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
@@ -249,17 +257,30 @@ public class MixinHelpers {
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = new ResourceLocation(id.getNamespace(), "blocks/" + id.getPath());
+            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blocks/" + id.getPath());
             ((BlockBehaviourAccessor) block).setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
             lootTables.accept(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 
+    public static LootItemCondition.Builder hasSilkTouch(HolderLookup.Provider provider) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = provider.lookupOrThrow(Registries.ENCHANTMENT);
+        return MatchTool.toolMatches(
+                ItemPredicate.Builder.item()
+                        .withSubPredicate(
+                                ItemSubPredicates.ENCHANTMENTS,
+                                ItemEnchantmentsPredicate.enchantments(
+                                        List.of(new EnchantmentPredicate(registrylookup.getOrThrow(Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1)))
+                                )
+                        )
+        );
+    }
+
     public static void addMaterialBlockLootTables(BiConsumer<ResourceLocation, LootTable> lootTables, TagPrefix prefix,
                                                   Map<Material, ? extends BlockEntry<? extends Block>> map) {
         map.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(),
+            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
                     "blocks/" + blockEntry.getId().getPath());
             ((BlockBehaviourAccessor) blockEntry.get())
                     .setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));

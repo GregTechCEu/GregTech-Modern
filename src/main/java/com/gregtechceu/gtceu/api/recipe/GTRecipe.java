@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
@@ -36,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTRecipe implements Recipe<Container> {
+public class GTRecipe implements Recipe<RecipeInput> {
 
     public final GTRecipeType recipeType;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
@@ -123,12 +124,12 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(@NotNull Container pContainer, @NotNull Level pLevel) {
+    public boolean matches(@NotNull RecipeInput pContainer, @NotNull Level pLevel) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container p_44001_, HolderLookup.Provider p_336092_) {
+    public ItemStack assemble(RecipeInput p_44001_, HolderLookup.Provider p_336092_) {
         return ItemStack.EMPTY;
     }
 

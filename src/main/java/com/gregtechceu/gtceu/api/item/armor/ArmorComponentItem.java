@@ -16,7 +16,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +63,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
         List<ItemAttributeModifiers.Entry> list = new ArrayList<>();
         IArmorLogic armorLogic = getArmorLogic();
-        list.addAll(armorLogic.getAttributeModifiers(Mob.getEquipmentSlotForItem(stack), stack));
+        list.addAll(armorLogic.getAttributeModifiers(Equipable.get(stack).getEquipmentSlot(), stack));
         list.addAll(super.getAttributeModifiers(stack).modifiers());
         return new ItemAttributeModifiers(list, true);
     }
@@ -121,9 +119,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
-    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage,
-                            EquipmentSlot slot) {
-        armorLogic.damageArmor(entity, stack, source, damage, slot);
+    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage) {
+        armorLogic.damageArmor(entity, stack, source, damage);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class HazardEffectTracker implements IHazardEffectTracker {
                     continue;
                 }
 
-                if (attributeInstance.hasModifier(modifier)) {
+                if (attributeInstance.hasModifier(modifier.id())) {
                     attributeInstance.removeModifier(modifier);
                 }
                 attributeInstance.addPermanentModifier(modifier);

@@ -318,7 +318,7 @@ public class MachineFunctionPresets {
 
             @Override
             public MachineBuilder<D> defaultModelRenderer() {
-                return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+                return modelRenderer(() -> ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/" + name));
             }
 
             @Override

@@ -64,7 +64,7 @@ public class FluidVeinWorldEntry {
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            ResourceLocation id = new ResourceLocation(tag.getString("vein"));
+            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
             if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.containKey(id)) {
                 info.vein = GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(id);
             }

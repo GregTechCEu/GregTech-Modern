@@ -152,10 +152,10 @@ public final class ToolChargeBarRenderer {
         float g2 = (float) FastColor.ARGB32.green(colorTo) / 255.0F;
         float b2 = (float) FastColor.ARGB32.blue(colorTo) / 255.0F;
         Matrix4f matrix4f = graphics.pose().last().pose();
-        consumer.vertex(matrix4f, (float) x1, (float) y1, (float) z).color(r1, g1, b1, a1).endVertex();
-        consumer.vertex(matrix4f, (float) x1, (float) y2, (float) z).color(r1, g1, b1, a1).endVertex();
-        consumer.vertex(matrix4f, (float) x2, (float) y2, (float) z).color(r2, g2, b2, a2).endVertex();
-        consumer.vertex(matrix4f, (float) x2, (float) y1, (float) z).color(r2, g2, b2, a2).endVertex();
+        consumer.addVertex(matrix4f, (float) x1, (float) y1, (float) z).setColor(r1, g1, b1, a1);
+        consumer.addVertex(matrix4f, (float) x1, (float) y2, (float) z).setColor(r1, g1, b1, a1);
+        consumer.addVertex(matrix4f, (float) x2, (float) y2, (float) z).setColor(r2, g2, b2, a2);
+        consumer.addVertex(matrix4f, (float) x2, (float) y1, (float) z).setColor(r2, g2, b2, a2);
     }
 
     private ToolChargeBarRenderer() {}

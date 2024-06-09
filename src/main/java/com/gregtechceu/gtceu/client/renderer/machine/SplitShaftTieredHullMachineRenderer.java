@@ -46,8 +46,7 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
                     var bakeModel = ModelFactory.getUnBakedModel(modelLocation).bake(
                             ModelFactory.getModelBaker(),
                             new SpriteOverrider(Map.of("bottom", baseTexture, "top", baseTexture, "side", baseTexture)),
-                            ModelFactory.getRotation(frontFacing),
-                            modelLocation);
+                            ModelFactory.getRotation(frontFacing));
                     if (bakeModel != null) {
                         quads.addAll(bakeModel.getQuads(part.self().getDefinition().defaultBlockState(), side, rand));
                         return true;

@@ -47,8 +47,8 @@ public class RockBreakerCondition extends RecipeCondition {
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-        var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+        var fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
+        var fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
         boolean hasFluidA = false, hasFluidB = false;
         var level = recipeLogic.machine.self().getLevel();
         var pos = recipeLogic.machine.self().getPos();

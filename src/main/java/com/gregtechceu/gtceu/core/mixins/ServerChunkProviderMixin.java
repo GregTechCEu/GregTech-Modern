@@ -73,9 +73,9 @@ public abstract class ServerChunkProviderMixin {
 
             ChunkHolder chunkholder = this.getVisibleChunkIfPresent(i);
             if (chunkholder != null) {
-                ChunkResult<ChunkAccess> result = chunkholder.getFutureIfPresent(ChunkStatus.FULL).getNow(null);
+                ChunkResult<LevelChunk> result = chunkholder.getFullChunkFuture().getNow(null);
                 if (result != null) {
-                    ChunkAccess chunk = result.orElse(null);
+                    LevelChunk chunk = result.orElse(null);
                     if (chunk instanceof LevelChunk levelChunk) {
                         storeInCache(i, levelChunk);
                         cir.setReturnValue(levelChunk);

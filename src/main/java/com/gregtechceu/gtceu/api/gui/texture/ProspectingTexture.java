@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
+import com.mojang.blaze3d.vertex.BufferUploader;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -146,17 +147,16 @@ public class ProspectingTexture extends AbstractTexture {
 
     public void draw(GuiGraphics graphics, int x, int y) {
         if (this.getId() == -1) return;
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.getId());
         var matrix4f = graphics.pose().last().pose();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix4f, x, y + imageHeight, 0).uv(0, 1).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x + imageWidth, y, 0).uv(1, 0).color(-1).endVertex();
-        bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
-        tessellator.end();
+        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
+        bufferbuilder.addVertex(matrix4f, x, y + imageHeight, 0).setUv(0, 1).setColor(-1);
+        bufferbuilder.addVertex(matrix4f, x + imageWidth, y + imageHeight, 0).setUv(1, 1).setColor(-1);
+        bufferbuilder.addVertex(matrix4f, x + imageWidth, y, 0).setUv(1, 0).setColor(-1);
+        bufferbuilder.addVertex(matrix4f, x, y, 0).setUv(0, 0).setColor(-1);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 
         // draw special grid (e.g. fluid)
         for (int cx = 0; cx < radius * 2 - 1; cx++) {

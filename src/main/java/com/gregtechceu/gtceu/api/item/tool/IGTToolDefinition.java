@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -87,9 +88,9 @@ public interface IGTToolDefinition {
         return true;
     }
 
-    boolean canApplyEnchantment(ItemStack stack, Enchantment enchantment);
+    boolean canApplyEnchantment(ItemStack stack, ResourceKey<Enchantment> enchantment);
 
-    Object2IntMap<Enchantment> getDefaultEnchantments();
+    Object2IntMap<ResourceKey<Enchantment>> getDefaultEnchantments();
 
     /**
      * Misc

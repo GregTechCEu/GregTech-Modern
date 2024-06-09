@@ -39,7 +39,7 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
     }
 
     public static String appendIdString(String id) {
@@ -55,7 +55,7 @@ public class GTCEu {
                 strings[0] = id.substring(0, i);
             }
         }
-        return new ResourceLocation(strings[0], strings[1]);
+        return ResourceLocation.fromNamespaceAndPath(strings[0], strings[1]);
     }
 
     public static boolean isKubeJSLoaded() {

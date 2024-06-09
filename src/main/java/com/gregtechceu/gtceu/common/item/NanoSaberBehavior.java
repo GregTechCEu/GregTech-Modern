@@ -3,8 +3,11 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IEnchantableItem;
 import com.gregtechceu.gtceu.api.item.component.IItemAttributes;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -34,11 +37,11 @@ public class NanoSaberBehavior extends ToggleEnergyConsumerBehavior implements I
         double attackDamage = baseAttackDamage + (isItemActive(stack) ? additionalAttackDamage : 0.0D);
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_SPEED,
-                        new AttributeModifier(Item.BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.0,
+                        new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,-2.0,
                                 AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.HAND)
                 .add(Attributes.ATTACK_DAMAGE,
-                        new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, "Weapon Modifier", attackDamage,
+                        new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, attackDamage,
                                 AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.HAND)
                 .build();
@@ -56,8 +59,10 @@ public class NanoSaberBehavior extends ToggleEnergyConsumerBehavior implements I
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment != Enchantments.UNBREAKING &&
-                enchantment != Enchantments.MENDING &&
+        Registry<Enchantment> registry = GTRegistries.builtinRegistry().registryOrThrow(Registries.ENCHANTMENT);
+        var key = registry.getResourceKey(enchantment).get();
+        return key != Enchantments.UNBREAKING &&
+                key != Enchantments.MENDING &&
                 enchantment.canEnchant(Items.IRON_SWORD.getDefaultInstance());
     }
 }

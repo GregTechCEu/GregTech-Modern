@@ -153,13 +153,13 @@ public class ForgeCommonEventListener {
 
             if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
                 valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                        (int) (player.fallDistance - 1.2f));
                 player.fallDistance = 0;
                 event.setCanceled(true);
             } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem &&
                     jet.has(GTDataComponents.FLY_MODE)) {
                         valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
-                                (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                                (int) (player.fallDistance - 1.2f));
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }

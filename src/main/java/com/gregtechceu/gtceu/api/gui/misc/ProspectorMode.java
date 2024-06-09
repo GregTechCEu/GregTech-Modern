@@ -85,7 +85,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getMaterialRGB();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).defaultMapColor().col;
+            return BuiltInRegistries.BLOCK.get(ResourceLocation.parse(item)).defaultMapColor().col;
         }
 
         @Override
@@ -103,7 +103,7 @@ public abstract class ProspectorMode<T> {
                         return new ItemStackTexture(list.toArray(ItemStack[]::new)).scale(0.8f);
                     }
                 }
-                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(new ResourceLocation(name))))
+                return new ItemStackTexture(new ItemStack(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(name))))
                         .scale(0.8f);
             });
         }
@@ -116,7 +116,7 @@ public abstract class ProspectorMode<T> {
                     return mat.getLocalizedName();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getName();
+            return BuiltInRegistries.BLOCK.get(ResourceLocation.parse(item)).getName();
         }
 
         @Override
@@ -208,7 +208,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public FluidInfo deserialize(FriendlyByteBuf buf) {
-            return new FluidInfo(BuiltInRegistries.FLUID.get(new ResourceLocation(buf.readUtf())), buf.readVarInt(),
+            return new FluidInfo(BuiltInRegistries.FLUID.get(ResourceLocation.parse(buf.readUtf())), buf.readVarInt(),
                     buf.readVarInt());
         }
 

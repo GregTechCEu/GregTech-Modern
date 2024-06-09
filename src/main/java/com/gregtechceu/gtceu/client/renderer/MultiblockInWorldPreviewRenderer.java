@@ -340,11 +340,10 @@ public class MultiblockInWorldPreviewRenderer {
                 if (Thread.interrupted())
                     return;
                 var layer = RenderType.chunkBufferLayers().get(i);
-                var buffer = new BufferBuilder(layer.bufferSize());
-                buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+                var buffer = new BufferBuilder(new ByteBufferBuilder(layer.bufferSize()), VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
                 renderBlocks(level, poseStack, dispatcher, layer, new WorldSceneRenderer.VertexConsumerWrapper(buffer),
                         renderedBlocks);
-                var builder = buffer.end();
+                var builder = buffer.buildOrThrow();
                 var vertexBuffer = getBUFFERS()[i];
                 Runnable toUpload = () -> {
                     if (!vertexBuffer.isInvalid()) {
@@ -417,7 +416,7 @@ public class MultiblockInWorldPreviewRenderer {
                 dispatcher.renderLiquid(pos, level, wrapperBuffer, state, fluidState);
             }
 
-            wrapperBuffer.clerOffset();
+            wrapperBuffer.clearOffset();
             wrapperBuffer.clearColor();
         }
     }

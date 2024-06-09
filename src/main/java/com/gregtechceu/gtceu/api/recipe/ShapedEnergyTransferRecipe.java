@@ -50,12 +50,12 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput craftingContainer, HolderLookup.Provider provider) {
         long maxCharge = 0L;
         long charge = 0L;
         ItemStack resultStack = super.assemble(craftingContainer, provider);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
-            for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
+            for (int i = 0; i < craftingContainer.size(); i++) {
                 if (ItemStack.isSameItem(craftingContainer.getItem(i), chargeStack)) {
                     ItemStack stack = craftingContainer.getItem(i);
                     IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);

@@ -89,7 +89,7 @@ public class MachineUIProject extends UIProject {
     public void deserializeNBT(CompoundTag tag, HolderLookup.Provider provider) {
         super.deserializeNBT(tag, provider);
         if (tag.contains("machine")) {
-            machineDefinition = GTRegistries.MACHINES.get(new ResourceLocation(tag.getString("machine")));
+            machineDefinition = GTRegistries.MACHINES.get(ResourceLocation.parse(tag.getString("machine")));
         }
     }
 

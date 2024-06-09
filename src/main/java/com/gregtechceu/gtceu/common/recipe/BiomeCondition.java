@@ -36,7 +36,7 @@ public class BiomeCondition extends RecipeCondition {
                     .apply(instance, BiomeCondition::new));
 
     public final static BiomeCondition INSTANCE = new BiomeCondition();
-    private ResourceLocation biome = new ResourceLocation("dummy");
+    private ResourceLocation biome = ResourceLocation.parse("dummy");
 
     public BiomeCondition(boolean isReverse, ResourceLocation biome) {
         super(isReverse);
@@ -91,7 +91,7 @@ public class BiomeCondition extends RecipeCondition {
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        biome = new ResourceLocation(
+        biome = ResourceLocation.parse(
                 GsonHelper.getAsString(config, "biome", "dummy"));
         return this;
     }
@@ -99,7 +99,7 @@ public class BiomeCondition extends RecipeCondition {
     @Override
     public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        biome = new ResourceLocation(buf.readUtf());
+        biome = ResourceLocation.parse(buf.readUtf());
         return this;
     }
 

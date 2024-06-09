@@ -216,14 +216,14 @@ public class GTRecipeTypes {
                         recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList())
                                 .isEmpty()) {
                     recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
+                            .copy(ResourceLocation.parse(recipeBuilder.id.toString() + "_water"))
                             .inputFluids(GTMaterials.Water.getFluid((int) Math.max(4,
                                     Math.min(1000, recipeBuilder.duration * recipeBuilder.EUt() / 320))))
                             .duration(recipeBuilder.duration * 2)
                             .save(provider);
 
                     recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
+                            .copy(ResourceLocation.parse(recipeBuilder.id.toString() + "_distilled_water"))
                             .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.max(3,
                                     Math.min(750, recipeBuilder.duration * recipeBuilder.EUt() / 426))))
                             .duration((int) (recipeBuilder.duration * 1.5))
@@ -382,7 +382,7 @@ public class GTRecipeTypes {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() &&
                         recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList())
                                 .isEmpty()) {
-                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_soldering_alloy"))
+                    recipeBuilder.copy(ResourceLocation.parse(recipeBuilder.id.toString() + "_soldering_alloy"))
                             .inputFluids(GTMaterials.SolderingAlloy
                                     .getFluid(Math.max(1, (GTValues.L / 2) * recipeBuilder.getSolderMultiplier())))
                             .save(provider);
@@ -422,8 +422,8 @@ public class GTRecipeTypes {
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .prepareBuilder(recipeBuilder -> recipeBuilder.addCondition(RockBreakerCondition.INSTANCE))
             .setUiBuilder((recipe, widgetGroup) -> {
-                var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-                var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+                var fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
+                var fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
                     FluidTank tank = new FluidTank(1000);
                     tank.setFluid(new FluidStack(fluidA, 1000));

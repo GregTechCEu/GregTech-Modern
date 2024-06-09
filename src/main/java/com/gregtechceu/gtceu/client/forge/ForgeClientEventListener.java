@@ -37,7 +37,7 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void registerItemStackCapabilities(RenderHighlightEvent.Block event) {
         BlockHighLightRenderer.renderBlockHighLight(event.getPoseStack(), event.getCamera(), event.getTarget(),
-                event.getMultiBufferSource(), event.getPartialTick());
+                event.getMultiBufferSource(), event.getDeltaTracker().getGameTimeDeltaPartialTick(false));
     }
 
     @SubscribeEvent

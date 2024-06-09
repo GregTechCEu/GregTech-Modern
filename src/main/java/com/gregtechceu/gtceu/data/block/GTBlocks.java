@@ -607,7 +607,7 @@ public class GTBlocks {
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE
             .block("pump_deck", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
                             Map.of("bottom", GTCEu.id("block/casings/pump_deck/bottom"),
                                     "top", GTCEu.id("block/casings/pump_deck/top"),
                                     "side", GTCEu.id("block/casings/pump_deck/side"))) :
@@ -750,7 +750,7 @@ public class GTBlocks {
             .register();
     public static final BlockEntry<Block> COMPUTER_HEAT_VENT = REGISTRATE
             .block("computer_heat_vent", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_column"),
+                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_column"),
                             Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
                                     "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) :
                             null))
@@ -774,7 +774,7 @@ public class GTBlocks {
                                                            NonNullSupplier<? extends Block> properties) {
         return REGISTRATE
                 .block("%s_pipe_casing".formatted(name.toLowerCase(Locale.ROOT)), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                                 Map.of("all", texture)) : null))
                 .lang("%s Pipe Casing".formatted(name))
                 .initialProperties(properties)
@@ -797,7 +797,7 @@ public class GTBlocks {
     private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
         return createCasingBlock(
                 name, properties -> new RendererBlock(properties,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
                                 Map.of("bottom", GTCEu.id(texture + "/bottom"),
                                         "top", GTCEu.id(texture + "/top"),
                                         "side", GTCEu.id(texture + "/side"))) :
@@ -816,7 +816,7 @@ public class GTBlocks {
                                                       NonNullSupplier<? extends Block> properties,
                                                       Supplier<Supplier<RenderType>> type) {
         return createCasingBlock(name, p -> blockSupplier.apply(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                         Map.of("all", texture)) : null),
                 properties, type);
     }
@@ -891,7 +891,7 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
         return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
                         Map.of("bottom", GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
                                 "top", GTCEu.id("block/casings/steam/%s/top".formatted(material)),
                                 "side", GTCEu.id("block/casings/steam/%s/side".formatted(material)))) :
@@ -926,7 +926,7 @@ public class GTBlocks {
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData) {
         BlockEntry<BatteryBlock> batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
                 p -> new BatteryBlock(p, batteryData, Platform.isClient() ?
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                        new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
                                 Map.of("bottom",
                                         GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
                                         "top",
@@ -966,7 +966,7 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
         var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                         Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
@@ -1000,7 +1000,7 @@ public class GTBlocks {
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
         BlockEntry<ActiveBlock> block = REGISTRATE
                 .block("%s_casing".formatted(type.name()), p -> new ActiveBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
                                 Map.of("bottom", type.bottom(),
                                         "top", type.top(),
                                         "side", type.side())) :
@@ -1043,8 +1043,8 @@ public class GTBlocks {
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
                     prov.blockTexture(ctx.get()).withSuffix("_side"),
-                    new ResourceLocation("minecraft", "block/tnt_bottom"),
-                    new ResourceLocation("minecraft", "block/tnt_top"))))
+                    ResourceLocation.withDefaultNamespace("block/tnt_bottom"),
+                    ResourceLocation.withDefaultNamespace("block/tnt_top"))))
             .simpleItem()
             .register();
 
@@ -1539,7 +1539,7 @@ public class GTBlocks {
             if (!strata.generateBlocks) continue;
             for (StoneBlockType type : StoneBlockType.values()) {
                 String blockId = type.blockId.formatted(strata.getSerializedName());
-                if (BuiltInRegistries.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
+                if (BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(blockId))) continue;
                 var entry = REGISTRATE.block(blockId, Block::new)
                         .initialProperties(() -> Blocks.STONE)
                         .properties(p -> p.strength(type.hardness, type.resistance).mapColor(strata.mapColor))

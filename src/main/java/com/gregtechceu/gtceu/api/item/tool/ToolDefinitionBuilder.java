@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +51,7 @@ public class ToolDefinitionBuilder {
     @Setter
     private float efficiencyMultiplier = 1.0F;
     private boolean isEnchantable;
-    private BiPredicate<ItemStack, Enchantment> canApplyEnchantment;
+    private BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment;
     private boolean sneakBypassUse = false;
     @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
@@ -58,7 +59,7 @@ public class ToolDefinitionBuilder {
     private AoESymmetrical aoe = AoESymmetrical.none();
     private final Set<Block> effectiveBlocks = new ObjectOpenHashSet<>();
     private Predicate<BlockState> effectiveStates;
-    private final Object2IntMap<Enchantment> defaultEnchantments = new Object2IntArrayMap<>();
+    private final Object2IntMap<ResourceKey<Enchantment>> defaultEnchantments = new Object2IntArrayMap<>();
 
     public ToolDefinitionBuilder behaviors(IToolBehavior<?>... behaviours) {
         Collections.addAll(this.behaviours, behaviours);
@@ -99,7 +100,7 @@ public class ToolDefinitionBuilder {
         return this;
     }
 
-    public ToolDefinitionBuilder canApplyEnchantment(BiPredicate<ItemStack, Enchantment> canApplyEnchantment) {
+    public ToolDefinitionBuilder canApplyEnchantment(BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment) {
         this.isEnchantable = true;
         this.canApplyEnchantment = canApplyEnchantment;
         return this;
@@ -110,7 +111,7 @@ public class ToolDefinitionBuilder {
         this.isEnchantable = true;
         this.canApplyEnchantment = (stack, enchantment) -> {
             for (TagKey<Item> type : enchantmentTypes) {
-                if (enchantment.getSupportedItems() == type) {
+                if (stack.is(type)) {
                     return true;
                 }
             }
@@ -138,11 +139,11 @@ public class ToolDefinitionBuilder {
         return this;
     }
 
-    public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level) {
+    public ToolDefinitionBuilder defaultEnchantment(ResourceKey<Enchantment> enchantment, int level) {
         return this.defaultEnchantment(enchantment, level, 0);
     }
 
-    public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level, int growth) {
+    public ToolDefinitionBuilder defaultEnchantment(ResourceKey<Enchantment> enchantment, int level, int growth) {
         this.defaultEnchantments.put(enchantment, level);
         return this;
     }
@@ -164,12 +165,12 @@ public class ToolDefinitionBuilder {
             private final float baseEfficiency = ToolDefinitionBuilder.this.baseEfficiency;
             private final float efficiencyMultiplier = ToolDefinitionBuilder.this.efficiencyMultiplier;
             private final boolean isEnchantable = ToolDefinitionBuilder.this.isEnchantable;
-            private final BiPredicate<ItemStack, Enchantment> canApplyEnchantment = ToolDefinitionBuilder.this.canApplyEnchantment;
+            private final BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment = ToolDefinitionBuilder.this.canApplyEnchantment;
             private final boolean sneakBypassUse = ToolDefinitionBuilder.this.sneakBypassUse;
             private final Supplier<ItemStack> brokenStack = ToolDefinitionBuilder.this.brokenStack;
             private final AoESymmetrical aoeSymmetrical = ToolDefinitionBuilder.this.aoe;
             private final Predicate<BlockState> effectiveStatePredicate;
-            private final Object2IntMap<Enchantment> defaultEnchantments = ToolDefinitionBuilder.this.defaultEnchantments;
+            private final Object2IntMap<ResourceKey<Enchantment>> defaultEnchantments = ToolDefinitionBuilder.this.defaultEnchantments;
 
             {
                 Set<Block> effectiveBlocks = ToolDefinitionBuilder.this.effectiveBlocks;
@@ -257,12 +258,12 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public boolean canApplyEnchantment(ItemStack stack, Enchantment enchantment) {
+            public boolean canApplyEnchantment(ItemStack stack, ResourceKey<Enchantment> enchantment) {
                 return canApplyEnchantment.test(stack, enchantment);
             }
 
             @Override
-            public Object2IntMap<Enchantment> getDefaultEnchantments() {
+            public Object2IntMap<ResourceKey<Enchantment>> getDefaultEnchantments() {
                 return Object2IntMaps.unmodifiable(this.defaultEnchantments);
             }
 

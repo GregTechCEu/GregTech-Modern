@@ -86,7 +86,7 @@ public class ShapelessRecipeBuilder {
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
 
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shapeless" + "/" + recipeId.getPath()), build(),
+        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "shapeless" + "/" + recipeId.getPath()), build(),
                 null);
     }
 }

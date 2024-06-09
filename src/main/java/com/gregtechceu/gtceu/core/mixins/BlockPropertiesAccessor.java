@@ -73,11 +73,10 @@ public interface BlockPropertiesAccessor {
     boolean isRequiresCorrectToolForDrops();
 
     @Accessor
-    Optional<BlockBehaviour.OffsetFunction> getOffsetFunction();
+    BlockBehaviour.OffsetFunction getOffsetFunction();
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Accessor
-    void setOffsetFunction(Optional<BlockBehaviour.OffsetFunction> function);
+    void setOffsetFunction(BlockBehaviour.OffsetFunction function);
 
     @Accessor
     boolean isSpawnTerrainParticles();

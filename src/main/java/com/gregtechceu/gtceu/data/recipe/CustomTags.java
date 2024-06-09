@@ -104,7 +104,7 @@ public class CustomTags {
     public static final TagKey<Block> GLASS_BLOCKS_BLOCK = TagUtil.createBlockTag("glass");
     public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK,
-            new ResourceLocation(GTValues.MODID_CREATE, "seats"));
+            ResourceLocation.fromNamespaceAndPath(GTValues.MODID_CREATE, "seats"));
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
     public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createModBlockTag("logs/rubber");

@@ -86,6 +86,6 @@ public class SmokingRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "smoking/" + recipeId.getPath()), create(), null);
+        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "smoking/" + recipeId.getPath()), create(), null);
     }
 }

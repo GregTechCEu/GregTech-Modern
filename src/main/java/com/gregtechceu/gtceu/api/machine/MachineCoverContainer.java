@@ -211,7 +211,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     @SuppressWarnings("unused")
     private CoverBehavior deserializeCoverUid(CompoundTag uid) {
-        var definitionId = new ResourceLocation(uid.getString("id"));
+        var definitionId = ResourceLocation.parse(uid.getString("id"));
         var side = GTUtil.DIRECTIONS[uid.getInt("side")];
         var definition = GTRegistries.COVERS.get(definitionId);
         if (definition != null) {
