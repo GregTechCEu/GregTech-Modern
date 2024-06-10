@@ -6,12 +6,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
@@ -20,22 +16,12 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class FuelRecipes {
 
     public static void init(RecipeOutput provider) {
-        // TODO this all needs to be cleaned up, but this will make it somewhat work for now
-        // do these first because for some reason vanilla fuels are not set up yet at this phase?
-        Set<Item> addedItems = new HashSet<>();
-        for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
-            addedItems.add(fuelEntry.getKey());
-            STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(fuelEntry.getKey()))
-                    .inputItems(fuelEntry.getKey())
-                    .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
-                    .save(provider);
-        }
         for (Item item : BuiltInRegistries.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
-            if (burnTime > 0 && !addedItems.contains(item)) {
+            if (burnTime > 0) {
                 STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(item))
                         .inputItems(item)
-                        .duration(burnTime * 12)
+                        .duration(burnTime * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                         .save(provider);
             }
         }

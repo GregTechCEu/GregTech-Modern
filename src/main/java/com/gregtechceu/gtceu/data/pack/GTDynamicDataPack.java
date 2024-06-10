@@ -78,7 +78,7 @@ public class GTDynamicDataPack implements PackResources {
         byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(recipeId, "recipes", parent, recipeBytes);
+            writeJson(recipeId, "recipe", parent, recipeBytes);
         }
         if (DATA.containsKey(recipeId)) {
             GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
@@ -90,7 +90,7 @@ public class GTDynamicDataPack implements PackResources {
                     .getOrThrow();
             byte[] advancementBytes = advancementJson.toString().getBytes(StandardCharsets.UTF_8);
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-                writeJson(advancement.id(), "advancements", parent, advancementBytes);
+                writeJson(advancement.id(), "advancement", parent, advancementBytes);
             }
             DATA.put(getAdvancementLocation(Objects.requireNonNull(advancement.id())), advancementBytes);
         }
@@ -102,7 +102,7 @@ public class GTDynamicDataPack implements PackResources {
         byte[] lootTableBytes = lootTableJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(lootTableId, "loot_tables", parent, lootTableBytes);
+            writeJson(lootTableId, "loot_table", parent, lootTableBytes);
         }
         if (DATA.containsKey(lootTableId)) {
             GTCEu.LOGGER.error("duplicated loot table: {}", lootTableId);
@@ -133,7 +133,7 @@ public class GTDynamicDataPack implements PackResources {
                 output.write(json);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            GTCEu.LOGGER.error("Failed to save data JSON to disk.", e);
         }
     }
 
@@ -215,17 +215,17 @@ public class GTDynamicDataPack implements PackResources {
 
     public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
         return ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(),
-                String.join("", "recipes/", recipeId.getPath(), ".json"));
+                String.join("", "recipe/", recipeId.getPath(), ".json"));
     }
 
     public static ResourceLocation getLootTableLocation(ResourceLocation lootTableId) {
         return ResourceLocation.fromNamespaceAndPath(lootTableId.getNamespace(),
-                String.join("", "loot_tables/", lootTableId.getPath(), ".json"));
+                String.join("", "loot_table/", lootTableId.getPath(), ".json"));
     }
 
     public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {
         return ResourceLocation.fromNamespaceAndPath(advancementId.getNamespace(),
-                String.join("", "advancements/", advancementId.getPath(), ".json"));
+                String.join("", "advancement/", advancementId.getPath(), ".json"));
     }
 
     public static ResourceLocation getTagLocation(String identifier, ResourceLocation tagId) {

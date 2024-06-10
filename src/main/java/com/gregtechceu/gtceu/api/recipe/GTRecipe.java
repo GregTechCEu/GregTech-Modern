@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -491,20 +490,5 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 ", duration=" + duration +
                 ", isFuel=" + isFuel +
                 '}';
-    }
-
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.recipeType.registryName);
-        buf.writeVarInt(this.duration);
-        GTRecipeSerializer.writeCollection(this.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(this.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(this.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(this.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(this.conditions, buf, GTRecipeSerializer::conditionWriter);
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRecipeSerializer.KJSCallWrapper.writeIngredientActions(this.ingredientActions, buf);
-        }
-        buf.writeNbt(this.data);
-        buf.writeBoolean(this.isFuel);
     }
 }

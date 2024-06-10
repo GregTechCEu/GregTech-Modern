@@ -38,7 +38,7 @@ public class GTRecipes {
      * This should also be used for recipes that need
      * to respond to a config option in ConfigHolder.
      */
-    public static void recipeAddition(RecipeOutput originalConsumer) {
+    public static void recipeAddition(final RecipeOutput originalConsumer) {
         RecipeOutput consumer = new RecipeOutput() {
 
             @Override

@@ -31,14 +31,15 @@ public class GTRecipeAccessor extends CustomObjectAccessor<GTRecipe> {
     @Override
     public ITypedPayload<?> serialize(AccessorOp accessorOp, GTRecipe gtRecipe, HolderLookup.Provider provider) {
         FriendlyByteBuf serializedHolder = new FriendlyByteBuf(Unpooled.buffer());
-        gtRecipe.toNetwork(new RegistryFriendlyByteBuf(serializedHolder, (RegistryAccess) provider));
+        GTRecipeSerializer.toNetwork(new RegistryFriendlyByteBuf(serializedHolder, (RegistryAccess) provider),
+                gtRecipe);
         return FriendlyBufPayload.of(serializedHolder);
     }
 
     @Override
     public GTRecipe deserialize(AccessorOp accessorOp, ITypedPayload<?> payload, HolderLookup.Provider provider) {
         if (payload instanceof FriendlyBufPayload buffer) {
-            return GTRecipeSerializer.SERIALIZER
+            return GTRecipeSerializer
                     .fromNetwork(new RegistryFriendlyByteBuf(buffer.getPayload(), (RegistryAccess) provider));
         }
         return null;
