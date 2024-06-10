@@ -11,6 +11,7 @@ import net.minecraft.client.resources.model.*;
 import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -27,7 +28,9 @@ public class BlockModelMixin {
 
     @Shadow
     public String name;
-    ThreadLocal<SpriteOverrider> spriteOverriderThreadLocal = ThreadLocal.withInitial(() -> null);
+    @Unique
+    private static final ThreadLocal<SpriteOverrider> gtceu$spriteOverriderThreadLocal = ThreadLocal
+            .withInitial(() -> null);
 
     // We want to remap our materials
     @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Z)Lnet/minecraft/client/resources/model/BakedModel;",
@@ -36,7 +39,7 @@ public class BlockModelMixin {
                             ModelState state, boolean guiLight3d,
                             CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider spriteOverrider) {
-            spriteOverriderThreadLocal.set(spriteOverrider);
+            gtceu$spriteOverriderThreadLocal.set(spriteOverrider);
         }
     }
 
@@ -46,14 +49,14 @@ public class BlockModelMixin {
                            ModelState state, boolean guiLight3d,
                            CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider) {
-            spriteOverriderThreadLocal.remove();
+            gtceu$spriteOverriderThreadLocal.remove();
         }
     }
 
     // We want to remap our materials
     @Inject(method = "findTextureEntry", at = @At(value = "HEAD"), cancellable = true)
     private void remapTextureEntry(String name, CallbackInfoReturnable<Either<Material, String>> cir) {
-        SpriteOverrider overrider = spriteOverriderThreadLocal.get();
+        SpriteOverrider overrider = gtceu$spriteOverriderThreadLocal.get();
         if (overrider != null && overrider.override().containsKey(name)) {
             var mat = overrider.override().get(name);
             if (mat != null) {
