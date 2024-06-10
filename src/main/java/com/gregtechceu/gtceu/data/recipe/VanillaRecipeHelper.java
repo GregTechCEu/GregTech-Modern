@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -459,9 +460,11 @@ public class VanillaRecipeHelper {
         materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);
     }
 
-    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict,
-                                       @NotNull ResourceLocation regName, @NotNull ItemStack result, @NotNull FluidStack fluid,
-                                       @NotNull Object... recipe) {
+    public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                             boolean isStrict,
+                                             @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                             @NotNull FluidStack fluid,
+                                             @NotNull Object... recipe) {
         var builder = new VanillaFluidCraftBuilder(regName).output(result).fluid(fluid);
         builder.isStrict(isStrict);
         CharSet set = new CharOpenHashSet();
@@ -528,23 +531,27 @@ public class VanillaRecipeHelper {
     }
 
     public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
-                                       @NotNull String regName, @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+                                             @NotNull String regName, @NotNull ItemStack result,
+                                             @NotNull FluidStack fluid, @NotNull Object... recipe) {
         addVanillaFluidRecipe(provider, withUnificationData, GTCEu.id(regName), result, fluid, recipe);
     }
 
     public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
-                                       @NotNull ResourceLocation regName, @NotNull ItemStack result, @NotNull FluidStack fluid,
-                                       @NotNull Object... recipe) {
+                                             @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                             @NotNull FluidStack fluid,
+                                             @NotNull Object... recipe) {
         addVanillaFluidRecipe(provider, withUnificationData, false, regName, result, fluid, recipe);
     }
 
     public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
-                                       @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+                                             @NotNull ItemStack result, @NotNull FluidStack fluid,
+                                             @NotNull Object... recipe) {
         addVanillaFluidRecipe(provider, GTCEu.id(regName), result, fluid, recipe);
     }
 
     public static void addVanillaFluidRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                       @NotNull ItemStack result, @NotNull FluidStack fluid, @NotNull Object... recipe) {
+                                             @NotNull ItemStack result, @NotNull FluidStack fluid,
+                                             @NotNull Object... recipe) {
         addVanillaFluidRecipe(provider, false, regName, result, fluid, recipe);
     }
 }
