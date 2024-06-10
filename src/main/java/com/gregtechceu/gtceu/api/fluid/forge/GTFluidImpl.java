@@ -35,6 +35,11 @@ public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
         return fluidType.get();
     }
 
+    @Override
+    public String toString() {
+        return getFluidType().getDescriptionId().toString();
+    }
+
     public static class Source extends GTFluidImpl {
 
         public Source(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
@@ -51,6 +56,11 @@ public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
         @Override
         public boolean isSource(net.minecraft.world.level.material.FluidState state) {
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "Source " + super.toString();
         }
     }
 
@@ -76,6 +86,11 @@ public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
         @Override
         public boolean isSource(net.minecraft.world.level.material.FluidState state) {
             return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Flowing " + super.toString();
         }
     }
 }
