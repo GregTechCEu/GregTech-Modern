@@ -362,22 +362,24 @@ public class WoodMachineRecipes {
             if (logs[i] != null) {
                 // nerf regular log -> plank crafting, if enabled
                 boolean hasPlanksRecipe = entry.planksRecipeName != null;
+                final String postfix = i == 0 ? "" : "_" + i;
                 if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
-                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks_" + i,
+                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks" + postfix,
                             new ItemStack(entry.planks, 2), logs[i]);
+
                 } else if (!hasPlanksRecipe) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks_" + i,
+                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks" + postfix,
                             new ItemStack(entry.planks, 4), logs[i]);
                 }
 
                 // log -> plank saw crafting
-                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw_" + i,
+                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw" + postfix,
                         new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
                         "s", "L", 'L', logs[i]);
 
                 // log -> plank cutting
-                CUTTER_RECIPES.recipeBuilder(name + "_planks_" + i)
+                CUTTER_RECIPES.recipeBuilder(name + "_planks" + postfix)
                         .inputItems(logs[i])
                         .outputItems(new ItemStack(entry.planks, 6))
                         .outputItems(dust, Wood, 2)
