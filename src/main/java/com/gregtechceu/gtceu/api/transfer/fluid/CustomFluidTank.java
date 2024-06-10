@@ -5,7 +5,6 @@ import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -55,16 +54,11 @@ public class CustomFluidTank extends FluidTank
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        if (!this.fluid.isEmpty()) {
-            this.fluid.save(provider, tag);
-        }
-        return tag;
+        return writeToNBT(provider, new CompoundTag());
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.fluid = FluidStack.OPTIONAL_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt)
-                .getOrThrow();
+        readFromNBT(provider, nbt);
     }
 }
