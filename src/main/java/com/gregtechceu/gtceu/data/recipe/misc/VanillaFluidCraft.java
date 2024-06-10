@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
@@ -21,9 +20,9 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import com.google.gson.JsonObject;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +58,8 @@ public class VanillaFluidCraft extends ShapedRecipe {
                 // to handle the fact that there exist 2 different FluidStacks both with different bit-lengths.
                 // Checks that the inventory stack meets the minimum required.
                 if (!FluidUtil.getFluidContained(iStack).get()
-                        .containsFluid((net.minecraftforge.fluids.FluidStack) FluidHelper.toRealFluidStack(this.fluid))) {
+                        .containsFluid(
+                                (net.minecraftforge.fluids.FluidStack) FluidHelper.toRealFluidStack(this.fluid))) {
                     return false;
                 }
             }
@@ -78,7 +78,8 @@ public class VanillaFluidCraft extends ShapedRecipe {
             if (FluidUtil.getFluidHandler(iStack).isPresent()) {
                 // Drain then set.
                 ItemStack copy = iStack.copy();
-                FluidUtil.getFluidHandler(copy).map(f -> f.drain((int) this.fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE));
+                FluidUtil.getFluidHandler(copy)
+                        .map(f -> f.drain((int) this.fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE));
                 items.set(i, copy);
             } else {
                 items.set(i, iStack.getCraftingRemainingItem());
