@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
@@ -349,6 +350,7 @@ public class WoodMachineRecipes {
      */
     public static void registerWoodTypeRecipe(Consumer<FinishedRecipe> provider, @NotNull WoodTypeEntry entry) {
         final String name = entry.woodName;
+        final Item[] logs_ = entry.getLogs();
 
         // noinspection ConstantValue can be null if someone does an oopsie and doesn't set it.
         if (entry.planks == null) {
@@ -356,27 +358,27 @@ public class WoodMachineRecipes {
         }
 
         // log-associated recipes
-        for (var log_ : entry.getLogs()) {
-            if (log_ != null) {
+        for (int i = 0; i < logs_.length; i++) {
+            if (logs_[i] != null) {
                 // nerf regular log -> plank crafting, if enabled
                 boolean hasPlanksRecipe = entry.planksRecipeName != null;
                 if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
-                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
-                            new ItemStack(entry.planks, 2), log_);
+                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks_" + i,
+                            new ItemStack(entry.planks, 2), logs_[i]);
                 } else if (!hasPlanksRecipe) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks",
-                            new ItemStack(entry.planks, 4), log_);
+                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks_" + i,
+                            new ItemStack(entry.planks, 4), logs_[i]);
                 }
 
                 // log -> plank saw crafting
-                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
+                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw_" + i,
                         new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                        "s", "L", 'L', log_);
+                        "s", "L", 'L', logs_[i]);
 
                 // log -> plank cutting
-                CUTTER_RECIPES.recipeBuilder(name + "_planks")
-                        .inputItems(log_)
+                CUTTER_RECIPES.recipeBuilder(name + "_planks_" + i)
+                        .inputItems(logs_[i])
                         .outputItems(new ItemStack(entry.planks, 6))
                         .outputItems(dust, Wood, 2)
                         .duration(200)
