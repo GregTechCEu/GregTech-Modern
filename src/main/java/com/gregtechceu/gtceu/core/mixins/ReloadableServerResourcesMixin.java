@@ -60,7 +60,7 @@ public abstract class ReloadableServerResourcesMixin {
                 GTDynamicDataPack.addRecipe(id, recipe, advancement, frozen);
             }
         });
-        MixinHelpers.generateGTDynamicLoot((id, lootTable) -> GTDynamicDataPack.addLootTable(id, lootTable, frozen));
+        MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable, frozen);
 
         GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
     }

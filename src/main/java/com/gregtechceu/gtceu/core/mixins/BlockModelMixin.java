@@ -31,20 +31,20 @@ public class BlockModelMixin {
     ThreadLocal<SpriteOverrider> spriteOverriderThreadLocal = ThreadLocal.withInitial(() -> null);
 
     // We want to remap our materials
-    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
+    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Z)Lnet/minecraft/client/resources/model/BakedModel;",
             at = @At(value = "HEAD"))
     private void beforeBake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter,
-                            ModelState state, ResourceLocation location, boolean guiLight3d,
+                            ModelState state, boolean guiLight3d,
                             CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider spriteOverrider) {
             spriteOverriderThreadLocal.set(spriteOverrider);
         }
     }
 
-    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
+    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Z)Lnet/minecraft/client/resources/model/BakedModel;",
             at = @At(value = "RETURN"))
     private void afterBake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter,
-                           ModelState state, ResourceLocation location, boolean guiLight3d,
+                           ModelState state, boolean guiLight3d,
                            CallbackInfoReturnable<BakedModel> cir) {
         if (spriteGetter instanceof SpriteOverrider) {
             spriteOverriderThreadLocal.remove();
