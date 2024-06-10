@@ -223,20 +223,23 @@ public class WorkableOverlayModel {
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
 
-            var normalSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath() + overlayPath);
+            var normalSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                    location.getPath() + overlayPath);
             var normalSprite1 = getTextureLocation(normalSprite);
             if (!resManager.getResource(normalSprite1).isPresent()) continue;
             register.accept(normalSprite);
 
             // normal
             final String active = String.format("%s_active", overlayPath);
-            ResourceLocation activeSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath() + active);
+            ResourceLocation activeSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                    location.getPath() + active);
             var activeSprite1 = getTextureLocation(activeSprite);
             if (resManager.getResource(activeSprite1).isPresent()) register.accept(activeSprite);
             else activeSprite = normalSprite;
 
             final String paused = String.format("%s_paused", overlayPath);
-            ResourceLocation pausedSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath() + paused);
+            ResourceLocation pausedSprite = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                    location.getPath() + paused);
             var pausedSprite1 = getTextureLocation(pausedSprite);
             if (resManager.getResource(pausedSprite1).isPresent()) register.accept(pausedSprite);
             else pausedSprite = normalSprite;
@@ -266,6 +269,7 @@ public class WorkableOverlayModel {
     }
 
     private ResourceLocation getTextureLocation(ResourceLocation location) {
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), "textures/%s.png".formatted(location.getPath()));
+        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                "textures/%s.png".formatted(location.getPath()));
     }
 }

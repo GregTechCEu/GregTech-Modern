@@ -7,7 +7,6 @@ import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;

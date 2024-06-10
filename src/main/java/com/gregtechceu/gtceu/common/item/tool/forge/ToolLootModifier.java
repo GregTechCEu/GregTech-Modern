@@ -9,7 +9,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -34,7 +33,8 @@ public class ToolLootModifier implements IGlobalLootModifier {
             Vec3 pos = context.getParam(LootContextParams.ORIGIN);
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
-            Registry<Enchantment> registry = context.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+            Registry<Enchantment> registry = context.getLevel().registryAccess()
+                    .registryOrThrow(Registries.ENCHANTMENT);
             boolean isSilktouch = tool.getEnchantmentLevel(registry.getHolderOrThrow(Enchantments.SILK_TOUCH)) > 0;
             int fortuneLevel = tool.getEnchantmentLevel(registry.getHolderOrThrow(Enchantments.FORTUNE));
             return ToolEventHandlers.onHarvestDrops(player, tool, context.getLevel(), blockPos,

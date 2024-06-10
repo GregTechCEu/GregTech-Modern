@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -40,18 +39,14 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -649,7 +644,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
     }
 
-    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, ResourceKey<Enchantment> enchantment) {
+    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack,
+                                                         ResourceKey<Enchantment> enchantment) {
         if (stack.isEmpty()) return false;
 
         // Block Mending and Unbreaking on Electric tools
@@ -660,16 +656,16 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
 
         /*
-        // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
-        // the Minecraft method takes an Item, and does not respect NBT nor meta.
-        if (enchantment.definition().supportedItems() == ItemTags.MINING_ENCHANTABLE) {
-            return getToolStats().isSuitableForBlockBreak(stack);
-        } else if (enchantment.getSupportedItems() == ItemTags.WEAPON_ENCHANTABLE) {
-            return getToolStats().isSuitableForAttacking(stack);
-        } else if (enchantment.getSupportedItems() == ItemTags.DURABILITY_ENCHANTABLE) {
-            return !stack.has(DataComponents.UNBREAKABLE);
-        }
-        */
+         * // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
+         * // the Minecraft method takes an Item, and does not respect NBT nor meta.
+         * if (enchantment.definition().supportedItems() == ItemTags.MINING_ENCHANTABLE) {
+         * return getToolStats().isSuitableForBlockBreak(stack);
+         * } else if (enchantment.getSupportedItems() == ItemTags.WEAPON_ENCHANTABLE) {
+         * return getToolStats().isSuitableForAttacking(stack);
+         * } else if (enchantment.getSupportedItems() == ItemTags.DURABILITY_ENCHANTABLE) {
+         * return !stack.has(DataComponents.UNBREAKABLE);
+         * }
+         */
 
         ToolProperty property = getToolProperty(stack);
         if (property == null) return false;

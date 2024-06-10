@@ -256,11 +256,15 @@ public class RecipeRemoval {
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
             registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
+                    ResourceLocation
+                            .withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {
-                registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_wool", colorMaterial.getName())));
+                registry.accept(
+                        ResourceLocation.withDefaultNamespace(String.format("%s_wool", colorMaterial.getName())));
             }
         }
         registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));

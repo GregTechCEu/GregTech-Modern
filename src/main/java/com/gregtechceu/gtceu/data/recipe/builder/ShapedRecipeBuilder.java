@@ -109,7 +109,8 @@ public class ShapedRecipeBuilder {
                         ShapedRecipePattern.of(key, rows),
                         this.output,
                         false);
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "shaped/" + recipeId.getPath()), shapedrecipe,
+        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "shaped/" + recipeId.getPath()),
+                shapedrecipe,
                 null);
     }
 }

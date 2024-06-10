@@ -747,7 +747,9 @@ public class GTRecipeBuilder {
                 this.recipeType.addDataStickEntry(entry.getResearchId(), buildRecipe());
             }
         }
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()),
+        consumer.accept(
+                ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                        recipeType.registryName.getPath() + "/" + id.getPath()),
                 build(), null);
     }
 

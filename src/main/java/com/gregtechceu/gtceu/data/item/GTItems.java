@@ -43,7 +43,6 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.material.GTFoods;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
@@ -251,7 +250,8 @@ public class GTItems {
                                                 ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(
                                                         ItemEnchantments.EMPTY);
                                                 // TODO default enchantments are fucked
-                                                //enchantmentLevels.forEach((enchantment, level) -> enchantments.set(enchantment, level));
+                                                // enchantmentLevels.forEach((enchantment, level) ->
+                                                // enchantments.set(enchantment, level));
                                                 p.component(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
                                                 // Set behaviours

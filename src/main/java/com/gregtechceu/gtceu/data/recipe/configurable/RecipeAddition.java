@@ -1008,7 +1008,8 @@ public class RecipeAddition {
     private static void addBedRecipe(RecipeOutput provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed",
-                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))), "WWW", "PPP",
+                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))),
+                "WWW", "PPP",
                 "FrF",
                 'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet")),
                 'P', ItemTags.PLANKS,

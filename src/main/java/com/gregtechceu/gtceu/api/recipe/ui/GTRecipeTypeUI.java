@@ -108,8 +108,9 @@ public class GTRecipeTypeUI {
             } else {
                 try {
                     var resource = resourceManager
-                            .getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(recipeType.registryName.getNamespace(),
-                                    "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
+                            .getResourceOrThrow(
+                                    ResourceLocation.fromNamespaceAndPath(recipeType.registryName.getNamespace(),
+                                            "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
                     try (InputStream inputStream = resource.open()) {
                         try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
                             this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.unlimitedHeap());

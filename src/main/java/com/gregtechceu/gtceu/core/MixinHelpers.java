@@ -59,7 +59,6 @@ import org.apache.commons.lang3.function.TriConsumer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class MixinHelpers {
 
@@ -179,17 +178,18 @@ public class MixinHelpers {
         });
     }
 
-
     public static void generateGTDynamicLoot(TriConsumer<ResourceLocation, LootTable, RegistryAccess.Frozen> lootTables,
                                              final RegistryAccess.Frozen access) {
         final VanillaBlockLoot blockLoot = new VanillaBlockLoot(access);
 
-        Holder<Enchantment> fortune = access.registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.FORTUNE);
+        Holder<Enchantment> fortune = access.registryOrThrow(Registries.ENCHANTMENT)
+                .getHolderOrThrow(Enchantments.FORTUNE);
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
-                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
+                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(
+                            blockEntry.getId().getNamespace(),
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
@@ -259,7 +259,8 @@ public class MixinHelpers {
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blocks/" + id.getPath());
+            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                    "blocks/" + id.getPath());
             ((BlockBehaviourAccessor) block).setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
             lootTables.accept(lootTableId,
                     blockLoot.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build(), access);
@@ -273,21 +274,23 @@ public class MixinHelpers {
                         .withSubPredicate(
                                 ItemSubPredicates.ENCHANTMENTS,
                                 ItemEnchantmentsPredicate.enchantments(
-                                        List.of(new EnchantmentPredicate(registrylookup.getOrThrow(Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1)))
-                                )
-                        )
-        );
+                                        List.of(new EnchantmentPredicate(
+                                                registrylookup.getOrThrow(Enchantments.SILK_TOUCH),
+                                                MinMaxBounds.Ints.atLeast(1))))));
     }
 
-    public static void addMaterialBlockLootTables(TriConsumer<ResourceLocation, LootTable, RegistryAccess.Frozen> lootTables, TagPrefix prefix,
-                                                  Map<Material, ? extends BlockEntry<? extends Block>> map, VanillaBlockLoot blockLoot, RegistryAccess.Frozen access) {
+    public static void addMaterialBlockLootTables(TriConsumer<ResourceLocation, LootTable, RegistryAccess.Frozen> lootTables,
+                                                  TagPrefix prefix,
+                                                  Map<Material, ? extends BlockEntry<? extends Block>> map,
+                                                  VanillaBlockLoot blockLoot, RegistryAccess.Frozen access) {
         map.forEach((material, blockEntry) -> {
             ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
                     "blocks/" + blockEntry.getId().getPath());
             ((BlockBehaviourAccessor) blockEntry.get())
                     .setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
             lootTables.accept(lootTableId,
-                    blockLoot.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build(), access);
+                    blockLoot.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build(),
+                    access);
         });
     }
 

@@ -88,7 +88,9 @@ public class SmeltingRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "smelting/" + recipeId.getPath()), create(),
+        consumer.accept(
+                ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "smelting/" + recipeId.getPath()),
+                create(),
                 null);
     }
 }

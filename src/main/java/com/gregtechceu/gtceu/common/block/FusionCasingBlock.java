@@ -17,8 +17,11 @@ import java.util.Map;
 public class FusionCasingBlock extends ActiveBlock {
 
     public FusionCasingBlock(Properties properties, IFusionCasingType casingType) {
-        super(properties, Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
-                Map.of("all", casingType.getTexture())) : null,
+        super(properties,
+                Platform.isClient() ?
+                        new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                Map.of("all", casingType.getTexture())) :
+                        null,
                 Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
                         Map.of("bot_all", casingType.getTexture(),
                                 "top_all", ResourceLocation.parse(casingType.getTexture() + "_bloom"))) :

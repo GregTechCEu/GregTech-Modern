@@ -398,7 +398,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setAfterWorking(this.afterWorking);
 
         if (renderer == null) {
-            renderer = () -> new MachineRenderer(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/" + name));
+            renderer = () -> new MachineRenderer(
+                    ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/" + name));
         }
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {

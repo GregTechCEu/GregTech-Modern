@@ -583,14 +583,18 @@ public class VanillaStandardRecipes {
                     .inputItems(Tags.Items.GRAVELS, 4)
                     .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
                     .outputItems(new ItemStack(
-                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete_powder")), 8))
+                            BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete_powder")),
+                            8))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder(dyeName + "_concrete").duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(
-                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete_powder"))))
+                            BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete_powder"))))
                     .inputFluids(Water.getFluid(1000))
-                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete"))))
+                    .outputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete"))))
                     .save(provider);
 
             if (color != DyeColor.WHITE) {
@@ -598,7 +602,8 @@ public class VanillaStandardRecipes {
                         .inputItems(CustomTags.CONCRETE_ITEM)
                         .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                         .outputItems(
-                                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete"))))
+                                new ItemStack(BuiltInRegistries.ITEM
+                                        .get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete"))))
                         .save(provider);
             }
 
@@ -606,42 +611,50 @@ public class VanillaStandardRecipes {
                     .inputItems(new ItemStack(Blocks.TERRACOTTA))
                     .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                     .outputItems(
-                            new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_terracotta"))))
+                            new ItemStack(BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_terracotta"))))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS))
                     .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                     .outputItems(
-                            new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass"))))
+                            new ItemStack(BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass"))))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_pane_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS_PANE))
                     .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                     .outputItems(new ItemStack(
-                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane"))))
+                            BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane"))))
                     .save(provider);
 
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_wool_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(new ItemStack(Blocks.WHITE_WOOL))
                         .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
-                        .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool"))))
+                        .outputItems(new ItemStack(
+                                BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool"))))
                         .save(provider);
             }
 
             CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_wool_to_carpet").duration(20).EUt(VA[ULV])
-                    .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool")), 1))
+                    .inputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool")), 1))
                     .outputItems(
-                            new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_carpet")), 2))
+                            new ItemStack(BuiltInRegistries.ITEM
+                                    .get(ResourceLocation.withDefaultNamespace(dyeName + "_carpet")), 2))
                     .save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder(dyeName + "_banner").duration(20).EUt(VA[ULV])
                     .circuitMeta(6)
                     .inputItems(new ItemStack(Items.STICK))
-                    .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool")), 6))
-                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_banner"))))
+                    .inputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool")), 6))
+                    .outputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_banner"))))
                     .save(provider);
         }
 

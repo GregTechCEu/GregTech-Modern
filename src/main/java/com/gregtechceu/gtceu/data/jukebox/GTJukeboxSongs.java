@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.jukebox;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -16,6 +17,5 @@ public class GTJukeboxSongs {
                 BuiltInRegistries.SOUND_EVENT.wrapAsHolder(GTSoundEntries.SUS_RECORD.getMainEvent()),
                 Component.translatable("item.gtceu.sus_record.desc"),
                 820, 1));
-
     }
 }

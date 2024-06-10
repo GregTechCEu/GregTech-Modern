@@ -607,10 +607,11 @@ public class GTBlocks {
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE
             .block("pump_deck", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
-                            Map.of("bottom", GTCEu.id("block/casings/pump_deck/bottom"),
-                                    "top", GTCEu.id("block/casings/pump_deck/top"),
-                                    "side", GTCEu.id("block/casings/pump_deck/side"))) :
+                    Platform.isClient() ?
+                            new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
+                                    Map.of("bottom", GTCEu.id("block/casings/pump_deck/bottom"),
+                                            "top", GTCEu.id("block/casings/pump_deck/top"),
+                                            "side", GTCEu.id("block/casings/pump_deck/side"))) :
                             null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.sound(SoundType.WOOD).mapColor(MapColor.WOOD))
@@ -750,9 +751,10 @@ public class GTBlocks {
             .register();
     public static final BlockEntry<Block> COMPUTER_HEAT_VENT = REGISTRATE
             .block("computer_heat_vent", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_column"),
-                            Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
-                                    "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) :
+                    Platform.isClient() ?
+                            new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_column"),
+                                    Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
+                                            "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) :
                             null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
@@ -774,8 +776,10 @@ public class GTBlocks {
                                                            NonNullSupplier<? extends Block> properties) {
         return REGISTRATE
                 .block("%s_pipe_casing".formatted(name.toLowerCase(Locale.ROOT)), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
-                                Map.of("all", texture)) : null))
+                        Platform.isClient() ?
+                                new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                        Map.of("all", texture)) :
+                                null))
                 .lang("%s Pipe Casing".formatted(name))
                 .initialProperties(properties)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
@@ -797,10 +801,12 @@ public class GTBlocks {
     private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
         return createCasingBlock(
                 name, properties -> new RendererBlock(properties,
-                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
-                                Map.of("bottom", GTCEu.id(texture + "/bottom"),
-                                        "top", GTCEu.id(texture + "/top"),
-                                        "side", GTCEu.id(texture + "/side"))) :
+                        Platform.isClient() ?
+                                new TextureOverrideRenderer(
+                                        ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
+                                        Map.of("bottom", GTCEu.id(texture + "/bottom"),
+                                                "top", GTCEu.id(texture + "/top"),
+                                                "side", GTCEu.id(texture + "/side"))) :
                                 null),
                 () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
@@ -816,8 +822,10 @@ public class GTBlocks {
                                                       NonNullSupplier<? extends Block> properties,
                                                       Supplier<Supplier<RenderType>> type) {
         return createCasingBlock(name, p -> blockSupplier.apply(p,
-                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
-                        Map.of("all", texture)) : null),
+                Platform.isClient() ?
+                        new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                Map.of("all", texture)) :
+                        null),
                 properties, type);
     }
 
@@ -891,10 +899,11 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
         return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
-                        Map.of("bottom", GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
-                                "top", GTCEu.id("block/casings/steam/%s/top".formatted(material)),
-                                "side", GTCEu.id("block/casings/steam/%s/side".formatted(material)))) :
+                Platform.isClient() ?
+                        new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
+                                Map.of("bottom", GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
+                                        "top", GTCEu.id("block/casings/steam/%s/top".formatted(material)),
+                                        "side", GTCEu.id("block/casings/steam/%s/side".formatted(material)))) :
                         null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -966,8 +975,10 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
         var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
-                        Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
+                Platform.isClient() ?
+                        new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) :
+                        null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
                         .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
@@ -1000,10 +1011,12 @@ public class GTBlocks {
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
         BlockEntry<ActiveBlock> block = REGISTRATE
                 .block("%s_casing".formatted(type.name()), p -> new ActiveBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
-                                Map.of("bottom", type.bottom(),
-                                        "top", type.top(),
-                                        "side", type.side())) :
+                        Platform.isClient() ?
+                                new TextureOverrideRenderer(
+                                        ResourceLocation.withDefaultNamespace("block/cube_bottom_top"),
+                                        Map.of("bottom", type.bottom(),
+                                                "top", type.top(),
+                                                "side", type.side())) :
                                 null,
                         Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/fire_box_active"),
                                 Map.of("bottom", type.bottom(),

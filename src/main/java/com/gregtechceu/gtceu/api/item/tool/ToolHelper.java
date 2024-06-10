@@ -211,7 +211,8 @@ public class ToolHelper {
         if (toolProperty != null) {
             toolProperty.getEnchantments().forEach((enchantment, level) -> {
                 if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    Registry<Enchantment> registry = GTRegistries.builtinRegistry().registryOrThrow(Registries.ENCHANTMENT);
+                    Registry<Enchantment> registry = GTRegistries.builtinRegistry()
+                            .registryOrThrow(Registries.ENCHANTMENT);
                     stack.enchant(registry.getHolderOrThrow(enchantment), level);
                 }
             });
@@ -706,7 +707,8 @@ public class ToolHelper {
     public static List<ItemStack> getSilkTouchDrop(ServerLevel world, BlockPos origin, @NotNull BlockState state) {
         ItemStack tool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         tool.enchant(
-                world.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH),
+                world.registryAccess().registryOrThrow(Registries.ENCHANTMENT)
+                        .getHolderOrThrow(Enchantments.SILK_TOUCH),
                 1);
 
         return state.getDrops(new LootParams.Builder(world).withParameter(LootContextParams.BLOCK_STATE, state)

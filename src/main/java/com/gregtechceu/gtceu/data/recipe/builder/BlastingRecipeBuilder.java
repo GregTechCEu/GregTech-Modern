@@ -88,7 +88,9 @@ public class BlastingRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "blasting/" + recipeId.getPath()), create(),
+        consumer.accept(
+                ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "blasting/" + recipeId.getPath()),
+                create(),
                 null);
     }
 }

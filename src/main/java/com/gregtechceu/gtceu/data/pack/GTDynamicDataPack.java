@@ -214,7 +214,8 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
-        return ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), String.join("", "recipes/", recipeId.getPath(), ".json"));
+        return ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(),
+                String.join("", "recipes/", recipeId.getPath(), ".json"));
     }
 
     public static ResourceLocation getLootTableLocation(ResourceLocation lootTableId) {
