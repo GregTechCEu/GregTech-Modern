@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.gregtechceu.gtceu.GTCEu;
-
-import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,21 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.UUID;
 
 public interface IArmorLogic {
-
-    UUID ATTACK_DAMAGE_MODIFIER = UUID.fromString("648D7064-6A60-4F59-8ABE-C2C23A6DD7A9");
-    UUID ATTACK_SPEED_MODIFIER = UUID.fromString("FA233E1C-4180-4288-B05C-BCCE9785ACA3");
-    EnumMap<ArmorItem.Type, ResourceLocation> ARMOR_MODIFIER_UUID_PER_TYPE = Util
-            .make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                map.put(ArmorItem.Type.BOOTS, GTCEu.id("boot_modifier"));
-                map.put(ArmorItem.Type.LEGGINGS, GTCEu.id("legs_modifier"));
-                map.put(ArmorItem.Type.CHESTPLATE, GTCEu.id("chest_modifier"));
-                map.put(ArmorItem.Type.HELMET, GTCEu.id("helmet_modifier"));
-            });
 
     default void addToolComponents(ArmorComponentItem item) {}
 

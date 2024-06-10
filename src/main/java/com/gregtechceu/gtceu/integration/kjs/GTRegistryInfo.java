@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.DevProperties;
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 

@@ -44,7 +44,7 @@ public class ParallelLogicTest {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .blastFurnaceTemp(1000)
                 .EUt(30).duration(100)
-                .buildRecipe();
+                .build();
 
         ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
                 new ItemStack(Blocks.COBBLESTONE, 16), false);
@@ -81,7 +81,7 @@ public class ParallelLogicTest {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .blastFurnaceTemp(1000)
                 .EUt(30).duration(100)
-                .buildRecipe();
+                .build();
 
         ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
                 new ItemStack(Blocks.COBBLESTONE, 16), false);
@@ -118,7 +118,7 @@ public class ParallelLogicTest {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .blastFurnaceTemp(1000)
                 .EUt(30).duration(100)
-                .buildRecipe();
+                .build();
 
         ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
                 new ItemStack(Blocks.COBBLESTONE, 16), false);

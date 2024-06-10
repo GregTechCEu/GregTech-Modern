@@ -662,9 +662,9 @@ public class BlockPattern {
                 return getMatchStackWithHandler(candidates, stackCap);
             } else if (candidates.stream()
                     .anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
-                        !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
-                            return Pair.of(i, handler);
-                        }
+                    !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                        return Pair.of(i, handler);
+                    }
         }
         return null;
     }

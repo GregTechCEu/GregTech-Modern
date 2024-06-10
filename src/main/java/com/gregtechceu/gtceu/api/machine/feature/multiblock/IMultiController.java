@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -171,15 +171,16 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * Show the preview of structure.
      */
     @Override
-    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                    BlockHitResult hit) {
+    default ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player,
+                                        InteractionHand hand,
+                                        BlockHitResult hit) {
         if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (world.isClientSide()) {
                 MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getUpwardsFacing(),
                         self().getDefinition().getMatchingShapes().get(0),
                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }

@@ -117,7 +117,7 @@ public abstract class LevelRendererMixin {
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
         if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) ||
-                minecraft.player.isCrouching() || !ToolHelper.hasBehaviorsComponent(mainHandItem))
+                minecraft.player.isShiftKeyDown() || !ToolHelper.hasBehaviorsComponent(mainHandItem))
             return;
 
         Set<BlockPos> blockPositions = ToolHelper.getHarvestableBlocks(mainHandItem,

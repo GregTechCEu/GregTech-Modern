@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 

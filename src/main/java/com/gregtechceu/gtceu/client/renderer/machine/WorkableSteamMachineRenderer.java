@@ -59,7 +59,7 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
         if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
             if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {
                 quads.add(
-                        StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
+                        FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
             }
         }
     }

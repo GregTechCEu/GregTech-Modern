@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.capability.forge.compat.GTEnergyWrapper;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
@@ -28,6 +27,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -69,7 +69,6 @@ import com.gregtechceu.gtceu.data.tag.GregTechDatagen;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
-import com.gregtechceu.gtceu.data.worldgen.GTPlacerTypes;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -134,28 +133,10 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
         // init common features
-        if (GTCEu.isKubeJSLoaded()) {
-            synchronized (LOCK) {
-                if (!isKubeJSSetup) {
-                    try { LOCK.wait(); } catch (InterruptedException ignored) {}
-                }
-            }
-        }
-        CommonProxy.init(modBus);
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
-    /**
-     * If kjs is loaded, make sure our mod is loaded after it.
-     */
-    public static void onKubeJSSetup() {
-        synchronized (LOCK) {
-            isKubeJSSetup = true;
-            LOCK.notify();
-        }
-    }
-
-    public static void init(final IEventBus modBus) {
+    public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTRegistries.COMPASS_NODES.unfreeze();
         GTRegistration.REGISTRATE.registerRegistrate(modBus);
@@ -163,7 +144,6 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
-        GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTToolTiers.init();
@@ -267,8 +247,7 @@ public class CommonProxy {
     @SubscribeEvent
     public void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
-            CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
+
         });
     }
 

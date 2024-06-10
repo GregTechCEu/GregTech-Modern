@@ -40,7 +40,7 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         if (transfer instanceof NotifiableFluidTank notifiable) {
-            return notifiable.storages[this.tank].fill(resource, action);
+            return notifiable.getStorages()[this.tank].fill(resource, action);
         }
         return transfer.fill(resource, action);
     }
@@ -56,7 +56,7 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         if (transfer instanceof NotifiableFluidTank notifiable) {
-            return notifiable.storages[this.tank].drain(maxDrain, action);
+            return notifiable.getStorages()[this.tank].drain(maxDrain, action);
         }
         return transfer.drain(maxDrain, action);
     }

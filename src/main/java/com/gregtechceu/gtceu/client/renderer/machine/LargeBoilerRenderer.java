@@ -46,7 +46,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
             // firebox
             if (side != null && modelFacing != null) {
                 if (side == Direction.UP) {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                    quads.add(FaceQuad.bakeFace(modelFacing,
                             ModelFactory.getBlockSprite(firebox.top()), modelState));
                 } else if (side == Direction.DOWN) {
                     quads.add(
@@ -62,7 +62,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
             }
         } else {
             if (side != null && modelFacing != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(baseCasing), modelState));
+                quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(baseCasing), modelState));
             }
         }
     }

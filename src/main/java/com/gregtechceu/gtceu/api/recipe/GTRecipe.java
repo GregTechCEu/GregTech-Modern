@@ -313,7 +313,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         builder.output.putAll(recipeOutputs);
         builder.tickOutput.putAll(recipeTickOutputs);
 
-        return builder.buildRecipe();
+        return builder.build();
     }
 
     /**

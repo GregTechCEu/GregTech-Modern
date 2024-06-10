@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     protected abstract GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
-                                                      @NotNull LivingEntity exploder);
+                                                      @Nullable LivingEntity exploder);
 
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
@@ -69,7 +70,7 @@ public abstract class GTExplosiveBlock extends Block {
         return false;
     }
 
-    public void explode(Level world, BlockPos pos, LivingEntity exploder) {
+    public void explode(Level world, BlockPos pos, @Nullable LivingEntity exploder) {
         if (!world.isClientSide) {
             GTExplosiveEntity entity = createEntity(world, pos, exploder);
             entity.setFuse(fuseLength);
@@ -89,9 +90,8 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-                                               BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                              Player player, InteractionHand hand, BlockHitResult hit) {
         if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
             this.explode(level, pos, player);
             level.removeBlock(pos, false);
@@ -100,9 +100,9 @@ public abstract class GTExplosiveBlock extends Block {
             } else if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return super.useWithoutItem(state, level, pos, player, hit);
+        return super.useItemOn(stack, state, level, pos, player, hand, hit);
     }
 
     @Override

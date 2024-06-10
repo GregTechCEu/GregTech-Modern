@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item;
+package com.gregtechceu.gtceu.common.item.behavior;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;

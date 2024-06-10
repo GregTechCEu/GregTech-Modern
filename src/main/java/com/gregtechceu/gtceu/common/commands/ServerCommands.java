@@ -67,9 +67,6 @@ public class ServerCommands {
                                             ServerPlayer target = context.getSource().getPlayerOrException();
                                             IHazardEffectTracker tracker = GTCapabilityHelper
                                                     .getHazardEffectTracker(target);
-                                            if (tracker == null) {
-                                                throw EntityArgument.NO_PLAYERS_FOUND.create();
-                                            }
                                             int count = tracker.getCurrentHazards().keySet().size();
                                             tracker.getCurrentHazards().clear();
                                             return count;
@@ -82,9 +79,6 @@ public class ServerCommands {
                                                     for (ServerPlayer target : targets) {
                                                         IHazardEffectTracker tracker = GTCapabilityHelper
                                                                 .getHazardEffectTracker(target);
-                                                        if (tracker == null) {
-                                                            continue;
-                                                        }
                                                         count += tracker.getCurrentHazards().keySet().size();
                                                         tracker.getCurrentHazards().clear();
                                                     }

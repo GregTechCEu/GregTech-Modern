@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.item;
+package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -26,8 +26,8 @@ public class ItemFluidContainer implements IRecipeRemainder {
             transfer.drain(FluidHelper.getBucket(), IFluidHandler.FluidAction.EXECUTE);
             var copied = storage.getStackInSlot(0);
             // clear all components.
-            for (var key : copied.getComponents().keySet()) {
-                copied.remove(key);
+            for (var key : copied.getComponentsPatch().entrySet()) {
+                copied.remove(key.getKey());
             }
             return copied;
         }

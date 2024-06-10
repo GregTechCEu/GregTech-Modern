@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -133,7 +133,7 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param stack the tool
      * @param tag   the nbt tag to add to
      */
-    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {}
+    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviors tag) {}
 
     public ToolBehaviorType<T> getType();
 }

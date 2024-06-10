@@ -99,7 +99,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
             if (overrideSupplier != null) override = overrideSupplier.get();
             for (Object value : override.values()) {
-                register.accept(new ResourceLocation(value.toString()));
+                register.accept(ResourceLocation.parse(value.toString()));
             }
         }
     }

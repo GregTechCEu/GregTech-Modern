@@ -533,7 +533,7 @@ public interface GTRecipeSchema {
             return SizedIngredient.NESTED_CODEC
                     .encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE),
                             new SizedIngredient(
-                                    !value.item.getComponents().isEmpty() ?
+                                    !value.item.getComponentsPatch().isEmpty() ?
                                             DataComponentIngredient.of(true, value.item) : Ingredient.of(value.item),
                                     value.item.getCount()))
                     .getOrThrow();

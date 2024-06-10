@@ -14,6 +14,6 @@ public class RecipeConditionType<T extends RecipeCondition> {
     @FunctionalInterface
     public interface ConditionFactory<T extends RecipeCondition> {
 
-        public T createDefault();
+        T createDefault();
     }
 }

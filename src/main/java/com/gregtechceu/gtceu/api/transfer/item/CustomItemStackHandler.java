@@ -24,7 +24,7 @@ public class CustomItemStackHandler extends ItemStackHandler implements IContent
     public CustomItemStackHandler() {}
 
     public CustomItemStackHandler(ItemStack stack) {
-        this(NonNullList.of(stack));
+        this(NonNullList.of(ItemStack.EMPTY, stack));
     }
 
     public CustomItemStackHandler(int size) {

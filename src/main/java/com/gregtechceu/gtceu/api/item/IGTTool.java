@@ -761,12 +761,12 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     default void attachCapabilities(RegisterCapabilitiesEvent event) {
         for (IToolBehavior<?> behavior : getToolStats().getBehaviors()) {
             if (behavior instanceof IComponentCapability componentCapability) {
-                componentCapability.attachCapabilites(event, this.asItem());
+                componentCapability.attachCapabilities(event, this.asItem());
             }
         }
         if (this.isElectric()) {
             ElectricStats item = ElectricStats.createElectricItem(0L, getElectricTier());
-            item.attachCapabilites(event, this.asItem());
+            item.attachCapabilities(event, this.asItem());
         }
     }
 

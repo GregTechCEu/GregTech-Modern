@@ -85,8 +85,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default boolean beforeWorking() {
-        return self().getDefinition().getBeforeWorking().test(this);
+    default boolean beforeWorking(@Nullable GTRecipe recipe) {
+        return self().getDefinition().getBeforeWorking().test(this, recipe);
     }
 
     /**

@@ -27,7 +27,6 @@
         "IngredientAccessor",
         "InventoryMixin",
         "ItemEntityAccessor",
-        "ITrunkPlacerTypeAccessor",
         "LevelMixin",
         "LiquidBlockAccessor",
         "LivingEntityMixin",

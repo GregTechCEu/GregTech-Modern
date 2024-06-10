@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
@@ -74,7 +74,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().offhand.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
+                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
                         val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
                 return InteractionResult.SUCCESS;
             }
@@ -83,7 +83,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().items.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
+                slotStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
                         val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
                 return InteractionResult.SUCCESS;
             }

@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -143,7 +142,7 @@ public class ArmorUtils {
      * @return result of eating food
      */
     public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
-        if (!food.has(DataComponents.FOOD)) {
+        if (food.getFoodProperties(player) == null) {
             return InteractionResultHolder.fail(food);
         }
 

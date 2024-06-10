@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.test.api.machine.trait.RecipeLogicTest;
 
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
 
@@ -48,7 +47,7 @@ public class GTGameTests {
                         method.getSecond().requiredSuccesses(),
                         method.getSecond().attempts(),
                         method.getSecond().skyAccess(),
-                        (GameTestHelper gameTestHelper) -> {
+                        gameTestHelper -> {
                             try {
                                 Object object = null;
                                 if (!Modifier.isStatic(method.getFirst().getModifiers())) {

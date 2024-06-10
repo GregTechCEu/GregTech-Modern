@@ -36,7 +36,6 @@ jobs:
         id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
-          version: ${{ steps.var.outputs.version }}
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |

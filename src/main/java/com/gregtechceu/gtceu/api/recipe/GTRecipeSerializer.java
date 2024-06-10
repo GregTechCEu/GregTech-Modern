@@ -95,21 +95,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
-        buf.writeResourceLocation(recipe.recipeType.registryName);
-        buf.writeVarInt(recipe.duration);
-        GTRecipeSerializer.writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(recipe.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(recipe.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        GTRecipeSerializer.writeCollection(recipe.conditions, buf, GTRecipeSerializer::conditionWriter);
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRecipeSerializer.KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
-        }
-        buf.writeNbt(recipe.data);
-        buf.writeBoolean(recipe.isFuel);
-    }
-
     @NotNull
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
@@ -146,6 +131,21 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             }
         }
         return recipe;
+    }
+
+    public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
+        buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeVarInt(recipe.duration);
+        GTRecipeSerializer.writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(recipe.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(recipe.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(recipe.conditions, buf, GTRecipeSerializer::conditionWriter);
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRecipeSerializer.KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
+        }
+        buf.writeNbt(recipe.data);
+        buf.writeBoolean(recipe.isFuel);
     }
 
     public static <T> ArrayList<T> readCollection(RegistryFriendlyByteBuf buf,

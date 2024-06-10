@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
@@ -118,7 +118,7 @@ public class ToolEventHandlers {
             }
             if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
 
-            ToolBehaviorsComponent behaviorTag = ToolHelper.getBehaviorsComponent(tool);
+            ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
             Block block = state.getBlock();
             if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
                 Item iceBlock = block.asItem();

@@ -16,7 +16,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,14 +54,15 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         var superResult = super.onUse(state, world, pos, player, hand, hit);
 
-        if (superResult != InteractionResult.PASS) return superResult;
-        if (!isFormed()) return InteractionResult.FAIL;
+        if (superResult != ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) return superResult;
+        if (!isFormed()) return ItemInteractionResult.FAIL;
 
-        return InteractionResult.PASS; // Otherwise let MetaMachineBlock.use() open the UI
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION; // Otherwise let MetaMachineBlock.use() open the
+                                                                        // UI
     }
 
     /////////////////////////////////////

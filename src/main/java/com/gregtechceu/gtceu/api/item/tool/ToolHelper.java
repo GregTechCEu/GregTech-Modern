@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -116,8 +116,8 @@ public class ToolHelper {
         symbols.put(symbol, tool);
     }
 
-    public static ToolBehaviorsComponent getBehaviorsComponent(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY);
+    public static ToolBehaviors getBehaviorsComponent(ItemStack stack) {
+        return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
     public static boolean hasBehaviorsComponent(ItemStack stack) {

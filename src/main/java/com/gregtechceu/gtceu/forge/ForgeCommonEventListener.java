@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
-import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
@@ -65,7 +65,7 @@ public class ForgeCommonEventListener {
         Player player = event.getEntity();
         IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
         IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY);
-        if (tracker != null && inventory != null) {
+        if (inventory != null) {
             tracker.startTick();
             for (int i = 0; i < inventory.getSlots(); ++i) {
                 ItemStack stack = inventory.getStackInSlot(i);

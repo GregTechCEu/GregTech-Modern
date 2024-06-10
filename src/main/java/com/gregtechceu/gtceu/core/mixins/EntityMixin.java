@@ -51,7 +51,7 @@ public abstract class EntityMixin implements IFireImmuneEntity {
         }
         if (((Entity) (Object) this) instanceof Player player) {
             IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
-            if (tracker != null && tracker.getMaxAirSupply() != -1) {
+            if (tracker.getMaxAirSupply() != -1) {
                 return tracker.getMaxAirSupply();
             }
         }

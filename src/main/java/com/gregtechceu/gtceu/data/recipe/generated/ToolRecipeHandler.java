@@ -107,7 +107,6 @@ public class ToolRecipeHandler {
     }
 
     public static void registerPowerUnitRecipes(RecipeOutput provider) {
-
         for (int tier : powerUnitItems.keySet()) {
             List<ItemEntry<? extends Item>> tieredBatteryItems = batteryItems.get(tier);
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {

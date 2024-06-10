@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Used to detect whether a machine has a certain capability.
  */
-public abstract class RecipeCapability<T> implements GenericRecipeCapability {
+public abstract class RecipeCapability<T> {
 
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = Codec.dispatchedMap(
@@ -159,8 +159,8 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput,
-                           MutableInt yOffset) {}
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
+                           boolean isInput, MutableInt yOffset) {}
 
     @NotNull
     public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {

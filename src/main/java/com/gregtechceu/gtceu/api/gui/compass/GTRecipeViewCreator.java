@@ -31,7 +31,7 @@ public class GTRecipeViewCreator implements RecipeComponent.RecipeViewCreator {
 
     @Override
     public WidgetGroup getViewWidget(RecipeHolder<?> recipe) {
-        if (recipe.value() instanceof GTRecipe gtRecipe) {
+        if (recipe.value() instanceof GTRecipe) {
             // noinspection unchecked
             var widget = new GTRecipeWidget((RecipeHolder<GTRecipe>) recipe);
             widget.addSelfPosition(4, 4);

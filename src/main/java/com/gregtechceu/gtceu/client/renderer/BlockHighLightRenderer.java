@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
+import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -92,14 +94,29 @@ public class BlockHighLightRenderer {
                                 .draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
                                         MultiBufferSource
                                                 .immediate(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE))),
-                                        0, 0, 4, 4,
-                                        8, 8);
+                                        0, 0, 4, 4, 8, 8);
                         RenderSystem.disableBlend();
                         RenderSystem.enableDepthTest();
                     }
                 }
                 poseStack.popPose();
                 return;
+            }
+
+            if (toolType != null && toolType.contains(GTToolType.WRENCH)) {
+                ICustomRotationBehavior behavior = CustomBlockRotations
+                        .getCustomRotation(level.getBlockState(blockPos).getBlock());
+                if (behavior != null && behavior.showGrid()) {
+                    Vec3 pos = camera.getPosition();
+                    poseStack.pushPose();
+                    poseStack.translate(-pos.x, -pos.y, -pos.z);
+                    var buffer = multiBufferSource.getBuffer(RenderType.lines());
+                    RenderSystem.lineWidth(3);
+
+                    drawGridOverlays(poseStack, buffer, target, side -> GuiTextures.TOOL_FRONT_FACING_ROTATION);
+
+                    poseStack.popPose();
+                }
             }
 
             // draw cover grid highlight

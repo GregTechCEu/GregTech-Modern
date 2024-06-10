@@ -35,7 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -280,8 +280,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         if (hit.getDirection() == getFrontFacing()) {
             var held = player.getMainHandItem();
             if (!held.isEmpty() && (ItemTransferHelper.canItemStacksStack(held, stored) || stored.isEmpty())) { // push
@@ -289,7 +289,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                     var remaining = cache.insertItem(0, held, false);
                     player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
@@ -311,18 +311,20 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
+    protected ItemInteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
-            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
+            if (tool.getDamageValue() >= tool.getMaxDamage())
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            if (hasFrontFacing() && gridSide == getFrontFacing())
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             if (gridSide != getOutputFacingItems()) {
                 setOutputFacingItems(gridSide);
             } else {
                 setOutputFacingItems(null);
             }
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
 
         }
 
@@ -330,8 +332,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                       BlockHitResult hitResult) {
         if (!isRemote()) {
             if (gridSide == getOutputFacingItems()) {
                 if (isAllowInputFromOutputSideItems()) {
@@ -346,7 +348,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                     .append(Component.translatable("gtceu.creative.chest.item")));
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
     }

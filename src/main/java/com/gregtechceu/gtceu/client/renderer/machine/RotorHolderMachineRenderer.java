@@ -47,7 +47,7 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                               @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY),
+            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY),
                     modelState));
             if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
                 var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);

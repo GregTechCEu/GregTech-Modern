@@ -11,6 +11,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -50,14 +51,14 @@ public class ResearchCondition extends RecipeCondition {
     @Override
     public JsonObject serialize() {
         JsonObject value = super.serialize();
-        value.add("research", this.data.toJson());
+        value.add("research", ResearchData.CODEC.encodeStart(JsonOps.INSTANCE, this.data).getOrThrow());
         return value;
     }
 
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        this.data = ResearchData.fromJson(config.getAsJsonArray("research"));
+        this.data = ResearchData.CODEC.parse(JsonOps.INSTANCE, config.get("research")).getOrThrow();
         return this;
     }
 

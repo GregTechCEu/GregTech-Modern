@@ -352,33 +352,33 @@ public class WoodMachineRecipes {
         }
 
         // log-associated recipes
-        if (entry.log != null) {
-            // nerf regular log -> plank crafting, if enabled
-            boolean hasPlanksRecipe = entry.planksRecipeName != null;
-            if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-                VanillaRecipeHelper.addShapelessRecipe(provider,
-                        hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
-                        new ItemStack(entry.planks, 2), entry.log);
-            } else {
-                if (!hasPlanksRecipe) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks", new ItemStack(entry.planks, 4),
-                            entry.log);
+        for (var log_ : entry.getLogs()) {
+            if (log_ != null) {
+                // nerf regular log -> plank crafting, if enabled
+                boolean hasPlanksRecipe = entry.planksRecipeName != null;
+                if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider,
+                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
+                            new ItemStack(entry.planks, 2), log_);
+                } else if (!hasPlanksRecipe) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks",
+                            new ItemStack(entry.planks, 4), log_);
                 }
+
+                // log -> plank saw crafting
+                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
+                        new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
+                        "s", "L", 'L', log_);
+
+                // log -> plank cutting
+                CUTTER_RECIPES.recipeBuilder(name + "_planks")
+                        .inputItems(log_)
+                        .outputItems(new ItemStack(entry.planks, 6))
+                        .outputItems(dust, Wood, 2)
+                        .duration(200)
+                        .EUt(VA[ULV])
+                        .save(provider);
             }
-
-            // log -> plank saw crafting
-            VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
-                    new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                    "s", "L", 'L', entry.log);
-
-            // log -> plank cutting
-            CUTTER_RECIPES.recipeBuilder(name + "_planks")
-                    .inputItems(entry.log)
-                    .outputItems(new ItemStack(entry.planks, 6))
-                    .outputItems(dust, Wood, 2)
-                    .duration(200)
-                    .EUt(VA[ULV])
-                    .save(provider);
         }
 
         // door

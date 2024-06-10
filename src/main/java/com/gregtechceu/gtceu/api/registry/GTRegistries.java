@@ -72,7 +72,6 @@ public final class GTRegistries {
             .create(Registries.FOLIAGE_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister
             .create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
-
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(Registries.RECIPE_TYPE,
             GTCEu.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister

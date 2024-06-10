@@ -41,8 +41,7 @@ dependencyResolutionManagement {
         def worldStripperForgeFile = "4578579"
 
         // Libs
-        def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
-        def parchmentVersion = "2024.04.14" // https://parchmentmc.org/docs/getting-started
+        def parchmentVersion = "2024.06.02" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def spotlessVersion = "6.25.0"
         def vineFlowerVersion = "1.+"
@@ -108,10 +107,10 @@ dependencyResolutionManagement {
         }
 
         libs {
-            version("quiltMappings", quiltMappingsVersion)
             version("parchment", parchmentVersion)
 
             version("minecraft", minecraftVersion)
+            version("minecraftOldish", minecraftVersionOldish)
             version("minecraftOld", minecraftVersionOld)
             version("minecraftVeryOld", minecraftVersionVeryOld)
 

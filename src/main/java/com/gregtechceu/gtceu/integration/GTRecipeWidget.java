@@ -252,7 +252,7 @@ public class GTRecipeWidget extends WidgetGroup {
         String tierText = GTValues.VNF[tier];
         if (tier > getMinTier() && inputEUt != 0) {
             LongIntPair pair = logic.getLogic().runOverclockingLogic(
-                recipe, inputEUt, GTValues.V[tier], duration, GTValues.MAX);
+                    recipe, inputEUt, GTValues.V[tier], duration, GTValues.MAX);
             duration = pair.rightInt();
             inputEUt = pair.firstLong();
             tierText = tierText.formatted(ChatFormatting.ITALIC);

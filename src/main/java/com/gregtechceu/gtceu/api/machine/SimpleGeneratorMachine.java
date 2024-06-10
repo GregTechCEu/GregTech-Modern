@@ -106,7 +106,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, recipeType) -> new EditableMachineUI("generator", path, () -> {
                 WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();

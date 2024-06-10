@@ -711,8 +711,6 @@ public class GTRecipeTypes {
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES));
         GTRegistries.RECIPE_TYPES.freeze();
 
-        // GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine_recipe"),
-        // GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover"),
                 FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe"),

@@ -84,8 +84,8 @@ public class MachineRenderer extends TextureOverrideRenderer
 
                         @Override
                         @OnlyIn(Dist.CLIENT)
-                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state,
-                                                        @org.jetbrains.annotations.Nullable Direction direction,
+                        public List<BakedQuad> getQuads(@Nullable BlockState state,
+                                                        @Nullable Direction direction,
                                                         RandomSource random) {
                             List<BakedQuad> quads = new LinkedList<>();
                             renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random,

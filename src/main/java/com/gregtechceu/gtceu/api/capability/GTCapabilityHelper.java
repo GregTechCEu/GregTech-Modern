@@ -119,8 +119,6 @@ public class GTCapabilityHelper {
         return null;
     }
 
-    @SuppressWarnings("DataFlowIssue")
-    @Nullable
     public static IHazardEffectTracker getHazardEffectTracker(@NotNull Player entity) {
         return entity.getData(GTAttachmentTypes.HAZARD_TRACKER);
     }

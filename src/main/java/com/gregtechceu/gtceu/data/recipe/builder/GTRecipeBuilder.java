@@ -239,7 +239,7 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
             throw new IllegalArgumentException(id + ": input items is empty");
         }
-        if (input.getComponents().isEmpty() && !input.getComponents().equals(input.getPrototype())) {
+        if (input.getComponentsPatch().isEmpty()) {
             return input(ItemRecipeCapability.CAP, SizedIngredient.of(input.getItem(), input.getCount()));
         } else {
             return input(ItemRecipeCapability.CAP,
@@ -255,7 +255,7 @@ public class GTRecipeBuilder {
             }
         }
         return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> {
-            if (stack.getComponents().isEmpty()) {
+            if (stack.getComponentsPatch().isEmpty()) {
                 return SizedIngredient.of(stack.getItem(), stack.getCount());
             } else {
                 return new SizedIngredient(DataComponentIngredient.of(true, stack), stack.getCount());
@@ -747,18 +747,13 @@ public class GTRecipeBuilder {
                 .map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), buildRecipe());
+                this.recipeType.addDataStickEntry(entry.getResearchId(), build());
             }
         }
         consumer.accept(
                 ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
                         recipeType.registryName.getPath() + "/" + id.getPath()),
                 build(), null);
-    }
-
-    public GTRecipe buildRecipe() {
-        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, List.of(), data, duration,
-                isFuel);
     }
 
     //////////////////////////////////////

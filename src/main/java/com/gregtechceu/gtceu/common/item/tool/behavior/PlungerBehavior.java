@@ -88,7 +88,7 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
     }
 
     @Override
-    public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
         event.registerItem(Capabilities.FluidHandler.ITEM,
                 (stack, unused) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, Integer.MAX_VALUE) {
 

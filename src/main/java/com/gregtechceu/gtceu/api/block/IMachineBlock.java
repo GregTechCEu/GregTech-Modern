@@ -37,8 +37,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import appeng.api.AECapabilities;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.capabilities.AppEngCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -283,7 +283,7 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
                         IOpticalComputationProvider.class);
                 if (!list.isEmpty()) {
-                    return list.get(0);
+                    return list.getFirst();
                 }
             }
             return null;
@@ -296,13 +296,13 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
                         IDataAccessHatch.class);
                 if (!list.isEmpty()) {
-                    return list.get(0);
+                    return list.getFirst();
                 }
             }
             return null;
         }, this.self());
         if (GTCEu.isAE2Loaded()) {
-            event.registerBlock(AppEngCapabilities.IN_WORLD_GRID_NODE_HOST, (level, pos, state, blockEntity, side) -> {
+            event.registerBlock(AECapabilities.IN_WORLD_GRID_NODE_HOST, (level, pos, state, blockEntity, side) -> {
                 if (blockEntity instanceof IMachineBlockEntity machine) {
                     if (machine.getMetaMachine() instanceof IInWorldGridNodeHost nodeHost) {
                         return nodeHost;

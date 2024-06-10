@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;

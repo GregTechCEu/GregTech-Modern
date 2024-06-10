@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,8 +60,6 @@ import java.util.function.Predicate;
 @Accessors(chain = true, fluent = true)
 @AllArgsConstructor
 public class GeodeVeinGenerator extends VeinGenerator {
-
-    private static final Direction[] DIRECTIONS = Direction.values();
 
     public static final Codec<Double> CHANCE_RANGE = Codec.doubleRange(0.0, 1.0);
 
@@ -213,7 +212,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 continue;
             if (doCrack && t >= crackSize && s < fillingSize) {
                 this.safeSetBlock(access, section, pos, Blocks.AIR.defaultBlockState(), placementPredicate);
-                for (Direction direction : DIRECTIONS) {
+                for (Direction direction : GTUtil.DIRECTIONS) {
                     BlockPos origin5 = pos.relative(direction);
                     FluidState fluidState = level.getFluidState(origin5);
                     if (fluidState.isEmpty()) continue;
@@ -260,7 +259,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
         block5:
         for (BlockPos origin2 : positions) {
             blockState = Util.getRandom(innerPlacements, random);
-            for (Direction direction2 : DIRECTIONS) {
+            for (Direction direction2 : GTUtil.DIRECTIONS) {
                 if (blockState.hasProperty(BlockStateProperties.FACING)) {
                     blockState = blockState.setValue(BlockStateProperties.FACING, direction2);
                 }

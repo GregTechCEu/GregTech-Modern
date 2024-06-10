@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -66,7 +67,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @date 2023/2/17
  * @implNote GTBlock
  */
-@SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
@@ -285,43 +285,42 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
-                                               BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
+                                              Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = getMachine(world, pos);
-        ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         boolean shouldOpenUi = true;
 
-        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-            var result = machine.onToolClick(types, itemStack,
-                    new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
-            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
+        Set<GTToolType> types = ToolHelper.getToolTypes(stack);
+        if (machine != null && !types.isEmpty() && ToolHelper.canUse(stack)) {
+            var result = machine.onToolClick(types, stack,
+                    new UseOnContext(player, hand, hit));
+            if (result.getSecond() == ItemInteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
                 if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
+                    ToolHelper.damageItem(stack, serverPlayer, 1);
                 }
             }
-            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
+            if (result.getSecond().result() != InteractionResult.PASS) return result.getSecond();
         }
 
-        if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
-            return itemStack.getItem().use(world, player, InteractionHand.MAIN_HAND).getResult();
+        if (stack.is(GTItems.PORTABLE_SCANNER.get())) {
+            return getFromInteractionResult(stack.getItem().use(world, player, hand).getResult());
         }
 
-        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
+        if (stack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem
-                    .definition$shouldOpenUIAfterUse(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+                    .definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
         if (machine instanceof IInteractedMachine interactedMachine) {
-            var result = interactedMachine.onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
-            if (result != InteractionResult.PASS) return result;
+            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
+            if (result.result() != InteractionResult.PASS) return result;
         }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
-            return uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit);
+            return uiMachine.tryToOpenUI(player, hand, hit);
         }
-        return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
+        return shouldOpenUi ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.CONSUME;
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
@@ -364,5 +363,15 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+    }
+
+    public static ItemInteractionResult getFromInteractionResult(InteractionResult result) {
+        return switch (result) {
+            case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
+            case CONSUME -> ItemInteractionResult.CONSUME;
+            case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
+            case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            case FAIL -> ItemInteractionResult.FAIL;
+        };
     }
 }

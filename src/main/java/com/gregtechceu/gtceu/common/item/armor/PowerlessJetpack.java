@@ -236,7 +236,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     public FluidStack getFuel() {
         if (currentRecipe != null) {
-            return FluidRecipeCapability.CAP.of(currentRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
+            return FluidRecipeCapability.CAP.of(currentRecipe.getInputContents(FluidRecipeCapability.CAP).getFirst())
                     .getFluids()[0];
         }
 
@@ -312,7 +312,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         }
 
         @Override
-        public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
+        public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
             event.registerItem(Capabilities.FluidHandler.ITEM,
                     (stack, unused) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, maxCapacity) {
 

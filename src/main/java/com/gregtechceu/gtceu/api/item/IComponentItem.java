@@ -20,7 +20,7 @@ public interface IComponentItem extends ItemLike {
     default void attachCapabilities(RegisterCapabilitiesEvent event) {
         for (IItemComponent component : getComponents()) {
             if (component instanceof IComponentCapability componentCapability) {
-                componentCapability.attachCapabilites(event, this.asItem());
+                componentCapability.attachCapabilities(event, this.asItem());
             }
         }
     }

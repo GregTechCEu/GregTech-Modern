@@ -10,5 +10,5 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
  */
 public interface IComponentCapability {
 
-    void attachCapabilites(RegisterCapabilitiesEvent event, Item item);
+    void attachCapabilities(RegisterCapabilitiesEvent event, Item item);
 }

@@ -63,7 +63,7 @@ public class RecipeLogicTest {
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(1).duration(1)
-                .buildRecipe();
+                .build();
         // force insert the recipe into the manager.
 
         if (!hasInjectedRecipe) {

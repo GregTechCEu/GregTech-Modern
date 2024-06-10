@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -54,7 +55,7 @@ public interface ICoverableRenderer extends IRenderer {
     default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
                               @NotNull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
         var thickness = coverable.getCoverPlateThickness();
-        for (Direction face : Direction.values()) {
+        for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
             if (cover != null) {
                 if (thickness > 0 && cover.shouldRenderPlate()) {

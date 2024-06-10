@@ -269,6 +269,23 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         collection.add(recipe);
     }
 
+    @Nullable
+    public Collection<GTRecipe> getDataStickEntry(@NotNull String researchId) {
+        return researchEntries.get(researchId);
+    }
+
+    public boolean removeDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
+        Collection<GTRecipe> collection = researchEntries.get(researchId);
+        if (collection == null) return false;
+        if (collection.remove(recipe)) {
+            if (collection.isEmpty()) {
+                return researchEntries.remove(researchId) != null;
+            }
+            return true;
+        }
+        return false;
+    }
+
     public RecipeHolder<GTRecipe> toGTRecipe(RecipeHolder<?> recipe) {
         var builder = recipeBuilder(recipe.id());
         for (var ingredient : recipe.value().getIngredients()) {

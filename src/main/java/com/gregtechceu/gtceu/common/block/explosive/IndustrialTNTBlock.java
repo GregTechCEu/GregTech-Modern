@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class IndustrialTNTBlock extends GTExplosiveBlock {
 
     @Override
     protected GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
-                                             @NotNull LivingEntity exploder) {
+                                             @Nullable LivingEntity exploder) {
         float x = pos.getX() + 0.5F, y = pos.getY(), z = pos.getZ() + 0.5F;
         return new IndustrialTNTEntity(world, x, y, z, exploder);
     }

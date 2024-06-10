@@ -995,6 +995,7 @@ public class CircuitRecipes {
     }
 
     private static void circuitRecipes(RecipeOutput provider) {
+        int outputAmount = ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 1 : 2;
 
         // T1: Electronic ==============================================================================================
 

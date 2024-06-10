@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -63,7 +65,7 @@ public class PipeModel {
         double max = min + thickness;
         this.coreCube = new AABB(min, min, min, max, max, max);
         this.sideCubes = new EnumMap<>(Direction.class);
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             var normal = side.getNormal();
             sideCubes.put(side, new AABB(
                     normal.getX() == 0 ? min : normal.getX() > 0 ? max : 0,
@@ -78,7 +80,7 @@ public class PipeModel {
     public VoxelShape getShapes(int connections) {
         var shapes = new ArrayList<VoxelShape>(7);
         shapes.add(Shapes.create(coreCube));
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             if (isConnected(connections, side)) {
                 shapes.add(Shapes.create(sideCubes.get(side)));
             }
@@ -134,7 +136,7 @@ public class PipeModel {
                             .bake());
                 }
                 if (sideOverlaySprite != null) {
-                    for (Direction face : Direction.values()) {
+                    for (Direction face : GTUtil.DIRECTIONS) {
                         if (face != side && face != side.getOpposite()) {
                             quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV()
                                     .tintIndex(2).bake());
@@ -150,7 +152,7 @@ public class PipeModel {
         List<BakedQuad> quads = new LinkedList<>();
         if (thickness < 1) { // non full block
             // render core cube
-            for (Direction face : Direction.values()) {
+            for (Direction face : GTUtil.DIRECTIONS) {
                 if (!isConnected(connections, face)) {
                     quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                     if (secondarySideSprite != null) {
@@ -159,7 +161,7 @@ public class PipeModel {
                     }
                 }
                 // render each connected side
-                for (Direction facing : Direction.values()) {
+                for (Direction facing : GTUtil.DIRECTIONS) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
                             quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV()

@@ -95,6 +95,13 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     }
 
     /**
+     * Called in {@link WorkableMultiblockMachine#setWorkingEnabled(boolean)}
+     */
+    default boolean onPaused(IWorkableMultiController controller) {
+        return true;
+    }
+
+    /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
     default boolean afterWorking(IWorkableMultiController controller) {

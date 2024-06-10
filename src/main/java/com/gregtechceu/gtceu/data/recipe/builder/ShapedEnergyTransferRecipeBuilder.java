@@ -69,7 +69,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (!itemStack.getComponents().isEmpty()) {
+        if (!itemStack.getComponentsPatch().isEmpty()) {
             key.put(cha, DataComponentIngredient.of(true, itemStack));
         } else {
             key.put(cha, Ingredient.of(itemStack));

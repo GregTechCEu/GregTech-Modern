@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -121,8 +120,9 @@ public class HazardEffectTracker implements IHazardEffectTracker {
         maxAirSupplySetterAmount = 0;
     }
 
+    @NotNull
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
         ListTag effectsTag = new ListTag();

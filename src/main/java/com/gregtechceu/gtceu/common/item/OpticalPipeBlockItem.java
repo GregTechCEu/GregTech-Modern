@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.common.item;
 
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.common.block.OpticalPipeBlock;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

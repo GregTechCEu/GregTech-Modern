@@ -28,9 +28,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTTool>> GT_TOOL = DATA_COMPONENTS
             .registerComponentType("gt_tool",
                     builder -> builder.persistent(GTTool.CODEC).networkSynchronized(GTTool.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ToolBehaviorsComponent>> TOOL_BEHAVIORS = DATA_COMPONENTS
-            .registerComponentType("tool_behaviors", builder -> builder.persistent(ToolBehaviorsComponent.CODEC)
-                    .networkSynchronized(ToolBehaviorsComponent.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ToolBehaviors>> TOOL_BEHAVIORS = DATA_COMPONENTS
+            .registerComponentType("tool_behaviors", builder -> builder.persistent(ToolBehaviors.CODEC)
+                    .networkSynchronized(ToolBehaviors.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> AOE = DATA_COMPONENTS
             .registerComponentType("aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
                     .networkSynchronized(AoESymmetrical.STREAM_CODEC));

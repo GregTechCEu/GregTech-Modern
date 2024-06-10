@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.behavior.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
@@ -144,7 +145,7 @@ public class GTItems {
                                     .transform(unificationItem(tagPrefix, material))
                                     .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                     .model(NonNullBiConsumer.noop())
-                                    .color(() -> () -> TagPrefixItem::tintColor)
+                                    .color(() -> TagPrefixItem::tintColor)
                                     .onRegister(GTItems::cauldronInteraction)
                                     .onRegister(item -> {
                                         switch (tagPrefix.name) {
@@ -202,7 +203,7 @@ public class GTItems {
                                                             new Tool(rules, tool.defaultMiningSpeed(),
                                                                     tool.damagePerBlock()))
                                                     .component(GTDataComponents.TOOL_BEHAVIORS,
-                                                            new ToolBehaviorsComponent(
+                                                            new ToolBehaviors(
                                                                     toolType.toolDefinition.getBehaviors())))
                                             .properties(p -> {
                                                 if (toolType.toolDefinition.getAoEDefinition() !=

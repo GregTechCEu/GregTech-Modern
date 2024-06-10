@@ -33,7 +33,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -201,8 +201,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     @SuppressWarnings("resource")
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         var currentStack = player.getMainHandItem();
         if (!currentStack.isEmpty()) {
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
@@ -224,7 +224,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
                             Block.popResource(player.level(), player.getOnPos(), remainingStack);
                         }
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 }
 
@@ -243,21 +243,22 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                         Block.popResource(player.level(), player.getOnPos(), remainingStack);
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return world.isClientSide ? ItemInteractionResult.SUCCESS :
+                ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                       BlockHitResult hitResult) {
         if (!isRemote()) {
             if (!playerIn.isShiftKeyDown()) {
                 setAutoOutputFluids(!isAutoOutputFluids());
                 playerIn.sendSystemMessage(Component
                         .translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);

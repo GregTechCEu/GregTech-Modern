@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
@@ -25,6 +25,7 @@ public interface IToolable {
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
      *         animations will be played
      */
-    Pair<@Nullable GTToolType, InteractionResult> onToolClick(@NotNull Set<GTToolType> toolTypes, ItemStack itemStack,
-                                                              UseOnContext context);
+    Pair<@Nullable GTToolType, ItemInteractionResult> onToolClick(@NotNull Set<GTToolType> toolTypes,
+                                                                  ItemStack itemStack,
+                                                                  UseOnContext context);
 }

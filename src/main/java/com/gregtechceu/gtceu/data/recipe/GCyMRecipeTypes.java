@@ -47,10 +47,6 @@ public class GCyMRecipeTypes {
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
-            })
-            .addDataInfo(data -> {
-                int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil != null && requiredCoil.getMaterial() != null) {

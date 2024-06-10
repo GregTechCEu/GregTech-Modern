@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,20 +38,6 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         return this.entries.iterator();
     }
 
-    public static ResearchData fromJson(JsonArray array) {
-        List<ResearchEntry> entries = new ArrayList<>();
-        for (int i = 0; i < array.size(); ++i) {
-            entries.add(ResearchEntry.fromJson(array.get(i).getAsJsonObject()));
-        }
-        return new ResearchData(entries);
-    }
-
-    public JsonArray toJson() {
-        JsonArray json = new JsonArray();
-        this.entries.forEach(entry -> json.add(entry.toJson()));
-        return json;
-    }
-
     public static ResearchData fromNetwork(RegistryFriendlyByteBuf buf) {
         List<ResearchEntry> entries = new ArrayList<>();
         int size = buf.readVarInt();
@@ -77,8 +60,8 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
     public static final class ResearchEntry {
 
         public static final Codec<ResearchEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
-                ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
+                Codec.STRING.fieldOf("research_id").forGetter(val -> val.researchId),
+                ItemStack.CODEC.fieldOf("data_item").forGetter(val -> val.dataItem))
                 .apply(instance, ResearchEntry::new));
 
         @NotNull
@@ -95,18 +78,6 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         public ResearchEntry(@NotNull String researchId, @NotNull ItemStack dataItem) {
             this.researchId = researchId;
             this.dataItem = dataItem;
-        }
-
-        public static ResearchEntry fromJson(JsonObject tag) {
-            return new ResearchEntry(tag.get("researchId").getAsString(),
-                    ItemStack.CODEC.parse(JsonOps.INSTANCE, tag.get("dataItem")).getOrThrow());
-        }
-
-        public JsonObject toJson() {
-            JsonObject json = new JsonObject();
-            json.addProperty("researchId", researchId);
-            json.add("dataItem", ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, dataItem).getOrThrow());
-            return json;
         }
 
         public static ResearchEntry fromNetwork(RegistryFriendlyByteBuf buf) {

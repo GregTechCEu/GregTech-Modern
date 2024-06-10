@@ -66,7 +66,7 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
-        // handler.itemWriter = itemWriter; TODO fix
+        // FIXME handler.itemWriter = itemWriter;
         return itemStack.get(GTDataComponents.SIMPLE_FLUID_FILTER);
     }
 

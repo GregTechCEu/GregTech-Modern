@@ -42,7 +42,7 @@ public class BatteryBufferRenderer extends TieredHullMachineRenderer {
             var texture = inventorySize <= 4 ? TransformerRenderer.ENERGY_OUT :
                     inventorySize <= 8 ? TransformerRenderer.ENERGY_OUT_MULTI :
                             TransformerRenderer.ENERGY_OUT_ULTRA;
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState, 2));
+            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState, 2));
         }
     }
 }

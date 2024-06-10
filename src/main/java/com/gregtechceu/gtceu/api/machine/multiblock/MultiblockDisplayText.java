@@ -321,7 +321,7 @@ public class MultiblockDisplayText {
         public Builder addMachineModeLine(GTRecipeType recipeType, GTRecipeType[] possibleTypes) {
             if (!isStructureFormed)
                 return this;
-            if (possibleTypes.length < 2)
+            if (possibleTypes.length <= 1)
                 return this;
             textList.add(Component
                     .translatable("gtceu.gui.machinemode", recipeType.getName())

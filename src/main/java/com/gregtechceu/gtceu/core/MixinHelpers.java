@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,8 +47,6 @@ import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -217,7 +214,7 @@ public class MixinHelpers {
                         if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
                             ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
-                                    .when(hasSilkTouch(access).invert())
+                                    .when(blockLoot.doesNotHaveSilkTouch())
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
                                     .apply(ApplyBonusCount.addUniformBonusCount(fortune))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
@@ -265,18 +262,6 @@ public class MixinHelpers {
             lootTables.accept(lootTableId,
                     blockLoot.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build(), access);
         });
-    }
-
-    public static LootItemCondition.Builder hasSilkTouch(HolderLookup.Provider provider) {
-        HolderLookup.RegistryLookup<Enchantment> registrylookup = provider.lookupOrThrow(Registries.ENCHANTMENT);
-        return MatchTool.toolMatches(
-                ItemPredicate.Builder.item()
-                        .withSubPredicate(
-                                ItemSubPredicates.ENCHANTMENTS,
-                                ItemEnchantmentsPredicate.enchantments(
-                                        List.of(new EnchantmentPredicate(
-                                                registrylookup.getOrThrow(Enchantments.SILK_TOUCH),
-                                                MinMaxBounds.Ints.atLeast(1))))));
     }
 
     public static void addMaterialBlockLootTables(TriConsumer<ResourceLocation, LootTable, RegistryAccess.Frozen> lootTables,

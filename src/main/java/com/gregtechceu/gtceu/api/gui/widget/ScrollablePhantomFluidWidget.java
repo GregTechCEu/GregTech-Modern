@@ -10,6 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -67,13 +68,13 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
         if (fluidTank == null)
             return;
 
-        FluidStack fluid = tank.getFluidInTank(0);
+        FluidStack fluid = fluidTank.getFluidInTank(tank);
         if (fluid.isEmpty())
             return;
 
-        fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0), tank.getTankCapacity(0)));
+        fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0), fluidTank.getTankCapacity(tank)));
         if (fluid.getAmount() <= 0L) {
-            tank.drain(fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            fluidTank.drain(fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
         }
     }
 }

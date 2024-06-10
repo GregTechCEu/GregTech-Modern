@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.client.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.ClientCommands;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.data.block.GTOres;
 import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
 
+import com.lowdragmc.lowdraglib.client.ClientCommands;
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -43,13 +43,6 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onTooltipEvent(ItemTooltipEvent event) {
         TooltipsHandler.appendTooltips(event.getItemStack(), event.getFlags(), event.getToolTip());
-    }
-
-    @SubscribeEvent
-    public static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-        var dispatcher = event.getDispatcher();
-        List<LiteralArgumentBuilder<CommandSourceStack>> commands = ClientCommands.createClientCommands();
-        commands.forEach(dispatcher::register);
     }
 
     @SubscribeEvent

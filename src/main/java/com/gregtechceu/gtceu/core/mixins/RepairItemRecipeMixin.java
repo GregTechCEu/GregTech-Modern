@@ -57,6 +57,8 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     /*
+     * ´FIXME enchantment copying
+     * 
      * @Inject(
      * method =
      * "assemble(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;",

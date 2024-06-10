@@ -26,6 +26,8 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -119,11 +121,16 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             ingredients.add(new MapItemStackIngredient(stack));
 
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
-            if (!stack.getComponents().equals(stack.getPrototype())) {
+            if (!stack.getComponentsPatch().isEmpty()) {
                 ingredients
                         .add(new MapItemStackDataComponentIngredient(stack, DataComponentIngredient.of(true, stack)));
+                DataComponentPredicate.Builder builder = DataComponentPredicate.builder();
+                for (var entry : stack.getComponentsPatch().entrySet()) {
+                    if (entry.getValue().isEmpty()) continue;
+                    builder.expect((DataComponentType) entry.getKey(), entry.getValue().get());
+                }
                 ingredients.add(new MapItemStackWeakDataComponentIngredient(stack,
-                        DataComponentIngredient.of(false, stack.getComponents(), stack.getItem())));
+                        DataComponentIngredient.of(false, builder.build(), stack.getItem())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {

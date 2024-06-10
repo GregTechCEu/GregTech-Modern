@@ -46,7 +46,7 @@ public class ShapelessRecipeBuilder {
     }
 
     public ShapelessRecipeBuilder requires(ItemStack itemStack) {
-        if (!itemStack.getComponents().isEmpty()) {
+        if (!itemStack.getComponentsPatch().isEmpty()) {
             requires(DataComponentIngredient.of(true, itemStack));
         } else {
             requires(Ingredient.of(itemStack));

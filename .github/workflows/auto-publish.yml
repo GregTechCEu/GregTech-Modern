@@ -34,11 +34,6 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
       - name: Setup Build
         uses: ./.github/actions/build_setup
 

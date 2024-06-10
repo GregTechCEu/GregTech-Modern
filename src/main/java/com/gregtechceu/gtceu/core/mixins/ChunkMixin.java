@@ -25,6 +25,7 @@ public class ChunkMixin {
     Level level;
 
     // We want to be as quick as possible here
+    @SuppressWarnings("UnreachableCode") // IDE doesn't like the cast to LevelChunk
     @Inject(method = "setBlockState",
             at = @At(value = "INVOKE",
                      opcode = Opcodes.GETFIELD,

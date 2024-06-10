@@ -42,22 +42,4 @@ public class GTCapability {
             .createSided(GTCEu.id("computation_provider"), IOpticalComputationProvider.class);
     public static final BlockCapability<IDataAccessHatch, Direction> CAPABILITY_DATA_ACCESS = BlockCapability
             .createSided(GTCEu.id("data_access"), IDataAccessHatch.class);
-
-    /*
-     * public static void register(RegisterCapabilitiesEvent event) {
-     * event.register(IEnergyContainer.class);
-     * event.register(IEnergyInfoProvider.class);
-     * event.register(ICoverable.class);
-     * event.register(IToolable.class);
-     * event.register(IWorkable.class);
-     * event.register(IControllable.class);
-     * event.register(RecipeLogic.class);
-     * event.register(IElectricItem.class);
-     * event.register(ICleanroomReceiver.class);
-     * event.register(IMaintenanceMachine.class);
-     * event.register(ILaserContainer.class);
-     * event.register(IOpticalComputationProvider.class);
-     * event.register(IDataAccessHatch.class);
-     * }
-     */
 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
@@ -57,7 +57,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
         if (player.isShiftKeyDown()) {
             ToolModeSwitchBehavior.ModeType type = ModeType.values()[(this.modeType.ordinal() + 1) %
                     ModeType.values().length];
-            itemStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviorsComponent.EMPTY,
+            itemStack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
                     behavior -> behavior.withBehavior(new ToolModeSwitchBehavior(type)));
 
             player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode", type.getName()),

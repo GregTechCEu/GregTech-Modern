@@ -12,7 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -40,8 +40,8 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     }
 
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
-        return InteractionResult.FAIL;
+    public ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+        return ItemInteractionResult.FAIL;
     }
 
     @Override
@@ -50,13 +50,13 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     }
 
     @Override
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public ItemInteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
         this.workingEnabled = !this.workingEnabled;
         if (!playerIn.level().isClientSide) {
             playerIn.sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.shutter.message.enabled" : "cover.shutter.message.disabled"));
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

@@ -2,6 +2,7 @@ repositories {
     flatDir {
         dir "libs"
     }
+    mavenCentral()
     maven {
         name 'Maven for PR #1076' // https://github.com/neoforged/NeoForge/pull/1076
         url 'https://prmaven.neoforged.net/NeoForge/pr1076'
@@ -10,7 +11,6 @@ repositories {
             includeModule('net.neoforged', 'neoforge')
         }
     }
-    mavenCentral()
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
     maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
@@ -31,7 +31,7 @@ repositories {
     } // JEI mirror, AE2
     maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
     maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
-    //maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+    maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
     maven { // Flywheel
         url = "https://maven.tterrag.com/"
         content {
@@ -54,5 +54,4 @@ repositories {
     }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
-    mavenLocal()
 }

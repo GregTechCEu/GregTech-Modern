@@ -49,7 +49,7 @@ public class SmeltingRecipeBuilder {
     }
 
     public SmeltingRecipeBuilder input(ItemStack itemStack) {
-        if (!itemStack.getComponents().isEmpty()) {
+        if (!itemStack.getComponentsPatch().isEmpty()) {
             input = DataComponentIngredient.of(true, itemStack);
         } else {
             input = Ingredient.of(itemStack);

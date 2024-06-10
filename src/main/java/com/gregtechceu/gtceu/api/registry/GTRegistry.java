@@ -83,8 +83,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean checkActiveModContainerIsRegisteringMod() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(this.registryName.getNamespace()) ||
-                container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
+        return container != null && (container.getModId().equals(this.registryName.getNamespace()) ||
+                container.getModId().equals("minecraft")); // check for minecraft modid in case of datagen or a mishap
     }
 
     public <T extends V> T register(K key, T value) {

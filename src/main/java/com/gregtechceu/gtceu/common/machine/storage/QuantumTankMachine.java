@@ -37,7 +37,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -230,8 +230,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         var currentStack = player.getMainHandItem();
         if (hit.getDirection() == getFrontFacing() && !currentStack.isEmpty()) {
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
@@ -253,7 +253,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
                             Block.popResource(player.level(), player.getOnPos(), remainingStack);
                         }
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 }
 
@@ -272,33 +272,35 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         Block.popResource(player.level(), player.getOnPos(), remainingStack);
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
+    protected ItemInteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
-            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
+            if (tool.getDamageValue() >= tool.getMaxDamage())
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            if (hasFrontFacing() && gridSide == getFrontFacing())
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             if (gridSide != getOutputFacingFluids()) {
                 setOutputFacingFluids(gridSide);
             } else {
                 setOutputFacingFluids(null);
             }
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                       BlockHitResult hitResult) {
         if (!isRemote()) {
             if (gridSide == getOutputFacingFluids()) {
                 if (isAllowInputFromOutputSideFluids()) {
@@ -313,7 +315,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                                     .append(Component.translatable("gtceu.creative.chest.fluid")));
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
     }
