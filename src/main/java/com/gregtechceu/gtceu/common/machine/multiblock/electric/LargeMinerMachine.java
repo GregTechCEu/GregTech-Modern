@@ -185,7 +185,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             FluidStack drillingFluid = DrillingFluid
                     .getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-            if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) &&
+            if (!fluidStack.isEmpty() && FluidStack.isSameFluidSameComponents(fluidStack, DrillingFluid.getFluid(1)) &&
                     fluidStack.getAmount() >= drillingFluid.getAmount()) {
                 if (!simulate) {
                     GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid,

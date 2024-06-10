@@ -29,12 +29,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -660,10 +660,11 @@ public class BlockPattern {
             IItemHandler stackCap = stack.getCapability(Capabilities.ItemHandler.ITEM);
             if (stackCap != null) {
                 return getMatchStackWithHandler(candidates, stackCap);
-            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
-                    !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
-                        return Pair.of(i, handler);
-                    }
+            } else if (candidates.stream()
+                    .anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
+                        !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                            return Pair.of(i, handler);
+                        }
         }
         return null;
     }

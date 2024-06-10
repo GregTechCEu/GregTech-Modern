@@ -30,8 +30,6 @@ public abstract class ModelManagerMixin {
                                          ResourceManager resourceManager, ProfilerFiller preparationsProfiler,
                                          ProfilerFiller reloadProfiler, Executor backgroundExecutor,
                                          Executor gameExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-        if (!ModLoader.isLoadingStateValid()) return;
-
         long startTime = System.currentTimeMillis();
         // turns out these do have to be init in here after all, as they check for asset existence. whoops.
         MaterialBlockRenderer.reinitModels();

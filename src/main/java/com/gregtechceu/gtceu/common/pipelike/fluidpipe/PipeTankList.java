@@ -33,7 +33,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
             FluidStack f = tanks[i].getFluid();
             if (f.isEmpty())
                 empty = i;
-            else if (f.isFluidEqual(stack))
+            else if (FluidStack.isSameFluidSameComponents(f, stack))
                 return i;
         }
         return empty;
@@ -93,7 +93,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
             }
             return newFluid.getAmount();
         }
-        if (currentFluid.isFluidEqual(resource)) {
+        if (FluidStack.isSameFluidSameComponents(currentFluid, resource)) {
             int toAdd = Math.min(tank.getCapacity() - currentFluid.getAmount(), resource.getAmount());
             if (toAdd > 0) {
                 if (action == FluidAction.EXECUTE) {

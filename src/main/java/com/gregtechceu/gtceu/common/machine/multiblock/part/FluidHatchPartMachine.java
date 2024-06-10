@@ -198,9 +198,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     private Component getFluidNameText(TankWidget tankWidget) {
         Component translation;
         if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
-            translation = tank.getFluidInTank(tankWidget.getTank()).getDisplayName();
+            translation = tank.getFluidInTank(tankWidget.getTank()).getHoverName();
         } else {
-            translation = this.tank.getLockedFluid().getFluid().getDisplayName();
+            translation = this.tank.getLockedFluid().getFluid().getHoverName();
         }
         return translation;
     }
