@@ -74,7 +74,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput container, HolderLookup.Provider provider) {
-        ItemStack itemStack = GTItems.COVER_FACADE.asStack();
+        ItemStack itemStack = GTItems.COVER_FACADE.asStack(3);
         for (int i = 0; i < container.size(); i++) {
             var item = container.getItem(i);
             if (item.isEmpty()) continue;
