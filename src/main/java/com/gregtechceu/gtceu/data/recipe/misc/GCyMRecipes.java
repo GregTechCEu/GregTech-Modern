@@ -430,9 +430,9 @@ public class GCyMRecipes {
      * @param material the material to generate for
      * @param property the blast property of the material
      */
-    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @Nonnull Material material,
-                                                 @Nonnull AlloyBlastProperty property,
-                                                 @Nonnull RecipeOutput provider) {
+    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @NotNull Material material,
+                                                 @NotNull AlloyBlastProperty property,
+                                                 @NotNull RecipeOutput provider) {
         if (material.hasProperty(PropertyKey.BLAST)) {
             property.getRecipeProducer().produce(material, material.getProperty(PropertyKey.BLAST), provider);
         }

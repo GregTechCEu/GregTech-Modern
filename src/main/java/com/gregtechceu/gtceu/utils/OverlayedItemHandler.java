@@ -11,7 +11,7 @@ public class OverlayedItemHandler {
     private final OverlayedItemHandlerSlot[] slots;
     private final IItemHandlerModifiable overlayedHandler;
 
-    public OverlayedItemHandler(@Nonnull IItemHandlerModifiable toOverlay) {
+    public OverlayedItemHandler(@NotNull IItemHandlerModifiable toOverlay) {
         this.slots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.originalSlots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.overlayedHandler = toOverlay;

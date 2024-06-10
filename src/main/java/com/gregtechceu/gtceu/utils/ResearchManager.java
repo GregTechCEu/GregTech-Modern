@@ -115,7 +115,7 @@ public final class ResearchManager {
      * @param builder the builder to retrieve recipe info from
      */
     public static void createDefaultResearchRecipe(@NotNull GTRecipeBuilder builder,
-                                                   Consumer<FinishedRecipe> provider) {
+                                                   RecipeOutput provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
@@ -198,7 +198,7 @@ public final class ResearchManager {
                     .inputItems(first)
                     .notConsumable(second)
                     .outputItems(output)
-                    .duration(DURATION).EUt(EUT).buildRawRecipe();
+                    .duration(DURATION).EUt(EUT).build();
         }
 
         @Nullable

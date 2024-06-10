@@ -11,10 +11,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
 
 public enum StoneTypes implements StringRepresentable {
 
@@ -46,12 +45,12 @@ public enum StoneTypes implements StringRepresentable {
 
     public final boolean generateBlocks;
 
-    StoneTypes(@Nonnull String name, @Nonnull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
+    StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
                Material material) {
         this(name, mapColor, natural, state, material, true);
     }
 
-    StoneTypes(@Nonnull String name, @Nonnull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
+    StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
                Material material, boolean generateBlocks) {
         this.name = name;
         this.mapColor = mapColor;
@@ -61,7 +60,7 @@ public enum StoneTypes implements StringRepresentable {
         this.generateBlocks = generateBlocks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return this.name;

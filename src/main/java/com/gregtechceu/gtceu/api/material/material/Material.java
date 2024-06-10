@@ -251,7 +251,7 @@ public class Material implements Comparable<Material> {
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
-    public FluidStack getFluid(@Nonnull FluidStorageKey key, int amount) {
+    public FluidStack getFluid(@NotNull FluidStorageKey key, int amount) {
         return new FluidStack(getFluid(key), amount);
     }
 

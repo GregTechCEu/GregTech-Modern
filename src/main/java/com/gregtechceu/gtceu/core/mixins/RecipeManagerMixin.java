@@ -45,7 +45,7 @@ public abstract class RecipeManagerMixin {
                     recipes.clear();
                     if (this.byType.containsKey(type)) {
                         for (var recipe : this.byType.get(type)) {
-                            recipes.add(gtRecipeType.toGTrecipe(recipe));
+                            recipes.add(gtRecipeType.toGTRecipe(recipe));
                         }
                     }
                 }

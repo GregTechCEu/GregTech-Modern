@@ -5,14 +5,14 @@ import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
 
 public interface IDataInfoProvider {
 
-    @Nonnull
+    @NotNull
     List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode);
 
     @Nullable

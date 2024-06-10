@@ -25,12 +25,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
 
 import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 public class ArmorUtils {
 
@@ -111,7 +110,7 @@ public class ArmorUtils {
         }
     }
 
-    public static void playJetpackSound(@Nonnull Player player) {
+    public static void playJetpackSound(@NotNull Player player) {
         if (player.level().isClientSide()) {
             float cons = (float) player.getDeltaMovement().y + player.moveDist;
             cons = Mth.clamp(cons, 0.6F, 1.0F);
@@ -187,7 +186,7 @@ public class ArmorUtils {
             }
         }
 
-        @Nonnull
+        @NotNull
         private Pair<Integer, Integer> getStringCoord(int index) {
             int posX;
             int posY;

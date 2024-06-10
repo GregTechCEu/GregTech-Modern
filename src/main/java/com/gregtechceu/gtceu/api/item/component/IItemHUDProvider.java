@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Provides a drawable HUD for the item
@@ -35,7 +35,7 @@ public interface IItemHUDProvider extends IItemComponent {
      * @param stack    the stack the provider should use
      */
     @OnlyIn(Dist.CLIENT)
-    static void tryDrawHud(@Nonnull IItemHUDProvider provider, @Nonnull ItemStack stack, GuiGraphics guiGraphics) {
+    static void tryDrawHud(@NotNull IItemHUDProvider provider, @NotNull ItemStack stack, GuiGraphics guiGraphics) {
         if (provider.shouldDrawHUD()) provider.drawHUD(stack, guiGraphics);
     }
 }

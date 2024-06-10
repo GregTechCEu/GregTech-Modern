@@ -33,6 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -86,6 +87,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Setter
     @Getter
     protected boolean isFuelRecipeType;
+    @Getter
+    @Setter
+    protected boolean isScanner;
+    // Does this recipe type have a research item slot? If this is true you MUST create a custom UI.
+    @Getter
+    @Setter
+    protected boolean hasResearchSlot;
     @Getter
     protected final Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> proxyRecipes;
     private CompoundTag customUICache;
@@ -256,7 +264,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public RecipeHolder<GTRecipe> toGTrecipe(RecipeHolder<?> recipe) {
+    public void addDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
+        Collection<GTRecipe> collection = researchEntries.computeIfAbsent(researchId, (k) -> new ObjectOpenHashSet<>());
+        collection.add(recipe);
+    }
+
+    public RecipeHolder<GTRecipe> toGTRecipe(RecipeHolder<?> recipe) {
         var builder = recipeBuilder(recipe.id());
         for (var ingredient : recipe.value().getIngredients()) {
             builder.inputItems(new SizedIngredient(ingredient, 1));

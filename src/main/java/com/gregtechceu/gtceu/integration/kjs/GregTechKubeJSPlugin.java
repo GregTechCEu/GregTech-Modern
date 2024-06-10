@@ -455,7 +455,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                     for (var recipe : recipesByName.entrySet().stream()
                             .filter(recipe -> recipe.getValue().value().getType() == type)
                             .collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getValue()));
+                        recipes.add(gtRecipeType.toGTRecipe(recipe.getValue()));
                     }
                 }
 

@@ -45,8 +45,6 @@ import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
-
 /**
  * @author KilaBash
  * @date 2023/2/17

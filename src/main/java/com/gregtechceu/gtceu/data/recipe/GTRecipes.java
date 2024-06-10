@@ -27,8 +27,6 @@ public class GTRecipes {
 
     private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
-    private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
-
     /*
      * Called on resource reload in-game.
      *

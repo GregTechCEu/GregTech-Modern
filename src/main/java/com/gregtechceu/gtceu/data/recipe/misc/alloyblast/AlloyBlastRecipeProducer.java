@@ -35,7 +35,7 @@ public class AlloyBlastRecipeProducer {
      * @param material the material to generate for
      * @param property the blast property of the material
      */
-    public void produce(@Nonnull Material material, @Nonnull BlastProperty property, RecipeOutput provider) {
+    public void produce(@NotNull Material material, @NotNull BlastProperty property, RecipeOutput provider) {
         // do not generate for disabled materials
         if (material.hasFlag(MaterialFlags.DISABLE_ALLOY_BLAST)) return;
 

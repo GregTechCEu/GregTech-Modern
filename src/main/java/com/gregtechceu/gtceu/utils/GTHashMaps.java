@@ -22,8 +22,8 @@ public final class GTHashMaps {
      * @param inputs The inventory handler of the inventory
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemHandler(@Nonnull IItemHandler inputs) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemHandler(@NotNull IItemHandler inputs) {
         return fromItemHandler(inputs, false);
     }
 
@@ -34,8 +34,8 @@ public final class GTHashMaps {
      * @param linked If the Map should be a Linked Map to preserve insertion order
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemHandler(@Nonnull IItemHandler inputs, boolean linked) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemHandler(@NotNull IItemHandler inputs, boolean linked) {
         final Object2IntMap<ItemStack> map = createItemStackMap(linked);
 
         // Create a single stack of the combined count for each item

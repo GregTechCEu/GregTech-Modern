@@ -82,6 +82,9 @@ public class GTRecipeBuilder {
     public boolean isFuel = false;
     @Setter
     public BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
+    @Getter
+    private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
+    private boolean generatingRecipes = true;
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;

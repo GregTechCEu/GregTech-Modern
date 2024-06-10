@@ -43,13 +43,13 @@ public abstract class ItemTransferDelegate implements IItemHandlerModifiable {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         return delegate.insertItem(slot, stack, simulate);
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return delegate.extractItem(slot, amount, simulate);
     }

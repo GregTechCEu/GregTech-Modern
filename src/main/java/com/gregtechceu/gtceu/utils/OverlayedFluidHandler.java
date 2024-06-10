@@ -133,7 +133,7 @@ public class OverlayedFluidHandler {
 
         private FluidStack fluid;
 
-        OverlayedTank(@Nonnull IFluidTank property, boolean allowSameFluidFill) {
+        OverlayedTank(@NotNull IFluidTank property, boolean allowSameFluidFill) {
             this.property = property;
             this.allowSameFluidFill = allowSameFluidFill;
             reset();
@@ -153,7 +153,7 @@ public class OverlayedFluidHandler {
          * @param amount Amount of the fluid to insert
          * @return Amount of fluid inserted into this tank
          */
-        public int tryInsert(@Nonnull FluidStack fluid, int amount) {
+        public int tryInsert(@NotNull FluidStack fluid, int amount) {
             if (this.fluid == FluidStack.EMPTY) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));

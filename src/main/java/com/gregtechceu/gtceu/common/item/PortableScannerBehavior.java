@@ -48,11 +48,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 public class PortableScannerBehavior implements IInteractionItem, IAddInformation {
 
@@ -129,7 +128,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
 
-    protected boolean drainEnergy(@Nonnull ItemStack stack, int amount, boolean simulate) {
+    protected boolean drainEnergy(@NotNull ItemStack stack, int amount, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
         return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
@@ -140,7 +139,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 mode -> (byte) ((mode + 1) % DisplayMode.values().length));
     }
 
-    @Nonnull
+    @NotNull
     protected DisplayMode getMode(ItemStack stack) {
         if (stack == ItemStack.EMPTY) {
             return DisplayMode.SHOW_ALL;
