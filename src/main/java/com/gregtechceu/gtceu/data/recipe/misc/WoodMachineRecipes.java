@@ -362,8 +362,6 @@ public class WoodMachineRecipes {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
-        GTCEu.LOGGER.info("Tag String is: {}", logTag);
-
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
