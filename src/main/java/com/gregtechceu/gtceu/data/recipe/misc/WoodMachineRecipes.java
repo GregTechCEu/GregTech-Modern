@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -14,9 +15,11 @@ import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -350,44 +353,39 @@ public class WoodMachineRecipes {
      */
     public static void registerWoodTypeRecipe(Consumer<FinishedRecipe> provider, @NotNull WoodTypeEntry entry) {
         final String name = entry.woodName;
-        final Item[] logs = entry.getLogs();
+        TagKey<Item> logTag = TagUtil.optionalTag(BuiltInRegistries.ITEM,
+                new ResourceLocation(entry.modid, name + "_logs"));
+        boolean hasPlanksRecipe = entry.planksRecipeName != null;
 
         // noinspection ConstantValue can be null if someone does an oopsie and doesn't set it.
         if (entry.planks == null) {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
-        // log-associated recipes
-        for (int i = 0; i < logs.length; i++) {
-            if (logs[i] != null) {
-                // nerf regular log -> plank crafting, if enabled
-                boolean hasPlanksRecipe = entry.planksRecipeName != null;
-                final String postfix = i == 0 ? "" : "_" + i;
-                if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider,
-                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks" + postfix,
-                            new ItemStack(entry.planks, 2), logs[i]);
+        GTCEu.LOGGER.info("Tag String is: {}", logTag);
 
-                } else if (!hasPlanksRecipe) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks" + postfix,
-                            new ItemStack(entry.planks, 4), logs[i]);
-                }
-
-                // log -> plank saw crafting
-                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw" + postfix,
-                        new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                        "s", "L", 'L', logs[i]);
-
-                // log -> plank cutting
-                CUTTER_RECIPES.recipeBuilder(name + "_planks" + postfix)
-                        .inputItems(logs[i])
-                        .outputItems(new ItemStack(entry.planks, 6))
-                        .outputItems(dust, Wood, 2)
-                        .duration(200)
-                        .EUt(VA[ULV])
-                        .save(provider);
-            }
+        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
+            VanillaRecipeHelper.addShapelessRecipe(provider,
+                    hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
+                    new ItemStack(entry.planks, 2), logTag);
+        } else if (!hasPlanksRecipe) {
+            VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks",
+                    new ItemStack(entry.planks, 4), logTag);
         }
+
+        // log -> plank saw crafting
+        VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
+                new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
+                "s", "L", 'L', logTag);
+
+        // log -> plank cutting
+        CUTTER_RECIPES.recipeBuilder(name + "_planks")
+                .inputItems(logTag)
+                .outputItems(new ItemStack(entry.planks, 6))
+                .outputItems(dust, Wood, 2)
+                .duration(200)
+                .EUt(VA[ULV])
+                .save(provider);
 
         // door
         if (entry.door != null) {
