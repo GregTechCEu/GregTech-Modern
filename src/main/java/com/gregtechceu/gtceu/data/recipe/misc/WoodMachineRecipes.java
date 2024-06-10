@@ -607,8 +607,7 @@ public class WoodMachineRecipes {
 
         // add Recipes for rubber log
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-            VanillaRecipeHelper.addShapelessRecipe(provider,
-                    "rubber_planks",
+            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
                     GTBlocks.RUBBER_PLANK.asStack(2), GTBlocks.RUBBER_LOG.asItem());
         } else {
             VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
