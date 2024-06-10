@@ -14,7 +14,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,10 +49,7 @@ public class FacadeCover extends CoverBehavior {
     @Override
     public void onAttached(ItemStack itemStack, ServerPlayer player) {
         super.onAttached(itemStack, player);
-        var facadeStack = FacadeItemBehaviour.getFacadeStack(itemStack);
-        if (facadeStack.getItem() instanceof BlockItem blockItem) {
-            facadeState = blockItem.getBlock().defaultBlockState();
-        }
+        facadeState = FacadeItemBehaviour.getFacadeState(itemStack);
     }
 
     @Override

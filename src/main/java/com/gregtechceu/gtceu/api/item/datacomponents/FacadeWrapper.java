@@ -1,19 +1,17 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
 
-public record FacadeWrapper(ItemStack stack) {
+public record FacadeWrapper(BlockState state) {
 
-    private static final ItemStackHashStrategy HASH_STRATEGY = ItemStackHashStrategy.comparingAll();
-    public static final Codec<FacadeWrapper> CODEC = ItemStack.CODEC.xmap(FacadeWrapper::new, FacadeWrapper::stack);
-    public static final StreamCodec<RegistryFriendlyByteBuf, FacadeWrapper> STREAM_CODEC = ItemStack.STREAM_CODEC
-            .map(FacadeWrapper::new, FacadeWrapper::stack);
+    public static final Codec<FacadeWrapper> CODEC = BlockState.CODEC.xmap(FacadeWrapper::new, FacadeWrapper::state);
+    public static final StreamCodec<RegistryFriendlyByteBuf, FacadeWrapper> STREAM_CODEC = ByteBufCodecs
+            .fromCodecWithRegistries(CODEC);
 
     @Override
     public boolean equals(Object o) {
@@ -22,11 +20,6 @@ public record FacadeWrapper(ItemStack stack) {
         if (!(o instanceof FacadeWrapper that))
             return false;
 
-        return ItemStack.matches(stack, that.stack);
-    }
-
-    @Override
-    public int hashCode() {
-        return HASH_STRATEGY.hashCode(stack);
+        return state == that.state;
     }
 }

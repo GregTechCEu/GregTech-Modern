@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.ModelUtil;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -20,18 +21,15 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
-import org.joml.AxisAngle4d;
 import org.joml.Quaternionf;
 
 import java.util.LinkedList;
@@ -61,12 +59,8 @@ public class FacadeCoverRenderer implements ICoverRenderer {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         var mc = Minecraft.getInstance();
-        var renderItem = FacadeItemBehaviour.getFacadeStack(stack);
-        BlockState blockState = null;
-        if (renderItem.getItem() instanceof BlockItem blockItem) {
-            blockState = blockItem.getBlock().defaultBlockState();
-        }
-        if (blockState != null && mc.level != null) {
+        var blockState = FacadeItemBehaviour.getFacadeState(stack);
+        if (mc.level != null) {
             model = mc.getBlockRenderer().getBlockModel(blockState);
             if (!model.isCustomRenderer()) {
                 matrixStack.pushPose();
@@ -76,7 +70,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                         transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
                     matrixStack.translate(0.5, 0.5, 0.5);
 
-                    matrixStack.mulPose(new Quaternionf(new AxisAngle4d().set(90, 0, 1, 0)));
+                    matrixStack.mulPose(new Quaternionf().rotateAxis(90, 0, 1, 0));
                     matrixStack.translate(-0.5, -0.5, -0.5);
                 }
                 var pose = matrixStack.last();
@@ -87,7 +81,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
                 var cube = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
 
-                for (Direction side : Direction.values()) {
+                for (Direction side : GTUtil.DIRECTIONS) {
                     if (side != Direction.NORTH) {
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire")))
                                 .cube(cube).cubeUV().tintIndex(-1).bake());

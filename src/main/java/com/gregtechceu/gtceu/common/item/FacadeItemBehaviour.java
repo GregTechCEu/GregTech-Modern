@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
@@ -40,15 +41,15 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
 
     @Override
     public @Nullable Component getItemName(ItemStack stack) {
-        ItemStack facadeStack = getFacadeStack(stack);
-        return Component.translatable(stack.getDescriptionId(), facadeStack.getHoverName());
+        BlockState facadeState = getFacadeState(stack);
+        return Component.translatable(stack.getDescriptionId(), facadeState.getBlock().getName());
     }
 
     @Override
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE),
-                GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
-        for (ItemStack facadeStack : validFacades) {
+        List<BlockState> validFacades = ImmutableList.of(Blocks.STONE.defaultBlockState(),
+                GTBlocks.COIL_CUPRONICKEL.getDefaultState(), Blocks.GLASS.defaultBlockState());
+        for (BlockState facadeStack : validFacades) {
             ItemStack resultStack = item.getDefaultInstance();
             setFacadeStack(resultStack, facadeStack);
             items.add(resultStack);
@@ -56,12 +57,20 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     }
 
     public static void setFacadeStack(ItemStack itemStack, ItemStack facadeStack) {
-        facadeStack = facadeStack.copy();
-        facadeStack.setCount(1);
+        BlockState state;
         if (!isValidFacade(facadeStack)) {
-            facadeStack = new ItemStack(Blocks.STONE);
+            state = Blocks.STONE.defaultBlockState();
+        } else {
+            state = ((BlockItem) facadeStack.getItem()).getBlock().defaultBlockState();
         }
-        itemStack.set(GTDataComponents.FACADE, new FacadeWrapper(facadeStack));
+        itemStack.set(GTDataComponents.FACADE, new FacadeWrapper(state));
+    }
+
+    public static void setFacadeStack(ItemStack itemStack, BlockState state) {
+        if (!isValidFacade(state)) {
+            state = Blocks.STONE.defaultBlockState();
+        }
+        itemStack.set(GTDataComponents.FACADE, new FacadeWrapper(state));
     }
 
     public static boolean isValidFacade(ItemStack itemStack) {
@@ -72,21 +81,25 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         return !rawBlockState.hasBlockEntity() && rawBlockState.getRenderShape() == RenderShape.MODEL;
     }
 
-    public static ItemStack getFacadeStack(ItemStack itemStack) {
-        ItemStack unsafeStack = getFacadeStackUnsafe(itemStack);
-        if (unsafeStack == null) {
-            return new ItemStack(Blocks.STONE);
+    public static boolean isValidFacade(BlockState state) {
+        return !state.hasBlockEntity() && state.getRenderShape() == RenderShape.MODEL;
+    }
+
+    public static BlockState getFacadeState(ItemStack itemStack) {
+        BlockState unsafeState = getFacadeStackUnsafe(itemStack);
+        if (unsafeState == null) {
+            return Blocks.STONE.defaultBlockState();
         }
-        return unsafeStack;
+        return unsafeState;
     }
 
     @Nullable
-    private static ItemStack getFacadeStackUnsafe(ItemStack itemStack) {
+    private static BlockState getFacadeStackUnsafe(ItemStack itemStack) {
         var facade = itemStack.get(GTDataComponents.FACADE);
         if (facade == null) {
             return null;
         }
-        ItemStack facadeStack = facade.stack();
+        BlockState facadeStack = facade.state();
         if (facadeStack.isEmpty() || !isValidFacade(facadeStack)) {
             return null;
         }
