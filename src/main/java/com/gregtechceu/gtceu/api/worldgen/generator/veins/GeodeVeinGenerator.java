@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

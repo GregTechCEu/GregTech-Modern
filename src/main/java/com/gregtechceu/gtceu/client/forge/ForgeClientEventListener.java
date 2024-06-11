@@ -9,21 +9,14 @@ import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.data.block.GTOres;
 import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
 
-import com.lowdragmc.lowdraglib.client.ClientCommands;
-import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
-import java.util.List;
 
 /**
  * @author KilaBash
