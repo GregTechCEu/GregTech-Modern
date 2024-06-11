@@ -19,7 +19,8 @@ public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
 
     @Override
     public ITypedPayload<?> serialize(AccessorOp accessorOp, Material material) {
-        FriendlyByteBuf serializedHolder = new FriendlyByteBuf(Unpooled.buffer());
+        var unpooledBuffer = Unpooled.buffer();
+        FriendlyByteBuf serializedHolder = new FriendlyByteBuf(unpooledBuffer);
         if(material != null) {
             serializedHolder.writeBoolean(true);
             serializedHolder.writeResourceLocation(material.getResourceLocation());
