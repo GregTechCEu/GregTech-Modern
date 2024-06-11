@@ -38,7 +38,7 @@ public interface ILocalizedHazardEmitter extends IMachineFeature {
             }
 
             var savedData = LocalizedHazardSavedData.getOrCreate(serverLevel);
-            savedData.addSphericalZone(self().getPos(), hazardSizePerOperation(), true,
+            savedData.addSphericalZone(self().getPos(), hazardSizePerOperation(), false,
                     HazardProperty.HazardTrigger.INHALATION, getConditionToEmit());
         }
     }
