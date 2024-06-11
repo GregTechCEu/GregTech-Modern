@@ -38,15 +38,11 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build --build-cache
 
       - if: ${{ inputs.publishMaven }}
         name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish --build-cache
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: Get Version

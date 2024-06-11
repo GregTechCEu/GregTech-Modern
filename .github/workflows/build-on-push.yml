@@ -33,9 +33,7 @@ jobs:
 
       - name: Build
         if: steps.filter.outputs.code == 'true'
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assemble
+        run: ./gradlew assemble --build-cache
           
       - name: Upload Artifact
         if: steps.filter.outputs.code == 'true'
