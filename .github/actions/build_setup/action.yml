@@ -16,12 +16,14 @@ runs:
         submodules: true
 
     - name: Set up JDK 21
+      shell: bash
       run: echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
 
     - name: Validate Gradle wrapper
       uses: gradle/actions/wrapper-validation@v3
 
     - name: Grant execute permission for gradlew
+      shell: bash
       run: chmod +x gradlew
 
     - name: Cache build directory
