@@ -462,6 +462,10 @@ public class ConfigHolder {
                 "true = all, false = GT only.", "Default: true" })
         public boolean universalHazards = true;
         @Configurable
+        @Configurable.Comment({ "Whether environmental hazards like pollution or radiation are active",
+                "Default: true" })
+        public boolean environmentalHazards = true;
+        @Configurable
         @Configurable.Comment({ "Whether the GTCEu's ingame guidebook, 'Compass', be enabled.", "WARNING: INCOMPLETE",
                 "Default: false" })
         public boolean enableCompass = false;
