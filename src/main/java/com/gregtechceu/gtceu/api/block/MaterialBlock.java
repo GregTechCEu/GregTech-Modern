@@ -258,8 +258,9 @@ public class MaterialBlock extends AppearanceBlock {
                     hit);
             itemBlock.placeBlock(context, pipeState);
             var pipeTile = pipeBlock.getPipeTile(level, pos);
-            if (pipeTile instanceof PipeBlockEntity) {
-                ((PipeBlockEntity<? extends Enum<?>, ?>) pipeTile).setFrameMaterial(material);
+            if (pipeTile instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
+                pipeBlockEntity.setFrameMaterial(material);
+            } 
             } else {
                 GTCEu.LOGGER.error("Pipe was not placed!");
                 return false;
