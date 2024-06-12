@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.model.custommodel.ICTMPredicate;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -117,14 +117,16 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         quads.add(
-                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
+                                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
+                                        modelState));
                     }
                 }
                 if (machine instanceof IAutoOutputFluid autoOutputFluid) {
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         quads.add(
-                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
+                                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY),
+                                        modelState));
                     }
                 }
 
@@ -132,8 +134,8 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         if (autoOutputItem.isAutoOutputItems()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY),
-                                    modelState, -101, 15));
+                            quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                                    ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState, -101, 15));
                         }
                     }
                 }
@@ -142,8 +144,8 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         if (autoOutputFluid.isAutoOutputFluids()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY),
-                                    modelState, -101, 15));
+                            quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                                    ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState, -101, 15));
                         }
                     }
                 }
