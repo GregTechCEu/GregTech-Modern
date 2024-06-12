@@ -1540,7 +1540,7 @@ public class GTMachines {
                     .aisle("SXXX", "##F#", "##F#")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
-                    .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
+                    .where('F', Predicates.frames(GTMaterials.TreatedWood))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
                                     .or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))

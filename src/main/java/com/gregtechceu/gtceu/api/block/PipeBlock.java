@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -19,9 +17,9 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
@@ -31,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -45,6 +44,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -294,28 +294,37 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         BlockEntity entity = level.getBlockEntity(pos);
 
         PipeBlockEntity<?, ?> pipeBlockEntity = null;
-        if(entity instanceof PipeBlockEntity<?, ?> pbe) { pipeBlockEntity = pbe; }
-        if(pipeBlockEntity == null) {
+        if (entity instanceof PipeBlockEntity<?, ?> pbe) {
+            pipeBlockEntity = pbe;
+        }
+        if (pipeBlockEntity == null) {
             return InteractionResult.FAIL;
         }
 
-        if(pipeBlockEntity.getFrameMaterial() == null && pipeType.getThickness() < 1) {
+        if (pipeBlockEntity.getFrameMaterial() == null && pipeType.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
-            if(frameBlock != null) {
+            if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
-
-                return InteractionResult.CONSUME;
+                if (!player.isCreative()) itemStack.shrink(1);
+                SoundType type = VanillaRecipeHelper.isMaterialWood(frameBlock.material) ? SoundType.WOOD :
+                        SoundType.METAL;
+                level.playSound(player, pos,
+                        type.getPlaceSound(), SoundSource.BLOCKS,
+                        (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
+                player.swing(hand);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        if(itemStack.getItem() instanceof PipeBlockItem) {
+        if (itemStack.getItem() instanceof PipeBlockItem) {
             BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
             BlockState stateAtSide = level.getBlockState(offsetPos);
-            if(stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
-                PipeBlockItem itemPipe = (PipeBlockItem)itemStack.getItem();
-                if(itemPipe.getBlock().pipeType == pipeType) {
-                    boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack, hit);
-                    if(wasPlaced) {
+            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
+                PipeBlockItem itemPipe = (PipeBlockItem) itemStack.getItem();
+                if (itemPipe.getBlock().pipeType == pipeType) {
+                    boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack,
+                            hit);
+                    if (wasPlaced) {
                         pipeBlockEntity.setConnection(hit.getDirection(), true, false);
                     }
                     return wasPlaced ? InteractionResult.CONSUME : InteractionResult.FAIL;
@@ -341,10 +350,10 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         var pipeNode = getPipeTile(level, pos);
-        if(pipeNode.getFrameMaterial() != null) {
-            BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()).getDefaultState();
-            MaterialBlock frameBlock = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()).get();
-            frameBlock.entityInside(frameState, level, pos, entity);
+        if (pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                    .getDefaultState();
+            frameState.getBlock().entityInside(frameState, level, pos, entity);
         }
         super.entityInside(state, level, pos, entity);
     }
@@ -352,8 +361,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeTile(level, pos);
-        if(pipeNode != null && pipeNode.getFrameMaterial() != null) {
-            return true;
+        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
+            return false;
         }
         return false;
     }
@@ -361,7 +370,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var pipeNode = getPipeTile(level, pos);
-        if(pipeNode != null && pipeNode.getFrameMaterial() != null) {
+        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
             return MaterialBlock.COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
@@ -372,7 +381,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         var pipeNode = getPipeTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
-            if(pipeNode.getFrameMaterial() != null) {
+            if (pipeNode.getFrameMaterial() != null) {
                 return Shapes.block();
             }
             connections = pipeNode.getVisualConnections();
@@ -437,7 +446,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
             if (pipeTile.getFrameMaterial() != null) {
-                drops.addAll(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()).getDefaultState().getDrops(builder));
+                drops.addAll(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
+                        .getDefaultState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {
                 pipeTile.getCoverContainer().removeCover(direction, null);

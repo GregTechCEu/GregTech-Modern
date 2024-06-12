@@ -1,18 +1,19 @@
 package com.gregtechceu.gtceu.syncdata;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
-import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.FriendlyByteBuf;
 
+import io.netty.buffer.Unpooled;
+
 public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
+
     public GTMaterialAccessor() {
         super(Material.class, true);
     }
@@ -21,7 +22,7 @@ public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
     public ITypedPayload<?> serialize(AccessorOp accessorOp, Material material) {
         var unpooledBuffer = Unpooled.buffer();
         FriendlyByteBuf serializedHolder = new FriendlyByteBuf(unpooledBuffer);
-        if(material != null) {
+        if (material != null) {
             serializedHolder.writeBoolean(true);
             serializedHolder.writeResourceLocation(material.getResourceLocation());
         } else {
@@ -29,7 +30,6 @@ public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
         }
         return FriendlyBufPayload.of(serializedHolder);
     }
-
 
     @Override
     public Material deserialize(AccessorOp accessorOp, ITypedPayload<?> payload) {
