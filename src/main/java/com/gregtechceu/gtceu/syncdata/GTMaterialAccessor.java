@@ -20,22 +20,25 @@ public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
 
     @Override
     public ITypedPayload<?> serialize(AccessorOp accessorOp, Material material) {
-        var unpooledBuffer = Unpooled.buffer();
-        FriendlyByteBuf serializedHolder = new FriendlyByteBuf(unpooledBuffer);
-        if (material != null) {
-            serializedHolder.writeBoolean(true);
-            serializedHolder.writeResourceLocation(material.getResourceLocation());
+        if (accessorOp == AccessorOp.PERSISTED) {
+            StringTag tag = StringTag.valueOf(material.getResourceLocation().toString());
+            return NbtTagPayload.of(tag);
         } else {
-            serializedHolder.writeBoolean(false);
+            FriendlyByteBuf serializedHolder = new FriendlyByteBuf(Unpooled.buffer());
+            serializedHolder.writeUtf(material.getResourceLocation().toString());
+            return FriendlyBufPayload.of(serializedHolder);
         }
-        return FriendlyBufPayload.of(serializedHolder);
     }
+
 
     @Override
     public Material deserialize(AccessorOp accessorOp, ITypedPayload<?> payload) {
-        if (payload instanceof FriendlyBufPayload buffer && buffer.getPayload().readBoolean()) {
-            var id = buffer.getPayload().readResourceLocation();
-            return GTCEuAPI.materialManager.getMaterial(id.toString());
+        if (payload instanceof FriendlyBufPayload buffer) {
+            var id = buffer.getPayload().readUtf();
+            return GTCEuAPI.materialManager.getMaterial(id);
+        } else if (payload instanceof NbtTagPayload nbt) {
+            var id = nbt.getPayload().getAsString();
+            return GTCEuAPI.materialManager.getMaterial(id);
         }
         return null;
     }
