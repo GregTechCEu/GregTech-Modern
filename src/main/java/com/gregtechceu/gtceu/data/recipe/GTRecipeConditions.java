@@ -42,7 +42,8 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<ResearchCondition> RESEARCH = GTRegistries.RECIPE_CONDITIONS
             .register("research", new RecipeConditionType<>(ResearchCondition::new, ResearchCondition.CODEC));
     public static final RecipeConditionType<EnvironmentalHazardCondition> ENVIRONMENTAL_HAZARD = GTRegistries.RECIPE_CONDITIONS
-            .register("environmental_hazard", new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
+            .register("environmental_hazard",
+                    new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<RPMCondition> RPM;
 
     static {

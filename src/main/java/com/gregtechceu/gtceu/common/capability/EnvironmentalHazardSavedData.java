@@ -47,8 +47,10 @@ public class EnvironmentalHazardSavedData extends SavedData {
     private final Map<ChunkPos, HazardZone> hazardZones = new HashMap<>();
 
     public static EnvironmentalHazardSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new EnvironmentalHazardSavedData(serverLevel),
-                (tag, provider) -> new EnvironmentalHazardSavedData(serverLevel, tag)), "gtceu_environmental_hazard_tracker");
+        return serverLevel.getDataStorage()
+                .computeIfAbsent(new SavedData.Factory<>(() -> new EnvironmentalHazardSavedData(serverLevel),
+                        (tag, provider) -> new EnvironmentalHazardSavedData(serverLevel, tag)),
+                        "gtceu_environmental_hazard_tracker");
     }
 
     public EnvironmentalHazardSavedData(ServerLevel serverLevel) {

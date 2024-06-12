@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 

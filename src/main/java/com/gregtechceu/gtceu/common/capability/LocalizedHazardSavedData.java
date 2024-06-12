@@ -45,8 +45,10 @@ public class LocalizedHazardSavedData extends SavedData {
     private final Map<BlockPos, HazardZone> hazardZones = new HashMap<>();
 
     public static LocalizedHazardSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new LocalizedHazardSavedData(serverLevel),
-                (tag, provider) -> new LocalizedHazardSavedData(serverLevel, tag)), "gtceu_localized_hazard_tracker");
+        return serverLevel.getDataStorage()
+                .computeIfAbsent(new SavedData.Factory<>(() -> new LocalizedHazardSavedData(serverLevel),
+                        (tag, provider) -> new LocalizedHazardSavedData(serverLevel, tag)),
+                        "gtceu_localized_hazard_tracker");
     }
 
     public LocalizedHazardSavedData(ServerLevel serverLevel) {

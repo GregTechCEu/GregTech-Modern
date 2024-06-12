@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-
 import com.gregtechceu.gtceu.api.material.material.Material;
+
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;

@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasT
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
-
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
+
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;

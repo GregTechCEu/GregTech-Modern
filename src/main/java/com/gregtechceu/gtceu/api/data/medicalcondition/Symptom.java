@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-
 import com.gregtechceu.gtceu.data.effect.GTMobEffects;
+
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -89,7 +89,7 @@ public class Symptom {
     /**
      * @param multiplier multiplier for Attribute modification
      * @param attribute  Attribute to modify
-     * @param id       AttributeModifier UUID
+     * @param id         AttributeModifier UUID
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier,
                    Holder<Attribute> attribute, ResourceLocation id) {
@@ -126,7 +126,8 @@ public class Symptom {
      * @param mobEffect           MobEffect to apply
      * @param amplifierMultiplier amplifier added to MobEffect every progression
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<Holder<MobEffect>> mobEffect,
+    public Symptom(String name, int defaultStages, float defaultProgressionThreshold,
+                   Supplier<Holder<MobEffect>> mobEffect,
                    int amplifierMultiplier) {
         this(name, defaultStages, defaultProgressionThreshold,
                 (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
@@ -144,7 +145,8 @@ public class Symptom {
     /**
      * @param mobEffect MobEffect to apply
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<Holder<MobEffect>> mobEffect) {
+    public Symptom(String name, int defaultStages, float defaultProgressionThreshold,
+                   Supplier<Holder<MobEffect>> mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold,
                 (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
                         modifier));

@@ -3,19 +3,21 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
-import com.mojang.serialization.Codec;
-import lombok.Getter;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
+
+import com.mojang.serialization.Codec;
+import lombok.Getter;
 
 import java.util.*;
 
 public class MedicalCondition {
 
     public static final Map<String, MedicalCondition> CONDITIONS = new HashMap<>();
-    public static final Codec<MedicalCondition> CODEC = Codec.stringResolver(MedicalCondition::getName, MedicalCondition.CONDITIONS::get);
+    public static final Codec<MedicalCondition> CODEC = Codec.stringResolver(MedicalCondition::getName,
+            MedicalCondition.CONDITIONS::get);
 
     @Getter
     public final String name;

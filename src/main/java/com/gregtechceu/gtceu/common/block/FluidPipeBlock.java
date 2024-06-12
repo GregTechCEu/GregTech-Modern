@@ -152,7 +152,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         if (pipeNode.getFrameMaterial() != null) {
             BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
-            ((MaterialBlock)frameState.getBlock()).entityInside(frameState, level, pos, entity);
+            ((MaterialBlock) frameState.getBlock()).entityInside(frameState, level, pos, entity);
             return;
         }
         if (level.isClientSide) return;
