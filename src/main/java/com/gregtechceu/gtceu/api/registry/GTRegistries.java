@@ -33,7 +33,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash

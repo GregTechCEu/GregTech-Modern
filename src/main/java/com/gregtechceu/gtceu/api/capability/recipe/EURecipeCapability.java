@@ -41,10 +41,10 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
         long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
-        } else if (holder instanceof IOverclockMachine overclockMachine) {
+        if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
+        } else if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = tieredMachine.getMaxVoltage();
         }
 
         long recipeEUt = RecipeHelper.getOutputEUt(recipe);
@@ -57,10 +57,10 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
-        } else if (holder instanceof IOverclockMachine overclockMachine) {
+        if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
+        } else if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = tieredMachine.getMaxVoltage();
         }
 
         long recipeEUt = RecipeHelper.getInputEUt(recipe);
