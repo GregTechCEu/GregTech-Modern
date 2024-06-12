@@ -449,6 +449,7 @@ public class GTBlocks {
                 .defaultLoot()
                 .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
                 .addLayer(() -> RenderType::cutoutMipped)
+                .color(() -> OpticalPipeBlock::tintedColor)
                 .item(OpticalPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()

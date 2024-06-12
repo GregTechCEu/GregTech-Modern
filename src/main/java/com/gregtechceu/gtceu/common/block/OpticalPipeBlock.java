@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -76,6 +79,26 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     @Override
     public @Nullable PipeBlockRenderer getRenderer(BlockState state) {
         return renderer;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static BlockColor tintedColor() {
+        return (blockState, level, blockPos, index) -> {
+            if (blockPos != null && level != null &&
+                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
+                if (pipe.getFrameMaterial() != null) {
+                    if (index == 3) {
+                        return pipe.getFrameMaterial().getMaterialRGB();
+                    } else if (index == 4) {
+                        return pipe.getFrameMaterial().getMaterialSecondaryRGB();
+                    }
+                }
+                if (pipe.isPainted()) {
+                    return pipe.getRealColor();
+                }
+            }
+            return -1;
+        };
     }
 
     @Override
