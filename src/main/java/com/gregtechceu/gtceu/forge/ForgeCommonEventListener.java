@@ -26,15 +26,16 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
+import com.gregtechceu.gtceu.common.network.packets.*;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -49,6 +50,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -62,6 +64,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -228,6 +231,11 @@ public class ForgeCommonEventListener {
                     serverPlayer);
             GTNetwork.NETWORK.sendToPlayer(
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), serverPlayer);
+
+            ServerLevel level = (ServerLevel) event.getEntity().level();
+            var data = EnvironmentalHazardSavedData.getOrCreate(level);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
+                    (ServerPlayer) event.getEntity());
         }
     }
 
@@ -266,6 +274,28 @@ public class ForgeCommonEventListener {
                 entity.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
                 zombie.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
+        var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
+        GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
+                (ServerPlayer) event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
+        LevelChunk chunk = event.getChunk();
+        if (chunk == null) return;
+
+        ServerPlayer player = event.getPlayer();
+        var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
+
+        var zone = data.getZoneByContainedPos(BlockPos.containing(player.getEyePosition()));
+        if (zone != null && zone.strength() > EnvironmentalHazardSavedData.PACKET_THRESHOLD) {
+            GTNetwork.NETWORK.sendToPlayer(new SPacketAddHazardZone(chunk.getPos(), zone), player);
         }
     }
 
