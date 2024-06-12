@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -101,9 +102,9 @@ public class PipeModel {
     public final AABB coreCube;
     public final Map<Direction, AABB> sideCubes;
 
-    public Supplier<ResourceLocation> sideTexture, endTexture;
+    public SupplierMemoizer.MemoizedSupplier<ResourceLocation> sideTexture, endTexture;
     @Nullable
-    public Supplier<@Nullable ResourceLocation> secondarySideTexture, secondaryEndTexture;
+    public SupplierMemoizer.MemoizedSupplier<@Nullable ResourceLocation> secondarySideTexture, secondaryEndTexture;
     @Setter
     public ResourceLocation sideOverlayTexture, endOverlayTexture;
 
@@ -114,10 +115,11 @@ public class PipeModel {
     public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture,
                      @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture,
                      @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
-        this.sideTexture = sideTexture;
-        this.endTexture = endTexture;
-        this.secondarySideTexture = secondarySideTexture;
-        this.secondaryEndTexture = secondaryEndTexture;
+        this.sideTexture = SupplierMemoizer.memoize(sideTexture);
+        this.endTexture = SupplierMemoizer.memoize(endTexture);
+        this.secondarySideTexture = secondarySideTexture != null ? SupplierMemoizer.memoize(secondarySideTexture) :
+                null;
+        this.secondaryEndTexture = secondaryEndTexture != null ? SupplierMemoizer.memoize(secondaryEndTexture) : null;
         this.thickness = thickness;
         double min = (1d - thickness) / 2;
         double max = min + thickness;
@@ -276,8 +278,22 @@ public class PipeModel {
     @OnlyIn(Dist.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         itemModelCache.clear();
+        sideTexture.forget();
         register.accept(sideTexture.get());
+        endTexture.forget();
         register.accept(endTexture.get());
+        if (secondarySideTexture != null) {
+            secondarySideTexture.forget();
+            if (secondarySideTexture.get() != null) {
+                register.accept(secondarySideTexture.get());
+            }
+        }
+        if (secondaryEndTexture != null) {
+            secondaryEndTexture.forget();
+            if (secondaryEndTexture.get() != null) {
+                register.accept(secondaryEndTexture.get());
+            }
+        }
         if (sideOverlayTexture != null) register.accept(sideOverlayTexture);
         if (endOverlayTexture != null) register.accept(endOverlayTexture);
         sideSprite = null;
