@@ -91,12 +91,12 @@ public class MaterialBlock extends AppearanceBlock {
         };
     }
 
-    public static VoxelShape COLLISION_BOX = Shapes.box(0.05, 0.0, 0.05, 0.95, 1.0, 0.95);
+    public static VoxelShape FRAME_COLLISION_BOX = Shapes.box(0.05, 0.0, 0.05, 0.95, 1.0, 0.95);
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (this.tagPrefix == TagPrefix.frameGt) {
-            return COLLISION_BOX;
+            return FRAME_COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
     }
@@ -183,8 +183,7 @@ public class MaterialBlock extends AppearanceBlock {
         var frameBlock = getFrameboxFromItem(stack);
         if (frameBlock == null) return InteractionResult.PASS;
 
-        BlockPos.MutableBlockPos blockPos = BlockPos.ZERO.mutable();
-        blockPos.set(pos);
+        BlockPos.MutableBlockPos blockPos = pos.mutable();
         for (int i = 0; i < 32; i++) {
             if (level.getBlockState(blockPos).getBlock() instanceof MaterialBlock matBlock &&
                     matBlock.tagPrefix == TagPrefix.frameGt) {
@@ -197,7 +196,7 @@ public class MaterialBlock extends AppearanceBlock {
                 continue;
             }
             if (canSupportRigidBlock(level, blockPos.below())) {
-                level.setBlock(blockPos, frameBlock.defaultBlockState(), 3);
+                level.setBlock(blockPos, frameBlock.defaultBlockState(), Block.UPDATE_ALL);
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
@@ -260,7 +259,6 @@ public class MaterialBlock extends AppearanceBlock {
             var pipeTile = pipeBlock.getPipeTile(level, pos);
             if (pipeTile instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
                 pipeBlockEntity.setFrameMaterial(material);
-            } 
             } else {
                 GTCEu.LOGGER.error("Pipe was not placed!");
                 return false;
@@ -280,20 +278,21 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity le) {
-            double currentAccel = 0.15D * (le.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
-            double currentSpeedVertical = 0.9D * (le.isInWater() ? 0.4D : 1.0D);
-            Vec3 deltaMovement = le.getDeltaMovement();
-            le.resetFallDistance();
+        if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
+            double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
+            double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);
+            Vec3 deltaMovement = livingEntity.getDeltaMovement();
+            livingEntity.resetFallDistance();
             float f = 0.15F;
             double d0 = Mth.clamp(deltaMovement.x, -f, f);
             double d1 = Mth.clamp(deltaMovement.z, -f, f);
             double d2 = Math.max(deltaMovement.y, -f);
-            if (d2 < 0.0 && !le.getFeetBlockState().isScaffolding(le) && le.isSuppressingSlidingDownLadder() &&
-                    le instanceof Player) {
+            if (d2 < 0.0 && !livingEntity.getFeetBlockState().isScaffolding(livingEntity) &&
+                    livingEntity.isSuppressingSlidingDownLadder() &&
+                    livingEntity instanceof Player) {
                 d2 = Math.min(deltaMovement.y + currentAccel, 0.0D);
             }
-            if (le.horizontalCollision) {
+            if (livingEntity.horizontalCollision) {
                 d2 = 0.3;
             }
 

@@ -7,7 +7,9 @@ import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
+import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
 
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import io.netty.buffer.Unpooled;
@@ -29,7 +31,6 @@ public class GTMaterialAccessor extends CustomObjectAccessor<Material> {
             return FriendlyBufPayload.of(serializedHolder);
         }
     }
-
 
     @Override
     public Material deserialize(AccessorOp accessorOp, ITypedPayload<?> payload) {

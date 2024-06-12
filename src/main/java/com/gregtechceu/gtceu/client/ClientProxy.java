@@ -33,7 +33,7 @@ public class ClientProxy extends CommonProxy {
 
     public ClientProxy() {
         super();
-        //init();
+        init();
     }
 
     public static void init() {
