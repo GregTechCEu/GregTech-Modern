@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.fluid.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
@@ -58,6 +59,7 @@ import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -149,6 +151,7 @@ public class GTMachines {
         REGISTRATE.creativeModeTab(() -> MACHINE);
         GTRegistries.MACHINES.unfreeze();
     }
+
     //////////////////////////////////////
     // ****** Steam Machine ******//
     //////////////////////////////////////
@@ -243,7 +246,7 @@ public class GTMachines {
     public static final MachineDefinition[] ARC_FURNACE = registerSimpleMachines("arc_furnace",
             GTRecipeTypes.ARC_FURNACE_RECIPES, hvCappedTankSizeFunction);
     public static final MachineDefinition[] ASSEMBLER = registerSimpleMachines("assembler",
-            GTRecipeTypes.ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
+            GTRecipeTypes.ASSEMBLER_RECIPES, hvCappedTankSizeFunction, true);
     public static final MachineDefinition[] AUTOCLAVE = registerSimpleMachines("autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES, hvCappedTankSizeFunction);
     public static final MachineDefinition[] BENDER = registerSimpleMachines("bender", GTRecipeTypes.BENDER_RECIPES);
@@ -255,7 +258,7 @@ public class GTMachines {
     public static final MachineDefinition[] CHEMICAL_BATH = registerSimpleMachines("chemical_bath",
             GTRecipeTypes.CHEMICAL_BATH_RECIPES, hvCappedTankSizeFunction);
     public static final MachineDefinition[] CHEMICAL_REACTOR = registerSimpleMachines("chemical_reactor",
-            GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidHelper.getBucket());
+            GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidHelper.getBucket(), true);
     public static final MachineDefinition[] COMPRESSOR = registerSimpleMachines("compressor",
             GTRecipeTypes.COMPRESSOR_RECIPES);
     public static final MachineDefinition[] CUTTER = registerSimpleMachines("cutter", GTRecipeTypes.CUTTER_RECIPES);
@@ -289,14 +292,14 @@ public class GTMachines {
     public static final MachineDefinition[] POLARIZER = registerSimpleMachines("polarizer",
             GTRecipeTypes.POLARIZER_RECIPES);
     public static final MachineDefinition[] LASER_ENGRAVER = registerSimpleMachines("laser_engraver",
-            GTRecipeTypes.LASER_ENGRAVER_RECIPES);
+            GTRecipeTypes.LASER_ENGRAVER_RECIPES, defaultTankSizeFunction, true);
     public static final MachineDefinition[] SIFTER = registerSimpleMachines("sifter", GTRecipeTypes.SIFTER_RECIPES);
     public static final MachineDefinition[] THERMAL_CENTRIFUGE = registerSimpleMachines("thermal_centrifuge",
             GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES);
     public static final MachineDefinition[] WIREMILL = registerSimpleMachines("wiremill",
             GTRecipeTypes.WIREMILL_RECIPES);
     public static final MachineDefinition[] CIRCUIT_ASSEMBLER = registerSimpleMachines("circuit_assembler",
-            GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
+            GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES, hvCappedTankSizeFunction, true);
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
@@ -317,7 +320,7 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector",
-            GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction);
+            GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction, true);
     public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher",
             RockCrusherMachine::new, (tier, builder) -> builder
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
@@ -333,6 +336,21 @@ public class GTMachines {
                     .compassNode("rock_crusher")
                     .register(),
             ELECTRIC_TIERS);
+    public static final MachineDefinition[] AIR_SCRUBBER = registerTieredMachines("air_scrubber",
+            AirScrubberMachine::new, (tier, builder) -> builder
+                    .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
+                    .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("air_scrubber"),
+                            GTRecipeTypes.AIR_SCRUBBER_RECIPES))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
+                    .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                    .workableTieredHullRenderer(GTCEu.id("block/machines/air_scrubber"))
+                    .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
+                            GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.apply(tier), true))
+                    .tooltips(explosion())
+                    .compassNode("air_scrubber")
+                    .register(),
+            LOW_TIERS);
 
     //////////////////////////////////////
     // **** Simple Generator ****//
@@ -1190,9 +1208,11 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE
             .multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
+            .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
@@ -1526,7 +1546,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .alwaysTryModifyRecipe(true)
-            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
                     .aisle("FIF", "RTR", "SAG", "#Y#")
@@ -1565,7 +1586,7 @@ public class GTMachines {
                     .aisle("SXXX", "##F#", "##F#")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
-                    .where('F', blocks(MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TreatedWood).get()))
+                    .where('F', Predicates.frames(GTMaterials.TreatedWood))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
                                     .or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))
@@ -1633,7 +1654,8 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .langValue("Fusion Reactor Computer MK %s".formatted(toRomanNumeral(tier - 5)))
                     .recipeType(GTRecipeTypes.FUSION_RECIPES)
-                    .recipeModifier(FusionReactorMachine::recipeModifier)
+                    .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                            FusionReactorMachine::recipeModifier)
                     .tooltips(
                             Component.translatable("gtceu.machine.fusion_reactor.capacity",
                                     FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
@@ -2104,26 +2126,40 @@ public class GTMachines {
     public static MachineDefinition[] registerSimpleMachines(String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
+                                                             boolean hasPollutionDebuff,
                                                              int... tiers) {
         return registerTieredMachines(name,
-                (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> builder
-                        .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
-                        .rotationState(RotationState.NON_Y_AXIS)
-                        .recipeType(recipeType)
-                        .recipeModifier(
-                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                        .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
-                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                tankScalingFunction.apply(tier), true))
-                        .compassNode(name)
-                        .register(),
+                (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
+                    if (hasPollutionDebuff) {
+                        builder.recipeModifier(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
+                                .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier))
+                                .tooltips(defaultEnvironmentRequirement());
+                    }
+                    return builder
+                            .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                            .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
+                            .rotationState(RotationState.NON_Y_AXIS)
+                            .recipeType(recipeType)
+                            .recipeModifier(
+                                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                            .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
+                            .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                    tankScalingFunction.apply(tier), true))
+                            .compassNode(name)
+                            .register();
+                },
                 tiers);
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
+                                                             Int2IntFunction tankScalingFunction,
+                                                             boolean hasPollutionDebuff) {
+        return registerSimpleMachines(name, recipeType, tankScalingFunction, hasPollutionDebuff, ELECTRIC_TIERS);
+    }
+
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(name, recipeType, tankScalingFunction, ELECTRIC_TIERS);
+        return registerSimpleMachines(name, recipeType, tankScalingFunction, false);
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
@@ -2492,6 +2528,15 @@ public class GTMachines {
         if (ConfigHolder.INSTANCE.machines.doTerrainExplosion)
             return Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
+    }
+
+    public static Component environmentRequirement(MedicalCondition condition) {
+        return Component.translatable("gtceu.recipe.environmental_hazard.reverse",
+                Component.translatable("gtceu.medical_condition." + condition.name));
+    }
+
+    public static Component defaultEnvironmentRequirement() {
+        return environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
 
     public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data;
 
+import com.gregtechceu.gtceu.syncdata.GTMaterialAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeTypeAccessor;
 
@@ -17,9 +18,11 @@ public class GTSyncedFieldAccessors {
 
     public static final IAccessor GT_RECIPE_ACCESSOR = new GTRecipeAccessor();
     public static final IAccessor GT_RECIPE_TYPE_ACCESSOR = new GTRecipeTypeAccessor();
+    public static final IAccessor GT_MATERIAL_ACCESSOR = new GTMaterialAccessor();
 
     public static void init() {
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_ACCESSOR, 1000);
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_TYPE_ACCESSOR, 1000);
+        register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_MATERIAL_ACCESSOR, 1000);
     }
 }

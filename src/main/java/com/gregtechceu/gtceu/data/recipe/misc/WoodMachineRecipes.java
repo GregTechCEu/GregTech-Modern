@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -15,6 +16,8 @@ import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
@@ -138,6 +141,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
                             .planks(Items.BAMBOO_PLANKS, "bamboo_planks")
+                            .logTag(TagUtil.createItemTag("bamboo_blocks", true))
                             .log(Items.BAMBOO_BLOCK).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_BAMBOO_BLOCK)
                             .door(Items.BAMBOO_DOOR, "bamboo_door")
@@ -181,6 +185,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
                             .planks(Items.CRIMSON_PLANKS, "crimson_planks")
+                            .logTag(TagUtil.createItemTag("crimson_stems", true))
                             .log(Items.CRIMSON_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_CRIMSON_STEM)
                             .wood(Items.CRIMSON_HYPHAE)
@@ -195,6 +200,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "warped")
                             .planks(Items.WARPED_PLANKS, "warped_planks")
+                            .logTag(TagUtil.createItemTag("warped_stems", true))
                             .log(Items.WARPED_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_WARPED_STEM)
                             .wood(Items.WARPED_HYPHAE)
@@ -220,6 +226,7 @@ public class WoodMachineRecipes {
                             .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
                             .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
                             // .boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                            .generateLogToPlankRecipe(false) // rubber log does not have a tag
                             .registerAllTags()
                             .registerAllUnificationInfo()
                             .build(),
@@ -233,6 +240,7 @@ public class WoodMachineRecipes {
                             .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
                             // .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
                             .material(TreatedWood)
+                            .generateLogToPlankRecipe(false)
                             .registerAllTags()
                             .registerAllUnificationInfo()
                             .build());
@@ -345,40 +353,37 @@ public class WoodMachineRecipes {
      */
     public static void registerWoodTypeRecipe(RecipeOutput provider, @NotNull WoodTypeEntry entry) {
         final String name = entry.woodName;
+        TagKey<Item> logTag = entry.logTag;
+        boolean hasPlanksRecipe = entry.planksRecipeName != null;
 
         // noinspection ConstantValue can be null if someone does an oopsie and doesn't set it.
         if (entry.planks == null) {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
-        // log-associated recipes
-        for (var log_ : entry.getLogs()) {
-            if (log_ != null) {
-                // nerf regular log -> plank crafting, if enabled
-                boolean hasPlanksRecipe = entry.planksRecipeName != null;
-                if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider,
-                            hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
-                            new ItemStack(entry.planks, 2), log_);
-                } else if (!hasPlanksRecipe) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks",
-                            new ItemStack(entry.planks, 4), log_);
-                }
-
-                // log -> plank saw crafting
-                VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
-                        new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                        "s", "L", 'L', log_);
-
-                // log -> plank cutting
-                CUTTER_RECIPES.recipeBuilder(name + "_planks")
-                        .inputItems(log_)
-                        .outputItems(new ItemStack(entry.planks, 6))
-                        .outputItems(dust, Wood, 2)
-                        .duration(200)
-                        .EUt(VA[ULV])
-                        .save(provider);
+        if (entry.generateLogToPlankRecipe) {
+            if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
+                VanillaRecipeHelper.addShapelessRecipe(provider,
+                        hasPlanksRecipe ? entry.planksRecipeName : name + "_planks",
+                        new ItemStack(entry.planks, 2), logTag);
+            } else if (!hasPlanksRecipe) {
+                VanillaRecipeHelper.addShapelessRecipe(provider, name + "_planks",
+                        new ItemStack(entry.planks, 4), logTag);
             }
+
+            // log -> plank saw crafting
+            VanillaRecipeHelper.addShapedRecipe(provider, name + "_planks_saw",
+                    new ItemStack(entry.planks, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
+                    "s", "L", 'L', logTag);
+
+            // log -> plank cutting
+            CUTTER_RECIPES.recipeBuilder(name + "_planks")
+                    .inputItems(logTag)
+                    .outputItems(new ItemStack(entry.planks, 6))
+                    .outputItems(dust, Wood, 2)
+                    .duration(200)
+                    .EUt(VA[ULV])
+                    .save(provider);
         }
 
         // door
@@ -595,6 +600,27 @@ public class WoodMachineRecipes {
                 "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate",
                 GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
+
+        // add Recipes for rubber log
+        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
+            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
+                    GTBlocks.RUBBER_PLANK.asStack(2), GTBlocks.RUBBER_LOG.asItem());
+        } else {
+            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
+                    GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asItem());
+        }
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_planks_saw",
+                GTBlocks.RUBBER_PLANK.asStack(ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
+                "s", "L", 'L', GTBlocks.RUBBER_LOG.asItem());
+
+        CUTTER_RECIPES.recipeBuilder("rubber_planks")
+                .inputItems(GTBlocks.RUBBER_LOG.asItem())
+                .outputItems(GTBlocks.RUBBER_PLANK.asStack(6))
+                .outputItems(dust, Wood, 2)
+                .duration(200)
+                .EUt(VA[ULV])
+                .save(provider);
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
@@ -13,6 +12,8 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -37,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,10 +96,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Setter
     private int paintingColor = -1;
 
-    @Persisted
-    @DescSynced
     @RequireRerender
-    private String frameMaterial;
+    @DescSynced
+    @Persisted
+    @Getter
+    @Setter
+    @Nullable
+    private Material frameMaterial = null;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -393,6 +398,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     getCoverContainer().removeCover(gridSide, playerIn);
                 }
                 return Pair.of(GTToolType.CROWBAR, ItemInteractionResult.CONSUME);
+            } else {
+                if (frameMaterial != null) {
+                    Block.popResource(getLevel(), getPipePos(),
+                            GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                    frameMaterial = null;
+                }
+                return Pair.of(GTToolType.CROWBAR, ItemInteractionResult.CONSUME);
             }
         }
 
@@ -407,12 +419,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public int getDefaultPaintingColor() {
         return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?, ?> materialPipeBlock ?
                 materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
-    }
-
-    @Nullable
-    @Override
-    public Material getFrameMaterial() {
-        return frameMaterial == null ? null : GTCEuAPI.materialManager.getMaterial(frameMaterial);
     }
 
     public void doExplosion(float explosionPower) {

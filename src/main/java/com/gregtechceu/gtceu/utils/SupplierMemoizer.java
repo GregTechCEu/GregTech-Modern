@@ -9,11 +9,11 @@ import java.util.function.Supplier;
  */
 public class SupplierMemoizer {
 
-    public static <T> Supplier<T> memoize(Supplier<T> delegate) {
+    public static <T> MemoizedSupplier<T> memoize(Supplier<T> delegate) {
         return new MemoizedSupplier<>(delegate);
     }
 
-    public static <T extends Block> Supplier<T> memoizeBlockSupplier(Supplier<T> delegate) {
+    public static <T extends Block> MemoizedBlockSupplier<T> memoizeBlockSupplier(Supplier<T> delegate) {
         return new MemoizedBlockSupplier<>(delegate);
     }
 
@@ -41,6 +41,13 @@ public class SupplierMemoizer {
                 }
             }
             return value;
+        }
+
+        public void forget() {
+            synchronized (this) {
+                initialized = false;
+                value = null;
+            }
         }
 
         @Override

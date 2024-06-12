@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -86,6 +90,27 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                     ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
             ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing,
                     modelState);
+            if (pipeNode.getFrameMaterial() != null) {
+                ResourceLocation rl = MaterialIconType.frameGt
+                        .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
+                BlockState blockState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                        .getDefaultState();
+                var frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+                for (Direction face : Direction.values()) {
+                    if ((pipeNode.getConnections() & 1 << (12 + face.get3DDataValue())) == 0) {
+                        var frameTintedFaces = frameModel.getQuads(state, face, rand)
+                                .stream()
+                                .map(quad -> new BakedQuad(quad.getVertices(),
+                                        quad.getTintIndex() + (quad.isTinted() ? 3 : 0),
+                                        quad.getDirection(),
+                                        quad.getSprite(),
+                                        quad.isShade(),
+                                        quad.hasAmbientOcclusion()))
+                                .toList();
+                        quads.addAll(frameTintedFaces);
+                    }
+                }
+            }
             return quads;
         }
         return Collections.emptyList();

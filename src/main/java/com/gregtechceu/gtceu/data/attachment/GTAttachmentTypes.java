@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.attachment;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
@@ -15,10 +15,10 @@ public class GTAttachmentTypes {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(
             NeoForgeRegistries.ATTACHMENT_TYPES, GTCEu.MOD_ID);
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<HazardEffectTracker>> HAZARD_TRACKER = ATTACHMENT_TYPES
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MedicalConditionTracker>> MEDICAL_CONDITION_TRACKER = ATTACHMENT_TYPES
             .register("hazard_tracker", () -> AttachmentType.serializable(holder -> {
                 if (holder instanceof Player player) {
-                    return new HazardEffectTracker(player);
+                    return new MedicalConditionTracker(player);
                 }
                 return null;
             }).build());

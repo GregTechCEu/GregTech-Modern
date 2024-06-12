@@ -3,14 +3,17 @@ package com.gregtechceu.gtceu.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
@@ -31,6 +34,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -63,19 +67,31 @@ public class ForgeCommonEventListener {
             return;
         }
         Player player = event.getEntity();
-        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
-        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY);
-        if (inventory != null) {
-            tracker.startTick();
-            for (int i = 0; i < inventory.getSlots(); ++i) {
-                ItemStack stack = inventory.getStackInSlot(i);
-                Material material = HazardProperty.getValidHazardMaterial(stack);
-                if (material == null) {
-                    continue;
-                }
-                tracker.tick(material);
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (inventory == null) {
+            return;
+        }
+        tracker.tick();
+
+        for (int i = 0; i < inventory.getSlots(); ++i) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            Material material = HazardProperty.getValidHazardMaterial(stack);
+            if (material == null || !material.hasProperty(PropertyKey.HAZARD)) {
+                continue;
             }
-            tracker.endTick();
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property.hazardTrigger.protectionType().isProtected(player)) {
+                // entity has proper safety equipment, so damage it per material every 5 seconds.
+                if (player.level().getGameTime() % 100 == 0) {
+                    for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
+                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, type.getSlot());
+                    }
+                }
+                // don't progress this material condition if entity is protected
+                continue;
+            }
+            tracker.progressRelatedCondition(material);
         }
     }
 
@@ -121,6 +137,8 @@ public class ForgeCommonEventListener {
     public static void levelTick(LevelTickEvent.Post event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
+            EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
+            LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
         }
     }
 

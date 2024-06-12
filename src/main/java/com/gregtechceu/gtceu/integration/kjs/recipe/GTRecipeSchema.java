@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -399,6 +400,14 @@ public interface GTRecipeSchema {
             return rpm(rpm, false);
         }
 
+        public GTKubeRecipe environmentalHazard(MedicalCondition condition, boolean reverse) {
+            return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
+        }
+
+        public GTKubeRecipe environmentalHazard(MedicalCondition condition) {
+            return environmentalHazard(condition, false);
+        }
+
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {
@@ -546,7 +555,7 @@ public interface GTRecipeSchema {
          * FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
          * return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
          * }
-         * 
+         *
          * @Override
          * public InputFluid readInputFluid(Object from) {
          * return super.readInputFluid(from);

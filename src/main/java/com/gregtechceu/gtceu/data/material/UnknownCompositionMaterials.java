@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.*;
@@ -557,7 +558,7 @@ public class UnknownCompositionMaterials {
 
         PCBCoolant = new Material.Builder(GTCEu.id("pcb_coolant"))
                 .fluid().color(0xD5D69C)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
                 .buildAndRegister();
     }
 }

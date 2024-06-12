@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
@@ -47,6 +49,7 @@ import com.gregtechceu.gtceu.data.machine.GCyMMachines;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTElements;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -203,6 +206,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("GCyMMachines", GCyMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
+        event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
@@ -214,6 +218,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("PropertyKey", PropertyKey.class);
         event.add("ToolProperty", ToolProperty.class);
         event.add("HazardProperty", HazardProperty.class);
+        event.add("MedicalCondition", MedicalCondition.class);
+        event.add("Symptom", Symptom.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
 
@@ -351,6 +357,11 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.register(IndicatorPlacement.class, (ctx, o) -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
+            return null;
+        });
+        registry.register(MedicalCondition.class, (ctx, o) -> {
+            if (o instanceof MedicalCondition condition) return condition;
+            if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
             return null;
         });
         // jank because Rhino doesn't agree that it's an interface

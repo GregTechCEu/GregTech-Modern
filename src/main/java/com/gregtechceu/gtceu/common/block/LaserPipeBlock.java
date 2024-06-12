@@ -78,8 +78,17 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
             if (blockPos != null && level != null &&
-                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe && pipe.isPainted()) {
-                return pipe.getRealColor();
+                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
+                if (pipe.getFrameMaterial() != null) {
+                    if (index == 3) {
+                        return pipe.getFrameMaterial().getMaterialRGB();
+                    } else if (index == 4) {
+                        return pipe.getFrameMaterial().getMaterialSecondaryRGB();
+                    }
+                }
+                if (pipe.isPainted()) {
+                    return pipe.getRealColor();
+                }
             }
             return -1;
         };

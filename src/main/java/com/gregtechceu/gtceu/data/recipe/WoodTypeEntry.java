@@ -3,8 +3,11 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
@@ -22,6 +25,8 @@ public final class WoodTypeEntry {
     public final String modid;
     @NotNull
     public final String woodName;
+    @NotNull
+    public final TagKey<Item> logTag;
     @Nullable
     public final Item log;
     @Nullable
@@ -87,11 +92,12 @@ public final class WoodTypeEntry {
     public final boolean addFenceGatesUnificationInfo;
     public final boolean addStairsUnificationInfo;
     public final boolean addBoatsUnificationInfo;
+    public final boolean generateLogToPlankRecipe;
 
     /**
      * @see WoodTypeEntry.Builder
      */
-    private WoodTypeEntry(@NotNull String modid, @NotNull String woodName,
+    private WoodTypeEntry(@NotNull String modid, @NotNull String woodName, @NotNull TagKey<Item> logTag,
                           @Nullable Item log, @Nullable Item strippedLog,
                           @Nullable Item wood, @Nullable Item strippedWood,
                           boolean removeCharcoalRecipe, boolean addCharcoalRecipe,
@@ -110,9 +116,10 @@ public final class WoodTypeEntry {
                           boolean addPlanksUnificationInfo, boolean addDoorsUnificationInfo,
                           boolean addSlabsUnificationInfo, boolean addFencesUnificationInfo,
                           boolean addFenceGatesUnificationInfo, boolean addStairsUnificationInfo,
-                          boolean addBoatsUnificationInfo) {
+                          boolean addBoatsUnificationInfo, boolean generateLogToPlankRecipe) {
         this.modid = modid;
         this.woodName = woodName;
+        this.logTag = logTag;
         this.log = log;
         this.strippedLog = strippedLog;
         this.wood = wood;
@@ -153,6 +160,7 @@ public final class WoodTypeEntry {
         this.addFenceGatesUnificationInfo = addFenceGatesUnificationInfo;
         this.addStairsUnificationInfo = addStairsUnificationInfo;
         this.addBoatsUnificationInfo = addBoatsUnificationInfo;
+        this.generateLogToPlankRecipe = generateLogToPlankRecipe;
     }
 
     @NotNull
@@ -174,6 +182,7 @@ public final class WoodTypeEntry {
         private final String modid;
         private final String woodName;
 
+        private TagKey<Item> logTag = null;
         private Item log = null;
         private Item strippedLog = null;
         private Item wood = null;
@@ -216,6 +225,7 @@ public final class WoodTypeEntry {
         private boolean addFenceGatesUnificationInfo;
         private boolean addStairsUnificationInfo;
         private boolean addBoatsUnificationInfo;
+        private boolean generateLogToPlankRecipe = true;
 
         /**
          * @param modid    the modid adding recipes for the wood
@@ -226,6 +236,17 @@ public final class WoodTypeEntry {
             Preconditions.checkArgument(!woodName.isEmpty(), "Wood name cannot be empty.");
             this.modid = modid;
             this.woodName = woodName;
+        }
+
+        /**
+         * Add an entry for TagKey of logs
+         *
+         * @param logTag the TagKey to add
+         * @return this
+         */
+        public Builder logTag(@NotNull TagKey<Item> logTag) {
+            this.logTag = logTag;
+            return this;
         }
 
         /**
@@ -493,12 +514,29 @@ public final class WoodTypeEntry {
         }
 
         /**
+         * Specify if log -> planks recipe should be generated
+         *
+         * @param enabled if log -> planks recipe should be enabled
+         * @return this
+         */
+        public Builder generateLogToPlankRecipe(boolean enabled) {
+            this.generateLogToPlankRecipe = enabled;
+            return this;
+        }
+
+        /**
          * @return a new wood type entry, if valid
          */
         @NotNull
         public WoodTypeEntry build() {
             Preconditions.checkArgument(planks != null, "Planks cannot be empty.");
-            return new WoodTypeEntry(modid, woodName, log, strippedLog, wood, strippedWood,
+
+            // add default tag if logTag is null
+            if (logTag == null)
+                logTag = TagUtil.optionalTag(BuiltInRegistries.ITEM,
+                        ResourceLocation.fromNamespaceAndPath(modid, woodName + "_logs"));
+
+            return new WoodTypeEntry(modid, woodName, logTag, log, strippedLog, wood, strippedWood,
                     removeCharcoalRecipe, addCharcoalRecipe,
                     planks, planksRecipeName,
                     door, doorRecipeName,
@@ -511,7 +549,8 @@ public final class WoodTypeEntry {
                     addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
                     addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
                     addDoorsUnificationInfo, addSlabsUnificationInfo, addFencesUnificationInfo,
-                    addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo);
+                    addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo,
+                    generateLogToPlankRecipe);
         }
     }
 }

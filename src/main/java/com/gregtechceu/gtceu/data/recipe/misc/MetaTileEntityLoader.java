@@ -813,6 +813,8 @@ public class MetaTileEntityLoader {
                 CABLE, 'H', HULL, 'S', SENSOR);
         registerMachineRecipe(provider, GTMachines.GAS_COLLECTOR, "WFW", "PHP", "WCW", 'W', Blocks.IRON_BARS, 'F',
                 GTItems.FLUID_FILTER, 'P', PUMP, 'H', HULL, 'C', CIRCUIT);
+        registerMachineRecipe(provider, GTMachines.AIR_SCRUBBER, "PFP", "FHF", "CFC", 'F', GTItems.FLUID_FILTER,
+                'P', PUMP, 'H', HULL, 'C', CIRCUIT);
         registerMachineRecipe(provider, GTMachines.ROCK_CRUSHER, "PMW", "CHC", "GGG", 'P', PISTON, 'M', MOTOR, 'W',
                 GRINDER, 'C', CABLE, 'H', HULL, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.PUMP, "WGW", "GMG", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T',

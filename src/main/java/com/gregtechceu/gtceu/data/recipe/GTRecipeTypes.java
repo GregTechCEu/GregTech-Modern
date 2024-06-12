@@ -404,6 +404,12 @@ public class GTRecipeTypes {
             .setOffsetVoltageText(true)
             .setSound(GTSoundEntries.COOLING);
 
+    public final static GTRecipeType AIR_SCRUBBER_RECIPES = register("air_scrubber", ELECTRIC)
+            .setMaxIOSize(1, 3, 1, 3).setEUIO(IO.IN)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
+            .setMaxTooltips(4)
+            .setSound(GTSoundEntries.COOLING);
+
     public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
             .setMaxIOSize(2, 1, 0, 0)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)

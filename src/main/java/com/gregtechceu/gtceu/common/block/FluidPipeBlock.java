@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IToolable;
@@ -8,10 +9,12 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -144,9 +147,18 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        // dont apply damage if there is a frame box
+        var pipeNode = getPipeTile(level, pos);
+        if (pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                    .getDefaultState();
+            ((MaterialBlock)frameState.getBlock()).entityInside(frameState, level, pos, entity);
+            return;
+        }
         if (level.isClientSide) return;
         if (level.getBlockEntity(pos) == null) return;
         FluidPipeBlockEntity pipe = (FluidPipeBlockEntity) level.getBlockEntity(pos);
+
         if (pipe.getOffsetTimer() % 10 == 0) {
             if (entity instanceof LivingEntity livingEntity) {
                 if (pipe.getFluidTanks().length > 1) {
@@ -179,5 +191,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                 }
             }
         }
+        super.entityInside(state, level, pos, entity);
     }
 }

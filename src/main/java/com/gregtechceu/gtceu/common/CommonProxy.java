@@ -23,10 +23,7 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
-import com.gregtechceu.gtceu.common.block.CableBlock;
-import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
-import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
-import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
@@ -285,6 +282,8 @@ public class CommonProxy {
                 itemPipe.attachCapabilities(event);
             } else if (block instanceof LaserPipeBlock laserPipe) {
                 laserPipe.attachCapabilities(event);
+            } else if (block instanceof DuctPipeBlock duct) {
+                duct.attachCapabilities(event);
             } else if (block instanceof IMachineBlock machine) {
                 machine.attachCapabilities(event);
             }

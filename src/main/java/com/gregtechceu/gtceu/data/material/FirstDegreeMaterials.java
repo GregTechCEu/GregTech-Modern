@@ -12,8 +12,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -49,7 +48,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.ASBESTOSIS)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -854,6 +853,7 @@ public class FirstDegreeMaterials {
                 .color(0xf2f2f2).secondaryColor(0xb2c4c7).iconSet(QUARTZ)
                 .flags(NO_SMASHING, NO_SMELTING)
                 .components(Silicon, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.SILICOSIS, false)
                 .buildAndRegister();
 
         MagnesiumChloride = new Material.Builder(GTCEu.id("magnesium_chloride"))
@@ -879,9 +879,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,
-                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
-                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -927,14 +925,14 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xff6000).secondaryColor(0xFF0000)
                 .components(Potassium, 2, Chromium, 2, Oxygen, 7)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.POISON)
                 .buildAndRegister();
 
         ChromiumTrioxide = new Material.Builder(GTCEu.id("chromium_trioxide"))
                 .dust(1)
                 .color(0xFFE4E1)
                 .components(Chromium, 1, Oxygen, 3)
-                .irritantHazard(true)
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.IRRITANT)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder(GTCEu.id("antimony_trioxide"))
@@ -990,9 +988,7 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,
-                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
-                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
@@ -1113,13 +1109,13 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x85FCFF)
                 .components(Nitrogen, 1, Oxygen, 2)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, 10)
                 .buildAndRegister();
 
         HydrogenSulfide = new Material.Builder(GTCEu.id("hydrogen_sulfide"))
                 .gas(new FluidBuilder().customStill())
                 .components(Hydrogen, 2, Sulfur, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, 5)
                 .buildAndRegister();
 
         NitricAcid = new Material.Builder(GTCEu.id("nitric_acid"))
@@ -1146,21 +1142,21 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0xA0A014)
                 .components(Sulfur, 1, Oxygen, 3)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, 1)
                 .buildAndRegister();
 
         SulfurDioxide = new Material.Builder(GTCEu.id("sulfur_dioxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Sulfur, 1, Oxygen, 2)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, 1)
                 .buildAndRegister();
 
         CarbonMonoxide = new Material.Builder(GTCEu.id("carbon_monoxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Carbon, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARBON_MONOXIDE_POISONING)
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))
@@ -1179,14 +1175,14 @@ public class FirstDegreeMaterials {
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x0088AA)
                 .components(Hydrogen, 1, Fluorine, 1)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                // TODO HF poisoning .hazard(HazardProperty.HazardTrigger.ANY)
                 .buildAndRegister();
 
         NitricOxide = new Material.Builder(GTCEu.id("nitric_oxide"))
                 .gas()
                 .color(0x7DC8F0)
                 .components(Nitrogen, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, 1)
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
@@ -1229,7 +1225,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x7DC8FF)
                 .components(Nitrogen, 2, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON, .5f)
                 .buildAndRegister();
 
         EnderPearl = new Material.Builder(GTCEu.id("ender_pearl"))
@@ -1237,7 +1233,6 @@ public class FirstDegreeMaterials {
                 .color(0x8cf4e2).secondaryColor(0x032620).iconSet(SHINY)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_PLATE)
                 .components(Beryllium, 1, Potassium, 4, Nitrogen, 5)
-                .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
 
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
@@ -1416,7 +1411,7 @@ public class FirstDegreeMaterials {
                 .color(0xACAD71).secondaryColor(0x291f34).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Osmium, 1, Oxygen, 4)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                // TODO Osmium tetroxide poisoning .hazard(HazardProperty.HazardTrigger.ANY)
                 .buildAndRegister();
 
         IridiumChloride = new Material.Builder(GTCEu.id("iridium_chloride"))
@@ -1506,9 +1501,7 @@ public class FirstDegreeMaterials {
         PotassiumHydroxide = new Material.Builder(GTCEu.id("potassium_hydroxide"))
                 .dust(1)
                 .color(0xd1c299).secondaryColor(0x85623a).iconSet(METALLIC)
-                .hazard(HazardProperty.HazardType.CORROSIVE,
-                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
-                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS)
                 .components(Potassium, 1, Oxygen, 1, Hydrogen, 1)
                 .buildAndRegister();
 
@@ -1542,6 +1535,7 @@ public class FirstDegreeMaterials {
                 .dust()
                 .color(0x72dbd4).secondaryColor(0x138a80).iconSet(ROUGH)
                 .components(Calcium, 1, Oxygen, 2, Hydrogen, 2)
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister()
                 .setFormula("Ca(OH)2", true);
 
@@ -1555,21 +1549,21 @@ public class FirstDegreeMaterials {
                 .dust()
                 .color(0x93badb).secondaryColor(0x0c5696).iconSet(ROUGH)
                 .components(Potassium, 1, Carbon, 1, Nitrogen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS, true)
                 .buildAndRegister();
 
         HydrogenCyanide = new Material.Builder(GTCEu.id("hydrogen_cyanide"))
                 .gas()
                 .color(0x72dbd4)
                 .components(Hydrogen, 1, Carbon, 1, Nitrogen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS, true)
                 .buildAndRegister();
 
         FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
                 .gas()
                 .color(0xa6a6a6)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister();
 
         PotassiumSulfate = new Material.Builder(GTCEu.id("potassium_sulfate"))
@@ -1592,7 +1586,7 @@ public class FirstDegreeMaterials {
                 .color(0xddeced)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON)
                 .buildAndRegister();
 
         Glycolonitrile = new Material.Builder(GTCEu.id("glycolonitrile"))

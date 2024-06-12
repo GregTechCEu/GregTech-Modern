@@ -42,4 +42,6 @@ public class GTCapability {
             .createSided(GTCEu.id("computation_provider"), IOpticalComputationProvider.class);
     public static final BlockCapability<IDataAccessHatch, Direction> CAPABILITY_DATA_ACCESS = BlockCapability
             .createSided(GTCEu.id("data_access"), IDataAccessHatch.class);
+    public static final BlockCapability<IHazardParticleContainer, Direction> CAPABILITY_HAZARD_CONTAINER = BlockCapability
+            .createSided(GTCEu.id("hazard_particle_container"), IHazardParticleContainer.class);
 }

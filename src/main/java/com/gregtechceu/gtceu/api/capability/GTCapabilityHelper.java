@@ -108,6 +108,11 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
+    public static IHazardParticleContainer getHazardContainer(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, level, pos, side);
+    }
+
+    @Nullable
     private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos,
                                                   @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
@@ -119,7 +124,7 @@ public class GTCapabilityHelper {
         return null;
     }
 
-    public static IHazardEffectTracker getHazardEffectTracker(@NotNull Player entity) {
-        return entity.getData(GTAttachmentTypes.HAZARD_TRACKER);
+    public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
+        return entity.getData(GTAttachmentTypes.MEDICAL_CONDITION_TRACKER);
     }
 }

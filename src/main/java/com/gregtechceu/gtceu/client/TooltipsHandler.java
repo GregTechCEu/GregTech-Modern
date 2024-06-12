@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
@@ -45,11 +48,17 @@ public class TooltipsHandler {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
                 List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);
-                if (multiLang != null && multiLang.size() > 0) {
+                if (multiLang != null && !multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }
             }
         }
+
+        Material material = HazardProperty.getValidHazardMaterial(stack);
+        if (material == null) {
+            return;
+        }
+        GTUtil.appendHazardTooltips(material, tooltips);
     }
 
     public static void appendFluidTooltips(Fluid fluid, List<Component> tooltips, TooltipFlag flag) {
