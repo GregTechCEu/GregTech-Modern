@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -16,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -31,10 +28,10 @@ import java.util.Set;
  * @param removePercent the time to remove from the chosen hazard, as a percentage of the current time [0, 100].
  *                      -1 for all.
  */
-public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int removePercent)
+public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
         implements IInteractionItem, IAddInformation {
 
-    public AntidoteBehavior(int timeToRemove, HazardProperty.HazardType... types) {
+    public AntidoteBehavior(int timeToRemove, MedicalCondition... types) {
         this(new HashSet<>(), timeToRemove);
         this.types.addAll(Arrays.asList(types));
     }
@@ -42,42 +39,31 @@ public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int removeP
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         ItemStack itemstack = IInteractionItem.super.finishUsingItem(stack, level, livingEntity);
-        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(livingEntity);
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(livingEntity);
         if (tracker == null) {
             return itemstack;
         }
-        var iterator = tracker.getCurrentHazards().object2IntEntrySet().iterator();
-        while (iterator.hasNext()) {
-            var entry = iterator.next();
-            if (entry.getKey() == null) {
+        for (var entry : tracker.getMedicalConditions().object2FloatEntrySet()) {
+            MedicalCondition condition = entry.getKey();
+            if (condition == null) {
                 continue;
             }
-            HazardProperty.HazardType type = getHazardTypeFromMaterial(entry.getKey());
-            if (type == null || !this.types.contains(type)) {
+            if (!this.types.contains(condition)) {
                 continue;
             }
             if (removePercent == -1) {
-                iterator.remove();
+                tracker.removeMedicalCondition(condition);
             } else {
-                int time = entry.getIntValue();
+                float time = entry.getFloatValue();
                 float timeToRemove = time * (removePercent / 100.0f);
                 if (timeToRemove > 0.05f * time) {
-                    iterator.remove();
+                    tracker.removeMedicalCondition(condition);
                     continue;
                 }
-                entry.setValue((int) (time - timeToRemove));
+                tracker.heal(condition, (int) timeToRemove);
             }
         }
         return itemstack;
-    }
-
-    @Nullable
-    public static HazardProperty.HazardType getHazardTypeFromMaterial(@NotNull Material material) {
-        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-        if (property == null) {
-            return null;
-        }
-        return property.getHazardType();
     }
 
     @Override
@@ -86,19 +72,20 @@ public record AntidoteBehavior(Set<HazardProperty.HazardType> types, int removeP
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description_shift"));
+            tooltipComponents.add(Component.translatable("gtceu.medical_condition.antidote.description_shift"));
             for (var type : types) {
-                tooltipComponents.add(Component
-                        .translatable("gtceu.hazard." + type.getSerializedName()));
+                tooltipComponents.add(Component.translatable("gtceu.medical_condition." + type.name));
             }
             if (removePercent == -1) {
-                tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description.effect_removed.all"));
+                tooltipComponents
+                        .add(Component.translatable("gtceu.medical_condition.antidote.description.effect_removed.all"));
             } else {
                 tooltipComponents
-                        .add(Component.translatable("gtceu.hazard.antidote.description.effect_removed", removePercent));
+                        .add(Component.translatable("gtceu.medical_condition.antidote.description.effect_removed",
+                                removePercent));
             }
             return;
         }
-        tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description"));
+        tooltipComponents.add(Component.translatable("gtceu.medical_condition.antidote.description"));
     }
 }
