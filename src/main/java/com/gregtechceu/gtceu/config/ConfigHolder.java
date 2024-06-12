@@ -179,11 +179,13 @@ public class ConfigHolder {
 
         public static class AE2CompatConfig {
 
+            @Configurable
             @Configurable.Comment({ "The interval between ME Hatch/Bus interact ME network.",
                     "It may cause lag if the interval is too small.", "Default: 2 sec" })
             @Configurable.Range(min = 1, max = 80)
             public int updateIntervals = 40;
 
+            @Configurable
             @Configurable.Comment({ "The energy consumption of ME Hatch/Bus.", "Default: 1.0AE/t" })
             @Configurable.DecimalRange(min = 0.0, max = 10.0)
             public double meHatchEnergyUsage = 1.0;
@@ -459,6 +461,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether hazards are applied to all valid items, or just GT's.",
                 "true = all, false = GT only.", "Default: true" })
         public boolean universalHazards = true;
+        @Configurable
+        @Configurable.Comment({ "Whether environmental hazards like pollution or radiation are active",
+                "Default: true" })
+        public boolean environmentalHazards = true;
         @Configurable
         @Configurable.Comment({ "Whether the GTCEu's ingame guidebook, 'Compass', be enabled.", "WARNING: INCOMPLETE",
                 "Default: false" })

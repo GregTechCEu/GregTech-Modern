@@ -423,11 +423,11 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.hazard.description_shift"));
+            tooltipComponents.add(Component.translatable("gtceu.medical_condition.description_shift"));
             tooltipComponents.add(Component
-                    .translatable("gtceu.hazard." + material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
+                    .translatable("gtceu.medical_condition." + material.getProperty(HAZARD).condition.name));
             return;
         }
-        tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
+        tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
     }
 }

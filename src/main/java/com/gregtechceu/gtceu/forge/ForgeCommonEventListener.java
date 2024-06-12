@@ -5,11 +5,12 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -17,7 +18,9 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
+import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -43,6 +46,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -113,8 +117,8 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void registerEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player entity) {
-            final HazardEffectTracker tracker = new HazardEffectTracker(entity);
-            event.addCapability(GTCEu.id("hazard_tracker"), new ICapabilitySerializable<CompoundTag>() {
+            final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
+            event.addCapability(GTCEu.id("medical_condition_tracker"), new ICapabilitySerializable<CompoundTag>() {
 
                 @Override
                 public CompoundTag serializeNBT() {
@@ -129,7 +133,7 @@ public class ForgeCommonEventListener {
                 @Override
                 public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
                                                                   @Nullable Direction arg) {
-                    return GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER.orEmpty(capability,
+                    return GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER.orEmpty(capability,
                             LazyOptional.of(() -> tracker));
                 }
             });
@@ -147,19 +151,32 @@ public class ForgeCommonEventListener {
             return;
         }
         Player player = event.player;
-        IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
-        if (tracker != null && inventory != null) {
-            tracker.startTick();
-            for (int i = 0; i < inventory.getSlots(); ++i) {
-                ItemStack stack = inventory.getStackInSlot(i);
-                Material material = HazardProperty.getValidHazardMaterial(stack);
-                if (material == null) {
-                    continue;
-                }
-                tracker.tick(material);
+        if (tracker == null || inventory == null) {
+            return;
+        }
+        tracker.tick();
+
+        for (int i = 0; i < inventory.getSlots(); ++i) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            Material material = HazardProperty.getValidHazardMaterial(stack);
+            if (material == null || !material.hasProperty(PropertyKey.HAZARD)) {
+                continue;
             }
-            tracker.endTick();
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property.hazardTrigger.protectionType().isProtected(player)) {
+                // entity has proper safety equipment, so damage it per material every 5 seconds.
+                if (player.level().getGameTime() % 100 == 0) {
+                    for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
+                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
+                                p -> p.broadcastBreakEvent(type.getSlot()));
+                    }
+                }
+                // don't progress this material condition if entity is protected
+                continue;
+            }
+            tracker.progressRelatedCondition(material);
         }
     }
 
@@ -191,6 +208,8 @@ public class ForgeCommonEventListener {
     public static void levelTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
+            EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
+            LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
         }
     }
 
