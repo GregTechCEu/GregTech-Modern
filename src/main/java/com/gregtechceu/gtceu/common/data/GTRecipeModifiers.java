@@ -88,10 +88,6 @@ public class GTRecipeModifiers {
         @Nullable
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
-            if (machine instanceof ITieredMachine tieredMachine &&
-                    RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
-                return null;
-            }
             if (machine instanceof IOverclockMachine overclockMachine) {
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
             }

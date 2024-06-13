@@ -51,7 +51,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs((int) (maxVoltage / recipeEUt));
+        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
     }
 
     @Override
