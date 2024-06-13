@@ -75,7 +75,7 @@ jobs:
           changelog-file: CHANGELOG.*
 
           loaders: |
-            forge
+            neoforge
           game-versions: |
             ${{ github.ref_name }}
           game-version-filter: none
