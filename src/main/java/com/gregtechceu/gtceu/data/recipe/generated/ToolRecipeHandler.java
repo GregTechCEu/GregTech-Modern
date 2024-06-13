@@ -102,7 +102,7 @@ public class ToolRecipeHandler {
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_LV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_HV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_IV);
-        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, GTToolType.BUZZSAW);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, GTToolType.BUZZSAW_LV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_LV);
     }
 
@@ -291,9 +291,9 @@ public class ToolRecipeHandler {
             }
 
             // buzzsaw
-            if (property.hasType(GTToolType.BUZZSAW)) {
+            if (property.hasType(GTToolType.BUZZSAW_LV)) {
                 toolPrefix = TagPrefix.toolHeadBuzzSaw;
-                addElectricToolRecipe(toolPrefix, material, new GTToolType[] { GTToolType.BUZZSAW }, provider);
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[] { GTToolType.BUZZSAW_LV }, provider);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("buzzsaw_blade_%s", material.getName()),
                         ChemicalHelper.get(toolPrefix, material),
