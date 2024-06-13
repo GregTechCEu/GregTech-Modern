@@ -45,7 +45,7 @@ public class ToolLang {
         provider.add("death.attack.gtceu.wrench_lv", "%s's pipes were loosened by %s");
         provider.add("death.attack.gtceu.wrench_hv", "%s's pipes were loosened by %s");
         provider.add("death.attack.gtceu.wrench_iv", "%s had a Monkey Wrench thrown into their plans by %s");
-        provider.add("death.attack.gtceu.buzzsaw", "%s got buzzed by %s");
+        provider.add("death.attack.gtceu.buzzsaw_lv", "%s got buzzed by %s");
         provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
 
         provider.add("death.attack.gtceu.medical_condition/asbestosis", "%s got mesothelioma");

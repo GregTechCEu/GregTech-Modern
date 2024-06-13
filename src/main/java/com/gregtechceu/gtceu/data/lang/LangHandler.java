@@ -207,8 +207,8 @@ public class LangHandler {
         provider.add("item.gtceu.tool.hv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
         provider.add("item.gtceu.tool.iv_wrench.tooltip", "§8Hold left click to dismantle Machines");
-        replace(provider, "item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
-        provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
+        replace(provider, "item.gtceu.tool.lv_buzzsaw", "%s Buzzsaw (LV)");
+        provider.add("item.gtceu.tool.lv_buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
@@ -1231,6 +1231,9 @@ public class LangHandler {
         replace(provider, "block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
+
+        // Subtitles
+        // TODO: Add subtitles
 
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
     }
