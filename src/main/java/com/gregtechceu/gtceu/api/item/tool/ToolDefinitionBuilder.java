@@ -51,7 +51,8 @@ public class ToolDefinitionBuilder {
     @Setter
     private float efficiencyMultiplier = 1.0F;
     private boolean isEnchantable;
-    private TagKey<Item>[] validEnchantmentTags;
+    @SuppressWarnings("unchecked")
+    private TagKey<Item>[] validEnchantmentTags = new TagKey[0];
     private boolean sneakBypassUse = false;
     @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
