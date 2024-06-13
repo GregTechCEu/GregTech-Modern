@@ -5,6 +5,10 @@ on:
     branches:
       - '1.21'
 
+concurrency:
+  group: auto-build-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
