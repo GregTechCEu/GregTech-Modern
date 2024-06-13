@@ -1,0 +1,10 @@
+{
+  "values": {
+    "gtceu:rubber_leaves": {
+      "chance": 0.3
+    },
+    "gtceu:rubber_sapling": {
+      "chance": 0.3
+    }
+  }
+}

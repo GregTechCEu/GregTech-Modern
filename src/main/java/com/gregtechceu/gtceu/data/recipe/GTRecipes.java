@@ -14,7 +14,6 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -53,7 +52,6 @@ public class GTRecipes {
             }
         };
 
-        ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
         ResearchManager.registerScannerLogic();
 
         // Decomposition info loading

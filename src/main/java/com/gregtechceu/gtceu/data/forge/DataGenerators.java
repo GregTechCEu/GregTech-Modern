@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.data.datamap.GTDataMaps;
 import com.gregtechceu.gtceu.data.jukebox.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
@@ -41,6 +42,7 @@ public class DataGenerators {
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new GTDataMaps(packOutput, registries));
             generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
