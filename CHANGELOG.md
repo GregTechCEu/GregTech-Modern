@@ -37,3 +37,4 @@ Version: 1.3.0
 - Fixed LV screwdriver and buzzsaw being marked as IV tools
 - Fixed placing cables/pipes being incredibly laggy
 - Fixed create compatiblity sometimes crashing servers
+- Fixed parallel hatch not working sometimes
