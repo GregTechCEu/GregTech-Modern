@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -88,10 +87,6 @@ public class GTRecipeModifiers {
         @Nullable
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
-            if (machine instanceof ITieredMachine tieredMachine &&
-                    RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
-                return null;
-            }
             if (machine instanceof IOverclockMachine overclockMachine) {
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
             }

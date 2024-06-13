@@ -27,7 +27,7 @@ public abstract class MachineTrait implements IEnhancedManaged {
     @Getter
     protected final MetaMachine machine;
     @Setter
-    protected Predicate<Direction> capabilityValidator;
+    protected Predicate<@Nullable Direction> capabilityValidator;
 
     public MachineTrait(MetaMachine machine) {
         this.machine = machine;

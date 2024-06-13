@@ -54,8 +54,8 @@ public class SimpleKineticElectricWorkableMachine extends SimpleTieredMachine im
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         var container = super.createEnergyContainer(args);
-        container.setSideInputCondition(dir -> dir.getAxis() != getRotationFacing().getAxis());
-        container.setCapabilityValidator(dir -> dir.getAxis() != getRotationFacing().getAxis());
+        container.setSideInputCondition(dir -> dir == null || dir.getAxis() != getRotationFacing().getAxis());
+        container.setCapabilityValidator(dir -> dir == null || dir.getAxis() != getRotationFacing().getAxis());
         return container;
     }
 
