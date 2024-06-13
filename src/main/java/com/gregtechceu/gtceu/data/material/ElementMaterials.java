@@ -624,7 +624,7 @@ public class ElementMaterials {
                 .ore(true)
                 .color(0xba2727).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .element(GTElements.Pu239)
-                // TODO.radioactiveHazard(1.5f)
+                .radioactiveHazard(1.5f)
                 .buildAndRegister();
 
         Plutonium241 = new Material.Builder(GTCEu.id("plutonium_241"))
@@ -633,7 +633,7 @@ public class ElementMaterials {
                 .color(0xfa7272).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.Pu241)
-                // TODO.radioactiveHazard(1.5f)
+                .radioactiveHazard(1.5f)
                 .buildAndRegister();
 
         Potassium = new Material.Builder(GTCEu.id("potassium"))
@@ -852,7 +852,7 @@ public class ElementMaterials {
                 .color(0xff316b).secondaryColor(0xd00000)
                 .iconSet(METALLIC)
                 .element(GTElements.T)
-                // TODO.radioactiveHazard(1)
+                .radioactiveHazard(1)
                 .buildAndRegister();
 
         Tungsten = new Material.Builder(GTCEu.id("tungsten"))
@@ -874,7 +874,7 @@ public class ElementMaterials {
                 .color(0x1d891d).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U238)
-                // TODO.radioactiveHazard(1)
+                .radioactiveHazard(1)
                 .buildAndRegister();
 
         Uranium235 = new Material.Builder(GTCEu.id("uranium_235"))
@@ -883,7 +883,7 @@ public class ElementMaterials {
                 .color(0x46FA46).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U235)
-                // TODO.radioactiveHazard(1)
+                .radioactiveHazard(1)
                 .buildAndRegister();
 
         Vanadium = new Material.Builder(GTCEu.id("vanadium"))
@@ -935,7 +935,7 @@ public class ElementMaterials {
                 .cableProperties(GTValues.V[7], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
-                // TODO.radioactiveHazard(2)
+                .radioactiveHazard(2)
                 .buildAndRegister();
 
         NaquadahEnriched = new Material.Builder(GTCEu.id("enriched_naquadah"))
@@ -945,7 +945,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .element(GTElements.Nq1)
                 .blastTemp(7000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
-                // TODO.radioactiveHazard(2.5f)
+                .radioactiveHazard(2.5f)
                 .buildAndRegister();
 
         Naquadria = new Material.Builder(GTCEu.id("naquadria"))
@@ -955,7 +955,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq2)
                 .blastTemp(9000, GasTier.HIGH, GTValues.VA[GTValues.ZPM], 1200)
-                // TODO.radioactiveHazard(3)
+                .radioactiveHazard(3)
                 .buildAndRegister();
 
         Neutronium = new Material.Builder(GTCEu.id("neutronium"))
@@ -968,7 +968,7 @@ public class ElementMaterials {
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
-                // TODO.radioactiveHazard(10)
+                .radioactiveHazard(10)
                 .buildAndRegister();
 
         Tritanium = new Material.Builder(GTCEu.id("tritanium"))

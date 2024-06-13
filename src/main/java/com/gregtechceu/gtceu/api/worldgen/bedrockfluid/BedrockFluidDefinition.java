@@ -41,7 +41,7 @@ public class BedrockFluidDefinition {
                     Codec.INT.fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
                     Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
                     BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(ft -> ft.storedFluid.get()),
-                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", null)
+                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of())
                             .forGetter(ft -> ft.originalModifiers),
                     ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
                             .forGetter(ft -> new ArrayList<>(ft.dimensionFilter)))

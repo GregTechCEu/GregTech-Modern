@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
@@ -27,6 +29,7 @@ import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -36,6 +39,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -47,6 +51,7 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -157,6 +162,10 @@ public class ForgeCommonEventListener {
                     new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
             PacketDistributor.sendToPlayer(serverPlayer,
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
+
+            ServerLevel level = (ServerLevel) event.getEntity().level();
+            var data = EnvironmentalHazardSavedData.getOrCreate(level);
+            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
         }
     }
 
@@ -195,6 +204,28 @@ public class ForgeCommonEventListener {
                 entity.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
                 zombie.setDropChance(EquipmentSlot.MAINHAND, 0.0f);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
+        var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
+        PacketDistributor.sendToPlayer((ServerPlayer) event.getEntity(),
+                new SPacketSyncLevelHazards(data.getHazardZones()));
+    }
+
+    @SubscribeEvent
+    public static void onChunkWatch(ChunkWatchEvent.Watch event) {
+        LevelChunk chunk = event.getChunk();
+        if (chunk == null) return;
+
+        ServerPlayer player = event.getPlayer();
+        var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
+
+        var zone = data.getZoneByContainedPos(BlockPos.containing(player.getEyePosition()));
+        if (zone != null && zone.strength() > EnvironmentalHazardSavedData.PACKET_THRESHOLD) {
+            PacketDistributor.sendToPlayer(player, new SPacketAddHazardZone(chunk.getPos(), zone));
         }
     }
 }

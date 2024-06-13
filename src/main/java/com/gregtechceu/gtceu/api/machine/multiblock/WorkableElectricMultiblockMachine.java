@@ -208,6 +208,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         return new EnergyContainerList(containers);
     }
 
+    @Override
     public long getMaxVoltage() {
         if (this.energyContainer == null) {
             this.energyContainer = getEnergyContainer();

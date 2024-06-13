@@ -1082,7 +1082,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder radioactiveHazard(int multiplier) {
+        public Builder radioactiveHazard(float multiplier) {
             properties.setProperty(HAZARD, new HazardProperty(HazardProperty.HazardTrigger.ANY,
                     GTMedicalConditions.CARCINOGEN, multiplier, true));
             return this;

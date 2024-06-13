@@ -5,7 +5,9 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
     "client": [
+        "BlockColorsMixin",
         "BlockModelMixin",
+        "ClientLevelAccessor",
         "GuiGraphicsAccessor",
         "GuiGraphicsMixin",
         "GuiHeartTypeMixin",
