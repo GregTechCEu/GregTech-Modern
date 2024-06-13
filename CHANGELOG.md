@@ -2,6 +2,8 @@
 
 Version: 1.3.0
 
+# **1.21 IS A *VERY* BREAKING UPDATE, DO NOT TRY TO UPDATE FROM 1.20.1 OR 1.19.2**
+
 ### ADDITIONS:
 - Added pollution
   - If you don't want to deal with it, pipe it elsewhere with duct pipes (or disable it.)
