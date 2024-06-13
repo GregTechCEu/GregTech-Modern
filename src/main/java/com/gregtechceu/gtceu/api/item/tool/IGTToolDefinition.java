@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -29,25 +31,25 @@ public interface IGTToolDefinition {
 
     int getDamagePerCraftingAction(ItemStack stack);
 
-    boolean isSuitableForBlockBreak(ItemStack stack);
+    boolean isSuitableForBlockBreak();
 
-    boolean isSuitableForAttacking(ItemStack stack);
+    boolean isSuitableForAttacking();
 
-    boolean isSuitableForCrafting(ItemStack stack);
+    boolean isSuitableForCrafting();
 
     default int getToolDamagePerBlockBreak(ItemStack stack) {
         int action = getTool().damagePerBlock();
-        return isSuitableForBlockBreak(stack) ? action : action * 2;
+        return isSuitableForBlockBreak() ? action : action * 2;
     }
 
     default int getToolDamagePerAttack(ItemStack stack) {
         int action = getTool().damagePerBlock();
-        return isSuitableForAttacking(stack) ? action : action * 2;
+        return isSuitableForAttacking() ? action : action * 2;
     }
 
     default int getToolDamagePerCraft(ItemStack stack) {
         int action = getDamagePerCraftingAction(stack);
-        return isSuitableForCrafting(stack) ? action : action * 2;
+        return isSuitableForCrafting() ? action : action * 2;
     }
 
     /**
@@ -88,7 +90,7 @@ public interface IGTToolDefinition {
         return true;
     }
 
-    boolean canApplyEnchantment(ItemStack stack, ResourceKey<Enchantment> enchantment);
+    TagKey<Item>[] getValidEnchantmentTags();
 
     Object2IntMap<ResourceKey<Enchantment>> getDefaultEnchantments();
 

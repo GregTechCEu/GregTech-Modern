@@ -26,7 +26,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
@@ -170,16 +169,6 @@ public class ComponentItem extends Item
             }
         }
         return super.getEnchantmentValue(stack);
-    }
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        for (IItemComponent component : components) {
-            if (component instanceof IEnchantableItem enchantableItem) {
-                return enchantableItem.canApplyAtEnchantingTable(stack, enchantment);
-            }
-        }
-        return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override

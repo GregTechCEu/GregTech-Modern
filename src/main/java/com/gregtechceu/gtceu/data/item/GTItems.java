@@ -63,13 +63,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Unit;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.Unbreakable;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
@@ -89,8 +88,6 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -243,17 +240,6 @@ public class GTItems {
                                                 if (toolProperty.isUnbreakable()) {
                                                     p.component(DataComponents.UNBREAKABLE, new Unbreakable(true));
                                                 }
-
-                                                // Set tool and material enchantments
-                                                Object2IntMap<ResourceKey<Enchantment>> enchantmentLevels = new Object2IntOpenHashMap<>(
-                                                        toolProperty.getEnchantments());
-                                                enchantmentLevels.putAll(toolStats.getDefaultEnchantments());
-                                                ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(
-                                                        ItemEnchantments.EMPTY);
-                                                // TODO default enchantments are fucked
-                                                // enchantmentLevels.forEach((enchantment, level) ->
-                                                // enchantments.set(enchantment, level));
-                                                p.component(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
                                                 // Set behaviours
                                                 if (toolProperty.isMagnetic()) {
@@ -572,7 +558,6 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
-                    // TODO render cell with a real fluid texture in the future?
                     if (held.getFluid() == Fluids.LAVA) {
                         return 0xFFFF7000;
                     }
@@ -2328,6 +2313,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> NANO_SABER = REGISTRATE.item("nano_saber", ComponentItem::create)
             .lang("Nano Saber")
             .properties(p -> p.stacksTo(1))
+            .tag(ItemTags.SWORDS)
             .onRegister(attach(new NanoSaberBehavior(), ElectricStats.createElectricItem(4_000_000L, GTValues.HV)))
             .model((ctx, prov) -> {
                 var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/nano_saber/normal"));

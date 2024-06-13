@@ -28,10 +28,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagKey;
-import net.minecraft.tags.TagLoader;
+import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -85,6 +82,22 @@ public class MixinHelpers {
                                 GTValues.CUSTOM_TAG_SOURCE);
                         for (TagKey<Item> tag : type.itemTags) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
+                        }
+                        if (type.toolDefinition.isSuitableForBlockBreak()) {
+                            tagMap.computeIfAbsent(ItemTags.MINING_ENCHANTABLE.location(), path -> new ArrayList<>())
+                                    .add(entry);
+                        }
+                        if (type.toolDefinition.isSuitableForAttacking()) {
+                            tagMap.computeIfAbsent(ItemTags.WEAPON_ENCHANTABLE.location(), path -> new ArrayList<>())
+                                    .add(entry);
+                        }
+                        for (TagKey<Item> tag : type.toolDefinition.getValidEnchantmentTags()) {
+                            tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
+                        }
+                        if (type.electricTier > -1) {
+                            tagMap.computeIfAbsent(ItemTags.DURABILITY_ENCHANTABLE.location(),
+                                    path -> new ArrayList<>())
+                                    .remove(entry);
                         }
                     }
                 });

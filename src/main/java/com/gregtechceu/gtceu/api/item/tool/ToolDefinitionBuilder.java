@@ -51,7 +51,7 @@ public class ToolDefinitionBuilder {
     @Setter
     private float efficiencyMultiplier = 1.0F;
     private boolean isEnchantable;
-    private BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment;
+    private TagKey<Item>[] validEnchantmentTags;
     private boolean sneakBypassUse = false;
     @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
@@ -100,23 +100,10 @@ public class ToolDefinitionBuilder {
         return this;
     }
 
-    public ToolDefinitionBuilder canApplyEnchantment(BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment) {
-        this.isEnchantable = true;
-        this.canApplyEnchantment = canApplyEnchantment;
-        return this;
-    }
-
     @SafeVarargs
-    public final ToolDefinitionBuilder canApplyEnchantment(TagKey<Item>... enchantmentTypes) {
+    public final ToolDefinitionBuilder validEnchantmentTags(TagKey<Item>... enchantmentTypes) {
         this.isEnchantable = true;
-        this.canApplyEnchantment = (stack, enchantment) -> {
-            for (TagKey<Item> type : enchantmentTypes) {
-                if (stack.is(type)) {
-                    return true;
-                }
-            }
-            return false;
-        };
+        this.validEnchantmentTags = enchantmentTypes;
         return this;
     }
 
@@ -165,7 +152,7 @@ public class ToolDefinitionBuilder {
             private final float baseEfficiency = ToolDefinitionBuilder.this.baseEfficiency;
             private final float efficiencyMultiplier = ToolDefinitionBuilder.this.efficiencyMultiplier;
             private final boolean isEnchantable = ToolDefinitionBuilder.this.isEnchantable;
-            private final BiPredicate<ItemStack, ResourceKey<Enchantment>> canApplyEnchantment = ToolDefinitionBuilder.this.canApplyEnchantment;
+            private final TagKey<Item>[] validEnchantmentTags = ToolDefinitionBuilder.this.validEnchantmentTags;
             private final boolean sneakBypassUse = ToolDefinitionBuilder.this.sneakBypassUse;
             private final Supplier<ItemStack> brokenStack = ToolDefinitionBuilder.this.brokenStack;
             private final AoESymmetrical aoeSymmetrical = ToolDefinitionBuilder.this.aoe;
@@ -208,17 +195,17 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public boolean isSuitableForBlockBreak(ItemStack stack) {
+            public boolean isSuitableForBlockBreak() {
                 return suitableForBlockBreaking;
             }
 
             @Override
-            public boolean isSuitableForAttacking(ItemStack stack) {
+            public boolean isSuitableForAttacking() {
                 return suitableForAttacking;
             }
 
             @Override
-            public boolean isSuitableForCrafting(ItemStack stack) {
+            public boolean isSuitableForCrafting() {
                 return suitableForCrafting;
             }
 
@@ -258,8 +245,8 @@ public class ToolDefinitionBuilder {
             }
 
             @Override
-            public boolean canApplyEnchantment(ItemStack stack, ResourceKey<Enchantment> enchantment) {
-                return canApplyEnchantment.test(stack, enchantment);
+            public TagKey<Item>[] getValidEnchantmentTags() {
+                return validEnchantmentTags;
             }
 
             @Override

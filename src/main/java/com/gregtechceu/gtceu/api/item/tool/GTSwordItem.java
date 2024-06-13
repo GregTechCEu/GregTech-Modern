@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 
@@ -10,9 +9,7 @@ import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,7 +21,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,6 +61,11 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     public static GTSwordItem create(GTToolType toolType, MaterialToolTier tier, Material material,
                                      IGTToolDefinition toolStats, Item.Properties properties) {
         return new GTSwordItem(toolType, tier, material, toolStats, properties);
+    }
+
+    @Override
+    public ItemStack getDefaultInstance() {
+        return get();
     }
 
     @Override
@@ -136,12 +137,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         definition$appendHoverText(stack, context, tooltipComponents, isAdvanced);
-    }
-
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        ResourceKey<Enchantment> key = GTRegistries.builtinRegistry().registryOrThrow(Registries.ENCHANTMENT)
-                .getResourceKey(enchantment).orElseThrow();
-        return definition$canApplyAtEnchantingTable(stack, key);
     }
 
     public int getEnchantmentValue(ItemStack stack) {

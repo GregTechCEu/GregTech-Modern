@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -210,10 +211,11 @@ public class ToolHelper {
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
             toolProperty.getEnchantments().forEach((enchantment, level) -> {
-                if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    Registry<Enchantment> registry = GTRegistries.builtinRegistry()
-                            .registryOrThrow(Registries.ENCHANTMENT);
-                    stack.enchant(registry.getHolderOrThrow(enchantment), level);
+                Registry<Enchantment> registry = GTRegistries.builtinRegistry()
+                        .registryOrThrow(Registries.ENCHANTMENT);
+                Holder<Enchantment> enchant = registry.getHolderOrThrow(enchantment);
+                if (enchant.value().canEnchant(stack)) {
+                    stack.enchant(enchant, level);
                 }
             });
         }

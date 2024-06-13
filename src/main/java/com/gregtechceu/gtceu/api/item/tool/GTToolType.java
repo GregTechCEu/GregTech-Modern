@@ -109,7 +109,7 @@ public class GTToolType {
                             .attackDamage(5.0F).durabilityMultiplier(3.0F)
                             .aoe(2, 2, 2)
                             .behaviors(HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
-                            .canApplyEnchantment(ItemTags.DURABILITY_ENCHANTABLE))
+                            .validEnchantmentTags(ItemTags.DURABILITY_ENCHANTABLE))
             .toolClassNames("scythe")
             .toolClasses(GTToolType.HOE)
             .build();

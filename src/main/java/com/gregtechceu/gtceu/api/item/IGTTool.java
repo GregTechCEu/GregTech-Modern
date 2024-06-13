@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -39,9 +40,11 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,7 +62,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -69,6 +72,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.CommonHooks;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,7 +114,24 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default ItemStack get() {
-        return asItem().getDefaultInstance();
+        ItemStack instance = new ItemStack(asItem());
+
+        ToolProperty toolStats = getMaterial().getProperty(PropertyKey.TOOL);
+        HolderLookup<Enchantment> lookup = GTRegistries.builtinRegistry().lookup(Registries.ENCHANTMENT).orElse(null);
+        if (lookup == null) {
+            return instance;
+        }
+
+        // Set tool and material enchantments
+        Object2IntMap<ResourceKey<Enchantment>> enchantmentLevels = new Object2IntOpenHashMap<>(
+                toolStats.getEnchantments());
+        enchantmentLevels.putAll(getToolType().toolDefinition.getDefaultEnchantments());
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(
+                ItemEnchantments.EMPTY);
+        enchantmentLevels.forEach((enchantment, level) -> enchantments.set(lookup.getOrThrow(enchantment), level));
+        instance.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
+
+        return instance;
     }
 
     default ItemStack get(long defaultCharge, long defaultMaxCharge) {
@@ -543,7 +565,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             // Plus 1 to match vanilla behavior where tools can still be used once at zero durability. We want to not
             // show this
             int damageRemaining = tool.getTotalMaxDurability(stack) - stack.getDamageValue() + 1;
-            if (toolStats.isSuitableForCrafting(stack)) {
+            if (toolStats.isSuitableForCrafting()) {
                 tooltip.add(Component.translatable("item.gtceu.tool.tooltip.crafting_uses", FormattingUtil
                         .formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
             }
@@ -553,7 +575,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
 
         // attack info
-        if (toolStats.isSuitableForAttacking(stack)) {
+        if (toolStats.isSuitableForAttacking()) {
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.attack_damage",
                     FormattingUtil.formatNumbers(2 + tool.getTotalAttackDamage(stack))));
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.attack_speed",
@@ -561,7 +583,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
 
         // mining info
-        if (toolStats.isSuitableForBlockBreak(stack)) {
+        if (toolStats.isSuitableForBlockBreak()) {
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.mining_speed",
                     FormattingUtil.formatNumbers(tool.getTotalToolSpeed(stack))));
 
@@ -642,41 +664,6 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
         }
-    }
-
-    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack,
-                                                         ResourceKey<Enchantment> enchantment) {
-        if (stack.isEmpty()) return false;
-
-        // Block Mending and Unbreaking on Electric tools
-        if (isElectric() &&
-                (enchantment == Enchantments.MENDING ||
-                        enchantment == Enchantments.UNBREAKING)) {
-            return false;
-        }
-
-        /*
-         * // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
-         * // the Minecraft method takes an Item, and does not respect NBT nor meta.
-         * if (enchantment.definition().supportedItems() == ItemTags.MINING_ENCHANTABLE) {
-         * return getToolStats().isSuitableForBlockBreak(stack);
-         * } else if (enchantment.getSupportedItems() == ItemTags.WEAPON_ENCHANTABLE) {
-         * return getToolStats().isSuitableForAttacking(stack);
-         * } else if (enchantment.getSupportedItems() == ItemTags.DURABILITY_ENCHANTABLE) {
-         * return !stack.has(DataComponents.UNBREAKABLE);
-         * }
-         */
-
-        ToolProperty property = getToolProperty(stack);
-        if (property == null) return false;
-
-        // Check for any special enchantments specified by the material of this Tool
-        if (!property.getEnchantments().isEmpty() && property.getEnchantments().containsKey(enchantment)) {
-            return true;
-        }
-
-        // Check for any additional Enchantment Types added in the builder
-        return getToolStats().isEnchantable() && getToolStats().canApplyEnchantment(stack, enchantment);
     }
 
     @OnlyIn(Dist.CLIENT)
