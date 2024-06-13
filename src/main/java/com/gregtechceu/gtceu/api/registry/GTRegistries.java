@@ -113,7 +113,6 @@ public final class GTRegistries {
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 
-    @Nullable
     public static RegistryAccess builtinRegistry() {
         return Platform.getFrozenRegistry();
     }
