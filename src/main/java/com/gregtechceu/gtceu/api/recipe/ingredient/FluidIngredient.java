@@ -127,6 +127,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(values);
+        result = 31 * result + Long.hashCode(amount);
+        result = 31 * result + Objects.hashCode(nbt);
+        return result;
+    }
+
     public boolean isEmpty() {
         return this.values.length == 0;
     }
@@ -216,7 +224,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                     nbt);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "value");
-            if (jsonArray.size() == 0 && !allowAir) {
+            if (jsonArray.isEmpty() && !allowAir) {
                 throw new JsonSyntaxException("Fluid array cannot be empty, at least one item must be defined");
             }
             return FluidIngredient
@@ -283,6 +291,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         public Value copy() {
             return new TagValue(this.tag);
         }
+
+        @Override
+        public int hashCode() {
+            return tag.hashCode();
+        }
     }
 
     public static class FluidValue implements Value {
@@ -308,6 +321,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public Value copy() {
             return new FluidValue(this.fluid);
+        }
+
+        @Override
+        public int hashCode() {
+            return fluid.hashCode();
         }
     }
 }

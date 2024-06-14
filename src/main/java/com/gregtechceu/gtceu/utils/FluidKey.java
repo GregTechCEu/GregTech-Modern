@@ -5,10 +5,13 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
 public class FluidKey {
 
+    @Getter
     public final Fluid fluid;
     // Don't make this final, so we can clear the NBT if we remove the only key, resulting in an NBT of {}. Thanks Forge
     public CompoundTag tag;
@@ -50,9 +53,5 @@ public class FluidKey {
                 "fluid=" + fluid +
                 ", tag=" + tag +
                 '}';
-    }
-
-    public Fluid getFluid() {
-        return fluid;
     }
 }
