@@ -9,12 +9,15 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.recipe.EnvironmentalHazardCondition;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +43,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
     @Override
     public boolean onWorking() {
         if (getOffsetTimer() % 20 == 0) {
-            ServerLevel serverLevel = (ServerLevel) getLevel();
+            final ServerLevel serverLevel = (ServerLevel) getLevel();
             EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
 
             final ChunkPos pos = new ChunkPos(getPos());
@@ -52,12 +55,12 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                     new ChunkPos(pos.x + 1, pos.z)
             };
             for (ChunkPos rel : relativePositions) {
-                savedData.getHazardZones().compute(rel, (k, v) -> {
+                savedData.getHazardZones().compute(rel, (chunkPos, v) -> {
                     if (v == null || v.strength() <= 0) {
                         return null;
                     }
                     EnvironmentalHazardSavedData.HazardZone zone;
-                    if (k.equals(pos)) {
+                    if (chunkPos.equals(pos)) {
                         zone = new EnvironmentalHazardSavedData.HazardZone(
                                 v.source(),
                                 v.strength() - CLEANING_PER_OPERATION * 2 * getTier(),
@@ -72,7 +75,13 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                                 v.trigger(),
                                 v.condition());
                     }
-                    if (zone.strength() <= 0) return null;
+                    if (zone.strength() <= 0) {
+                        if (serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
+                            LevelChunk chunk = serverLevel.getChunk(chunkPos.x, chunkPos.z);
+                            GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(chunkPos), chunk);
+                        }
+                        return null;
+                    }
                     else return zone;
                 });
             }
