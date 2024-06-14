@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.SimpleGeneratorMachineRenderer;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -40,11 +41,12 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
 
     private static GeneratorBuilder[] tieredMachines(String name,
                                                      BiConsumer<GeneratorBuilder, Integer> builderConsumer,
+                                                     int hazardStrengthPerOperation,
                                                      Integer... tiers) {
         GeneratorBuilder[] builders = new GeneratorBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = new GeneratorBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                    holder -> new SimpleGeneratorMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+                    holder -> new SimpleGeneratorMachine(holder, tier, defaultTankSizeFunction, hazardStrengthPerOperation)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }
@@ -66,8 +68,8 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
     }
 
     public static MachineBuilder<MachineDefinition> createAll(String name, Object... args) {
-        GeneratorBuilder[] builders = tieredMachines(name, GeneratorBuilder::simple,
-                MachineFunctionPresets.mapTierArray(args));
+        GeneratorBuilder[] builders = tieredMachines(name, GeneratorBuilder::simple, args.length < 2 ? 1 : (int) args[0],
+                MachineFunctionPresets.mapTierArray(Arrays.copyOfRange(args, args.length < 2 ? 0 : 1, args.length)));
         return MachineFunctionPresets.builder(name, builders, GeneratorBuilder.class,
                 MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
     }

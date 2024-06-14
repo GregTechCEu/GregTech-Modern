@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -15,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
+import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -39,13 +41,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine {
+public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine, IEnvironmentalHazardEmitter {
+
+    @Getter
+    private final float hazardStrengthPerOperation;
+
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+                                  int hazardStrengthPerOperation, Object... args) {
+        super(holder, tier, tankScalingFunction, args);
+        this.hazardStrengthPerOperation = hazardStrengthPerOperation;
+    }
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
                                   Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+        this(holder, tier, tankScalingFunction, 1, args);
     }
-
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
