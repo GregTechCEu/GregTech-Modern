@@ -64,8 +64,7 @@ public class DuctNetHandler implements IHazardParticleContainer {
                                 Math.round(differenceAmount), true, HazardProperty.HazardTrigger.INHALATION, condition);
                         total += differenceAmount;
                         break;
-                    }
-                    if (handler == null) {
+                    } else if (handler == null) {
                         continue;
                     }
                     float change = handler.changeHazard(condition, differenceAmount);

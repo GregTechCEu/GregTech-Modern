@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine, IEnvironmentalHazardEmitter {
+public class SimpleGeneratorMachine extends WorkableTieredMachine
+                                    implements IFancyUIMachine, IEnvironmentalHazardEmitter {
 
     @Getter
     private final float hazardStrengthPerOperation;

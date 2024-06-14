@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.machine.electric.AirScrubberMachine;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.duct.LevelDuctPipeNet;
@@ -85,6 +88,10 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     @Override
     public boolean canPipeConnectToBlock(IPipeNode<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
-        return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
+        return tile != null &&
+                (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
+                        tile instanceof MetaMachineBlockEntity metaMachine &&
+                                (metaMachine.getMetaMachine() instanceof AirScrubberMachine ||
+                                        metaMachine.getMetaMachine() instanceof IEnvironmentalHazardEmitter));
     }
 }

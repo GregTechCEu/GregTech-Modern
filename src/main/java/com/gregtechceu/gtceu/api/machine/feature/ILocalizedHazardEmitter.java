@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.server.level.ServerLevel;
 
 /**

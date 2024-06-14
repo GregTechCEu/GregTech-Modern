@@ -24,10 +24,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class AirScrubberMachine extends SimpleTieredMachine {
 
-    public static final int CLEANING_PER_OPERATION = 10;
+    public static final float MIN_CLEANING_PER_OPERATION = 10;
+
+    private final float cleaningPerOperation;
 
     public AirScrubberMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, GTMachines.defaultTankSizeFunction, args);
+        this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * tier;
     }
 
     @NotNull
@@ -68,14 +71,14 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                     if (chunkPos.equals(pos)) {
                         zone = new EnvironmentalHazardSavedData.HazardZone(
                                 v.source(),
-                                v.strength() - CLEANING_PER_OPERATION * 2 * getTier(),
+                                v.strength() - cleaningPerOperation * 2 * getTier(),
                                 v.canSpread(),
                                 v.trigger(),
                                 v.condition());
                     } else {
                         zone = new EnvironmentalHazardSavedData.HazardZone(
                                 v.source(),
-                                v.strength() - CLEANING_PER_OPERATION * getTier(),
+                                v.strength() - cleaningPerOperation * getTier(),
                                 v.canSpread(),
                                 v.trigger(),
                                 v.condition());
@@ -106,12 +109,12 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
         @Override
         protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
-            Direction front = getMachine().getOutputFacingFluids();
-            if (front == null) {
+            Direction output = getMachine().getOutputFacingFluids();
+            if (output == null) {
                 return super.handleRecipeIO(recipe, io);
             }
             final IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(
-                    getMachine().getLevel(), getMachine().getPos().relative(front), front.getOpposite());
+                    getMachine().getLevel(), getMachine().getPos().relative(output), output.getOpposite());
             if (container != null) {
                 // if we have a valid hazard container on the fluid output, then push the particles into it instead of
                 // converting them into fluid/item form.
@@ -123,7 +126,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                         .findFirst()
                         .ifPresent(condition -> {
                             container.addHazard(condition.getCondition(),
-                                    6 * CLEANING_PER_OPERATION * getMachine().getTier());
+                                    6 * getMachine().cleaningPerOperation * getMachine().getTier());
                             didFindCondition.setTrue();
                         });
                 if (didFindCondition.getValue()) {
