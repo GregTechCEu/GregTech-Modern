@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 public class EnvironmentalHazardSavedData extends SavedData {
 
     public static final int MIN_STRENGTH_FOR_SPREAD = 1000;
-    public static final int PACKET_THRESHOLD = 100;
 
     private final ServerLevel serverLevel;
 

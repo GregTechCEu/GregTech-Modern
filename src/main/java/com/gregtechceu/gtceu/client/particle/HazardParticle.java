@@ -35,8 +35,7 @@ public class HazardParticle extends TextureSheetParticle {
         this.gCol = this.randomizeColor(FastColor.ARGB32.green(options.color()) / 255f, colorMultiplier);
         this.bCol = this.randomizeColor(FastColor.ARGB32.blue(options.color()) / 255f, colorMultiplier);
         this.quadSize *= 0.75F * options.scale();
-        this.lifetime = (int) (lifetime / (level.random.nextFloat() * 0.8 + 0.2) * options.scale());
-        this.lifetime = Math.max(this.lifetime, 1);
+        this.lifetime = (int) (lifetime / (level.random.nextFloat() * 0.8 + 0.2) * 2);
         this.setSpriteFromAge(sprites);
         this.hasPhysics = false;
     }

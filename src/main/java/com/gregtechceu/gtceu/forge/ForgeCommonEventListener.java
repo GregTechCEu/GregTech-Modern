@@ -301,7 +301,7 @@ public class ForgeCommonEventListener {
         var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
 
         var zone = data.getZoneByPos(pos);
-        if (zone != null && zone.strength() > EnvironmentalHazardSavedData.PACKET_THRESHOLD) {
+        if (zone != null) {
             GTNetwork.NETWORK.sendToPlayer(new SPacketAddHazardZone(pos, zone), player);
         }
     }

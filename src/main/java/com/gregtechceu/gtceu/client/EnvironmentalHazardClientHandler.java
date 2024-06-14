@@ -21,12 +21,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData.MIN_STRENGTH_FOR_SPREAD;
-
 @OnlyIn(Dist.CLIENT)
 public class EnvironmentalHazardClientHandler {
 
-    public static final int MAX_PARTICLE_DISTANCE = 64;
+    public static final int PARTICLE_THRESHOLD = 200;
+    public static final int MAX_PARTICLE_DISTANCE = 96;
     public static final int MAX_PARTICLE_DISTANCE_SQR = MAX_PARTICLE_DISTANCE * MAX_PARTICLE_DISTANCE;
 
     public static final float COLORING_LOW = 350;
@@ -66,10 +65,10 @@ public class EnvironmentalHazardClientHandler {
                 continue;
             }
             var zone = entry.getValue();
-            if (zone.strength() < MIN_STRENGTH_FOR_SPREAD / 5) {
+            if (zone.strength() < PARTICLE_THRESHOLD) {
                 continue;
             }
-            BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
+            BlockPos source = chunkPos.getMiddleBlockPosition(zone.source().getY());
             if (source.distToCenterSqr(playerPosition) > MAX_PARTICLE_DISTANCE_SQR) {
                 continue;
             }

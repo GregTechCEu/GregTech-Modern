@@ -88,13 +88,13 @@ public class LocalizedHazardSavedData extends SavedData {
             // try to spawn particles on every block in the zone if it's loaded and empty.
             for (BlockPos pos : zone.blocks()) {
                 if (serverLevel.isLoaded(pos) &&
-                        serverLevel.getBlockState(pos).isCollisionShapeFullBlock(serverLevel, pos) &&
+                        !serverLevel.getBlockState(pos).isCollisionShapeFullBlock(serverLevel, pos) &&
                         GTValues.RNG.nextInt(64000 / zone.strength()) == 0) {
                     serverLevel.sendParticles(
-                            new HazardParticleOptions(zone.condition().color, zone.strength() / 500f),
+                            new HazardParticleOptions(zone.condition().color, zone.strength() / 250f),
                             pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
                             pos.getZ() + random.nextDouble(),
-                            1, 0, 0, 0, 0);
+                            1, 0, 0, 0, 0.1);
                 }
             }
 

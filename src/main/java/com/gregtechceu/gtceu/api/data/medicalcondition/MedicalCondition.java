@@ -30,7 +30,7 @@ public class MedicalCondition {
         this.maxProgression = maxProgression;
         this.damageTypeData = new DamageTypeData.Builder()
                 .simpleId("medical_condition/" + name)
-                .scaling(DamageScaling.ALWAYS)
+                .scaling(DamageScaling.NEVER)
                 .tag(DamageTypeTags.BYPASSES_ARMOR)
                 .build();
 
