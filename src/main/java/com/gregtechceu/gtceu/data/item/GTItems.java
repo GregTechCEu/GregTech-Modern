@@ -235,8 +235,7 @@ public class GTItems {
                                                             toolStats.getDurabilityMultiplier());
                                                 }
 
-                                                p.component(DataComponents.MAX_DAMAGE, durability - 1);
-                                                p.component(DataComponents.DAMAGE, 0);
+                                                p.durability(durability - 1);
                                                 if (toolProperty.isUnbreakable()) {
                                                     p.component(DataComponents.UNBREAKABLE, new Unbreakable(true));
                                                 }
