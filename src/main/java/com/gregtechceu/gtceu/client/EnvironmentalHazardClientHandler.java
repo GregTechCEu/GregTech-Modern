@@ -11,6 +11,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,7 +26,7 @@ import static com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedDa
 @OnlyIn(Dist.CLIENT)
 public class EnvironmentalHazardClientHandler {
 
-    public static final int MAX_PARTICLE_DISTANCE = 48;
+    public static final int MAX_PARTICLE_DISTANCE = 64;
     public static final int MAX_PARTICLE_DISTANCE_SQR = MAX_PARTICLE_DISTANCE * MAX_PARTICLE_DISTANCE;
 
     public static final float COLORING_LOW = 350;
@@ -51,15 +52,12 @@ public class EnvironmentalHazardClientHandler {
             return;
         }
 
-        if (Minecraft.getInstance().isPaused()) {
-            return;
-        }
         Level level = Minecraft.getInstance().level;
         if (level == null) {
             return;
         }
         RandomSource random = level.random;
-        BlockPos playerPosition = BlockPos.containing(Minecraft.getInstance().player.getEyePosition());
+        Vec3 playerPosition = Minecraft.getInstance().player.getEyePosition();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (var entry : hazardZones.entrySet()) {
@@ -72,7 +70,7 @@ public class EnvironmentalHazardClientHandler {
                 continue;
             }
             BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
-            if (playerPosition.distSqr(source) > MAX_PARTICLE_DISTANCE_SQR) {
+            if (source.distToCenterSqr(playerPosition) > MAX_PARTICLE_DISTANCE_SQR) {
                 continue;
             }
 
@@ -143,6 +141,8 @@ public class EnvironmentalHazardClientHandler {
 
     public void removeHazardZone(ChunkPos pos) {
         this.hazardZones.remove(pos);
+        ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
+                .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
     }
 
     public int colorGrass(int color, ChunkPos pos) {

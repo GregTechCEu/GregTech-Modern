@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
@@ -49,6 +50,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.Capability;
@@ -294,15 +296,25 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onChunkWatch(ChunkWatchEvent.Watch event) {
-        LevelChunk chunk = event.getChunk();
-        if (chunk == null) return;
-
+        ChunkPos pos = event.getPos();
         ServerPlayer player = event.getPlayer();
         var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
 
-        var zone = data.getZoneByContainedPos(BlockPos.containing(player.getEyePosition()));
+        var zone = data.getZoneByPos(pos);
         if (zone != null && zone.strength() > EnvironmentalHazardSavedData.PACKET_THRESHOLD) {
-            GTNetwork.NETWORK.sendToPlayer(new SPacketAddHazardZone(chunk.getPos(), zone), player);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketAddHazardZone(pos, zone), player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkUnWatch(ChunkWatchEvent.UnWatch event) {
+        ChunkPos pos = event.getPos();
+        ServerPlayer player = event.getPlayer();
+        var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
+
+        var zone = data.getZoneByPos(pos);
+        if (zone != null) {
+            GTNetwork.NETWORK.sendToPlayer(new SPacketRemoveHazardZone(pos), player);
         }
     }
 

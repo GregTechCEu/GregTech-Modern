@@ -72,7 +72,6 @@ public class EnvironmentalHazardSavedData extends SavedData {
             HazardZone zone = HazardZone.deserializeNBT(zoneTag);
 
             this.hazardZones.put(source, zone);
-            sendAddZonePacket(source, zone);
         }
     }
 
@@ -149,14 +148,25 @@ public class EnvironmentalHazardSavedData extends SavedData {
     }
 
     /**
-     * finds the hazard zone that's in the chunk the block pos is in and has the correct condition.
+     * finds the hazard zone that's in the chunk pos.
+     *
+     * @param pos the position to find zones for.
+     * @return all zones that were found.
+     */
+    @Nullable
+    public HazardZone getZoneByPos(ChunkPos pos) {
+        return hazardZones.get(pos);
+    }
+
+    /**
+     * finds the hazard zone that's in the chunk the block pos is in.
      *
      * @param containedPos the position to find zones for.
      * @return all zones that were found.
      */
     @Nullable
     public HazardZone getZoneByContainedPos(BlockPos containedPos) {
-        return hazardZones.get(new ChunkPos(containedPos));
+        return getZoneByPos(new ChunkPos(containedPos));
     }
 
     /**
@@ -202,10 +212,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             sendSyncZonePacket(source, this.hazardZones.get(source));
         } else if (!this.hazardZones.containsKey(source)) {
             this.hazardZones.put(source, zone);
-            if (this.serverLevel.hasChunk(source.x, source.z)) {
-                LevelChunk chunk = this.serverLevel.getChunk(source.x, source.z);
-                GTNetwork.NETWORK.sendToTrackingChunk(new SPacketAddHazardZone(source, zone), chunk);
-            }
+            sendAddZonePacket(source, zone);
         }
         this.setDirty();
     }
