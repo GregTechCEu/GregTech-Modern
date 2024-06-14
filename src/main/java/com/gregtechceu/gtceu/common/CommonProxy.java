@@ -249,6 +249,7 @@ public class CommonProxy {
             // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
             ChemicalHelper.reinitializeUnification();
+            GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions
             DungeonLootLoader.init();
