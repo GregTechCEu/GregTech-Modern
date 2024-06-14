@@ -119,7 +119,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
                 removedStrength += 20;
             }
             hazardZones.replace(pos, new HazardZone(zone.source(),
-                    zone.strength - removedStrength, false, zone.trigger(), zone.condition()));
+                    zone.strength - removedStrength, true, zone.trigger(), zone.condition()));
             this.setDirty();
         }
     }
