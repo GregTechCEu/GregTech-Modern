@@ -27,7 +27,7 @@ public class SPacketSyncHazardZoneStrength implements IPacket {
     @Override
     public void decode(FriendlyByteBuf buf) {
         pos = buf.readChunkPos();
-        this.newAmount = buf.readVarInt();
+        this.newAmount = buf.readFloat();
     }
 
     @Override
