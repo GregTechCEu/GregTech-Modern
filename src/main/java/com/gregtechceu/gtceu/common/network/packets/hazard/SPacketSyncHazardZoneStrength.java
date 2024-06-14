@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 public class SPacketSyncHazardZoneStrength implements IPacket {
 
     public ChunkPos pos;
-    public int newAmount;
+    public float newAmount;
 
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarLong(pos.toLong());
-        buf.writeVarInt(newAmount);
+        buf.writeFloat(newAmount);
     }
 
     @Override

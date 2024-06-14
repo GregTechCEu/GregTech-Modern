@@ -27,7 +27,7 @@ public interface IEnvironmentalHazardEmitter extends IMachineFeature {
     /**
      * @return the starting strength of the hazard zone.
      */
-    int getHazardStrengthPerOperation();
+    float getHazardStrengthPerOperation();
 
     default void spreadEnvironmentalHazard() {
         if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {

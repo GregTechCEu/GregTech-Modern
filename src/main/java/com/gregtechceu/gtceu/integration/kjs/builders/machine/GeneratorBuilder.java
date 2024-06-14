@@ -41,12 +41,12 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
 
     private static GeneratorBuilder[] tieredMachines(String name,
                                                      BiConsumer<GeneratorBuilder, Integer> builderConsumer,
-                                                     int hazardStrengthPerOperation,
+                                                     float hazardStrengthPerOperation,
                                                      Integer... tiers) {
         GeneratorBuilder[] builders = new GeneratorBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = new GeneratorBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                    holder -> new SimpleGeneratorMachine(holder, tier, defaultTankSizeFunction, hazardStrengthPerOperation)).tier(tier);
+                    holder -> new SimpleGeneratorMachine(holder, tier, hazardStrengthPerOperation, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }

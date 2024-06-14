@@ -348,12 +348,12 @@ public class GTMachines {
     // **** Simple Generator ****//
     //////////////////////////////////////
     public static final MachineDefinition[] COMBUSTION = registerSimpleGenerator("combustion",
-            GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, genericGeneratorTankSizeFunction, 1, GTValues.LV, GTValues.MV,
+            GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV,
             GTValues.HV);
     public static final MachineDefinition[] STEAM_TURBINE = registerSimpleGenerator("steam_turbine",
-            GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, 1, GTValues.LV, GTValues.MV, GTValues.HV);
+            GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV, GTValues.HV);
     public static final MachineDefinition[] GAS_TURBINE = registerSimpleGenerator("gas_turbine",
-            GTRecipeTypes.GAS_TURBINE_FUELS, genericGeneratorTankSizeFunction, 1, GTValues.LV, GTValues.MV, GTValues.HV);
+            GTRecipeTypes.GAS_TURBINE_FUELS, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV, GTValues.HV);
 
     //////////////////////////////////////
     // ******** Electric ********//
@@ -2185,10 +2185,10 @@ public class GTMachines {
     public static MachineDefinition[] registerSimpleGenerator(String name,
                                                               GTRecipeType recipeType,
                                                               Int2LongFunction tankScalingFunction,
-                                                              int hazardStrengthPerOperation,
+                                                              float hazardStrengthPerOperation,
                                                               int... tiers) {
         return registerTieredMachines(name,
-                (holder, tier) -> new SimpleGeneratorMachine(holder, tier, tankScalingFunction, hazardStrengthPerOperation * tier),
+                (holder, tier) -> new SimpleGeneratorMachine(holder, tier, hazardStrengthPerOperation * tier, tankScalingFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                         .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))

@@ -46,15 +46,16 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     @Getter
     private final float hazardStrengthPerOperation;
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
-                                  int hazardStrengthPerOperation, Object... args) {
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
+                                  float hazardStrengthPerOperation, Int2LongFunction tankScalingFunction,
+                                  Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
                                   Object... args) {
-        this(holder, tier, tankScalingFunction, 1, args);
+        this(holder, tier, 0.25f, tankScalingFunction, args);
     }
     //////////////////////////////////////
     // ***** Initialization ******//
@@ -110,6 +111,12 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
         return capability != EURecipeCapability.CAP;
+    }
+
+    @Override
+    public void afterWorking() {
+        super.afterWorking();
+        spreadEnvironmentalHazard();
     }
 
     //////////////////////////////////////

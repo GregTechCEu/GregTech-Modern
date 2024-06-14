@@ -28,8 +28,8 @@ public class EnvironmentalHazardClientHandler {
     public static final int MAX_PARTICLE_DISTANCE = 48;
     public static final int MAX_PARTICLE_DISTANCE_SQR = MAX_PARTICLE_DISTANCE * MAX_PARTICLE_DISTANCE;
 
-    public static final int COLORING_LOW = 350;
-    public static final int COLORING_HIGH = 600;
+    public static final float COLORING_LOW = 350;
+    public static final float COLORING_HIGH = 600;
     private static final int[] GRASS_COLORS = { 230, 180, 40 };
     private static final int[] LIQUID_COLORS = { 160, 200, 10 };
     private static final int[] FOLIAGE_COLORS = { 160, 80, 15 };
@@ -111,7 +111,7 @@ public class EnvironmentalHazardClientHandler {
         }
     }
 
-    public void updateHazardStrength(ChunkPos pos, int newStrength) {
+    public void updateHazardStrength(ChunkPos pos, float newStrength) {
         if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
             return;
         }
@@ -176,13 +176,13 @@ public class EnvironmentalHazardClientHandler {
      * @param toMix     the colors to interpolate between
      * @return the new color
      */
-    private static int colorize(int color, int pollution, int newColor, int[] toMix) {
+    private static int colorize(int color, float pollution, int newColor, int[] toMix) {
         if (pollution < COLORING_LOW) return color;
 
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
         int b = color & 0xFF;
-        float ratio = ((float) (pollution - COLORING_LOW)) / COLORING_HIGH;
+        float ratio = (pollution - COLORING_LOW) / COLORING_HIGH;
         if (ratio > 1) ratio = 1;
 
         float complement = 1 - ratio;

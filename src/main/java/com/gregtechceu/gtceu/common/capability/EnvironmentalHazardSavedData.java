@@ -210,7 +210,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         this.setDirty();
     }
 
-    public void addZone(BlockPos source, int strength, boolean canSpread,
+    public void addZone(BlockPos source, float strength, boolean canSpread,
                         HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
         addZone(new ChunkPos(source), new HazardZone(source, strength, canSpread, trigger, condition));
     }
@@ -231,12 +231,12 @@ public class EnvironmentalHazardSavedData extends SavedData {
         return compoundTag;
     }
 
-    public record HazardZone(BlockPos source, int strength, boolean canSpread,
+    public record HazardZone(BlockPos source, float strength, boolean canSpread,
                              HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
 
         public CompoundTag serializeNBT(CompoundTag zoneTag) {
             zoneTag.put("source", NbtUtils.writeBlockPos(source));
-            zoneTag.putInt("strength", strength);
+            zoneTag.putFloat("strength", strength);
             zoneTag.putBoolean("can_spread", canSpread);
             zoneTag.putString("trigger", trigger.name());
             zoneTag.putString("condition", condition.name);
@@ -246,7 +246,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
         public static HazardZone deserializeNBT(CompoundTag zoneTag) {
             BlockPos source = NbtUtils.readBlockPos(zoneTag.getCompound("source"));
-            int strength = zoneTag.getInt("strength");
+            float strength = zoneTag.getFloat("strength");
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
@@ -257,7 +257,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
         public void toNetwork(FriendlyByteBuf buf) {
             buf.writeBlockPos(source);
-            buf.writeVarInt(strength);
+            buf.writeFloat(strength);
             buf.writeBoolean(canSpread);
             buf.writeUtf(trigger.name());
             buf.writeUtf(condition.name);
@@ -265,7 +265,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
         public static HazardZone fromNetwork(FriendlyByteBuf buf) {
             BlockPos source = buf.readBlockPos();
-            int strength = buf.readVarInt();
+            float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
             MedicalCondition condition = MedicalCondition.CONDITIONS.get(buf.readUtf());
