@@ -5,20 +5,20 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.phys.Vec3;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -74,18 +74,23 @@ public class LocalizedHazardSavedData extends SavedData {
         }
 
         Object2IntMap<BlockPos> zonesToSpread = new Object2IntOpenHashMap<>();
+
+        RandomSource random = serverLevel.random;
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
-            if (zone.strength() >= MIN_STRENGTH_FOR_SPREAD / 5) {
-                // try to spawn particles on every block in the zone if it's loaded and empty.
-                for (BlockPos pos : zone.blocks()) {
-                    if (serverLevel.isLoaded(pos) && serverLevel.getBlockState(pos).isAir() &&
-                            GTValues.RNG.nextInt(32000 / zone.strength()) == 0) {
-                        serverLevel.sendParticles(
-                                new DustParticleOptions(Vec3.fromRGB24(zone.condition.color).toVector3f(), 1),
-                                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                                1, 0, 0.1, 0, 0.1);
-                    }
+            if (zone.strength() < MIN_STRENGTH_FOR_SPREAD / 5) {
+                continue;
+            }
+            // try to spawn particles on every block in the zone if it's loaded and empty.
+            for (BlockPos pos : zone.blocks()) {
+                if (serverLevel.isLoaded(pos) &&
+                        serverLevel.getBlockState(pos).isCollisionShapeFullBlock(serverLevel, pos) &&
+                        GTValues.RNG.nextInt(64000 / zone.strength()) == 0) {
+                    serverLevel.sendParticles(
+                            new HazardParticleOptions(zone.condition().color, zone.strength() / 500f),
+                            pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
+                            pos.getZ() + random.nextDouble(),
+                            1, 0, 0, 0, 0);
                 }
             }
 

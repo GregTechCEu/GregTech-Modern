@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.client;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ClientLevelAccessor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +24,9 @@ import static com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedDa
 
 @OnlyIn(Dist.CLIENT)
 public class EnvironmentalHazardClientHandler {
+
+    public static final int MAX_PARTICLE_DISTANCE = 48;
+    public static final int MAX_PARTICLE_DISTANCE_SQR = MAX_PARTICLE_DISTANCE * MAX_PARTICLE_DISTANCE;
 
     public static final int COLORING_LOW = 350;
     public static final int COLORING_HIGH = 600;
@@ -51,21 +54,37 @@ public class EnvironmentalHazardClientHandler {
         if (level == null) {
             return;
         }
+        RandomSource random = level.random;
+        BlockPos playerPosition = BlockPos.containing(Minecraft.getInstance().player.getEyePosition());
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
         for (var entry : hazardZones.entrySet()) {
             ChunkPos chunkPos = entry.getKey();
-            if (level.hasChunk(chunkPos.x, chunkPos.z)) {
-                var zone = entry.getValue();
-                if (zone.strength() >= MIN_STRENGTH_FOR_SPREAD / 5) {
-                    BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
-                    for (BlockPos pos : BlockPos.betweenClosed(
-                            chunkPos.getMinBlockX(), source.getY() - 8, chunkPos.getMinBlockZ(),
-                            chunkPos.getMaxBlockX(), source.getY() + 8, chunkPos.getMaxBlockZ())) {
-                        if (level.getBlockState(pos).isAir() && GTValues.RNG.nextInt(64000 / zone.strength()) == 0) {
-                            level.addParticle(
-                                    new DustParticleOptions(Vec3.fromRGB24(zone.condition().color).toVector3f(), 2.5f),
-                                    pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0.1, 0);
-                        }
-                    }
+            if (!level.hasChunk(chunkPos.x, chunkPos.z)) {
+                continue;
+            }
+            var zone = entry.getValue();
+            if (zone.strength() < MIN_STRENGTH_FOR_SPREAD / 5) {
+                continue;
+            }
+            BlockPos source = entry.getKey().getMiddleBlockPosition(zone.source().getY());
+            if (playerPosition.distSqr(source) > MAX_PARTICLE_DISTANCE_SQR) {
+                continue;
+            }
+
+            for (int i = 0; i < 32; ++i) {
+                // random is slightly over 8 (half a chunk) so that the particles cover the chunk better.
+                // in my testing this didn't spill over too much.
+                int randX = source.getX() - random.nextInt(9) + random.nextInt(9);
+                int randY = source.getY() - random.nextInt(9) + random.nextInt(9);
+                int randZ = source.getZ() - random.nextInt(9) + random.nextInt(9);
+                pos.set(randX, randY, randZ);
+                if (!level.getBlockState(pos).isCollisionShapeFullBlock(level, pos)) {
+                    level.addParticle(
+                            new HazardParticleOptions(zone.condition().color, zone.strength() / 250f),
+                            pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
+                            pos.getZ() + random.nextDouble(),
+                            0, 0, 0);
                 }
             }
         }
