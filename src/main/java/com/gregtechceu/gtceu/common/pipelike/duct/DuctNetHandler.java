@@ -96,6 +96,9 @@ public class DuctNetHandler implements IHazardParticleContainer {
                     IHazardParticleContainer handler = path.getHandler(net.getLevel());
                     if (handler != null) {
                         total += handler.getHazardCapacity(condition);
+                    } else if (path.getTargetPipe().isConnected(path.getTargetFacing())) {
+                        total += Integer.MAX_VALUE;
+                        break;
                     }
                 }
                 return total;
