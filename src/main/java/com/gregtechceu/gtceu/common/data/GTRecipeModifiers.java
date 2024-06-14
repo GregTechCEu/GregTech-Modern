@@ -72,7 +72,7 @@ public class GTRecipeModifiers {
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
-            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 500);
+            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 750);
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
