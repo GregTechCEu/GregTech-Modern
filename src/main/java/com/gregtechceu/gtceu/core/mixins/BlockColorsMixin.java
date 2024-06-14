@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,10 @@ public class BlockColorsMixin {
                                                       @Nullable BlockAndTintGetter level,
                                                       @Nullable BlockPos pos,
                                                       int tintIndex) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return color;
+        }
+
         if (pos == null) {
             return color;
         }

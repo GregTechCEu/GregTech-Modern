@@ -232,10 +232,13 @@ public class ForgeCommonEventListener {
             GTNetwork.NETWORK.sendToPlayer(
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), serverPlayer);
 
+            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                return;
+            }
             ServerLevel level = (ServerLevel) event.getEntity().level();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
-                    (ServerPlayer) event.getEntity());
+                    serverPlayer);
         }
     }
 
@@ -279,6 +282,10 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
         var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
         GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),

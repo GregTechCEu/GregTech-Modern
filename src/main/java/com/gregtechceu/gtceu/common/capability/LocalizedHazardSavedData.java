@@ -57,6 +57,10 @@ public class LocalizedHazardSavedData extends SavedData {
 
     public LocalizedHazardSavedData(ServerLevel serverLevel, CompoundTag tag) {
         this(serverLevel);
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         ListTag allHazardZones = tag.getList("zones", Tag.TAG_COMPOUND);
         for (int i = 0; i < allHazardZones.size(); ++i) {
             CompoundTag zoneTag = allHazardZones.getCompound(i);
@@ -182,6 +186,10 @@ public class LocalizedHazardSavedData extends SavedData {
     }
 
     public boolean expandHazard(BlockPos source, int blocksToAdd) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return true;
+        }
+
         if (blocksToAdd <= 0) {
             return false;
         }

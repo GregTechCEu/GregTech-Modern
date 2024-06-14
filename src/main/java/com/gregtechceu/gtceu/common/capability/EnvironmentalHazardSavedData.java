@@ -60,6 +60,10 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
     public EnvironmentalHazardSavedData(ServerLevel serverLevel, CompoundTag tag) {
         this(serverLevel);
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         ListTag allHazardZones = tag.getList("zones", Tag.TAG_COMPOUND);
         for (int i = 0; i < allHazardZones.size(); ++i) {
             CompoundTag zoneTag = allHazardZones.getCompound(i);
@@ -190,6 +194,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
             return;
         }
+
         if (this.hazardZones.containsKey(source) && this.hazardZones.get(source).condition == zone.condition) {
             // noinspection DataFlowIssue
             this.hazardZones.compute(source, (k, oldZone) -> new HazardZone(oldZone.source(),

@@ -47,6 +47,10 @@ public class EnvironmentalHazardClientHandler {
     private final Map<ChunkPos, EnvironmentalHazardSavedData.HazardZone> hazardZones = new HashMap<>();
 
     public void onClientTick() {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         if (Minecraft.getInstance().isPaused()) {
             return;
         }
@@ -91,6 +95,10 @@ public class EnvironmentalHazardClientHandler {
     }
 
     public void updateHazardMap(Map<ChunkPos, EnvironmentalHazardSavedData.HazardZone> newZones) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         this.hazardZones.clear();
         this.hazardZones.putAll(newZones);
         // must clear tint caches when block colors change
@@ -104,6 +112,10 @@ public class EnvironmentalHazardClientHandler {
     }
 
     public void updateHazardStrength(ChunkPos pos, int newStrength) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         hazardZones.computeIfPresent(pos, (key, zone) -> new EnvironmentalHazardSavedData.HazardZone(zone.source(),
                 newStrength,
                 zone.canSpread(),
@@ -117,6 +129,10 @@ public class EnvironmentalHazardClientHandler {
     }
 
     public void addHazardZone(ChunkPos pos, EnvironmentalHazardSavedData.HazardZone zone) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         this.hazardZones.put(pos, zone);
         // must clear tint caches when block colors change
         if (zone.strength() > COLORING_LOW) {

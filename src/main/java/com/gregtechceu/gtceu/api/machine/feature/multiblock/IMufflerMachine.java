@@ -75,7 +75,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default int hazardStrengthPerOperation() {
+    default int getHazardStrengthPerOperation() {
         int outputAmount = 5;
         return this instanceof TieredPartMachine tiered ? outputAmount / Math.max(tiered.getTier(), 1) : outputAmount;
     }

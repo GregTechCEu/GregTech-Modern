@@ -12,12 +12,13 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.recipe.EnvironmentalHazardCondition;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-
 import net.minecraft.world.level.chunk.LevelChunk;
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,10 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     @Override
     public boolean onWorking() {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return super.onWorking();
+        }
+
         if (getOffsetTimer() % 20 == 0) {
             final ServerLevel serverLevel = (ServerLevel) getLevel();
             EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
@@ -81,8 +86,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                             GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(chunkPos), chunk);
                         }
                         return null;
-                    }
-                    else return zone;
+                    } else return zone;
                 });
             }
         }

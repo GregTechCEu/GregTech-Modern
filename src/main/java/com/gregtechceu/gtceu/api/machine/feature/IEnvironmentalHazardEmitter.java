@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.server.level.ServerLevel;
 
 /**
@@ -26,19 +27,23 @@ public interface IEnvironmentalHazardEmitter extends IMachineFeature {
     /**
      * @return the starting strength of the hazard zone.
      */
-    int hazardStrengthPerOperation();
+    int getHazardStrengthPerOperation();
 
     default void spreadEnvironmentalHazard() {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         if (self().getLevel() instanceof ServerLevel serverLevel) {
             IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(serverLevel,
                     self().getPos().relative(self().getFrontFacing()), self().getFrontFacing().getOpposite());
             if (container != null) {
-                container.addHazard(getConditionToEmit(), hazardStrengthPerOperation());
+                container.addHazard(getConditionToEmit(), getHazardStrengthPerOperation());
                 return;
             }
 
             var savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-            savedData.addZone(self().getPos(), hazardStrengthPerOperation(), true,
+            savedData.addZone(self().getPos(), getHazardStrengthPerOperation(), true,
                     HazardProperty.HazardTrigger.INHALATION, getConditionToEmit());
         }
     }
