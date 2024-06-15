@@ -40,8 +40,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
 
         IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
                 pos.relative(facing), facing.getOpposite());
-        if (container != null &&
-                container.getHazardCanBeInserted(getConditionToEmit()) > getHazardStrengthPerOperation()) {
+        if (container != null) {
             // do not emit particles if front face has a duct on it.
             return;
         }

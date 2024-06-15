@@ -23,7 +23,10 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +41,7 @@ import java.util.stream.Stream;
  */
 public class EnvironmentalHazardSavedData extends SavedData {
 
-    public static final int MIN_STRENGTH_FOR_SPREAD = 1000;
+    public static final float MIN_STRENGTH_FOR_SPREAD = 1000;
 
     private final ServerLevel serverLevel;
 
@@ -80,6 +83,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         }
 
         Set<ChunkPos> zonesToSpread = new HashSet<>();
+        Set<ChunkPos> zonesToRemove = new HashSet<>();
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
             Stream<ServerPlayer> playersInZone = serverLevel.players()
@@ -88,8 +92,20 @@ public class EnvironmentalHazardSavedData extends SavedData {
                             .equals(entry.getKey()));
             tickPlayerHazards(zone, playersInZone);
 
-            if (zone.canSpread() && zone.strength() > MIN_STRENGTH_FOR_SPREAD) {
+            zone = zone.removeStrength(ConfigHolder.INSTANCE.gameplay.environmentalHazardDecayRate);
+            if (zone == null) {
+                zonesToRemove.add(entry.getKey());
+            } else if (zone.canSpread() && zone.strength() > MIN_STRENGTH_FOR_SPREAD) {
                 zonesToSpread.add(entry.getKey());
+            }
+        }
+
+        // remove empty zones
+        for (ChunkPos pos : zonesToRemove) {
+            hazardZones.remove(pos);
+            if (this.serverLevel.hasChunk(pos.x, pos.z)) {
+                LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+                GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(pos), chunk);
             }
         }
 
@@ -101,13 +117,12 @@ public class EnvironmentalHazardSavedData extends SavedData {
                     new ChunkPos(pos.x - 1, pos.z),
                     new ChunkPos(pos.x + 1, pos.z)
             };
-            int removedStrength = 0;
+            float removedStrength = 0;
             for (ChunkPos relativePos : relativePositions) {
                 hazardZones.compute(relativePos, (k, v) -> {
                     HazardZone newZone;
                     if (v != null && v.condition() == zone.condition() && v.trigger() == zone.trigger()) {
-                        newZone = new HazardZone(v.source(), 20 + v.strength(), true,
-                                v.trigger(), v.condition());
+                        newZone = v.addStrength(20);
                         sendSyncZonePacket(k, newZone);
                     } else {
                         newZone = new HazardZone(k.getMiddleBlockPosition(zone.source().getY()), 20, true,
@@ -118,8 +133,14 @@ public class EnvironmentalHazardSavedData extends SavedData {
                 });
                 removedStrength += 20;
             }
-            hazardZones.replace(pos, new HazardZone(zone.source(),
-                    zone.strength - removedStrength, true, zone.trigger(), zone.condition()));
+            HazardZone newZone = zone.removeStrength(removedStrength);
+            if (newZone == null) {
+                hazardZones.remove(pos);
+                if (this.serverLevel.hasChunk(pos.x, pos.z)) {
+                    LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+                    GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(pos), chunk);
+                }
+            }
             this.setDirty();
         }
     }
@@ -204,11 +225,10 @@ public class EnvironmentalHazardSavedData extends SavedData {
             return;
         }
 
-        if (this.hazardZones.containsKey(source) && this.hazardZones.get(source).condition == zone.condition) {
-            // noinspection DataFlowIssue
-            this.hazardZones.compute(source, (k, oldZone) -> new HazardZone(oldZone.source(),
-                    oldZone.strength() + zone.strength(), zone.canSpread(), zone.trigger(), zone.condition()));
-            sendSyncZonePacket(source, this.hazardZones.get(source));
+        HazardZone existing = this.hazardZones.get(source);
+        if (existing != null && existing.condition == zone.condition) {
+            existing.addStrength(zone.strength());
+            sendSyncZonePacket(source, existing);
         } else if (!this.hazardZones.containsKey(source)) {
             this.hazardZones.put(source, zone);
             sendAddZonePacket(source, zone);
@@ -237,8 +257,34 @@ public class EnvironmentalHazardSavedData extends SavedData {
         return compoundTag;
     }
 
-    public record HazardZone(BlockPos source, float strength, boolean canSpread,
-                             HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+    @Accessors(fluent = true)
+    @AllArgsConstructor
+    public static class HazardZone {
+
+        @Getter
+        private final BlockPos source;
+        @Getter
+        @Setter
+        private float strength;
+        @Getter
+        private final boolean canSpread;
+        @Getter
+        private final HazardProperty.HazardTrigger trigger;
+        @Getter
+        private final MedicalCondition condition;
+
+        public HazardZone addStrength(float toAdd) {
+            this.strength += toAdd;
+            return this;
+        }
+
+        public HazardZone removeStrength(float toRemove) {
+            this.strength -= toRemove;
+            if (this.strength <= 0) {
+                return null;
+            }
+            return this;
+        }
 
         public CompoundTag serializeNBT(CompoundTag zoneTag) {
             zoneTag.put("source", NbtUtils.writeBlockPos(source));
@@ -256,7 +302,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(zoneTag.getString("condition"));
+            MedicalCondition condition = com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition.CONDITIONS
+                    .get(zoneTag.getString("condition"));
 
             return new HazardZone(source, strength, canSpread, trigger, condition);
         }

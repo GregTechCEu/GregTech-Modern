@@ -138,6 +138,12 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
         provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
+        provider.add("gtceu.hazard_trigger.description", "Caused by:");
+        provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
+        provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
+        provider.add("gtceu.hazard_trigger.any", "Any contact");
+        provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
+        provider.add("gtceu.hazard_trigger.none", "Nothing");
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
         provider.add("gtceu.medical_condition.antidote.description.effect_removed",
@@ -1035,6 +1041,7 @@ public class LangHandler {
         provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
         provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
         provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
+        provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "Idling.");

@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 
@@ -63,9 +65,16 @@ public class DuctNetHandler implements IHazardParticleContainer {
                 for (DuctRoutePath path : data) {
                     IHazardParticleContainer handler = path.getHandler(net.getLevel());
                     if (handler == null && path.getTargetPipe().isConnected(path.getTargetFacing())) {
+                        if (net.getLevel().getBlockEntity(path.getTargetPipePos()
+                                .relative(path.getTargetFacing())) instanceof IMachineBlockEntity machineBE &&
+                                machineBE.getMetaMachine() instanceof IEnvironmentalHazardCleaner cleaner) {
+                            cleaner.cleanHazard(condition, differenceAmount);
+                            break;
+                        }
+
                         var savedData = EnvironmentalHazardSavedData.getOrCreate(net.getLevel());
                         savedData.addZone(path.getTargetPipePos().relative(path.getTargetFacing()),
-                                Math.round(differenceAmount), true, HazardProperty.HazardTrigger.INHALATION, condition);
+                                differenceAmount, true, HazardProperty.HazardTrigger.INHALATION, condition);
                         total += differenceAmount;
                         emitPollutionParticles(net.getLevel(), path.getTargetPipePos(), path.getTargetFacing());
                         break;
@@ -167,6 +176,6 @@ public class DuctNetHandler implements IHazardParticleContainer {
                 zPos + GTValues.RNG.nextFloat() * 0.5F,
                 1,
                 xSpd, ySpd, zSpd,
-                1);
+                0.1);
     }
 }
