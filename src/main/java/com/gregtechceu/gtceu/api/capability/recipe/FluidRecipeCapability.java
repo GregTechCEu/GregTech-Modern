@@ -206,24 +206,24 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe input fluids to account for duplicated fluids,
         // so their sum is counted against the total of fluids available in the input
-        Map<FluidKey, Long> fluidCountMap = new HashMap<>();
-        Map<FluidKey, Long> notConsumableMap = new HashMap<>();
+        Map<FluidIngredient, Long> fluidCountMap = new HashMap<>();
+        Map<FluidIngredient, Long> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
             long fluidAmount = fluidInput.getAmount();
             if (content.chance == 0.0f) {
-                notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
+                notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
-                notConsumableMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
+                notConsumableMap.putIfAbsent(fluidInput, fluidAmount);
             } else {
-                fluidCountMap.computeIfPresent(new FluidKey(fluidInput.getStacks()[0]),
+                fluidCountMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
-                fluidCountMap.putIfAbsent(new FluidKey(fluidInput.getStacks()[0]), fluidAmount);
+                fluidCountMap.putIfAbsent(fluidInput, fluidAmount);
             }
         }
 
         // Iterate through the recipe inputs, excluding the not consumable fluids from the fluid inventory map
-        for (Map.Entry<FluidKey, Long> notConsumableFluid : notConsumableMap.entrySet()) {
+        for (Map.Entry<FluidIngredient, Long> notConsumableFluid : notConsumableMap.entrySet()) {
             long needed = notConsumableFluid.getValue();
             long available = 0;
             // For every fluid gathered from the fluid inputs.
@@ -231,7 +231,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 // Strip the Non-consumable tags here, as FluidKey compares the tags, which causes finding matching
                 // fluids
                 // in the input tanks to fail, because there is nothing in those hatches with a non-consumable tag
-                if (notConsumableFluid.getKey().equals(inputFluid.getKey())) {
+                if (notConsumableFluid.getKey().test(
+                        FluidStack.create(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().tag))) {
                     available = inputFluid.getValue();
                     if (available > needed) {
                         inputFluid.setValue(available - needed);
@@ -263,12 +264,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         }
 
         // Iterate through the fluid inputs in the recipe
-        for (Map.Entry<FluidKey, Long> fs : fluidCountMap.entrySet()) {
+        for (Map.Entry<FluidIngredient, Long> fs : fluidCountMap.entrySet()) {
             long needed = fs.getValue();
             long available = 0;
             // For every fluid gathered from the fluid inputs.
             for (Map.Entry<FluidKey, Long> inputFluid : fluidStacks.entrySet()) {
-                if (fs.getKey().equals(inputFluid.getKey())) {
+                if (fs.getKey().test(
+                        FluidStack.create(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().tag))) {
                     available += inputFluid.getValue();
                 }
             }
