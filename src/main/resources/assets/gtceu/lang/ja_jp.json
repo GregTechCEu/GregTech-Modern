@@ -1440,7 +1440,7 @@
     "block.gtceu.wire_coil.tooltip_energy_cracking": "  §aエネルギー使用量: §f%s%%",
     "block.gtceu.wire_coil.tooltip_energy_smelter": "  §aエネルギー使用量: §f%s EU/t §8毎レシピ",
     "block.gtceu.wire_coil.tooltip_extended_info": "§7SHIFTでコイルのボーナス情報を表示",
-    "block.gtceu.wire_coil.tooltip_heat": "§c基本最大温度: §f%,d K",
+    "block.gtceu.wire_coil.tooltip_heat": "§c基本最大温度: §f%d K",
     "block.gtceu.wire_coil.tooltip_parallel_smelter": "   §5最大並列処理数: §f%s",
     "block.gtceu.wire_coil.tooltip_pyro": "§8熱分解炉:",
     "block.gtceu.wire_coil.tooltip_smelter": "§8マルチスメルター:",
