@@ -84,20 +84,14 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             }
             for (ChunkPos rel : relativePositions.keySet()) {
                 final float distance = relativePositions.getFloat(rel);
-                savedData.getHazardZones().compute(rel, (chunkPos, v) -> {
-                    if (v == null || v.strength() <= 0) {
+                savedData.getHazardZones().compute(rel, (chunkPos, zone) -> {
+                    if (zone == null || zone.strength() <= 0) {
                         return null;
                     }
-                    EnvironmentalHazardSavedData.HazardZone zone;
 
                     float toClean = cleaningPerOperation * getTier() / distance;
                     removedLastSecond += toClean;
-                    zone = new EnvironmentalHazardSavedData.HazardZone(
-                            v.source(),
-                            v.strength() - toClean,
-                            v.canSpread(),
-                            v.trigger(),
-                            v.condition());
+                    zone.removeStrength(toClean);
                     if (zone.strength() <= 0) {
                         if (serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
                             LevelChunk chunk = serverLevel.getChunk(chunkPos.x, chunkPos.z);
