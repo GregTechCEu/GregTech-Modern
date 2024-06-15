@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 public class GTRecipes {
 
-    private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
+    public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.
@@ -95,10 +95,10 @@ public class GTRecipes {
      *
      * This is also where any recipe removals should happen.
      */
-    public static void recipeRemoval(Consumer<ResourceLocation> consumer) {
-        RecipeRemoval.init(consumer);
-
+    public static void recipeRemoval() {
         RECIPE_FILTERS.clear();
-        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(consumer.andThen(RECIPE_FILTERS::add)));
+
+        RecipeRemoval.init(RECIPE_FILTERS::add);
+        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
     }
 }

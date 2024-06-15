@@ -166,12 +166,13 @@ public class GTDynamicDataPack implements PackResources {
         } else if (metaReader.getMetadataSectionName().equals("filter")) {
             JsonObject filter = new JsonObject();
             JsonArray block = new JsonArray();
-            GTRecipes.recipeRemoval((id) -> { // Collect removed recipes in here, in the pack filter section.
+            GTRecipes.RECIPE_FILTERS.forEach((id) -> { // Collect removed recipes in here, in the pack filter section.
                 JsonObject entry = new JsonObject();
                 entry.addProperty("namespace", "^" + id.getNamespace().replaceAll("[\\W]", "\\\\$0") + "$");
                 entry.addProperty("path", "^recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0") + "\\.json" + "$");
                 block.add(entry);
             });
+            GTRecipes.RECIPE_FILTERS.clear();
             filter.add("block", block);
             return metaReader.fromJson(filter);
         }
