@@ -14,6 +14,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.function.Consumer;
 
@@ -98,7 +99,7 @@ public class CraftingRecipeLoader {
 
         // TODO: Temp recipe. Needs to be better defined for practical use.
         VanillaRecipeHelper.addVanillaFluidRecipe(provider, "treated_wood_planks_dos",
-                GTBlocks.TREATED_WOOD_PLANK.asStack(8), Creosote.getFluid(1000),
+                GTBlocks.TREATED_WOOD_PLANK.asStack(8), new FluidStack(Creosote.getFluid(), 1000),
                 "PPP", "PlP", "PPP", 'P', ItemTags.PLANKS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X',

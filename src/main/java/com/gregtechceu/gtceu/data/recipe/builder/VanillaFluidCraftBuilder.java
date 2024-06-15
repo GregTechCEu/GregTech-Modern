@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.data.recipe.misc.VanillaFluidCraft;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
@@ -21,6 +20,7 @@ import net.minecraft.world.level.ItemLike;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -36,7 +36,7 @@ public class VanillaFluidCraftBuilder extends Builder<Ingredient, VanillaFluidCr
     // though those could easily just be defined in regular recipes. In this case, it
     // would likely help protect people from accidentally using full containers in
     // recipes where the container is consumed. Food for thought.
-    private FluidStack fluid = FluidStack.empty();
+    private FluidStack fluid = FluidStack.EMPTY;
 
     public VanillaFluidCraftBuilder(@Nullable ResourceLocation id) {
         this.id = id;

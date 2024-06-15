@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -57,9 +57,7 @@ public class VanillaFluidCraft extends ShapedRecipe {
                 // This is ugly as shit. Unless I'm missing something (very possible), this is the only way
                 // to handle the fact that there exist 2 different FluidStacks both with different bit-lengths.
                 // Checks that the inventory stack meets the minimum required.
-                if (!FluidUtil.getFluidContained(iStack).get()
-                        .containsFluid(
-                                (net.minecraftforge.fluids.FluidStack) FluidHelper.toRealFluidStack(this.fluid))) {
+                if (!FluidUtil.getFluidContained(iStack).get().containsFluid(this.fluid)) {
                     return false;
                 }
             }
@@ -79,7 +77,7 @@ public class VanillaFluidCraft extends ShapedRecipe {
                 // Drain then set.
                 ItemStack copy = iStack.copy();
                 FluidUtil.getFluidHandler(copy)
-                        .map(f -> f.drain((int) this.fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE));
+                        .map(f -> f.drain(this.fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE));
                 items.set(i, copy);
             } else {
                 items.set(i, iStack.getCraftingRemainingItem());
@@ -105,7 +103,7 @@ public class VanillaFluidCraft extends ShapedRecipe {
 
             Fluid _fluid = BuiltInRegistries.FLUID
                     .get(new ResourceLocation(GsonHelper.getAsString(fluidJson, "fluid")));
-            FluidStack fluid = FluidStack.create(_fluid, GsonHelper.getAsLong(fluidJson, "amount"));
+            FluidStack fluid = new FluidStack(_fluid, GsonHelper.getAsInt(fluidJson, "amount"));
 
             return new VanillaFluidCraft(recipeId, group, xSize, ySize, dissolved, result, fluid);
         }
@@ -121,7 +119,7 @@ public class VanillaFluidCraft extends ShapedRecipe {
 
             // Should ensure the buffer is read in proper order.
             Fluid _fluid = BuiltInRegistries.FLUID.get(buffer.readResourceLocation());
-            FluidStack fluid = FluidStack.create(_fluid, buffer.readLong());
+            FluidStack fluid = new FluidStack(_fluid, buffer.readInt());
 
             return new VanillaFluidCraft(recipeId, group, xSize, ySize, ingredients, result, fluid);
         }
@@ -136,7 +134,7 @@ public class VanillaFluidCraft extends ShapedRecipe {
             }
             buffer.writeItem(((ShapedRecipeAccessor) this).getResult());
             buffer.writeResourceLocation(BuiltInRegistries.FLUID.getKey(recipe.fluid.getFluid()));
-            buffer.writeLong(recipe.fluid.getAmount());
+            buffer.writeInt(recipe.fluid.getAmount());
         }
     }
 }
