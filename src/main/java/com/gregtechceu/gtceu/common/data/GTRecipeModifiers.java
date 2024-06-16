@@ -64,15 +64,15 @@ public class GTRecipeModifiers {
                     return recipe;
                 }
                 float strength = zone.strength();
-                if (strength < maxAllowedStrength) {
-                    return recipe;
+                if (strength > maxAllowedStrength) {
+                    return null;
                 }
                 recipe = recipe.copy();
                 recipe.duration *= Math.max(1, (int) (maxAllowedStrength / Math.max(strength, 1)));
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
-            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 750);
+            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
