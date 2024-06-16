@@ -277,7 +277,7 @@ public class ForgeCommonEventListener {
             if (tracker == null) {
                 return;
             }
-            for (MedicalCondition condition : MedicalCondition.CONDITIONS.values()) {
+            for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(condition);
             }
         }
