@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -68,8 +69,10 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
         if (getOffsetTimer() % 20 == 0) {
             removedLastSecond = 0;
 
-            if (GTCapabilityHelper.getHazardContainer(getLevel(), getPos().above(), Direction.DOWN) != null) {
-                return true;
+            for (Direction dir : GTUtil.DIRECTIONS) {
+                if (GTCapabilityHelper.getHazardContainer(getLevel(), getPos().above(), dir) != null) {
+                    return true;
+                }
             }
 
             final ServerLevel serverLevel = (ServerLevel) getLevel();
