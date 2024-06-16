@@ -11,12 +11,14 @@ import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ILocalizedHazardEmitter;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
@@ -60,6 +62,8 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -263,6 +267,19 @@ public class ForgeCommonEventListener {
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityDie(LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            if (tracker == null) {
+                return;
+            }
+            for (MedicalCondition condition : MedicalCondition.CONDITIONS.values()) {
+                tracker.removeMedicalCondition(condition);
+            }
         }
     }
 
