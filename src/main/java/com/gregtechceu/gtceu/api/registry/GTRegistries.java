@@ -33,7 +33,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -98,7 +97,6 @@ public final class GTRegistries {
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 
-    @Nullable
     public static RegistryAccess builtinRegistry() {
         return Platform.getFrozenRegistry();
     }

@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
@@ -194,6 +196,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCyMMachines", GCyMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
+        event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
@@ -205,6 +208,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("PropertyKey", PropertyKey.class);
         event.add("ToolProperty", ToolProperty.class);
         event.add("HazardProperty", HazardProperty.class);
+        event.add("MedicalCondition", MedicalCondition.class);
+        event.add("Symptom", Symptom.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
 
@@ -342,6 +347,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(IndicatorPlacement.class, (ctx, o) -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
+            return null;
+        });
+        typeWrappers.register(MedicalCondition.class, (ctx, o) -> {
+            if (o instanceof MedicalCondition condition) return condition;
+            if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
             return null;
         });
         // jank because Rhino doesn't agree that it's an interface

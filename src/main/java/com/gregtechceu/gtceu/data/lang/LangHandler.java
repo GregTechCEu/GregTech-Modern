@@ -119,19 +119,31 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
-        provider.add("gtceu.hazard.description", "§l§cHAZARDOUS §7Hold Shift to show details");
-        provider.add("gtceu.hazard.description_shift", "§l§cHAZARDOUS:");
-        provider.add("gtceu.hazard.contact_poison", "§5Contact Poison");
-        provider.add("gtceu.hazard.inhalation_poison", "§2Poisonous when inhaled");
-        provider.add("gtceu.hazard.corrosive", "§6Corrosive");
-        provider.add("gtceu.hazard.radioactive", "§eRadioactive");
-        provider.add("gtceu.hazard.none", "§2Not Dangerous");
-        provider.add("gtceu.hazard.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("gtceu.hazard.antidote.description_shift", "§aCures types:");
-        provider.add("gtceu.hazard.antidote.description.effect_removed",
-                "Removes %s%% of current ailments' effects");
-        provider.add("gtceu.hazard.antidote.description.effect_removed.all",
-                "Removes all of current ailments' effects");
+        provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
+        provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
+        provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s seconds");
+        provider.add("command.gtceu.medical_condition.get.element.permanent", "Condition %s§r: %s seconds (permanent)");
+        provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
+        provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
+        provider.add("gtceu.medical_condition.poison", "§2Poisonous");
+        provider.add("gtceu.medical_condition.weak_poison", "§aWeakly poisonous");
+        provider.add("gtceu.medical_condition.irritant", "§6Irritant");
+        provider.add("gtceu.medical_condition.nausea", "§3Nauseating");
+        provider.add("gtceu.medical_condition.carcinogen", "§eCarcinogenic");
+        provider.add("gtceu.medical_condition.asbestosis", "§dAsbestosis");
+        provider.add("gtceu.medical_condition.arsenicosis", "§bArsenicosis");
+        provider.add("gtceu.medical_condition.silicosis", "§1Silicosis");
+        provider.add("gtceu.medical_condition.berylliosis", "§5Berylliosis");
+        provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
+        provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
+        provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
+        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
+        provider.add("gtceu.medical_condition.antidote.description.effect_removed",
+                "Removes %s%% of current conditions' effects");
+        provider.add("gtceu.medical_condition.antidote.description.effect_removed.all",
+                "Removes all of current conditions' effects");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
@@ -713,6 +725,11 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
+        provider.add("behavior.portable_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
+        provider.add("behavior.portable_scanner.environmental_hazard.nothing",
+                "Environmental Hazard In Chunk: §6Nothing§r");
+        provider.add("behavior.portable_scanner.local_hazard", "Local Hazard In Chunk: %s§r - %s ppm");
+        provider.add("behavior.portable_scanner.local_hazard.nothing", "Local Hazard In Chunk: §6Nothing§r");
         provider.add("behavior.portable_scanner.block_hardness", "Hardness: %s Blast Resistance: %s");
         provider.add("behavior.portable_scanner.block_name", "Name: %s MetaData: %s");
         provider.add("behavior.portable_scanner.debug_cpu_load",
@@ -875,6 +892,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
+        provider.add("gtceu.recipe.environmental_hazard.reverse", "Area must be free of %s");
+        provider.add("gtceu.recipe.environmental_hazard", "Area must have %s");
         provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
         provider.add("gtceu.recipe.research", "Requires Research");
@@ -1218,6 +1237,47 @@ public class LangHandler {
         replace(provider, "block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
+
+        // Subtitles
+        provider.add("gtceu.subtitle.boiler", "Boiler heating");
+        provider.add("gtceu.subtitle.computation", "Computer beeps");
+        provider.add("gtceu.subtitle.assembler", "Assembler constructing");
+        provider.add("gtceu.subtitle.chainsaw", "Chainsaw revving");
+        provider.add("gtceu.subtitle.compressor", "Compressor squeezing");
+        provider.add("gtceu.subtitle.centrifuge", "Centrifuge spinning");
+        provider.add("gtceu.subtitle.mortar", "Mortar crushing");
+        provider.add("gtceu.subtitle.screwdriver", "Screwing");
+        provider.add("gtceu.subtitle.saw", "Sawing");
+        provider.add("gtceu.subtitle.miner", "Miner excavating");
+        provider.add("gtceu.subtitle.turbine", "Turbine whizzing");
+        provider.add("gtceu.subtitle.wrench", "Wrench rattling");
+        provider.add("gtceu.subtitle.portal_opening", "Portal opens");
+        provider.add("gtceu.subtitle.replicator", "Replicator copying");
+        provider.add("gtceu.subtitle.arc", "Arcs buzzing");
+        provider.add("gtceu.subtitle.combustion", "Combusting");
+        provider.add("gtceu.subtitle.portable_scanner", "Scanning");
+        provider.add("gtceu.subtitle.macerator", "Macerator crushing");
+        provider.add("gtceu.subtitle.jet_engine", "Jet roaring");
+        provider.add("gtceu.subtitle.spray_can", "Spraying");
+        provider.add("gtceu.subtitle.mixer", "Mixer sloshing");
+        provider.add("gtceu.subtitle.fire", "Fire crackling");
+        provider.add("gtceu.subtitle.forge_hammer", "Forge Hammer thumping");
+        provider.add("gtceu.subtitle.bath", "Bath fizzing");
+        provider.add("gtceu.subtitle.soft_hammer", "Soft tap");
+        provider.add("gtceu.subtitle.wirecutter", "Wire snipped");
+        provider.add("gtceu.subtitle.chemical", "Chemical bubbling");
+        provider.add("gtceu.subtitle.file", "File rasping");
+        provider.add("gtceu.subtitle.portal_closing", "Portal closes");
+        provider.add("gtceu.subtitle.motor", "Motor humming");
+        provider.add("gtceu.subtitle.drill", "Drilling");
+        provider.add("gtceu.subtitle.cut", "Cutter whirring");
+        provider.add("gtceu.subtitle.furnace", "Furnace heating");
+        provider.add("gtceu.subtitle.electrolyzer", "Electrolyzer sparking");
+        provider.add("gtceu.subtitle.cooling", "Freezer humming");
+        provider.add("gtceu.subtitle.plunger", "Plunger popping");
+        provider.add("gtceu.subtitle.sus", "Sus...");
+        provider.add("gtceu.subtitle.science", "s c i e n c e");
+        provider.add("gtceu.subtitle.metal_pipe", "Destruction_Metal_Pole_L_Wave_2_0_0.wav");
 
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
     }
