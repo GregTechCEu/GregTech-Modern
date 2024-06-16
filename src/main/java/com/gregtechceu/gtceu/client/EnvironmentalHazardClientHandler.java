@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 
+import it.unimi.dsi.fastutil.floats.FloatIntPair;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -28,11 +29,8 @@ public class EnvironmentalHazardClientHandler {
     public static final int MAX_PARTICLE_DISTANCE = 96;
     public static final int MAX_PARTICLE_DISTANCE_SQR = MAX_PARTICLE_DISTANCE * MAX_PARTICLE_DISTANCE;
 
-    public static final float COLORING_LOW = 350;
+    public static final float COLORING_LOW = PARTICLE_THRESHOLD;
     public static final float COLORING_HIGH = 600;
-    private static final int[] GRASS_COLORS = { 230, 180, 40 };
-    private static final int[] LIQUID_COLORS = { 160, 200, 10 };
-    private static final int[] FOLIAGE_COLORS = { 160, 80, 15 };
 
     public static final EnvironmentalHazardClientHandler INSTANCE = new EnvironmentalHazardClientHandler();
 
@@ -45,6 +43,7 @@ public class EnvironmentalHazardClientHandler {
      */
     @Getter
     private final Map<ChunkPos, EnvironmentalHazardSavedData.HazardZone> hazardZones = new HashMap<>();
+    private final Map<ChunkPos, FloatIntPair> chunkColorCache = new HashMap<>();
 
     public void onClientTick() {
         if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
@@ -149,7 +148,15 @@ public class EnvironmentalHazardClientHandler {
         if (zone == null) {
             return color;
         }
-        return colorize(color, zone.strength(), zone.condition().color, GRASS_COLORS);
+        var entry = chunkColorCache.get(pos);
+        if (entry != null &&
+                (entry.firstFloat() > zone.strength() + 0.5f || entry.firstFloat() < zone.strength() - 0.5f)) {
+            return entry.valueInt();
+        }
+
+        color = colorize(color, zone.strength(), zone.condition().color);
+        chunkColorCache.put(pos, FloatIntPair.of(zone.strength(), color));
+        return color;
     }
 
     public int colorLiquid(int color, ChunkPos pos) {
@@ -157,7 +164,15 @@ public class EnvironmentalHazardClientHandler {
         if (zone == null) {
             return color;
         }
-        return colorize(color, zone.strength(), zone.condition().color, LIQUID_COLORS);
+        var entry = chunkColorCache.get(pos);
+        if (entry != null &&
+                (entry.firstFloat() > zone.strength() + 0.5f || entry.firstFloat() < zone.strength() - 0.5f)) {
+            return entry.valueInt();
+        }
+
+        color = colorize(color, zone.strength(), zone.condition().color);
+        chunkColorCache.put(pos, FloatIntPair.of(zone.strength(), color));
+        return color;
     }
 
     public int colorFoliage(int color, ChunkPos pos) {
@@ -165,17 +180,24 @@ public class EnvironmentalHazardClientHandler {
         if (zone == null) {
             return color;
         }
-        return colorize(color, zone.strength(), zone.condition().color, FOLIAGE_COLORS);
+        var entry = chunkColorCache.get(pos);
+        if (entry != null &&
+                (entry.firstFloat() > zone.strength() + 0.5f || entry.firstFloat() < zone.strength() - 0.5f)) {
+            return entry.valueInt();
+        }
+
+        color = colorize(color, zone.strength(), zone.condition().color);
+        chunkColorCache.put(pos, FloatIntPair.of(zone.strength(), color));
+        return color;
     }
 
     /**
      * @param color     the existing color to modify
      * @param pollution the amount of pollution present
      * @param newColor  the color to interpolate with
-     * @param toMix     the colors to interpolate between
      * @return the new color
      */
-    private static int colorize(int color, float pollution, int newColor, int[] toMix) {
+    private static int colorize(int color, float pollution, int newColor) {
         if (pollution < COLORING_LOW) return color;
 
         int r = (color >> 16) & 0xFF;
@@ -186,9 +208,9 @@ public class EnvironmentalHazardClientHandler {
 
         float complement = 1 - ratio;
 
-        r = ((int) (r * complement + ratio * FastColor.ARGB32.red(newColor)) * toMix[0]) & 0xFF;
-        g = ((int) (g * complement + ratio * FastColor.ARGB32.green(newColor)) * toMix[1]) & 0xFF;
-        b = ((int) (b * complement + ratio * FastColor.ARGB32.blue(newColor)) * toMix[2]) & 0xFF;
+        r = ((int) (r * complement + ratio * FastColor.ARGB32.red(newColor))) & 0xFF;
+        g = ((int) (g * complement + ratio * FastColor.ARGB32.green(newColor))) & 0xFF;
+        b = ((int) (b * complement + ratio * FastColor.ARGB32.blue(newColor))) & 0xFF;
 
         return FastColor.ARGB32.color(0xFF, r, g, b);
     }
