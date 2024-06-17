@@ -91,6 +91,7 @@ public class RecipeHelper {
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
         // and the maximum tier that the machine can overclock to.
         int numberOfOCs = maximumTier - recipeTier;
+        if (numberOfOCs <= 0) return LongIntPair.of(EUt, recipe.duration);
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.

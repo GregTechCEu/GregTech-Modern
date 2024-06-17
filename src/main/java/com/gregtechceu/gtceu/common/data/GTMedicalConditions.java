@@ -24,7 +24,7 @@ public class GTMedicalConditions {
     public static final MedicalCondition NAUSEA = new MedicalCondition("nausea", 0x1D4A00, 600,
             MedicalCondition.IdleProgressionType.HEAL, 5, false,
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA));
-    public static final MedicalCondition CARCINOGEN = new MedicalCondition("carcinogen", 0x181818, 20000,
+    public static final MedicalCondition CARCINOGEN = new MedicalCondition("carcinogen", 0x0f570f, 20000,
             MedicalCondition.IdleProgressionType.NONE, 0, true,
             new Symptom.ConfiguredSymptom(Symptom.DEATH),
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .75f),
