@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.syncdata.GTMaterialAccessor;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeTypeAccessor;
+import com.gregtechceu.gtceu.syncdata.MaterialPayload;
 
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
@@ -18,11 +19,11 @@ public class GTSyncedFieldAccessors {
 
     public static final IAccessor GT_RECIPE_ACCESSOR = new GTRecipeAccessor();
     public static final IAccessor GT_RECIPE_TYPE_ACCESSOR = new GTRecipeTypeAccessor();
-    public static final IAccessor GT_MATERIAL_ACCESSOR = new GTMaterialAccessor();
 
     public static void init() {
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_ACCESSOR, 1000);
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_TYPE_ACCESSOR, 1000);
-        register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_MATERIAL_ACCESSOR, 1000);
+
+        registerSimple(MaterialPayload.class, MaterialPayload::new, Material.class, 1);
     }
 }
