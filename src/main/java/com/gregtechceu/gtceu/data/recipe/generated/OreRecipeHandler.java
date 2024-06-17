@@ -18,6 +18,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -139,10 +141,12 @@ public class OreRecipeHandler {
             float xp = Math.round(((1 + oreMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                            Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
                     "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                            Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
         }
     }
 

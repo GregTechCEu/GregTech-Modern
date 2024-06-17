@@ -142,7 +142,6 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
-        GTDataFixers.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTToolTiers.init();
@@ -193,6 +192,7 @@ public class CommonProxy {
         GTFeatures.init();
         CustomBlockRotations.init();
         KeyBind.init();
+        GTDataFixers.init();
     }
 
     private static void initMaterials() {

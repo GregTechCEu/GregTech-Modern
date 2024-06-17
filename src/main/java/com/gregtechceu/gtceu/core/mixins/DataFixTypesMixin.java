@@ -20,9 +20,9 @@ public class DataFixTypesMixin {
     private DSL.TypeReference type;
 
     // ModifyArg to inject our fixes *before* vanilla ones
-    @ModifyArg(method = "updateToCurrentVersion(Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;I)Lcom/mojang/serialization/Dynamic;",
+    @ModifyArg(method = "update(Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;",
                at = @At(value = "INVOKE",
-                        target = "Lnet/minecraft/util/datafix/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;"),
+                        target = "Lcom/mojang/datafixers/DataFixer;update(Lcom/mojang/datafixers/DSL$TypeReference;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;"),
                index = 1)
     private Dynamic<?> gtceu$injectDataFixers(Dynamic<?> value) {
         return DataFixesInternals.get().updateWithAllFixers(this.type, value);

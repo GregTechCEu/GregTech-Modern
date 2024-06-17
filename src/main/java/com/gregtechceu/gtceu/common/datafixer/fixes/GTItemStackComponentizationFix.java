@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.datafixer;
+package com.gregtechceu.gtceu.common.datafixer.fixes;
 
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -87,7 +87,7 @@ public class GTItemStackComponentizationFix extends DataFix {
         }
 
         // fix tool behaviors tag
-        fixGtToolBehaviors(data, tag, "GT.Behaviours", "gtceu:tool_behaviors");
+        fixGtToolBehaviors(data, tag);
 
         // Fix power info tags
         if (tag.get("Charge").result().isPresent()) {
@@ -128,36 +128,36 @@ public class GTItemStackComponentizationFix extends DataFix {
         }
     }
 
-    private static void fixGtToolBehaviors(ItemStackData data, Dynamic<?> tag, String key, String component) {
-        OptionalDynamic<?> gtBehaviors = data.removeTag(key);
+    private static void fixGtToolBehaviors(ItemStackData data, Dynamic<?> tag) {
+        OptionalDynamic<?> gtBehaviorsOpt = data.removeTag("GT.Behaviours");
 
-        if (gtBehaviors.result().isPresent()) {
+        Optional<? extends Dynamic<?>> gtBehaviors = gtBehaviorsOpt.result();
+        if (gtBehaviors.isPresent()) {
             Dynamic<?> dynamic = tag.emptyMap()
-                    .set("max_column", tag.createInt(gtBehaviors.get("MaxAoEColumn").asInt(0)))
-                    .set("max_row", tag.createInt(gtBehaviors.get("MaxAoERow").asInt(0)))
-                    .set("max_layer", tag.createInt(gtBehaviors.get("MaxAoELayer").asInt(0)))
-                    .set("column", tag.createInt(gtBehaviors.get("AoEColumn").asInt(0)))
-                    .set("row", tag.createInt(gtBehaviors.get("AoERow").asInt(0)))
-                    .set("layer", tag.createInt(gtBehaviors.get("AoELayer").asInt(0)));
+                    .set("max_column", tag.createInt(gtBehaviors.get().remove("MaxAoEColumn").asInt(0)))
+                    .set("max_row", tag.createInt(gtBehaviors.get().remove("MaxAoERow").asInt(0)))
+                    .set("max_layer", tag.createInt(gtBehaviors.get().remove("MaxAoELayer").asInt(0)))
+                    .set("column", tag.createInt(gtBehaviors.get().remove("AoEColumn").asInt(0)))
+                    .set("row", tag.createInt(gtBehaviors.get().remove("AoERow").asInt(0)))
+                    .set("layer", tag.createInt(gtBehaviors.get().remove("AoELayer").asInt(0)));
             data.setComponent("gtceu:aoe", dynamic);
 
-            Map<String, ? extends Dynamic<?>> map = gtBehaviors.asMap(val -> val.asString(""), Function.identity());
+            Map<String, ? extends Dynamic<?>> map = gtBehaviors.get().asMap(val -> val.asString(""), Function.identity());
             if (!map.isEmpty()) {
                 dynamic = tag.emptyMap();
-                Dynamic<?> dynamic1 = tag.emptyMap();
 
                 for (var entry : map.entrySet()) {
                     if (entry.getKey().equals("RelocateMinedBlocks")) {
                         data.setComponent("gtceu:relocate_mined_blocks", createEmpty(tag));
                         continue;
+                    } else if (entry.getKey().contains("AoE")) {
+                        continue;
                     }
-                    dynamic1 = dynamic1.set("gtceu:" + FormattingUtil.toLowerCaseUnderscore(entry.getKey()),
+                    dynamic = dynamic.set("gtceu:" + FormattingUtil.toLowerCaseUnderscore(entry.getKey()),
                             createEmpty(tag));
                 }
 
-                dynamic = dynamic.set("tool_behaviors", dynamic1);
-
-                data.setComponent(component, dynamic);
+                data.setComponent("gtceu:tool_behaviors", dynamic);
             }
         }
     }
