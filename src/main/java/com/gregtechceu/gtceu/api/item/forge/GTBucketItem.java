@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.forge;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -18,7 +17,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -33,7 +31,6 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -78,13 +75,6 @@ public class GTBucketItem extends BucketItem {
     public Component getDescription() {
         Component materialName = material.getLocalizedName();
         return Component.translatable("item.gtceu.bucket", Component.translatable(this.langKey, materialName));
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        GTUtil.appendHazardTooltips(material, tooltipComponents);
     }
 
     @Override

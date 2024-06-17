@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -543,6 +544,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS rpm(float rpm) {
             return rpm(rpm, false);
+        }
+
+        public GTRecipeJS environmentalHazard(MedicalCondition condition, boolean reverse) {
+            return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
+        }
+
+        public GTRecipeJS environmentalHazard(MedicalCondition condition) {
+            return environmentalHazard(condition, false);
         }
 
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

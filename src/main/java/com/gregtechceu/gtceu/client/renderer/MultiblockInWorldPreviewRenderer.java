@@ -100,13 +100,16 @@ public class MultiblockInWorldPreviewRenderer {
 
     /**
      * Show the multiblock preview in the world by the given pos, side, and shape info.
-     * 
+     *
      * @param pos       the pos of the controller
      * @param front     the front of the controller
      * @param shapeInfo the shape info of the multiblock
      * @param duration  the duration of the preview. in ticks.
      */
-    public static void showPreview(BlockPos pos, Direction front, MultiblockShapeInfo shapeInfo, int duration) {
+    public static void showPreview(BlockPos pos, Direction front, Direction up, MultiblockShapeInfo shapeInfo,
+                                   int duration) {
+        front = front.getStepY() == 0 ? front : front.getStepY() < 0 ? up : up.getOpposite();
+
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
         IMultiController controllerBase = null;
         LEVEL = new TrackedDummyWorld();
@@ -231,11 +234,11 @@ public class MultiblockInWorldPreviewRenderer {
                         if (tile != null) {
                             poseStack.pushPose();
                             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                            BlockEntityRenderer<BlockEntity> tileentityrenderer = Minecraft.getInstance()
+                            BlockEntityRenderer<BlockEntity> ber = Minecraft.getInstance()
                                     .getBlockEntityRenderDispatcher().getRenderer(tile);
-                            if (tileentityrenderer != null) {
+                            if (ber != null) {
                                 if (tile.hasLevel() && tile.getType().isValid(tile.getBlockState())) {
-                                    tileentityrenderer.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
+                                    ber.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
                                             OverlayTexture.NO_OVERLAY);
                                 }
                             }
@@ -383,7 +386,6 @@ public class MultiblockInWorldPreviewRenderer {
                                      RenderType layer, WorldSceneRenderer.VertexConsumerWrapper wrapperBuffer,
                                      Collection<BlockPos> renderedBlocks) {
         for (BlockPos pos : renderedBlocks) {
-
             BlockState state = level.getBlockState(pos);
             FluidState fluidState = state.getFluidState();
             Block block = state.getBlock();

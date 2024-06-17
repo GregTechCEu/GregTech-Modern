@@ -117,7 +117,7 @@ public class DamageTypeData {
          */
         public DamageTypeData.Builder simpleId(ResourceLocation location) {
             location(location);
-            return msgId(location.getNamespace() + "." + location.getPath());
+            return msgId(location.toLanguageKey());
         }
 
         public DamageTypeData.Builder simpleId(String path) {

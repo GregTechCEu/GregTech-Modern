@@ -17,7 +17,7 @@ public interface IHPCACoolantProvider extends IHPCAComponentHatch {
      * Actual amount used will depend on how much of this cooler is actually being utilized
      * by Computation providers.
      *
-     * @return The amount of coolant to use per tick, in L/t
+     * @return The amount of coolant to use per tick, in mB/t
      */
     default int getMaxCoolantPerTick() {
         return 0;

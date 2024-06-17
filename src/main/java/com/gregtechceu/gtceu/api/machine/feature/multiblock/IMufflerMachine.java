@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.ChatFormatting;
@@ -16,21 +19,30 @@ import lombok.val;
 
 import java.util.List;
 
-public interface IMufflerMachine extends IMultiPart {
+public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter {
 
     void recoverItemsTable(ItemStack... recoveryItems);
 
     /**
-     * @return true if front face is free and contains only air blocks in 1x1 area
+     * @return true if front face is free and contains only air blocks in 1x1 area OR has a duct block on it.
      */
     default boolean isFrontFaceFree() {
         var frontPos = self().getPos().relative(self().getFrontFacing());
-        return self().getLevel().getBlockState(frontPos).isAir();
+        return self().getLevel().getBlockState(frontPos).isAir() ||
+                GTCapabilityHelper.getHazardContainer(self().getLevel(),
+                        frontPos, self().getFrontFacing().getOpposite()) != null;
     }
 
     default void emitPollutionParticles() {
         var pos = self().getPos();
         var facing = self().getFrontFacing();
+
+        if (GTCapabilityHelper.getHazardContainer(self().getLevel(),
+                pos.relative(facing), facing.getOpposite()) != null) {
+            // do not emit particles if front face has a duct on it.
+            return;
+        }
+
         float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.25F;
         float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
         float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.25F;
@@ -63,7 +75,14 @@ public interface IMufflerMachine extends IMultiPart {
     }
 
     @Override
+    default int hazardStrengthPerOperation() {
+        int outputAmount = 5;
+        return this instanceof TieredPartMachine tiered ? outputAmount / Math.max(tiered.getTier(), 1) : outputAmount;
+    }
+
+    @Override
     default boolean afterWorking(IWorkableMultiController controller) {
+        spreadEnvironmentalHazard();
         val supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());
