@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
 import com.gregtechceu.gtceu.common.datafixer.GTItemStackComponentizationFix;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.fixes.ItemRenameFix;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;

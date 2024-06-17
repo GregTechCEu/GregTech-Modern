@@ -16,9 +16,9 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
-import com.mojang.datafixers.DSL;
 import net.minecraft.nbt.CompoundTag;
 
+import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;

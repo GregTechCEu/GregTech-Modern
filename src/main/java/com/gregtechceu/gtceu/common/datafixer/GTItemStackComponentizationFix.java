@@ -41,8 +41,7 @@ public class GTItemStackComponentizationFix extends DataFix {
             "gtceu:electric_jetpack",
             "gtceu:advanced_electric_jetpack",
             "gtceu:avanced_nanomuscle_chestplate",
-            "gtceu:advanced_quarktech_chestplate"
-    );
+            "gtceu:advanced_quarktech_chestplate");
 
     public GTItemStackComponentizationFix(Schema outputSchema) {
         super(outputSchema, true);

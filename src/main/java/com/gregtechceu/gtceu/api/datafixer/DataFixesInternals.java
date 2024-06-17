@@ -18,11 +18,11 @@ package com.gregtechceu.gtceu.api.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.mojang.datafixers.DSL;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.datafix.DataFixers;
 
+import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
