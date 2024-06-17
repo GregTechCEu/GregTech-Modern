@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 @NoArgsConstructor

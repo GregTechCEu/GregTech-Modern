@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeTypeAccessor;
-
 import com.gregtechceu.gtceu.syncdata.MaterialPayload;
+
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 
