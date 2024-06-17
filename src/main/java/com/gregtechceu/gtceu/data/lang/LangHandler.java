@@ -734,8 +734,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
         provider.add("behavior.portable_scanner.environmental_hazard.nothing",
                 "Environmental Hazard In Chunk: §6Nothing§r");
-        provider.add("behavior.portable_scanner.local_hazard", "Local Hazard In Chunk: %s§r - %s ppm");
-        provider.add("behavior.portable_scanner.local_hazard.nothing", "Local Hazard In Chunk: §6Nothing§r");
+        provider.add("behavior.portable_scanner.local_hazard", "Local Hazard In Area: %s§r - %s ppm");
+        provider.add("behavior.portable_scanner.local_hazard.nothing", "Local Hazard In Area: §6Nothing§r");
         provider.add("behavior.portable_scanner.block_hardness", "Hardness: %s Blast Resistance: %s");
         provider.add("behavior.portable_scanner.block_name", "Name: %s MetaData: %s");
         provider.add("behavior.portable_scanner.debug_cpu_load",
