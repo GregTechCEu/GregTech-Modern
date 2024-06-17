@@ -27,7 +27,11 @@ public class GTDataFixers {
     private static final BiFunction<Integer, Schema, Schema> SAME = Schema::new;
     private static final BiFunction<Integer, Schema, Schema> SAME_NAMESPACED = NamespacedSchema::new;
 
-    public static void register() {
+    public static void init() {
+        if (!ConfigHolder.INSTANCE.compat.doDatafixers) {
+            return;
+        }
+
         GTCEu.LOGGER.info("Registering data fixers");
 
         DataFixesInternals api = DataFixesInternals.get();
