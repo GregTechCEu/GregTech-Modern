@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(IOWorker.class)
-public class MixinIOWorker {
+public class IOWorkerMixin {
 
     @Inject(method = "store", at = @At("HEAD"))
     private void storeDFUVersion(ChunkPos chunkPos, @Nullable CompoundTag chunkData,

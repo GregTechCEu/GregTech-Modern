@@ -16,10 +16,8 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
-import com.gregtechceu.gtceu.core.mixins.DataFixTypesAccessor;
-
+import com.mojang.datafixers.DSL;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.datafix.DataFixTypes;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
@@ -63,11 +61,11 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
     }
 
     @Override
-    public @NotNull Dynamic<?> updateWithAllFixers(@NotNull DataFixTypes dataFixTypes, @NotNull Dynamic<?> dynamic) {
+    public @NotNull Dynamic<?> updateWithAllFixers(DSL.TypeReference type, @NotNull Dynamic<?> dynamic) {
         if (dataFixer != null) {
             int modDataVersion = DataFixesInternals.getModDataVersion(dynamic);
             dynamic = dataFixer.dataFixer()
-                    .update(((DataFixTypesAccessor) (Object) dataFixTypes).getType(),
+                    .update(type,
                             dynamic,
                             modDataVersion, dataFixer.currentVersion());
         }

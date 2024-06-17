@@ -42,6 +42,7 @@ import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
 import com.gregtechceu.gtceu.data.fluid.GTFluids;
@@ -141,6 +142,7 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
+        GTDataFixers.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTToolTiers.init();

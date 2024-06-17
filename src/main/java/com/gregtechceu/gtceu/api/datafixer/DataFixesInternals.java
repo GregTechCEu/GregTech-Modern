@@ -18,9 +18,9 @@ package com.gregtechceu.gtceu.api.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.mojang.datafixers.DSL;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
 
 import com.mojang.datafixers.DataFixUtils;
@@ -84,7 +84,7 @@ public abstract class DataFixesInternals {
     @Contract(value = "-> new", pure = true)
     public abstract @NotNull Schema createBaseSchema();
 
-    public abstract @NotNull Dynamic<?> updateWithAllFixers(@NotNull DataFixTypes dataFixTypes,
+    public abstract @NotNull Dynamic<?> updateWithAllFixers(DSL.TypeReference dataFixTypes,
                                                             @NotNull Dynamic<?> dynamic);
 
     public abstract @NotNull CompoundTag addModDataVersions(@NotNull CompoundTag compound);

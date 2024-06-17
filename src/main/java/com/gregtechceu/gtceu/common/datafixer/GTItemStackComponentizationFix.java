@@ -21,6 +21,29 @@ import java.util.function.UnaryOperator;
 
 public class GTItemStackComponentizationFix extends DataFix {
 
+    private static final Set<String> ARMOR_IDS = Set.of(
+            "gtceu:nightvision_goggles",
+            "gtceu:nanomuscle_chestplate",
+            "gtceu:nanomuscle_leggings",
+            "gtceu:nanomuscle_boots",
+            "gtceu:nanomuscle_helmet",
+            "gtceu:face_mask",
+            "gtceu:rubber_gloves",
+            "gtceu:hazmat_chestpiece",
+            "gtceu:hazmat_leggings",
+            "gtceu:hazmat_boots",
+            "gtceu:hazmat_headpiece",
+            "gtceu:quarktech_chestplate",
+            "gtceu:quarktech_leggings",
+            "gtceu:quarktech_boots",
+            "gtceu:quarktech_helmet",
+            "gtceu:liquid_fuel_jetpack",
+            "gtceu:electric_jetpack",
+            "gtceu:advanced_electric_jetpack",
+            "gtceu:avanced_nanomuscle_chestplate",
+            "gtceu:advanced_quarktech_chestplate"
+    );
+
     public GTItemStackComponentizationFix(Schema outputSchema) {
         super(outputSchema, true);
     }
@@ -68,13 +91,13 @@ public class GTItemStackComponentizationFix extends DataFix {
         fixGtToolBehaviors(data, tag, "GT.Behaviours", "gtceu:tool_behaviors");
 
         // Fix power info tags
-        {
+        if (tag.get("Charge").result().isPresent()) {
             OptionalDynamic<?> charge = data.removeTag("Charge");
             OptionalDynamic<?> maxCharge = data.removeTag("MaxCharge");
             OptionalDynamic<?> infinite = data.removeTag("Infinite");
             OptionalDynamic<?> dischargeMode = data.removeTag("DischargeMode");
             Dynamic<?> dynamic = tag.emptyMap()
-                    .set("max_charge", tag.createLong(maxCharge.asLong(0)))
+                    .set("max_charge", tag.createLong(maxCharge.asLong(-1)))
                     .set("charge", tag.createLong(charge.asLong(0)))
                     .set("infinite", tag.createBoolean(infinite.asBoolean(false)))
                     .set("discharge_mode", tag.createBoolean(dischargeMode.asBoolean(false)));
@@ -82,13 +105,13 @@ public class GTItemStackComponentizationFix extends DataFix {
         }
 
         // Fix magnet tag
-        {
+        if (tag.get("IsActive").result().isPresent()) {
             OptionalDynamic<?> isActive = data.removeTag("IsActive");
             data.setComponent("item_magnet", isActive);
         }
 
         // Fix armors
-        {
+        if (data.is(ARMOR_IDS)) {
             OptionalDynamic<?> toggleTimer = data.removeTag("toggleTimer");
             OptionalDynamic<?> hover = data.removeTag("hover");
             OptionalDynamic<?> burnTimer = data.removeTag("burnTimer");
@@ -162,7 +185,7 @@ public class GTItemStackComponentizationFix extends DataFix {
         public static Optional<ItemStackData> read(final Dynamic<?> pTag) {
             return pTag.get("id")
                     .asString()
-                    .map((itemId) -> new ItemStackData(itemId, pTag))
+                    .map(itemId -> new ItemStackData(itemId, pTag))
                     .result();
         }
 

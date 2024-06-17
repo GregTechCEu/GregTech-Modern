@@ -16,8 +16,8 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
+import com.mojang.datafixers.DSL;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.datafix.DataFixTypes;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
@@ -49,7 +49,7 @@ public class NoOpDataFixesInternals extends DataFixesInternals {
     }
 
     @Override
-    public @NotNull Dynamic<?> updateWithAllFixers(@NotNull DataFixTypes dataFixTypes, @NotNull Dynamic<?> dynamic) {
+    public @NotNull Dynamic<?> updateWithAllFixers(DSL.TypeReference dataFixTypes, @NotNull Dynamic<?> dynamic) {
         return dynamic;
     }
 

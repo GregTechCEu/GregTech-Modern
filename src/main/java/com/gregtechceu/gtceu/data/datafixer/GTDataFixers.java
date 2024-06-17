@@ -5,16 +5,20 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
 import com.gregtechceu.gtceu.common.datafixer.GTItemStackComponentizationFix;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.util.datafix.fixes.ItemRenameFix;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.datafixer.DataFixesInternals.BASE_SCHEMA;
 
@@ -41,7 +45,13 @@ public class GTDataFixers {
     public static void addFixers(DataFixerBuilder builder) {
         builder.addSchema(0, BASE_SCHEMA);
 
-        Schema schema = builder.addSchema(1, SAME_NAMESPACED);
+        Schema schema = builder.addSchema(1, SAME);
+        builder.addFixer(ItemRenameFix.create(schema, "advanced_nanomuscle_chestplate rename fix",
+                createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
         builder.addFixer(new GTItemStackComponentizationFix(schema));
+    }
+
+    private static UnaryOperator<String> createRenamer(String pOldName, String pNewName) {
+        return id -> Objects.equals(NamespacedSchema.ensureNamespaced(id), pOldName) ? pNewName : id;
     }
 }

@@ -2641,7 +2641,7 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.RARE))
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("avanced_nanomuscle_chestplate",
+            .item("advanced_nanomuscle_chestplate",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new AdvancedNanoMuscleSuite(512,
                                     12_800_000L * (long) Math.max(1,
