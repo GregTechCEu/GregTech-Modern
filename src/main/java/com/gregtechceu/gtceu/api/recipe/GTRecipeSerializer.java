@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.StreamDecoder;
@@ -19,11 +18,10 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -35,25 +33,9 @@ import java.util.*;
  */
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
-    public static final MapCodec<GTRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
-            RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
-            RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
-            RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
-            RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
-            RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of())
-                    .forGetter(val -> val.conditions),
-            CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
-            Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel))
-            .apply(instance,
-                    (type, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration,
-                     isFuel) -> new GTRecipe(type, inputs, outputs, tickInputs, tickOutputs, conditions, List.of(),
-                             data, duration, isFuel)));
+    public static final MapCodec<GTRecipe> CODEC = makeCodec(GTCEu.isKubeJSLoaded());
     public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec
             .of(GTRecipeSerializer::toNetwork, GTRecipeSerializer::fromNetwork);
-
-    public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
     @Override
     public MapCodec<GTRecipe> codec() {
@@ -169,19 +151,47 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
     }
 
+    private static MapCodec<GTRecipe> makeCodec(boolean isKubeLoaded) {
+        // @formatter:off
+        if (!isKubeLoaded) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
+                            GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
+                            RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
+                            RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
+                            RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
+                            RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
+                            RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
+                            CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                            Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel))
+                    .apply(instance, (type, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel) ->
+                            new GTRecipe(type, inputs, outputs, tickInputs, tickOutputs, conditions, List.of(), data, duration, isFuel)));
+        } else {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
+                            GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
+                            RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
+                            RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
+                            RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
+                            RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
+                            RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
+                            IngredientActionHolder.LIST_CODEC.optionalFieldOf("ingredient_actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
+                            CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                            Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel))
+                    .apply(instance, GTRecipe::new));
+        }
+        // @formatter:on
+    }
+
     public static class KJSCallWrapper {
 
-        public static List<?> getIngredientActions(JsonObject json) {
-            return IngredientAction.parseList(json.get("kubejs:actions"));
+        public static List<?> getIngredientActions(RegistryFriendlyByteBuf buf) {
+            return IngredientActionHolder.LIST_STREAM_CODEC.decode(buf);
         }
 
-        public static List<?> getIngredientActions(FriendlyByteBuf buf) {
-            return IngredientAction.readList(buf);
-        }
-
-        public static void writeIngredientActions(List<?> ingredientActions, FriendlyByteBuf buf) {
+        public static void writeIngredientActions(List<?> ingredientActions, RegistryFriendlyByteBuf buf) {
             // noinspection unchecked must be List<?> to be able to load without KJS.
-            IngredientAction.writeList(buf, (List<IngredientAction>) ingredientActions);
+            IngredientActionHolder.LIST_STREAM_CODEC.encode(buf, (List<IngredientActionHolder>) ingredientActions);
         }
     }
 }

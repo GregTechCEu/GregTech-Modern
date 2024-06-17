@@ -23,33 +23,29 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
+import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
+import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
@@ -123,8 +119,8 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe addCondition(RecipeCondition condition) {
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
-            setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
+            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new ArrayList<>());
+            getValue(CONDITIONS).add(condition);
             save();
             return this;
         }
@@ -168,7 +164,7 @@ public interface GTRecipeSchema {
         public GTKubeRecipe totalCWU(int cwu) {
             this.durationIsTotalCWU(true);
             this.hideDuration(true);
-            this.setValue(GTRecipeSchema.DURATION, (long) cwu);
+            this.setValue(GTRecipeSchema.DURATION, new TickDuration(cwu));
             return this;
         }
 
@@ -176,15 +172,15 @@ public interface GTRecipeSchema {
             return output(CWURecipeCapability.CAP, cwu);
         }
 
-        public GTKubeRecipe inputItems(InputItem... inputs) {
+        public GTKubeRecipe inputItems(SizedIngredient... inputs) {
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
-        public GTKubeRecipe outputItems(OutputItem... outputs) {
+        public GTKubeRecipe outputItems(SizedIngredient... outputs) {
             return output(ItemRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTKubeRecipe inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+        public GTKubeRecipe inputFluids(SizedFluidIngredient... inputs) {
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
@@ -200,7 +196,7 @@ public interface GTRecipeSchema {
             return output(StressRecipeCapability.CAP, stress);
         }
 
-        public GTKubeRecipe notConsumableItem(InputItem itemStack) {
+        public GTKubeRecipe notConsumableItem(SizedIngredient itemStack) {
             float lastChance = this.chance;
             this.chance = 0;
             inputItems(itemStack);
@@ -208,16 +204,17 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe notConsumableFluid(GTRecipeComponents.FluidIngredientJS fluid) {
+        public GTKubeRecipe notConsumableFluid(SizedFluidIngredient fluid) {
             chancedFluidInput(fluid, 0, 0);
             return this;
         }
 
         public GTKubeRecipe circuit(int configuration) {
-            return notConsumableItem(InputItem.create(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
+            return notConsumableItem(
+                    new SizedIngredient(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
         }
 
-        public GTKubeRecipe chancedInput(InputItem stack, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedInput(SizedIngredient stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance / 10000f;
@@ -228,11 +225,10 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe chancedOutput(OutputItem stack, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedOutput(SizedIngredient stack, int chance, int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
-            this.chance = stack.hasChance() ?
-                    (float) (stack.getChance() > 1 ? stack.getChance() / 10000f : stack.getChance()) : chance / 10000f;
+            this.chance = chance / 10000f;
             this.tierChanceBoost = tierChanceBoost / 10000f;
             outputItems(stack);
             this.chance = lastChance;
@@ -240,7 +236,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
+        public GTKubeRecipe chancedFluidInput(SizedFluidIngredient stack, int chance,
                                               int tierChanceBoost) {
             float lastChance = this.chance;
             float lastTierChanceBoost = this.tierChanceBoost;
@@ -421,8 +417,8 @@ public interface GTRecipeSchema {
                 return false;
             }
 
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
-            ResearchCondition condition = Arrays.stream(this.getValue(CONDITIONS))
+            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, List.of());
+            ResearchCondition condition = this.getValue(CONDITIONS).stream()
                     .filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast)
                     .orElse(null);
             if (condition != null) {
@@ -493,92 +489,29 @@ public interface GTRecipeSchema {
             }
             return super.createRecipe();
         }
-
-        public InputItem readInputItem(Object from) {
-            if (from instanceof SizedIngredient ingr) {
-                return InputItem.create(ingr.ingredient(), ingr.count());
-            } else if (from instanceof JsonObject jsonObject) {
-                var ingredient = SizedIngredient.NESTED_CODEC
-                        .parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject)
-                        .getOrThrow();
-                if (ingredient instanceof SizedIngredient sized) {
-                    return InputItem.create(sized.ingredient(), sized.count());
-                } else {
-                    return InputItem.of(from);
-                }
-            }
-            return InputItem.of(from);
-        }
-
-        public JsonElement writeInputItem(InputItem value) {
-            return SizedIngredient.NESTED_CODEC
-                    .encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE),
-                            new SizedIngredient(value.ingredient, value.count))
-                    .getOrThrow();
-        }
-
-        @Override
-        public OutputItem readOutputItem(Object from) {
-            if (from instanceof SizedIngredient ingredient) {
-                return OutputItem.create(ingredient.ingredient().getItems()[0], Double.NaN);
-            } else if (from instanceof JsonObject jsonObject) {
-                float chance = 1.0f;
-                if (jsonObject.has("chance")) {
-                    chance = jsonObject.get("chance").getAsFloat();
-                }
-                if (jsonObject.has("content")) {
-                    jsonObject = jsonObject.getAsJsonObject("content");
-                }
-                var ingredient = SizedIngredient.NESTED_CODEC
-                        .parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject)
-                        .getOrThrow();
-                return OutputItem.create(ingredient.getItems()[0], chance);
-            }
-            return OutputItem.of(from);
-        }
-
-        @Override
-        public JsonElement writeOutputItem(OutputItem value) {
-            return SizedIngredient.NESTED_CODEC
-                    .encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE),
-                            new SizedIngredient(
-                                    !value.item.getComponentsPatch().isEmpty() ?
-                                            DataComponentIngredient.of(true, value.item) : Ingredient.of(value.item),
-                                    value.item.getCount()))
-                    .getOrThrow();
-        }
-
-        /*
-         * @Override
-         * public JsonElement writeInputFluid(InputFluid value) {
-         * var fluid = ((FluidStack) value).getFluidStack();
-         * FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
-         * return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
-         * }
-         *
-         * @Override
-         * public InputFluid readInputFluid(Object from) {
-         * return super.readInputFluid(from);
-         * }
-         */
     }
 
-    RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");
-    RecipeKey<Long> DURATION = TimeComponent.TICKS.key("duration").optional(100L);
-    RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
-    RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
+    RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
+    RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.key("duration", ComponentRole.OTHER)
+            .optional(new TickDuration(100));
+    RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data", ComponentRole.OTHER).optional((CompoundTag) null);
+    RecipeKey<List<RecipeCondition>> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asList()
+            .key("recipeConditions", ComponentRole.OTHER)
             .defaultOptional();
-    RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false);
+    RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel", ComponentRole.OTHER).optional(false);
 
-    RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs").defaultOptional();
-    RecipeKey<CapabilityMap> ALL_TICK_INPUTS = GTRecipeComponents.TICK_IN.key("tickInputs").defaultOptional();
+    RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs", ComponentRole.INPUT).defaultOptional();
+    RecipeKey<CapabilityMap> ALL_TICK_INPUTS = GTRecipeComponents.TICK_IN.key("tickInputs", ComponentRole.INPUT)
+            .defaultOptional();
 
-    RecipeKey<CapabilityMap> ALL_OUTPUTS = GTRecipeComponents.OUT.key("outputs").defaultOptional();
-    RecipeKey<CapabilityMap> ALL_TICK_OUTPUTS = GTRecipeComponents.TICK_OUT.key("tickOutputs").defaultOptional();
+    RecipeKey<CapabilityMap> ALL_OUTPUTS = GTRecipeComponents.OUT.key("outputs", ComponentRole.OUTPUT)
+            .defaultOptional();
+    RecipeKey<CapabilityMap> ALL_TICK_OUTPUTS = GTRecipeComponents.TICK_OUT.key("tickOutputs", ComponentRole.OUTPUT)
+            .defaultOptional();
 
-    RecipeSchema SCHEMA = new RecipeSchema(GTKubeRecipe.class, GTKubeRecipe::new, DURATION, DATA, CONDITIONS,
-            ALL_INPUTS,
-            ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
-            .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
+    RecipeSchema SCHEMA = new RecipeSchema(DURATION, DATA, CONDITIONS,
+            ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
+            .factory(new KubeRecipeFactory(GTCEu.id("recipe"), GTKubeRecipe.class, GTKubeRecipe::new))
+            .constructor(ID)
             .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);
 }

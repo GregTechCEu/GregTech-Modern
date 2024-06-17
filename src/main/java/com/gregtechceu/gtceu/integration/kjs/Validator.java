@@ -32,7 +32,7 @@ public interface Validator {
                 .count(); // Ensure all errors are caught here
 
         if (errors > 0) {
-            ConsoleJS.getCurrent((Context) null).error("VALIDATION FAILED! Cannot build %s".formatted(id));
+            ConsoleJS.getCurrent(null).error("VALIDATION FAILED! Cannot build %s".formatted(id));
 
             throw new IllegalStateException(
                     "Validation failed for %s. Please check your KubeJS logs for details.".formatted(id));

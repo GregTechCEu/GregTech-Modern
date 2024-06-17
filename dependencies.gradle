@@ -9,6 +9,10 @@ dependencies {
     api("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
     jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
 
+    // Configuration
+    api(forge.configuration)
+    jarJar(forge.configuration)
+
     // Create and its dependencies
     createCompileOnly("com.simibubi.create:create-${libs.versions.minecraftVeryOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
     createCompileOnly forge.flywheel
@@ -19,30 +23,26 @@ dependencies {
     jeiCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
-    reiCompileOnly forge.rei.plugin
-    reiCompileOnly forge.rei.api
+    reiCompileOnlyApi forge.rei.plugin
+    reiCompileOnlyApi forge.rei.api
     reiCompileOnly forge.rei.forge
 
     // EMI
-    emiCompileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    emiCompileOnly forge.emi
+    emiCompileOnlyApi("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
+    emiImplementation forge.emi
 
     // TOP
-    topCompileOnly(forge.theoneprobe) { transitive = false }
+    topCompileOnlyApi(forge.theoneprobe) { transitive = false }
 
     // Jade
-    jadeCompileOnly(forge.jade)
+    jadeCompileOnlyApi(forge.jade)
 
     // AE2
-    ae2CompileOnly(forge.ae2) { transitive = false }
+    ae2CompileOnlyApi(forge.ae2) { transitive = false }
     compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS
-    kjsCompileOnly forge.kubejs
-
-    // Configuration
-    api(forge.configuration)
-    jarJar(forge.configuration)
+    kjsCompileOnlyApi forge.kubejs
 
     // Shimmer
     shimmerCompileOnly(forge.shimmer.forge) { transitive = false }

@@ -24,15 +24,15 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "17.3.0.49"
-        def reiVersion = "15.0.728"
-        def emiVersion = "1.1.6"
+        def jeiVersion = "19.0.0.1"
+        def reiVersion = "16.0.729"
+        def emiVersion = "1.1.7"
         def ae2Version = "18.1.3-alpha"
-        def kjsVersion = "2006.7.0-build.12"
+        def kjsVersion = "2100.7.0-build.30"
         def auVersion = "1.20.1-0.6.0"
 
         // NeoForge
-        def neoForgeVersion = "21.0.0-beta"
+        def neoForgeVersion = "21.0.14-beta"
         def registrateForgeVersion = "MC1.21-1.3.0"
         def createForgeVersion = "0.5.1.d-9"
         def flywheelForgeVersion = "0.6.9-5"
@@ -72,16 +72,16 @@ dependencyResolutionManagement {
             library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersionVeryOld}").versionRef(flywheel)
 
             def jei = version("jei", jeiVersion)
-            library("jei-common-api", "mezz.jei", "jei-${minecraftVersionOld}-common-api").versionRef(jei)
-            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersionOld}-neoforge-api").versionRef(jei)
-            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersionOld}-neoforge").versionRef(jei)
+            library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
+            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersion}-neoforge-api").versionRef(jei)
+            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersion}-neoforge").versionRef(jei)
 
             def rei = version("rei", reiVersion)
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-neoforge").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-neoforge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-neoforge").versionRef(rei)
 
-            def emi = version("emi", emiVersion + "+" + minecraftVersionOldish)
+            def emi = version("emi", emiVersion + "+" + minecraftVersion)
             library("emi", "dev.emi", "emi-neoforge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)

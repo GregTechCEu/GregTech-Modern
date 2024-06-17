@@ -116,7 +116,7 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     }
 
     public TagPrefixBuilder miningToolTag(String path) {
-        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(path)));
+        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.parse(path)));
         return this;
     }
 

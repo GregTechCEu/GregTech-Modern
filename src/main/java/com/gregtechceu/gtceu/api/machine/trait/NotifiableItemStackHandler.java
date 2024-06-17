@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
+import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
@@ -16,10 +16,11 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,7 +112,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                 if (GTCEu.isKubeJSLoaded()) {
                                     // noinspection unchecked must be List<?> to be able to load without KJS.
                                     ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                            (List<IngredientAction>) recipe.ingredientActions);
+                                            (List<IngredientActionHolder>) recipe.ingredientActions);
                                     if (!actioned.isEmpty()) {
                                         extracted = actioned;
                                         didRunIngredientAction = true;
@@ -146,7 +147,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                         if (GTCEu.isKubeJSLoaded()) {
                             // noinspection unchecked must be List<?> to be able to load without KJS.
                             ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                    (List<IngredientAction>) recipe.ingredientActions);
+                                    (List<IngredientActionHolder>) recipe.ingredientActions);
                             if (!actioned.isEmpty()) {
                                 leftStack = actioned;
                                 didRunIngredientAction = true;
@@ -287,17 +288,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     public static class KJSCallWrapper {
 
         public static ItemStack applyIngredientAction(CustomItemStackHandler storage, int index,
-                                                      List<IngredientAction> ingredientActions) {
+                                                      List<IngredientActionHolder> ingredientActions) {
             var stack = storage.getStackInSlot(index);
 
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
 
-            DummyCraftingContainer container = new DummyCraftingContainer(storage);
-            for (var action : ingredientActions) {
-                if (action.checkFilter(index, stack)) {
-                    return action.transform(stack.copy(), index, container);
+            CraftingInput input = new DummyCraftingInput(storage);
+            for (var holder : ingredientActions) {
+                if (holder.filter().checkFilter(index, stack)) {
+                    return holder.action().transform(stack.copy(), index, input);
                 }
             }
 

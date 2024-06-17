@@ -23,8 +23,7 @@ public class GTRegistryEventJS<K, V> implements KubeStartupEvent {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
         }
 
-        var b = t.factory()
-                .createBuilder(GTCEu.appendId(id));
+        var b = t.factory().createBuilder(GTCEu.appendId(id));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
@@ -45,8 +44,7 @@ public class GTRegistryEventJS<K, V> implements KubeStartupEvent {
                             .map(Object.class::cast).toArray());
         }
 
-        var b = t.factory().createBuilder(GTCEu.appendId(id),
-                args);
+        var b = t.factory().createBuilder(GTCEu.appendId(id), args);
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
@@ -65,8 +63,7 @@ public class GTRegistryEventJS<K, V> implements KubeStartupEvent {
                     "Registry for type '" + registry.registryKey + "' doesn't have any builders registered!");
         }
 
-        var b = t.factory()
-                .createBuilder(GTCEu.appendId(id));
+        var b = t.factory().createBuilder(GTCEu.appendId(id));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + t.type() + "' for object '" + id + "'!");

@@ -65,8 +65,6 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -77,7 +75,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -86,17 +83,19 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
+import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
-import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
-import dev.latvian.mods.kubejs.script.BindingsEvent;
+import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import dev.latvian.mods.kubejs.script.WrapperRegistry;
+import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.kubejs.util.NBTUtils;
 import dev.latvian.mods.rhino.Wrapper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -164,14 +163,14 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
-    public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
+    public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
         for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
-            event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
+            registry.register(entry.getKey(), GTRecipeSchema.SCHEMA);
         }
     }
 
     @Override
-    public void registerRecipeComponents(RecipeComponentFactoryRegistryEvent event) {
+    public void registerRecipeComponents(RecipeComponentFactoryRegistry event) {
         event.register("compoundTag", GTRecipeComponents.TAG);
         event.register("recipeCondition", GTRecipeComponents.RECIPE_CONDITION);
         event.register("resourceLocation", GTRecipeComponents.RESOURCE_LOCATION);
@@ -181,21 +180,14 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.register("gtRecipeOutputs", GTRecipeComponents.OUT);
         event.register("gtRecipeTickOutputs", GTRecipeComponents.TICK_OUT);
 
-        event.register("gtItemIn", GTRecipeComponents.ITEM_IN);
-        event.register("gtItemOut", GTRecipeComponents.ITEM_OUT);
-        event.register("gtFluidIn", GTRecipeComponents.FLUID_IN);
-        event.register("gtFluidOut", GTRecipeComponents.FLUID_OUT);
-        event.register("gtEuIn", GTRecipeComponents.EU_IN);
-        event.register("gtEuOut", GTRecipeComponents.EU_OUT);
-        event.register("gtSuIn", GTRecipeComponents.SU_IN);
-        event.register("gtSuOut", GTRecipeComponents.SU_OUT);
-
-        event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
-        event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
+        event.register("gtItem", GTRecipeComponents.ITEM);
+        event.register("gtFluid", GTRecipeComponents.FLUID);
+        event.register("gtEu", GTRecipeComponents.EU);
+        event.register("gtSu", GTRecipeComponents.SU);
     }
 
     @Override
-    public void registerBindings(BindingsEvent event) {
+    public void registerBindings(BindingRegistry event) {
         event.add("GTRegistries", GTRegistries.class);
         event.add("GTMaterials", GTMaterials.class);
         event.add("GTElements", GTElements.class);
@@ -251,9 +243,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
-    public void registerTypeWrappers(WrapperRegistry registry) {
+    public void registerTypeWrappers(TypeWrapperRegistry registry) {
         KubeJSPlugin.super.registerTypeWrappers(registry);
-        registry.register(GTRecipeType.class, (ctx, o) -> {
+        registry.register(GTRecipeType.class, (TypeWrapperRegistry.ContextFromFunction<GTRecipeType>) (ctx, o) -> {
             if (o instanceof Wrapper w) {
                 o = w.unwrap();
             }
@@ -262,119 +254,130 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             return null;
         });
 
-        registry.register(Element.class, (ctx, o) -> {
+        registry.register(Element.class, (TypeWrapperRegistry.ContextFromFunction<Element>) (ctx, o) -> {
             if (o instanceof Element element) return element;
             if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
             return null;
         });
-        registry.register(Material.class, (ctx, o) -> {
+        registry.register(Material.class, (TypeWrapperRegistry.ContextFromFunction<Material>) (ctx, o) -> {
             if (o instanceof Material material) return material;
             if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
             return null;
         });
-        registry.register(MachineDefinition.class, (ctx, o) -> {
-            if (o instanceof MachineDefinition definition) return definition;
-            if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
-            return null;
-        });
+        registry.register(MachineDefinition.class,
+                (TypeWrapperRegistry.ContextFromFunction<MachineDefinition>) (ctx, o) -> {
+                    if (o instanceof MachineDefinition definition) return definition;
+                    if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
+                    return null;
+                });
 
-        registry.register(TagPrefix.class, (ctx, o) -> {
+        registry.register(TagPrefix.class, (TypeWrapperRegistry.ContextFromFunction<TagPrefix>) (ctx, o) -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        registry.register(UnificationEntry.class, (ctx, o) -> {
-            if (o instanceof UnificationEntry entry) return entry;
-            if (o instanceof CharSequence chars) {
-                var values = chars.toString().split(":");
-                if (values.length == 1) {
-                    return new UnificationEntry(TagPrefix.get(values[0]));
-                }
-                if (values.length >= 2) {
-                    return new UnificationEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
-                }
-            }
-            return null;
-        });
-        registry.register(RecipeCapability.class, (ctx, o) -> {
-            if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
-            return null;
-        });
+        registry.register(UnificationEntry.class,
+                (TypeWrapperRegistry.ContextFromFunction<UnificationEntry>) (ctx, o) -> {
+                    if (o instanceof UnificationEntry entry) return entry;
+                    if (o instanceof CharSequence chars) {
+                        var values = chars.toString().split(":");
+                        if (values.length == 1) {
+                            return new UnificationEntry(TagPrefix.get(values[0]));
+                        }
+                        if (values.length >= 2) {
+                            return new UnificationEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
+                        }
+                    }
+                    return null;
+                });
+        // noinspection rawtypes
+        registry.register(RecipeCapability.class,
+                (TypeWrapperRegistry.ContextFromFunction<RecipeCapability>) (ctx, o) -> {
+                    if (o instanceof RecipeCapability<?> capability) return capability;
+                    if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
+                    return null;
+                });
 
-        registry.register(MaterialIconSet.class, (ctx, o) -> {
-            if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
-            return null;
-        });
-        registry.register(MaterialStack.class, (ctx, o) -> {
+        registry.register(MaterialIconSet.class,
+                (TypeWrapperRegistry.ContextFromFunction<MaterialIconSet>) (ctx, o) -> {
+                    if (o instanceof MaterialIconSet iconSet) return iconSet;
+                    if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+                    return null;
+                });
+        registry.register(MaterialStack.class, (TypeWrapperRegistry.ContextFromFunction<MaterialStack>) (ctx, o) -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        registry.register(MaterialStackWrapper.class, (ctx, o) -> {
-            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
-            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
-            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
-            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
-            return null;
-        });
+        registry.register(MaterialStackWrapper.class,
+                (TypeWrapperRegistry.ContextFromFunction<MaterialStackWrapper>) (ctx, o) -> {
+                    if (o instanceof MaterialStackWrapper wrapper) return wrapper;
+                    if (o instanceof MaterialStack stack)
+                        return new MaterialStackWrapper(stack::material, stack.amount());
+                    if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
+                    if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
+                    return null;
+                });
 
-        registry.register(IWorldGenLayer.class, (ctx, o) -> {
+        registry.register(IWorldGenLayer.class, (TypeWrapperRegistry.ContextFromFunction<IWorldGenLayer>) (ctx, o) -> {
             if (o instanceof IWorldGenLayer layer) return layer;
             if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
             return null;
         });
-        registry.register(HeightRangePlacement.class, (ctx, o) -> {
-            if (o instanceof HeightRangePlacement placement) return placement;
-            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
-                    .map(tag -> HeightRangePlacement.CODEC.codec().parse(NbtOps.INSTANCE, tag))
-                    .flatMap(DataResult::result)
-                    .orElse(null);
-        });
-        registry.register(BiomeWeightModifier.class, (ctx, o) -> {
-            if (o instanceof BiomeWeightModifier modifier) return modifier;
-            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
-                    .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
-                    .flatMap(DataResult::result)
-                    .orElse(null);
-        });
-        registry.register(VeinGenerator.class, (ctx, o) -> {
+        registry.register(HeightRangePlacement.class,
+                (TypeWrapperRegistry.ContextFromFunction<HeightRangePlacement>) (ctx, o) -> {
+                    if (o instanceof HeightRangePlacement placement) return placement;
+                    return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
+                            .map(tag -> HeightRangePlacement.CODEC.codec().parse(NbtOps.INSTANCE, tag))
+                            .flatMap(DataResult::result)
+                            .orElse(null);
+                });
+        registry.register(BiomeWeightModifier.class,
+                (TypeWrapperRegistry.ContextFromFunction<BiomeWeightModifier>) (ctx, o) -> {
+                    if (o instanceof BiomeWeightModifier modifier) return modifier;
+                    return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
+                            .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
+                            .flatMap(DataResult::result)
+                            .orElse(null);
+                });
+        registry.register(VeinGenerator.class, (TypeWrapperRegistry.ContextFromFunction<VeinGenerator>) (ctx, o) -> {
             if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        registry.register(IndicatorGenerator.class, (ctx, o) -> {
-            if (o instanceof IndicatorGenerator generator) return generator;
-            return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
-                    .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
-                    .flatMap(DataResult::result)
-                    .orElse(null);
-        });
-        registry.register(IndicatorPlacement.class, (ctx, o) -> {
-            if (o instanceof IndicatorPlacement placement) return placement;
-            if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
-            return null;
-        });
-        registry.register(MedicalCondition.class, (ctx, o) -> {
-            if (o instanceof MedicalCondition condition) return condition;
-            if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
-            return null;
-        });
+        registry.register(IndicatorGenerator.class,
+                (TypeWrapperRegistry.ContextFromFunction<IndicatorGenerator>) (ctx, o) -> {
+                    if (o instanceof IndicatorGenerator generator) return generator;
+                    return Optional.ofNullable(NBTUtils.toTagCompound(ctx, o))
+                            .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
+                            .flatMap(DataResult::result)
+                            .orElse(null);
+                });
+        registry.register(IndicatorPlacement.class,
+                (TypeWrapperRegistry.ContextFromFunction<IndicatorPlacement>) (ctx, o) -> {
+                    if (o instanceof IndicatorPlacement placement) return placement;
+                    if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
+                    return null;
+                });
+        registry.register(MedicalCondition.class,
+                (TypeWrapperRegistry.ContextFromFunction<MedicalCondition>) (ctx, o) -> {
+                    if (o instanceof MedicalCondition condition) return condition;
+                    if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
+                    return null;
+                });
         // jank because Rhino doesn't agree that it's an interface
-        registry.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
-            if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
-            return () -> BlockStatePredicate.ruleTestOf(ctx, o);
-        });
-        registry.register(GTRecipeComponents.FluidIngredientJS.class,
-                GTRecipeComponents.FluidIngredientJS::of);
+        registry.register(IWorldGenLayer.RuleTestSupplier.class,
+                (TypeWrapperRegistry.ContextFromFunction<IWorldGenLayer.RuleTestSupplier>) (ctx, o) -> {
+                    if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
+                    return () -> BlockStatePredicate.ruleTestOf(ctx, o);
+                });
     }
 
     @Override
-    public void injectRuntimeRecipes(RecipesKubeEvent event, RecipeManager manager,
+    public void injectRuntimeRecipes(RecipesKubeEvent event, RecipeManagerKJS manager,
                                      Map<ResourceLocation, RecipeHolder<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesKubeEvent.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
@@ -384,13 +387,13 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                         .recipeBuilder(gtRecipe.idWithoutType());
 
                 if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-                    builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+                    builder.duration = (int) gtRecipe.getValue(GTRecipeSchema.DURATION).ticks();
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
                     builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
-                    builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
+                    builder.conditions.addAll(gtRecipe.getValue(GTRecipeSchema.CONDITIONS));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
                     builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
@@ -398,42 +401,16 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                 builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
-                    builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content), Platform.getFrozenRegistry()))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS) != null) {
-                    builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer.fromJsonContent(
-                                            GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getSecond()
-                                                    .write(gtRecipe, content),
-                                            Platform.getFrozenRegistry()))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS) != null) {
-                    builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content), Platform.getFrozenRegistry()))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS) != null) {
-                    builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer.fromJsonContent(
-                                            GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getSecond()
-                                                    .write(gtRecipe, content),
-                                            Platform.getFrozenRegistry()))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                    builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS));
                 }
 
                 builder.save(new RecipeOutput() {
@@ -445,8 +422,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                     }
 
                     @Override
-                    public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
-                                       ICondition... conditions) {
+                    public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
+                                       @Nullable AdvancementHolder advancement,
+                                       ICondition @NotNull... conditions) {
                         recipesByName.put(id, new RecipeHolder<>(id, recipe));
                     }
                 });
