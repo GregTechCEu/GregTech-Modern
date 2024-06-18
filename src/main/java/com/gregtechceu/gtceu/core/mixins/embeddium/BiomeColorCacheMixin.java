@@ -30,11 +30,11 @@ public class BiomeColorCacheMixin {
 
         // because spotless decided to be dumb about if statement indentation
         if (source == BiomeColorSource.GRASS) {
-            return clientHandler.colorGrass(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         } else if (source == BiomeColorSource.FOLIAGE) {
-            return clientHandler.colorFoliage(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         } else if (source == BiomeColorSource.WATER) {
-            return clientHandler.colorLiquid(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         }
 
         return color;

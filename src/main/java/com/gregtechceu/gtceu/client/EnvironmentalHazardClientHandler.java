@@ -122,13 +122,7 @@ public class EnvironmentalHazardClientHandler {
         }
         // must clear tint caches when block colors change
         if (newStrength > COLORING_LOW) {
-            for (int y = Minecraft.getInstance().level.getMinSection(); y <
-                    Minecraft.getInstance().level.getMaxSection(); ++y) {
-                Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
-            }
-
-            ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                    .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+            updateChunks(pos);
         }
     }
 
@@ -140,19 +134,17 @@ public class EnvironmentalHazardClientHandler {
         this.hazardZones.put(pos, zone);
         // must clear tint caches when block colors change
         if (zone.strength() > COLORING_LOW) {
-            for (int y = Minecraft.getInstance().level.getMinSection(); y <
-                    Minecraft.getInstance().level.getMaxSection(); ++y) {
-                Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
-            }
-
-            ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                    .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+            updateChunks(pos);
         }
     }
 
     public void removeHazardZone(ChunkPos pos) {
         this.hazardZones.remove(pos);
 
+        updateChunks(pos);
+    }
+
+    private void updateChunks(ChunkPos pos) {
         for (int y = Minecraft.getInstance().level.getMinSection(); y <
                 Minecraft.getInstance().level.getMaxSection(); ++y) {
             Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
@@ -162,39 +154,7 @@ public class EnvironmentalHazardClientHandler {
                 .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
     }
 
-    public int colorGrass(int color, ChunkPos pos) {
-        var zone = hazardZones.get(pos);
-        if (zone == null) {
-            return color;
-        }
-        var entry = chunkColorCache.get(pos);
-        if (entry != null &&
-                (entry.firstFloat() > zone.strength() + 0.5f || entry.firstFloat() < zone.strength() - 0.5f)) {
-            return entry.valueInt();
-        }
-
-        color = colorize(color, zone.strength(), zone.condition().color);
-        chunkColorCache.put(pos, FloatIntPair.of(zone.strength(), color));
-        return color;
-    }
-
-    public int colorLiquid(int color, ChunkPos pos) {
-        var zone = hazardZones.get(pos);
-        if (zone == null) {
-            return color;
-        }
-        var entry = chunkColorCache.get(pos);
-        if (entry != null &&
-                (entry.firstFloat() > zone.strength() + 0.5f || entry.firstFloat() < zone.strength() - 0.5f)) {
-            return entry.valueInt();
-        }
-
-        color = colorize(color, zone.strength(), zone.condition().color);
-        chunkColorCache.put(pos, FloatIntPair.of(zone.strength(), color));
-        return color;
-    }
-
-    public int colorFoliage(int color, ChunkPos pos) {
+    public int colorZone(int color, ChunkPos pos) {
         var zone = hazardZones.get(pos);
         if (zone == null) {
             return color;

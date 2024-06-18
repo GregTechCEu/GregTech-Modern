@@ -40,11 +40,11 @@ public class BlockColorsMixin {
         // @formatter:off
         final Block block = state.getBlock();
         if (block instanceof GrassBlock) {
-            return clientHandler.colorGrass(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         } else if (state.is(BlockTags.LEAVES) || block instanceof TallGrassBlock || state.is(BlockTags.FLOWERS) || block instanceof DoublePlantBlock) {
-            return clientHandler.colorFoliage(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         } else if (!state.getFluidState().isEmpty()) {
-            return clientHandler.colorLiquid(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         }
         // @formatter:on
 
