@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +21,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     }
 
     @Override
-    public Float copyInner(Float content) {
+    public Float copyInner(@NotNull Float content) {
         return content;
     }
 

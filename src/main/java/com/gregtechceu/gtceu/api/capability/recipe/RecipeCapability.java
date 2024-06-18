@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,8 +59,9 @@ public abstract class RecipeCapability<T> {
     /**
      * deep copy of this content. recipe need it for searching and such things
      */
-    public T copyInner(T content) {
-        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), Platform.getFrozenRegistry());
+    public T copyInner(@NotNull T content) {
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(),
+                Platform.getFrozenRegistry(), ConnectionType.NEOFORGE);
         serializer.toNetwork(buf, content);
         return serializer.fromNetwork(buf);
     }

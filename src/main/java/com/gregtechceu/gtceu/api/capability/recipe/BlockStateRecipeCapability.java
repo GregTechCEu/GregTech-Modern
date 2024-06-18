@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerBlockState;
 
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
 
@@ -13,7 +14,7 @@ public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
     }
 
     @Override
-    public BlockState copyInner(BlockState content) {
+    public BlockState copyInner(@NotNull BlockState content) {
         return content;
     }
 }

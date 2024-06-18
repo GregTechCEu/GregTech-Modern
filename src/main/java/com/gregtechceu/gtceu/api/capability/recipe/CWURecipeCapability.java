@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public Integer copyInner(Integer content) {
+    public Integer copyInner(@NotNull Integer content) {
         return content;
     }
 

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +25,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     }
 
     @Override
-    public Long copyInner(Long content) {
+    public Long copyInner(@NotNull Long content) {
         return content;
     }
 

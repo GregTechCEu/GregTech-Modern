@@ -68,7 +68,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     }
 
     @Override
-    public SizedIngredient copyInner(SizedIngredient content) {
+    public SizedIngredient copyInner(@NotNull SizedIngredient content) {
         if (content instanceof SizedIngredient sizedIngredient) {
             return new SizedIngredient(sizedIngredient.ingredient(), sizedIngredient.count());
         } else if (content.ingredient().getCustomIngredient() instanceof IntCircuitIngredient circuit) {
@@ -357,7 +357,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
                         ItemStack researchItem = ItemRecipeCapability.CAP
-                                .of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                                .of(r.getOutputContents(ItemRecipeCapability.CAP).getFirst().content).getItems()[0];
                         researchItem = researchItem.copy();
                         researchItem.setCount(1);
                         boolean didMatch = false;
@@ -379,7 +379,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                         if (!didMatch) scannerPossibilities.add(Either.right(List.of(researchItem)));
                     }
                 }
-                scannerPossibilities.add(outputStacks.get(0));
+                scannerPossibilities.add(outputStacks.getFirst());
             }
         }
 
@@ -468,103 +468,55 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     // Maps ingredients to Either <(Tag with count), ItemStack>s
     private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(SizedIngredient ingredient) {
-        if (ingredient instanceof SizedIngredient sizedIngredient) {
-            final int amount = sizedIngredient.count();
-            if (sizedIngredient.ingredient().getCustomIngredient() instanceof IntersectionIngredient intersection) {
-                List<Ingredient> children = intersection.children();
-                if (children.isEmpty()) {
-                    return Either.right(null);
-                }
-                var childEither = mapItem(children.get(0));
-                return Either.right(childEither.map(tags -> {
-                    List<ItemStack> tagItems = tags.stream()
-                            .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
-                                    pair.getSecond()))
-                            .flatMap(pair -> pair.getFirst().flatMap(
-                                    tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
-                            .collect(Collectors.toList());
-                    ListIterator<ItemStack> iterator = tagItems.listIterator();
-                    while (iterator.hasNext()) {
-                        var item = iterator.next();
-                        for (int i = 1; i < children.size(); ++i) {
-                            if (!children.get(i).test(item)) {
-                                iterator.remove();
-                                break;
-                            }
-                        }
-                        iterator.set(item.copyWithCount(amount));
-                    }
-                    return tagItems;
-                }, items -> {
-                    items = new ArrayList<>(items);
-                    ListIterator<ItemStack> iterator = items.listIterator();
-                    while (iterator.hasNext()) {
-                        var item = iterator.next();
-                        for (int i = 1; i < children.size(); ++i) {
-                            if (!children.get(i).test(item)) {
-                                iterator.remove();
-                                break;
-                            }
-                        }
-                        iterator.set(item.copyWithCount(amount));
-                    }
-                    return items;
-                }));
-            } else if (sizedIngredient.ingredient().getCustomIngredient() != null) {
-                return Either.right(sizedIngredient.ingredient().getCustomIngredient().getItems().toList());
-            } else if (sizedIngredient.ingredient().getValues().length > 0 &&
-                    sizedIngredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                        return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
-                    }
-        }
-        return Either.right(Arrays.stream(ingredient.getItems()).toList());
-    }
-
-    public static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
-        if (ingredient.getCustomIngredient() instanceof IntersectionIngredient intersection) {
-            // Map intersection ingredients to the items inside, as recipe viewers don't support them.
+        final int amount = ingredient.count();
+        if (ingredient.ingredient().getCustomIngredient() instanceof IntersectionIngredient intersection) {
             List<Ingredient> children = intersection.children();
             if (children.isEmpty()) {
                 return Either.right(null);
             }
-            var childEither = mapItem(children.get(0));
+            var childEither = mapItem(new SizedIngredient(children.getFirst(), amount));
             return Either.right(childEither.map(tags -> {
                 List<ItemStack> tagItems = tags.stream()
-                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
+                                pair.getSecond()))
                         .flatMap(pair -> pair.getFirst().flatMap(
                                 tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
                         .collect(Collectors.toList());
                 ListIterator<ItemStack> iterator = tagItems.listIterator();
+                iteratorLoop:
                 while (iterator.hasNext()) {
                     var item = iterator.next();
                     for (int i = 1; i < children.size(); ++i) {
                         if (!children.get(i).test(item)) {
                             iterator.remove();
-                            break;
+                            continue iteratorLoop;
                         }
                     }
+                    iterator.set(item.copyWithCount(amount));
                 }
                 return tagItems;
             }, items -> {
                 items = new ArrayList<>(items);
                 ListIterator<ItemStack> iterator = items.listIterator();
+                iteratorLoop:
                 while (iterator.hasNext()) {
                     var item = iterator.next();
                     for (int i = 1; i < children.size(); ++i) {
                         if (!children.get(i).test(item)) {
                             iterator.remove();
-                            break;
+                            continue iteratorLoop;
                         }
                     }
+                    iterator.set(item.copyWithCount(amount));
                 }
                 return items;
             }));
-        } else if (ingredient.getCustomIngredient() != null) {
-            return Either.right(ingredient.getCustomIngredient().getItems().toList());
-        } else if (ingredient.getValues().length > 0 &&
-                ingredient.getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                    return Either.left(List.of(Pair.of(tagValue.tag(), 1)));
-                }
+        } else if (ingredient.ingredient().getCustomIngredient() != null) {
+            return Either.right(ingredient.ingredient().getCustomIngredient().getItems().toList());
+        } else if (ingredient.ingredient().getValues().length > 0 &&
+                ingredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
+            return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+        }
         return Either.right(Arrays.stream(ingredient.getItems()).toList());
     }
 }

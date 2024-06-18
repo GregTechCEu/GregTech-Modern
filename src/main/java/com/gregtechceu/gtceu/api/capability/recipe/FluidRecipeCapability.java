@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -55,7 +56,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     }
 
     @Override
-    public SizedFluidIngredient copyInner(SizedFluidIngredient content) {
+    public SizedFluidIngredient copyInner(@NotNull SizedFluidIngredient content) {
         return new SizedFluidIngredient(content.ingredient(), content.amount());
     }
 
@@ -350,12 +351,52 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     // Maps fluids to Either<(tag with count), FluidStack>s
     public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(SizedFluidIngredient ingredient) {
-        if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
-            List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
-            tags.add(Pair.of(tag.tag(), ingredient.amount()));
-            return Either.left(tags);
-        } else {
-            return Either.right(Arrays.asList(ingredient.getFluids()));
+        final int amount = ingredient.amount();
+        if (ingredient.ingredient() instanceof IntersectionFluidIngredient intersection) {
+            // Map intersection ingredients to the items inside, as recipe viewers don't support them.
+            List<FluidIngredient> children = intersection.children();
+            if (children.isEmpty()) {
+                return Either.right(null);
+            }
+            var childEither = mapFluid(new SizedFluidIngredient(children.getFirst(), amount));
+            return Either.right(childEither.map(tags -> {
+                List<FluidStack> tagItems = tags.stream()
+                        .map(pair -> Pair.of(BuiltInRegistries.FLUID.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .flatMap(pair -> pair.getFirst().flatMap(
+                                tag -> tag.stream().map(holder -> new FluidStack(holder.value(), pair.getSecond()))))
+                        .collect(Collectors.toList());
+                ListIterator<FluidStack> iterator = tagItems.listIterator();
+                iteratorLoop:
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            continue iteratorLoop;
+                        }
+                    }
+                    iterator.set(item.copyWithAmount(amount));
+                }
+                return tagItems;
+            }, items -> {
+                items = new ArrayList<>(items);
+                ListIterator<FluidStack> iterator = items.listIterator();
+                iteratorLoop:
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            continue iteratorLoop;
+                        }
+                    }
+                    iterator.set(item.copyWithAmount(amount));
+                }
+                return items;
+            }));
+        } else if (ingredient.ingredient() instanceof TagFluidIngredient tag) {
+            return Either.left(List.of(Pair.of(tag.tag(), amount)));
         }
+        return Either.right(Arrays.stream(ingredient.getFluids()).toList());
     }
 }
