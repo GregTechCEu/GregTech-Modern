@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
 import com.gregtechceu.gtceu.common.datafixer.fixes.GTItemStackComponentizationFix;
 import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
-import com.gregtechceu.gtceu.common.datafixer.schemas.V1;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.util.datafix.DataFixTypes;
@@ -31,7 +30,6 @@ import static com.gregtechceu.gtceu.api.datafixer.DataFixesInternals.BASE_SCHEMA
 
 public class GTDataFixers {
 
-    private static final BiFunction<Integer, Schema, Schema> SAME = Schema::new;
     private static final BiFunction<Integer, Schema, Schema> SAME_NAMESPACED = NamespacedSchema::new;
 
     public static void init() {
@@ -54,25 +52,24 @@ public class GTDataFixers {
     }
 
     public static void addFixers(DataFixerBuilder builder) {
-        builder.addSchema(0, BASE_SCHEMA);
-        Schema schemaV1 = builder.addSchema(1, V1::new);
-        builder.addFixer(new AddNewChoices(schemaV1, "Add GT block entities fix", References.BLOCK_ENTITY));
+        Schema schemaV0 = builder.addSchema(0, BASE_SCHEMA);
+        builder.addFixer(new AddNewChoices(schemaV0, "Added GT block entities", References.BLOCK_ENTITY));
 
-        Schema schemaV2 = builder.addSchema(2, SAME_NAMESPACED);
-        builder.addFixer(ItemRenameFix.create(schemaV2, "advanced_nanomuscle_chestplate rename fix",
+        Schema schemaV1 = builder.addSchema(1, SAME_NAMESPACED);
+        builder.addFixer(ItemRenameFix.create(schemaV1, "advanced_nanomuscle_chestplate rename fix",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
-        builder.addFixer(ItemRenameFix.create(schemaV2, "U238 rename fix",
+        builder.addFixer(ItemRenameFix.create(schemaV1, "U238 rename fix",
                 createRenamer(Pattern.compile("uranium_"), "uranium_238_")));
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Pu239 rename fix",
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 rename fix",
                 createRenamer(Pattern.compile("plutonium_"), "plutonium_239_")));
 
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Raw oil bucket rename fix",
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Raw oil bucket rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS)));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Raw oil block rename fix",
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Raw oil block rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_BLOCK_IDS)));
 
-        builder.addFixer(new GTItemStackComponentizationFix(schemaV2));
+        builder.addFixer(new GTItemStackComponentizationFix(schemaV1));
     }
 
     private static UnaryOperator<String> createRenamer(String pOldName, String pNewName) {

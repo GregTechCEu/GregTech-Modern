@@ -16,10 +16,10 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

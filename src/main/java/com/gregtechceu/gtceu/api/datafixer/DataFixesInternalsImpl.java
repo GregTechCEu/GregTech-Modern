@@ -16,6 +16,8 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
+import com.gregtechceu.gtceu.common.datafixer.schemas.V0;
+
 import net.minecraft.nbt.CompoundTag;
 
 import com.mojang.datafixers.DSL;
@@ -57,7 +59,7 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     @Override
     public @NotNull Schema createBaseSchema() {
-        return new Schema(0, this.latestVanillaSchema);
+        return new V0(0, this.latestVanillaSchema);
     }
 
     @Override

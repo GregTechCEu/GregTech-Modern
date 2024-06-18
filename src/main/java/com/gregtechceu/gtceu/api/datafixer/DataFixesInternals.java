@@ -17,6 +17,7 @@
 package com.gregtechceu.gtceu.api.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +55,11 @@ public abstract class DataFixesInternals {
 
     public static @NotNull DataFixesInternals get() {
         if (instance == null) {
+            if (!ConfigHolder.INSTANCE.compat.doDatafixers) {
+                instance = new NoOpDataFixesInternals();
+                return instance;
+            }
+
             Schema latestVanillaSchema;
             try {
                 latestVanillaSchema = DataFixers.getDataFixer()

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

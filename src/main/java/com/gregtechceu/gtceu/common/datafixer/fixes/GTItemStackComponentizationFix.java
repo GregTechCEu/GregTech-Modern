@@ -142,7 +142,8 @@ public class GTItemStackComponentizationFix extends DataFix {
                     .set("layer", tag.createInt(gtBehaviors.get().remove("AoELayer").asInt(0)));
             data.setComponent("gtceu:aoe", dynamic);
 
-            Map<String, ? extends Dynamic<?>> map = gtBehaviors.get().asMap(val -> val.asString(""), Function.identity());
+            Map<String, ? extends Dynamic<?>> map = gtBehaviors.get().asMap(val -> val.asString(""),
+                    Function.identity());
             if (!map.isEmpty()) {
                 dynamic = tag.emptyMap();
 
@@ -177,8 +178,10 @@ public class GTItemStackComponentizationFix extends DataFix {
         private ItemStackData(String pItem, Dynamic<?> pNbt) {
             this.item = NamespacedSchema.ensureNamespaced(pItem);
             this.components = pNbt.emptyMap();
-            this.tag = pNbt.get("tag").orElseEmptyMap();
-            this.remainder = pNbt.remove("tag");
+            this.tag = pNbt.get("components").get("minecraft:custom_data")
+                    .result().orElseGet(() -> (Dynamic) pNbt.get("tag").orElseEmptyMap());
+            this.remainder = pNbt.remove("tag").set("components", pNbt.get("components")
+                    .orElseEmptyMap().remove("minecraft:custom_data"));
         }
 
         public static Optional<ItemStackData> read(final Dynamic<?> pTag) {
