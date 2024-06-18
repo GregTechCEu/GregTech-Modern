@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -57,11 +55,6 @@ public class GTOres {
 
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
     public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
-
-    static {
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
-    }
 
     //////////////////////////////////////
     // ******** End Vein *********//
