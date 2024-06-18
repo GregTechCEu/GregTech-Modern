@@ -88,9 +88,15 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
 
             final ChunkPos pos = new ChunkPos(getPos());
             Object2FloatMap<ChunkPos> relativePositions = new Object2FloatOpenHashMap<>();
-            for (int x = -tier; x < tier; ++x) {
-                for (int z = -tier; z < tier; ++z) {
-                    relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
+            int radius = tier / 2;
+            if (radius <= 0) {
+                // LV scrubber can only process the chunk it's in
+                relativePositions.put(pos, 1);
+            } else {
+                for (int x = -radius; x <= radius; ++x) {
+                    for (int z = -radius; z <= radius; ++z) {
+                        relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
+                    }
                 }
             }
             for (ChunkPos rel : relativePositions.keySet()) {
