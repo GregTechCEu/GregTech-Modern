@@ -58,31 +58,4 @@ public class ForgeClientEventListener {
             GTValues.CLIENT_TIME++;
         }
     }
-
-    @SubscribeEvent
-    public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        if (GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.unfreeze();
-        }
-        GTOres.init();
-        if (!GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.freeze();
-        }
-
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
-        }
-        GTBedrockFluids.init();
-        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
-
-        if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
-        }
-        GTOres.toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
-        if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
-        }
-    }
 }
