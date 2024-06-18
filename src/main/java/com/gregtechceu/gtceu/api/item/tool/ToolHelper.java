@@ -166,6 +166,7 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
+                // don't process unbreaking if the entity is null as we get the level from there
                 if (user != null && user.level() instanceof ServerLevel serverLevel) {
                     damage = EnchantmentHelper.processDurabilityChange(serverLevel, stack, damage);
                 }

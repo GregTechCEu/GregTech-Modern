@@ -27,6 +27,8 @@ import java.util.function.Supplier;
 
 public class GTCEuAPI {
 
+    public static final int GT_DATA_VERSION = 1;
+
     /** Will always be available */
     public static GTCEu instance;
     /** Will be available at the Construction stage */

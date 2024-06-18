@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import com.mojang.datafixers.util.Pair;
 
@@ -74,7 +76,8 @@ public class OreRecipeHandler {
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                 .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
-                .inputItems(orePrefix, material)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                        Ingredient.of(orePrefix.getItemParentTags()[0])))
                 .duration(10).EUt(16);
         if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
             builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier,
@@ -139,10 +142,14 @@ public class OreRecipeHandler {
             float xp = Math.round(((1 + oreMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                            Ingredient.of(orePrefix.getItemParentTags()[0])),
+                    ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
                     "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                            Ingredient.of(orePrefix.getItemParentTags()[0])),
+                    ingotStack, xp);
         }
     }
 

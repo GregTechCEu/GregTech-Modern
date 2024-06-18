@@ -86,9 +86,4 @@ public class GTCEu {
     public static boolean isAlmostUnifiedLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
     }
-
-    @Deprecated(forRemoval = true, since = "1.0.21")
-    public static boolean isHighTier() {
-        return GTCEuAPI.isHighTier();
-    }
 }

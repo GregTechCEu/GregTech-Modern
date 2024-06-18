@@ -42,6 +42,7 @@ import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
 import com.gregtechceu.gtceu.data.fluid.GTFluids;
@@ -191,6 +192,7 @@ public class CommonProxy {
         GTFeatures.init();
         CustomBlockRotations.init();
         KeyBind.init();
+        GTDataFixers.init();
     }
 
     private static void initMaterials() {

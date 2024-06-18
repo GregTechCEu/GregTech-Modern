@@ -150,7 +150,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
-        //noinspection ConstantValue
+        // noinspection ConstantValue
         if (getMachine().getLevel() != null) {
             var registry = getMachine().getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
             this.pickaxeTool.enchant(registry.getHolderOrThrow(Enchantments.FORTUNE), fortune);
