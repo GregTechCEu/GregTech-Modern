@@ -76,7 +76,8 @@ public class OreRecipeHandler {
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                 .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
-                .inputItems(orePrefix, material)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                        Ingredient.of(orePrefix.getItemParentTags()[0])))
                 .duration(10).EUt(16);
         if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
             builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier,
