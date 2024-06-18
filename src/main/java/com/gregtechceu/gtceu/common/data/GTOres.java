@@ -58,11 +58,6 @@ public class GTOres {
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
     public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
 
-    static {
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
-    }
-
     //////////////////////////////////////
     // ******** End Vein *********//
     //////////////////////////////////////
