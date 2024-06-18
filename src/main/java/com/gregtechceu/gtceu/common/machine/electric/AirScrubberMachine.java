@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 
@@ -89,7 +90,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             Object2FloatMap<ChunkPos> relativePositions = new Object2FloatOpenHashMap<>();
             for (int x = -tier; x < tier; ++x) {
                 for (int z = -tier; z < tier; ++z) {
-                    relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), x * z + 1);
+                    relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
                 }
             }
             for (ChunkPos rel : relativePositions.keySet()) {
