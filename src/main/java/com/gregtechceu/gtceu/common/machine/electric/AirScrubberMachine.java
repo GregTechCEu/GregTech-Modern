@@ -99,7 +99,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
                         return null;
                     }
 
-                    float toClean = cleaningPerOperation * getTier() / distance;
+                    float toClean = cleaningPerOperation / distance;
                     removedLastSecond += toClean;
                     zone.removeStrength(toClean);
                     if (zone.strength() <= 0) {
