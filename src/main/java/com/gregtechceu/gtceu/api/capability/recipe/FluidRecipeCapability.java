@@ -361,7 +361,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             var childEither = mapFluid(new SizedFluidIngredient(children.getFirst(), amount));
             return Either.right(childEither.map(tags -> {
                 List<FluidStack> tagItems = tags.stream()
-                        .map(pair -> Pair.of(BuiltInRegistries.FLUID.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .map(pair -> Pair.of(BuiltInRegistries.FLUID.getTag(pair.getFirst()).stream(),
+                                pair.getSecond()))
                         .flatMap(pair -> pair.getFirst().flatMap(
                                 tag -> tag.stream().map(holder -> new FluidStack(holder.value(), pair.getSecond()))))
                         .collect(Collectors.toList());
