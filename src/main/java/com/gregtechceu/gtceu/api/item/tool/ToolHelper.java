@@ -166,7 +166,9 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
-                damage = EnchantmentHelper.processDurabilityChange((ServerLevel) user.level(), stack, damage);
+                if (user != null && user.level() instanceof ServerLevel serverLevel) {
+                    damage = EnchantmentHelper.processDurabilityChange(serverLevel, stack, damage);
+                }
                 if (damage <= 0) {
                     return;
                 }
