@@ -148,7 +148,7 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         return definition$getDefaultAttributeModifiers(stack);
     }
 

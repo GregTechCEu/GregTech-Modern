@@ -149,7 +149,7 @@ public class GTHoeItem extends HoeItem implements IGTTool {
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         return definition$getDefaultAttributeModifiers(stack);
     }
 

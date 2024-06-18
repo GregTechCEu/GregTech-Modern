@@ -5,5 +5,5 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public interface IItemAttributes {
 
-    ItemAttributeModifiers getAttributeModifiers(ItemStack stack);
+    ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack);
 }

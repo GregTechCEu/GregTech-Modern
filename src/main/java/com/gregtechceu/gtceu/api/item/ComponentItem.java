@@ -139,16 +139,16 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof IItemAttributes itemAttributes) {
-                var result = itemAttributes.getAttributeModifiers(stack);
+                var result = itemAttributes.getDefaultAttributeModifiers(stack);
                 if (result != null && !result.modifiers().isEmpty()) {
                     return result;
                 }
             }
         }
-        return super.getAttributeModifiers(stack);
+        return super.getDefaultAttributeModifiers(stack);
     }
 
     @Override

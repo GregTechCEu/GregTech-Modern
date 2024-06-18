@@ -64,11 +64,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         List<ItemAttributeModifiers.Entry> list = new ArrayList<>();
         IArmorLogic armorLogic = getArmorLogic();
-        list.addAll(armorLogic.getAttributeModifiers(Equipable.get(stack).getEquipmentSlot(), stack));
-        list.addAll(super.getAttributeModifiers(stack).modifiers());
+        list.addAll(armorLogic.getDefaultAttributeModifiers(Equipable.get(stack).getEquipmentSlot(), stack));
+        list.addAll(super.getDefaultAttributeModifiers(stack).modifiers());
         return new ItemAttributeModifiers(list, true);
     }
 

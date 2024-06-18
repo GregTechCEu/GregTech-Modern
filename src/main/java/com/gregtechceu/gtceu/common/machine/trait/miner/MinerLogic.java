@@ -136,8 +136,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.maximumRadius = maximumRadius;
         this.isDone = false;
         this.pickaxeTool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
-        var registry = machine.self().getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-        this.pickaxeTool.enchant(registry.getHolderOrThrow(Enchantments.FORTUNE), fortune);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
@@ -147,6 +145,16 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.capabilitiesProxy.put(IO.IN, inputItemHandler.getCapability(), List.of(inputItemHandler));
         this.capabilitiesProxy.put(IO.IN, inputEnergyHandler.getCapability(), List.of(inputEnergyHandler));
         this.capabilitiesProxy.put(IO.OUT, outputItemHandler.getCapability(), List.of(outputItemHandler));
+    }
+
+    @Override
+    public void onMachineLoad() {
+        super.onMachineLoad();
+        //noinspection ConstantValue
+        if (getMachine().getLevel() != null) {
+            var registry = getMachine().getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+            this.pickaxeTool.enchant(registry.getHolderOrThrow(Enchantments.FORTUNE), fortune);
+        }
     }
 
     @Override

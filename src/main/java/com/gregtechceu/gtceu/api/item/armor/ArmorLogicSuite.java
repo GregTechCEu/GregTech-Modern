@@ -55,7 +55,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public List<ItemAttributeModifiers.Entry> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    public List<ItemAttributeModifiers.Entry> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != this.type.getSlot()) return Collections.emptyList();
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         ResourceLocation id = ResourceLocation.withDefaultNamespace("armor." + type.getName());

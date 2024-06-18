@@ -44,7 +44,7 @@ public interface IArmorLogic {
 
     default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage) {}
 
-    default List<ItemAttributeModifiers.Entry> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    default List<ItemAttributeModifiers.Entry> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return Collections.emptyList();
     }
 

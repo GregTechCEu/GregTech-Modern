@@ -33,7 +33,7 @@ public class NanoSaberBehavior extends ToggleEnergyConsumerBehavior implements I
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         double attackDamage = baseAttackDamage + (isItemActive(stack) ? additionalAttackDamage : 0.0D);
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_SPEED,
