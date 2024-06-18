@@ -5,15 +5,17 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -51,10 +53,10 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             return;
         }
 
-        GTRecipe recipe = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder("dummy")
-                .duration(200).EUt(VHA[LV]).buildRawRecipe();
-
-        this.recipeLogic.setupRecipe(recipe);
+        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.name + "_autogen")
+                .duration(200).EUt(VHA[LV]);
+        condition.recipeModifier.accept(builder);
+        this.recipeLogic.checkMatchedRecipeAvailable(builder.buildRawRecipe());
     }
 
     @Override
@@ -70,7 +72,12 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             removedLastSecond = 0;
 
             for (Direction dir : GTUtil.DIRECTIONS) {
-                if (GTCapabilityHelper.getHazardContainer(getLevel(), getPos().above(), dir) != null) {
+                BlockPos offset = getPos().relative(dir);
+                if (GTCapabilityHelper.getHazardContainer(getLevel(), offset, dir.getOpposite()) != null) {
+                    if (getLevel().getBlockEntity(offset) instanceof DuctPipeBlockEntity duct &&
+                            !duct.isConnected(dir.getOpposite())) {
+                        continue;
+                    }
                     return true;
                 }
             }
