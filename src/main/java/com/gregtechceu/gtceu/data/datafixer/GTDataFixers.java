@@ -60,9 +60,9 @@ public class GTDataFixers {
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
         builder.addFixer(ItemRenameFix.create(schemaV1, "U238 rename fix",
-                createRenamer(Pattern.compile("uranium_"), "uranium_238_")));
+                createRenamer(Pattern.compile("gtceu:uranium_"), "gtceu:uranium_238_")));
         builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 rename fix",
-                createRenamer(Pattern.compile("plutonium_"), "plutonium_239_")));
+                createRenamer(Pattern.compile("gtceu:plutonium_"), "gtceu:plutonium_239_")));
 
         builder.addFixer(ItemRenameFix.create(schemaV1, "Raw oil bucket rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS)));
