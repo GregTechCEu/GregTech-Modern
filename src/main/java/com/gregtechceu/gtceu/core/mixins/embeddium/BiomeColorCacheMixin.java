@@ -6,11 +6,10 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ColorResolver;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.jellysquid.mods.sodium.client.world.biome.BiomeColorCache;
-import me.jellysquid.mods.sodium.client.world.biome.BiomeColorSource;
-import net.minecraft.world.level.ColorResolver;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
