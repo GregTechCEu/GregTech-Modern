@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -169,7 +170,10 @@ public class GTRegistrate extends Registrate {
     }
 
     private RegistryEntry<CreativeModeTab, CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    // This is using Collections#synchronizedMap because of https://github.com/Creators-of-Create/Create/issues/6222
+    // TLDR: Forge's parallel mod loading will break the map if multiple mods insert into it at once during loading
+    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, CreativeModeTab>> TAB_LOOKUP = Collections
+            .synchronizedMap(new IdentityHashMap<>());
 
     public void creativeModeTab(Supplier<RegistryEntry<CreativeModeTab, CreativeModeTab>> currentTab) {
         this.currentTab = currentTab.get();
