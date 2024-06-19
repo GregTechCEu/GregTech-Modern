@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -37,9 +38,8 @@ public class BrewingRecipes {
         }
 
         // Biomass
-        // todo tag?
-        // BREWING_RECIPES.recipeBuilder("biomass_from_sapling").duration(800).EUt(3).inputItems("treeSapling",
-        // 1).inputFluids(Water.getFluid(100)).outputFluids(Biomass.getFluid(100)).save(provider);
+        BREWING_RECIPES.recipeBuilder("biomass_from_sapling").duration(800).EUt(3).inputItems(ItemTags.SAPLINGS)
+                .inputFluids(Water.getFluid(100)).outputFluids(Biomass.getFluid(100)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_potato").duration(160).EUt(3).inputItems(Items.POTATO)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_carrot").duration(160).EUt(3).inputItems(Items.CARROT)

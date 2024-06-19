@@ -489,7 +489,6 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
-                    // TODO render cell with a real fluid texture in the future?
                     if (held.getFluid() == Fluids.LAVA) {
                         return 0xFFFF7000;
                     }

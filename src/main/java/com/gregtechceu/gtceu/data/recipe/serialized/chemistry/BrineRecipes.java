@@ -40,7 +40,7 @@ public class BrineRecipes {
                 .outputFluids(HotAlkalineDebrominatedBrine.getFluid(1000))
                 .outputFluids(BrominatedChlorineVapor.getFluid(2000))
                 .duration(300).EUt(VA[HV]).save(provider);
-        FLUID_HEATER_RECIPES.recipeBuilder("brominated_chlorine_vapor_condensation")
+        CHEMICAL_RECIPES.recipeBuilder("brominated_chlorine_vapor_condensation")
                 .inputFluids(BrominatedChlorineVapor.getFluid(1000))
                 .inputFluids(Water.getFluid(1000))
                 .outputFluids(AcidicBromineSolution.getFluid(1000))
@@ -64,7 +64,7 @@ public class BrineRecipes {
                 .outputFluids(Chlorine.getFluid(1000))
                 .outputFluids(HotDebrominatedBrine.getFluid(2000))
                 .duration(100).EUt(VA[HV]).save(provider);
-        FLUID_HEATER_RECIPES.recipeBuilder("debrominated_brine_raw_brine_mixing")
+        CHEMICAL_RECIPES.recipeBuilder("debrominated_brine_raw_brine_mixing")
                 .inputFluids(RawBrine.getFluid(1000))
                 .inputFluids(HotDebrominatedBrine.getFluid(1000))
                 .outputFluids(HotBrine.getFluid(1000))
