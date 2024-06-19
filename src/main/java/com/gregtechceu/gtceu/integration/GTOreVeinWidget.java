@@ -84,7 +84,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     private void setupBaseGui(GTOreDefinition oreDefinition) {
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         List<Integer> chances = oreDefinition.veinGenerator().getAllChances();
-        containedOresAsItemStacks.addAll(getContainedOresAndBlocks(oreDefinition));
+        containedOresAsItemStacks.addAll(getRawMaterialList(oreDefinition));
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
@@ -151,6 +151,13 @@ public class GTOreVeinWidget extends WidgetGroup {
                             }
                             return ores.stream();
                         }))
+                .toList();
+    }
+
+    public static List<ItemStack> getRawMaterialList(GTOreDefinition oreDefinition) {
+        return oreDefinition.veinGenerator().getAllEntries().stream()
+                .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(),
+                        material -> ChemicalHelper.get(TagPrefix.rawOre, material)))
                 .toList();
     }
 
