@@ -61,7 +61,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("Registry is already frozen!");
         }
 
-        if (!checkActiveModContainerIsRegisteringMod()) {
+        if (!checkActiveModContainerIsRegisteringModOrGT()) {
             return;
         }
 
@@ -73,7 +73,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("Registry is already unfrozen!");
         }
 
-        if (!checkActiveModContainerIsRegisteringMod()) {
+        if (!checkActiveModContainerIsRegisteringModOrGT()) {
             return;
         }
 
@@ -81,9 +81,10 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean checkActiveModContainerIsRegisteringMod() {
+    private boolean checkActiveModContainerIsRegisteringModOrGT() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
         return container != null && (container.getModId().equals(this.registryName.getNamespace()) ||
+                container.getModId().equals(GTCEu.MOD_ID) ||
                 container.getModId().equals("minecraft")); // check for minecraft modid in case of datagen or a mishap
     }
 
