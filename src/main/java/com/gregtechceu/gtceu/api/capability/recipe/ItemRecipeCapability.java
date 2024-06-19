@@ -324,7 +324,11 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             // For every stack in the ingredients gathered from the input bus.
             for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
                 if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
-                    available += inventoryEntry.getIntValue();
+                    if (inventoryEntry.getKey().getCount() == inventoryEntry.getIntValue()) {
+                        available += inventoryEntry.getIntValue();
+                    } else {
+                        available += inventoryEntry.getKey().getCount();
+                    }
                 }
             }
             if (available >= needed) {
