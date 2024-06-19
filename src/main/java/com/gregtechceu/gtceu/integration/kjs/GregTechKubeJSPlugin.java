@@ -81,18 +81,17 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import com.mojang.serialization.DataResult;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
+import dev.latvian.mods.kubejs.plugin.ClassFilter;
+import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
-import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.kubejs.util.NBTUtils;
 import dev.latvian.mods.rhino.Wrapper;
 import org.jetbrains.annotations.NotNull;
@@ -157,7 +156,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
-    public void registerClasses(ScriptType type, ClassFilter filter) {
+    public void registerClasses(ClassFilter filter) {
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
     }
@@ -171,19 +170,18 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerRecipeComponents(RecipeComponentFactoryRegistry event) {
-        event.register("compoundTag", GTRecipeComponents.TAG);
-        event.register("recipeCondition", GTRecipeComponents.RECIPE_CONDITION);
-        event.register("resourceLocation", GTRecipeComponents.RESOURCE_LOCATION);
-        event.register("resourceLocation", GTRecipeComponents.RESOURCE_LOCATION);
-        event.register("gtRecipeInputs", GTRecipeComponents.IN);
-        event.register("gtRecipeTickInputs", GTRecipeComponents.TICK_IN);
-        event.register("gtRecipeOutputs", GTRecipeComponents.OUT);
-        event.register("gtRecipeTickOutputs", GTRecipeComponents.TICK_OUT);
+        event.register(GTRecipeComponents.TAG);
+        event.register(GTRecipeComponents.RECIPE_CONDITION);
+        event.register(GTRecipeComponents.RESOURCE_LOCATION);
+        event.register(GTRecipeComponents.IN);
+        event.register(GTRecipeComponents.TICK_IN);
+        event.register(GTRecipeComponents.OUT);
+        event.register(GTRecipeComponents.TICK_OUT);
 
-        event.register("gtItem", GTRecipeComponents.ITEM);
-        event.register("gtFluid", GTRecipeComponents.FLUID);
-        event.register("gtEu", GTRecipeComponents.EU);
-        event.register("gtSu", GTRecipeComponents.SU);
+        event.register(GTRecipeComponents.ITEM);
+        event.register(GTRecipeComponents.FLUID);
+        event.register(GTRecipeComponents.EU);
+        event.register(GTRecipeComponents.SU);
     }
 
     @Override

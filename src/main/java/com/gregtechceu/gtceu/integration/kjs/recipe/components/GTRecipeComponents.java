@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.component.*;
@@ -74,16 +74,16 @@ public class GTRecipeComponents {
 
     public static final ContentJS<SizedIngredient> ITEM = new ContentJS<>(SizedIngredientComponent.NESTED,
             GTRecipeCapabilities.ITEM);
-    public static final ContentJS<FluidIngredient> FLUID = new ContentJS<>(FluidIngredientComponent.FLUID_INGREDIENT,
+    public static final ContentJS<SizedFluidIngredient> FLUID = new ContentJS<>(SizedFluidIngredientComponent.NESTED,
             GTRecipeCapabilities.FLUID);
     public static final ContentJS<Long> EU = new ContentJS<>(NumberComponent.LONG, GTRecipeCapabilities.EU);
     public static final ContentJS<Float> SU = new ContentJS<>(NumberComponent.FLOAT, GTRecipeCapabilities.SU);
     public static final ContentJS<Integer> CWU = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU);
 
-    public static final CapabilityMapComponent IN = new CapabilityMapComponent();
-    public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent();
-    public static final CapabilityMapComponent OUT = new CapabilityMapComponent();
-    public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent();
+    public static final CapabilityMapComponent IN = new CapabilityMapComponent(true, false);
+    public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent(true, true);
+    public static final CapabilityMapComponent OUT = new CapabilityMapComponent(false, false);
+    public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(false, true);
 
     /**
      * First in pair is in, second is out

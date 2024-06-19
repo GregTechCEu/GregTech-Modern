@@ -9,7 +9,7 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
-public class CapabilityMapComponent implements RecipeComponent<CapabilityMap> {
+public record CapabilityMapComponent(boolean isInput, boolean isTick) implements RecipeComponent<CapabilityMap> {
 
     @Override
     public Codec<CapabilityMap> codec() {
@@ -24,12 +24,17 @@ public class CapabilityMapComponent implements RecipeComponent<CapabilityMap> {
     @Override
     public CapabilityMap replaceInput(Context cx, KubeRecipe recipe, CapabilityMap original, ReplacementMatch match,
                                       InputReplacement with) {
-        return wrap(cx, recipe, original.replaceInput(cx, recipe, match, with));
+        return isInput ? wrap(cx, recipe, original.replaceInput(cx, recipe, match, with)) : original;
     }
 
     @Override
     public CapabilityMap replaceOutput(Context cx, KubeRecipe recipe, CapabilityMap original, ReplacementMatch match,
                                        OutputReplacement with) {
-        return wrap(cx, recipe, original.replaceOutput(cx, recipe, match, with));
+        return !isInput ? wrap(cx, recipe, original.replaceOutput(cx, recipe, match, with)) : original;
+    }
+
+    @Override
+    public String toString() {
+        return "capability_map[input=" + isInput + ",tick=" + isTick + "]";
     }
 }

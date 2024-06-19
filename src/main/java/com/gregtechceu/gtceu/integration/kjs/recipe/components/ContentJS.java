@@ -39,4 +39,9 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
         return new Content(with.replaceOutput(cx, recipe, match, with), original.chance,
                 original.tierChanceBoost, original.slotName, original.uiName);
     }
+
+    @Override
+    public String toString() {
+        return "content[" + baseComponent + "]";
+    }
 }
