@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
@@ -273,6 +274,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
         IMultiController controllerBase = null;
+        Set<BlockEntity> blockEntitiesToAdd = new HashSet<>();
         BlockPos multiPos = locateNextRegion(500);
 
         BlockInfo[][][] blocks = shapeInfo.getBlocks();
@@ -284,10 +286,12 @@ public class PatternPreviewWidget extends WidgetGroup {
                     BlockState blockState = column[z].getBlockState();
                     BlockPos pos = multiPos.offset(x, y, z);
                     if (column[z].getBlockEntity(pos,
-                            Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder &&
-                            holder.getMetaMachine() instanceof IMultiController controller) {
+                            Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder) {
                         holder.getSelf().setLevel(LEVEL);
-                        controllerBase = controller;
+                        blockEntitiesToAdd.add(holder.getSelf());
+                        if (holder.getMetaMachine() instanceof IMultiController controller) {
+                            controllerBase = controller;
+                        }
                     }
                     blockMap.put(pos, BlockInfo.fromBlockState(blockState));
                 }
@@ -295,8 +299,8 @@ public class PatternPreviewWidget extends WidgetGroup {
         }
 
         LEVEL.addBlocks(blockMap);
-        if (controllerBase != null) {
-            LEVEL.setInnerBlockEntity(controllerBase.self().holder.getSelf());
+        for (BlockEntity blockEntity : blockEntitiesToAdd) {
+            LEVEL.setInnerBlockEntity(blockEntity);
         }
 
         Map<ItemStackKey, PartInfo> parts = gatherBlockDrops(blockMap);

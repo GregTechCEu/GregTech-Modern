@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
@@ -54,8 +54,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            IOpticalComputationProvider provider = part.self().holder.self().getLevel()
-                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, part.self().getPos(), null);
+            IOpticalComputationProvider provider = GTCapabilityHelper
+                    .getOpticalComputationProvider(part.self().getLevel(), part.self().getPos(), null);
             if (provider != null) {
                 this.computationProvider = provider;
             }
