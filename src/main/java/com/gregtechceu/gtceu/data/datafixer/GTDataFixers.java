@@ -63,6 +63,8 @@ public class GTDataFixers {
                 createRenamer(Pattern.compile("gtceu:uranium_"), "gtceu:uranium_238_")));
         builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 rename fix",
                 createRenamer(Pattern.compile("gtceu:plutonium_"), "gtceu:plutonium_239_")));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Red granite rename fix",
+                createRenamer(Pattern.compile("gtceu:granite_red"), "gtceu:red_granite")));
 
         builder.addFixer(ItemRenameFix.create(schemaV1, "Raw oil bucket rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS)));
