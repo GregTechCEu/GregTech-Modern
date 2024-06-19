@@ -1097,12 +1097,12 @@ public class MachineRecipeLoader {
         // .duration(150).EUt(2)
         // .save(provider);
 
-        // MACERATOR_RECIPES.recipeBuilder("macerate_marble")
-        // .inputItems(block, Marble)
-        // .outputItems(dust, Marble)
-        // .chancedOutput(dust, Marble, 1000, 380)
-        // .duration(150).EUt(2)
-        // .save(provider);
+        MACERATOR_RECIPES.recipeBuilder("macerate_marble")
+                .inputItems(rock, Marble)
+                .outputItems(dust, Marble)
+                .chancedOutput(dust, Marble, 1000, 380)
+                .duration(150).EUt(2)
+                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
@@ -1118,12 +1118,12 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
-        // MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-        // .inputItems(block, GraniteRed)
-        // .outputItems(dust, GraniteRed)
-        // .chancedOutput(dust, Uranium238, 10, 5)
-        // .duration(150).EUt(2)
-        // .save(provider);
+        MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
+                .inputItems(rock, GraniteRed)
+                .outputItems(dust, GraniteRed)
+                .chancedOutput(dust, Uranium238, 10, 5)
+                .duration(150).EUt(2)
+                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
@@ -1142,6 +1142,13 @@ public class MachineRecipeLoader {
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
+                .chancedOutput(dust, Stone, 10, 5)
+                .duration(150).EUt(2)
+                .save(provider);
+
+        MACERATOR_RECIPES.recipeBuilder("macerate_calcite")
+                .inputItems(Blocks.CALCITE.asItem())
+                .outputItems(dust, Calcite)
                 .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
