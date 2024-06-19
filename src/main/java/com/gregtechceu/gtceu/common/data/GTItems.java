@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
@@ -2465,6 +2466,10 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "bad_hazmat")))
             .lang("Face Mask")
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new TooltipBehavior(tooltips -> {
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.inhalation"));
+            })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
             .item("rubber_gloves",
@@ -2472,6 +2477,10 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "bad_hazmat")))
             .lang("Rubber Gloves")
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new TooltipBehavior(tooltips -> {
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.skin_contact"));
+            })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE
             .item("hazmat_chestpiece",
@@ -2696,11 +2705,11 @@ public class GTItems {
         return item -> item.burnTime(burnTime);
     }
 
-    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
+    public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
         return item -> item.attachComponents(components);
     }
 
-    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
+    public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
         return item -> item.attachComponents(components);
     }
 

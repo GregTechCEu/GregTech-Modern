@@ -57,6 +57,7 @@ public class GTRecipes {
         WireCombiningHandler.init(consumer);
         WireRecipeHandler.init(consumer);
 
+        AirScrubberRecipes.init(consumer);
         ChemistryRecipes.init(consumer);
         MetaTileEntityMachineRecipeLoader.init(consumer);
         MiscRecipeLoader.init(consumer);

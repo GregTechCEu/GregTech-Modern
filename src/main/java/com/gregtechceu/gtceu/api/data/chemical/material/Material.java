@@ -355,7 +355,7 @@ public class Material implements Comparable<Material> {
         if (layerIndex < -100) {
             layerIndex = (Math.abs(layerIndex) % 100) / 10;
         }
-        if (layerIndex > materialInfo.colors.size() - 1) return -1;
+        if (layerIndex > materialInfo.colors.size() - 1 || layerIndex < 0) return -1;
         int layerColor = getMaterialARGB(layerIndex);
         if (layerColor != -1 || layerIndex == 0) return layerColor;
         else return getMaterialARGB(0);

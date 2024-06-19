@@ -21,16 +21,13 @@ public class SPacketAddHazardZone implements IPacket {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeVarLong(pos.toLong());
+        buf.writeChunkPos(pos);
         zone.toNetwork(buf);
     }
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        long packed = buf.readVarLong();
-        int x = ChunkPos.getX(packed);
-        int z = ChunkPos.getZ(packed);
-        pos = new ChunkPos(x, z);
+        pos = buf.readChunkPos();
         zone = EnvironmentalHazardSavedData.HazardZone.fromNetwork(buf);
     }
 
