@@ -141,10 +141,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 this.fluidStorages = Arrays.stream(this.tanks)
                         .map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank))
                         .toArray(CustomFluidTank[]::new);
-                return this.fluidStorages;
-            } else {
-                return this.fluidStorages;
             }
+            return this.fluidStorages;
         }
 
         @Override

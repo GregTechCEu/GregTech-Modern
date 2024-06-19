@@ -207,7 +207,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
-        for (CustomFluidTank storage : storages) {
+        for (CustomFluidTank storage : getStorages()) {
             storage.setValidator(filter);
         }
         return this;
@@ -254,7 +254,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     public boolean isEmpty() {
         if (isEmpty == null) {
             isEmpty = true;
-            for (CustomFluidTank storage : storages) {
+            for (CustomFluidTank storage : getStorages()) {
                 if (!storage.getFluid().isEmpty()) {
                     isEmpty = false;
                     break;
@@ -308,37 +308,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || !canCapInput()) return 0;
-        int filled = 0;
-        CustomFluidTank existingStorage = null;
-        if (!allowSameFluids) {
-            for (var storage : getStorages()) {
-                if (!storage.getFluid().isEmpty() &&
-                        FluidStack.isSameFluidSameComponents(storage.getFluid(), resource)) {
-                    existingStorage = storage;
-                    break;
-                }
-            }
+        if (canCapInput()) {
+            return fillInternal(resource, action);
         }
-        if (existingStorage == null) {
-            for (int i = 0; i < getTanks(); i++) {
-                if (filled > 0 && !allowSameFluids) {
-                    break;
-                }
-                var copy = resource.copy();
-                copy.setAmount(resource.getAmount() - filled);
-                filled += fill(copy, action);
-                if (filled == resource.getAmount()) break;
-            }
-        } else {
-            var copy = resource.copy();
-            copy.setAmount(resource.getAmount() - filled);
-            filled += existingStorage.fill(copy, action);
-        }
-        if (filled > 0 && action == FluidAction.EXECUTE) {
-            onContentsChanged();
-        }
-        return filled;
+        return 0;
     }
 
     public int fillInternal(FluidStack resource, FluidAction action) {
@@ -355,7 +328,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
             }
         }
         if (existingStorage == null) {
-            for (var storage : storages) {
+            for (var storage : getStorages()) {
                 var filled = storage.fill(copied.copy(), action);
                 if (filled > 0) {
                     copied.shrink(filled);
