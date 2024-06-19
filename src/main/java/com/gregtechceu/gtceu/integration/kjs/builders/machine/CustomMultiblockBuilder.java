@@ -43,7 +43,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.type.TypeInfo;
@@ -103,7 +103,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                         (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
                 builders = tieredMultis(name,
-                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(),
+                        UtilsJS.makeFunctionProxy(KubeJS.getStartupScriptManager().contextFactory.enter(),
                                 TypeInfo.of(BiFunction.class), machineFunction),
                         tiers);
             } else {
@@ -115,7 +115,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                         (Function<IMachineBlockEntity, MultiblockControllerMachine>) machineFunction);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
                 return new CustomMultiblockBuilder(name,
-                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(),
+                        UtilsJS.makeFunctionProxy(KubeJS.getStartupScriptManager().contextFactory.enter(),
                                 TypeInfo.of(Function.class), machineFunction));
             } else {
                 return new CustomMultiblockBuilder(name, WorkableElectricMultiblockMachine::new);

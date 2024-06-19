@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 
-import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.type.TypeInfo;
@@ -54,7 +54,7 @@ public class CustomTieredMachineBuilder extends SimpleMachineBuilder {
                 // NativeJavaObject.createInterfaceAdapter(ScriptType.STARTUP.manager.get().context, BiFunction.class,
                 // machineFunction), MachineFunctionPresets.mapTierArray(tiers));
                 builders = customTiered(name,
-                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP.manager.get().contextFactory.enter(),
+                        UtilsJS.makeFunctionProxy(KubeJS.getStartupScriptManager().contextFactory.enter(),
                                 TypeInfo.of(BiFunction.class), machineFunction),
                         tiers);
             }

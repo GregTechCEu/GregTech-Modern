@@ -135,7 +135,7 @@ public class GTRegistryInfo<K, V> {
             throw new IllegalArgumentException("Can't add null builder in registry '" + registryKey + "'!");
         }
 
-        if (DevProperties.get().debugInfo) {
+        if (DevProperties.get().logRegistryEventObjects) {
             ConsoleJS.STARTUP.info("~ " + registryKey + " | " + builder.id);
         }
 
@@ -166,7 +166,7 @@ public class GTRegistryInfo<K, V> {
             type.postEvent();
 
             for (var builder : type.objects.values()) {
-                if (DevProperties.get().debugInfo) {
+                if (DevProperties.get().logRegistryEventObjects) {
                     ConsoleJS.STARTUP.info("+ " + registry + " | " + builder.id);
                 }
                 builder.register();
