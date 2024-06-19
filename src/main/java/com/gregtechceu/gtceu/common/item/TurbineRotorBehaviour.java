@@ -55,7 +55,6 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         return property == null ? -1 : 800 * (int) Math.pow(property.getDurability(), 0.65);
     }
 
-    // TODO : getDamage() and Hurt Player
     public float getDamage(ItemStack itemStack) {
         var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
         return property == null ? -1 : property.getDamage();
