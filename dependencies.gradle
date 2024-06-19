@@ -46,7 +46,8 @@ dependencies {
 
     // Shimmer
     shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
-    shimmerCompileOnly("maven.modrinth:embeddium:0.2.10+mc1.20.1")
+    compileOnly("maven.modrinth:embeddium:1.0.0-beta.1+mc1.21")
+    runtimeOnly("maven.modrinth:embeddium:1.0.0-beta.1+mc1.21")
     shimmerCompileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
 
     // lombok
