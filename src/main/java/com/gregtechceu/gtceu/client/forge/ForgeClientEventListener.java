@@ -2,20 +2,16 @@ package com.gregtechceu.gtceu.client.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
-import com.gregtechceu.gtceu.data.block.GTOres;
-import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
@@ -46,32 +42,5 @@ public class ForgeClientEventListener {
         MultiblockInWorldPreviewRenderer.onClientTick();
         EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
         GTValues.CLIENT_TIME++;
-    }
-
-    @SubscribeEvent
-    public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        if (GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.unfreeze();
-        }
-        GTOres.init();
-        if (!GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.freeze();
-        }
-
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
-        }
-        GTBedrockFluids.init();
-        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
-
-        if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
-        }
-        GTOres.toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
-        if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
-        }
     }
 }

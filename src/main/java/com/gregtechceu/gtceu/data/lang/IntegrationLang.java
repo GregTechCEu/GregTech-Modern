@@ -76,6 +76,7 @@ public class IntegrationLang {
         provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
+        provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

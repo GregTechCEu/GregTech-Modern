@@ -935,7 +935,6 @@ public class ElementMaterials {
                 .cableProperties(GTValues.V[7], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
-                .radioactiveHazard(2)
                 .buildAndRegister();
 
         NaquadahEnriched = new Material.Builder(GTCEu.id("enriched_naquadah"))
@@ -945,7 +944,6 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .element(GTElements.Nq1)
                 .blastTemp(7000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
-                .radioactiveHazard(2.5f)
                 .buildAndRegister();
 
         Naquadria = new Material.Builder(GTCEu.id("naquadria"))

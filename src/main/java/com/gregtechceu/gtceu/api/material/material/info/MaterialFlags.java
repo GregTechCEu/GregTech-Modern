@@ -186,6 +186,13 @@ public class MaterialFlags {
             .build();
 
     /**
+     * Add to a material to disable creating an ore processing tab.
+     */
+    public static final MaterialFlag NO_ORE_PROCESSING_TAB = new MaterialFlag.Builder("no_ore_processing_tab")
+            .requireProps(PropertyKey.ORE)
+            .build();
+
+    /**
      * Add this to your Material if you want to have its Ore Calcite heated in a Blast Furnace for more output. Already
      * listed are:
      * Iron, Pyrite, PigIron, WroughtIron.

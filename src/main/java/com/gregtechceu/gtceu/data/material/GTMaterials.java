@@ -165,6 +165,7 @@ public class GTMaterials {
         rock.setIgnored(Diorite, Blocks.DIORITE);
         rock.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
         rock.setIgnored(Stone, Blocks.STONE);
+        rock.setIgnored(Calcite, Blocks.CALCITE);
         rock.setIgnored(Netherrack, Blocks.NETHERRACK);
         rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
         rock.setIgnored(Endstone, Blocks.END_STONE);

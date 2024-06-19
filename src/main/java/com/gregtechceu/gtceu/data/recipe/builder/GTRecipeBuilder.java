@@ -238,7 +238,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack input) {
         if (input.isEmpty()) {
             GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-            throw new IllegalArgumentException(id + ": input items is empty");
         }
         if (input.getComponentsPatch().isEmpty()) {
             return input(ItemRecipeCapability.CAP, SizedIngredient.of(input.getItem(), input.getCount()));
@@ -252,7 +251,6 @@ public class GTRecipeBuilder {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
                 GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-                throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
         return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> {
@@ -332,7 +330,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(ItemStack output) {
         if (output.isEmpty()) {
             GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
-            throw new IllegalArgumentException(id + ": output items is empty");
         }
         return output(ItemRecipeCapability.CAP,
                 new SizedIngredient(DataComponentIngredient.of(true, output), output.getCount()));
@@ -342,7 +339,6 @@ public class GTRecipeBuilder {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
                 GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
-                throw new IllegalArgumentException(id + ": output items is empty");
             }
         }
         return output(ItemRecipeCapability.CAP,

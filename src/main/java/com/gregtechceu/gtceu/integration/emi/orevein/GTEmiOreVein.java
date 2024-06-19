@@ -10,7 +10,10 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
 
@@ -29,5 +32,13 @@ public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
     @Override
     public @Nullable ResourceLocation getId() {
         return GTRegistries.ORE_VEINS.getKey(oreDefinition);
+    }
+
+    @Override
+    public List<EmiStack> getOutputs() {
+        return GTOreVeinWidget.getContainedOresAndBlocks(oreDefinition)
+                .stream()
+                .map(EmiStack::of)
+                .toList();
     }
 }

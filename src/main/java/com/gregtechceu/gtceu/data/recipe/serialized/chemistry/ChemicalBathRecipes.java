@@ -56,12 +56,11 @@ public class ChemicalBathRecipes {
                 .outputItems(GTBlocks.TREATED_WOOD_PLANK.asStack())
                 .duration(100).EUt(VA[ULV]).save(provider);
 
-        // TODO Concrete
-        // CHEMICAL_BATH_RECIPES.recipeBuilder()
-        // .inputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT))
-        // .inputFluids(Water.getFluid(100))
-        // .outputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK))
-        // .duration(100).EUt(VA[ULV]).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("light_to_dark_concrete")
+                .inputItems(GTBlocks.LIGHT_CONCRETE.asStack())
+                .inputFluids(Water.getFluid(100))
+                .outputItems(GTBlocks.DARK_CONCRETE.asStack())
+                .duration(100).EUt(VA[ULV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("tungstic_acid_from_scheelite")
                 .inputItems(dust, Scheelite, 6)

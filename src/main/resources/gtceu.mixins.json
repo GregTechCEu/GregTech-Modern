@@ -53,6 +53,8 @@
         "TagManagerMixin",
         "ae2.GenericStackInvAccessor",
         "create.RotationPropagatorMixin",
+        "embeddium.BiomeColorCacheMixin",
+        "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
         "rei.InputSlotCrafterMixin",

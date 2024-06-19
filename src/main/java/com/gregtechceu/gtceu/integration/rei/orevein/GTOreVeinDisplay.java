@@ -26,8 +26,8 @@ public class GTOreVeinDisplay extends ModularDisplay<WidgetGroup> {
     @Override
     public List<EntryIngredient> getOutputEntries() {
         List<EntryIngredient> ingredients = new ArrayList<>();
-        for (ItemStack outPut : GTOreVeinWidget.getContainedOresAndBlocks(oreDefinition)) {
-            ingredients.add(EntryIngredients.of(outPut));
+        for (ItemStack output : GTOreVeinWidget.getContainedOresAndBlocks(oreDefinition)) {
+            ingredients.add(EntryIngredients.of(output));
         }
         return ingredients;
     }

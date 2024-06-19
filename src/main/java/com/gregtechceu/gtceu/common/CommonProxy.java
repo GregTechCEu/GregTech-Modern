@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
@@ -57,6 +59,7 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
+import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
@@ -130,6 +133,7 @@ public class CommonProxy {
         GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
+        GTParticleTypes.init(modBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
@@ -189,6 +193,9 @@ public class CommonProxy {
         });
 
         WorldGenLayers.registerAll();
+        VeinGenerators.registerAddonGenerators();
+        IndicatorGenerators.registerAddonGenerators();;
+
         GTFeatures.init();
         CustomBlockRotations.init();
         KeyBind.init();

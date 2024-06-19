@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<GTBedrockFluidInfoWrapper> {
 
-    public final static RecipeType<GTBedrockFluidInfoWrapper> Recipe_Type = new RecipeType<>(
+    public final static RecipeType<GTBedrockFluidInfoWrapper> RECIPE_TYPE = new RecipeType<>(
             GTCEu.id("bedrock_fluid_diagram"), GTBedrockFluidInfoWrapper.class);
     private final IDrawable background;
     private final IDrawable icon;
@@ -33,21 +33,21 @@ public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<GTBedroc
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(Recipe_Type, GTRegistries.BEDROCK_FLUID_DEFINITIONS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, GTRegistries.BEDROCK_FLUID_DEFINITIONS.values().stream()
                 .map(GTBedrockFluidInfoWrapper::new)
                 .toList());
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LV.asStack(), Recipe_Type);
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_HV.asStack(), Recipe_Type);
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), Recipe_Type);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LV.asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_HV.asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), RECIPE_TYPE);
     }
 
     @NotNull
     @Override
     public RecipeType<GTBedrockFluidInfoWrapper> getRecipeType() {
-        return Recipe_Type;
+        return RECIPE_TYPE;
     }
 
     @NotNull

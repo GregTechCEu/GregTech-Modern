@@ -52,7 +52,7 @@ public class GTRecipeModifiers {
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers
             .hatchParallel(machine, recipe, false).getFirst();
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
-            .memoize((condition, maxAllowedAffectedBlocks) -> (machine, recipe) -> {
+            .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return recipe;
                 Level level = machine.getLevel();
                 if (!(level instanceof ServerLevel serverLevel)) {
@@ -64,16 +64,16 @@ public class GTRecipeModifiers {
                 if (zone == null) {
                     return recipe;
                 }
-                int strength = zone.strength();
-                if (strength < maxAllowedAffectedBlocks) {
-                    return recipe;
+                float strength = zone.strength();
+                if (strength > maxAllowedStrength) {
+                    return null;
                 }
                 recipe = recipe.copy();
-                recipe.duration *= Math.max(1, maxAllowedAffectedBlocks / Math.max(strength, 1));
+                recipe.duration *= Math.max(1, (int) (maxAllowedStrength / Math.max(strength, 1)));
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
-            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 500);
+            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault

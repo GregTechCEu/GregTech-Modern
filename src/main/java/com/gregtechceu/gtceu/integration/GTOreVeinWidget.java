@@ -26,9 +26,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Arbor
@@ -82,7 +84,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     private void setupBaseGui(GTOreDefinition oreDefinition) {
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         List<Integer> chances = oreDefinition.veinGenerator().getAllChances();
-        containedOresAsItemStacks.addAll(getContainedOresAndBlocks(oreDefinition));
+        containedOresAsItemStacks.addAll(getRawMaterialList(oreDefinition));
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
@@ -139,6 +141,20 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public static List<ItemStack> getContainedOresAndBlocks(GTOreDefinition oreDefinition) {
+        return oreDefinition.veinGenerator().getAllEntries().stream()
+                .flatMap(entry -> entry.getKey().map(state -> Stream.of(state.getBlock().asItem().getDefaultInstance()),
+                        material -> {
+                            Set<ItemStack> ores = new HashSet<>();
+                            ores.add(ChemicalHelper.get(TagPrefix.rawOre, material));
+                            for (TagPrefix prefix : TagPrefix.ORES.keySet()) {
+                                ores.add(ChemicalHelper.get(prefix, material));
+                            }
+                            return ores.stream();
+                        }))
+                .toList();
+    }
+
+    public static List<ItemStack> getRawMaterialList(GTOreDefinition oreDefinition) {
         return oreDefinition.veinGenerator().getAllEntries().stream()
                 .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(),
                         material -> ChemicalHelper.get(TagPrefix.rawOre, material)))

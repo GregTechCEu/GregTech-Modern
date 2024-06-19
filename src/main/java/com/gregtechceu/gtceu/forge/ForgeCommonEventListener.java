@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTItems;
@@ -29,7 +31,6 @@ import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -39,7 +40,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -47,6 +48,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -163,6 +165,9 @@ public class ForgeCommonEventListener {
             PacketDistributor.sendToPlayer(serverPlayer,
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
 
+            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                return;
+            }
             ServerLevel level = (ServerLevel) event.getEntity().level();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
@@ -194,6 +199,19 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onEntityDie(LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            if (tracker == null) {
+                return;
+            }
+            for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
+                tracker.removeMedicalCondition(condition);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onEntitySpawn(FinalizeSpawnEvent event) {
         Mob entity = event.getEntity();
         Difficulty difficulty = entity.level().getDifficulty();
@@ -209,6 +227,10 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return;
+        }
+
         ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
         var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
         PacketDistributor.sendToPlayer((ServerPlayer) event.getEntity(),
@@ -217,15 +239,25 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onChunkWatch(ChunkWatchEvent.Watch event) {
-        LevelChunk chunk = event.getChunk();
-        if (chunk == null) return;
-
+        ChunkPos pos = event.getPos();
         ServerPlayer player = event.getPlayer();
         var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
 
-        var zone = data.getZoneByContainedPos(BlockPos.containing(player.getEyePosition()));
-        if (zone != null && zone.strength() > EnvironmentalHazardSavedData.PACKET_THRESHOLD) {
-            PacketDistributor.sendToPlayer(player, new SPacketAddHazardZone(chunk.getPos(), zone));
+        var zone = data.getZoneByPos(pos);
+        if (zone != null) {
+            PacketDistributor.sendToPlayer(player, new SPacketAddHazardZone(pos, zone));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkUnWatch(ChunkWatchEvent.UnWatch event) {
+        ChunkPos pos = event.getPos();
+        ServerPlayer player = event.getPlayer();
+        var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
+
+        var zone = data.getZoneByPos(pos);
+        if (zone != null) {
+            PacketDistributor.sendToPlayer(player, new SPacketRemoveHazardZone(pos));
         }
     }
 }

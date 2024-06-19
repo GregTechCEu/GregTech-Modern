@@ -36,7 +36,7 @@ public class BrewingRecipes {
         }
 
         // Biomass
-        BREWING_RECIPES.recipeBuilder("biomass_from_sapling").duration(800).EUt(3).inputItems(ItemTags.SAPLINGS, 1)
+        BREWING_RECIPES.recipeBuilder("biomass_from_sapling").duration(800).EUt(3).inputItems(ItemTags.SAPLINGS)
                 .inputFluids(Water.getFluid(100)).outputFluids(Biomass.getFluid(100)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_potato").duration(160).EUt(3).inputItems(Items.POTATO)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);

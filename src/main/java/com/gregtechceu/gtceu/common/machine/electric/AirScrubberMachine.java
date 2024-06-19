@@ -1,35 +1,45 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
-import com.gregtechceu.gtceu.common.recipe.EnvironmentalHazardCondition;
+import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import lombok.Getter;
 
-public class AirScrubberMachine extends SimpleTieredMachine {
+import static com.gregtechceu.gtceu.api.GTValues.LV;
+import static com.gregtechceu.gtceu.api.GTValues.VHA;
 
-    public static final int CLEANING_PER_OPERATION = 10;
+public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironmentalHazardCleaner {
+
+    public static final float MIN_CLEANING_PER_OPERATION = 10;
+
+    private final float cleaningPerOperation;
+
+    @Getter
+    private float removedLastSecond;
 
     public AirScrubberMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachines.defaultTankSizeFunction, args);
-    }
-
-    @NotNull
-    @Override
-    public RecipeLogic createRecipeLogic(Object... args) {
-        return new AirScrubberLogic(this);
+        super(holder, tier, GTMachines.largeTankSizeFunction, args);
+        this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * tier;
     }
 
     @Override
@@ -38,86 +48,76 @@ public class AirScrubberMachine extends SimpleTieredMachine {
     }
 
     @Override
-    public boolean onWorking() {
-        if (getOffsetTimer() % 20 == 0) {
-            ServerLevel serverLevel = (ServerLevel) getLevel();
-            EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-
-            final ChunkPos pos = new ChunkPos(getPos());
-            ChunkPos[] relativePositions = new ChunkPos[] {
-                    pos,
-                    new ChunkPos(pos.x, pos.z - 1),
-                    new ChunkPos(pos.x, pos.z + 1),
-                    new ChunkPos(pos.x - 1, pos.z),
-                    new ChunkPos(pos.x + 1, pos.z)
-            };
-            for (ChunkPos rel : relativePositions) {
-                savedData.getHazardZones().compute(rel, (k, v) -> {
-                    if (v == null || v.strength() <= 0) {
-                        return null;
-                    }
-                    EnvironmentalHazardSavedData.HazardZone zone;
-                    if (k.equals(pos)) {
-                        zone = new EnvironmentalHazardSavedData.HazardZone(
-                                v.source(),
-                                v.strength() - CLEANING_PER_OPERATION * 2 * getTier(),
-                                v.canSpread(),
-                                v.trigger(),
-                                v.condition());
-                    } else {
-                        zone = new EnvironmentalHazardSavedData.HazardZone(
-                                v.source(),
-                                v.strength() - CLEANING_PER_OPERATION * getTier(),
-                                v.canSpread(),
-                                v.trigger(),
-                                v.condition());
-                    }
-                    if (zone.strength() <= 0) return null;
-                    else return zone;
-                });
-            }
+    public void cleanHazard(MedicalCondition condition, float amount) {
+        if (this.recipeLogic.isActive()) {
+            return;
         }
-        return super.onWorking();
+
+        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.name + "_autogen")
+                .duration(200).EUt(VHA[LV]);
+        condition.recipeModifier.accept(builder);
+        this.recipeLogic.checkMatchedRecipeAvailable(builder.build());
     }
 
-    public static class AirScrubberLogic extends RecipeLogic {
-
-        public AirScrubberLogic(AirScrubberMachine machine) {
-            super(machine);
+    @Override
+    public boolean onWorking() {
+        if (!super.onWorking()) {
+            return false;
+        }
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return true;
         }
 
-        @Override
-        public AirScrubberMachine getMachine() {
-            return (AirScrubberMachine) super.getMachine();
-        }
+        if (getOffsetTimer() % 20 == 0) {
+            removedLastSecond = 0;
 
-        @Override
-        protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
-            Direction front = getMachine().getOutputFacingFluids();
-            if (front == null) {
-                return super.handleRecipeIO(recipe, io);
-            }
-            final IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(
-                    getMachine().getLevel(), getMachine().getPos().relative(front), front.getOpposite());
-            if (container != null) {
-                // if we have a valid hazard container on the fluid output, then push the particles into it instead of
-                // converting them into fluid/item form.
-                MutableBoolean didFindCondition = new MutableBoolean(false);
-                recipe.conditions
-                        .stream()
-                        .filter(EnvironmentalHazardCondition.class::isInstance)
-                        .map(EnvironmentalHazardCondition.class::cast)
-                        .findFirst()
-                        .ifPresent(condition -> {
-                            container.addHazard(condition.getCondition(),
-                                    6 * CLEANING_PER_OPERATION * getMachine().getTier());
-                            didFindCondition.setTrue();
-                        });
-                if (didFindCondition.getValue()) {
+            for (Direction dir : GTUtil.DIRECTIONS) {
+                BlockPos offset = getPos().relative(dir);
+                if (GTCapabilityHelper.getHazardContainer(getLevel(), offset, dir.getOpposite()) != null) {
+                    if (getLevel().getBlockEntity(offset) instanceof DuctPipeBlockEntity duct &&
+                            !duct.isConnected(dir.getOpposite())) {
+                        continue;
+                    }
                     return true;
                 }
             }
-            return super.handleRecipeIO(recipe, io);
+
+            final ServerLevel serverLevel = (ServerLevel) getLevel();
+            EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
+
+            final ChunkPos pos = new ChunkPos(getPos());
+            Object2FloatMap<ChunkPos> relativePositions = new Object2FloatOpenHashMap<>();
+            int radius = tier / 2;
+            if (radius <= 0) {
+                // LV scrubber can only process the chunk it's in
+                relativePositions.put(pos, 1);
+            } else {
+                for (int x = -radius; x <= radius; ++x) {
+                    for (int z = -radius; z <= radius; ++z) {
+                        relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
+                    }
+                }
+            }
+            for (ChunkPos rel : relativePositions.keySet()) {
+                final float distance = relativePositions.getFloat(rel);
+                savedData.getHazardZones().compute(rel, (chunkPos, zone) -> {
+                    if (zone == null || zone.strength() <= 0) {
+                        return null;
+                    }
+
+                    float toClean = cleaningPerOperation / distance;
+                    removedLastSecond += toClean;
+                    zone.removeStrength(toClean);
+                    if (zone.strength() <= 0) {
+                        if (serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
+                            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, chunkPos,
+                                    new SPacketRemoveHazardZone(chunkPos));
+                        }
+                        return null;
+                    } else return zone;
+                });
+            }
         }
+        return true;
     }
 }

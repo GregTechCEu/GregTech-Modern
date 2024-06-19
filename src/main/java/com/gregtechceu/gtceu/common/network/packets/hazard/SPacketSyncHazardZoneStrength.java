@@ -23,16 +23,16 @@ public class SPacketSyncHazardZoneStrength implements CustomPacketPayload {
             .ofMember(SPacketSyncHazardZoneStrength::encode, SPacketSyncHazardZoneStrength::decode);
 
     public ChunkPos pos;
-    public int newAmount;
+    public float newAmount;
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeChunkPos(pos);
-        buf.writeVarInt(newAmount);
+        buf.writeFloat(newAmount);
     }
 
     public static SPacketSyncHazardZoneStrength decode(FriendlyByteBuf buf) {
         ChunkPos pos = buf.readChunkPos();
-        int newAmount = buf.readVarInt();
+        float newAmount = buf.readFloat();
         return new SPacketSyncHazardZoneStrength(pos, newAmount);
     }
 

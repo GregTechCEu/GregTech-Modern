@@ -210,7 +210,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
+    public boolean checkMatchedRecipeAvailable(GTRecipe match) {
         var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&

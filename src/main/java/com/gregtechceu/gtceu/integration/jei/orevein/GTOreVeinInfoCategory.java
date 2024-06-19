@@ -12,9 +12,12 @@ import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.network.chat.Component;
 
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -22,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfoWrapper> {
 
-    public final static RecipeType<GTOreVeinInfoWrapper> Recipe_Type = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
+    public final static RecipeType<GTOreVeinInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
             GTOreVeinInfoWrapper.class);
     private final IDrawable background;
     private final IDrawable icon;
@@ -35,21 +38,28 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(Recipe_Type, GTRegistries.ORE_VEINS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, GTRegistries.ORE_VEINS.values().stream()
                 .map(GTOreVeinInfoWrapper::new)
                 .toList());
     }
 
+    @Override
+    public void setRecipe(IRecipeLayoutBuilder builder, GTOreVeinInfoWrapper wrapper, IFocusGroup focuses) {
+        super.setRecipe(builder, wrapper, focuses);
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
+                .addItemStacks(GTOreVeinWidget.getContainedOresAndBlocks(wrapper.oreDefinition));
+    }
+
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LV.asStack(), Recipe_Type);
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_HV.asStack(), Recipe_Type);
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), Recipe_Type);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LV.asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_HV.asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), RECIPE_TYPE);
     }
 
     @NotNull
     @Override
     public RecipeType<GTOreVeinInfoWrapper> getRecipeType() {
-        return Recipe_Type;
+        return RECIPE_TYPE;
     }
 
     @NotNull

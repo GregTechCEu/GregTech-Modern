@@ -20,11 +20,10 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class GTRecipes {
 
-    private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
+    public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.
@@ -69,6 +68,7 @@ public class GTRecipes {
         WireCombiningHandler.init(consumer);
         WireRecipeHandler.init(consumer);
 
+        AirScrubberRecipes.init(consumer);
         ChemistryRecipes.init(consumer);
         MetaTileEntityMachineRecipeLoader.init(consumer);
         MiscRecipeLoader.init(consumer);
@@ -107,10 +107,10 @@ public class GTRecipes {
      *
      * This is also where any recipe removals should happen.
      */
-    public static void recipeRemoval(Consumer<ResourceLocation> consumer) {
-        RecipeRemoval.init(consumer);
-
+    public static void recipeRemoval() {
         RECIPE_FILTERS.clear();
-        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(consumer.andThen(RECIPE_FILTERS::add)));
+
+        RecipeRemoval.init(RECIPE_FILTERS::add);
+        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
     }
 }

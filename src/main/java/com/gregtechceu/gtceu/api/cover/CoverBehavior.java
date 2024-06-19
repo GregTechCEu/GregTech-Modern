@@ -208,14 +208,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     // ******* Capabilities *******//
     //////////////////////////////////////
 
-    // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system
-
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public IItemHandlerModifiable getItemTransferCap(IItemHandlerModifiable defaultValue) {
         return defaultValue;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public IFluidHandlerModifiable getFluidTransferCap(IFluidHandlerModifiable defaultValue) {
         return defaultValue;
     }

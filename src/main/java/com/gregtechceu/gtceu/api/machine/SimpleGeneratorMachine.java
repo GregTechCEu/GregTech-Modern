@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -22,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,13 +41,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine {
+public class SimpleGeneratorMachine extends WorkableTieredMachine
+                                    implements IFancyUIMachine, IEnvironmentalHazardEmitter {
+
+    @Getter
+    private final float hazardStrengthPerOperation;
+
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
+                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction,
+                                  Object... args) {
+        super(holder, tier, tankScalingFunction, args);
+        this.hazardStrengthPerOperation = hazardStrengthPerOperation;
+    }
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                   Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+        this(holder, tier, 0.25f, tankScalingFunction, args);
     }
-
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
@@ -100,6 +112,12 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
         return capability != EURecipeCapability.CAP;
+    }
+
+    @Override
+    public void afterWorking() {
+        super.afterWorking();
+        spreadEnvironmentalHazard();
     }
 
     //////////////////////////////////////
