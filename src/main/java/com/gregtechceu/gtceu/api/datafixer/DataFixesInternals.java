@@ -55,6 +55,8 @@ public abstract class DataFixesInternals {
 
     public static @NotNull DataFixesInternals get() {
         if (instance == null) {
+            // Init config in case it's not loaded yet
+            ConfigHolder.init();
             if (!ConfigHolder.INSTANCE.compat.doDatafixers) {
                 instance = new NoOpDataFixesInternals();
                 return instance;
