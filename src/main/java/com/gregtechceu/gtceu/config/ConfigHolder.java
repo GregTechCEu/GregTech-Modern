@@ -466,6 +466,10 @@ public class ConfigHolder {
                 "Default: true" })
         public boolean environmentalHazards = true;
         @Configurable
+        @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
+                "Default: 0.001" })
+        public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
         @Configurable.Comment({ "Whether the GTCEu's ingame guidebook, 'Compass', be enabled.", "WARNING: INCOMPLETE",
                 "Default: false" })
         public boolean enableCompass = false;

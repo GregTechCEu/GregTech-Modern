@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
@@ -88,6 +90,7 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
+        GTParticleTypes.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
@@ -155,6 +158,9 @@ public class CommonProxy {
         });
 
         WorldGenLayers.registerAll();
+        VeinGenerators.registerAddonGenerators();
+        IndicatorGenerators.registerAddonGenerators();;
+
         GTFeatures.init();
         GTFeatures.register();
         CustomBlockRotations.init();
