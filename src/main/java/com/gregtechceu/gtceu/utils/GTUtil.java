@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.google.common.math.LongMath;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -187,6 +188,20 @@ public class GTUtil {
     public static byte getTierByVoltage(long voltage) {
         // Yes, yes we do need UHV+.
         return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
+    }
+
+    public static int getFakeVoltageTier(long voltage) {
+        long a = voltage;
+        int b = 0;
+        while(a / 4L >= 8L) {
+            b++;
+            a /= 4L;
+        }
+        return b;
+    }
+
+    public static long getVoltageFromFakeTier(int tier) {
+        return LongMath.pow(4L, tier + 1) * 2;
     }
 
     /**
