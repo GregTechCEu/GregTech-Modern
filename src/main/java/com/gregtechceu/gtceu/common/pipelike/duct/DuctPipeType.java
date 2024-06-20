@@ -13,10 +13,10 @@ import java.util.Locale;
 
 public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringRepresentable {
 
-    SMALL("small", 0.375f, 0.5f),
-    NORMAL("normal", 0.5f, 1f),
-    LARGE("large", 0.75f, 2f),
-    HUGE("huge", 0.875f, 4f),
+    SMALL("small", 0.375f, 2f),
+    NORMAL("normal", 0.5f, 4f),
+    LARGE("large", 0.75f, 8f),
+    HUGE("huge", 0.875f, 16f),
     ;
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("duct");

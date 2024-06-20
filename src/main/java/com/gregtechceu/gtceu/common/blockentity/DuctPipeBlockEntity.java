@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
-import com.gregtechceu.gtceu.common.machine.electric.AirScrubberMachine;
 import com.gregtechceu.gtceu.common.pipelike.duct.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -114,11 +114,11 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             if (level.getBlockEntity(getBlockPos().relative(side)) instanceof DuctPipeBlockEntity) {
                 return false;
             }
-            return GTCapabilityHelper.getHazardContainer(level, getBlockPos().relative(side), side.getOpposite()) !=
+            BlockPos relative = getBlockPos().relative(side);
+            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) !=
                     null ||
-                    (level.getBlockEntity(
-                            getBlockPos().relative(side)) instanceof IMachineBlockEntity machineBlockEntity &&
-                            (machineBlockEntity.getMetaMachine() instanceof AirScrubberMachine ||
+                    (level.getBlockEntity(relative) instanceof IMachineBlockEntity machineBlockEntity &&
+                            (machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardCleaner ||
                                     machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardEmitter));
         }
         return false;
