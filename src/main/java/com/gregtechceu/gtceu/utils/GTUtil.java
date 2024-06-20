@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.google.common.math.LongMath;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -32,6 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 
+import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -193,7 +193,7 @@ public class GTUtil {
     public static int getFakeVoltageTier(long voltage) {
         long a = voltage;
         int b = 0;
-        while(a / 4L >= 8L) {
+        while (a / 4L >= 8L) {
             b++;
             a /= 4L;
         }
