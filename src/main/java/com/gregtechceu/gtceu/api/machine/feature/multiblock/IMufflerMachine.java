@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -37,8 +38,9 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
         var pos = self().getPos();
         var facing = self().getFrontFacing();
 
-        if (GTCapabilityHelper.getHazardContainer(self().getLevel(),
-                pos.relative(facing), facing.getOpposite()) != null) {
+        IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
+                pos.relative(facing), facing.getOpposite());
+        if (container != null) {
             // do not emit particles if front face has a duct on it.
             return;
         }
@@ -75,8 +77,8 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default int hazardStrengthPerOperation() {
-        int outputAmount = 5;
+    default float getHazardStrengthPerOperation() {
+        float outputAmount = 2.5f;
         return this instanceof TieredPartMachine tiered ? outputAmount / Math.max(tiered.getTier(), 1) : outputAmount;
     }
 

@@ -90,6 +90,7 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
+        GTParticleTypes.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
