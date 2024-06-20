@@ -251,21 +251,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-//        Object2IntMap<ItemStack> ingredientStacks = Objects
-//                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-//                        Collections::<IRecipeHandler<?>>emptyList)
-//                .stream()
-//                .filter(handler -> !handler.isProxy())
-//                .map(container ->
-//                        {
-//                            return container.getContents().stream().filter(ItemStack.class::isInstance)
-//                                    .map(ItemStack.class::cast).toList();
-//                        }
-//                )
-//                .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
-//                        () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
-
         Object2IntMap<ItemStack> ingredientStacks = getIngredientStacks(holder);
 
         int minMultiplier = Integer.MAX_VALUE;
@@ -347,7 +332,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
-//        Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
+        Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
         Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
 
         List<IRecipeHandler<?>> recipeHandlerList = Objects
@@ -356,55 +341,36 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 .stream()
                 .filter(handler -> !handler.isProxy()).toList();
 
-        for(IRecipeHandler<?> container:recipeHandlerList) {
+        for (IRecipeHandler<?> container : recipeHandlerList) {
 
-            var itemMap = container.getContents().stream().filter(ItemStack.class::isInstance).map(ItemStack.class::cast)
-                      .flatMap(con -> GTHashMaps.fromItemStackCollection(Collections.singleton(con)).object2IntEntrySet().stream())
+            var itemMap = container.getContents().stream().filter(ItemStack.class::isInstance)
+                    .map(ItemStack.class::cast)
+                    .flatMap(con -> GTHashMaps.fromItemStackCollection(Collections.singleton(con)).object2IntEntrySet()
+                            .stream())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
                             () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
-            result.putAll(itemMap);
 
-//            if (container.isDistinct()) {
-//                result.putAll(itemMap);
-//                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
-//                    if (!isInMap(map,obj.getKey())) {
-//                        map.put(obj.getKey(),obj.getIntValue());
-//                    } else {
-//                        if (isInMap(result,obj.getKey())) {
-//                            updateMap(map,obj.getKey());
-//                        }
-//                    }
-//                   }
-//            } else {
-//                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
-//                    if (!isInMap(map,obj.getKey())) {
-//                        map.put(obj.getKey(),obj.getIntValue());
-//                    } else {
-//                        updateMap(map,obj.getKey());
-//                    }
-//                }
-//            }
+            if (container.isDistinct()) {
+                result.putAll(itemMap);
+            } else {
+                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
+                    if (!isInMap(map, obj.getKey())) {
+                        map.put(obj.getKey(), obj.getIntValue());
+                    } else {
+                        updateMap(map, obj.getKey());
+                    }
+                }
+            }
         }
 
-//        for (Object2IntMap.Entry<ItemStack> resultObj : result.object2IntEntrySet()) {
-//            for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-//                if (isSameItemStack(resultObj.getKey(),obj.getKey()) && obj.getIntValue()>0) {
-//                    resultObj.setValue(obj.getIntValue());
-//                    obj.setValue(0);
-//                    break;
-//                }
-//            }
-//        }
-//        for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-//            if (obj.getIntValue() > 0) result.put(obj.getKey(),obj.getIntValue());
-//        }
+        if (!map.isEmpty()) result.putAll(map);
         return result;
     }
 
     private boolean isInMap(Object2IntMap<ItemStack> map, ItemStack is) {
         for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
             if (obj.getKey().getItem() == is.getItem()) {
-                if(obj.getKey().hasTag() && is.hasTag()) {
+                if (obj.getKey().hasTag() && is.hasTag()) {
                     return obj.getKey().getTag() == is.getTag();
                 } else {
                     return true;
@@ -417,7 +383,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     private void updateMap(Object2IntMap<ItemStack> map, ItemStack is) {
         for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
             if (obj.getKey().getItem() == is.getItem()) {
-                if(obj.getKey().hasTag() && is.hasTag()) {
+                if (obj.getKey().hasTag() && is.hasTag()) {
                     if (obj.getKey().hasTag() && is.hasTag()) {
                         obj.setValue(obj.getIntValue() + is.getCount());
                     }
@@ -428,17 +394,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         }
     }
 
-    private boolean isSameItemStack(ItemStack is1,ItemStack is2) {
-        if (is1.getItem() == is2.getItem()) {
-            if(is1.hasTag() && is2.hasTag()) {
-                return is1.getTag()==is2.getTag();
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
