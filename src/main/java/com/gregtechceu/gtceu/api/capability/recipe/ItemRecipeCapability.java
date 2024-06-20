@@ -490,12 +490,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                     tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
                             .collect(Collectors.toList());
                     ListIterator<ItemStack> iterator = tagItems.listIterator();
+                    iteratorLoop:
                     while (iterator.hasNext()) {
                         var item = iterator.next();
                         for (int i = 1; i < children.size(); ++i) {
                             if (!children.get(i).test(item)) {
                                 iterator.remove();
-                                break;
+                                continue iteratorLoop;
                             }
                         }
                         iterator.set(item.copyWithCount(amount));
@@ -504,12 +505,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }, items -> {
                     items = new ArrayList<>(items);
                     ListIterator<ItemStack> iterator = items.listIterator();
+                    iteratorLoop:
                     while (iterator.hasNext()) {
                         var item = iterator.next();
                         for (int i = 1; i < children.size(); ++i) {
                             if (!children.get(i).test(item)) {
                                 iterator.remove();
-                                break;
+                                continue iteratorLoop;
                             }
                         }
                         iterator.set(item.copyWithCount(amount));

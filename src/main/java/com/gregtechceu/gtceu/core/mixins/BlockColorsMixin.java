@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,10 @@ public class BlockColorsMixin {
                                                       @Nullable BlockAndTintGetter level,
                                                       @Nullable BlockPos pos,
                                                       int tintIndex) {
+        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return color;
+        }
+
         if (pos == null) {
             return color;
         }
@@ -35,11 +40,11 @@ public class BlockColorsMixin {
         // @formatter:off
         final Block block = state.getBlock();
         if (block instanceof GrassBlock) {
-            return clientHandler.colorGrass(color, chunkPos);
-        } else if (state.is(BlockTags.LEAVES) || block instanceof TallGrassBlock || block instanceof FlowerBlock || block instanceof DoublePlantBlock) {
-            return clientHandler.colorFoliage(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
+        } else if (state.is(BlockTags.LEAVES) || block instanceof TallGrassBlock || state.is(BlockTags.FLOWERS) || block instanceof DoublePlantBlock) {
+            return clientHandler.colorZone(color, chunkPos);
         } else if (!state.getFluidState().isEmpty()) {
-            return clientHandler.colorLiquid(color, chunkPos);
+            return clientHandler.colorZone(color, chunkPos);
         }
         // @formatter:on
 

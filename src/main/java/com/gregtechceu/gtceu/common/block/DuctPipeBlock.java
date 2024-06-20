@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
@@ -14,13 +17,18 @@ import com.gregtechceu.gtceu.common.pipelike.duct.LevelDuctPipeNet;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -85,6 +93,18 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     @Override
     public boolean canPipeConnectToBlock(IPipeNode<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
-        return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
+        return tile != null &&
+                (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
+                        tile instanceof MetaMachineBlockEntity metaMachine &&
+                                (metaMachine.getMetaMachine() instanceof IEnvironmentalHazardCleaner ||
+                                        metaMachine.getMetaMachine() instanceof IEnvironmentalHazardEmitter));
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
+                                TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltip, flag);
+        tooltip.add(Component.translatable("gtceu.duct_pipe.transfer_rate",
+                this.pipeType.modifyProperties(this.properties).getTransferRate()));
     }
 }

@@ -172,7 +172,6 @@ public class GTDynamicDataPack implements PackResources {
                 entry.addProperty("path", "^recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0") + "\\.json" + "$");
                 block.add(entry);
             });
-            GTRecipes.RECIPE_FILTERS.clear();
             filter.add("block", block);
             return metaReader.fromJson(filter);
         }

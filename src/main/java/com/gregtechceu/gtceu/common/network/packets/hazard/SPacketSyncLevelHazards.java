@@ -26,7 +26,7 @@ public class SPacketSyncLevelHazards implements IPacket {
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(map.size());
         for (var entry : map.entrySet()) {
-            buf.writeVarLong(entry.getKey().toLong());
+            buf.writeChunkPos(entry.getKey());
             entry.getValue().toNetwork(buf);
         }
     }
@@ -34,10 +34,7 @@ public class SPacketSyncLevelHazards implements IPacket {
     @Override
     public void decode(FriendlyByteBuf buf) {
         map = Stream.generate(() -> {
-            long packed = buf.readVarLong();
-            int x = ChunkPos.getX(packed);
-            int z = ChunkPos.getZ(packed);
-            ChunkPos pos = new ChunkPos(x, z);
+            ChunkPos pos = buf.readChunkPos();
             var zone = EnvironmentalHazardSavedData.HazardZone.fromNetwork(buf);
             return Map.entry(pos, zone);
         }).limit(buf.readVarInt()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
