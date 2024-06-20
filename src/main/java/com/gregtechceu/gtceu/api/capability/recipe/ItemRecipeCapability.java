@@ -251,7 +251,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        // Because of parallel can not process the reciple in more than one input bus,items in diff input bus not merge
         Object2IntMap<ItemStack> ingredientStacks = getIngredientStacks(holder);
 
         int minMultiplier = Integer.MAX_VALUE;
@@ -317,8 +316,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
                 if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
                     available += inventoryEntry.getIntValue();
-                    // Because of parallel can not process the reciple in more than one input bus,only process item in
-                    // one input bus
                     break;
                 }
             }
@@ -335,6 +332,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
+        Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
         Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
 
         List<IRecipeHandler<?>> recipeHandlerList = Objects
@@ -351,10 +349,51 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                             .stream())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
                             () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
-            result.putAll(itemMap);
+
+            if (container.isDistinct()) {
+                result.putAll(itemMap);
+            } else {
+                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
+                    if (!isInMap(map, obj.getKey())) {
+                        map.put(obj.getKey(), obj.getIntValue());
+                    } else {
+                        updateMap(map, obj.getKey());
+                    }
+                }
+            }
         }
+
+        if (!map.isEmpty()) result.putAll(map);
         return result;
     }
+
+    private boolean isInMap(Object2IntMap<ItemStack> map, ItemStack is) {
+        for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
+            if (obj.getKey().getItem() == is.getItem()) {
+                if (obj.getKey().hasTag() && is.hasTag()) {
+                    return obj.getKey().getTag() == is.getTag();
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void updateMap(Object2IntMap<ItemStack> map, ItemStack is) {
+        for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
+            if (obj.getKey().getItem() == is.getItem()) {
+                if (obj.getKey().hasTag() && is.hasTag()) {
+                    if (obj.getKey().hasTag() && is.hasTag()) {
+                        obj.setValue(obj.getIntValue() + is.getCount());
+                    }
+                } else {
+                    obj.setValue(obj.getIntValue() + is.getCount());
+                }
+            }
+        }
+    }
+
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
