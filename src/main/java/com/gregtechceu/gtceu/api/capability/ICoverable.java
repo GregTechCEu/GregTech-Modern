@@ -59,7 +59,6 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     boolean shouldRenderBackSide();
 
-    // TODO replace getItemTransferCap and getFluidTransferCap with a cross-platform capability implementation
     IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);

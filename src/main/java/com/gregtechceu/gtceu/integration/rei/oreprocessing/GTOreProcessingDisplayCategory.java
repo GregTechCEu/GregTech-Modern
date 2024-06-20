@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
@@ -62,7 +63,7 @@ public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTO
 
     public static void registerDisplays(DisplayRegistry registry) {
         for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (mat.hasProperty(ORE)) {
+            if (mat.hasProperty(ORE) && !mat.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB)) {
                 registry.add(new GTOreProcessingDisplay(mat));
             }
         }

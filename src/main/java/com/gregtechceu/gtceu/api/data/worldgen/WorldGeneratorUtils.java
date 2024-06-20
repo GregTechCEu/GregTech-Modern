@@ -66,7 +66,8 @@ public class WorldGeneratorUtils {
             if (!veins.isEmpty())
                 return veins;
             List<Entry<Integer, GTOreDefinition>> result = worldVeins.stream()
-                    .filter(entry -> entry.biomes() == null || entry.biomes().get().contains(biome))
+                    .filter(entry -> entry.biomes() == null ||
+                            (entry.biomes().get().size() == 0 || entry.biomes().get().contains(biome)))
                     .map(vein -> new AbstractMap.SimpleEntry<>(
                             vein.weight() +
                                     (vein.biomeWeightModifier() == null ? 0 : vein.biomeWeightModifier().apply(biome)),

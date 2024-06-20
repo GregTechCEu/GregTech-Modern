@@ -441,6 +441,9 @@ public class GTUtil {
             tooltipComponents.add(Component.translatable("gtceu.medical_condition.description_shift"));
             tooltipComponents.add(Component
                     .translatable("gtceu.medical_condition." + material.getProperty(HAZARD).condition.name));
+            tooltipComponents.add(Component.translatable("gtceu.hazard_trigger.description"));
+            tooltipComponents.add(Component
+                    .translatable("gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
             return;
         }
         tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
