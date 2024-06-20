@@ -251,16 +251,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        Object2IntMap<ItemStack> ingredientStacks = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .filter(handler -> !handler.isProxy())
-                .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
-                        .map(ItemStack.class::cast).toList())
-                .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
-                        () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+        // Because of parallel can not process the reciple in more than one input bus,items in diff input bus not merge
+        Object2IntMap<ItemStack> ingredientStacks = getIngredientStacks(holder);
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -324,11 +316,10 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             // For every stack in the ingredients gathered from the input bus.
             for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
                 if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
-                    if (inventoryEntry.getKey().getCount() == inventoryEntry.getIntValue()) {
-                        available += inventoryEntry.getIntValue();
-                    } else {
-                        available += inventoryEntry.getKey().getCount();
-                    }
+                    available += inventoryEntry.getIntValue();
+                    // Because of parallel can not process the reciple in more than one input bus,only process item in
+                    // one input bus
+                    break;
                 }
             }
             if (available >= needed) {
@@ -341,6 +332,28 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             }
         }
         return minMultiplier;
+    }
+
+    private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
+        Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
+
+        List<IRecipeHandler<?>> recipeHandlerList = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .filter(handler -> !handler.isProxy()).toList();
+
+        for (IRecipeHandler<?> container : recipeHandlerList) {
+
+            var itemMap = container.getContents().stream().filter(ItemStack.class::isInstance)
+                    .map(ItemStack.class::cast)
+                    .flatMap(con -> GTHashMaps.fromItemStackCollection(Collections.singleton(con)).object2IntEntrySet()
+                            .stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
+                            () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+            result.putAll(itemMap);
+        }
+        return result;
     }
 
     @Override
