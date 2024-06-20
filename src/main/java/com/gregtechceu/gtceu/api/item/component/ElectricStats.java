@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -137,29 +139,62 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                                 TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
-            addTotalChargeTooltip(tooltipComponents, electricItem.getMaxCharge(), electricItem.getTier());
+            addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(), electricItem.getTier());
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
         }
     }
 
-    private static void addTotalChargeTooltip(List<Component> tooltip, long maxCharge, int tier) {
-        Instant start = Instant.now();
-        Instant end = Instant.now().plusSeconds((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20));
-        Duration duration = Duration.between(start, end);
+    private static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
+        double percentage = (double)currentCharge / (double)maxCharge;
 
-        long chargeTime;
+
+        Instant start = Instant.now();
+        Instant current = Instant.now().plusSeconds((long) ((currentCharge * 1.0) / GTValues.V[tier] / 20));
+        Instant max = Instant.now().plusSeconds((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20));
+        Duration durationCurrent = Duration.between(start, current);
+        Duration durationMax = Duration.between(start, max);
+        long currentChargeTime;
+        long maxChargeTime;
         String unit;
-        if (duration.getSeconds() <= 180) {
-            chargeTime = duration.getSeconds();
+        if (durationCurrent.getSeconds() <= 180) {
+            currentChargeTime = durationCurrent.getSeconds();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (duration.toMinutes() <= 180) {
-            chargeTime = duration.toMinutes();
+        } else if (durationCurrent.toMinutes() <= 180) {
+            currentChargeTime = durationCurrent.toMinutes();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
         } else {
-            chargeTime = duration.toHours();
+            currentChargeTime = durationCurrent.toHours();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
         }
-        tooltip.add(Component.translatable("item.gtceu.battery.charge_time", chargeTime, unit, GTValues.VNF[tier]));
+
+        if (durationMax.getSeconds() <= 180) {
+            maxChargeTime = durationMax.getSeconds();
+        } else if (durationMax.toMinutes() <= 180) {
+            maxChargeTime = durationMax.toMinutes();
+        } else {
+            maxChargeTime = durationMax.toHours();
+        }
+
+        if(percentage > 0.5) {
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.0",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                    .withStyle(ChatFormatting.GREEN));
+        } else if(percentage > 0.3) {
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.1",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                    .withStyle(ChatFormatting.YELLOW));
+        } else {
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.2",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                    .withStyle(ChatFormatting.RED));
+        }
+
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
