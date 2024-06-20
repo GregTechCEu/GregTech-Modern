@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
@@ -139,14 +139,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                                 TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
-            addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(), electricItem.getTier());
+            addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
+                    electricItem.getTier());
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
         }
     }
 
     private static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
-        double percentage = (double)currentCharge / (double)maxCharge;
-
+        double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
         Instant current = Instant.now().plusSeconds((long) ((currentCharge * 1.0) / GTValues.V[tier] / 20));
@@ -175,13 +175,13 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             maxChargeTime = durationMax.toHours();
         }
 
-        if(percentage > 0.5) {
+        if (percentage > 0.5) {
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.0",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
                     GTValues.VNF[tier],
                     FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
                     .withStyle(ChatFormatting.GREEN));
-        } else if(percentage > 0.3) {
+        } else if (percentage > 0.3) {
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.1",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
                     GTValues.VNF[tier],
@@ -194,7 +194,6 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                     FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
                     .withStyle(ChatFormatting.RED));
         }
-
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
