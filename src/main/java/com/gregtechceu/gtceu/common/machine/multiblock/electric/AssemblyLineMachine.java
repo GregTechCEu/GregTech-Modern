@@ -39,6 +39,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                     .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
                             .map(ItemStack.class::cast).toList())
                     .filter(container -> !container.isEmpty())
+                    .sorted()
                     .toList();
 
             if(itemInputInventory.size() < recipeInputs.size()) return false;
@@ -46,7 +47,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             for( int i = 0; i < recipeInputs.size(); i++) {
                 var itemStack = itemInputInventory.get(i).get(0);
                 ItemStack recipeStack = ItemRecipeCapability.CAP.of(recipeInputs.get(i).content).getItems()[0];
-                if(INGREDIENT_COMPARATOR.compare(Ingredient.of(recipeStack), Ingredient.of(itemStack)) == 0) {
+                if(INGREDIENT_COMPARATOR.compare(Ingredient.of(recipeStack), Ingredient.of(itemStack)) != 0) {
                     return false;
                 }
             }

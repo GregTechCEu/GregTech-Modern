@@ -393,7 +393,7 @@ public class ConfigHolder {
         public boolean orderedAssemblyLineItems = true;
         @Configurable
         @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.", "Default: false" })
-        public boolean orderedAssemblyLineFluids = false;
+        public boolean orderedAssemblyLineFluids = true;
     }
 
     public static class ToolConfigs {
