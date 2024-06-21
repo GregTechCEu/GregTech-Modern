@@ -110,8 +110,11 @@ public class OverclockingLogic {
      * @return an int array of {OverclockedEUt, OverclockedDuration, PotentialParallels}
      */
     @NotNull
-    public static ImmutableTriple<Long, Integer, Integer> standardOverclockingLogicWithSubTickParallelCount(long recipeEUt, long maxVoltage, int recipeDuration,
-                                                                                                            int numberOfOCs, double durationDivisor,
+    public static ImmutableTriple<Long, Integer, Integer> standardOverclockingLogicWithSubTickParallelCount(long recipeEUt,
+                                                                                                            long maxVoltage,
+                                                                                                            int recipeDuration,
+                                                                                                            int numberOfOCs,
+                                                                                                            double durationDivisor,
                                                                                                             double voltageMultiplier) {
         double resultDuration = recipeDuration;
         double resultVoltage = recipeEUt;
@@ -135,7 +138,7 @@ public class OverclockingLogic {
             // in case duration overclocking would waste energy
             resultVoltage = potentialVoltage;
         }
-        return ImmutableTriple.of((long)resultVoltage, (int)resultDuration, (int)resultParallel);
+        return ImmutableTriple.of((long) resultVoltage, (int) resultDuration, (int) resultParallel);
     }
 
     @NotNull

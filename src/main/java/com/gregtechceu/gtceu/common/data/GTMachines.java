@@ -1269,7 +1269,8 @@ public class GTMachines {
             .multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -1455,7 +1456,8 @@ public class GTMachines {
             .multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("YSY", "YYY", "YYY")
@@ -1485,7 +1487,8 @@ public class GTMachines {
             .langValue("Evaporation Tower")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.EVAPORATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STAINLESS_EVAPORATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("YSYY", "YYYY", "YYYY", "YYYY")
@@ -1512,7 +1515,8 @@ public class GTMachines {
             .multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")

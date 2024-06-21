@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -28,12 +27,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.longs.LongIntPair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -237,21 +236,22 @@ public class GTRecipeModifiers {
 
     public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, boolean modifyDuration) {
         if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-            final Pair<GTRecipe, Integer>[] result = new Pair[]{null};
+            final Pair<GTRecipe, Integer>[] result = new Pair[] { null };
             RecipeHelper.applyOverclock(
                     new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> {
-                            var parallel = OverclockingLogic.standardOverclockingLogicWithSubTickParallelCount(Math.abs(recipeEUt),
-                                    maxVoltage,
-                                    duration,
-                                    amountOC,
-                                    OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR,
-                                    OverclockingLogic.STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
+                        var parallel = OverclockingLogic.standardOverclockingLogicWithSubTickParallelCount(
+                                Math.abs(recipeEUt),
+                                maxVoltage,
+                                duration,
+                                amountOC,
+                                OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR,
+                                OverclockingLogic.STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
 
-                            result[0] = GTRecipeModifiers.accurateParallel(machine, recipe, parallel.getRight(), modifyDuration);
-                            return LongIntPair.of(parallel.getLeft(), parallel.getMiddle());
-                    })
-            , recipe, electricMachine.getOverclockVoltage());
-            if(result[0] != null) {
+                        result[0] = GTRecipeModifiers.accurateParallel(machine, recipe, parallel.getRight(),
+                                modifyDuration);
+                        return LongIntPair.of(parallel.getLeft(), parallel.getMiddle());
+                    }), recipe, electricMachine.getOverclockVoltage());
+            if (result[0] != null) {
                 return result[0].getFirst();
             }
         }

@@ -287,7 +287,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -319,7 +320,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -387,7 +389,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -790,7 +793,8 @@ public class GCyMMachines {
                     Component.translatable("gtceu.electric_blast_furnace")))
             .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock)
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
                 TraceabilityPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
