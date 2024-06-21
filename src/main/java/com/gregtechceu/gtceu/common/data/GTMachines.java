@@ -1531,7 +1531,7 @@ public class GTMachines {
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
-            .multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
+            .multiblock("assembly_line", AssemblyLineMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .alwaysTryModifyRecipe(true)

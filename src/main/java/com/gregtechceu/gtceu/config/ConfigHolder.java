@@ -387,6 +387,13 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false" })
         public boolean highTierContent = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.", "Default: true" })
+        public boolean orderedAssemblyLineItems = true;
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.", "Default: false" })
+        public boolean orderedAssemblyLineFluids = false;
     }
 
     public static class ToolConfigs {
