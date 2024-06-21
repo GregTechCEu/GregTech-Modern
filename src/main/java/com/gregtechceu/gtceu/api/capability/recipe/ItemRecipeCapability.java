@@ -362,38 +362,25 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             }
         }
-
-        if (!map.isEmpty()) result.putAll(map);
+        result.putAll(map);
         return result;
     }
 
     private boolean isInMap(Object2IntMap<ItemStack> map, ItemStack is) {
         for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-            if (obj.getKey().getItem() == is.getItem()) {
-                if (obj.getKey().hasTag() && is.hasTag()) {
-                    return obj.getKey().getTag() == is.getTag();
-                } else {
-                    return true;
-                }
-            }
+            if (ItemStackHashStrategy.comparingAllButCount().equals(obj.getKey(), is)) return true;
         }
         return false;
     }
 
     private void updateMap(Object2IntMap<ItemStack> map, ItemStack is) {
         for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-            if (obj.getKey().getItem() == is.getItem()) {
-                if (obj.getKey().hasTag() && is.hasTag()) {
-                    if (obj.getKey().hasTag() && is.hasTag()) {
-                        obj.setValue(obj.getIntValue() + is.getCount());
-                    }
-                } else {
-                    obj.setValue(obj.getIntValue() + is.getCount());
-                }
+            if (ItemStackHashStrategy.comparingAllButCount().equals(obj.getKey(), is)) {
+                obj.setValue(obj.getIntValue() + is.getCount());
+                break;
             }
         }
     }
-
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
