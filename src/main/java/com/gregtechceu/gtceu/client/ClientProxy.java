@@ -59,6 +59,7 @@ public class ClientProxy {
         event.registerBlockEntityRenderer(GTBlockEntities.GT_SIGN.get(), SignRenderer::new);
         event.registerBlockEntityRenderer(GTBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);
     }
+
     @SubscribeEvent
     public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
@@ -67,7 +68,6 @@ public class ClientProxy {
             }
         }
     }
-
 
     @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
