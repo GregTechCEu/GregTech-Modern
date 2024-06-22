@@ -4,6 +4,7 @@
 
 GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simultaneously.
 
+
 ## Download
 [`Github Releases`](https://github.com/GregTechCEu/GregTechCEu-1.19/releases).
 [`Curseforge`](https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern/files)
@@ -17,6 +18,13 @@ GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simul
 ## Dev Q&A
 * [Todo List](https://github.com/GregTechCEu/GregTechCEu-1.19/issues/125) for potential contributors who are interested in this project
 * [Dev Q&A](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
+
+
+## IDE Requirements (when using IntelliJ IDEA)
+
+For developing this mod, the [Lombok plugin](https://plugins.jetbrains.com/plugin/6317-lombok) for IntelliJ IDEA is strictly required.  
+Additionally, the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) is recommended.
+
 
 ## Credited Works
 - Most textures are originally from the **[ZedTech GTCEu Resourcepack](https://github.com/brachy84/zedtech-ceu)**, with some changes made by the community.

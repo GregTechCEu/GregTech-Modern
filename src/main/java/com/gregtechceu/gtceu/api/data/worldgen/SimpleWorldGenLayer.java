@@ -30,7 +30,8 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     @Override
     public String toString() {
         return getSerializedName() + "[" +
-                RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]";
+                RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]" +
+                ",dimensions=" + levels.toString();
     }
 
     @Override

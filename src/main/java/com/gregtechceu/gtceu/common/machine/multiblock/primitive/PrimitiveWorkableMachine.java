@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -29,7 +30,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PrimitiveWorkableMachine extends WorkableMultiblockMachine implements IMachineModifyDrops {
+public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
+                                      implements IMachineModifyDrops, IEnvironmentalHazardEmitter {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PrimitiveWorkableMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -81,5 +83,16 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine implemen
     public void onDrops(List<ItemStack> drops, Player entity) {
         MetaMachine.clearInventory(drops, importItems.storage);
         MetaMachine.clearInventory(drops, exportItems.storage);
+    }
+
+    @Override
+    public float getHazardStrengthPerOperation() {
+        return 0.1f;
+    }
+
+    @Override
+    public void afterWorking() {
+        super.afterWorking();
+        spreadEnvironmentalHazard();
     }
 }

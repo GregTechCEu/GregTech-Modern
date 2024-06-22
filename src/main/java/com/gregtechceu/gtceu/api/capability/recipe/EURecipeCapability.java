@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -45,14 +44,14 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
         } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = GTValues.V[tieredMachine.getTier()];
+            maxVoltage = tieredMachine.getMaxVoltage();
         }
 
         long recipeEUt = RecipeHelper.getOutputEUt(recipe);
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs((int) (maxVoltage / recipeEUt));
+        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
         } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = GTValues.V[tieredMachine.getTier()];
+            maxVoltage = tieredMachine.getMaxVoltage();
         }
 
         long recipeEUt = RecipeHelper.getInputEUt(recipe);

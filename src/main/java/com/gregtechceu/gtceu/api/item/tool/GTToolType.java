@@ -357,7 +357,7 @@ public class GTToolType {
             .toolStats(b -> b.crafting().attackDamage(1.5F).attackSpeed(-3.2F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.CHAINSAW_TOOL, true)
-            .electric(GTValues.IV)
+            .electric(GTValues.LV)
             .toolClasses(GTToolType.SAW)
             .build();
     public static final GTToolType SCREWDRIVER_LV = GTToolType.builder("lv_screwdriver")
@@ -367,8 +367,8 @@ public class GTToolType {
                     .attackDamage(-1.0F).attackSpeed(3.0F)
                     .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
-            .sound(GTSoundEntries.CHAINSAW_TOOL)
-            .electric(GTValues.IV)
+            .sound(GTSoundEntries.SCREWDRIVER_TOOL)
+            .electric(GTValues.LV)
             .toolClasses(GTToolType.SCREWDRIVER)
             .build();
 

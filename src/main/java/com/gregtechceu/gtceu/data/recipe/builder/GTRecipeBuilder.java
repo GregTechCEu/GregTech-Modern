@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -236,7 +237,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack input) {
         if (input.isEmpty()) {
             GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-            throw new IllegalArgumentException(id + ": input items is empty");
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
     }
@@ -245,7 +245,6 @@ public class GTRecipeBuilder {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
                 GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-                throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
         return input(ItemRecipeCapability.CAP,
@@ -320,7 +319,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(ItemStack output) {
         if (output.isEmpty()) {
             GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
-            throw new IllegalArgumentException(id + ": output items is empty");
         }
         return output(ItemRecipeCapability.CAP, SizedIngredient.create(output));
     }
@@ -329,7 +327,6 @@ public class GTRecipeBuilder {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
                 GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
-                throw new IllegalArgumentException(id + ": output items is empty");
             }
         }
         return output(ItemRecipeCapability.CAP,
@@ -644,6 +641,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder rpm(float rpm) {
         return rpm(rpm, false);
+    }
+
+    public GTRecipeBuilder environmentalHazard(MedicalCondition condition, boolean reverse) {
+        return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder environmentalHazard(MedicalCondition condition) {
+        return environmentalHazard(condition, false);
     }
 
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -55,7 +55,8 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
                               @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == Direction.DOWN) quads.add(
-                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState));
+                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY),
+                        modelState));
     }
 
     @Override

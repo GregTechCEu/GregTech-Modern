@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -94,21 +94,24 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                 // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
                 // Check for HPCA specifically since these components could potentially be used in other multiblocks.
                 if (controller instanceof HPCAMachine hpca) {
-                    facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), Direction.NORTH, false);
+                    facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), hpca.getUpwardsFacing(),
+                            hpca.isFlipped());
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
-                        -1, 0, true, true));
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, facing,
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
                 if (emissiveTexture != null) {
-                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, facing,
+                            ModelFactory.getBlockSprite(emissiveTexture),
                             modelState, -101, 15, true, false));
                 }
             }
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
-                        modelState, -1, 0, true, true));
+                quads.add(StaticFaceBakery.bakeFace(
+                        StaticFaceBakery.SLIGHTLY_OVER_BLOCK, Direction.NORTH,
+                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
             }
         }
     }

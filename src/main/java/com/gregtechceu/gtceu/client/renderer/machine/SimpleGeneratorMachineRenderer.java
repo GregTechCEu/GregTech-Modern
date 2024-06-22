@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -33,7 +33,8 @@ public class SimpleGeneratorMachineRenderer extends WorkableTieredHullMachineRen
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(TransformerRenderer.ENERGY_OUT),
+            quads.add(StaticFaceBakery.bakeFace(
+                    modelFacing, ModelFactory.getBlockSprite(TransformerRenderer.ENERGY_OUT),
                     modelState, 2));
         }
     }

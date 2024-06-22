@@ -165,6 +165,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         if (amperage == 1) {
             // amperage is 1 when the energy is not exactly on a tier
             // the voltage for recipe search is always on tier, so take the closest lower tier
+            if (voltage > Integer.MAX_VALUE) return GTUtil.getVoltageFromFakeTier(GTUtil.getFakeVoltageTier(voltage));
             return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
         } else {
             // amperage != 1 means the voltage is exactly on a tier
@@ -208,6 +209,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         return new EnergyContainerList(containers);
     }
 
+    @Override
     public long getMaxVoltage() {
         if (this.energyContainer == null) {
             this.energyContainer = getEnergyContainer();

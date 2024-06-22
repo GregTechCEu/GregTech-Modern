@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -21,6 +20,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
@@ -46,6 +46,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -57,6 +58,7 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.TierSortingRegistry;
 
 import com.google.common.collect.ArrayTable;
@@ -487,7 +489,6 @@ public class GTItems {
             if (index == 1) {
                 var held = FluidTransferHelper.getFluidContained(itemStack);
                 if (held != null) {
-                    // TODO render cell with a real fluid texture in the future?
                     if (held.getFluid() == Fluids.LAVA) {
                         return 0xFFFF7000;
                     }
@@ -2238,21 +2239,41 @@ public class GTItems {
             .lang("Gas Mask Filter")
             .properties(p -> p.stacksTo(1))
             .register();
+    // TODO add more medications for specific conditions & then remove them from paracetamol
     public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
             .lang("Paracetamol Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehavior(15,
-                    HazardProperty.HazardType.CONTACT_POISON,
-                    HazardProperty.HazardType.INHALATION_POISON,
-                    HazardProperty.HazardType.CORROSIVE)))
+            .onRegister(attach(new AntidoteBehavior(10,
+                    GTMedicalConditions.CHEMICAL_BURNS,
+                    GTMedicalConditions.WEAK_POISON,
+                    GTMedicalConditions.NAUSEA,
+                    GTMedicalConditions.IRRITANT,
+                    GTMedicalConditions.METHANOL_POISONING,
+                    GTMedicalConditions.CARBON_MONOXIDE_POISONING)))
             .register();
     public static ItemEntry<ComponentItem> RAD_AWAY_PILL = REGISTRATE.item("rad_away_pill", ComponentItem::create)
             .lang("RadAway™ Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
-            .onRegister(attach(new AntidoteBehavior(75, HazardProperty.HazardType.RADIOACTIVE)))
+            .onRegister(attach(new AntidoteBehavior(50, GTMedicalConditions.CARCINOGEN)))
             .register();
 
-    public static ItemEntry<Item> NANO_SABER;
+    public static ItemEntry<ComponentItem> NANO_SABER = REGISTRATE.item("nano_saber", ComponentItem::create)
+            .lang("Nano Saber")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new NanoSaberBehavior(), ElectricStats.createElectricItem(4_000_000L, GTValues.HV)))
+            .model((ctx, prov) -> {
+                var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/nano_saber/normal"));
+                prov.getBuilder("item/nano_saber/active")
+                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                        .texture("layer0", prov.modLoc("item/nano_saber/active"));
+
+                rootModel.override().predicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION, 1.0f)
+                        .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/nano_saber/active")))
+                        .end();
+            })
+            .onRegister(modelPredicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION,
+                    () -> () -> (stack, level, entity, layer) -> NanoSaberBehavior.isItemActive(stack) ? 1.0f : 0.0f))
+            .register();
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::create)
             .lang("Ore Prospector (LV)")
             .properties(p -> p.stacksTo(1))
@@ -2445,6 +2466,10 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "bad_hazmat")))
             .lang("Face Mask")
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new TooltipBehavior(tooltips -> {
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.inhalation"));
+            })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
             .item("rubber_gloves",
@@ -2452,6 +2477,10 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "bad_hazmat")))
             .lang("Rubber Gloves")
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new TooltipBehavior(tooltips -> {
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
+                tooltips.add(Component.translatable("gtceu.hazard_trigger.skin_contact"));
+            })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE
             .item("hazmat_chestpiece",
@@ -2676,11 +2705,11 @@ public class GTItems {
         return item -> item.burnTime(burnTime);
     }
 
-    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
+    public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
         return item -> item.attachComponents(components);
     }
 
-    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
+    public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
         return item -> item.attachComponents(components);
     }
 
@@ -2689,6 +2718,16 @@ public class GTItems {
         return item -> {
             if (LDLib.isClient()) {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
+            }
+        };
+    }
+
+    @SuppressWarnings("deprecation")
+    public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
+                                                                     Supplier<Supplier<ItemPropertyFunction>> property) {
+        return item -> {
+            if (LDLib.isClient()) {
+                ItemProperties.register(item, predicate, property.get().get());
             }
         };
     }

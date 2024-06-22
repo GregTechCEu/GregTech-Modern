@@ -27,6 +27,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
 
         registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }

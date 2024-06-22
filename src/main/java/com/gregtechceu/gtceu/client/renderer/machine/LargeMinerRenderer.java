@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -36,7 +36,7 @@ public class LargeMinerRenderer extends WorkableCasingMachineRenderer {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof IMultiController controller && controller.isFormed() && side == Direction.DOWN &&
                 modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(BEHIND_BLOCK, modelFacing,
+            quads.add(StaticFaceBakery.bakeFace(BEHIND_BLOCK, modelFacing,
                     ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
         }
     }

@@ -64,10 +64,9 @@ public class MaterialParser {
 
         try {
             materialParser.parse();
-        } catch (CommandSyntaxException var6) {}
+        } catch (CommandSyntaxException ignored) {}
 
-        return (CompletableFuture<Suggestions>) materialParser.suggestions
-                .apply(builder.createOffset(stringReader.getCursor()));
+        return materialParser.suggestions.apply(builder.createOffset(stringReader.getCursor()));
     }
 
     private void readMaterial() throws CommandSyntaxException {
@@ -83,14 +82,6 @@ public class MaterialParser {
     private void parse() throws CommandSyntaxException {
         this.suggestions = this::suggestMaterial;
         this.readMaterial();
-    }
-
-    private CompletableFuture<Suggestions> suggestOpenNbt(SuggestionsBuilder builder) {
-        if (builder.getRemaining().isEmpty()) {
-            builder.suggest(String.valueOf('{'));
-        }
-
-        return builder.buildFuture();
     }
 
     private CompletableFuture<Suggestions> suggestMaterial(SuggestionsBuilder builder) {

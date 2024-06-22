@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
@@ -37,7 +39,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
-import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -89,6 +90,7 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
+        GTParticleTypes.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
@@ -125,7 +127,6 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
-        GTOreVeinWidget.init();
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
@@ -157,6 +158,9 @@ public class CommonProxy {
         });
 
         WorldGenLayers.registerAll();
+        VeinGenerators.registerAddonGenerators();
+        IndicatorGenerators.registerAddonGenerators();;
+
         GTFeatures.init();
         GTFeatures.register();
         CustomBlockRotations.init();
@@ -251,6 +255,7 @@ public class CommonProxy {
             // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
             ChemicalHelper.reinitializeUnification();
+            GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions
             DungeonLootLoader.init();

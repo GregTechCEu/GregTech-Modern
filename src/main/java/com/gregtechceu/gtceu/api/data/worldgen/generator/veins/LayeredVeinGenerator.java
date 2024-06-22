@@ -38,8 +38,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public static final Codec<LayeredVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns")
-                    .forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns :
-                            ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList())))
+                    .forGetter(LayeredVeinGenerator::getLayerPatterns))
             .apply(instance, LayeredVeinGenerator::new));
 
     private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
@@ -50,9 +49,16 @@ public class LayeredVeinGenerator extends VeinGenerator {
         super(entry);
     }
 
+    public List<GTLayerPattern> getLayerPatterns() {
+        if (layerPatterns == null || this.layerPatterns.isEmpty()) {
+            layerPatterns = bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList());
+        }
+        return layerPatterns;
+    }
+
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        return layerPatterns.stream()
+        return getLayerPatterns().stream()
                 .flatMap(pattern -> pattern.layers.stream())
                 .map(layer -> Map.entry(
                         layer.targets.stream()
@@ -75,7 +81,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
                                                   BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
-        var patternPool = this.layerPatterns;
+        var patternPool = this.getLayerPatterns();
 
         if (patternPool.isEmpty())
             return Map.of();

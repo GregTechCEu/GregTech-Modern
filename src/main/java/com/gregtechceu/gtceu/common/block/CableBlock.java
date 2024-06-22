@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
@@ -114,7 +116,16 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        // dont apply damage if there is a frame box
+        var pipeNode = getPipeTile(level, pos);
+        if (pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                    .getDefaultState();
+            frameState.getBlock().entityInside(frameState, level, pos, entity);
+            return;
+        }
         if (level.isClientSide) return;
+
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);

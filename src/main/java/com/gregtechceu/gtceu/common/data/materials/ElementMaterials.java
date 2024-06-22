@@ -13,8 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
-
-import java.util.List;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -75,7 +74,7 @@ public class ElementMaterials {
                         .temperature(887))
                 .color(0x9c9c8d).secondaryColor(0x676756)
                 .element(GTElements.As)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.ARSENICOSIS)
                 .buildAndRegister();
 
         Astatine = new Material.Builder(GTCEu.id("astatine"))
@@ -100,7 +99,7 @@ public class ElementMaterials {
                 .ore()
                 .color(0x98d677).secondaryColor(0x254d40).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON, false)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.BERYLLIOSIS, false)
                 .element(GTElements.Be)
                 .buildAndRegister();
 
@@ -156,7 +155,7 @@ public class ElementMaterials {
                 .dust()
                 .color(0x636377).secondaryColor(0x412738).iconSet(SHINY)
                 .element(GTElements.Cd)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.POISON)
                 .buildAndRegister();
 
         Cerium = new Material.Builder(GTCEu.id("cerium"))
@@ -169,10 +168,7 @@ public class ElementMaterials {
         Chlorine = new Material.Builder(GTCEu.id("chlorine"))
                 .gas(new FluidBuilder().state(FluidState.GAS).customStill())
                 .element(GTElements.Cl)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON,
-                        List.of(HazardProperty.blindnessEffect(2000, 1000, 3),
-                                HazardProperty.poisonEffect(2000, 1000, 3)),
-                        false)
+                // TODO hazard
                 .buildAndRegister();
 
         Chromium = new Material.Builder(GTCEu.id("chromium"))
@@ -184,7 +180,7 @@ public class ElementMaterials {
                 .rotorStats(130, 155, 3.0f, 512)
                 .fluidPipeProperties(2180, 35, true, true, false, false)
                 .blastTemp(1700, GasTier.LOW)
-                .irritantHazard(false)
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CARCINOGEN)
                 .buildAndRegister();
 
         Cobalt = new Material.Builder(GTCEu.id("cobalt"))
@@ -282,7 +278,7 @@ public class ElementMaterials {
         Fluorine = new Material.Builder(GTCEu.id("fluorine"))
                 .gas(new FluidBuilder().state(FluidState.GAS).customStill())
                 .element(GTElements.F)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON, false)
+                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS, false)
                 .buildAndRegister();
 
         Francium = new Material.Builder(GTCEu.id("francium"))
@@ -433,7 +429,7 @@ public class ElementMaterials {
                 .element(GTElements.Pb)
                 .cableProperties(GTValues.V[0], 2, 2)
                 .fluidPipeProperties(1200, 32, true)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.WEAK_POISON)
                 .buildAndRegister();
 
         Lithium = new Material.Builder(GTCEu.id("lithium"))
@@ -486,7 +482,7 @@ public class ElementMaterials {
                 .fluid()
                 .color(0xE6DCDC).iconSet(DULL)
                 .element(GTElements.Hg)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.WEAK_POISON)
                 .buildAndRegister();
 
         Molybdenum = new Material.Builder(GTCEu.id("molybdenum"))
@@ -940,7 +936,6 @@ public class ElementMaterials {
                 .cableProperties(GTValues.V[7], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
-                .radioactiveHazard(2)
                 .buildAndRegister();
 
         NaquadahEnriched = new Material.Builder(GTCEu.id("enriched_naquadah"))
@@ -950,7 +945,6 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .element(GTElements.Nq1)
                 .blastTemp(7000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
-                .radioactiveHazard(2.5f)
                 .buildAndRegister();
 
         Naquadria = new Material.Builder(GTCEu.id("naquadria"))

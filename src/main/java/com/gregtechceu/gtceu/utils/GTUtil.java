@@ -31,6 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 
+import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -187,6 +188,20 @@ public class GTUtil {
     public static byte getTierByVoltage(long voltage) {
         // Yes, yes we do need UHV+.
         return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
+    }
+
+    public static int getFakeVoltageTier(long voltage) {
+        long a = voltage;
+        int b = 0;
+        while (a / 4L >= 8L) {
+            b++;
+            a /= 4L;
+        }
+        return b;
+    }
+
+    public static long getVoltageFromFakeTier(int tier) {
+        return LongMath.pow(4L, tier + 1) * 2;
     }
 
     /**
@@ -423,11 +438,14 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.hazard.description_shift"));
+            tooltipComponents.add(Component.translatable("gtceu.medical_condition.description_shift"));
             tooltipComponents.add(Component
-                    .translatable("gtceu.hazard." + material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
+                    .translatable("gtceu.medical_condition." + material.getProperty(HAZARD).condition.name));
+            tooltipComponents.add(Component.translatable("gtceu.hazard_trigger.description"));
+            tooltipComponents.add(Component
+                    .translatable("gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
             return;
         }
-        tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
+        tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
     }
 }
