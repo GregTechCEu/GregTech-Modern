@@ -23,6 +23,8 @@ public class OrganicChemistryMaterials {
         SiliconeRubber = new Material.Builder(GTCEu.id("silicone_rubber"))
                 .polymer()
                 .liquid(new FluidBuilder().temperature(900))
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .color(0xF0F0F0).secondaryColor(0xE8E8E0)
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
@@ -53,6 +55,8 @@ public class OrganicChemistryMaterials {
         StyreneButadieneRubber = new Material.Builder(GTCEu.id("styrene_butadiene_rubber"))
                 .polymer()
                 .liquid(new FluidBuilder().temperature(1000))
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .color(0x34312b).secondaryColor(0x110B09)
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
@@ -103,7 +107,7 @@ public class OrganicChemistryMaterials {
                 .color(0x464441).secondaryColor(0x382e1b)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
                 .toolStats(
-                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                        ToolProperty.Builder.of(1.0F, 1.0F, 1024, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 20, Hydrogen, 12, Nitrogen, 4)
                 .fluidPipeProperties(1000, 350, true)
                 .buildAndRegister();
@@ -121,7 +125,7 @@ public class OrganicChemistryMaterials {
                 .color(0xC8C8C8)
                 .flags(GENERATE_FOIL)
                 .toolStats(
-                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                        ToolProperty.Builder.of(1.0F, 1.0F, 256, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Hydrogen, 4)
                 .fluidPipeProperties(370, 60, true)
                 .buildAndRegister();
@@ -148,7 +152,7 @@ public class OrganicChemistryMaterials {
                 .color(0xFFFFFF).secondaryColor(0x919187)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
                 .toolStats(
-                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                        ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Fluorine, 4)
                 .fluidPipeProperties(600, 100, true, true, false, false)
                 .buildAndRegister();
@@ -502,7 +506,7 @@ public class OrganicChemistryMaterials {
                 .liquid(new FluidBuilder().temperature(400))
                 .color(0x353529).secondaryColor(0x080808)
                 .toolStats(
-                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                        ToolProperty.Builder.of(1.0F, 1.0F, 256, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Carbon, 5, Hydrogen, 8)
                 .buildAndRegister();
