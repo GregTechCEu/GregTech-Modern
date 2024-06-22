@@ -63,7 +63,7 @@ public class ClientProxy {
     public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof IGTTool || item instanceof IComponentItem) {
-                event.register(item, new GTItemBarRenderer());
+                event.register(item, GTItemBarRenderer.INSTANCE);
             }
         }
     }

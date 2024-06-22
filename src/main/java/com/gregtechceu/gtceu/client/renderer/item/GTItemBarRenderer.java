@@ -10,6 +10,8 @@ import net.neoforged.neoforge.client.IItemDecorator;
 import org.jetbrains.annotations.NotNull;
 
 public class GTItemBarRenderer implements IItemDecorator {
+    public static final GTItemBarRenderer INSTANCE = new GTItemBarRenderer();
+
     @Override
     public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
         if (stack.getItem() instanceof IGTTool toolItem) {
