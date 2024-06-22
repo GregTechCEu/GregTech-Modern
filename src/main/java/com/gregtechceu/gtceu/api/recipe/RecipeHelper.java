@@ -2,11 +2,21 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -97,5 +107,31 @@ public class RecipeHelper {
 
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
         return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
+    }
+
+    /**
+     * get all output items from GTRecipes
+     *
+     * @param recipe GTRecipe
+     * @return all output items
+     */
+    public static List<ItemStack> getOutputItem(GTRecipe recipe) {
+        return new ArrayList<>(recipe.getOutputContents(ItemRecipeCapability.CAP).stream()
+                .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
+                .flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
+                .collect(Collectors.toMap(ItemStack::getItem, Function.identity(), (s1, s2) -> s1.copyWithCount(s1.getCount() + s2.getCount()))).values());
+    }
+
+    /**
+     * get all output fluids from GTRecipes
+     *
+     * @param recipe GTRecipe
+     * @return all output fluids
+     */
+    public static List<FluidStack> getOutputFluid(GTRecipe recipe) {
+        return new ArrayList<>(recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
+                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .flatMap(ingredient -> Arrays.stream(ingredient.getStacks()))
+                .collect(Collectors.toMap(FluidStack::getFluid, Function.identity(), (s1, s2) -> s1.copy(s1.getAmount() + s2.getAmount()))).values());
     }
 }

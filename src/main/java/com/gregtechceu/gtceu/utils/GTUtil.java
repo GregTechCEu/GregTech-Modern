@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -14,11 +18,17 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
@@ -55,6 +65,7 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final Map<GTToolType, ItemStack> TOOL_CACHE = new HashMap<>();
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -144,7 +155,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser or equal than {@code value},
-     *         or {@code -1} if there's no entry matching the condition
+     * or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesserOrEqual(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -164,7 +175,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser than {@code value},
-     *         or {@code -1} if there's no entry matching the condition
+     * or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesser(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -182,8 +193,8 @@ public class GTUtil {
 
     /**
      * @return Lowest tier of the voltage that can handle {@code voltage}; that is,
-     *         a voltage with value greater than equal than {@code voltage}. If there's no
-     *         tier that can handle it, {@code MAX} is returned.
+     * a voltage with value greater than equal than {@code voltage}. If there's no
+     * tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
         // Yes, yes we do need UHV+.
@@ -208,7 +219,7 @@ public class GTUtil {
      * Ex: This method turns both 1024 and 512 into HV.
      *
      * @return the highest voltage tier with value below or equal to {@code voltage}, or
-     *         {@code ULV} if there's no tier below
+     * {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
         return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
@@ -447,5 +458,65 @@ public class GTUtil {
             return;
         }
         tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
+    }
+
+    public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {
+        ResourceLocation resourceLocation = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
+        compoundTag.putString("id", resourceLocation.toString());
+        compoundTag.putInt("Count", itemStack.getCount());
+        if (itemStack.getTag() != null) {
+            compoundTag.put("tag", itemStack.getTag().copy());
+        }
+
+        return compoundTag;
+    }
+
+    public static ItemStack loadItemStack(CompoundTag compoundTag) {
+        try {
+            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
+            int count = compoundTag.getInt("Count");
+            ItemStack stack = new ItemStack(item, count);
+            if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
+                stack.setTag(compoundTag.getCompound("tag"));
+                if (stack.getTag() != null) {
+                    stack.getItem().verifyTagAfterLoad(stack.getTag());
+                }
+            }
+
+            if (stack.getItem().canBeDepleted()) {
+                stack.setDamageValue(stack.getDamageValue());
+            }
+            return stack;
+        } catch (RuntimeException var2) {
+            GTCEu.LOGGER.debug("Tried to load invalid item: {}", compoundTag, var2);
+            return ItemStack.EMPTY;
+        }
+    }
+
+    /**
+     * get tool itemStack by GTToolType with default Material
+     *
+     * @param toolType GTToolType
+     * @return the tool itemStack
+     */
+    public static ItemStack getToolItem(GTToolType toolType) {
+        return TOOL_CACHE.computeIfAbsent(toolType, type -> {
+            if (type == GTToolType.SOFT_MALLET) {
+                return GTItems.TOOL_ITEMS.get(GTMaterials.Rubber, type).asStack();
+            }
+            return GTItems.TOOL_ITEMS.get(GTMaterials.Aluminium, type).asStack();
+        });
+    }
+
+
+    public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+        return switch (flag) {
+            case 0 -> Pair.of(GTUtil.getToolItem(GTToolType.WRENCH), Component.translatable("gtceu.top.maintenance.wrench"));
+            case 1 -> Pair.of(GTUtil.getToolItem(GTToolType.SCREWDRIVER), Component.translatable("gtceu.top.maintenance.screwdriver"));
+            case 2 -> Pair.of(GTUtil.getToolItem(GTToolType.SOFT_MALLET), Component.translatable("gtceu.top.maintenance.soft_mallet"));
+            case 3 -> Pair.of(GTUtil.getToolItem(GTToolType.HARD_HAMMER), Component.translatable("gtceu.top.maintenance.hard_hammer"));
+            case 4 -> Pair.of(GTUtil.getToolItem(GTToolType.WIRE_CUTTER), Component.translatable("gtceu.top.maintenance.wire_cutter"));
+            default -> Pair.of(GTUtil.getToolItem(GTToolType.CROWBAR), Component.translatable("gtceu.top.maintenance.crowbar"));
+        };
     }
 }
