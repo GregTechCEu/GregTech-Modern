@@ -1,16 +1,9 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 
-import mcjty.theoneprobe.api.CompoundText;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.TextStyleClass;
-import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -18,6 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import mcjty.theoneprobe.api.CompoundText;
+import mcjty.theoneprobe.api.ElementAlignment;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.TextStyleClass;
+import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +38,13 @@ public class ExhaustVentInfoProvider extends CapabilityInfoProvider<IExhaustVent
     }
 
     @Override
-    protected void addProbeInfo(IExhaustVentMachine iExhaustVentMachine, IProbeInfo iProbeInfo, Player player, BlockEntity blockEntity, IProbeHitData iProbeHitData) {
-        IProbeInfo horizontalPane = iProbeInfo.horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+    protected void addProbeInfo(IExhaustVentMachine iExhaustVentMachine, IProbeInfo iProbeInfo, Player player,
+                                BlockEntity blockEntity, IProbeHitData iProbeHitData) {
+        IProbeInfo horizontalPane = iProbeInfo
+                .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
         var direction = iExhaustVentMachine.getVentingDirection();
-        horizontalPane.text(CompoundText.create().info(Component.translatable("gtceu.top.exhaust_vent_direction", StringUtils.capitalize(direction.getName()) + " ")));
+        horizontalPane.text(CompoundText.create().info(Component.translatable("gtceu.top.exhaust_vent_direction",
+                StringUtils.capitalize(direction.getName()) + " ")));
         if (!iExhaustVentMachine.isVentingBlocked()) return;
 
         if (player.isShiftKeyDown()) {
@@ -53,7 +56,9 @@ public class ExhaustVentInfoProvider extends CapabilityInfoProvider<IExhaustVent
             }
         }
         if (iExhaustVentMachine.isNeedsVenting()) {
-            horizontalPane.text(CompoundText.create().text("(").error(Component.translatable("gtceu.top.exhaust_vent_blocked")).style(TextStyleClass.INFO).text(")"));
+            horizontalPane.text(
+                    CompoundText.create().text("(").error(Component.translatable("gtceu.top.exhaust_vent_blocked"))
+                            .style(TextStyleClass.INFO).text(")"));
         }
     }
 

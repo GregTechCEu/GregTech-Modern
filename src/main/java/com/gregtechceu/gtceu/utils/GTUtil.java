@@ -18,7 +18,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,6 +42,7 @@ import net.minecraftforge.common.Tags;
 
 import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -155,7 +155,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser or equal than {@code value},
-     * or {@code -1} if there's no entry matching the condition
+     *         or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesserOrEqual(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -175,7 +175,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser than {@code value},
-     * or {@code -1} if there's no entry matching the condition
+     *         or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesser(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -193,8 +193,8 @@ public class GTUtil {
 
     /**
      * @return Lowest tier of the voltage that can handle {@code voltage}; that is,
-     * a voltage with value greater than equal than {@code voltage}. If there's no
-     * tier that can handle it, {@code MAX} is returned.
+     *         a voltage with value greater than equal than {@code voltage}. If there's no
+     *         tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
         // Yes, yes we do need UHV+.
@@ -219,7 +219,7 @@ public class GTUtil {
      * Ex: This method turns both 1024 and 512 into HV.
      *
      * @return the highest voltage tier with value below or equal to {@code voltage}, or
-     * {@code ULV} if there's no tier below
+     *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
         return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
@@ -508,15 +508,20 @@ public class GTUtil {
         });
     }
 
-
     public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> Pair.of(GTUtil.getToolItem(GTToolType.WRENCH), Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> Pair.of(GTUtil.getToolItem(GTToolType.SCREWDRIVER), Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> Pair.of(GTUtil.getToolItem(GTToolType.SOFT_MALLET), Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> Pair.of(GTUtil.getToolItem(GTToolType.HARD_HAMMER), Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> Pair.of(GTUtil.getToolItem(GTToolType.WIRE_CUTTER), Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> Pair.of(GTUtil.getToolItem(GTToolType.CROWBAR), Component.translatable("gtceu.top.maintenance.crowbar"));
+            case 0 -> Pair.of(GTUtil.getToolItem(GTToolType.WRENCH),
+                    Component.translatable("gtceu.top.maintenance.wrench"));
+            case 1 -> Pair.of(GTUtil.getToolItem(GTToolType.SCREWDRIVER),
+                    Component.translatable("gtceu.top.maintenance.screwdriver"));
+            case 2 -> Pair.of(GTUtil.getToolItem(GTToolType.SOFT_MALLET),
+                    Component.translatable("gtceu.top.maintenance.soft_mallet"));
+            case 3 -> Pair.of(GTUtil.getToolItem(GTToolType.HARD_HAMMER),
+                    Component.translatable("gtceu.top.maintenance.hard_hammer"));
+            case 4 -> Pair.of(GTUtil.getToolItem(GTToolType.WIRE_CUTTER),
+                    Component.translatable("gtceu.top.maintenance.wire_cutter"));
+            default -> Pair.of(GTUtil.getToolItem(GTToolType.CROWBAR),
+                    Component.translatable("gtceu.top.maintenance.crowbar"));
         };
     }
 }

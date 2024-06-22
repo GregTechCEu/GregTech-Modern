@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -36,12 +38,15 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
                     } else {
                         text = Component.literal("   ");
                     }
-                    text.append(Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath())));
+                    text.append(
+                            Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath())));
                     iTooltip.add(text);
                 }
             } else {
-                ResourceLocation recipeType = new ResourceLocation(recipeTypesTagList.getString(currentRecipeTypeIndex));
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
+                ResourceLocation recipeType = new ResourceLocation(
+                        recipeTypesTagList.getString(currentRecipeTypeIndex));
+                iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(
+                        Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
             }
         }
     }
@@ -49,7 +54,8 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity) {
-            @Nullable GTRecipeType[] recipeTypes = blockEntity.getMetaMachine().getDefinition().getRecipeTypes();
+            @Nullable
+            GTRecipeType[] recipeTypes = blockEntity.getMetaMachine().getDefinition().getRecipeTypes();
             if (recipeTypes != null && recipeTypes.length > 1) {
                 if (blockEntity.getMetaMachine() instanceof IRecipeLogicMachine recipeLogicMachine) {
                     ListTag recipeTypesTagList = new ListTag();

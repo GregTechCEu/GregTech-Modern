@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.apache.commons.lang3.StringUtils;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -49,13 +50,15 @@ public class AutoOutputBlockProvider implements IBlockComponentProvider, IServer
         if (MetaMachine.getMachine(level, pos) instanceof IAutoOutputItem outputItem) {
             var direction = outputItem.getOutputFacingItems();
             if (direction != null) {
-                data.put("autoOutputItem", writeData(new CompoundTag(), direction, blockAccessor, outputItem.isAllowInputFromOutputSideItems(), outputItem.isAutoOutputItems()));
+                data.put("autoOutputItem", writeData(new CompoundTag(), direction, blockAccessor,
+                        outputItem.isAllowInputFromOutputSideItems(), outputItem.isAutoOutputItems()));
             }
         }
         if (MetaMachine.getMachine(level, pos) instanceof IAutoOutputFluid outputFluid) {
             var direction = outputFluid.getOutputFacingFluids();
             if (direction != null) {
-                data.put("autoOutputFluid", writeData(new CompoundTag(), direction, blockAccessor, outputFluid.isAllowInputFromOutputSideFluids(), outputFluid.isAutoOutputFluids()));
+                data.put("autoOutputFluid", writeData(new CompoundTag(), direction, blockAccessor,
+                        outputFluid.isAllowInputFromOutputSideFluids(), outputFluid.isAutoOutputFluids()));
             }
         }
         compoundTag.put(getUid().toString(), data);
@@ -66,7 +69,8 @@ public class AutoOutputBlockProvider implements IBlockComponentProvider, IServer
         return GTCEu.id("auto_output_info");
     }
 
-    private CompoundTag writeData(CompoundTag compoundTag, Direction direction, BlockAccessor blockAccessor, boolean allowInput, boolean auto) {
+    private CompoundTag writeData(CompoundTag compoundTag, Direction direction, BlockAccessor blockAccessor,
+                                  boolean allowInput, boolean auto) {
         compoundTag.putString("direction", direction.getName());
         var level = blockAccessor.getLevel();
         var pos = blockAccessor.getPosition().relative(direction);
@@ -79,14 +83,16 @@ public class AutoOutputBlockProvider implements IBlockComponentProvider, IServer
         return compoundTag;
     }
 
-    private void addAutoOutputInfo(ITooltip iTooltip, BlockAccessor blockAccessor, CompoundTag compoundTag, String text) {
+    private void addAutoOutputInfo(ITooltip iTooltip, BlockAccessor blockAccessor, CompoundTag compoundTag,
+                                   String text) {
         var direction = Direction.byName(compoundTag.getString("direction"));
         boolean allowInput = compoundTag.getBoolean("allowInput");
         boolean auto = compoundTag.getBoolean("auto");
         if (direction != null) {
             iTooltip.add(Component.translatable(text, StringUtils.capitalize(direction.getName())));
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("block"))).asItem().getDefaultInstance();
+                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("block"))).asItem()
+                        .getDefaultInstance();
                 if (!block.isEmpty()) {
                     iTooltip.append(iTooltip.getElementHelper().smallItem(block));
                 }

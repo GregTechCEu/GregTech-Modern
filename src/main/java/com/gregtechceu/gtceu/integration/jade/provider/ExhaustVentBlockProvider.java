@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
@@ -43,7 +44,8 @@ public class ExhaustVentBlockProvider extends BlockInfoProvider<IExhaustVentMach
     }
 
     @Override
-    protected void write(CompoundTag compoundTag, IExhaustVentMachine iExhaustVentMachine, BlockAccessor blockAccessor) {
+    protected void write(CompoundTag compoundTag, IExhaustVentMachine iExhaustVentMachine,
+                         BlockAccessor blockAccessor) {
         var direction = iExhaustVentMachine.getVentingDirection();
         compoundTag.putString("ventDirection", direction.getName());
         var level = blockAccessor.getLevel();
@@ -57,20 +59,24 @@ public class ExhaustVentBlockProvider extends BlockInfoProvider<IExhaustVentMach
     }
 
     @Override
-    protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor, BlockEntity blockEntity, IPluginConfig iPluginConfig) {
+    protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor,
+                              BlockEntity blockEntity, IPluginConfig iPluginConfig) {
         var direction = Direction.byName(compoundTag.getString("ventDirection"));
         if (direction != null) {
-            iTooltip.add(Component.translatable("gtceu.top.exhaust_vent_direction", StringUtils.capitalize(direction.getName())));
+            iTooltip.add(Component.translatable("gtceu.top.exhaust_vent_direction",
+                    StringUtils.capitalize(direction.getName())));
             if (!compoundTag.getBoolean("ventBlocked")) return;
 
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("ventBlock"))).asItem().getDefaultInstance();
+                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("ventBlock")))
+                        .asItem().getDefaultInstance();
                 iTooltip.append(iTooltip.getElementHelper().smallItem(block));
             }
 
             if (compoundTag.getBoolean("needsVenting")) {
                 iTooltip.append(Component.literal(" ("));
-                iTooltip.append(Component.translatable("gtceu.top.exhaust_vent_blocked").withStyle(ChatFormatting.RED).append(Component.literal(")").withStyle(ChatFormatting.GRAY)));
+                iTooltip.append(Component.translatable("gtceu.top.exhaust_vent_blocked").withStyle(ChatFormatting.RED)
+                        .append(Component.literal(")").withStyle(ChatFormatting.GRAY)));
             }
         }
     }

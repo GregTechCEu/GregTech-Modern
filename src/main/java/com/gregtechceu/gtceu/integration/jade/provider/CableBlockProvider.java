@@ -1,16 +1,17 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -53,7 +54,8 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         CompoundTag data = compoundTag.getCompound(getUid().toString());
         if (blockAccessor.getBlock() instanceof CableBlock cableBlock) {
-            CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(), blockAccessor.getPosition());
+            CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(),
+                    blockAccessor.getPosition());
             if (cable != null) {
                 var cableData = new CompoundTag();
                 cableData.putLong("maxVoltage", cable.getMaxVoltage());

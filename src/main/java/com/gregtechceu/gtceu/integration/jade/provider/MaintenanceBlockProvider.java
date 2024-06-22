@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
@@ -55,7 +57,8 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
     }
 
     @Override
-    protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor, BlockEntity blockEntity, IPluginConfig iPluginConfig) {
+    protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor,
+                              BlockEntity blockEntity, IPluginConfig iPluginConfig) {
         if (compoundTag.contains("hasProblems", Tag.TAG_BYTE)) {
             if (compoundTag.getBoolean("hasProblems")) {
                 if (blockAccessor.showDetails()) {
@@ -76,5 +79,4 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
             }
         }
     }
-
 }

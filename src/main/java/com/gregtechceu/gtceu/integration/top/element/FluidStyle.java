@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class FluidStyle implements IFluidStyle {
+
     private int width = 20;
 
     private int height = 20;

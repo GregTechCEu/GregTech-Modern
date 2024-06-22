@@ -6,12 +6,9 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.integration.top.element.FluidStackElement;
 import com.gregtechceu.gtceu.integration.top.element.FluidStyle;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import mcjty.theoneprobe.api.CompoundText;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -20,12 +17,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
 
+import mcjty.theoneprobe.api.CompoundText;
+import mcjty.theoneprobe.api.ElementAlignment;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
+
     @Override
     public ResourceLocation getID() {
         return GTCEu.id("recipe_output_info");
@@ -37,14 +40,15 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
         return GTCapabilityHelper.getRecipeLogic(level, blockPos, direction);
     }
 
-
     @Override
-    protected void addProbeInfo(RecipeLogic recipeLogic, IProbeInfo iProbeInfo, Player player, BlockEntity blockEntity, IProbeHitData iProbeHitData) {
+    protected void addProbeInfo(RecipeLogic recipeLogic, IProbeInfo iProbeInfo, Player player, BlockEntity blockEntity,
+                                IProbeHitData iProbeHitData) {
         if (recipeLogic.isWorking()) {
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
                 IProbeInfo verticalPane = iProbeInfo.vertical(iProbeInfo.defaultLayoutStyle().spacing(0));
-                verticalPane.text(CompoundText.create().info(Component.translatable("gtceu.top.recipe_output").append(" ")));
+                verticalPane.text(
+                        CompoundText.create().info(Component.translatable("gtceu.top.recipe_output").append(" ")));
                 List<ItemStack> outputItems = RecipeHelper.getOutputItem(recipe);
                 if (!outputItems.isEmpty()) {
                     addItemInfo(verticalPane, outputItems);
@@ -62,7 +66,8 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
         IProbeInfo horizontalPane;
         for (ItemStack itemOutput : outputItems) {
             if (itemOutput != null && !itemOutput.isEmpty()) {
-                horizontalPane = verticalPane.horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+                horizontalPane = verticalPane
+                        .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 horizontalPane.item(itemOutput, new ItemStyle().width(16).height(16)).text(" ").itemLabel(itemOutput);
             }
         }
@@ -72,8 +77,10 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
         IProbeInfo horizontalPane;
         for (FluidStack fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
-                horizontalPane = verticalPane.horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                horizontalPane.element(new FluidStackElement(fluidOutput, new FluidStyle())).text(" ").text(fluidOutput.getDisplayName());
+                horizontalPane = verticalPane
+                        .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+                horizontalPane.element(new FluidStackElement(fluidOutput, new FluidStyle())).text(" ")
+                        .text(fluidOutput.getDisplayName());
             }
         }
     }

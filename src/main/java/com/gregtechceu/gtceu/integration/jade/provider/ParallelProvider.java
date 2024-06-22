@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -24,9 +26,8 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
             int parallel = blockAccessor.getServerData().getInt("parallel");
             if (parallel > 0) {
                 iTooltip.add(Component.translatable(
-                    "gtceu.multiblock.parallel",
-                    Component.literal(parallel + "").withStyle(ChatFormatting.DARK_PURPLE)
-                ));
+                        "gtceu.multiblock.parallel",
+                        Component.literal(parallel + "").withStyle(ChatFormatting.DARK_PURPLE)));
             }
         }
     }
@@ -38,10 +39,11 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
                 compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
             } else if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
                 Optional<IParallelHatch> parallelHatch = controller.getParts().stream()
-                    .filter(IParallelHatch.class::isInstance)
-                    .map(IParallelHatch.class::cast)
-                    .findAny();
-                parallelHatch.ifPresent(iParallelHatch -> compoundTag.putInt("parallel", iParallelHatch.getCurrentParallel()));
+                        .filter(IParallelHatch.class::isInstance)
+                        .map(IParallelHatch.class::cast)
+                        .findAny();
+                parallelHatch.ifPresent(
+                        iParallelHatch -> compoundTag.putInt("parallel", iParallelHatch.getCurrentParallel()));
             }
         }
     }

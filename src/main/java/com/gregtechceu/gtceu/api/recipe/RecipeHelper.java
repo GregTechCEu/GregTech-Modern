@@ -8,8 +8,10 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
+
 import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.longs.LongIntPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -119,7 +121,9 @@ public class RecipeHelper {
         return new ArrayList<>(recipe.getOutputContents(ItemRecipeCapability.CAP).stream()
                 .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
                 .flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
-                .collect(Collectors.toMap(ItemStack::getItem, Function.identity(), (s1, s2) -> s1.copyWithCount(s1.getCount() + s2.getCount()))).values());
+                .collect(Collectors.toMap(ItemStack::getItem, Function.identity(),
+                        (s1, s2) -> s1.copyWithCount(s1.getCount() + s2.getCount())))
+                .values());
     }
 
     /**
@@ -132,6 +136,8 @@ public class RecipeHelper {
         return new ArrayList<>(recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
                 .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
                 .flatMap(ingredient -> Arrays.stream(ingredient.getStacks()))
-                .collect(Collectors.toMap(FluidStack::getFluid, Function.identity(), (s1, s2) -> s1.copy(s1.getAmount() + s2.getAmount()))).values());
+                .collect(Collectors.toMap(FluidStack::getFluid, Function.identity(),
+                        (s1, s2) -> s1.copy(s1.getAmount() + s2.getAmount())))
+                .values());
     }
 }

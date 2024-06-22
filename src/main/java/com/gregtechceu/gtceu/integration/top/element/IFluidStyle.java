@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.top.element;
 
 public interface IFluidStyle {
+
     IFluidStyle copy();
 
     IFluidStyle width(int var1);

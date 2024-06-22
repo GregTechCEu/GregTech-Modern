@@ -1,17 +1,12 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import mcjty.theoneprobe.api.CompoundText;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -19,9 +14,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import mcjty.theoneprobe.api.CompoundText;
+import mcjty.theoneprobe.api.ElementAlignment;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import org.jetbrains.annotations.Nullable;
 
 public class MaintenanceInfoProvider extends CapabilityInfoProvider<IMaintenanceMachine> {
+
     @Nullable
     @Override
     protected IMaintenanceMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
@@ -40,16 +42,19 @@ public class MaintenanceInfoProvider extends CapabilityInfoProvider<IMaintenance
     }
 
     @Override
-    protected void addProbeInfo(IMaintenanceMachine maintenanceMachine, IProbeInfo iProbeInfo, Player player, BlockEntity blockEntity, IProbeHitData iProbeHitData) {
+    protected void addProbeInfo(IMaintenanceMachine maintenanceMachine, IProbeInfo iProbeInfo, Player player,
+                                BlockEntity blockEntity, IProbeHitData iProbeHitData) {
         IProbeInfo verticalPane = iProbeInfo.vertical(iProbeInfo.defaultLayoutStyle().spacing(0));
         if (maintenanceMachine.hasMaintenanceProblems()) {
             if (player.isShiftKeyDown()) {
                 int problems = maintenanceMachine.getMaintenanceProblems();
                 for (byte i = 0; i < 6; i++) {
                     if (((problems >> i) & 1) == 0) {
-                        IProbeInfo horizontalPane = verticalPane.horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+                        IProbeInfo horizontalPane = verticalPane
+                                .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                         var pair = GTUtil.getMaintenanceText(i);
-                        horizontalPane.item(pair.getFirst(), new ItemStyle().width(16).height(16)).text(pair.getSecond());
+                        horizontalPane.item(pair.getFirst(), new ItemStyle().width(16).height(16))
+                                .text(pair.getSecond());
                     }
                 }
             } else {

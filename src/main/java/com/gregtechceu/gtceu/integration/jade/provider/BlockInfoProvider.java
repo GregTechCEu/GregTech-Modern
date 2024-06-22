@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import lombok.Getter;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -16,6 +17,7 @@ import snownee.jade.api.config.IPluginConfig;
 import javax.annotation.Nullable;
 
 public abstract class BlockInfoProvider<C> implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+
     @Getter
     public final ResourceLocation uid;
 
@@ -28,7 +30,8 @@ public abstract class BlockInfoProvider<C> implements IBlockComponentProvider, I
 
     protected abstract void write(CompoundTag data, C capability, BlockAccessor block);
 
-    protected abstract void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config);
+    protected abstract void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
+                                       BlockEntity blockEntity, IPluginConfig config);
 
     protected boolean allowDisplaying(C capability) {
         return true;
@@ -50,5 +53,4 @@ public abstract class BlockInfoProvider<C> implements IBlockComponentProvider, I
         }
         data.put(this.uid.toString(), capData);
     }
-
 }
