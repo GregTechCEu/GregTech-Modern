@@ -81,7 +81,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent Direction: %s");
         provider.add("gtceu.top.exhaust_vent_blocked", "Exhaust Vent Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
-        provider.add("gtceu.top.stained", "Stained: %s");
+        provider.add("gtceu.top.stained", "Colored: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
         provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
