@@ -5,20 +5,22 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.utils.IngredientEquality.INGREDIENT_COMPARATOR;
@@ -39,7 +41,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                     .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
                             .map(ItemStack.class::cast).toList())
                     .filter(container -> !container.isEmpty())
-                    .sorted()
                     .toList();
 
             if(itemInputInventory.size() < recipeInputs.size()) return false;
@@ -54,12 +55,16 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             if(ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids) {
                 recipeInputs = recipe.inputs.get(FluidRecipeCapability.CAP);
-                var itemFluidInventory = getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP);
+                var itemFluidInventory = Objects.requireNonNullElseGet(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList).stream()
+                        .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
+                                .map(FluidStack.class::cast).toList())
+                        .filter(container -> !container.isEmpty())
+                        .toList();
 
                 if (itemFluidInventory.size() < recipeInputs.size()) return false;
 
                 for (int i = 0; i < recipeInputs.size(); i++) {
-                    var fluidStack = (FluidStack) itemFluidInventory.get(i).getContents().get(0);
+                    var fluidStack = (FluidStack) itemFluidInventory.get(i).get(0);
                     FluidStack recipeStack = FluidRecipeCapability.CAP.of(recipeInputs.get(i).content).getStacks()[0];
                     if (recipeStack.getFluid() != fluidStack.getFluid() || fluidStack.getAmount() < recipeStack.getAmount()) {
                         return false;
@@ -68,5 +73,15 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             }
         }
         return super.beforeWorking(recipe);
+    }
+
+    @Override
+    public void onStructureFormed() {
+        getDefinition().setPartSorter(Comparator.comparing(it -> multiblockPartSorter().apply(it.self().getPos())));
+        super.onStructureFormed();
+    }
+
+    private Function<BlockPos, Integer> multiblockPartSorter() {
+        return RelativeDirection.LEFT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
     }
 }
