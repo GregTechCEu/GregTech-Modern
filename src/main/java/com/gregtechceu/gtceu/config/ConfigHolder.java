@@ -389,10 +389,12 @@ public class ConfigHolder {
         public boolean highTierContent = false;
 
         @Configurable
-        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.", "Default: true" })
+        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.",
+                "Default: true" })
         public boolean orderedAssemblyLineItems = true;
         @Configurable
-        @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.", "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
+        @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.",
+                "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
         public boolean orderedAssemblyLineFluids = false;
     }
 
