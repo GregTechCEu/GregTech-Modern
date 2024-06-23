@@ -1,31 +1,37 @@
 package com.gregtechceu.gtceu.integration;
 
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.material.Fluid;
 
 import lombok.Getter;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +125,7 @@ public class GTOreVeinWidget extends WidgetGroup {
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
         addWidget(new LabelWidget(5, 70,
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
-        addWidget(new LabelWidget(5, 80, dimensions));
+        setupDimensionMarker(80);
     }
 
     private void setupText(BedrockFluidDefinition ignored) {
@@ -130,7 +136,36 @@ public class GTOreVeinWidget extends WidgetGroup {
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
         addWidget(new LabelWidget(5, 50,
                 LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
-        addWidget(new LabelWidget(5, 60, dimensions));
+        setupDimensionMarker(60);
+    }
+
+    private void setupDimensionMarker(int yPosition) {
+        if (this.dimensionFilter != null) {
+            int interval = 2;
+            int rowSlots = (width - 10 + interval) / (16 + interval);
+
+            var dimMarkerTuples = dimensionFilter.stream()
+                    .map(ResourceKey::location)
+                    .map(loc -> new Tuple<>(loc, GTRegistries.DIMENSION_MARKERS.getOrDefault(loc, new DimensionMarker(0, () -> Blocks.GRASS_BLOCK, loc.toLanguageKey()))))
+                    .sorted(Comparator.comparingInt(p -> p.getB().tier))
+                    .toList();
+            var transfer = new ItemStackTransfer(dimMarkerTuples.size());
+            for (int i = 0; i < dimMarkerTuples.size(); i++) {
+                var tuple = dimMarkerTuples.get(i);
+                var dimMarker = tuple.getB();
+                var markerItem = tuple.getB().getMarker();
+                int row = Math.floorDiv(i, rowSlots);
+                SlotWidget dimSlot = new SlotWidget(transfer, i,
+                        5 + (16 + interval) * (i - row * rowSlots),
+                        yPosition + 18 * row,
+                        false, false).setIngredientIO(IngredientIO.INPUT);
+                transfer.setStackInSlot(i, markerItem);
+                dimSlot.setOverlay(new TextTexture("T" + dimMarker.tier).scale(0.75F).transform(-3F, 5F));
+                addWidget(dimSlot.setBackgroundTexture(IGuiTexture.EMPTY));
+            }
+        } else {
+            addWidget(new LabelWidget(5, yPosition, dimensions));
+        }
     }
 
     private String dimensions() {

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
@@ -27,6 +28,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -2641,6 +2643,11 @@ public class GTItems {
     public static void init() {
         generateMaterialItems();
         generateTools();
+        GTRegistries.DIMENSION_MARKERS.unfreeze();
+        GTRegistries.DIMENSION_MARKERS.register(new ResourceLocation("overworld"), new DimensionMarker(0, GTBlocks.BATTERY_EMPTY_TIER_I, "overworld"));
+        GTRegistries.DIMENSION_MARKERS.register(new ResourceLocation("the_nether"), new DimensionMarker(0, GTBlocks.BATTERY_EMPTY_TIER_II, "the_nether"));
+        GTRegistries.DIMENSION_MARKERS.register(new ResourceLocation("the_end"), new DimensionMarker(0, GTBlocks.BATTERY_EMPTY_TIER_III, "the_end"));
+        GTRegistries.DIMENSION_MARKERS.freeze();
     }
 
     public static <T extends ItemLike> NonNullConsumer<T> compassNode(CompassSection section, CompassNode... preNodes) {
