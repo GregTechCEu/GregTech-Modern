@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
@@ -129,6 +130,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
+
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new, true);
 
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);

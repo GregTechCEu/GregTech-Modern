@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -60,6 +61,8 @@ public class GTRegistryInfo<K, V> {
             () -> WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
     public static final GTRegistryInfo<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"),
             () -> TagPrefix.PREFIXES, KJSTagPrefix.class);
+    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+
     /*
      * public static final GTRegistryInfo<String, RecipeCapability<?>> RECIPE_CAPABILITY =
      * add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);
