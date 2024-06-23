@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.tool.behavior.ConfigurationCopyBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -2637,6 +2638,16 @@ public class GTItems {
             .onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
+
+    public static ItemEntry<ComponentItem> FLOPPY_DISK = REGISTRATE
+            .item("floppy_disk", ComponentItem::create)
+            .lang("Floppy Disk")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("gtceu.universal.tooltip.floppy_disk"));
+            })))
+            .onRegister(attach(new ConfigurationCopyBehavior()))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .register();
 
     public static void init() {
         generateMaterialItems();
