@@ -2,12 +2,19 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -16,17 +23,21 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -35,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -51,6 +62,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription tankSubs;
+    @Getter
+    @Persisted
+    protected final NotifiableItemStackHandler circuitInventory;
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
     // We can't use fields here because those won't be available while createTank() is called.
@@ -59,6 +73,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
+        this.circuitInventory = createCircuitItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -75,6 +90,22 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     public static long getTankCapacity(long initialCapacity, int tier) {
         return initialCapacity * (1L << Math.min(9, tier));
+    }
+
+    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        } else {
+            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+            clearInventory(drops, circuitInventory.storage);
+        }
     }
 
     @Override
@@ -144,6 +175,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        super.attachConfigurators(configuratorPanel);
+        if(this.io == IO.IN) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
+    }
+
     @Override
     public Widget createUIWidget() {
         if (slots == 1) {
