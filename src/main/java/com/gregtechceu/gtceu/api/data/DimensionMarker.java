@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
@@ -19,6 +20,7 @@ import java.util.function.Supplier;
 
 public class DimensionMarker {
 
+    @Getter
     public final int tier; // Not only used to represent dimension tier, but also for sorting
 
     @Nullable

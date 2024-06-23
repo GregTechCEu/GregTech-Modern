@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -14,14 +15,12 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -35,7 +34,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -48,7 +46,6 @@ public class GTOreVeinWidget extends WidgetGroup {
     private final String name;
     private final int weight;
     private final String range;
-    private final String dimensions;
     private final Set<ResourceKey<Level>> dimensionFilter;
     public final static int width = 120;
 
@@ -57,7 +54,6 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.name = getOreName(oreDefinition);
         this.weight = oreDefinition.weight();
         this.dimensionFilter = oreDefinition.dimensionFilter();
-        this.dimensions = dimensions();
         this.range = range(oreDefinition);
         setClientSideWidget();
         setupBaseGui(oreDefinition);
@@ -69,7 +65,6 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.name = getFluidName(fluid);
         this.weight = fluid.getWeight();
         this.dimensionFilter = fluid.getDimensionFilter();
-        this.dimensions = dimensions();
         this.range = "NULL";
         setClientSideWidget();
         setupBaseGui(fluid);
@@ -144,35 +139,29 @@ public class GTOreVeinWidget extends WidgetGroup {
             int interval = 2;
             int rowSlots = (width - 10 + interval) / (16 + interval);
 
-            var dimMarkerTuples = dimensionFilter.stream()
+            DimensionMarker[] dimMarkers = dimensionFilter.stream()
                     .map(ResourceKey::location)
-                    .map(loc -> new Tuple<>(loc, GTRegistries.DIMENSION_MARKERS.getOrDefault(loc, new DimensionMarker(0, () -> Blocks.GRASS_BLOCK, loc.toLanguageKey()))))
-                    .sorted(Comparator.comparingInt(p -> p.getB().tier))
-                    .toList();
-            var transfer = new ItemStackTransfer(dimMarkerTuples.size());
-            for (int i = 0; i < dimMarkerTuples.size(); i++) {
-                var tuple = dimMarkerTuples.get(i);
-                var dimMarker = tuple.getB();
-                var markerItem = tuple.getB().getMarker();
+                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc, new DimensionMarker(0, () -> Blocks.BARRIER, loc.toString())))
+                    .sorted(Comparator.comparingInt(DimensionMarker::getTier))
+                    .toArray(DimensionMarker[]::new);
+            var transfer = new ItemStackTransfer(dimMarkers.length);
+            for (int i = 0; i < dimMarkers.length; i++) {
+                var dimMarker = dimMarkers[i];
+                var markerItem = dimMarker.getMarker();
                 int row = Math.floorDiv(i, rowSlots);
                 SlotWidget dimSlot = new SlotWidget(transfer, i,
                         5 + (16 + interval) * (i - row * rowSlots),
                         yPosition + 18 * row,
                         false, false).setIngredientIO(IngredientIO.INPUT);
                 transfer.setStackInSlot(i, markerItem);
-                dimSlot.setOverlay(new TextTexture("T" + dimMarker.tier).scale(0.75F).transform(-3F, 5F));
+                if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
+                    dimSlot.setOverlay(new TextTexture("T" + dimMarker.tier).scale(0.75F).transform(-3F, 5F));
+                }
                 addWidget(dimSlot.setBackgroundTexture(IGuiTexture.EMPTY));
             }
         } else {
-            addWidget(new LabelWidget(5, yPosition, dimensions));
+            addWidget(new LabelWidget(5, yPosition, "Any"));
         }
-    }
-
-    private String dimensions() {
-        if (dimensionFilter == null) return "Any";
-        return dimensionFilter.stream()
-                .map(dimension -> dimension.location().toString())
-                .collect(Collectors.joining("\n"));
     }
 
     public static List<ItemStack> getContainedOresAndBlocks(GTOreDefinition oreDefinition) {

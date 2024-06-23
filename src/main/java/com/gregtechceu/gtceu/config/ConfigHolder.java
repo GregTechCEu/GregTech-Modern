@@ -152,6 +152,10 @@ public class ConfigHolder {
                 "Default: true" })
         public boolean removeSmeltingForEBFMetals = true;
 
+        @Configurable
+        @Configurable.Comment({ "Whether dimension marker should show dimension tier.", "Default: false" })
+        public boolean showDimensionTier = false;
+
         public static class EnergyCompatConfig {
 
             @Configurable
