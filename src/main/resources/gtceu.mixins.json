@@ -10,7 +10,6 @@
         "ClientLevelAccessor",
         "CompassManagerMixin",
         "GuiGraphicsAccessor",
-        "GuiGraphicsMixin",
         "GuiHeartTypeMixin",
         "HotbarManagerMixin",
         "LevelRendererMixin",
