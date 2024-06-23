@@ -72,14 +72,14 @@ public class IntegrationLang {
         provider.add("gtceu.top.unit.fluid_milibuckets", "L");
         provider.add("gtceu.top.unit.fluid_buckets", "kL");
         provider.add("gtceu.top.recipe_output", "Recipe Outputs:");
-        provider.add("gtceu.top.item_auto_output", "Item Output Direction: %s");
-        provider.add("gtceu.top.fluid_auto_output", "Fluid Output Direction: %s");
+        provider.add("gtceu.top.item_auto_output", "Item Output: %s");
+        provider.add("gtceu.top.fluid_auto_output", "Fluid Output: %s");
         provider.add("gtceu.top.auto_input", "Auto Input");
-        provider.add("gtceu.top.allow_output_input", "Allow Output Input");
+        provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");
-        provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent Direction: %s");
-        provider.add("gtceu.top.exhaust_vent_blocked", "Exhaust Vent Blocked");
+        provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
+        provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
         provider.add("gtceu.top.stained", "Colored: %s");
 
