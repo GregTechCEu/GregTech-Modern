@@ -126,6 +126,7 @@ public class CommonProxy {
         GTMachines.init();
         GTFoods.init();
         GTItems.init();
+        GTDimensionMarker.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
@@ -159,7 +160,7 @@ public class CommonProxy {
 
         WorldGenLayers.registerAll();
         VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();;
+        IndicatorGenerators.registerAddonGenerators();
 
         GTFeatures.init();
         GTFeatures.register();

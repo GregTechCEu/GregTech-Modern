@@ -1,6 +1,11 @@
 package com.gregtechceu.gtceu.api.data;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,11 +45,47 @@ public class DimensionMarker {
         return markerSupplier.get();
     }
 
+    public void register(ResourceLocation id) {
+        GTRegistries.DIMENSION_MARKERS.register(id, this);
+    }
+
     private ItemStack getStack(Item item) {
         ItemStack stack = new ItemStack(item);
         if (overrideName != null) {
             stack.setHoverName(Component.translatable(overrideName));
         }
         return stack;
+    }
+    @Setter
+    @Accessors(fluent = true, chain = true)
+    public static class Builder extends BuilderBase<DimensionMarker> {
+
+        private Item icon;
+        private int tier = 0;
+        @Nullable
+        private String overrideName;
+
+        public Builder(ResourceLocation id) {
+            super(id);
+        }
+
+        public Builder(ResourceLocation id, Object... args) {
+            this(id);
+        }
+
+        @HideFromJS
+        public DimensionMarker buildAndRegister() {
+            if (icon == null) {
+                throw new IllegalArgumentException("icon must be not null");
+            }
+            DimensionMarker marker = new DimensionMarker(tier, () -> icon, overrideName);
+            marker.register(id);
+            return marker;
+        }
+
+        @Override
+        public DimensionMarker register() {
+            return value = buildAndRegister();
+        }
     }
 }
