@@ -142,7 +142,7 @@ public class GTOreVeinWidget extends WidgetGroup {
             DimensionMarker[] dimMarkers = dimensionFilter.stream()
                     .map(ResourceKey::location)
                     .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc,
-                            new DimensionMarker(0, () -> Blocks.BARRIER, loc.toString())))
+                            new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                     .toArray(DimensionMarker[]::new);
             var transfer = new ItemStackTransfer(dimMarkers.length);
@@ -156,7 +156,10 @@ public class GTOreVeinWidget extends WidgetGroup {
                         false, false).setIngredientIO(IngredientIO.INPUT);
                 transfer.setStackInSlot(i, markerItem);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
-                    dimSlot.setOverlay(new TextTexture("T" + dimMarker.tier).scale(0.75F).transform(-3F, 5F));
+                    dimSlot.setOverlay(
+                            new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
+                                    .scale(0.75F)
+                                    .transform(-3F, 5F));
                 }
                 addWidget(dimSlot.setBackgroundTexture(IGuiTexture.EMPTY));
             }

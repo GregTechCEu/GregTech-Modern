@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import net.minecraft.core.Holder;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public class DimensionMarker {
+
+    public static final int MAX_TIER = 99;
 
     @Getter
     public final int tier; // Not only used to represent dimension tier, but also for sorting
@@ -50,6 +53,9 @@ public class DimensionMarker {
     }
 
     public void register(ResourceLocation id) {
+        if (tier < 0 || tier > MAX_TIER - 1) {
+            throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
+        }
         GTRegistries.DIMENSION_MARKERS.register(id, this);
     }
 
@@ -80,9 +86,10 @@ public class DimensionMarker {
 
         @HideFromJS
         public DimensionMarker buildAndRegister() {
-            if (icon == null) {
-                throw new IllegalArgumentException("icon must be not null");
-            }
+            Validator.validate(
+                    id,
+                    Validator.errorIfNull(icon, "icon"),
+                    Validator.errorIfOutOfRange(tier, "tier", 0, MAX_TIER - 1));
             DimensionMarker marker = new DimensionMarker(tier, () -> icon, overrideName);
             marker.register(id);
             return marker;
