@@ -101,4 +101,17 @@ public interface Validator {
             return ValidationResult.ERROR;
         };
     }
+
+    static Validator errorIfOutOfRange(int value, String name, int min, int max) {
+        return id -> {
+            if (value >= min && value <= max) {
+                return ValidationResult.SUCCESS;
+            }
+
+            var message = "Cannot build %s, %s is not in range [%d, %d].".formatted(id, name, min, max);
+
+            ConsoleJS.getCurrent((Context) null).error(message);
+            return ValidationResult.ERROR;
+        };
+    }
 }

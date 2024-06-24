@@ -51,7 +51,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
                 ListTag itemTags = new ListTag();
-                for (var stack : RecipeHelper.getOutputItem(recipe)) {
+                for (var stack : RecipeHelper.getOutputItems(recipe)) {
                     if (stack != null && !stack.isEmpty()) {
                         var itemTag = new CompoundTag();
 
@@ -63,7 +63,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     data.put("OutputItems", itemTags);
                 }
                 ListTag fluidTags = new ListTag();
-                for (var stack : RecipeHelper.getOutputFluid(recipe)) {
+                for (var stack : RecipeHelper.getOutputFluids(recipe)) {
                     if (stack != null && !stack.isEmpty()) {
                         var fluidTag = new CompoundTag();
                         stack.saveToTag(fluidTag);

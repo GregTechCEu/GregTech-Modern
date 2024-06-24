@@ -69,7 +69,7 @@ public class AutoOutputInfoProvider implements IProbeInfoProvider {
             if (allowInput || auto) {
                 var compoundText = CompoundText.create().text("(");
                 if (auto) {
-                    compoundText.ok(Component.translatable("gtceu.top.auto_input"));
+                    compoundText.ok(Component.translatable("gtceu.top.auto_output"));
                 }
 
                 if (allowInput && auto) {
