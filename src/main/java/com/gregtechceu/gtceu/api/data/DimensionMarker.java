@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.api.data;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +11,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -58,6 +60,7 @@ public class DimensionMarker {
         }
         return stack;
     }
+
     @Setter
     @Accessors(fluent = true, chain = true)
     public static class Builder extends BuilderBase<DimensionMarker> {

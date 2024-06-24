@@ -62,7 +62,8 @@ public final class GTRegistries {
     public static final GTRegistry.RL<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry.RL<>(
             GTCEu.id("bedrock_ore"));
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
-    public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(GTCEu.id("dimension_marker"));
+    public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(
+            GTCEu.id("dimension_marker"));
 
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);

@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -141,7 +141,8 @@ public class GTOreVeinWidget extends WidgetGroup {
 
             DimensionMarker[] dimMarkers = dimensionFilter.stream()
                     .map(ResourceKey::location)
-                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc, new DimensionMarker(0, () -> Blocks.BARRIER, loc.toString())))
+                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc,
+                            new DimensionMarker(0, () -> Blocks.BARRIER, loc.toString())))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                     .toArray(DimensionMarker[]::new);
             var transfer = new ItemStackTransfer(dimMarkers.length);

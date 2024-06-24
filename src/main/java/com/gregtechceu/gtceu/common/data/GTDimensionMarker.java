@@ -8,13 +8,15 @@ import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.tterrag.registrate.util.entry.BlockEntry;
+
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModLoader;
+
+import com.tterrag.registrate.util.entry.BlockEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -33,17 +35,22 @@ public class GTDimensionMarker {
     public static final BlockEntry<Block> NETHER_MARKER = createMarker("the_nether");
     public static final BlockEntry<Block> END_MARKER = createMarker("the_end");
 
-    public static final DimensionMarker OVERWORLD = createAndRegister(Level.OVERWORLD.location(), 0, () -> OVERWORLD_MARKER, "flat_world_preset.minecraft.overworld");
-    public static final DimensionMarker NETHER = createAndRegister(Level.NETHER.location(), 0, () -> NETHER_MARKER, "advancements.nether.root.title");
-    public static final DimensionMarker END = createAndRegister(Level.END.location(), 0, () -> END_MARKER, "advancements.end.root.title");
+    public static final DimensionMarker OVERWORLD = createAndRegister(Level.OVERWORLD.location(), 0,
+            () -> OVERWORLD_MARKER, null);
+    public static final DimensionMarker NETHER = createAndRegister(Level.NETHER.location(), 0,
+            () -> NETHER_MARKER, null);
+    public static final DimensionMarker END = createAndRegister(Level.END.location(), 0,
+            () -> END_MARKER, null);
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, ResourceLocation itemKey, @Nullable String overrideName) {
+    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, ResourceLocation itemKey,
+                                                    @Nullable String overrideName) {
         DimensionMarker marker = new DimensionMarker(tier, itemKey, overrideName);
         marker.register(dim);
         return marker;
     }
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, Supplier<ItemLike> supplier, @Nullable String overrideName) {
+    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, Supplier<ItemLike> supplier,
+                                                    @Nullable String overrideName) {
         DimensionMarker marker = new DimensionMarker(tier, supplier, overrideName);
         marker.register(dim);
         return marker;
@@ -59,7 +66,7 @@ public class GTDimensionMarker {
                         prov.modLoc("block/dim_markers/%s/south".formatted(name)),
                         prov.modLoc("block/dim_markers/%s/east".formatted(name)),
                         prov.modLoc("block/dim_markers/%s/west".formatted(name)))
-                                .texture("particle", "#north")
+                        .texture("particle", "#north")
                         .guiLight(BlockModel.GuiLight.FRONT)))
                 .simpleItem()
                 .register();

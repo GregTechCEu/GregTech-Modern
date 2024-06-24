@@ -136,9 +136,10 @@ public class RecipeHelper {
     }
 
     /*
-      Those who use these methods should note that these methods do not guarantee that the returned values are valid,
-      because the relevant data, such as tag information, may not be loaded at the time these methods are called.
-      Methods for getting Recipe Builder input items or fluids are not provided, as these data are not yet loaded when they are needed.
+     * Those who use these methods should note that these methods do not guarantee that the returned values are valid,
+     * because the relevant data, such as tag information, may not be loaded at the time these methods are called.
+     * Methods for getting Recipe Builder input items or fluids are not provided, as these data are not yet loaded when
+     * they are needed.
      */
 
     /**
