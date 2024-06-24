@@ -101,7 +101,7 @@ public class AutoOutputBlockProvider implements IBlockComponentProvider, IServer
             if (allowInput || auto) {
                 var component = Component.literal(" (");
                 if (auto) {
-                    component.append(Component.translatable("gtceu.top.auto_input"));
+                    component.append(Component.translatable("gtceu.top.auto_output"));
                 }
 
                 if (allowInput && auto) {
