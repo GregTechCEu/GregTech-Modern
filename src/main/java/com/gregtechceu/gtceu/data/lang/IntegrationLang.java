@@ -74,7 +74,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.recipe_output", "Recipe Outputs:");
         provider.add("gtceu.top.item_auto_output", "Item Output: %s");
         provider.add("gtceu.top.fluid_auto_output", "Fluid Output: %s");
-        provider.add("gtceu.top.auto_input", "Auto Input");
+        provider.add("gtceu.top.auto_output", "Auto Output");
         provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");

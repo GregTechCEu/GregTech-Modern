@@ -3691,7 +3691,7 @@
   "gtceu.tooltip.hold_shift": "§7Hold SHIFT for more info",
   "gtceu.tooltip.tool_fluid_hold_shift": "§7Hold SHIFT to show Fluid Containment and Tool Info",
   "gtceu.top.allow_output_input": "Allow Input",
-  "gtceu.top.auto_input": "Auto Input",
+  "gtceu.top.auto_output": "Auto Output",
   "gtceu.top.cable_amperage": "Amperage: ",
   "gtceu.top.cable_voltage": "Voltage: ",
   "gtceu.top.convert_eu": "Converting §eEU§r -> §cFE§r",
