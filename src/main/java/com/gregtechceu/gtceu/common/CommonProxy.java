@@ -46,6 +46,7 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -85,6 +86,10 @@ public class CommonProxy {
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
+        if (Platform.isDevEnv()) {
+            ConfigHolder.INSTANCE.machines.doProcessingArray = true;
+            ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+        }
 
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
