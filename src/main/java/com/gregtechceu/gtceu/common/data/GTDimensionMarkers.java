@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -24,7 +22,7 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
-public class GTDimensionMarker {
+public class GTDimensionMarkers {
 
     static {
         GTRegistries.DIMENSION_MARKERS.unfreeze();
@@ -73,7 +71,6 @@ public class GTDimensionMarker {
     }
 
     public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerDimensionMarker);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.DIMENSION_MARKERS.getRegistryName());

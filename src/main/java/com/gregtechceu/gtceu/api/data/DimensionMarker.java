@@ -53,7 +53,7 @@ public class DimensionMarker {
     }
 
     public void register(ResourceLocation id) {
-        if (tier < 0 || tier > MAX_TIER - 1) {
+        if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
         GTRegistries.DIMENSION_MARKERS.register(id, this);

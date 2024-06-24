@@ -86,11 +86,6 @@ public interface IGTAddon {
      */
     default void registerIndicatorGenerators() {}
 
-    /**
-     * Call init on your custom DimensionMarker class(es) here
-     */
-    default void registerDimensionMarker() {}
-
     default void addRecipes(Consumer<FinishedRecipe> provider) {}
 
     default void removeRecipes(Consumer<ResourceLocation> consumer) {}

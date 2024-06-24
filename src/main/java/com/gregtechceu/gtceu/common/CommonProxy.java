@@ -126,7 +126,7 @@ public class CommonProxy {
         GTMachines.init();
         GTFoods.init();
         GTItems.init();
-        GTDimensionMarker.init();
+        GTDimensionMarkers.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
