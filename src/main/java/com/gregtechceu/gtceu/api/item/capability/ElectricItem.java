@@ -30,13 +30,12 @@ public class ElectricItem implements IElectricItem {
         this.container = container;
         if (container.has(componentType)) {
             this.maxCharge = getMaxCharge();
-            this.tier = getTier();
         } else {
             this.maxCharge = maxCharge;
-            this.tier = tier;
             // do this here to force the max charge to be set on the stats
             setMaxChargeOverride(maxCharge);
         }
+        this.tier = tier;
         this.chargeable = chargeable;
         this.canProvideEnergyExternally = canProvideEnergyExternally;
     }
