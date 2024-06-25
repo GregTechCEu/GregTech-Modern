@@ -22,9 +22,9 @@ import java.util.List;
 /**
  * @author KilaBash
  * @date 2023/3/26
- * @implNote GTPlacements
+ * @implNote GTPlacedFeatures
  */
-public class GTPlacements {
+public class GTPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE,
             GTCEu.id("rubber_checked"));

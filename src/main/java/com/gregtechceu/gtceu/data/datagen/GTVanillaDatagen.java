@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.forge;
+package com.gregtechceu.gtceu.data.datagen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
@@ -8,9 +8,10 @@ import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.data.datamap.GTDataMaps;
 import com.gregtechceu.gtceu.data.jukebox.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.worldgen.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
-import com.gregtechceu.gtceu.data.worldgen.GTPlacements;
-import com.gregtechceu.gtceu.data.worldgen.GTWorldgen;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacedFeatures;
+import com.gregtechceu.gtceu.data.worldgen.GTDensityFunctions;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +27,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.Set;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public class DataGenerators {
+public class GTVanillaDatagen {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
@@ -48,8 +49,8 @@ public class DataGenerators {
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                            .add(Registries.PLACED_FEATURE, GTPlacedFeatures::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTDensityFunctions::bootstrap)
                             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap),
                     set));

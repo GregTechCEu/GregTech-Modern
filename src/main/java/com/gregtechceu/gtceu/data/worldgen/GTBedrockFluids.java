@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.fluid;
+package com.gregtechceu.gtceu.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;

@@ -13,9 +13,9 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import static com.gregtechceu.gtceu.data.worldgen.GTFeatures.NEW_ORE_VEIN_RIDGED;
 import static com.gregtechceu.gtceu.data.worldgen.GTFeatures.NEW_ORE_VEIN_TOGGLE;
 
-public class GTWorldgen {
+public class GTDensityFunctions {
 
-    public static void bootstrapDensityFunctions(BootstrapContext<DensityFunction> ctx) {
+    public static void bootstrap(BootstrapContext<DensityFunction> ctx) {
         HolderGetter<NormalNoise.NoiseParameters> noises = ctx.lookup(Registries.NOISE);
 
         Holder<NormalNoise.NoiseParameters> oreVeininess = noises.getOrThrow(Noises.ORE_VEININESS);

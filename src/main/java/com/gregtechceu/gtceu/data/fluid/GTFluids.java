@@ -43,14 +43,5 @@ public class GTFluids {
     public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Fluid fluid) {
         var property = material.getProperty(PropertyKey.FLUID);
         property.getStorage().store(FluidStorageKeys.LIQUID, () -> fluid, null);
-        // TODO TOOLTIPS
-        // List<String> tooltip = new ArrayList<>();
-        // if (!material.getChemicalFormula().isEmpty()) {
-        // tooltip.add(TextFormatting.YELLOW + material.getChemicalFormula());
-        // }
-        // tooltip.add(LocalizationUtils.format("gtceu.fluid.temperature", property.getFluidTemperature()));
-        // tooltip.add(LocalizationUtils.format(property.getFluidType().getUnlocalizedTooltip()));
-        // tooltip.addAll(property.getFluidType().getAdditionalTooltips());
-        // FluidTooltipUtil.registerTooltip(fluid, tooltip);
     }
 }

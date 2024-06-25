@@ -1,16 +1,17 @@
-package com.gregtechceu.gtceu.data.tag;
+package com.gregtechceu.gtceu.data.datagen;
 
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
+import com.gregtechceu.gtceu.data.tag.TagsHandler;
 import com.tterrag.registrate.providers.ProviderType;
 
 /**
  * @author KilaBash
  * @date 2023/3/19
- * @implNote GregTechDatagen
+ * @implNote GTRegistrateDatagen
  */
-public class GregTechDatagen {
+public class GTRegistrateDatagen {
 
     public static void init() {
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, TagsHandler::initItem);

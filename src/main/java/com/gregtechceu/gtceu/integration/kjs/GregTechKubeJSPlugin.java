@@ -43,7 +43,7 @@ import com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator;
 import com.gregtechceu.gtceu.common.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.block.GCyMBlocks;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.block.GTOres;
+import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GCyMMachines;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
