@@ -38,7 +38,8 @@ public class HazardCleanerBlockProvider extends CapabilityBlockProvider<IEnviron
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         float cleaned = capData.getFloat("Cleaned");
-
-        tooltip.add(Component.translatable("gtceu.jade.cleaned_this_second", cleaned));
+        if (cleaned > 0) {
+            tooltip.add(Component.translatable("gtceu.jade.cleaned_this_second", cleaned));
+        }
     }
 }

@@ -410,6 +410,7 @@ public class OrganicChemistryMaterials {
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
+                .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .flags(DISABLE_DECOMPOSITION)
                 // TODO ethanol intoxication .hazard(HazardProperty.HazardTrigger.INHALATION,
                 .buildAndRegister();
