@@ -121,6 +121,11 @@ public class ConfigHolder {
                 "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
+        @Configurable
+        @Configurable.Comment({
+                "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
+                "Default: true" })
+        public boolean enchantedTools = true;
     }
 
     public static class CompatibilityConfigs {

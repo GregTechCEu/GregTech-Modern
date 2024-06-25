@@ -2062,6 +2062,7 @@
   "config.gtceu.option.enableResearch": "enableResearch",
   "config.gtceu.option.enableTieredCasings": "enableTieredCasings",
   "config.gtceu.option.enableWorldAccelerators": "enableWorldAccelerators",
+  "config.gtceu.option.enchantedTools": "enchantedTools",
   "config.gtceu.option.energy": "energy",
   "config.gtceu.option.energyConsumption": "energyConsumption",
   "config.gtceu.option.energyUsageMultiplier": "energyUsageMultiplier",
