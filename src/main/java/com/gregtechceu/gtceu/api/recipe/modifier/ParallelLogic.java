@@ -195,8 +195,10 @@ public class ParallelLogic {
         // and limit by the amount we can successfully merge
         int limitByOutput = ParallelLogic.limitByOutputMerging(currentRecipe, machine, multiplierByInputs,
                 machine::canVoidRecipeOutputs);
+        GTRecipe multiRecipe;
         if (limitByOutput > 0) {
-            currentRecipe = currentRecipe.copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
+            multiRecipe = currentRecipe.copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
+            return Pair.of(multiRecipe, limitByOutput);
         }
 
         return Pair.of(currentRecipe, limitByOutput);
