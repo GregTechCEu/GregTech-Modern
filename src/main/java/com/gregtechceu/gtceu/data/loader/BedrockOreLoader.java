@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.data.loader;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
@@ -54,8 +52,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
         GTOres.toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
 
-        AddonFinder.getAddons().forEach(IGTAddon::registerBedrockOreVeins);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.BEDROCK_ORE_DEFINITIONS));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

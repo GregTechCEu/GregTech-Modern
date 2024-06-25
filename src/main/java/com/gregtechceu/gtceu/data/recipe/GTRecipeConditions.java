@@ -56,7 +56,7 @@ public final class GTRecipeConditions {
     }
 
     public static void init() {
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.RECIPE_CONDITIONS));
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }

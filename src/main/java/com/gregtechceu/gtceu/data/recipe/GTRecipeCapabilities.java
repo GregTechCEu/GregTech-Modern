@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -35,8 +33,7 @@ public class GTRecipeCapabilities {
         GTRegistries.RECIPE_CAPABILITIES.register(CWU.name, CWU);
         GTRegistries.RECIPE_CAPABILITIES.register(SU.name, SU);
 
-        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.RECIPE_CAPABILITIES));
         GTRegistries.RECIPE_CAPABILITIES.freeze();
     }
 }

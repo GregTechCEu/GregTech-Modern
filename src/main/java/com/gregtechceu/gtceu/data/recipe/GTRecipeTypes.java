@@ -714,7 +714,7 @@ public class GTRecipeTypes {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.RECIPE_TYPES));
         GTRegistries.RECIPE_TYPES.freeze();
 
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover"),

@@ -57,17 +57,18 @@ public class GTCEuAPI {
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
     }
 
-    public static class RegisterEvent<K, V> extends Event implements IModBusEvent {
+    public static class RegisterEvent extends Event implements IModBusEvent {
 
         @Getter
-        private final GTRegistry<K, V> registry;
+        private final GTRegistry<?, ?> registry;
 
-        public RegisterEvent(GTRegistry<K, V> registry) {
+        public RegisterEvent(GTRegistry<?, ?> registry) {
             this.registry = registry;
         }
 
-        public void register(K key, V value) {
-            registry.register(key, value);
+        public <K, V> void register(K key, V value) {
+            //noinspection unchecked
+            ((GTRegistry<K, V>) registry).register(key, value);
         }
     }
 }

@@ -52,8 +52,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
 
         GTBedrockFluids.init();
-        AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.BEDROCK_FLUID_DEFINITIONS));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

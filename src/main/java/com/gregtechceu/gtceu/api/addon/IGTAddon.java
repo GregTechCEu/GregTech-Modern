@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.addon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.data.block.GTOres;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -38,26 +36,6 @@ public interface IGTAddon {
     default void registerTagPrefixes() {}
 
     /**
-     * Call init on your custom Element class(es) here
-     */
-    default void registerElements() {}
-
-    /**
-     * Call init on your custom Sound class(es) here
-     */
-    default void registerSounds() {}
-
-    /**
-     * Call init on your custom Cover class(es) here
-     */
-    default void registerCovers() {}
-
-    /**
-     * Call init on your custom Recipe Capabilities here
-     */
-    default void registerRecipeCapabilities() {}
-
-    /**
      * Call init on your custom IWorldGenLayer class(es) here
      */
     default void registerWorldgenLayers() {}
@@ -75,22 +53,6 @@ public interface IGTAddon {
     default void addRecipes(RecipeOutput provider) {}
 
     default void removeRecipes(Consumer<ResourceLocation> consumer) {}
-
-    /**
-     * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
-     */
-    default void registerOreVeins() {}
-
-    /**
-     * Use {@link BedrockFluidDefinition#builder(ResourceLocation)} to register the veins.
-     */
-    default void registerFluidVeins() {}
-
-    /**
-     * Use {@link com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition#builder(ResourceLocation)} to
-     * register the veins.
-     */
-    default void registerBedrockOreVeins() {}
 
     /**
      * Register Material -> Casing block mappings here
