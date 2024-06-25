@@ -442,11 +442,15 @@ public class ToolHelper {
             BlockEntity tile = world.getBlockEntity(pos);
             if (block instanceof GameMasterBlock && !player.canUseGameMasterBlocks()) {
                 world.sendBlockUpdated(pos, state, state, 3);
+                isAoeBreakingBlocks.set(false);
                 return false;
             } else if (player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer())) {
+                isAoeBreakingBlocks.set(false);
                 return false;
             } else if (player.isCreative()) {
-                return removeBlockRoutine(state, world, player, pos, playSound);
+                boolean returnValue = removeBlockRoutine(state, world, player, pos, playSound);
+                isAoeBreakingBlocks.set(false);
+                return returnValue;
             } else {
                 world.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
                 boolean successful = removeBlockRoutine(state, world, player, pos, playSound);
