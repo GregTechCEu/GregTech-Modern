@@ -71,7 +71,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 for (int i = 0; i < recipeInputs.size(); i++) {
                     var fluidStack = (FluidStack) itemFluidInventory.get(i).get(0);
                     FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(recipeInputs.get(i).content);
-                    if (!recipeStack.test(fluidStack) && recipeStack.getAmount() > fluidStack.getAmount()) {
+                    if (!recipeStack.test(fluidStack) || recipeStack.getAmount() > fluidStack.getAmount()) {
                         return false;
                     }
                 }
