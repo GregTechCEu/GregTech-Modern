@@ -222,7 +222,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
         float toolSpeed = getToolStats().getEfficiencyMultiplier() * getMaterialToolSpeed(stack) +
                 getToolStats().getBaseEfficiency();
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(), tool -> tool.setToolSpeed(toolSpeed));
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY, tool -> tool.setToolSpeed(toolSpeed));
         return toolSpeed;
     }
 
@@ -239,7 +239,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         } else {
             attackDamage = 0;
         }
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(), tool -> tool.setAttackDamage(attackDamage));
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY, tool -> tool.setAttackDamage(attackDamage));
         return attackDamage;
     }
 
@@ -248,7 +248,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             return stack.get(GTDataComponents.GT_TOOL).toolSpeed().get();
         }
         float attackSpeed = getMaterialAttackSpeed(stack) + getToolStats().getTool().defaultMiningSpeed();
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(), tool -> tool.setToolSpeed(attackSpeed));
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY, tool -> tool.setToolSpeed(attackSpeed));
         return attackSpeed;
     }
 
@@ -274,7 +274,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             return stack.get(GTDataComponents.GT_TOOL).enchantability().get();
         }
         int enchantability = getMaterialEnchantability(stack);
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(), tool -> tool.setEnchantability(enchantability));
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY, tool -> tool.setEnchantability(enchantability));
         return enchantability;
     }
 
@@ -283,7 +283,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             return stack.get(GTDataComponents.GT_TOOL).harvestLevel().get();
         }
         int harvestLevel = getMaterialHarvestLevel(stack) + getToolStats().getBaseQuality();
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(), tool -> tool.setHarvestLevel(harvestLevel));
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY, tool -> tool.setHarvestLevel(harvestLevel));
         return harvestLevel;
     }
 
@@ -683,13 +683,14 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default void setLastCraftingSoundTime(ItemStack stack) {
-        stack.update(GTDataComponents.GT_TOOL, new GTTool(),
+        stack.update(GTDataComponents.GT_TOOL, GTTool.EMPTY,
                 tool -> tool.setLastCraftingUse((int) System.currentTimeMillis()));
     }
 
     default boolean canPlaySound(ItemStack stack) {
         return Math.abs(
-                (int) System.currentTimeMillis() - stack.get(GTDataComponents.GT_TOOL).lastCraftingUse().orElse(0)) >
+                (int) System.currentTimeMillis() - stack.getOrDefault(GTDataComponents.GT_TOOL, GTTool.EMPTY)
+                        .lastCraftingUse().orElse(0)) >
                 1000;
     }
 

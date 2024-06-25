@@ -16,6 +16,8 @@ public record GTTool(
                      Optional<Integer> harvestLevel,
                      Optional<Integer> lastCraftingUse) {
 
+    public static final GTTool EMPTY = new GTTool();
+
     public static final Codec<GTTool> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.FLOAT.optionalFieldOf("tool_speed").forGetter(GTTool::toolSpeed),
             Codec.FLOAT.optionalFieldOf("attack_damage").forGetter(GTTool::attackDamage),
