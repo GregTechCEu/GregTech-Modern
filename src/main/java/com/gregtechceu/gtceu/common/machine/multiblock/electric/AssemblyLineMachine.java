@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -22,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
-
-import static com.gregtechceu.gtceu.utils.IngredientEquality.INGREDIENT_COMPARATOR;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
@@ -51,7 +48,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             for (int i = 0; i < recipeInputs.size(); i++) {
                 var itemStack = itemInputInventory.get(i).get(0);
                 Ingredient recipeStack = ItemRecipeCapability.CAP.of(recipeInputs.get(i).content);
-                if(!recipeStack.test(itemStack)) {
+                if (!recipeStack.test(itemStack)) {
                     return false;
                 }
             }
@@ -88,6 +85,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     }
 
     private Function<BlockPos, Integer> multiblockPartSorter() {
-        return RelativeDirection.LEFT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
+        return RelativeDirection.RIGHT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
     }
 }
