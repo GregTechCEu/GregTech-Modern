@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.data.datagen;
 
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-
 import com.gregtechceu.gtceu.data.tag.TagsHandler;
+
 import com.tterrag.registrate.providers.ProviderType;
 
 /**

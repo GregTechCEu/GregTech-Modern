@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.data.worldgen.GTBedrockFluids;
+import com.gregtechceu.gtceu.data.worldgen.GTOres;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 

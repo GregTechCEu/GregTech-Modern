@@ -67,7 +67,7 @@ public class GTCEuAPI {
         }
 
         public <K, V> void register(K key, V value) {
-            //noinspection unchecked
+            // noinspection unchecked
             ((GTRegistry<K, V>) registry).register(key, value);
         }
     }

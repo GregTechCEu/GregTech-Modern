@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.data.jukebox.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.worldgen.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
-import com.gregtechceu.gtceu.data.worldgen.GTPlacedFeatures;
 import com.gregtechceu.gtceu.data.worldgen.GTDensityFunctions;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacedFeatures;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
