@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -193,8 +194,8 @@ public class GTDynamicDataPack implements PackResources {
             JsonArray block = new JsonArray();
             GTRecipes.RECIPE_FILTERS.forEach((id) -> { // Collect removed recipes in here, in the pack filter section.
                 JsonObject entry = new JsonObject();
-                entry.addProperty("namespace", "^" + id.getNamespace().replaceAll("[\\W]", "\\\\$0") + "$");
-                entry.addProperty("path", "^recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0") + "\\.json" + "$");
+                entry.addProperty("namespace", "^" + Matcher.quoteReplacement(id.getNamespace()) + "$");
+                entry.addProperty("path", "^recipe/" + Matcher.quoteReplacement(id.getPath()) + "\\.json" + "$");
                 block.add(entry);
             });
             filter.add("block", block);

@@ -326,8 +326,7 @@ public class CommonProxy {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
-            ChemicalHelper.reinitializeUnification();
-            // recipes and loot tables have been moved to ReloadableServerResourcesMixin.
+            // recipes have been moved to ReloadableServerResourcesMixin.
             // Initialize dungeon loot additions
             DungeonLootLoader.init();
 

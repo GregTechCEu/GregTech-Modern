@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.GTRecipes;
@@ -46,6 +47,8 @@ public abstract class ReloadableServerResourcesMixin {
 
         // Register recipes & unification data again
         long startTime = System.currentTimeMillis();
+        ChemicalHelper.reinitializeUnification();
+        GTRecipes.recipeRemoval();
         GTRecipes.recipeAddition(new RecipeOutput() {
 
             @Override
