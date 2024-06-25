@@ -9,14 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.event.Extra;
-import dev.latvian.mods.kubejs.event.SpecializedEventHandler;
+import dev.latvian.mods.kubejs.event.EventTargetType;
+import dev.latvian.mods.kubejs.event.TargetedEventHandler;
 
 public interface GTCEuStartupEvents {
 
     EventGroup GROUP = EventGroup.of("GTCEuStartupEvents");
 
-    Extra<ResourceLocation> REGISTRY_EXTRA = Extra.create(ResourceLocation.class)
+    EventTargetType<ResourceLocation> REGISTRY_EXTRA = EventTargetType.create(ResourceLocation.class)
             .validator(GTCEuStartupEvents::validateRegistry);
 
     private static boolean validateRegistry(Object o) {
@@ -28,7 +28,7 @@ public interface GTCEuStartupEvents {
         }
     }
 
-    SpecializedEventHandler<ResourceLocation> REGISTRY = GROUP.startup("registry", REGISTRY_EXTRA,
-            () -> GTRegistryEventJS.class);
+    TargetedEventHandler<ResourceLocation> REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class)
+            .requiredTarget(REGISTRY_EXTRA);
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
 }
