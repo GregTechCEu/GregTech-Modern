@@ -37,7 +37,7 @@ public class DummyCraftingInput extends CraftingInput {
     }
 
     private static NonNullList<ItemStack> createInventory(IItemHandler itemHandler) {
-        NonNullList<ItemStack> inv = NonNullList.of(ItemStack.EMPTY);
+        NonNullList<ItemStack> inv = NonNullList.withSize(itemHandler.getSlots(), ItemStack.EMPTY);
 
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
             ItemStack stack = itemHandler.getStackInSlot(slot);
@@ -46,7 +46,7 @@ public class DummyCraftingInput extends CraftingInput {
                 continue;
 
             ItemStack stackCopy = stack.copy();
-            inv.add(stackCopy);
+            inv.set(slot, stackCopy);
         }
 
         return inv;
