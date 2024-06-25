@@ -1535,7 +1535,7 @@ public class GTMachines {
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
-            .multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
+            .multiblock("assembly_line", AssemblyLineMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .alwaysTryModifyRecipe(true)
@@ -1548,7 +1548,9 @@ public class GTMachines {
                     .aisle("FOF", "RTR", "DAG", "#Y#")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('F', blocks(CASING_STEEL_SOLID.get())
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(4)))
+                            .or(ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids ?
+                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS) :
+                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
                                     .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end")))
