@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -49,8 +50,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             for (int i = 0; i < recipeInputs.size(); i++) {
                 var itemStack = itemInputInventory.get(i).get(0);
-                ItemStack recipeStack = ItemRecipeCapability.CAP.of(recipeInputs.get(i).content).getItems()[0];
-                if (INGREDIENT_COMPARATOR.compare(Ingredient.of(recipeStack), Ingredient.of(itemStack)) != 0) {
+                Ingredient recipeStack = ItemRecipeCapability.CAP.of(recipeInputs.get(i).content);
+                if(!recipeStack.test(itemStack)) {
                     return false;
                 }
             }
