@@ -332,7 +332,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
-        Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
+        Object2IntMap<ItemStack> map = new Object2IntOpenCustomHashMap<>(
+                ItemStackHashStrategy.comparingAllButCount());
         Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
 
         List<IRecipeHandler<?>> recipeHandlerList = Objects
@@ -354,32 +355,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 result.putAll(itemMap);
             } else {
                 for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
-                    if (!isInMap(map, obj.getKey())) {
-                        map.put(obj.getKey(), obj.getIntValue());
-                    } else {
-                        updateMap(map, obj.getKey());
-                    }
+                    map.computeInt(obj.getKey(), (k, v) -> v == null ? obj.getIntValue() : v + obj.getIntValue());
                 }
             }
         }
         result.putAll(map);
         return result;
-    }
-
-    private boolean isInMap(Object2IntMap<ItemStack> map, ItemStack is) {
-        for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-            if (ItemStackHashStrategy.comparingAllButCount().equals(obj.getKey(), is)) return true;
-        }
-        return false;
-    }
-
-    private void updateMap(Object2IntMap<ItemStack> map, ItemStack is) {
-        for (Object2IntMap.Entry<ItemStack> obj : map.object2IntEntrySet()) {
-            if (ItemStackHashStrategy.comparingAllButCount().equals(obj.getKey(), is)) {
-                obj.setValue(obj.getIntValue() + is.getCount());
-                break;
-            }
-        }
     }
 
     @Override
