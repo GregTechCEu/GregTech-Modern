@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "gtceu:block/lamp",
   "textures": {
-    "all": "gtceu:block/lime_lamp"
+    "active": "gtceu:block/lamps/lime",
+    "active_overlay": "gtceu:block/lamps/lime_emissive"
   }
 }

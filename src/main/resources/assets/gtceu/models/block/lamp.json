@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/cube_2_layer_all",
+    "textures": {
+        "bot_all": "#active",
+        "top_all": "#active_overlay"
+    }
+}
