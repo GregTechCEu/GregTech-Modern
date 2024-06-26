@@ -127,8 +127,7 @@ public class GTModels {
                         if (state.getValue(LampBlock.LIGHT)) {
                             ModelBuilder<?> model = prov.models()
                                     .getBuilder(ctx.getName() + (state.getValue(LampBlock.BLOOM) ? "_bloom" : ""))
-                                    .parent(parentOn)
-                                    .renderType("translucent");
+                                    .parent(parentOn);
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
                                 if (state.getValue(LampBlock.BLOOM)) {

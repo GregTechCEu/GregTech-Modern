@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +42,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     public static final int BLOOM_FLAG = 1;
     public static final int LIGHT_FLAG = 2;
     public static final int INVERTED_FLAG = 4;
+    public static final int POWERED_FLAG = 8;
 
     public final DyeColor color;
     public final boolean bordered;
@@ -74,6 +76,14 @@ public class LampBlock extends Block implements IBlockRendererProvider {
 
     public boolean isBloomEnabled(BlockState state) {
         return state.getValue(BLOOM);
+    }
+
+    public CompoundTag getTagFromState(BlockState state) {
+        CompoundTag tag = new CompoundTag();
+        tag.putBoolean(TAG_BLOOM, state.getValue(BLOOM));
+        tag.putBoolean(TAG_LIT, state.getValue(LIGHT));
+        tag.putBoolean(TAG_INVERTED, state.getValue(INVERTED));
+        return tag;
     }
 
     public ItemStack getStackFromIndex(int i) {
@@ -136,6 +146,18 @@ public class LampBlock extends Block implements IBlockRendererProvider {
             if (!stack.getTag().getBoolean(TAG_LIT))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_light"));
         }
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        List<ItemStack> returnValue = super.getDrops(state, params);
+        for (ItemStack stack : returnValue) {
+            if (stack.is(this.asItem())) {
+                stack.setTag(this.getTagFromState(state));
+                break;
+            }
+        }
+        return returnValue;
     }
 
     @Nullable
