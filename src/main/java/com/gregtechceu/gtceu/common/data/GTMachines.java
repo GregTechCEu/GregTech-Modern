@@ -1730,8 +1730,9 @@ public class GTMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .workableCasingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
-                            GTCEu.id("block/multiblock/fusion_reactor"), false)
+                    .renderer(() -> new FusionReactorRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
+                            GTCEu.id("block/multiblock/fusion_reactor"), false))
+                    .hasTESR(true)
                     .compassSections(GTCompassSections.TIER[LuV])
                     .compassNodeSelf()
                     .register(),
