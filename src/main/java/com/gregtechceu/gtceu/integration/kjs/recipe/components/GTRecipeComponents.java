@@ -80,10 +80,10 @@ public class GTRecipeComponents {
     public static final ContentJS<Float> SU = new ContentJS<>(NumberComponent.FLOAT, GTRecipeCapabilities.SU);
     public static final ContentJS<Integer> CWU = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU);
 
-    public static final CapabilityMapComponent IN = new CapabilityMapComponent(true, false);
-    public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent(true, true);
-    public static final CapabilityMapComponent OUT = new CapabilityMapComponent(false, false);
-    public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(false, true);
+    public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);
+    public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent(true);
+    public static final CapabilityMapComponent OUT = new CapabilityMapComponent(false);
+    public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(true);
 
     /**
      * First in pair is in, second is out

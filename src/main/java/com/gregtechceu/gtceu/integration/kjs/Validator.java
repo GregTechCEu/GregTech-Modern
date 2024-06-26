@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
-import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.rhino.Context;
 import org.jetbrains.annotations.Nullable;
 

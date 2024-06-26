@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
@@ -74,6 +73,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,7 +83,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_ID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_ID;
 
-public interface IGTTool extends IItemUIFactory, ItemLike {
+public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     GTToolType getToolType();
 
@@ -701,35 +701,41 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         }
     }
 
-    default ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+    default ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
         ItemStack held = holder.getHeld();
-        AoESymmetrical definition = getAoEDefinition(held);
+        final MutableObject<AoESymmetrical> definition = new MutableObject<>(getAoEDefinition(held));
         return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
                 .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
                 .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
                 .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.increaseColumn(definition));
+                    definition.setValue(AoESymmetrical.increaseColumn(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new ButtonWidget(15, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.decreaseColumn(definition));
+                    definition.setValue(AoESymmetrical.decreaseColumn(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new ButtonWidget(50, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.increaseRow(definition));
+                    definition.setValue(AoESymmetrical.increaseRow(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new ButtonWidget(50, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.decreaseRow(definition));
+                    definition.setValue(AoESymmetrical.decreaseRow(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new ButtonWidget(85, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.increaseLayer(definition));
+                    definition.setValue(AoESymmetrical.increaseLayer(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new ButtonWidget(85, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    held.set(GTDataComponents.AOE, AoESymmetrical.decreaseLayer(definition));
+                    definition.setValue(AoESymmetrical.decreaseLayer(definition.getValue()));
+                    held.set(GTDataComponents.AOE, definition.getValue());
                     holder.markAsDirty();
                 }))
                 .widget(new LabelWidget(23, 65,

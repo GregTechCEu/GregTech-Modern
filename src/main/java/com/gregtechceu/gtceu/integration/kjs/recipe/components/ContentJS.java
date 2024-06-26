@@ -4,11 +4,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import com.mojang.serialization.Codec;
-import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
-import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
@@ -26,18 +24,10 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     }
 
     @Override
-    public Content replaceInput(Context cx, KubeRecipe recipe, Content original, ReplacementMatch match,
-                                InputReplacement with) {
+    public Content replace(Context cx, KubeRecipe recipe, Content original, ReplacementMatchInfo match, Object with) {
         return new Content(
-                baseComponent.replaceInput(cx, recipe, baseComponent.wrap(cx, recipe, original.content), match, with),
+                baseComponent.replace(cx, recipe, baseComponent.wrap(cx, recipe, original.content), match, with),
                 original.chance, original.tierChanceBoost, original.slotName, original.uiName);
-    }
-
-    @Override
-    public Content replaceOutput(Context cx, KubeRecipe recipe, Content original, ReplacementMatch match,
-                                 OutputReplacement with) {
-        return new Content(with.replaceOutput(cx, recipe, match, with), original.chance,
-                original.tierChanceBoost, original.slotName, original.uiName);
     }
 
     @Override
