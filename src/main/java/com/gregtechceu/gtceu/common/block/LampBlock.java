@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.impl.BlockStateRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,9 +21,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class LampBlock extends Block {
+public class LampBlock extends Block implements IBlockRendererProvider {
 
     public static final BooleanProperty BLOOM = BooleanProperty.create("bloom");
     public static final BooleanProperty LIGHT = BlockStateProperties.LIT;
@@ -36,6 +41,7 @@ public class LampBlock extends Block {
     public static final int INVERTED_FLAG = 4;
 
     public final DyeColor color;
+    private final Map<BlockState, BlockStateRenderer> rendererCache = new HashMap<>();
 
     public LampBlock(Properties properties, DyeColor color) {
         super(properties);
@@ -98,12 +104,9 @@ public class LampBlock extends Block {
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
                                 boolean movedByPiston) {
         if (!level.isClientSide) {
-            if (state.getValue(POWERED)) {
-                if (!level.hasNeighborSignal(pos)) {
-                    level.updateNeighborsAt(pos, this);
-                }
-            } else if (level.hasNeighborSignal(pos)) {
-                level.setBlock(pos, state.setValue(POWERED, true), state.getValue(LIGHT) ? 2 | 8 : 2);
+            boolean powered = state.getValue(POWERED);
+            if (powered != level.hasNeighborSignal(pos)) {
+                level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
             }
         }
     }
@@ -126,5 +129,21 @@ public class LampBlock extends Block {
             if (!stack.getTag().getBoolean(TAG_LIT))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_light"));
         }
+    }
+
+    @Nullable
+    @Override
+    public IRenderer getRenderer(BlockState state) {
+        return rendererCache.computeIfAbsent(state, s -> new BlockStateRenderer(s) {
+            @Override
+            public boolean reBakeCustomQuads() {
+                return true;
+            }
+
+            @Override
+            public float reBakeCustomQuadsOffset() {
+                return 0.0f;
+            }
+        });
     }
 }
