@@ -75,7 +75,11 @@ public class GTRecipeModifiers {
                     return null;
                 }
                 recipe = recipe.copy();
+                int originalDuration = recipe.duration;
                 recipe.duration *= Math.max(1, (int) (maxAllowedStrength / Math.max(strength, 1)));
+                if (recipe.duration > 5 * originalDuration) {
+                    return null;
+                }
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
