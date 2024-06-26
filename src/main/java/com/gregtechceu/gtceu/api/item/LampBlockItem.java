@@ -27,7 +27,7 @@ public class LampBlockItem extends BlockItem {
     protected BlockState getPlacementState(BlockPlaceContext context) {
         BlockState returnValue = super.getPlacementState(context);
         ItemStack handItem = context.getItemInHand();
-        if (handItem.hasTag()) {
+        if (returnValue != null && handItem.hasTag()) {
             returnValue = returnValue
                     .setValue(LampBlock.INVERTED, handItem.getTag().getBoolean(LampBlock.TAG_INVERTED))
                     .setValue(LampBlock.BLOOM, handItem.getTag().getBoolean(LampBlock.TAG_BLOOM))
