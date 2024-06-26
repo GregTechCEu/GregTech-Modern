@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -57,11 +55,6 @@ public class GTOres {
 
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
     public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
-
-    static {
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
-    }
 
     //////////////////////////////////////
     // ******** End Vein *********//
@@ -260,7 +253,7 @@ public class GTOres {
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Bastnasite).size(2, 4))
-                            .layer(l -> l.weight(1).mat(Molybdenum).size(1, 1))
+                            .layer(l -> l.weight(1).mat(Monazite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Neodymium).size(1, 1))
                             .build()))
             .surfaceIndicatorGenerator(indicator -> indicator

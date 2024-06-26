@@ -16,21 +16,18 @@ import lombok.NoArgsConstructor;
 public class SPacketSyncHazardZoneStrength implements IPacket {
 
     public ChunkPos pos;
-    public int newAmount;
+    public float newAmount;
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeVarLong(pos.toLong());
-        buf.writeVarInt(newAmount);
+        buf.writeChunkPos(pos);
+        buf.writeFloat(newAmount);
     }
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        long packed = buf.readVarLong();
-        int x = ChunkPos.getX(packed);
-        int z = ChunkPos.getZ(packed);
-        pos = new ChunkPos(x, z);
-        this.newAmount = buf.readVarInt();
+        pos = buf.readChunkPos();
+        this.newAmount = buf.readFloat();
     }
 
     @Override

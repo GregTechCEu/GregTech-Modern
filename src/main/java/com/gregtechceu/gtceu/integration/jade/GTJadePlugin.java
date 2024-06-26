@@ -27,6 +27,16 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new ParallelProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new RecipeOutputProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new MultiblockStructureProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new MaintenanceBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new ExhaustVentBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new AutoOutputBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new CableBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new MachineModeProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new StainedColorProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
 
         registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }
@@ -37,6 +47,16 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new WorkableBlockProvider(), Block.class);
         registration.registerBlockComponent(new ControllableBlockProvider(), Block.class);
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
+        registration.registerBlockComponent(new ParallelProvider(), Block.class);
+        registration.registerBlockComponent(new RecipeOutputProvider(), Block.class);
+        registration.registerBlockComponent(new MultiblockStructureProvider(), Block.class);
+        registration.registerBlockComponent(new MaintenanceBlockProvider(), Block.class);
+        registration.registerBlockComponent(new ExhaustVentBlockProvider(), Block.class);
+        registration.registerBlockComponent(new AutoOutputBlockProvider(), Block.class);
+        registration.registerBlockComponent(new CableBlockProvider(), Block.class);
+        registration.registerBlockComponent(new MachineModeProvider(), Block.class);
+        registration.registerBlockComponent(new StainedColorProvider(), Block.class);
+        registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
 
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }

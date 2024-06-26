@@ -121,6 +121,11 @@ public class ConfigHolder {
                 "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
+        @Configurable
+        @Configurable.Comment({
+                "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
+                "Default: true" })
+        public boolean enchantedTools = true;
     }
 
     public static class CompatibilityConfigs {
@@ -151,6 +156,10 @@ public class ConfigHolder {
                 "Whether Gregtech should remove smelting recipes from the vanilla furnace for ingots requiring the Electric Blast Furnace.",
                 "Default: true" })
         public boolean removeSmeltingForEBFMetals = true;
+
+        @Configurable
+        @Configurable.Comment({ "Whether dimension marker should show dimension tier.", "Default: false" })
+        public boolean showDimensionTier = false;
 
         public static class EnergyCompatConfig {
 
@@ -387,6 +396,15 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false" })
         public boolean highTierContent = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.",
+                "Default: true" })
+        public boolean orderedAssemblyLineItems = true;
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.",
+                "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
+        public boolean orderedAssemblyLineFluids = false;
     }
 
     public static class ToolConfigs {
@@ -465,6 +483,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether environmental hazards like pollution or radiation are active",
                 "Default: true" })
         public boolean environmentalHazards = true;
+        @Configurable
+        @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
+                "Default: 0.001" })
+        public float environmentalHazardDecayRate = 0.001f;
         @Configurable
         @Configurable.Comment({ "Whether the GTCEu's ingame guidebook, 'Compass', be enabled.", "WARNING: INCOMPLETE",
                 "Default: false" })

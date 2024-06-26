@@ -10,8 +10,8 @@ dependencies {
 
 
     // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -73,9 +73,9 @@ dependencies {
     include(forge.configuration)
 
     // Shimmer
-    modImplementation(forge.shimmer.forge) { transitive = false }
-    modImplementation("maven.modrinth:embeddium:0.2.10+mc1.20.1")
-    modImplementation("maven.modrinth:oculus:1.20.1-1.6.9")
+    modCompileOnly(forge.shimmer.forge) { transitive = false }
+    modImplementation("maven.modrinth:embeddium:0.3.19+mc1.20.1")
+    modImplementation("maven.modrinth:oculus:1.20.1-1.7.0")
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)

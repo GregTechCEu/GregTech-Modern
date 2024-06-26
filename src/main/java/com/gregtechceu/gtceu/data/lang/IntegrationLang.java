@@ -71,11 +71,23 @@ public class IntegrationLang {
         provider.add("gtceu.top.unit.items", "Items");
         provider.add("gtceu.top.unit.fluid_milibuckets", "L");
         provider.add("gtceu.top.unit.fluid_buckets", "kL");
+        provider.add("gtceu.top.recipe_output", "Recipe Outputs:");
+        provider.add("gtceu.top.item_auto_output", "Item Output: %s");
+        provider.add("gtceu.top.fluid_auto_output", "Fluid Output: %s");
+        provider.add("gtceu.top.auto_output", "Auto Output");
+        provider.add("gtceu.top.allow_output_input", "Allow Input");
+        provider.add("gtceu.top.cable_voltage", "Voltage: ");
+        provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
+        provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
+        provider.add("gtceu.top.machine_mode", "Machine Mode: ");
+        provider.add("gtceu.top.stained", "Colored: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
         provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
+        provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

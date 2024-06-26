@@ -138,6 +138,12 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
         provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
+        provider.add("gtceu.hazard_trigger.description", "Caused by:");
+        provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
+        provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
+        provider.add("gtceu.hazard_trigger.any", "Any contact");
+        provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
+        provider.add("gtceu.hazard_trigger.none", "Nothing");
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
         provider.add("gtceu.medical_condition.antidote.description.effect_removed",
@@ -728,8 +734,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
         provider.add("behavior.portable_scanner.environmental_hazard.nothing",
                 "Environmental Hazard In Chunk: §6Nothing§r");
-        provider.add("behavior.portable_scanner.local_hazard", "Local Hazard In Chunk: %s§r - %s ppm");
-        provider.add("behavior.portable_scanner.local_hazard.nothing", "Local Hazard In Chunk: §6Nothing§r");
+        provider.add("behavior.portable_scanner.local_hazard", "Local Hazard In Area: %s§r - %s ppm");
+        provider.add("behavior.portable_scanner.local_hazard.nothing", "Local Hazard In Area: §6Nothing§r");
         provider.add("behavior.portable_scanner.block_hardness", "Hardness: %s Blast Resistance: %s");
         provider.add("behavior.portable_scanner.block_name", "Name: %s MetaData: %s");
         provider.add("behavior.portable_scanner.debug_cpu_load",
@@ -831,8 +837,8 @@ public class LangHandler {
 
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
-        provider.add("gtceu.universal.liters", "%s B");
-        provider.add("gtceu.universal.kiloliters", "%s mB");
+        provider.add("gtceu.universal.liters", "%s mB");
+        provider.add("gtceu.universal.kiloliters", "%s B");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -1035,6 +1041,7 @@ public class LangHandler {
         provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
         provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
         provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
+        provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "Idling.");
@@ -1183,6 +1190,16 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
+        provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
+        provider.add("config.jade.plugin_gtceu.recipe_output_info", "[GTCEu] Recipe Output Info");
+        provider.add("config.jade.plugin_gtceu.auto_output_info", "[GTCEu] Auto Output Info");
+        provider.add("config.jade.plugin_gtceu.cable_info", "[GTCEu] Cable Info");
+        provider.add("config.jade.plugin_gtceu.exhaust_vent_info", "[GTCEu] Exhaust Vent Info");
+        provider.add("config.jade.plugin_gtceu.machine_mode", "[GTCEu] Machine Mode");
+        provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
+        provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
+        provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
+        provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");

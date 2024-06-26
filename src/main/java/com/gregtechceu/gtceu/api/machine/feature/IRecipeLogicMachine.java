@@ -124,7 +124,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
      */
     default boolean alwaysTryModifyRecipe() {
-        return self().getDefinition().isAlwaysTryModifyRecipe();
+        // make it *always* do overclock and parallel so that the machine doesn't get stuck running a lower-tier recipe
+        // in any possible scenario.
+        return true;
     }
 
     default boolean shouldWorkingPlaySound() {
