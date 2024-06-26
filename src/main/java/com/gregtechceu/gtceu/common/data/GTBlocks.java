@@ -1563,6 +1563,15 @@ public class GTBlocks {
     public static BlockEntry<Block> LIGHT_CONCRETE;
     public static BlockEntry<Block> DARK_CONCRETE;
 
+    public static BlockEntry<BrittleCharcoalBlock> BRITTLE_CHARCOAL = REGISTRATE.block("brittle_charcoal_block", p -> new BrittleCharcoalBlock(p))
+            .lang("Brittle Charcoal")
+            .initialProperties(() -> Blocks.COAL_BLOCK)
+            .blockstate(NonNullBiConsumer.noop())
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+
     public static void generateStoneBlocks() {
         // Stone type blocks
         ImmutableTable.Builder<StoneBlockType, StoneTypes, BlockEntry<Block>> builder = ImmutableTable.builder();
