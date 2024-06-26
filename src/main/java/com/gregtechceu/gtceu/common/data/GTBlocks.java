@@ -1640,18 +1640,20 @@ public class GTBlocks {
         ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> lampBuilder = new ImmutableMap.Builder<>();
         DyeColor[] colors = DyeColor.values();
         for (DyeColor dyeColor : colors) {
-            lampBuilder.put(dyeColor, REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
-                    .initialProperties(() -> Blocks.GLASS)
-                    .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
-                    .blockstate(GTModels.lampModel(dyeColor, true))
-                    .item(LampBlockItem::new)
-                    .build()
-                    .register());
+            lampBuilder.put(dyeColor,
+                    REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+                            .initialProperties(() -> Blocks.GLASS)
+                            .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                            .blockstate(GTModels.lampModel(dyeColor, true))
+                            .item(LampBlockItem::new)
+                            .build()
+                            .register());
         }
         LAMPS = lampBuilder.build();
         ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> borderlessLampBuilder = new ImmutableMap.Builder<>();
         for (DyeColor dyeColor : colors) {
-            borderlessLampBuilder.put(dyeColor, REGISTRATE.block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+            borderlessLampBuilder.put(dyeColor, REGISTRATE
+                    .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                     .blockstate(GTModels.lampModel(dyeColor, false))

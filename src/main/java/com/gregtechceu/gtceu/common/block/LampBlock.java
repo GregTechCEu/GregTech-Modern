@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isLightActive(BlockState state) {
-        return state.getValue(INVERTED) == state.getValue(POWERED);
+        return state.getValue(INVERTED) != state.getValue(POWERED);
     }
 
     public boolean isInverted(BlockState state) {
@@ -109,13 +110,14 @@ public class LampBlock extends Block {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!level.isClientSide && state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.setValue(POWERED, false), state.getValue(LIGHT) ? 2 | 8 : 2);
+        if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
+            level.setBlock(pos, state.cycle(POWERED), state.getValue(LIGHT) ? 2 | 8 : 2);
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
+                                TooltipFlag flag) {
         if (stack.hasTag()) {
             if (stack.getTag().getBoolean(TAG_INVERTED))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.inverted"));

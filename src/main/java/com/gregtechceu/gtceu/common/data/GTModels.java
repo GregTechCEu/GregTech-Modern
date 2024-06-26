@@ -114,7 +114,8 @@ public class GTModels {
                 prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color, boolean border) {
+    public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
+                                                                                                              boolean border) {
         return (ctx, prov) -> {
             String borderPart = (border ? "" : "_borderless");
             ModelFile parentOn = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart));
@@ -123,14 +124,16 @@ public class GTModels {
             ConfiguredModel[] models = prov.getVariantBuilder(ctx.getEntry())
                     .partialState()
                     .with(LampBlock.LIGHT, true)
-                    .modelForState().modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName())
+                    .modelForState()
+                    .modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName())
                             .parent(parentOn)
                             .texture("active", "block/lamps/" + color.getName())
                             .texture("active_overlay", "block/lamps/" + color.getName() + "_emissive"))
                     .addModel()
                     .partialState()
                     .with(LampBlock.LIGHT, false)
-                    .modelForState().modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName() + "_off")
+                    .modelForState()
+                    .modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName() + "_off")
                             .parent(parentOff)
                             .texture("inactive", "block/lamps/" + color.getName() + "_off"))
                     .build();
