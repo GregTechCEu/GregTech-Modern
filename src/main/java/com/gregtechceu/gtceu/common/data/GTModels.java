@@ -21,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -117,26 +118,43 @@ public class GTModels {
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
                                                                                                               boolean border) {
         return (ctx, prov) -> {
-            String borderPart = (border ? "" : "_borderless");
+            final String borderPart = (border ? "" : "_borderless");
             ModelFile parentOn = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart));
             ModelFile parentOff = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart + "_off"));
 
             prov.getVariantBuilder(ctx.getEntry())
                     .forAllStates(state -> {
                         if (state.getValue(LampBlock.LIGHT)) {
+                            ModelBuilder<?> model = prov.models()
+                                    .getBuilder(ctx.getName() + (state.getValue(LampBlock.BLOOM) ? "_bloom" : ""))
+                                    .parent(parentOn)
+                                    .renderType("translucent");
+                            if (border) {
+                                model.texture("active", "block/lamps/" + color.getName());
+                                if (state.getValue(LampBlock.BLOOM)) {
+                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
+                                } else {
+                                    model.texture("active_overlay", "block/lamps/" + color.getName());
+                                }
+                            } else {
+                                if (state.getValue(LampBlock.BLOOM)) {
+                                    model.texture("active",
+                                            "block/lamps/" + color.getName() + "_borderless_emissive");
+                                } else {
+                                    model.texture("active",
+                                            "block/lamps/" + color.getName() + "_borderless");
+                                }
+                            }
                             return ConfiguredModel.builder()
-                                    .modelFile(prov.models()
-                                            .getBuilder(ctx.getName())
-                                            .parent(parentOn)
-                                            .texture("active", "block/lamps/" + color.getName())
-                                            .texture("active_overlay", "block/lamps/" + color.getName() + "_emissive"))
+                                    .modelFile(model)
                                     .build();
                         } else {
                             return ConfiguredModel.builder()
                                     .modelFile(prov.models()
                                             .getBuilder(ctx.getName() + "_off")
                                             .parent(parentOff)
-                                            .texture("inactive", "block/lamps/" + color.getName() + "_off"))
+                                            .texture("inactive",
+                                                    "block/lamps/" + color.getName() + "_off" + borderPart))
                                     .build();
                         }
                     });

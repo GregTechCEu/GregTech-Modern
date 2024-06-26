@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.client.renderer.block.LampRenderer;
+
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.BlockStateRenderer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,7 +23,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,16 +43,21 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     public static final int INVERTED_FLAG = 4;
 
     public final DyeColor color;
-    private final Map<BlockState, BlockStateRenderer> rendererCache = new HashMap<>();
+    public final boolean bordered;
+    private final Map<BlockState, LampRenderer> renderers = new IdentityHashMap<>();
 
-    public LampBlock(Properties properties, DyeColor color) {
+    public LampBlock(Properties properties, DyeColor color, boolean bordered) {
         super(properties);
         this.color = color;
+        this.bordered = bordered;
         registerDefaultState(defaultBlockState()
                 .setValue(BLOOM, true)
                 .setValue(LIGHT, true)
                 .setValue(INVERTED, false)
                 .setValue(POWERED, false));
+        for (BlockState state : getStateDefinition().getPossibleStates()) {
+            renderers.computeIfAbsent(state, s -> new LampRenderer(this, s));
+        }
     }
 
     public static boolean isLightActive(BlockState state) {
@@ -134,16 +141,6 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     @Nullable
     @Override
     public IRenderer getRenderer(BlockState state) {
-        return rendererCache.computeIfAbsent(state, s -> new BlockStateRenderer(s) {
-            @Override
-            public boolean reBakeCustomQuads() {
-                return true;
-            }
-
-            @Override
-            public float reBakeCustomQuadsOffset() {
-                return 0.0f;
-            }
-        });
+        return renderers.get(state);
     }
 }

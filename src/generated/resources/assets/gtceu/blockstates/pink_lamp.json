@@ -31,10 +31,10 @@
       "model": "gtceu:block/pink_lamp_off"
     },
     "bloom=true,inverted=false,lit=true,powered=false": {
-      "model": "gtceu:block/pink_lamp"
+      "model": "gtceu:block/pink_lamp_bloom"
     },
     "bloom=true,inverted=false,lit=true,powered=true": {
-      "model": "gtceu:block/pink_lamp"
+      "model": "gtceu:block/pink_lamp_bloom"
     },
     "bloom=true,inverted=true,lit=false,powered=false": {
       "model": "gtceu:block/pink_lamp_off"
@@ -43,10 +43,10 @@
       "model": "gtceu:block/pink_lamp_off"
     },
     "bloom=true,inverted=true,lit=true,powered=false": {
-      "model": "gtceu:block/pink_lamp"
+      "model": "gtceu:block/pink_lamp_bloom"
     },
     "bloom=true,inverted=true,lit=true,powered=true": {
-      "model": "gtceu:block/pink_lamp"
+      "model": "gtceu:block/pink_lamp_bloom"
     }
   }
 }

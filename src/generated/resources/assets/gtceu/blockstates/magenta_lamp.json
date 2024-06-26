@@ -31,10 +31,10 @@
       "model": "gtceu:block/magenta_lamp_off"
     },
     "bloom=true,inverted=false,lit=true,powered=false": {
-      "model": "gtceu:block/magenta_lamp"
+      "model": "gtceu:block/magenta_lamp_bloom"
     },
     "bloom=true,inverted=false,lit=true,powered=true": {
-      "model": "gtceu:block/magenta_lamp"
+      "model": "gtceu:block/magenta_lamp_bloom"
     },
     "bloom=true,inverted=true,lit=false,powered=false": {
       "model": "gtceu:block/magenta_lamp_off"
@@ -43,10 +43,10 @@
       "model": "gtceu:block/magenta_lamp_off"
     },
     "bloom=true,inverted=true,lit=true,powered=false": {
-      "model": "gtceu:block/magenta_lamp"
+      "model": "gtceu:block/magenta_lamp_bloom"
     },
     "bloom=true,inverted=true,lit=true,powered=true": {
-      "model": "gtceu:block/magenta_lamp"
+      "model": "gtceu:block/magenta_lamp_bloom"
     }
   }
 }

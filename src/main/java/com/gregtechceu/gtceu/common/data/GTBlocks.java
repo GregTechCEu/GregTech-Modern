@@ -1641,7 +1641,7 @@ public class GTBlocks {
         DyeColor[] colors = DyeColor.values();
         for (DyeColor dyeColor : colors) {
             lampBuilder.put(dyeColor,
-                    REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+                    REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, true))
                             .initialProperties(() -> Blocks.GLASS)
                             .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                             .blockstate(GTModels.lampModel(dyeColor, true))
@@ -1653,7 +1653,7 @@ public class GTBlocks {
         ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> borderlessLampBuilder = new ImmutableMap.Builder<>();
         for (DyeColor dyeColor : colors) {
             borderlessLampBuilder.put(dyeColor, REGISTRATE
-                    .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+                    .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, false))
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                     .blockstate(GTModels.lampModel(dyeColor, false))

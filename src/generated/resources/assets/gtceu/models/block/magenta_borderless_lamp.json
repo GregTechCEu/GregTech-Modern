@@ -1,7 +1,7 @@
 {
   "parent": "gtceu:block/lamp_borderless",
+  "render_type": "minecraft:translucent",
   "textures": {
-    "active": "gtceu:block/lamps/magenta",
-    "active_overlay": "gtceu:block/lamps/magenta_emissive"
+    "active": "gtceu:block/lamps/magenta_borderless"
   }
 }
