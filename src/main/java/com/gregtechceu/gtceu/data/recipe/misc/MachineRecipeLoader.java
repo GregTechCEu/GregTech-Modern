@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -23,12 +25,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -426,9 +430,11 @@ public class MachineRecipeLoader {
         ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_bar").duration(100).EUt(VA[ULV]).inputItems(dust, Sulfur)
                 .inputItems(dust, RawRubber, 3).outputItems(ingot, Rubber).save(provider);
 
-        // todo tag stuff
-        // ALLOY_SMELTER_RECIPES.recipeBuilder("coke_oven_brick").duration(150).EUt(VA[ULV]).inputItems(OreDictUnifier.get("sand")).inputItems(new
-        // ItemStack(Items.CLAY_BALL)).outputItems(COKE_OVEN_BRICK, 2).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("coke_oven_brick").duration(150).EUt(VA[ULV])
+                .inputItems(Tags.Items.SAND)
+                .inputItems(new ItemStack(Items.CLAY_BALL))
+                .outputItems(COKE_OVEN_BRICK, 2)
+                .save(provider);
     }
 
     private static void registerAssemblerRecipes(Consumer<FinishedRecipe> provider) {
@@ -439,6 +445,30 @@ public class MachineRecipeLoader {
                     .outputItems(SPRAY_CAN_DYES[i])
                     .EUt(VA[ULV]).duration(200)
                     .save(provider);
+
+            DyeColor color = DyeColor.byId(i);
+
+            LampBlock lamp = GTBlocks.LAMPS.get(color).get();
+            for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
+                ASSEMBLER_RECIPES.recipeBuilder("lamp_" + color + "_" + lampMeta)
+                        .inputItems(plate, Glass, 6)
+                        .inputItems(dust, Glowstone, 1)
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .outputItems(lamp.getStackFromIndex(lampMeta))
+                        .circuitMeta(lampMeta + 1).EUt(VA[ULV]).duration(40)
+                        .save(provider);
+            }
+            lamp = GTBlocks.BORDERLESS_LAMPS.get(color).get();
+            for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
+                ASSEMBLER_RECIPES.recipeBuilder("borderless_lamp_" + color + "_" + lampMeta)
+                        .inputItems(plate, Glass, 6)
+                        .inputItems(dust, Glowstone, 1)
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .outputItems(lamp.getStackFromIndex(lampMeta))
+                        .circuitMeta(lampMeta + 9).EUt(VA[ULV]).duration(40)
+                        .save(provider);
+            }
+
         }
 
         CANNER_RECIPES.recipeBuilder("spray_can_solvent")

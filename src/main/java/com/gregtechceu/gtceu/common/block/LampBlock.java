@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -59,6 +60,16 @@ public class LampBlock extends Block {
 
     public boolean isBloomEnabled(BlockState state) {
         return state.getValue(BLOOM);
+    }
+
+    public ItemStack getStackFromIndex(int i) {
+        CompoundTag tag = new CompoundTag();
+        tag.putBoolean(LampBlock.TAG_INVERTED, (i & LampBlock.INVERTED_FLAG) == 0);
+        tag.putBoolean(LampBlock.TAG_BLOOM, (i & LampBlock.BLOOM_FLAG) == 0);
+        tag.putBoolean(LampBlock.TAG_LIT, (i & LampBlock.LIGHT_FLAG) == 0);
+        ItemStack stack = new ItemStack(this);
+        stack.setTag(tag);
+        return stack;
     }
 
     @Override
