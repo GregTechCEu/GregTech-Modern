@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -45,6 +46,13 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Override
     public void tick() {
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            for (MedicalCondition medicalCondition : getMedicalConditions().keySet()) {
+                removeMedicalCondition(medicalCondition);
+            }
+            return;
+        }
+
         for (var entry : activeMobEffects.object2IntEntrySet()) {
             player.addEffect(new MobEffectInstance(entry.getKey(), 100, entry.getIntValue()));
         }
