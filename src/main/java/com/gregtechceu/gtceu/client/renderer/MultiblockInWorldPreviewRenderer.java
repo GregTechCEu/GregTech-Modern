@@ -316,7 +316,7 @@ public class MultiblockInWorldPreviewRenderer {
                 }
 
                 if (shaderInstance.FOG_START != null) {
-                    shaderInstance.FOG_START.set(RenderSystem.getShaderFogStart());
+                    shaderInstance.FOG_START.set(Float.MAX_VALUE);
                 }
 
                 if (shaderInstance.FOG_END != null) {
