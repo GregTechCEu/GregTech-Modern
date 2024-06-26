@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
@@ -15,6 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -110,6 +112,30 @@ public class GTModels {
                                                   RegistrateBlockstateProvider prov) {
         prov.simpleBlock(ctx.getEntry(),
                 prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color, boolean border) {
+        return (ctx, prov) -> {
+            String borderPart = (border ? "" : "_borderless");
+            ModelFile parentOn = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart));
+            ModelFile parentOff = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart + "_off"));
+
+            ConfiguredModel[] models = prov.getVariantBuilder(ctx.getEntry())
+                    .partialState()
+                    .with(LampBlock.LIGHT, true)
+                    .modelForState().modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName())
+                            .parent(parentOn)
+                            .texture("active", "block/lamps/" + color.getName())
+                            .texture("active_overlay", "block/lamps/" + color.getName() + "_emissive"))
+                    .addModel()
+                    .partialState()
+                    .with(LampBlock.LIGHT, false)
+                    .modelForState().modelFile(prov.models().getBuilder(ModelProvider.BLOCK_FOLDER + "/block/" + ctx.getName() + "_off")
+                            .parent(parentOff)
+                            .texture("inactive", "block/lamps/" + color.getName() + "_off"))
+                    .build();
+            prov.simpleBlock(ctx.getEntry(), models);
+        };
     }
 
     public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {

@@ -1634,17 +1634,32 @@ public class GTBlocks {
             .register();
 
     // Lamps
-    @SuppressWarnings("unchecked")
-    public static final BlockEntry<Block>[] LAMPS = new BlockEntry[DyeColor.values().length];
+    public static final Map<DyeColor, BlockEntry<LampBlock>> LAMPS;
+    public static final Map<DyeColor, BlockEntry<LampBlock>> BORDERLESS_LAMPS;
     static {
+        ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> lampBuilder = new ImmutableMap.Builder<>();
         DyeColor[] colors = DyeColor.values();
-        for (int i = 0; i < colors.length; i++) {
-            var dyeColor = colors[i];
-            LAMPS[i] = REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), Block::new)
-                    .initialProperties(() -> Blocks.GLOWSTONE)
-                    .simpleItem()
-                    .register();
+        for (DyeColor dyeColor : colors) {
+            lampBuilder.put(dyeColor, REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+                    .initialProperties(() -> Blocks.GLASS)
+                    .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .blockstate(GTModels.lampModel(dyeColor, true))
+                    .item(LampBlockItem::new)
+                    .build()
+                    .register());
         }
+        LAMPS = lampBuilder.build();
+        ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> borderlessLampBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            borderlessLampBuilder.put(dyeColor, REGISTRATE.block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor))
+                    .initialProperties(() -> Blocks.GLASS)
+                    .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .blockstate(GTModels.lampModel(dyeColor, false))
+                    .item(LampBlockItem::new)
+                    .build()
+                    .register());
+        }
+        BORDERLESS_LAMPS = borderlessLampBuilder.build();
     }
 
     public static <P, T extends Block,
