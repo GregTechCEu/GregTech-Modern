@@ -105,7 +105,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -2065,6 +2065,30 @@ public class GTMachines {
             })
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_palladium_substation"),
                     GTCEu.id("block/multiblock/power_substation"), false)
+            .register();
+
+    public static final MultiblockMachineDefinition TEST_RENDER = REGISTRATE
+            .multiblock("test_render", WorkableElectricMultiblockMachine::new)
+            .langValue("Test Render")
+            .rotationState(RotationState.ALL)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
+            .pattern(def -> FactoryBlockPattern.start(FRONT, UP, RIGHT)
+                    .aisle("ASB", "CD ")
+                    .aisle("EFG", "H  ")
+                    .where('A', blocks(WOODEN_CRATE.getBlock()))
+                    .where('S', Predicates.controller(blocks(def.getBlock())))
+                    .where('B', frames(TungstenSteel))
+                    .where('C', blocks(CASING_ASSEMBLY_LINE.get()))
+                    .where('D', blocks(CASING_LAMINATED_GLASS.get()))
+                    .where('E', blocks(CASING_TITANIUM_GEARBOX.get()))
+                    .where('F', blocks(GOLD_DRUM.getBlock()))
+                    .where('G', blocks(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.ore, Bentonite).get()))
+                    .where('H', Predicates.cleanroomFilters())
+                    .build())
+            .allowExtendedFacing(true)
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+                    GTCEu.id("block/multiblock/cracking_unit"), false)
             .register();
 
     //////////////////////////////////////
