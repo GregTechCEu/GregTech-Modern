@@ -202,7 +202,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (color == -1) {
             if (!recipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
                 int newColor = 0xFF000000 |
-                        FluidHelper.getColor(FluidRecipeCapability.CAP.of(recipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()).getStacks()[0]);
+                        FluidHelper.getColor(FluidRecipeCapability.CAP
+                                .of(recipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent())
+                                .getStacks()[0]);
                 if (!Objects.equals(color, newColor)) {
                     color = newColor;
                 }

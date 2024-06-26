@@ -7,16 +7,19 @@ import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.BloomUtils;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
@@ -26,7 +29,8 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
+                       int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
             if (GTCEu.isShimmerLoaded()) {
@@ -39,7 +43,8 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack, MultiBufferSource buffer) {
+    private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
+                                 MultiBufferSource buffer) {
         var color = machine.getColor();
         if (color == -1) return;
         int ringColor = ColorUtils.blendColor(color, -1, Eases.EaseQuadIn.getInterpolation(

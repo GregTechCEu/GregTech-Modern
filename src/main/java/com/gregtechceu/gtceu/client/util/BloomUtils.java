@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.lowdragmc.shimmer.client.postprocessing.PostProcessing;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,5 +16,4 @@ public class BloomUtils {
         // We probably don't need to call it ourselves
         PostProcessing.BLOOM_UNREAL.postEntity(sourceConsumer);
     }
-
 }

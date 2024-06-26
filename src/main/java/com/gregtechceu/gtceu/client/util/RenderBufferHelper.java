@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
@@ -15,22 +16,24 @@ public class RenderBufferHelper {
      *
      * Draw a ring torus
      *
-     * @param poseStack The stack used to store the transformation matrix.
-     * @param buffer Vertex consumer, which is used to cache vertex data.
-     * @param x The coordinates of the center
-     * @param y The coordinates of the center
-     * @param z The coordinates of the center
-     * @param r The large radius of the torus, that is, the distance from the center of the torus to center of the "pipe".
+     * @param poseStack  The stack used to store the transformation matrix.
+     * @param buffer     Vertex consumer, which is used to cache vertex data.
+     * @param x          The coordinates of the center
+     * @param y          The coordinates of the center
+     * @param z          The coordinates of the center
+     * @param r          The large radius of the torus, that is, the distance from the center of the torus to center of
+     *                   the "pipe".
      * @param tubeRadius The small radius of the "pipe", i.e. the thickness of the "pipe".
-     * @param sides The number of subdivisions of the "pipe".
-     * @param segments The number of subdivisions for the ring.
-     * @param red color
-     * @param green color
-     * @param blue color
-     * @param alpha transparency
-     * @param axis The axial direction of the "ring pipe" determines which axis the "ring pipe" rotates around.
+     * @param sides      The number of subdivisions of the "pipe".
+     * @param segments   The number of subdivisions for the ring.
+     * @param red        color
+     * @param green      color
+     * @param blue       color
+     * @param alpha      transparency
+     * @param axis       The axial direction of the "ring pipe" determines which axis the "ring pipe" rotates around.
      */
-    public static void renderRing(PoseStack poseStack, VertexConsumer buffer, float x, float y, float z, float r, float tubeRadius,
+    public static void renderRing(PoseStack poseStack, VertexConsumer buffer, float x, float y, float z, float r,
+                                  float tubeRadius,
                                   int sides, int segments, float red, float green, float blue, float alpha,
                                   Direction.Axis axis) {
         Matrix4f mat = poseStack.last().pose();
@@ -85,5 +88,4 @@ public class RenderBufferHelper {
 
         }
     }
-
 }
