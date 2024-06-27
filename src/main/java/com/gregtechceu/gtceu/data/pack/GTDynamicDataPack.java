@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.GTRecipes;
 
 import com.lowdragmc.lowdraglib.Platform;
 
@@ -25,7 +24,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
@@ -42,7 +40,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -189,17 +186,6 @@ public class GTDynamicDataPack implements PackResources {
         if (metaReader == PackMetadataSection.TYPE) {
             return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"),
                     SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
-        } else if (metaReader.getMetadataSectionName().equals("filter")) {
-            JsonObject filter = new JsonObject();
-            JsonArray block = new JsonArray();
-            GTRecipes.RECIPE_FILTERS.forEach((id) -> { // Collect removed recipes in here, in the pack filter section.
-                JsonObject entry = new JsonObject();
-                entry.addProperty("namespace", "^" + Matcher.quoteReplacement(id.getNamespace()) + "$");
-                entry.addProperty("path", "^recipe/" + Matcher.quoteReplacement(id.getPath()) + "\\.json" + "$");
-                block.add(entry);
-            });
-            filter.add("block", block);
-            return metaReader.fromJson(filter);
         }
         return null;
     }

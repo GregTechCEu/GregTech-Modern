@@ -12,14 +12,9 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
-
-    public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.
@@ -88,8 +83,6 @@ public class GTRecipes {
      * This is also where any recipe removals should happen.
      */
     public static void recipeRemoval(final Consumer<ResourceLocation> filter) {
-        RECIPE_FILTERS.clear();
-
         RecipeRemoval.init(filter);
         AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(filter));
     }
