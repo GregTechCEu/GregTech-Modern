@@ -161,6 +161,12 @@ public class ForgeCommonEventListener {
         if (tracker == null || inventory == null) {
             return;
         }
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
+                tracker.removeMedicalCondition(medicalCondition);
+            }
+            return;
+        }
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {

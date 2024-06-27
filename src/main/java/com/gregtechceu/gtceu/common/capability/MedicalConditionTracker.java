@@ -46,13 +46,6 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Override
     public void tick() {
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
-            for (MedicalCondition medicalCondition : getMedicalConditions().keySet()) {
-                removeMedicalCondition(medicalCondition);
-            }
-            return;
-        }
-
         for (var entry : activeMobEffects.object2IntEntrySet()) {
             player.addEffect(new MobEffectInstance(entry.getKey(), 100, entry.getIntValue()));
         }
