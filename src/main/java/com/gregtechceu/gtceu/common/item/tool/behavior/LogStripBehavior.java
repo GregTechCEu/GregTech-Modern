@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
@@ -112,12 +112,12 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
     protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos,
                                         UseOnContext context) {
         BlockState state = level.getBlockState(pos);
-        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.AXE_STRIP, false);
         return newState != null && newState != state;
     }
 
     protected BlockState getStripped(BlockState unscrapedState, UseOnContext context) {
-        return unscrapedState.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
+        return unscrapedState.getToolModifiedState(context, ItemAbilities.AXE_STRIP, false);
     }
 
     @Override

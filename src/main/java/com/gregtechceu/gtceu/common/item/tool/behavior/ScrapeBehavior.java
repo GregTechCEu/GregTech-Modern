@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
@@ -113,13 +113,13 @@ public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
     protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos,
                                        UseOnContext context) {
         BlockState state = level.getBlockState(pos);
-        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.AXE_SCRAPE, false);
         return newState != null && newState != state;
     }
 
     protected BlockState getScraped(BlockState unscrapedState, UseOnContext context) {
         // just assume it exists.
-        BlockState newState = unscrapedState.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        BlockState newState = unscrapedState.getToolModifiedState(context, ItemAbilities.AXE_SCRAPE, false);
         return newState != null ? newState : unscrapedState;
     }
 

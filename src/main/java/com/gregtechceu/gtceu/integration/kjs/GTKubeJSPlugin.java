@@ -105,9 +105,9 @@ import java.util.stream.Stream;
 /**
  * @author KilaBash
  * @date 2023/3/26
- * @implNote GregTechKubeJSPlugin
+ * @implNote GTKubeJSPlugin
  */
-public class GregTechKubeJSPlugin implements KubeJSPlugin {
+public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
@@ -378,7 +378,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     public void injectRuntimeRecipes(RecipesKubeEvent event, RecipeManagerKJS manager,
                                      Map<ResourceLocation, RecipeHolder<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
-        RecipesKubeEvent.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
+        event.addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTKubeRecipe gtRecipe) {
                 // get the recipe ID without the leading type path
                 GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
@@ -427,7 +427,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                     }
                 });
             }
-        })));
+        });
 
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {

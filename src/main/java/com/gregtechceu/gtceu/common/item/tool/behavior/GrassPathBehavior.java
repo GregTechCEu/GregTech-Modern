@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
@@ -119,14 +119,14 @@ public class GrassPathBehavior implements IToolBehavior<GrassPathBehavior> {
                                              UseOnContext context) {
         if (level.getBlockState(pos.above()).isAir()) {
             BlockState state = level.getBlockState(pos);
-            BlockState newState = state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+            BlockState newState = state.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, false);
             return newState != null && newState != state;
         }
         return false;
     }
 
     protected BlockState getFlattened(BlockState unFlattenedState, UseOnContext context) {
-        return unFlattenedState.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+        return unFlattenedState.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, false);
     }
 
     @Override

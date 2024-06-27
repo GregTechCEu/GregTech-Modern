@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
@@ -118,14 +118,14 @@ public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {
     protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
             BlockState state = world.getBlockState(pos);
-            BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
+            BlockState newState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
             return newState != null && newState != state;
         }
         return false;
     }
 
     protected boolean tillGround(UseOnContext context, BlockState state) {
-        BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
         if (newState != null && newState != state) {
             context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(),
                     GameEvent.Context.of(context.getPlayer(), state));

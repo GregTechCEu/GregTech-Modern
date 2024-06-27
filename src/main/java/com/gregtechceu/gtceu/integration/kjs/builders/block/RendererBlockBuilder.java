@@ -13,9 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
-import dev.latvian.mods.kubejs.block.BlockItemBuilder;
 import dev.latvian.mods.kubejs.client.ModelGenerator;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.item.ItemBuilder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -54,7 +54,7 @@ public class RendererBlockBuilder extends BlockBuilder {
     }
 
     @Override
-    protected BlockItemBuilder getOrCreateItemBuilder() {
+    protected ItemBuilder getOrCreateItemBuilder() {
         return itemBuilder == null ? (itemBuilder = new RendererBlockItemBuilder(id)) : itemBuilder;
     }
 
