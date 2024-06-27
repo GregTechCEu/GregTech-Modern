@@ -46,7 +46,7 @@ dependencyResolutionManagement {
         def configurationVersion = "2.2.0"
         def ldLibVersion = "1.0.25.p"
         def mixinextrasVersion = "0.2.0"
-        def shimmerVersion = "0.2.2"
+        def shimmerVersion = "0.2.4"
         
         forge {
             version("forgeShortVersion", forgeVersion)
