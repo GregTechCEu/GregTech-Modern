@@ -8,6 +8,8 @@ import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
 
+import java.util.concurrent.locks.Lock;
+
 /**
  * @author KilaBash
  * @date 2023/2/14
@@ -17,10 +19,13 @@ import dev.toma.configuration.config.format.ConfigFormats;
 public class ConfigHolder {
 
     public static ConfigHolder INSTANCE;
+    private static final Object LOCK = new Object();
 
     public static void init() {
-        if (INSTANCE == null) {
-            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        synchronized (LOCK) {
+            if (INSTANCE == null) {
+                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+            }
         }
     }
 
