@@ -128,7 +128,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         enchantmentLevels.putAll(getToolType().toolDefinition.getDefaultEnchantments());
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(
                 ItemEnchantments.EMPTY);
-        enchantmentLevels.forEach((enchantment, level) -> enchantments.set(lookup.getOrThrow(enchantment), level));
+        enchantmentLevels.forEach(
+                (enchantment, level) -> lookup.get(enchantment).ifPresent(enchant -> enchantments.set(enchant, level)));
         instance.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
         return instance;
