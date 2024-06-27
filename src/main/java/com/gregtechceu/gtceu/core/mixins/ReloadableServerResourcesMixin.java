@@ -48,7 +48,6 @@ public abstract class ReloadableServerResourcesMixin {
         // Register recipes & unification data again
         long startTime = System.currentTimeMillis();
         ChemicalHelper.reinitializeUnification();
-        GTRecipes.recipeRemoval();
         GTRecipes.recipeAddition(new RecipeOutput() {
 
             @Override

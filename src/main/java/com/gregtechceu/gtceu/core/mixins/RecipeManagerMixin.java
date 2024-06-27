@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.data.recipe.GTRecipes;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -23,13 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-// only fires if KJS is NOT loaded.
-@Mixin(RecipeManager.class)
+@Mixin(value = RecipeManager.class, priority = 500)
 public abstract class RecipeManagerMixin {
 
     @Shadow
     private Multimap<RecipeType<?>, RecipeHolder<?>> byType;
 
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
+            at = @At("HEAD"))
+    private void gtceu$removeRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager pResourceManager,
+                                     ProfilerFiller pProfiler, CallbackInfo ci) {
+        GTRecipes.recipeRemoval(map::remove);
+    }
+
+    // only fires if KJS is NOT loaded.
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,

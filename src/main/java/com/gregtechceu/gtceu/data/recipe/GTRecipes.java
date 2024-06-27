@@ -9,17 +9,13 @@ import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.common.conditions.ICondition;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class GTRecipes {
 
@@ -34,23 +30,7 @@ public class GTRecipes {
      * This should also be used for recipes that need
      * to respond to a config option in ConfigHolder.
      */
-    public static void recipeAddition(final RecipeOutput originalConsumer) {
-        RecipeOutput consumer = new RecipeOutput() {
-
-            @Override
-            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
-                               ICondition... conditions) {
-                if (!RECIPE_FILTERS.contains(id)) {
-                    originalConsumer.accept(id, recipe, advancement, conditions);
-                }
-            }
-
-            @Override
-            public Advancement.Builder advancement() {
-                return originalConsumer.advancement();
-            }
-        };
-
+    public static void recipeAddition(final RecipeOutput consumer) {
         ResearchManager.registerScannerLogic();
 
         // Decomposition info loading
@@ -107,10 +87,10 @@ public class GTRecipes {
      *
      * This is also where any recipe removals should happen.
      */
-    public static void recipeRemoval() {
+    public static void recipeRemoval(final Consumer<ResourceLocation> filter) {
         RECIPE_FILTERS.clear();
 
-        RecipeRemoval.init(RECIPE_FILTERS::add);
-        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
+        RecipeRemoval.init(filter);
+        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(filter));
     }
 }
