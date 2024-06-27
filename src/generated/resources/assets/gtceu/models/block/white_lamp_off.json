@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/lamp_off",
+  "textures": {
+    "inactive": "gtceu:block/lamps/white_off"
+  }
+}
