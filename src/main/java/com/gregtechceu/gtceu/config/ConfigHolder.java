@@ -8,8 +8,6 @@ import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
 
-import java.util.concurrent.locks.Lock;
-
 /**
  * @author KilaBash
  * @date 2023/2/14
