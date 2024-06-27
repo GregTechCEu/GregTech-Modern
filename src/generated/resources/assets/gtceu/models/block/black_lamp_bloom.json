@@ -1,0 +1,8 @@
+{
+  "parent": "gtceu:block/lamp",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "active": "gtceu:block/lamps/black",
+    "active_overlay": "gtceu:block/lamps/black_emissive"
+  }
+}
