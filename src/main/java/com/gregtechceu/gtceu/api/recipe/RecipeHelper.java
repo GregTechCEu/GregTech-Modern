@@ -57,6 +57,15 @@ public class RecipeHelper {
         return GTUtil.getTierByVoltage(EUt);
     }
 
+    public static int getRecipeRealTier(GTRecipe recipe) {
+        long EUt = getInputEUt(recipe);
+        if (EUt == 0) {
+            EUt = getOutputEUt(recipe);
+        }
+        EUt = EUt / recipe.parallelAmount;
+        return GTUtil.getTierByVoltage(EUt);
+    }
+
     /**
      * Calculates the overclocked Recipe's final duration and EU/t
      *

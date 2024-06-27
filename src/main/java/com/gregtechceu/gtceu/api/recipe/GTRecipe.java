@@ -51,6 +51,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public int duration;
     @Getter
     public boolean isFuel;
+    public int parallelAmount;
 
     public GTRecipe(GTRecipeType recipeType,
                     ResourceLocation id,
@@ -74,6 +75,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
+        this.parallelAmount = 1;
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,

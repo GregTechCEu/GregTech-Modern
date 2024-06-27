@@ -95,13 +95,13 @@ public class GTRecipeModifiers {
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeRealTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
             }
             if (machine instanceof ITieredMachine tieredMachine &&
-                    RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+                    RecipeHelper.getRecipeRealTier(recipe) > tieredMachine.getTier()) {
                 return null;
             }
             return recipe;
