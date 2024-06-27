@@ -43,6 +43,10 @@ public interface IInteractionItem extends IItemComponent {
         return InteractionResult.PASS;
     }
 
+    default boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        return false;
+    }
+
     default InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
                                                    InteractionHand usedHand) {
         return InteractionResult.PASS;

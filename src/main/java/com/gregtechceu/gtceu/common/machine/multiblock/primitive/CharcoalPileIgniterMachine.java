@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
@@ -321,7 +323,16 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                         getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
                         shouldActivate = true;
-                    } // TODO lighters
+                    } else if(stack.getItem() instanceof ComponentItem compItem) {
+                       for(var component : compItem.getComponents()) {
+                           if(component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
+                               getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+                               shouldActivate = true;
+                               break;
+                           }
+                       }
+                    }
 
                     if(shouldActivate) {
                         cpi.setActive(true);
