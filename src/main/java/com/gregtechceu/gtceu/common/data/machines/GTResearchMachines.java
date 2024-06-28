@@ -105,7 +105,7 @@ public class GTResearchMachines {
                     .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.NORTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
-                    GTCEu.id("block/multiblock/research_station"), true)
+                    GTCEu.id("block/multiblock/research_station"))
             .register();
 
     public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderMachine::new)
@@ -188,7 +188,7 @@ public class GTResearchMachines {
                     .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.SOUTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
-                    GTCEu.id("block/multiblock/network_switch"), true)
+                    GTCEu.id("block/multiblock/network_switch"))
             .register();
 
     public static final MachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
@@ -288,7 +288,7 @@ public class GTResearchMachines {
                 return shapeInfo;
             })
             .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
-                    GTCEu.id("block/multiblock/hpca"), true)
+                    GTCEu.id("block/multiblock/hpca"))
             .register();
 
     ////////////////////////////////////////////
