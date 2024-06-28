@@ -25,7 +25,10 @@ import static net.minecraft.ChatFormatting.YELLOW;
 public class FormattingUtil {
 
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
-    private static final DecimalFormat TWO_PLACES_FORMAT = new DecimalFormat("#.##");
+    public static final DecimalFormat DECIMAL_FORMAT_0F = new DecimalFormat("#");
+    public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#.#");
+    public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#.##");
+    public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E00");
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
     private static final int SMALL_UP_NUMBER_BASE = '\u2070';
@@ -164,7 +167,7 @@ public class FormattingUtil {
 
     @NotNull
     public static String formatNumber2Places(float number) {
-        return TWO_PLACES_FORMAT.format(number);
+        return DECIMAL_FORMAT_2F.format(number);
     }
 
     public static Component formatPercentage2Places(String langKey, float percentage) {
