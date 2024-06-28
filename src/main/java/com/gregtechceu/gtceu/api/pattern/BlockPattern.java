@@ -664,7 +664,10 @@ public class BlockPattern {
             @NotNull
             LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
             if (stackCap.isPresent()) {
-                return getMatchStackWithHandler(candidates, stackCap);
+                var rt = getMatchStackWithHandler(candidates, stackCap);
+                if (rt != null) {
+                    return rt;
+                }
             } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
                     !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                         return Pair.of(i, handler);
