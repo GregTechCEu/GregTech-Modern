@@ -209,7 +209,7 @@ public class BlockPattern {
         IMultiController controller = worldState.getController();
         BlockPos centerPos = controller.self().getPos();
         Direction facing = controller.self().getFrontFacing();
-        Direction upwardsFacing = controller.self().getUpwardsFacing();
+            Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isFlipped = controller.self().isFlipped();
         Map<SimplePredicate, Integer> cacheGlobal = worldState.getGlobalCount();
         Map<SimplePredicate, Integer> cacheLayer = worldState.getLayerCount();

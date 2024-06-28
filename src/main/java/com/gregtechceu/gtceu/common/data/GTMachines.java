@@ -1691,7 +1691,7 @@ public class GTMachines {
                         List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
 
                         MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
-                                .aisle("###############", "######WGW######", "###############")
+                                .aisle("###############", "######EME######", "###############")
                                 .aisle("######DCD######", "####GG###GG####", "######UCU######")
                                 .aisle("####CC###CC####", "###w##EGE##s###", "####CC###CC####")
                                 .aisle("###C#######C###", "##nKeG###GeKn##", "###C#######C###")
@@ -1705,7 +1705,7 @@ public class GTMachines {
                                 .aisle("###C#######C###", "##eKnG###GnKe##", "###C#######C###")
                                 .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
                                 .aisle("######DCD######", "####GG###GG####", "######UCU######")
-                                .aisle("###############", "######EME######", "###############")
+                                .aisle("###############", "######WGW######", "###############")
                                 .where('M', controller, Direction.SOUTH)
                                 .where('C', FusionReactorMachine.getCasingState(tier))
                                 .where('G', FUSION_GLASS.get())
