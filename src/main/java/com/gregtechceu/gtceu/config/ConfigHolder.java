@@ -204,7 +204,8 @@ public class ConfigHolder {
     public static class WorldGenConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Rubber Tree spawn chance (% per chunk)", "Default: 0.5" })
+        @Configurable.Comment({ "Rubber Tree spawn chance (decimal % per chunk)", "Default: 0.5" })
+        @Configurable.DecimalRange(min = 0f, max = 1f)
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
