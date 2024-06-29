@@ -12,9 +12,7 @@ public class JourneyMapPlugin {
     public static void init(IEventBus eventBus){
         if (LDLib.isModLoaded(GTValues.MODID_JOURNEY_MAP)) {
             isActive = true;
-            eventBus.addListener(event -> {
-                if (event instanceof)
-            });
+
         }
     }
 }
