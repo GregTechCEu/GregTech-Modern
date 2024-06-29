@@ -25,8 +25,6 @@ import snownee.jade.api.ui.IElementHelper;
 
 public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenanceMachine> {
 
-    public static final MaintenanceBlockProvider INSTANCE = new MaintenanceBlockProvider();
-
     public MaintenanceBlockProvider() {
         super(GTCEu.id("maintenance_info"));
     }
