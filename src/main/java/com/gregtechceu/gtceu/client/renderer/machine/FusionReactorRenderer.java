@@ -23,8 +23,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
-    public FusionReactorRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
-        super(baseCasing, workableModel, tint);
+    public FusionReactorRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        super(baseCasing, workableModel);
     }
 
     @Override

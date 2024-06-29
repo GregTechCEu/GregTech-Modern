@@ -105,7 +105,7 @@ public class GTResearchMachines {
                     .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
-                    GTCEu.id("block/multiblock/research_station"), false)
+                    GTCEu.id("block/multiblock/research_station"))
             .register();
 
     public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderMachine::new)
@@ -149,7 +149,7 @@ public class GTResearchMachines {
                                     .setPreviewCount(1)))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
-                    GTCEu.id("block/multiblock/data_bank"), false)
+                    GTCEu.id("block/multiblock/data_bank"))
             .register();
 
     public static final MachineDefinition NETWORK_SWITCH = REGISTRATE
@@ -188,7 +188,7 @@ public class GTResearchMachines {
                     .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
-                    GTCEu.id("block/multiblock/network_switch"), false)
+                    GTCEu.id("block/multiblock/network_switch"))
             .register();
 
     public static final MachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
@@ -288,7 +288,7 @@ public class GTResearchMachines {
                 return shapeInfo;
             })
             .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
-                    GTCEu.id("block/multiblock/hpca"), false)
+                    GTCEu.id("block/multiblock/hpca"))
             .register();
 
     ////////////////////////////////////////////
