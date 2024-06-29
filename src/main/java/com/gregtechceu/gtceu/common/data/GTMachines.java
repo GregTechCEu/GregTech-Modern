@@ -1200,7 +1200,7 @@ public class GTMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.SUBTICK_PARALLEL,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
@@ -1292,7 +1292,7 @@ public class GTMachines {
             .multiblock("pyrolyse_oven", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers::pyrolyseOvenOverclock)
+            .recipeModifiers(GTRecipeModifiers::pyrolyseOvenOverclock, GTRecipeModifiers.SUBTICK_PARALLEL)
             .appearanceBlock(MACHINE_CASING_ULV)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -1348,7 +1348,7 @@ public class GTMachines {
             .multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers::multiSmelterParallel,
+            .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, GTRecipeModifiers.SUBTICK_PARALLEL,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -1539,7 +1539,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .alwaysTryModifyRecipe(true)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.SUBTICK_PARALLEL,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
