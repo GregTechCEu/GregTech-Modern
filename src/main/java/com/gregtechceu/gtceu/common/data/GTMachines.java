@@ -1548,7 +1548,7 @@ public class GTMachines {
                     .aisle("FOF", "RTR", "DAG", "#Y#")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('F', blocks(CASING_STEEL_SOLID.get())
-                            .or(ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids ?
+                            .or(!ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids ?
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS) :
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
