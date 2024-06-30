@@ -1,6 +1,5 @@
 {
   "parent": "gtceu:block/lamp_borderless",
-  "render_type": "minecraft:translucent",
   "textures": {
     "active": "gtceu:block/lamps/brown_borderless_emissive"
   }
