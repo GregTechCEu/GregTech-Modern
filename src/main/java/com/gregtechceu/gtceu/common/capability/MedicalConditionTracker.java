@@ -45,7 +45,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Override
     public void tick() {
-        if(player.isCreative()) return;
+        if (player.isCreative()) return;
 
         for (var entry : activeMobEffects.object2IntEntrySet()) {
             player.addEffect(new MobEffectInstance(entry.getKey(), 100, entry.getIntValue()));
@@ -73,7 +73,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
     }
 
     public void progressCondition(@NotNull MedicalCondition condition, float strength) {
-        if(player.isCreative()) return;
+        if (player.isCreative()) return;
 
         medicalConditions.put(condition, medicalConditions.getOrDefault(condition, 0) + strength);
 
