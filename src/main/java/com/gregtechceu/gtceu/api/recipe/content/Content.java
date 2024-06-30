@@ -85,7 +85,7 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.ingredient().hasNoFluids() ? 0 : ingredient.getFluids()[0].getAmount();
+            long amount = ingredient.ingredient().hasNoFluids() ? 0 : ingredient.amount();
             String s;
             if (amount >= 1000) {
                 amount /= 1000;

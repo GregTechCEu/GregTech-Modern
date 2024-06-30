@@ -511,9 +511,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 }
                 return items;
             }));
-        } else if (ingredient.ingredient().getCustomIngredient() != null) {
-            return Either.right(ingredient.ingredient().getCustomIngredient().getItems().toList());
-        } else if (ingredient.ingredient().getValues().length > 0 &&
+        } else if (ingredient.ingredient().getCustomIngredient() == null &&
+                ingredient.ingredient().getValues().length > 0 &&
                 ingredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
                     return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
                 }
