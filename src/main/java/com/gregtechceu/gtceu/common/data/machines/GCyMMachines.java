@@ -73,7 +73,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.macerator")))
             .rotationState(RotationState.ALL)
             .recipeType(MACERATOR_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_SECURE_MACERATION)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -90,7 +90,7 @@ public class GCyMMachines {
                     .where('A', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_maceration_tower"), false)
+                    GTCEu.id("block/multiblock/gcym/large_maceration_tower"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -103,7 +103,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.ore_washer"), Component.translatable("gtceu.chemical_bath")))
             .rotationState(RotationState.ALL)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -122,7 +122,7 @@ public class GCyMMachines {
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_chemical_bath"), false)
+                    GTCEu.id("block/multiblock/gcym/large_chemical_bath"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -135,7 +135,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.centrifuge"), Component.translatable("gtceu.thermal_centrifuge")))
             .rotationState(RotationState.ALL)
             .recipeTypes(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -153,7 +153,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_centrifuge"), false)
+                    GTCEu.id("block/multiblock/gcym/large_centrifuge"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -166,7 +166,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.mixer")))
             .rotationState(RotationState.ALL)
             .recipeType(MIXER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_REACTION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -186,7 +186,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_mixer"), false)
+                    GTCEu.id("block/multiblock/gcym/large_mixer"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -199,7 +199,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.electrolyzer")))
             .rotationState(RotationState.ALL)
             .recipeType(ELECTROLYZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -214,7 +214,7 @@ public class GCyMMachines {
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_electrolyzer"), false)
+                    GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -228,7 +228,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.polarizer")))
             .rotationState(RotationState.ALL)
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -243,7 +243,7 @@ public class GCyMMachines {
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_electrolyzer"), false)
+                    GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -256,7 +256,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.packer")))
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PACKER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -273,7 +273,7 @@ public class GCyMMachines {
                     .where('A', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
-                    GTCEu.id("block/multiblock/gcym/large_packer"), false)
+                    GTCEu.id("block/multiblock/gcym/large_packer"))
             .compassSections(GTCompassSections.TIER[HV])
             .compassNodeSelf()
             .register();
@@ -287,7 +287,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -305,7 +306,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_assembler"), false)
+                    GTCEu.id("block/multiblock/gcym/large_assembler"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -319,7 +320,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -341,7 +343,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_circuit_assembler"), false)
+                    GTCEu.id("block/multiblock/gcym/large_circuit_assembler"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -354,7 +356,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.arc_furnace")))
             .rotationState(RotationState.ALL)
             .recipeType(ARC_FURNACE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -373,7 +375,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_arc_smelter"), false)
+                    GTCEu.id("block/multiblock/gcym/large_arc_smelter"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -387,7 +389,8 @@ public class GCyMMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -406,7 +409,7 @@ public class GCyMMachines {
                     .where('A', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_engraving_laser"), false)
+                    GTCEu.id("block/multiblock/gcym/large_engraving_laser"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -419,7 +422,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.sifter")))
             .rotationState(RotationState.ALL)
             .recipeType(SIFTER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -437,7 +440,7 @@ public class GCyMMachines {
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_sifting_funnel"), false)
+                    GTCEu.id("block/multiblock/gcym/large_sifting_funnel"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -449,7 +452,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.alloy_blast_smelter")))
             .rotationState(RotationState.ALL)
             .recipeType(ALLOY_BLAST_RECIPES)
-            .recipeModifier(GTRecipeModifiers::ebfOverclock)
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
@@ -492,7 +495,7 @@ public class GCyMMachines {
                 return shapeInfo;
             })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"), false)
+                    GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -505,7 +508,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.autoclave")))
             .rotationState(RotationState.ALL)
             .recipeType(AUTOCLAVE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -522,7 +525,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_autoclave"), false)
+                    GTCEu.id("block/multiblock/gcym/large_autoclave"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -536,7 +539,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.forge_hammer"), Component.translatable("gtceu.forming_press")))
             .rotationState(RotationState.ALL)
             .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -552,7 +555,7 @@ public class GCyMMachines {
                     .where('A', air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_material_press"), false)
+                    GTCEu.id("block/multiblock/gcym/large_material_press"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -566,7 +569,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.fluid_heater")))
             .rotationState(RotationState.ALL)
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_CORROSION_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -586,7 +589,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_brewer"), false)
+                    GTCEu.id("block/multiblock/gcym/large_brewer"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -599,7 +602,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.cutter"), Component.translatable("gtceu.lathe")))
             .rotationState(RotationState.ALL)
             .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_SHOCK_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -617,7 +620,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_cutter"), false)
+                    GTCEu.id("block/multiblock/gcym/large_cutter"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -630,7 +633,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.distillation_tower"), Component.translatable("gtceu.distillery")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(DISTILLATION_RECIPES, DISTILLERY_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
@@ -658,7 +661,7 @@ public class GCyMMachines {
             })
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_distillery"), false)
+                    GTCEu.id("block/multiblock/gcym/large_distillery"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -671,7 +674,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.extractor"), Component.translatable("gtceu.canner")))
             .rotationState(RotationState.ALL)
             .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -686,7 +689,7 @@ public class GCyMMachines {
                     .where('A', air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_extractor"), false)
+                    GTCEu.id("block/multiblock/gcym/large_extractor"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -699,7 +702,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.extruder")))
             .rotationState(RotationState.ALL)
             .recipeType(EXTRUDER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -718,7 +721,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_extruder"), false)
+                    GTCEu.id("block/multiblock/gcym/large_extruder"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -731,7 +734,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.fluid_solidifier")))
             .rotationState(RotationState.ALL)
             .recipeType(FLUID_SOLIDFICATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -749,7 +752,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_solidifier"), false)
+                    GTCEu.id("block/multiblock/gcym/large_solidifier"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -762,7 +765,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.wiremill")))
             .rotationState(RotationState.ALL)
             .recipeType(WIREMILL_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -777,7 +780,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_wiremill"), false)
+                    GTCEu.id("block/multiblock/gcym/large_wiremill"))
             .compassSections(GTCompassSections.TIER[IV])
             .compassNodeSelf()
             .register();
@@ -790,7 +793,8 @@ public class GCyMMachines {
                     Component.translatable("gtceu.electric_blast_furnace")))
             .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock)
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
                 TraceabilityPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
@@ -941,7 +945,7 @@ public class GCyMMachines {
                 return shapeInfo;
             })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"), false)
+                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
             .compassSections(GTCompassSections.TIER[LuV])
             .compassNodeSelf()
             .register();
@@ -954,7 +958,7 @@ public class GCyMMachines {
                     Component.translatable("gtceu.vacuum_freezer")))
             .rotationState(RotationState.ALL)
             .recipeType(VACUUM_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL, GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -982,7 +986,7 @@ public class GCyMMachines {
                     .where('#', any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
-                    GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"), false)
+                    GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"))
             .compassSections(GTCompassSections.TIER[LuV])
             .compassNodeSelf()
             .register();

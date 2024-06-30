@@ -82,6 +82,10 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
     }
 
+    public static boolean isShimmerLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
+    }
+
     @Deprecated(forRemoval = true, since = "1.0.21")
     public static boolean isHighTier() {
         return GTCEuAPI.isHighTier();
