@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 
 import net.minecraft.world.entity.Entity;
@@ -48,6 +49,10 @@ public abstract class EntityMixin implements IFireImmuneEntity {
         if (!gtceu$isEntityInit) {
             return original;
         }
+
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled)
+            return original;
+
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker((Entity) (Object) this);
         if (tracker != null && tracker.getMaxAirSupply() != -1) {
             return tracker.getMaxAirSupply();
