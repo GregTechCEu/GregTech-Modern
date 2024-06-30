@@ -51,8 +51,6 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
-    // public static final List<ICustomRecipeLogic> CUSTOM_RECIPE_LOGICS = new ArrayList<>();
-
     public final ResourceLocation registryName;
     public final String group;
     public final TreeMap<RecipeCapability<?>, Integer> maxInputs = new TreeMap<>(RecipeCapability.COMPARATOR);
@@ -178,8 +176,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     /**
      *
      * @param recipeLogic A function which is passed the normal findRecipe() result. Returns null if no valid recipe for
-     *                    the
-     *                    custom logic is found.
+     *                    the custom logic is found.
      */
     public GTRecipeType addCustomRecipeLogic(ICustomRecipeLogic recipeLogic) {
         this.customRecipeLogicRunners.add(recipeLogic);

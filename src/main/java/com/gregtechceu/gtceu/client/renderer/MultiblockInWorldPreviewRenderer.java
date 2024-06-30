@@ -108,8 +108,6 @@ public class MultiblockInWorldPreviewRenderer {
      */
     public static void showPreview(BlockPos pos, MultiblockControllerMachine controller,
                                    int duration) {
-        // front = front.getStepY() == 0 ? front : front.getStepY() < 0 ? up : up.getOpposite();
-
         Direction front = controller.getFrontFacing();
         Direction up = controller.getUpwardsFacing();
         MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
