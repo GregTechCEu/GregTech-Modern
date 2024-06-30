@@ -121,6 +121,11 @@ public class ConfigHolder {
                 "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
+        @Configurable
+        @Configurable.Comment({
+                "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
+                "Default: true" })
+        public boolean enchantedTools = true;
     }
 
     public static class CompatibilityConfigs {
@@ -151,6 +156,10 @@ public class ConfigHolder {
                 "Whether Gregtech should remove smelting recipes from the vanilla furnace for ingots requiring the Electric Blast Furnace.",
                 "Default: true" })
         public boolean removeSmeltingForEBFMetals = true;
+
+        @Configurable
+        @Configurable.Comment({ "Whether dimension marker should show dimension tier.", "Default: false" })
+        public boolean showDimensionTier = false;
 
         public static class EnergyCompatConfig {
 
@@ -195,7 +204,8 @@ public class ConfigHolder {
     public static class WorldGenConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Rubber Tree spawn chance (% per chunk)", "Default: 0.5" })
+        @Configurable.Comment({ "Rubber Tree spawn chance (decimal % per chunk)", "Default: 0.5" })
+        @Configurable.DecimalRange(min = 0f, max = 1f)
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
@@ -387,6 +397,15 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false" })
         public boolean highTierContent = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the item inputs to be in order.",
+                "Default: true" })
+        public boolean orderedAssemblyLineItems = true;
+        @Configurable
+        @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.",
+                "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
+        public boolean orderedAssemblyLineFluids = false;
     }
 
     public static class ToolConfigs {

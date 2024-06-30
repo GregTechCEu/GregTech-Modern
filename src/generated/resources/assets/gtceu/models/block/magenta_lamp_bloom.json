@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/lamp",
+  "textures": {
+    "active": "gtceu:block/lamps/magenta",
+    "active_overlay": "gtceu:block/lamps/magenta_emissive"
+  }
+}

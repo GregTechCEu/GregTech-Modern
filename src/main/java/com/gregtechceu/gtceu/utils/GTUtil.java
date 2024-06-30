@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -30,6 +28,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +41,6 @@ import net.minecraftforge.common.Tags;
 
 import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -65,7 +63,6 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
-    public static final Map<GTToolType, ItemStack> TOOL_CACHE = new HashMap<>();
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -493,34 +490,19 @@ public class GTUtil {
         }
     }
 
-    /**
-     * get tool itemStack by GTToolType with default Material
-     *
-     * @param toolType GTToolType
-     * @return the tool itemStack
-     */
-    public static ItemStack getToolItem(GTToolType toolType) {
-        return TOOL_CACHE.computeIfAbsent(toolType, type -> {
-            if (type == GTToolType.SOFT_MALLET) {
-                return GTItems.TOOL_ITEMS.get(GTMaterials.Rubber, type).asStack();
-            }
-            return GTItems.TOOL_ITEMS.get(GTMaterials.Aluminium, type).asStack();
-        });
-    }
-
-    public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+    public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> Pair.of(GTUtil.getToolItem(GTToolType.WRENCH),
+            case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
                     Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> Pair.of(GTUtil.getToolItem(GTToolType.SCREWDRIVER),
+            case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
                     Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> Pair.of(GTUtil.getToolItem(GTToolType.SOFT_MALLET),
+            case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
                     Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> Pair.of(GTUtil.getToolItem(GTToolType.HARD_HAMMER),
+            case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
                     Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> Pair.of(GTUtil.getToolItem(GTToolType.WIRE_CUTTER),
+            case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
                     Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> Pair.of(GTUtil.getToolItem(GTToolType.CROWBAR),
+            default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
     }
