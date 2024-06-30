@@ -32,7 +32,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
     public final BoilerFireboxType firebox;
 
     public LargeBoilerRenderer(ResourceLocation texture, BoilerFireboxType firebox, ResourceLocation workableModel) {
-        super(texture, workableModel, false);
+        super(texture, workableModel);
         this.firebox = firebox;
     }
 

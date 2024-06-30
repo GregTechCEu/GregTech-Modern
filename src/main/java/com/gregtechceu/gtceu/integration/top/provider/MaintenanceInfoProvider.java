@@ -52,9 +52,9 @@ public class MaintenanceInfoProvider extends CapabilityInfoProvider<IMaintenance
                     if (((problems >> i) & 1) == 0) {
                         IProbeInfo horizontalPane = verticalPane
                                 .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                        var pair = GTUtil.getMaintenanceText(i);
-                        horizontalPane.item(pair.getFirst(), new ItemStyle().width(16).height(16))
-                                .text(pair.getSecond());
+                        var tuple = GTUtil.getMaintenanceText(i);
+                        horizontalPane.item(tuple.getA(), new ItemStyle().width(16).height(16))
+                                .text(tuple.getB());
                     }
                 }
             } else {
