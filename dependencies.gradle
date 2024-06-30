@@ -42,7 +42,7 @@ dependencies {
     compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS
-    kjsImplementation forge.kubejs
+    kjsCompileOnlyApi forge.kubejs
 
     // Shimmer
     shimmerCompileOnly(forge.shimmer.forge) { transitive = false }
