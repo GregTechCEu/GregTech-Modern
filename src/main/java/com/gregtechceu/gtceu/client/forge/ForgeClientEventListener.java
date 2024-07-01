@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.client.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
-import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.util.GTFormattingCode;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +49,7 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            TooltipHelper.onClientTick();
+            GTFormattingCode.onClientTick();
             MultiblockInWorldPreviewRenderer.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
             GTValues.CLIENT_TIME++;
