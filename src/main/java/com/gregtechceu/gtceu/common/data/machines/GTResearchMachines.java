@@ -83,26 +83,26 @@ public class GTResearchMachines {
                     .where('H', abilities(PartAbility.OBJECT_HOLDER))
                     .build())
             .shapeInfo(definition -> MultiblockShapeInfo.builder()
-                    .aisle("XXX", "VVV", "POP", "PEP", "PMP", "VVV", "XXX")
-                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
-                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
-                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
-                    .aisle("-X-", "XAX", "---", "---", "---", "XAX", "-X-")
-                    .aisle("-X-", "XAX", "-A-", "-H-", "-A-", "XAX", "-X-")
                     .aisle("---", "XXX", "---", "---", "---", "XXX", "---")
-                    .where('S', GTResearchMachines.RESEARCH_STATION, Direction.SOUTH)
+                    .aisle("-X-", "XAX", "-A-", "-H-", "-A-", "XAX", "-X-")
+                    .aisle("-X-", "XAX", "---", "---", "---", "XAX", "-X-")
+                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
+                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
+                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
+                    .aisle("XXX", "VVV", "POP", "PEP", "PMP", "VVV", "XXX")
+                    .where('S', GTResearchMachines.RESEARCH_STATION, Direction.NORTH)
                     .where('X', COMPUTER_CASING.get())
                     .where('-', Blocks.AIR)
                     .where('V', COMPUTER_HEAT_VENT.get())
                     .where('A', ADVANCED_COMPUTER_CASING.get())
                     .where('P', COMPUTER_CASING.get())
-                    .where('O', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.NORTH)
-                    .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
+                    .where('O', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.SOUTH)
+                    .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.SOUTH)
                     .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance ?
                             GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(
-                                    GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.NORTH) :
+                                    GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.SOUTH) :
                             COMPUTER_CASING.getDefaultState())
-                    .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.NORTH)
+                    .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
                     GTCEu.id("block/multiblock/research_station"))
@@ -176,16 +176,16 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setMinGlobalLimited(1, 1)))
                     .build())
             .shapeInfo(definition -> MultiblockShapeInfo.builder()
-                    .aisle("XEX", "XXX", "TTT")
-                    .aisle("XXX", "XAX", "XXX")
                     .aisle("XMX", "XSX", "XRX")
-                    .where('S', GTResearchMachines.NETWORK_SWITCH, Direction.SOUTH)
+                    .aisle("XXX", "XAX", "XXX")
+                    .aisle("XEX", "XXX", "TTT")
+                    .where('S', GTResearchMachines.NETWORK_SWITCH, Direction.NORTH)
                     .where('X', COMPUTER_CASING)
                     .where('A', ADVANCED_COMPUTER_CASING)
-                    .where('R', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.SOUTH)
-                    .where('T', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.NORTH)
-                    .where('M', GTMachines.MAINTENANCE_HATCH, Direction.SOUTH)
-                    .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.SOUTH)
+                    .where('R', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.NORTH)
+                    .where('T', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
+                    .where('M', GTMachines.MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
                     .build())
             .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
                     GTCEu.id("block/multiblock/network_switch"))
@@ -218,22 +218,22 @@ public class GTResearchMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("AA", "EC", "MC", "HC", "AA")
-                        .aisle("VA", "6V", "3V", "0V", "VA")
-                        .aisle("VA", "7V", "4V", "1V", "VA")
-                        .aisle("VA", "8V", "5V", "2V", "VA")
                         .aisle("SA", "CC", "CC", "OC", "AA")
-                        .where('S', GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
+                        .aisle("VA", "8V", "5V", "2V", "VA")
+                        .aisle("VA", "7V", "4V", "1V", "VA")
+                        .aisle("VA", "6V", "3V", "0V", "VA")
+                        .aisle("AA", "EC", "MC", "HC", "AA")
+                        .where('S', GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.NORTH)
                         .where('A', ADVANCED_COMPUTER_CASING)
                         .where('V', COMPUTER_HEAT_VENT)
                         .where('C', COMPUTER_CASING)
-                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
-                        .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('O', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
+                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.SOUTH)
+                        .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.SOUTH)
+                        .where('O', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.NORTH)
                         .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance ?
                                 GTMachines.MAINTENANCE_HATCH.defaultBlockState().setValue(
                                         GTMachines.MAINTENANCE_HATCH.get().getRotationState().property,
-                                        Direction.NORTH) :
+                                        Direction.SOUTH) :
                                 COMPUTER_CASING.getDefaultState());
 
                 // a few example structures
