@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -16,9 +18,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +38,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -188,6 +197,20 @@ public class GTUtil {
         return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
     }
 
+    public static int getFakeVoltageTier(long voltage) {
+        long a = voltage;
+        int b = 0;
+        while (a / 4L >= 8L) {
+            b++;
+            a /= 4L;
+        }
+        return b;
+    }
+
+    public static long getVoltageFromFakeTier(int tier) {
+        return LongMath.pow(4L, tier + 1) * 2;
+    }
+
     /**
      * Ex: This method turns both 1024 and 512 into HV.
      *
@@ -332,7 +355,7 @@ public class GTUtil {
             return FluidHelper.getBucket() / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
             return FluidHelper.getBucket() * 175 / 1000;
-        } else if (biome.is(CustomTags.IS_SANDY)) {
+        } else if (biome.is(Tags.Biomes.IS_SANDY)) {
             return FluidHelper.getBucket() * 170 / 1000;
         }
         return FluidHelper.getBucket() / 10;
@@ -431,5 +454,22 @@ public class GTUtil {
             return;
         }
         tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
+    }
+
+    public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+        return switch (flag) {
+            case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
+                    Component.translatable("gtceu.top.maintenance.wrench"));
+            case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
+                    Component.translatable("gtceu.top.maintenance.screwdriver"));
+            case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
+                    Component.translatable("gtceu.top.maintenance.soft_mallet"));
+            case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
+                    Component.translatable("gtceu.top.maintenance.hard_hammer"));
+            case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
+                    Component.translatable("gtceu.top.maintenance.wire_cutter"));
+            default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
+                    Component.translatable("gtceu.top.maintenance.crowbar"));
+        };
     }
 }

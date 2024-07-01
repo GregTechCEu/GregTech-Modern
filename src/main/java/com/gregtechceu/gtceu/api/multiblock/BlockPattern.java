@@ -659,7 +659,10 @@ public class BlockPattern {
 
             IItemHandler stackCap = stack.getCapability(Capabilities.ItemHandler.ITEM);
             if (stackCap != null) {
-                return getMatchStackWithHandler(candidates, stackCap);
+                var rt = getMatchStackWithHandler(candidates, stackCap);
+                if (rt != null) {
+                    return rt;
+                }
             } else if (candidates.stream()
                     .anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, stack)) &&
                     !stack.isEmpty() && stack.getItem() instanceof BlockItem) {

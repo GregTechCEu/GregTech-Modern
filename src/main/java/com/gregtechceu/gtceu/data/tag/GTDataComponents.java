@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -88,4 +89,7 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FacadeWrapper>> FACADE = DATA_COMPONENTS
             .registerComponentType("facade",
                     builder -> builder.persistent(FacadeWrapper.CODEC).networkSynchronized(FacadeWrapper.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LampBlockItem.LampData>> LAMP_DATA = DATA_COMPONENTS
+            .registerComponentType("lamp",
+                    builder -> builder.persistent(LampBlockItem.LampData.CODEC));
 }

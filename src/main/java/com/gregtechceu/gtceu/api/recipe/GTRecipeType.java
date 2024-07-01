@@ -51,7 +51,6 @@ import java.util.function.Supplier;
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public static final String LANGUAGE_KEY_PATH = "recipe_type";
-    public static final List<ICustomScannerLogic> CUSTOM_SCANNER_LOGICS = new ArrayList<>();
 
     @Getter
     @Setter(onMethod_ = { @ApiStatus.Internal })
@@ -106,6 +105,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     private int voltageTextOffset = 20;
     private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
+    @Getter
+    private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -177,6 +178,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
+    /**
+     *
+     * @param recipeLogic A function which is passed the normal findRecipe() result. Returns null if no valid recipe for
+     *                    the custom logic is found.
+     */
+    public GTRecipeType addCustomRecipeLogic(ICustomRecipeLogic recipeLogic) {
+        this.customRecipeLogicRunners.add(recipeLogic);
+        return this;
+    }
+
     @Override
     public String toString() {
         return registryName.toString();
@@ -200,12 +211,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             any = true;
             break;
         }
-        if (!this.isScanner || any) {
+
+        if (any) {
             iterator.reset();
             return iterator;
         }
 
-        for (ICustomScannerLogic logic : CUSTOM_SCANNER_LOGICS) {
+        for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
             GTRecipe recipe = logic.createCustomRecipe(holder);
             if (recipe != null) return Collections.singleton(recipe).iterator();
         }
@@ -301,7 +313,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
         List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
-        for (ICustomScannerLogic logic : CUSTOM_SCANNER_LOGICS) {
+        for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
             List<RecipeHolder<GTRecipe>> logicRecipes = logic.getRepresentativeRecipes();
             if (logicRecipes != null && !logicRecipes.isEmpty()) {
                 recipes.addAll(logicRecipes);
@@ -318,16 +330,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return Component.translatable(getTranslationKey());
     }
 
-    /**
-     *
-     * @param logic A function which is passed the normal findRecipe() result. Returns null if no valid recipe for the
-     *              custom logic is found.
-     */
-    public static void registerCustomScannerLogic(ICustomScannerLogic logic) {
-        CUSTOM_SCANNER_LOGICS.add(logic);
-    }
-
-    public interface ICustomScannerLogic {
+    public interface ICustomRecipeLogic {
 
         /**
          * @return A custom recipe to run given the current Scanner's inputs. Will be called only if a registered

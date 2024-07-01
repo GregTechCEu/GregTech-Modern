@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.material.material.properties;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -141,7 +142,9 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
     }
 
     public void addEnchantmentForTools(ResourceKey<Enchantment> enchantment, int level) {
-        enchantments.put(enchantment, level);
+        if (ConfigHolder.INSTANCE.recipes.enchantedTools) {
+            enchantments.put(enchantment, level);
+        }
     }
 
     public MaterialToolTier getTier(Material material) {

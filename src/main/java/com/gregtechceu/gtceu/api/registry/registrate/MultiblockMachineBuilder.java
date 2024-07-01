@@ -218,14 +218,21 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel);
     }
 
+    @Override
     public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel,
                                                            boolean tint) {
         return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
     }
 
+    @Override
     public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel,
                                                                 boolean tint) {
         return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
+    }
+
+    @Override
+    public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel);
     }
 
     @Override

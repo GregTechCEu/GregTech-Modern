@@ -238,6 +238,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel, tint));
     }
 
+    public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
+        return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel));
+    }
+
     public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
         appearance = () -> block.get().defaultBlockState();
         return this;

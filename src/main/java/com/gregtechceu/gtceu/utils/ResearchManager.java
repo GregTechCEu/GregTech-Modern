@@ -57,11 +57,6 @@ public final class ResearchManager {
 
     private ResearchManager() {}
 
-    @ApiStatus.Internal
-    public static void registerScannerLogic() {
-        GTRecipeType.registerCustomScannerLogic(new DataStickCopyScannerLogic());
-    }
-
     /**
      * @param stack      the ItemStack to write to
      * @param researchId the research id
@@ -164,7 +159,7 @@ public final class ResearchManager {
                 ResearchItem::new);
     }
 
-    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomScannerLogic {
+    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
         private static final int EUT = 2;
         private static final int DURATION = 100;

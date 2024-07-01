@@ -11,6 +11,10 @@ public class BlockLang {
     }
 
     private static void initCasingLang(RegistrateLangProvider provider) {
+        provider.add("block.gtceu.lamp.tooltip.inverted", "Inverted");
+        provider.add("block.gtceu.lamp.tooltip.no_bloom", "No Bloom");
+        provider.add("block.gtceu.lamp.tooltip.no_light", "No Light");
+
         // Coils
         replace(provider, "block.gtceu.hssg_coil_block", "HSS-G Coil Block");
         replace(provider, "block.gtceu.rtm_alloy_coil_block", "RTM Alloy Coil Block");

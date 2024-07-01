@@ -19,6 +19,15 @@ public class TheOneProbePlugin {
         // oneProbe.registerProvider(new MultiRecipeMapInfoProvider());
         // oneProbe.registerProvider(new ConverterInfoProvider());
         oneProbe.registerProvider(new RecipeLogicInfoProvider());
+        oneProbe.registerProvider(new ParallelProvider());
+        oneProbe.registerProvider(new RecipeOutputProvider());
+        oneProbe.registerProvider(new MulitblockStructureProvider());
+        oneProbe.registerProvider(new MaintenanceInfoProvider());
+        oneProbe.registerProvider(new ExhaustVentInfoProvider());
+        oneProbe.registerProvider(new AutoOutputInfoProvider());
+        oneProbe.registerProvider(new CableInfoProvider());
+        oneProbe.registerProvider(new MachineModeProvider());
+        oneProbe.registerProvider(new StainedColorProvider());
         // oneProbe.registerProvider(new PrimitivePumpInfoProvider());
         oneProbe.registerProvider(new CoverProvider());
         oneProbe.registerProvider(new HazardCleanerInfoProvider());

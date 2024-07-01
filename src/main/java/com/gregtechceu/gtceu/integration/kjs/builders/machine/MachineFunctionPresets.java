@@ -388,6 +388,15 @@ public class MachineFunctionPresets {
                 return this;
             }
 
+            @Override
+            public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.sidedWorkableCasingRenderer(basePath, overlayModel);
+                }
+                return this;
+            }
+
             public MachineBuilder<D> tier(int tier, BuilderConsumer<D> consumer) {
                 for (var builder : builders) {
                     if (builder == null) continue;

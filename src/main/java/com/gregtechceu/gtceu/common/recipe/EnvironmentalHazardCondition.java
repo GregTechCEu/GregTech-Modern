@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -55,6 +56,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return true;
         if (!(recipeLogic.getMachine().getLevel() instanceof ServerLevel serverLevel)) {
             return false;
         }

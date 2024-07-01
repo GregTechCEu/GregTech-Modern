@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
@@ -126,6 +127,10 @@ public class GTCreativeModeTabs {
                 } else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                } else if (item instanceof LampBlockItem lamp) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    lamp.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
                 } else {
                     output.accept(item);

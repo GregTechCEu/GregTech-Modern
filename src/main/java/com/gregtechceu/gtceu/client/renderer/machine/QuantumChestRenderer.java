@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -41,6 +42,10 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
     public QuantumChestRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_chest"));
+    }
+
+    public QuantumChestRenderer(int tier, ResourceLocation modelLocation) {
+        super(tier, modelLocation);
     }
 
     @Override

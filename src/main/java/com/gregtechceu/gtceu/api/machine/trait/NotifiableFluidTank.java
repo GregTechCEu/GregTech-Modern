@@ -170,7 +170,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     @Override
     public int getPriority() {
-        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() : Integer.MAX_VALUE - getTanks();
+        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() : HIGH - getTanks();
     }
 
     public boolean isLocked() {
@@ -409,5 +409,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     @Override
     public boolean supportsDrain(int i) {
         return canCapOutput();
+    }
+
+    @Override
+    public void onMachineLoad() {
+        super.onMachineLoad();
+        if (this.isLocked()) {
+            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
+        } else {
+            setFilter(stack -> true);
+        }
     }
 }

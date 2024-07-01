@@ -1184,6 +1184,16 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
+        provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
+        provider.add("config.jade.plugin_gtceu.recipe_output_info", "[GTCEu] Recipe Output Info");
+        provider.add("config.jade.plugin_gtceu.auto_output_info", "[GTCEu] Auto Output Info");
+        provider.add("config.jade.plugin_gtceu.cable_info", "[GTCEu] Cable Info");
+        provider.add("config.jade.plugin_gtceu.exhaust_vent_info", "[GTCEu] Exhaust Vent Info");
+        provider.add("config.jade.plugin_gtceu.machine_mode", "[GTCEu] Machine Mode");
+        provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
+        provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
+        provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
+        provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");

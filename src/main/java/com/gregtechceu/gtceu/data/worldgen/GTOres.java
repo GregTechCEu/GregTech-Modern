@@ -254,7 +254,7 @@ public class GTOres {
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
                             // .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState))
                             .layer(l -> l.weight(3).mat(Bastnasite).size(2, 4))
-                            .layer(l -> l.weight(1).mat(Molybdenum).size(1, 1))
+                            .layer(l -> l.weight(1).mat(Monazite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Neodymium).size(1, 1))
                             .build()))
             .surfaceIndicatorGenerator(indicator -> indicator

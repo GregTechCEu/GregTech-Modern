@@ -10,12 +10,14 @@ import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -23,10 +25,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -426,9 +430,11 @@ public class MachineRecipeLoader {
         ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_bar").duration(100).EUt(VA[ULV]).inputItems(dust, Sulfur)
                 .inputItems(dust, RawRubber, 3).outputItems(ingot, Rubber).save(provider);
 
-        // todo tag stuff
-        // ALLOY_SMELTER_RECIPES.recipeBuilder("coke_oven_brick").duration(150).EUt(VA[ULV]).inputItems(OreDictUnifier.get("sand")).inputItems(new
-        // ItemStack(Items.CLAY_BALL)).outputItems(COKE_OVEN_BRICK, 2).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("coke_oven_brick").duration(150).EUt(VA[ULV])
+                .inputItems(Tags.Items.SANDS)
+                .inputItems(new ItemStack(Items.CLAY_BALL))
+                .outputItems(COKE_OVEN_BRICK, 2)
+                .save(provider);
     }
 
     private static void registerAssemblerRecipes(RecipeOutput provider) {
@@ -439,6 +445,30 @@ public class MachineRecipeLoader {
                     .outputItems(SPRAY_CAN_DYES[i])
                     .EUt(VA[ULV]).duration(200)
                     .save(provider);
+
+            DyeColor color = DyeColor.byId(i);
+
+            LampBlock lamp = GTBlocks.LAMPS.get(color).get();
+            for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
+                ASSEMBLER_RECIPES.recipeBuilder("lamp_" + color + "_" + lampMeta)
+                        .inputItems(plate, Glass, 6)
+                        .inputItems(dust, Glowstone, 1)
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .outputItems(lamp.getStackFromIndex(lampMeta))
+                        .circuitMeta(lampMeta + 1).EUt(VA[ULV]).duration(40)
+                        .save(provider);
+            }
+            lamp = GTBlocks.BORDERLESS_LAMPS.get(color).get();
+            for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
+                ASSEMBLER_RECIPES.recipeBuilder("borderless_lamp_" + color + "_" + lampMeta)
+                        .inputItems(plate, Glass, 6)
+                        .inputItems(dust, Glowstone, 1)
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .outputItems(lamp.getStackFromIndex(lampMeta))
+                        .circuitMeta(lampMeta + 9).EUt(VA[ULV]).duration(40)
+                        .save(provider);
+            }
+
         }
 
         CANNER_RECIPES.recipeBuilder("spray_can_solvent")
@@ -805,9 +835,9 @@ public class MachineRecipeLoader {
                 .inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2)
                 .inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
                 .inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
                 .inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
                 .save(provider);
 

@@ -73,10 +73,18 @@ public class ForgeCommonEventListener {
         if (event.getEntity().level().isClientSide) {
             return;
         }
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
+
         Player player = event.getEntity();
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
         if (inventory == null) {
+            return;
+        }
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
+                tracker.removeMedicalCondition(medicalCondition);
+            }
             return;
         }
         tracker.tick();
@@ -144,8 +152,10 @@ public class ForgeCommonEventListener {
     public static void levelTick(LevelTickEvent.Post event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
-            EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
-            LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
+                LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
+            }
         }
     }
 
@@ -165,9 +175,9 @@ public class ForgeCommonEventListener {
             PacketDistributor.sendToPlayer(serverPlayer,
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
-            }
+
             ServerLevel level = (ServerLevel) event.getEntity().level();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));

@@ -248,16 +248,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        Object2IntMap<ItemStack> ingredientStacks = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .filter(handler -> !handler.isProxy())
-                .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
-                        .map(ItemStack.class::cast).toList())
-                .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
-                        () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+        Object2IntMap<ItemStack> ingredientStacks = getIngredientStacks(holder);
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -321,6 +312,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
                 if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
                     available += inventoryEntry.getIntValue();
+                    break;
                 }
             }
             if (available >= needed) {
@@ -333,6 +325,38 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             }
         }
         return minMultiplier;
+    }
+
+    private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
+        Object2IntMap<ItemStack> map = new Object2IntOpenCustomHashMap<>(
+                ItemStackHashStrategy.comparingAllButCount());
+        Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
+
+        List<IRecipeHandler<?>> recipeHandlerList = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .filter(handler -> !handler.isProxy()).toList();
+
+        for (IRecipeHandler<?> container : recipeHandlerList) {
+
+            var itemMap = container.getContents().stream().filter(ItemStack.class::isInstance)
+                    .map(ItemStack.class::cast)
+                    .flatMap(con -> GTHashMaps.fromItemStackCollection(Collections.singleton(con)).object2IntEntrySet()
+                            .stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
+                            () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+
+            if (container.isDistinct()) {
+                result.putAll(itemMap);
+            } else {
+                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
+                    map.computeInt(obj.getKey(), (k, v) -> v == null ? obj.getIntValue() : v + obj.getIntValue());
+                }
+            }
+        }
+        result.putAll(map);
+        return result;
     }
 
     @Override

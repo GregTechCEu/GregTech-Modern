@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class GTBedrockFluids {
             .depletionChance(100)
             .depletedYield(20)
             .biomes(5, BiomeTags.IS_OCEAN)
-            .biomes(10, CustomTags.IS_SANDY)
+            .biomes(10, Tags.Biomes.IS_SANDY)
             .dimensions(overworld())
             .register();
 
@@ -68,7 +69,7 @@ public class GTBedrockFluids {
             .depletionChance(100)
             .depletedYield(25)
             .biomes(5, BiomeTags.IS_OCEAN)
-            .biomes(5, CustomTags.IS_SANDY)
+            .biomes(5, Tags.Biomes.IS_SANDY)
             .dimensions(overworld())
             .register();
 
