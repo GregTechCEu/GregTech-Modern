@@ -1,43 +1,34 @@
 # ChangeLog
 
-Version: 1.3.0-a
+Version: 1.3.1
 
 # **1.21 IS A *VERY* BREAKING UPDATE, DO NOT TRY TO UPDATE FROM 1.20.1 OR 1.19.2**
 
 ### ADDITIONS:
-- Added the subtitle language values for machine/tool sounds
-- Added various missing, commented out recipes back
-- Added the ability to disable ore processing categories per material
+- Ordered Assembly Lines
+- Integration of Monazite: providing lots of additional functionality to jade
+- Ghost Circuits for fluid hatches
+- Overclocking beyond MAX voltage
+- Much more lamp variants, with bloom support
+- Subtick parallels, if a recipe oc's past 1 tick it does parallels instead
 
 ### CHANGES:
-- Updated mod compatibilities now that the dependencies exist
-- Changed RedGranite material's id to actually be `red_granite`
-- updated to latest KJS 1.21 changes
-- Made pollution more bearable
-- Made pollution shrink away slowly (speed is configurable)
-- Made pollution spawn a fixed amount of particles instead of a massive amount
-- Made pollution change the grass/leaf/water color of the area it's in
-- Made singleblock generators produce a small amount of pollution
-- Made air ducts more sensible to use
-- Made all medical conditions be unconditionally removed on death
-- Made normal naquadah not radioactive
-- Made higher-tier air scrubbers have a higher radius
-- Updated ja_jp & zh_cn language files
+- In world multiblock preview now properly works with rotated multiblocks
+- Updated jp and tw lang
+- Fusion Reactors now show a bloom ring when running a recipe
+- Pipes of any kind can be water logged
+- Updated NeoForge, EMI, KubeJS
+- Removed registerX methods from IGTAddon in favor of the GT register event
 
 ### FIXES:
-- Fixed tools not taking durability damage when using
-- Fixed fluid stack networking crash that sometimes could happen
-- Fixed JEI crashing when loading a world
-- Fixed EMI spamming the log when loading a world
-- Fixed addons' material registries being stuck frozen
-- Fixed infinite loop in fluid tank filling via automation
-- Fixed EMI/JEI/REI not loading GT's pages
-- Fixed missing null checks on create compatibility machines sometimes causing crashes
-- Fixed fluid parallel logic
-- Fixed GT recipe removal filtering
-- Fixed pipe frame material not loading correctly when a world is loaded
-- Fixed custom veins not generating when no biomes are set
-- Fixed "%s B" and "%s mB" being inverted in the language values
-- Fixed unsafe set operation in recipe logic that could cause crashes
-- Fixed removal of vanilla GT ore veins not working correctly on singleplayer
-- Fixed xaero's minimap spamming the log when it's rendering a material block
+- Disabling hazard config now properly disables everything hazard related
+- Rubber trees spawn chance config now works
+- Singleblock machines can no longer run a recipe beyond its tier
+- Fluid Hatch locking properly saves between world loads
+- Color-changing tooltip now changes colors properly
+- Fixed recipe conflicts in ore recipes
+- Fixed Drill GUI not updating after 1st click
+- Fixed batteries always working as ULV once charged
+- Fixed crafting with tools crashing the game
+- Fixed GT's recipe removal not working
+- Fixed GT causing options.txt to reset every launch

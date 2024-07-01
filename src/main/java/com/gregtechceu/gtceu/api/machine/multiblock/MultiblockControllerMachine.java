@@ -154,6 +154,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
                 serverLevel.getServer().execute(() -> {
                     patternLock.lock();
                     if (checkPatternWithLock()) { // formed
+                        setFlipped(getMultiblockState().isNeededFlip());
                         onStructureFormed();
                         var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                         mwsd.addMapping(getMultiblockState());

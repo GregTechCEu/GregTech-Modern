@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -166,6 +165,9 @@ public class MaterialBlock extends AppearanceBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
+        if (this.tagPrefix != TagPrefix.frameGt) {
+            return super.useItemOn(stack, state, level, pos, player, hand, hit);
+        }
         if (stack.isEmpty())
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
@@ -255,12 +257,14 @@ public class MaterialBlock extends AppearanceBlock {
             BlockState pipeState = pipeBlock.defaultBlockState();
             BlockPlaceContext context = new BlockPlaceContext(level, player, InteractionHand.MAIN_HAND, stackInHand,
                     hit);
+            BlockState original = level.getBlockState(context.getClickedPos());
             itemBlock.placeBlock(context, pipeState);
             var pipeTile = pipeBlock.getPipeTile(level, pos);
             if (pipeTile instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
                 pipeBlockEntity.setFrameMaterial(material);
             } else {
-                GTCEu.LOGGER.error("Pipe was not placed!");
+                // reset the state if we didn't place correctly
+                level.setBlockAndUpdate(context.getClickedPos(), original);
                 return false;
             }
 

@@ -68,7 +68,9 @@ import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
+import com.gregtechceu.gtceu.data.worldgen.GTDimensionMarkers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
+import com.gregtechceu.gtceu.data.worldgen.GTIntProviderTypes;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -77,6 +79,7 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -126,6 +129,9 @@ public class CommonProxy {
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
+        if (Platform.isDevEnv()) {
+            ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+        }
 
         GTRegistries.init(modBus);
         GTFeatures.init(modBus);
@@ -133,6 +139,7 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
         GTParticleTypes.init(modBus);
+        GTIntProviderTypes.init(modBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
@@ -170,6 +177,7 @@ public class CommonProxy {
         GTDataComponents.DATA_COMPONENTS.register(modBus);
         GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
+        GTDimensionMarkers.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
 
@@ -193,7 +201,7 @@ public class CommonProxy {
 
         WorldGenLayers.registerAll();
         VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();;
+        IndicatorGenerators.registerAddonGenerators();
 
         GTFeatures.init();
         CustomBlockRotations.init();

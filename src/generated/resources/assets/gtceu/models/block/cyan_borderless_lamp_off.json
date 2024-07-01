@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/lamp_borderless_off",
+  "textures": {
+    "inactive": "gtceu:block/lamps/cyan_off_borderless"
+  }
+}

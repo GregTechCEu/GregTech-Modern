@@ -33,7 +33,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,11 +55,6 @@ public final class ResearchManager {
     }
 
     private ResearchManager() {}
-
-    @ApiStatus.Internal
-    public static void registerScannerLogic() {
-        GTRecipeType.registerCustomScannerLogic(new DataStickCopyScannerLogic());
-    }
 
     /**
      * @param stack      the ItemStack to write to
@@ -164,7 +158,7 @@ public final class ResearchManager {
                 ResearchItem::new);
     }
 
-    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomScannerLogic {
+    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
         private static final int EUT = 2;
         private static final int DURATION = 100;

@@ -512,6 +512,5 @@ public interface GTRecipeSchema {
     RecipeSchema SCHEMA = new RecipeSchema(DURATION, DATA, CONDITIONS,
             ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS, IS_FUEL)
             .factory(new KubeRecipeFactory(GTCEu.id("recipe"), GTKubeRecipe.class, GTKubeRecipe::new))
-            .constructor(ID)
-            .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);
+            .constructor(new IDRecipeConstructor());
 }

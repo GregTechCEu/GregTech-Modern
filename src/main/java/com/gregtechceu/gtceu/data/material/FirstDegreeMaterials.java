@@ -925,7 +925,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xff6000).secondaryColor(0xFF0000)
                 .components(Potassium, 2, Chromium, 2, Oxygen, 7)
-                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.POISON)
+                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON)
                 .buildAndRegister();
 
         ChromiumTrioxide = new Material.Builder(GTCEu.id("chromium_trioxide"))

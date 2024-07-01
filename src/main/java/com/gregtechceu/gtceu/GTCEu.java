@@ -86,4 +86,8 @@ public class GTCEu {
     public static boolean isAlmostUnifiedLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
     }
+
+    public static boolean isShimmerLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
+    }
 }

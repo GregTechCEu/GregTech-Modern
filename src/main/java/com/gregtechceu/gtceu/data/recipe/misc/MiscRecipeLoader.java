@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -27,7 +28,7 @@ public class MiscRecipeLoader {
     public static void init(RecipeOutput provider) {
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
-                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B',
+                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
                 'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
 

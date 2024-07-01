@@ -24,17 +24,6 @@ import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 public class ItemTagLoader {
 
     public static void init(RegistrateTagsProvider<Item> provider) {
-        create(provider, CustomTags.CONCRETE_ITEM, Items.WHITE_CONCRETE, Items.ORANGE_CONCRETE, Items.MAGENTA_CONCRETE,
-                Items.LIGHT_BLUE_CONCRETE, Items.YELLOW_CONCRETE, Items.LIME_CONCRETE, Items.PINK_CONCRETE,
-                Items.GRAY_CONCRETE, Items.LIGHT_GRAY_CONCRETE, Items.CYAN_CONCRETE, Items.PURPLE_CONCRETE,
-                Items.BLUE_CONCRETE, Items.BROWN_CONCRETE, Items.GREEN_CONCRETE, Items.RED_CONCRETE,
-                Items.BLACK_CONCRETE);
-        create(provider, CustomTags.CONCRETE_POWDER_ITEM, Items.WHITE_CONCRETE_POWDER, Items.ORANGE_CONCRETE_POWDER,
-                Items.MAGENTA_CONCRETE_POWDER, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.YELLOW_CONCRETE_POWDER,
-                Items.LIME_CONCRETE_POWDER, Items.PINK_CONCRETE_POWDER, Items.GRAY_CONCRETE_POWDER,
-                Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
-                Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
-                Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
         create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId(),
                 GTItems.MATERIAL_ITEMS.get(lens, NetherStar).getId());
         create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).getId());

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.mojang.serialization.Codec;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,6 @@ public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, List<Con
     }
 
     public void add(RecipeCapability<?> capability, Content value) {
-        this.get(capability).add(value);
+        this.computeIfAbsent(capability, cap -> new ArrayList<>()).add(value);
     }
 }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -101,14 +102,15 @@ public class MultiblockInWorldPreviewRenderer {
     /**
      * Show the multiblock preview in the world by the given pos, side, and shape info.
      *
-     * @param pos       the pos of the controller
-     * @param front     the front of the controller
-     * @param shapeInfo the shape info of the multiblock
-     * @param duration  the duration of the preview. in ticks.
+     * @param pos        the pos of the controller
+     * @param controller the controller
+     * @param duration   the duration of the preview. in ticks.
      */
-    public static void showPreview(BlockPos pos, Direction front, Direction up, MultiblockShapeInfo shapeInfo,
+    public static void showPreview(BlockPos pos, MultiblockControllerMachine controller,
                                    int duration) {
-        front = front.getStepY() == 0 ? front : front.getStepY() < 0 ? up : up.getOpposite();
+        Direction front = controller.getFrontFacing();
+        Direction up = controller.getUpwardsFacing();
+        MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
 
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
         IMultiController controllerBase = null;
@@ -167,6 +169,12 @@ public class MultiblockInWorldPreviewRenderer {
                         case EAST -> offset.rotate(Rotation.CLOCKWISE_90);
                     };
 
+                    Rotation r = up == Direction.NORTH ? Rotation.NONE : up == Direction.EAST ? Rotation.CLOCKWISE_90 :
+                            up == Direction.SOUTH ? Rotation.CLOCKWISE_180 :
+                                    up == Direction.WEST ? Rotation.COUNTERCLOCKWISE_90 : Rotation.NONE;
+
+                    offset = rotateByFrontAxis(offset, front, r);
+
                     if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
                         var rotationState = machineBlock.getRotationState();
                         if (rotationState != RotationState.NONE) {
@@ -189,9 +197,9 @@ public class MultiblockInWorldPreviewRenderer {
 
                     if (column[z].getBlockEntity(realPos,
                             Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder &&
-                            holder.getMetaMachine() instanceof IMultiController controller) {
+                            holder.getMetaMachine() instanceof IMultiController cont) {
                         holder.getSelf().setLevel(LEVEL);
-                        controllerBase = controller;
+                        controllerBase = cont;
                     } else {
                         blockMap.put(realPos, BlockInfo.fromBlockState(blockState));
                     }
@@ -205,6 +213,40 @@ public class MultiblockInWorldPreviewRenderer {
         }
 
         prepareBuffers(LEVEL, blockMap.keySet(), duration);
+    }
+
+    private static BlockPos rotateByFrontAxis(BlockPos pos, Direction front, Rotation rotation) {
+        if (front.getAxis() == Direction.Axis.X) {
+            return switch (rotation) {
+                default -> pos;
+                case CLOCKWISE_90 -> new BlockPos(pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        -front.getAxisDirection().getStep() * -pos.getY());
+                case CLOCKWISE_180 -> new BlockPos(pos.getX(), -pos.getY(), -pos.getZ());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(pos.getX(), front.getAxisDirection().getStep() * pos.getZ(),
+                        -front.getAxisDirection().getStep() * pos.getY());
+            };
+        } else if (front.getAxis() == Direction.Axis.Y) {
+            return switch (rotation) {
+                default -> new BlockPos(-pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        -front.getAxisDirection().getStep() * pos.getY());
+                case CLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * pos.getY(),
+                        -front.getAxisDirection().getStep() * pos.getZ(), pos.getX());
+                case CLOCKWISE_180 -> new BlockPos(pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        front.getAxisDirection().getStep() * pos.getY());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(front.getAxisDirection().getStep() * pos.getY(),
+                        -front.getAxisDirection().getStep() * pos.getZ(), -pos.getX());
+            };
+        } else if (front.getAxis() == Direction.Axis.Z) {
+            return switch (rotation) {
+                default -> pos;
+                case CLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * pos.getY(),
+                        front.getAxisDirection().getStep() * pos.getX(), pos.getZ());
+                case CLOCKWISE_180 -> new BlockPos(-pos.getX(), -pos.getY(), pos.getZ());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * -pos.getY(),
+                        -front.getAxisDirection().getStep() * pos.getX(), pos.getZ());
+            };
+        }
+        return pos;
     }
 
     public static void onClientTick() {
@@ -273,7 +315,7 @@ public class MultiblockInWorldPreviewRenderer {
                 }
 
                 if (shaderInstance.FOG_START != null) {
-                    shaderInstance.FOG_START.set(RenderSystem.getShaderFogStart());
+                    shaderInstance.FOG_START.set(Float.MAX_VALUE);
                 }
 
                 if (shaderInstance.FOG_END != null) {

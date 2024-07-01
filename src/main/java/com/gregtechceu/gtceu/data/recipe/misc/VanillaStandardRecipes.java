@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -551,7 +550,7 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(CustomTags.WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+                .inputItems(Tags.Items.CHESTS_WOODEN).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
                 .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
@@ -599,7 +598,7 @@ public class VanillaStandardRecipes {
 
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_concrete_to_" + dyeName).duration(20).EUt(VA[ULV])
-                        .inputItems(CustomTags.CONCRETE_ITEM)
+                        .inputItems(Tags.Items.CONCRETES)
                         .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                         .outputItems(
                                 new ItemStack(BuiltInRegistries.ITEM
@@ -693,7 +692,7 @@ public class VanillaStandardRecipes {
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_concrete")
-                .inputItems(CustomTags.CONCRETE_ITEM)
+                .inputItems(Tags.Items.CONCRETES)
                 .inputFluids(Chlorine.getFluid(20))
                 .outputItems(Items.WHITE_CONCRETE)
                 .duration(400).EUt(2).save(provider);
@@ -975,7 +974,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV])
-                .inputItems(CustomTags.WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
+                .inputItems(Tags.Items.CHESTS_WOODEN).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
                 .outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL)

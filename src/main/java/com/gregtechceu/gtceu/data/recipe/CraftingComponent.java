@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.EnumMap;
@@ -423,10 +424,10 @@ public class CraftingComponent {
          */
         GLASS = new Component(Stream.of(new Object[][] {
 
-                { GTValues.FALLBACK, CustomTags.GLASS_BLOCKS },
-                { ULV, CustomTags.GLASS_BLOCKS },
-                { LV, CustomTags.GLASS_BLOCKS },
-                { MV, CustomTags.GLASS_BLOCKS },
+                { GTValues.FALLBACK, Tags.Items.GLASS_BLOCKS },
+                { ULV, Tags.Items.GLASS_BLOCKS },
+                { LV, Tags.Items.GLASS_BLOCKS },
+                { MV, Tags.Items.GLASS_BLOCKS },
                 { HV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
                 { EV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
                 { IV, GTBlocks.CASING_LAMINATED_GLASS.asStack() },

@@ -182,7 +182,7 @@ public class GTRecipeWidget extends WidgetGroup {
             isOutput = true;
         }
         if (EUt > 0) {
-            long euTotal = EUt * recipe.duration;
+            long euTotal = EUt * duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {

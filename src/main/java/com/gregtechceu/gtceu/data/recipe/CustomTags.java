@@ -17,11 +17,6 @@ public class CustomTags {
 
     // Added Vanilla tags
     public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
-    public static final TagKey<Item> GLASS_BLOCKS = TagUtil.createItemTag("glass_blocks");
-    public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
-    public static final TagKey<Item> SEEDS = TagUtil.createItemTag("seeds");
-    public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concrete");
-    public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powder");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
@@ -59,10 +54,6 @@ public class CustomTags {
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
 
-    // Platform-dependent tags
-    public static final TagKey<Item> RUBBER_LOGS_ITEM = TagUtil.createModItemTag("logs/rubber");
-    public static final TagKey<Item> WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
-
     public static final TagKey<Block> NEEDS_WOOD_TOOL = Tags.Blocks.NEEDS_WOOD_TOOL;
     public static final TagKey<Block> NEEDS_GOLD_TOOL = Tags.Blocks.NEEDS_GOLD_TOOL;
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = Tags.Blocks.NEEDS_NETHERITE_TOOL;
@@ -99,18 +90,10 @@ public class CustomTags {
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
-    public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concrete");
-    public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powder");
-    public static final TagKey<Block> GLASS_BLOCKS_BLOCK = TagUtil.createBlockTag("glass_blocks");
-    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powders");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK,
             ResourceLocation.fromNamespaceAndPath(GTValues.MODID_CREATE, "seats"));
-    public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
-    public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createModBlockTag("logs/rubber");
-
-    public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
-    public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
 
     public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");

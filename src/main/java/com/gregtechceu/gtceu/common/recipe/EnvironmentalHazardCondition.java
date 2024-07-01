@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
@@ -55,6 +56,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return true;
         if (!(recipeLogic.getMachine().getLevel() instanceof ServerLevel serverLevel)) {
             return false;
         }

@@ -24,10 +24,7 @@ public class BiomeTagsLoader extends BiomeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(CustomTags.IS_SWAMP).add(Biomes.SWAMP).add(Biomes.MANGROVE_SWAMP);
-        tag(CustomTags.HAS_RUBBER_TREE).addTag(CustomTags.IS_SWAMP).addTag(BiomeTags.IS_FOREST)
+        tag(CustomTags.HAS_RUBBER_TREE).addTag(Tags.Biomes.IS_SWAMP).addTag(BiomeTags.IS_FOREST)
                 .addTag(BiomeTags.IS_JUNGLE);
-        tag(CustomTags.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT).add(Biomes.BEACH).add(Biomes.BADLANDS)
-                .add(Biomes.WOODED_BADLANDS);
     }
 }

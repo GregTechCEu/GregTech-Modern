@@ -22,6 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -44,6 +45,10 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     public QuantumTankRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_tank"));
+    }
+
+    public QuantumTankRenderer(int tier, ResourceLocation modelLocation) {
+        super(tier, modelLocation);
     }
 
     @Override

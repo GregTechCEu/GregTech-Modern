@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
 import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
@@ -63,6 +64,9 @@ public class GTRegistryInfo<K, V> {
             () -> WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
     public static final GTRegistryInfo<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"),
             () -> TagPrefix.PREFIXES, KJSTagPrefix.class);
+    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(
+            GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+
     /*
      * public static final GTRegistryInfo<String, RecipeCapability<?>> RECIPE_CAPABILITY =
      * add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);

@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.neoforge.common.Tags;
 
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -271,12 +272,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private boolean tryPaintSpecialBlock(Player player, Level world, BlockPos pos, Block block) {
-        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS_BLOCK)) {
+        if (block.defaultBlockState().is(Tags.Blocks.GLASS_BLOCKS)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.GLASS_PANES_BLOCK)) {
+        if (block.defaultBlockState().is(Tags.Blocks.GLASS_PANES)) {
             if (recolorBlockNoState(GLASS_PANE_MAP, this.color, world, pos, Blocks.GLASS_PANE)) {
                 return true;
             }
@@ -296,7 +297,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK)) {
+        if (block.defaultBlockState().is(Tags.Blocks.CONCRETES)) {
             if (recolorBlockNoState(CONCRETE_MAP, this.color, world, pos)) {
                 return true;
             }
@@ -403,7 +404,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             world.setBlock(pos, Blocks.WHITE_CARPET.defaultBlockState(), 3);
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK) && block != Blocks.WHITE_CONCRETE) {
+        if (block.defaultBlockState().is(Tags.Blocks.CONCRETES) && block != Blocks.WHITE_CONCRETE) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE.defaultBlockState(), 3);
             return true;
         }

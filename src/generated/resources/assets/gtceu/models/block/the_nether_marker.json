@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "gui_light": "front",
+  "textures": {
+    "down": "gtceu:block/dim_markers/the_nether/down",
+    "east": "gtceu:block/dim_markers/the_nether/east",
+    "north": "gtceu:block/dim_markers/the_nether/north",
+    "particle": "#north",
+    "south": "gtceu:block/dim_markers/the_nether/south",
+    "up": "gtceu:block/dim_markers/the_nether/up",
+    "west": "gtceu:block/dim_markers/the_nether/west"
+  }
+}

@@ -137,12 +137,12 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 any = true;
                 break;
             }
-            if (!machine.getRecipeType().isScanner() || any) {
+            if (any) {
                 iterator.reset();
                 return iterator;
             }
 
-            for (GTRecipeType.ICustomScannerLogic logic : GTRecipeType.CUSTOM_SCANNER_LOGICS) {
+            for (GTRecipeType.ICustomRecipeLogic logic : machine.getRecipeType().getCustomRecipeLogicRunners()) {
                 GTRecipe recipe = logic.createCustomRecipe(holder);
                 if (recipe != null) return Collections.singleton(recipe).iterator();
             }
