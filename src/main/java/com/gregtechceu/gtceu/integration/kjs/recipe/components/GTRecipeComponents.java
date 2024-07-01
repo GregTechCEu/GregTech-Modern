@@ -45,7 +45,7 @@ public class GTRecipeComponents {
 
         @Override
         public TypeInfo typeInfo() {
-            return TypeInfo.STRING;
+            return TypeInfo.of(ResourceLocation.class);
         }
 
         @Override
