@@ -12,12 +12,12 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
 import net.minecraft.world.item.ItemStack;
-
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

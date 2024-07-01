@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)

@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.client.renderer.block.LampRenderer;
-
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -133,7 +132,8 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
+                                       Player player) {
         ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
         stack.set(GTDataComponents.LAMP_DATA, getDataFromState(state));
         return stack;

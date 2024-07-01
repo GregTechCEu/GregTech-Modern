@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import com.gregtechceu.gtceu.data.worldgen.GTIntProviderTypes;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
+
+import com.mojang.serialization.MapCodec;
 
 public class RubberTreeChanceWeightedListInt extends IntProvider {
 

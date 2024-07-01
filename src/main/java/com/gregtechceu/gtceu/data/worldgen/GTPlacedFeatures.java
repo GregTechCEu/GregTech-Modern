@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.common.worldgen.RubberTreeChanceWeightedListInt;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.top.element;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 
@@ -12,10 +12,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.theoneprobe.api.IElement;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 public class FluidStackElement implements IElement {
 

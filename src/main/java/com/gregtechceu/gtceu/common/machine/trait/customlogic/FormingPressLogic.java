@@ -12,10 +12,9 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
