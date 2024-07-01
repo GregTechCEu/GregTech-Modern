@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,11 +43,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.createCreativeTooltips;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
@@ -345,18 +348,18 @@ public class GTResearchMachines {
             .tier(MAX)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
-                    Component.translatable("gtceu.creative_tooltip.1")
-                            .append(TooltipHelper.RAINBOW.toString())
-                            .append(Component.translatable("gtceu.creative_tooltip.2"))
-                            .append(Component.translatable("gtceu.creative_tooltip.3")),
-                    Component.translatable("gtceu.universal.enabled"))
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"))
+            .tooltipBuilder(createCreativeTooltips(true))
             .overlayTieredHullRenderer("data_access_hatch_creative")
             .register();
 
     //////////////////////////////////////
     // *********** HPCA ***********//
     //////////////////////////////////////
+
+    public static final BiConsumer<ItemStack, List<Component>> OVERHEAT_TOOLTIPS = (stack, components) -> components
+            .add(Component.translatable("gtceu.machine.hpca.component_type.damaged")
+                    .withStyle(style -> style.withColor(TooltipHelper.BLINKING_ORANGE.getCurrent())));
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
@@ -368,9 +371,8 @@ public class GTResearchMachines {
                     Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[GTValues.EV]),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.LuV]),
                     Component.translatable("gtceu.machine.hpca.component_type.computation_cwut", 4),
-                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 2),
-                    Component.literal(TooltipHelper.BLINKING_ORANGE.toString())
-                            .append(Component.translatable("gtceu.machine.hpca.component_type.damaged")))
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 2))
+            .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_advanced_computation_component", "HPCA Advanced Computation Component",
@@ -379,9 +381,8 @@ public class GTResearchMachines {
                     Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[GTValues.IV]),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.ZPM]),
                     Component.translatable("gtceu.machine.hpca.component_type.computation_cwut", 16),
-                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 4),
-                    Component.literal(TooltipHelper.BLINKING_ORANGE.toString())
-                            .append(Component.translatable("gtceu.machine.hpca.component_type.damaged")))
+                    Component.translatable("gtceu.machine.hpca.component_type.computation_cooling", 4))
+            .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
