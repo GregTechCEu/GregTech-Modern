@@ -31,7 +31,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.TooltipHelper;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -562,21 +562,29 @@ public class GTMachines {
     //////////////////////////////////////
     // ********* Storage *********//
     //////////////////////////////////////
+
+    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
+            .add(Component.translatable("gtceu.creative_tooltip.1")
+                    .append(Component.translatable("gtceu.creative_tooltip.2")
+                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+                    .append(Component.translatable("gtceu.creative_tooltip.3")));
+
+    public static BiConsumer<ItemStack, List<Component>> createCreativeTooltips(boolean share) {
+        return (stack, list) -> {
+            CREATIVE_TOOLTIPS.accept(stack, list);
+            list.add(Component.translatable("gtceu.universal.%s".formatted(share ? "enabled" : "disabled")));
+        };
+    }
+
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
-                    Component.translatable("gtceu.creative_tooltip.3"))
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
-                    Component.translatable("gtceu.creative_tooltip.3"))
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -584,10 +592,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
-                    Component.translatable("gtceu.creative_tooltip.3"))
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -1972,10 +1977,12 @@ public class GTMachines {
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .appearanceBlock(HIGH_POWER_CASING)
             .tooltips(Component.translatable("gtceu.machine.active_transformer.tooltip.0"),
-                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"),
-                    Component.translatable("gtceu.machine.active_transformer.tooltip.2")
-                            .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
-                                    .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent()))))
+                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"))
+            .tooltipBuilder(
+                    (stack,
+                     components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
+                             .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
+                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
@@ -1999,10 +2006,12 @@ public class GTMachines {
                             PowerSubstationMachine.MAX_BATTERY_LAYERS),
                     Component.translatable("gtceu.machine.power_substation.tooltip.3"),
                     Component.translatable("gtceu.machine.power_substation.tooltip.4",
-                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.5")
-                            .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
-                                    .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent()))))
+                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000))
+            .tooltipBuilder(
+                    (stack,
+                     components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
+                             .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
+                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
@@ -2298,7 +2307,7 @@ public class GTMachines {
 
     private static MachineDefinition registerTankValve(
                                                        String name, String displayName, boolean isMetal,
-                                                       BiConsumer<MachineBuilder, ResourceLocation> rendererSetup) {
+                                                       BiConsumer<MachineBuilder<?>, ResourceLocation> rendererSetup) {
         MachineBuilder<MachineDefinition> builder = REGISTRATE
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
