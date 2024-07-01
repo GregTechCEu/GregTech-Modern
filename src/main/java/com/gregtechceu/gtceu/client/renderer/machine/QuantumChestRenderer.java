@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -36,6 +37,10 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
     public QuantumChestRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_chest"));
+    }
+
+    public QuantumChestRenderer(int tier, ResourceLocation modelLocation) {
+        super(tier, modelLocation);
     }
 
     @Override

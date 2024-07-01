@@ -351,7 +351,7 @@ public class GTMachines {
             GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV,
             GTValues.HV);
     public static final MachineDefinition[] STEAM_TURBINE = registerSimpleGenerator("steam_turbine",
-            GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV,
+            GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, 0.0f, GTValues.LV, GTValues.MV,
             GTValues.HV);
     public static final MachineDefinition[] GAS_TURBINE = registerSimpleGenerator("gas_turbine",
             GTRecipeTypes.GAS_TURBINE_FUELS, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV,
@@ -569,6 +569,8 @@ public class GTMachines {
                     Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
+            .hasTESR(true)
             .compassNodeSelf()
             .register();
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
@@ -578,6 +580,8 @@ public class GTMachines {
                     Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
+            .hasTESR(true)
             .compassNodeSelf()
             .register();
 
