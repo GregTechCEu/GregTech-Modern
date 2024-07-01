@@ -33,7 +33,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
-import com.gregtechceu.gtceu.client.util.GTFormattingCode;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
@@ -558,7 +558,7 @@ public class GTMachines {
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
             .add(Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(GTFormattingCode.RAINBOW_SLOW.getCurrent())))
+                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
                     .append(Component.translatable("gtceu.creative_tooltip.3")));
 
     public static BiConsumer<ItemStack, List<Component>> createCreativeTooltips(boolean share) {
@@ -1998,7 +1998,7 @@ public class GTMachines {
                     (stack,
                      components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
                              .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
-                                     .withStyle(style -> style.withColor(GTFormattingCode.RAINBOW_SLOW.getCurrent())))))
+                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
@@ -2027,7 +2027,7 @@ public class GTMachines {
                     (stack,
                      components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
                              .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
-                                     .withStyle(style -> style.withColor(GTFormattingCode.RAINBOW_SLOW.getCurrent())))))
+                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")

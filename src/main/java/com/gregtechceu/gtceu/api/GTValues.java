@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api;
 
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
@@ -51,11 +50,6 @@ public class GTValues {
 
     /** Current time on the Client. Will always be zero on the server. */
     public static long CLIENT_TIME = 0;
-
-    /** Array of ChatFormatting codes that are used to create a rainbow effect */
-    public static final ChatFormatting[] ALL_COLORS = new ChatFormatting[] {
-            RED, GOLD, YELLOW, GREEN, AQUA, DARK_AQUA, DARK_BLUE, BLUE, DARK_PURPLE, LIGHT_PURPLE
-    };
 
     /**
      * The Voltage Tiers. Use this Array instead of the old named Voltage Variables

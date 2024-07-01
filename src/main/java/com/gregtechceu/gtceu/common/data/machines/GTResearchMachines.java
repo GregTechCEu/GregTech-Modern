@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
-import com.gregtechceu.gtceu.client.util.GTFormattingCode;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -359,7 +359,7 @@ public class GTResearchMachines {
 
     public static final BiConsumer<ItemStack, List<Component>> OVERHEAT_TOOLTIPS = (stack, components) -> components
             .add(Component.translatable("gtceu.machine.hpca.component_type.damaged")
-                    .withStyle(style -> style.withColor(GTFormattingCode.BLINKING_ORANGE.getCurrent())));
+                    .withStyle(style -> style.withColor(TooltipHelper.BLINKING_ORANGE.getCurrent())));
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
