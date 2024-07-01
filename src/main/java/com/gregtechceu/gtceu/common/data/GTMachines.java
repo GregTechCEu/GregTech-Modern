@@ -569,6 +569,8 @@ public class GTMachines {
                     Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
+            .hasTESR(true)
             .compassNodeSelf()
             .register();
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
@@ -578,6 +580,8 @@ public class GTMachines {
                     Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
                     Component.translatable("gtceu.creative_tooltip.3"))
+            .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
+            .hasTESR(true)
             .compassNodeSelf()
             .register();
 
