@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,6 +40,10 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     public QuantumTankRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_tank"));
+    }
+
+    public QuantumTankRenderer(int tier, ResourceLocation modelLocation) {
+        super(tier, modelLocation);
     }
 
     @Override
