@@ -17,10 +17,13 @@ import dev.toma.configuration.config.format.ConfigFormats;
 public class ConfigHolder {
 
     public static ConfigHolder INSTANCE;
+    private static final Object LOCK = new Object();
 
     public static void init() {
-        if (INSTANCE == null) {
-            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        synchronized (LOCK) {
+            if (INSTANCE == null) {
+                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+            }
         }
     }
 
