@@ -129,10 +129,16 @@ public class OverclockingLogic {
             if (potentialVoltage > maxVoltage) break;
 
             double potentialDuration = resultDuration / durationDivisor;
-            // do not allow duration to go below one tick
-            if (potentialDuration < 1) resultParallel *= 2;
+
+            if (potentialDuration < 1) {
+                resultParallel *= durationDivisor;
+                if (potentialDuration > (double) 1. / durationDivisor) {
+                    potentialDuration *= durationDivisor;
+                }
+            }
+
             // update the duration for the next iteration
-            resultDuration = resultParallel > 1 ? 1 : potentialDuration;
+            resultDuration = Math.max(1, potentialDuration);
 
             // update the voltage for the next iteration after everything else
             // in case duration overclocking would waste energy
