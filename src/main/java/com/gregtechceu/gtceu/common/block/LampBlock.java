@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.phys.HitResult;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +60,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
                 .setValue(INVERTED, false)
                 .setValue(POWERED, false));
         for (BlockState state : getStateDefinition().getPossibleStates()) {
-            renderers.computeIfAbsent(state, s -> new LampRenderer(this, s));
+            renderers.put(state, new LampRenderer(this, state));
         }
     }
 
@@ -133,6 +135,14 @@ public class LampBlock extends Block implements IBlockRendererProvider {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), state.getValue(LIGHT) ? 2 | 8 : 2);
         }
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target,
+                                       BlockGetter level, BlockPos pos, Player player) {
+        ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+        stack.setTag(getTagFromState(state));
+        return stack;
     }
 
     @Override
