@@ -21,3 +21,4 @@ Version: 1.3.1
 - Rubber trees spawn chance config now works
 - Singleblock machines can no longer run a recipe beyond its tier
 - Fluid Hatch locking properly saves between world loads
+- Color-changing tooltip now changes colors properly

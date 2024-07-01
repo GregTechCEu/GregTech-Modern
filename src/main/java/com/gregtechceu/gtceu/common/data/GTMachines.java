@@ -558,7 +558,7 @@ public class GTMachines {
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
             .add(Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(GTFormattingCode.RAINBOW.getCurrent())))
+                            .withStyle(style -> style.withColor(GTFormattingCode.RAINBOW_SLOW.getCurrent())))
                     .append(Component.translatable("gtceu.creative_tooltip.3")));
 
     public static BiConsumer<ItemStack, List<Component>> createCreativeTooltips(boolean share) {
