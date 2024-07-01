@@ -132,7 +132,7 @@ public class OverclockingLogic {
 
             if (potentialDuration < 1) {
                 resultParallel *= durationDivisor;
-                if(potentialDuration > (double)1. / durationDivisor) {
+                if (potentialDuration > (double) 1. / durationDivisor) {
                     potentialDuration *= durationDivisor;
                 }
             }
