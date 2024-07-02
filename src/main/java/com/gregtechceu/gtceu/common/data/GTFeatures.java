@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.feature.FluidSproutFeature;
 import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
-
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.Feature;
