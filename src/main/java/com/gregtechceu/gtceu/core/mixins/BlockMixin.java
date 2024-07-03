@@ -34,10 +34,11 @@ public abstract class BlockMixin {
     private static List<ItemStack> gtceu$onDropResources(List<ItemStack> original, BlockState state, Level level,
                                                          BlockPos pos, @Nullable BlockEntity blockEntity,
                                                          @Nullable Entity entity, ItemStack tool) {
-        if (entity instanceof Player player) {
+        if (!tool.isEmpty() && entity instanceof Player player) {
             boolean isSilktouch = EnchantmentHelper.hasSilkTouch(tool);
             int fortuneLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-            ToolEventHandlers.onHarvestDrops(player, tool, (ServerLevel) level, pos, state, isSilktouch, fortuneLevel,
+            return ToolEventHandlers.onHarvestDrops(player, tool, (ServerLevel) level, pos, state, isSilktouch,
+                    fortuneLevel,
                     original, 1);
         }
         return original;

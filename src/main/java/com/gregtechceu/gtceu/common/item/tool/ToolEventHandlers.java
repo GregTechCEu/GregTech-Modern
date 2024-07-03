@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -104,7 +104,7 @@ public class ToolEventHandlers {
                                                  BlockPos pos, BlockState state, boolean isSilkTouch,
                                                  int fortuneLevel, List<ItemStack> drops,
                                                  float dropChance) {
-        if (tool.isEmpty() || !tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
+        if (!tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
             return drops;
         }
         if (!isSilkTouch) {
@@ -120,9 +120,12 @@ public class ToolEventHandlers {
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));
                 level.getServer().tell(new TickTask(0, () -> {
-                    FluidState flowingState = level.getFluidState(pos);
-                    if (flowingState == Fluids.FLOWING_WATER.defaultFluidState()) {
-                        level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                    BlockState oldState = level.getBlockState(pos);
+                    if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
+                        BlockState newState = oldState.hasProperty(BlockStateProperties.WATERLOGGED) ?
+                                oldState.setValue(BlockStateProperties.WATERLOGGED, false) :
+                                Blocks.AIR.defaultBlockState();
+                        level.setBlockAndUpdate(pos, newState);
                     }
                 }));
                 ((IGTTool) tool.getItem()).playSound(player);
