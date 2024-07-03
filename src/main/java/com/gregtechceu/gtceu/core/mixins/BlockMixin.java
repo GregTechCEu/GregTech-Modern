@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class BlockMixin {
 
     /**
-     * Because most mods do not use LootItemFunction to save custom data,
+     * Because most mods override Block#getDrops instead of using LootItemFunction to save custom data,
      * we use Mixin instead of GlobalLootModifier for compatibility.
      */
     @ModifyExpressionValue(method = "dropResources(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;Z)V",
