@@ -660,10 +660,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Grossular, 3, -50, -5))
                     .withBlock(new DikeBlockDefinition(Spessartine, 2, -40, -15))
                     .withBlock(new DikeBlockDefinition(Pyrolusite, 2, -40, -15))
-                    .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5))
-                    .minYLevel(-50).maxYLevel(-5))
+                    .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
+                    .density(0.15f)
                     .radius(3)));
 
     public static final GTOreDefinition MICA_VEIN = create("mica_vein", vein -> vein
