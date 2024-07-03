@@ -29,10 +29,10 @@ public interface IArmorLogic {
     UUID ATTACK_DAMAGE_MODIFIER = UUID.fromString("648D7064-6A60-4F59-8ABE-C2C23A6DD7A9");
     UUID ATTACK_SPEED_MODIFIER = UUID.fromString("FA233E1C-4180-4288-B05C-BCCE9785ACA3");
     EnumMap<ArmorItem.Type, UUID> ARMOR_MODIFIER_UUID_PER_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-        map.put(ArmorItem.Type.BOOTS, UUID.fromString("6D8074F6-3525-5601-2A41-DC2E87DBE63F"));
-        map.put(ArmorItem.Type.LEGGINGS, UUID.fromString("BF41E53F-6FD7-565D-2DE3-BE1563EDDFBA"));
-        map.put(ArmorItem.Type.CHESTPLATE, UUID.fromString("A969E025-F555-AC52-3988-D291BB26F1EB"));
-        map.put(ArmorItem.Type.HELMET, UUID.fromString("E46B9A92-B74A-ED34-71FA-D55115C922A2"));
+        map.put(ArmorItem.Type.BOOTS, UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"));
+        map.put(ArmorItem.Type.LEGGINGS, UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"));
+        map.put(ArmorItem.Type.CHESTPLATE, UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"));
+        map.put(ArmorItem.Type.HELMET, UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"));
     });
 
     default void addToolComponents(ArmorComponentItem item) {}
