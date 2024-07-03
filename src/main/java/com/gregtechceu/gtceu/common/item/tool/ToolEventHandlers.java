@@ -122,6 +122,7 @@ public class ToolEventHandlers {
                 level.getServer().tell(new TickTask(0, () -> {
                     BlockState oldState = level.getBlockState(pos);
                     if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
+                        // I think it may be a waterlogged block, although the probability is very small
                         BlockState newState = oldState.hasProperty(BlockStateProperties.WATERLOGGED) ?
                                 oldState.setValue(BlockStateProperties.WATERLOGGED, false) :
                                 Blocks.AIR.defaultBlockState();
