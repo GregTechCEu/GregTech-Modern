@@ -254,6 +254,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                         CompoundTag tag = drop.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY)
                                 .copyTag();
                         dropSaveMachine.saveToItem(tag);
+                        tag.remove("id");
+                        BlockEntity.addEntityType(tag, tileEntity.getType());
                         drop.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
                         // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                         break;
