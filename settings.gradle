@@ -45,7 +45,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "5573796"
-        def ldLibVersion = "1.0.26.b"
+        def ldLibVersion = "1.0.26.c"
         def shimmerVersion = "0.2.2"
         def neogradleVersion = "7.0.158"
 
@@ -55,7 +55,7 @@ dependencyResolutionManagement {
             library("neoForge", "net.neoforged", "neoforge").versionRef(neoForge)
 
             def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-neoforge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersionOld}").versionRef(ldLib)
+            library("ldlib-neoforge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersion}").versionRef(ldLib)
 
             def shimmer = version("shimmer", "${minecraftVersionVeryOld}-${shimmerVersion}")
             library("shimmer-forge", "com.lowdragmc.shimmer", "Shimmer-forge").versionRef(shimmer)
