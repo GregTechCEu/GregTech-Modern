@@ -22,8 +22,6 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class AutoOutputBlockProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
-    public static final AutoOutputBlockProvider INSTANCE = new AutoOutputBlockProvider();
-
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         BlockEntity be = blockAccessor.getBlockEntity();
@@ -46,7 +44,6 @@ public class AutoOutputBlockProvider implements IBlockComponentProvider, IServer
         CompoundTag data = compoundTag.getCompound(getUid().toString());
         var level = blockAccessor.getLevel();
         var pos = blockAccessor.getPosition();
-        var dir = blockAccessor.getSide();
         if (MetaMachine.getMachine(level, pos) instanceof IAutoOutputItem outputItem) {
             var direction = outputItem.getOutputFacingItems();
             if (direction != null) {

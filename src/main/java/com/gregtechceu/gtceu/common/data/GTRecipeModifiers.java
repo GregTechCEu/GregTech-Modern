@@ -75,7 +75,11 @@ public class GTRecipeModifiers {
                     return null;
                 }
                 recipe = recipe.copy();
-                recipe.duration *= Math.max(1, (int) (maxAllowedStrength / Math.max(strength, 1)));
+                int originalDuration = recipe.duration;
+                recipe.duration *= (1 + (int) (strength * 5 / maxAllowedStrength));
+                if (recipe.duration > 5 * originalDuration) {
+                    return null;
+                }
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
@@ -95,7 +99,7 @@ public class GTRecipeModifiers {
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) / recipe.parallels > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
@@ -263,6 +267,6 @@ public class GTRecipeModifiers {
                 return result[0].getFirst();
             }
         }
-        return null;
+        return recipe;
     }
 }

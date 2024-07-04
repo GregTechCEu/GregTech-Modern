@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
@@ -157,6 +159,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setSlotOverlay(true, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_CANNER, LEFT_TO_RIGHT)
+            .addCustomRecipeLogic(new CannerLogic())
             .setSound(GTSoundEntries.BATH);
 
     public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
@@ -308,6 +311,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType FORMING_PRESS_RECIPES = register("forming_press", ELECTRIC)
             .setMaxIOSize(6, 1, 0, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_COMPRESS, LEFT_TO_RIGHT)
+            .addCustomRecipeLogic(new FormingPressLogic())
             .setSound(GTSoundEntries.COMPRESSOR);
 
     public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
@@ -413,6 +417,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
+            .addCustomRecipeLogic(new ResearchManager.DataStickCopyScannerLogic())
             .setScanner(true)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
@@ -447,6 +452,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.DATA_ORB_OVERLAY)
             .setSlotOverlay(false, false, true, GuiTextures.SCANNER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .addCustomRecipeLogic(new ResearchManager.DataStickCopyScannerLogic())
             .setScanner(true)
             .setSound(GTSoundEntries.ELECTROLYZER);
 

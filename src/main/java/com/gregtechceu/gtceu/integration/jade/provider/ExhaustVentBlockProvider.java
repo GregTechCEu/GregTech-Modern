@@ -23,8 +23,6 @@ import snownee.jade.api.config.IPluginConfig;
 
 public class ExhaustVentBlockProvider extends BlockInfoProvider<IExhaustVentMachine> {
 
-    public static final ExhaustVentBlockProvider INSTANCE = new ExhaustVentBlockProvider();
-
     public ExhaustVentBlockProvider() {
         super(GTCEu.id("exhaust_vent_info"));
     }
