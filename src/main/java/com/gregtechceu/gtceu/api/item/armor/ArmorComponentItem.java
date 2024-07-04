@@ -65,8 +65,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> multimap = ArrayListMultimap.create();
         IArmorLogic armorLogic = getArmorLogic();
-        multimap.putAll(armorLogic.getAttributeModifiers(slot, stack));
         multimap.putAll(super.getAttributeModifiers(slot, stack));
+        multimap.putAll(armorLogic.getAttributeModifiers(slot, stack));
         return multimap;
     }
 
