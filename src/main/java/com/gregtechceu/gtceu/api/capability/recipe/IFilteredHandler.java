@@ -5,8 +5,14 @@ import java.util.function.Predicate;
 
 public interface IFilteredHandler<K> extends Predicate<K> {
 
-    Comparator<IFilteredHandler<?>> PRIORITY_COMPARATOR = Comparator.comparingInt(IFilteredHandler::getPriority);
-    int NO_PRIORITY = Integer.MIN_VALUE;
+    Comparator<IFilteredHandler<?>> PRIORITY_COMPARATOR = Comparator
+            .<IFilteredHandler<?>>comparingInt(IFilteredHandler::getPriority).reversed();
+
+    int HIGHEST = Integer.MAX_VALUE;
+    int HIGH = Integer.MAX_VALUE / 2;
+    int NORMAL = 0;
+    int LOW = Integer.MIN_VALUE / 2;
+    int LOWEST = Integer.MIN_VALUE;
 
     /**
      * Test an ingredient for filtering & priority.
@@ -24,6 +30,6 @@ public interface IFilteredHandler<K> extends Predicate<K> {
      * The priority of this recipe handler.
      */
     default int getPriority() {
-        return NO_PRIORITY;
+        return NORMAL;
     }
 }
