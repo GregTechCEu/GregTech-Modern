@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -635,12 +636,21 @@ public class GTMachines {
                     .register(),
             HIGH_TIERS);
 
-    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName) {
+    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName,
+                                                                            @Nullable Material material) {
         return (stack, list) -> {
             if (stack.hasTag()) {
                 FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement(nbtName));
                 list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                        tank.getAmount()));
+                        FormattingUtil.formatNumbers(tank.getAmount())));
+            }
+
+            var item = stack.getItem();
+            if (item instanceof DrumMachineItem drumItem && material != null) {
+                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
+                    pipeprops.appendTooltips(list, true, true);
+                }
             }
         };
     }
@@ -654,7 +664,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored"))
+                    .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(4000000l * (long) Math.pow(2, tier))))
@@ -672,7 +682,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored"))
+                    .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
@@ -2548,9 +2558,10 @@ public class GTMachines {
                 .rotationState(RotationState.NONE)
                 .renderer(
                         () -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
-                .tooltipBuilder(createTankTooltips("Fluid"))
+                .tooltipBuilder(createTankTooltips("Fluid", material))
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                        Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity))
+                        Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .compassNode("drum")

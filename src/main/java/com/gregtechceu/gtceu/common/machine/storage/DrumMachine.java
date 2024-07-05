@@ -46,6 +46,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -274,5 +275,10 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             }
         }
         return super.sideTips(player, toolTypes, side);
+    }
+
+    @Override
+    public void onAddFancyInformationTooltip(List<Component> tooltips) {
+        super.onAddFancyInformationTooltip(tooltips);
     }
 }
