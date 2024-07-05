@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:polybenzimidazole_plunger"
+    "res": "gtceu:silicone_rubber_plunger"
   },
   "items": [
     "#forge:tools/plungers"
