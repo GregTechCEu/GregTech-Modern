@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.worldgen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.common.worldgen.RubberTreeChanceWeightedListInt;
+import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 
 import net.minecraft.core.HolderGetter;
@@ -42,7 +42,7 @@ public class GTPlacedFeatures {
         PlacementUtils.register(ctx, RUBBER_CHECKED, featureLookup.getOrThrow(GTConfiguredFeatures.RUBBER),
                 new BiomePlacement(List.of(
                         new BiomeWeightModifier(() -> biomeLookup.getOrThrow(Tags.Biomes.IS_SWAMP), 50))),
-                CountPlacement.of(RubberTreeChanceWeightedListInt.INSTANCE),
+                RubberTreeChancePlacement.INSTANCE,
                 InSquarePlacement.spread(),
                 SurfaceWaterDepthFilter.forMaxDepth(0),
                 PlacementUtils.HEIGHTMAP_TOP_SOLID,

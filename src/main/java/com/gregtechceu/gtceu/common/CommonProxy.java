@@ -70,7 +70,6 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
 import com.gregtechceu.gtceu.data.worldgen.GTDimensionMarkers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
-import com.gregtechceu.gtceu.data.worldgen.GTIntProviderTypes;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -139,7 +138,6 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
         GTParticleTypes.init(modBus);
-        GTIntProviderTypes.init(modBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
