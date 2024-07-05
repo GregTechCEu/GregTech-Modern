@@ -601,6 +601,14 @@ public class GTMachines {
             .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
+
+    public static final MachineDefinition CREATIVE_COMPUTATION = REGISTRATE
+            .machine("creative_computation", CreativeComputationProviderMachine::new)
+            .rotationState(RotationState.ALL)
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .compassNodeSelf()
+            .register();
+
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
