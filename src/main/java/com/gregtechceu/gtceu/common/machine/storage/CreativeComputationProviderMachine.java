@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -15,19 +16,22 @@ import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeComputationProviderMachine extends MetaMachine
-        implements IUIMachine, IOpticalComputationProvider {
+                                                implements IUIMachine, IOpticalComputationProvider {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CreativeComputationProviderMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -72,7 +76,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     @Override
     public int requestCWUt(
-            int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+                           int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         int requestedCWUt = active ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
@@ -110,7 +114,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                 .widget(new SwitchWidget(9, 66, 122, 20, (clickData, value) -> setActive(value))
                         .setSupplier(this::isActive)
                         .setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.off")),
+                                new TextTexture("gtceu.creative.activity.off")),
                                 new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
                                         new TextTexture("gtceu.creative.activity.on"))));
     }
