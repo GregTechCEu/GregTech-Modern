@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "bloom=false,inverted=false,lit=false,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=false,inverted=false,lit=false,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=false,inverted=false,lit=true,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp"
+    },
+    "bloom=false,inverted=false,lit=true,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp"
+    },
+    "bloom=false,inverted=true,lit=false,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=false,inverted=true,lit=false,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=false,inverted=true,lit=true,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp"
+    },
+    "bloom=false,inverted=true,lit=true,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp"
+    },
+    "bloom=true,inverted=false,lit=false,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=true,inverted=false,lit=false,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=true,inverted=false,lit=true,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_bloom"
+    },
+    "bloom=true,inverted=false,lit=true,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_bloom"
+    },
+    "bloom=true,inverted=true,lit=false,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=true,inverted=true,lit=false,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_off"
+    },
+    "bloom=true,inverted=true,lit=true,powered=false": {
+      "model": "gtceu:block/purple_borderless_lamp_bloom"
+    },
+    "bloom=true,inverted=true,lit=true,powered=true": {
+      "model": "gtceu:block/purple_borderless_lamp_bloom"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "ldlib": {
+    "connection": "gtceu:block/lamps/black_ctm_emissive"
+  },
+  "shimmer": {
+    "bloom": true
+  }
+}
+

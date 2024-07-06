@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
@@ -348,8 +347,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (entity instanceof IToolable toolable && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-            var result = toolable.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+        if (!types.isEmpty() && ToolHelper.canUse(itemStack)) {
+            var result = pipeBlockEntity.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 

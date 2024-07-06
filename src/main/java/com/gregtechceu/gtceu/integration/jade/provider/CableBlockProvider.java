@@ -18,12 +18,9 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import java.text.DecimalFormat;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_1F;
 
 public class CableBlockProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
-
-    public static final CableBlockProvider INSTANCE = new CableBlockProvider();
-    public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#.#");
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {

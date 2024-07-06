@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -27,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.longs.LongIntPair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,6 +53,10 @@ public class GTRecipeModifiers {
             .memoize(ElectricOverclockModifier::new);
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers
             .hatchParallel(machine, recipe, false).getFirst();
+
+    public static final RecipeModifier SUBTICK_PARALLEL = (machine, recipe) -> GTRecipeModifiers
+            .subtickParallel(machine, recipe, false);
+
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return recipe;
@@ -69,7 +75,11 @@ public class GTRecipeModifiers {
                     return null;
                 }
                 recipe = recipe.copy();
-                recipe.duration *= Math.max(1, (int) (maxAllowedStrength / Math.max(strength, 1)));
+                int originalDuration = recipe.duration;
+                recipe.duration *= (1 + (int) (strength * 5 / maxAllowedStrength));
+                if (recipe.duration > 5 * originalDuration) {
+                    return null;
+                }
                 return recipe;
             });
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
@@ -89,7 +99,7 @@ public class GTRecipeModifiers {
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) / recipe.parallels > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
@@ -234,5 +244,29 @@ public class GTRecipeModifiers {
             return recipe;
         }
         return null;
+    }
+
+    public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, boolean modifyDuration) {
+        if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
+            final Pair<GTRecipe, Integer>[] result = new Pair[] { null };
+            RecipeHelper.applyOverclock(
+                    new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> {
+                        var parallel = OverclockingLogic.standardOverclockingLogicWithSubTickParallelCount(
+                                Math.abs(recipeEUt),
+                                maxVoltage,
+                                duration,
+                                amountOC,
+                                OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR,
+                                OverclockingLogic.STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
+
+                        result[0] = GTRecipeModifiers.accurateParallel(machine, recipe, parallel.getRight(),
+                                modifyDuration);
+                        return LongIntPair.of(parallel.getLeft(), parallel.getMiddle());
+                    }), recipe, electricMachine.getOverclockVoltage());
+            if (result[0] != null) {
+                return result[0].getFirst();
+            }
+        }
+        return recipe;
     }
 }
