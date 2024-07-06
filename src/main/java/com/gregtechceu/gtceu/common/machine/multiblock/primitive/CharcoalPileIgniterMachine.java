@@ -6,18 +6,16 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,7 +36,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -123,9 +122,9 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     public BlockPattern getPattern() {
         updateDimensions();
 
-        if(lDist < 1) lDist = MIN_RADIUS;
-        if(rDist < 1) rDist = MIN_RADIUS;
-        if(hDist < 2) hDist = MIN_RADIUS;
+        if (lDist < 1) lDist = MIN_RADIUS;
+        if (rDist < 1) rDist = MIN_RADIUS;
+        if (hDist < 2) hDist = MIN_RADIUS;
 
         if (this.getFrontFacing().getAxis() == Direction.Axis.X) {
             int tmp = lDist;
@@ -144,9 +143,9 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         ctrlBuilder.append(" ");
         woodBuilder.append("X");
 
-        for(int i = 0; i < lDist; i++) {
+        for (int i = 0; i < lDist; i++) {
             cornerBuilder.append(" ");
-            if(i > 0) {
+            if (i > 0) {
                 wallBuilder.append("X");
                 floorBuilder.append("B");
                 ctrlBuilder.append("X");
@@ -160,9 +159,9 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         ctrlBuilder.append("S");
         woodBuilder.append("C");
 
-        for(int i = 0; i < rDist; i++) {
+        for (int i = 0; i < rDist; i++) {
             cornerBuilder.append(" ");
-            if(i < rDist - 1) {
+            if (i < rDist - 1) {
                 wallBuilder.append("X");
                 floorBuilder.append("B");
                 ctrlBuilder.append("X");
@@ -187,8 +186,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         String[] center = Arrays.copyOf(slice, slice.length); // " BBB ", "XCCCX", " XSX "
         if (this.getFrontFacing().getAxis() == Direction.Axis.X) {
             center[center.length - 1] = ctrlBuilder.reverse().toString();
-        }
-        else {
+        } else {
             center[center.length - 1] = ctrlBuilder.toString();
         }
 
@@ -210,7 +208,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private TraceabilityPredicate logPredicate() {
         return new TraceabilityPredicate(multiblockState -> {
-            if(multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN)) {
+            if (multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN)) {
                 logPos.add(multiblockState.getPos());
                 return true;
             }
@@ -223,22 +221,24 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         Direction left = getFrontFacing().getOpposite().getCounterClockWise();
         Direction right = left.getOpposite();
 
-        BlockPos.MutableBlockPos lPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ()).move(Direction.DOWN);
-        BlockPos.MutableBlockPos rPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ()).move(Direction.DOWN);
+        BlockPos.MutableBlockPos lPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ())
+                .move(Direction.DOWN);
+        BlockPos.MutableBlockPos rPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ())
+                .move(Direction.DOWN);
         BlockPos.MutableBlockPos hPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ());
 
         int lDist = 0;
         int rDist = 0;
         int hDist = 0;
 
-        for(int i = 1; i < 6; i++) {
-            if(lDist != 0 && rDist != 0 && hDist != 0) break;
-            if(lDist == 0 && isBlockWall(level, lPos, left)) lDist = i;
-            if(rDist == 0 && isBlockWall(level, rPos, right)) rDist = i;
-            if(hDist == 0 && isBlockFloor(level, hPos)) hDist = i;
+        for (int i = 1; i < 6; i++) {
+            if (lDist != 0 && rDist != 0 && hDist != 0) break;
+            if (lDist == 0 && isBlockWall(level, lPos, left)) lDist = i;
+            if (rDist == 0 && isBlockWall(level, rPos, right)) rDist = i;
+            if (hDist == 0 && isBlockFloor(level, hPos)) hDist = i;
         }
 
-        if(lDist < MIN_RADIUS || rDist < MIN_RADIUS || hDist < MIN_DEPTH) {
+        if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || hDist < MIN_DEPTH) {
             onStructureInvalid();
             return false;
         }
@@ -263,7 +263,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     private void updateMaxProgessTime() {
-        this.maxTime = Math.max(1, (int)Math.sqrt(logPos.size() * 240_000));
+        this.maxTime = Math.max(1, (int) Math.sqrt(logPos.size() * 240_000));
     }
 
     @Override
@@ -283,8 +283,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     public void tick() {
-        if(isActive && maxTime > 0) {
-            if(++progressTime == maxTime) {
+        if (isActive && maxTime > 0) {
+            if (++progressTime == maxTime) {
                 progressTime = 0;
                 maxTime = 0;
                 convertLogBlocks();
@@ -295,46 +295,48 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private void convertLogBlocks() {
         Level level = getLevel();
-        for(BlockPos pos : logPos) {
+        for (BlockPos pos : logPos) {
             level.setBlock(pos, GTBlocks.BRITTLE_CHARCOAL.getDefaultState(), Block.UPDATE_ALL);
         }
         logPos.clear();
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof IMachineBlockEntity machineBe) {
             MetaMachine mte = machineBe.getMetaMachine();
             if (mte instanceof CharcoalPileIgniterMachine cpi && cpi.isFormed()) {
                 if (world.isClientSide) {
                     player.swing(hand);
-                } else if(!cpi.isActive()) {
+                } else if (!cpi.isActive()) {
                     boolean shouldActivate = false;
                     ItemStack stack = player.getItemInHand(hand);
-                    if(stack.getItem() instanceof FlintAndSteelItem) {
+                    if (stack.getItem() instanceof FlintAndSteelItem) {
                         stack.getItem().damageItem(stack, 1, player, null);
                         getLevel().playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
                         shouldActivate = true;
-                    } else if(stack.getItem() instanceof FireChargeItem) {
+                    } else if (stack.getItem() instanceof FireChargeItem) {
                         stack.shrink(1);
 
                         getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
                         shouldActivate = true;
-                    } else if(stack.getItem() instanceof ComponentItem compItem) {
-                       for(var component : compItem.getComponents()) {
-                           if(component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
-                               getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+                    } else if (stack.getItem() instanceof ComponentItem compItem) {
+                        for (var component : compItem.getComponents()) {
+                            if (component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
+                                getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f,
+                                        1.0f);
 
-                               shouldActivate = true;
-                               break;
-                           }
-                       }
+                                shouldActivate = true;
+                                break;
+                            }
+                        }
                     }
 
-                    if(shouldActivate) {
+                    if (shouldActivate) {
                         cpi.setActive(true);
                         return InteractionResult.CONSUME;
                     }

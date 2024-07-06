@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.common.block.explosive.GTExplosiveBlock;
 import com.gregtechceu.gtceu.utils.GradientUtil;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,17 +34,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddInformation {
 
-
-    private static final String LIGHTER_OPEN = "lighterOpen";
+    public static final String LIGHTER_OPEN = "lighterOpen";
     private static final String USES_LEFT = "usesLeft";
     private static final Pair<Integer, Integer> DURABILITY_BAR_COLORS = GradientUtil.getGradient(0xF07F1D, 10);
     private final ResourceLocation overrideLocation;
@@ -64,7 +66,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         this.destroyItem = destroyItem;
     }
 
-    public LighterBehavior(@Nullable ResourceLocation overrideLocation, boolean useFluid, boolean hasMultipleUses, boolean canOpen) {
+    public LighterBehavior(@Nullable ResourceLocation overrideLocation, boolean useFluid, boolean hasMultipleUses,
+                           boolean canOpen) {
         this.overrideLocation = overrideLocation;
         this.usesFluid = useFluid;
         this.hasMultipleUses = hasMultipleUses;
@@ -73,11 +76,12 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if(attacker instanceof Player player) {
+        if (attacker instanceof Player player) {
             if (target instanceof Creeper creeper) {
                 CompoundTag compound = stack.getOrCreateTag();
                 if ((!canOpen || compound.getBoolean(LIGHTER_OPEN)) && consumeFuel(player, stack)) {
-                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F, GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
+                            SoundSource.PLAYERS, 1.0F, GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                     creeper.ignite();
                     return true;
                 }
@@ -86,13 +90,12 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         return IInteractionItem.super.hurtEnemy(stack, target, attacker);
     }
 
-
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
-        if(canOpen && player.isCrouching()) {
-            tag.putBoolean(LIGHTER_OPEN, tag.getBoolean(LIGHTER_OPEN));
+        if (canOpen && player.isCrouching()) {
+            tag.putBoolean(LIGHTER_OPEN, !tag.getBoolean(LIGHTER_OPEN));
             itemStack.setTag(tag);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
@@ -100,27 +103,30 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        //ItemStack itemStack = player.getItemInHand(usedHand);
+        // ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
         Player player = context.getPlayer();
-        if((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && player.isCrouching()) && consumeFuel(player, itemStack)) {
-            player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F, GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching()) && consumeFuel(player, itemStack)) {
+            player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                    GTValues.RNG.nextFloat() * 0.4F + 0.8F);
             BlockState state = context.getLevel().getBlockState(context.getClickedPos());
             Block block = state.getBlock();
-            if(block instanceof TntBlock tnt) {
+            if (block instanceof TntBlock tnt) {
                 tnt.onCaughtFire(null, context.getLevel(), context.getClickedPos(), null, player);
-                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(),
+                        Block.UPDATE_ALL_IMMEDIATE);
                 return InteractionResult.SUCCESS;
             }
-            if(block instanceof GTExplosiveBlock explosive) {
+            if (block instanceof GTExplosiveBlock explosive) {
                 explosive.explode(context.getLevel(), context.getClickedPos(), player);
-                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(),
+                        Block.UPDATE_ALL_IMMEDIATE);
                 return InteractionResult.SUCCESS;
             }
 
             BlockPos offset = context.getClickedPos().offset(context.getClickedFace().getNormal());
             context.getLevel().setBlock(offset, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-            if(!context.getLevel().isClientSide){
+            if (!context.getLevel().isClientSide) {
                 CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
             }
             return InteractionResult.SUCCESS;
@@ -129,15 +135,13 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         return InteractionResult.FAIL;
     }
 
-
-
     public boolean consumeFuel(Player player, ItemStack stack) {
-        if(player != null && player.isCreative())
+        if (player != null && player.isCreative())
             return true;
 
         int usesLeft = getUsesLeft(stack);
 
-        if(usesLeft - 1 >= 0) {
+        if (usesLeft - 1 >= 0) {
             setUsesLeft(player, stack, usesLeft - 1);
             return true;
         }
@@ -145,17 +149,19 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     private int getUsesLeft(ItemStack stack) {
-        if(usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).resolve().orElse(null);
-            if(fluidHandlerItem == null)
+        if (usesFluid) {
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
+                    .resolve().orElse(null);
+            if (fluidHandlerItem == null)
                 return 0;
 
-            net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
+            net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE,
+                    IFluidHandler.FluidAction.SIMULATE);
             return fluid.isEmpty() ? 0 : fluid.getAmount();
         }
-        if(hasMultipleUses) {
+        if (hasMultipleUses) {
             CompoundTag compound = stack.getOrCreateTag();
-            if(compound.contains(USES_LEFT)) {
+            if (compound.contains(USES_LEFT)) {
                 return compound.getInt(USES_LEFT);
             }
             compound.putInt(USES_LEFT, maxUses);
@@ -166,17 +172,19 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     private void setUsesLeft(Player player, @NotNull ItemStack stack, int usesLeft) {
-        if(usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).resolve().orElse(null);
-            if(fluidHandlerItem != null) {
+        if (usesFluid) {
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
+                    .resolve().orElse(null);
+            if (fluidHandlerItem != null) {
 
-                net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
-                if(!fluid.isEmpty()) {
+                net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE,
+                        IFluidHandler.FluidAction.SIMULATE);
+                if (!fluid.isEmpty()) {
                     fluidHandlerItem.drain(fluid.getAmount() - usesLeft, IFluidHandler.FluidAction.EXECUTE);
                 }
             }
-        } else if(hasMultipleUses) {
-            if(usesLeft == 0) {
+        } else if (hasMultipleUses) {
+            if (usesLeft == 0) {
                 stack.setCount(0);
                 player.addItem(new ItemStack(destroyItem));
             } else {
@@ -187,19 +195,18 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         }
     }
 
-
-
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
-        if(usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).resolve().orElse(null);
-            if(fluidHandlerItem == null)
+        if (usesFluid) {
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
+                    .resolve().orElse(null);
+            if (fluidHandlerItem == null)
                 return 0.0f;
 
             net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.getFluidInTank(0);
-            return fluid.isEmpty() ? 0.0f : (float)fluid.getAmount() / (float)fluidHandlerItem.getTankCapacity(0);
-        } else if(hasMultipleUses) {
-            return (float)getUsesLeft(stack) / (float)maxUses;
+            return fluid.isEmpty() ? 0.0f : (float) fluid.getAmount() / (float) fluidHandlerItem.getTankCapacity(0);
+        } else if (hasMultipleUses) {
+            return (float) getUsesLeft(stack) / (float) maxUses;
         }
         return 0.0f;
     }
@@ -210,17 +217,24 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
+    public boolean showEmptyBar(ItemStack itemStack) {
+        return usesFluid || hasMultipleUses;
+    }
+
+    @Override
     public @Nullable Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
-        if(hasMultipleUses && usesFluid) {
+        if (hasMultipleUses && usesFluid) {
             return DURABILITY_BAR_COLORS;
         }
         return null;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip"));
-        if(hasMultipleUses && !usesFluid) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level,
+                                List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        tooltipComponents.add(
+                Component.translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip"));
+        if (hasMultipleUses && !usesFluid) {
             tooltipComponents.add(Component.translatable("behaviour.lighter.uses", getUsesLeft(stack)));
         }
     }

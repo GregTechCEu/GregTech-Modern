@@ -87,7 +87,6 @@ public class AssemblerRecipeLoader {
         // .outputItems(FOAM_SPRAYER)
         // .duration(200).EUt(VA[ULV]).save(provider);
 
-        // TODO Matches/lighters recipes
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_invar")
                 .inputItems(plate, Invar, 2)
@@ -96,34 +95,34 @@ public class AssemblerRecipeLoader {
                 .duration(256).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_platinum")
-        .inputItems(plate, Platinum, 2)
-        .inputItems(Items.FLINT)
-        .outputItems(TOOL_LIGHTER_PLATINUM)
-        .duration(256).EUt(256).save(provider);
+                .inputItems(plate, Platinum, 2)
+                .inputItems(Items.FLINT)
+                .outputItems(TOOL_LIGHTER_PLATINUM)
+                .duration(256).EUt(256).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_matches_0")
-        .inputItems(bolt, Wood)
-        .inputItems(dustSmall, Phosphorus)
-        .outputItems(TOOL_MATCHES)
-        .duration(16).EUt(16).save(provider);
+                .inputItems(bolt, Wood)
+                .inputItems(dustSmall, Phosphorus)
+                .outputItems(TOOL_MATCHES)
+                .duration(16).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_matches_1")
-        .inputItems(bolt, Wood)
-        .inputItems(dustSmall, TricalciumPhosphate)
-        .outputItems(TOOL_MATCHES)
-        .duration(16).EUt(16).save(provider);
+                .inputItems(bolt, Wood)
+                .inputItems(dustSmall, TricalciumPhosphate)
+                .outputItems(TOOL_MATCHES)
+                .duration(16).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_matches_2")
-        .inputItems(bolt, Wood, 4)
-        .inputItems(dust, Phosphorus)
-        .outputItems(TOOL_MATCHES, 4)
-        .duration(64).EUt(16).save(provider);
+                .inputItems(bolt, Wood, 4)
+                .inputItems(dust, Phosphorus)
+                .outputItems(TOOL_MATCHES, 4)
+                .duration(64).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_matches_3")
-        .inputItems(bolt, Wood, 4)
-        .inputItems(dust, TricalciumPhosphate)
-        .outputItems(TOOL_MATCHES, 4)
-        .duration(64).EUt(16).save(provider);
+                .inputItems(bolt, Wood, 4)
+                .inputItems(dust, TricalciumPhosphate)
+                .outputItems(TOOL_MATCHES, 4)
+                .duration(64).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("small_wood_pipe").duration(200).EUt(VA[LV])
                 .inputItems(plate, Wood)

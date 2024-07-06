@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -618,22 +619,37 @@ public class GTItems {
     // TODO Lighter
     public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
             .lang("Matches")
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, false, false)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::create)
             .lang("Matchbox")
             .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, true, false, Items.PAPER, 16)))
             .register();
-    public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_closed_lighter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::create)
             .lang("Invar Lighter")
             .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(ThermalFluidStats.create(100, true,
+                    x -> x.getFluid() == GTMaterials.Butane.getFluid() ||
+                            x.getFluid() == GTMaterials.Propane.getFluid()), new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();
-    public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE.item("platinum_closed_lighter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
+            .item("platinum_lighter", ComponentItem::create)
             .lang("Platinum Lighter")
             .properties(p -> p.stacksTo(1).rarity(Rarity.UNCOMMON))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(ThermalFluidStats.create(1000, true,
+                    x -> x.getFluid() == GTMaterials.Butane.getFluid() ||
+                            x.getFluid() == GTMaterials.Propane.getFluid()), new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)

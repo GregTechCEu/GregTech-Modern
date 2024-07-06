@@ -71,8 +71,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -1567,9 +1565,10 @@ public class GTBlocks {
     public static BlockEntry<Block> LIGHT_CONCRETE;
     public static BlockEntry<Block> DARK_CONCRETE;
 
-    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE.block("brittle_charcoal_block", p -> (Block) new RendererBlock(p,
-            Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                    Map.of("all", GTCEu.id("block/misc/brittle_charcoal")) ) : null))
+    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
+            .block("brittle_charcoal_block", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                            Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
             .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
