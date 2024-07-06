@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
 import dev.latvian.mods.kubejs.client.ModelGenerator;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.item.ItemBuilder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -40,7 +40,7 @@ public class RendererBlockBuilder extends BlockBuilder {
     protected void generateItemModelJson(ModelGenerator m) {}
 
     @Override
-    protected void generateBlockModelJsons(AssetJsonGenerator generator) {}
+    protected void generateBlockModelJsons(KubeAssetGenerator generator) {}
 
     public RendererBlockBuilder textureOverrideRenderer(ResourceLocation modelPath,
                                                         Map<String, ResourceLocation> textures) {
