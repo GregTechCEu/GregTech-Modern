@@ -94,9 +94,9 @@ public class TooltipsHandler {
                 if (GTUtil.isShiftDown() && amount >= GTValues.L) {
                     long ingots = amount / GTValues.L;
                     long remainder = amount % GTValues.L;
-                    String fluidAmount = String.format(" %,d L = %,d * %d L", amount, ingots, GTValues.L);
+                    String fluidAmount = String.format(" %,d mB = %,d * %d mB", amount, ingots, GTValues.L);
                     if (remainder != 0) {
-                        fluidAmount += String.format(" + %d L", remainder);
+                        fluidAmount += String.format(" + %d mB", remainder);
                     }
                     tooltips.add(2, Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(fluidAmount)));

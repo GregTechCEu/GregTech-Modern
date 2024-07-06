@@ -276,9 +276,4 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
         return super.sideTips(player, toolTypes, side);
     }
-
-    @Override
-    public void onAddFancyInformationTooltip(List<Component> tooltips) {
-        super.onAddFancyInformationTooltip(tooltips);
-    }
 }
