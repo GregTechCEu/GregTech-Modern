@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.item.ItemBuilder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -39,7 +39,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     }
 
     @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {}
+    public void generateAssetJsons(KubeAssetGenerator generator) {}
 
     @Override
     protected ItemBuilder getOrCreateItemBuilder() {
