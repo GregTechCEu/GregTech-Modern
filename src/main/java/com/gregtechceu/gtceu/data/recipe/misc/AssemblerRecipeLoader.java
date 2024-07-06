@@ -87,7 +87,6 @@ public class AssemblerRecipeLoader {
         // .outputItems(FOAM_SPRAYER)
         // .duration(200).EUt(VA[ULV]).save(provider);
 
-
         ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_invar")
                 .inputItems(plate, Invar, 2)
                 .inputItems(Items.FLINT)

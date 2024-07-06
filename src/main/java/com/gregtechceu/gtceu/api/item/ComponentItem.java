@@ -242,8 +242,8 @@ public class ComponentItem extends Item
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         boolean result = false;
-        for(IItemComponent component : components) {
-            if(component instanceof IInteractionItem interactionItem) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
                 result |= interactionItem.hurtEnemy(stack, target, attacker);
             }
         }

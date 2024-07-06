@@ -78,13 +78,13 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
                 if (allowPartialFill) {
-                    if(filter != null) {
+                    if (filter != null) {
                         return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
                     }
                     return new ThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
                             acidProof, cryoProof, plasmaProof);
                 }
-                if(filter != null) {
+                if (filter != null) {
                     return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
                 }
                 return new SimpleThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
@@ -99,9 +99,10 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
                                 TooltipFlag isAdvanced) {
         if (stack.hasTag()) {
             FluidStack tank = FluidTransferHelper.getFluidContained(stack);
-            if(tank != null) {
-                tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                        tank.getAmount()));
+            if (tank != null) {
+                tooltipComponents
+                        .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
+                                tank.getAmount()));
             }
         }
     }

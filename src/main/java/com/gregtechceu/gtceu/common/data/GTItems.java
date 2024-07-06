@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -635,7 +634,8 @@ public class GTItems {
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(ThermalFluidStats.create(100, true,
                     x -> x.getFluid() == GTMaterials.Butane.getFluid() ||
-                            x.getFluid() == GTMaterials.Propane.getFluid()), new ItemFluidContainer()))
+                            x.getFluid() == GTMaterials.Propane.getFluid()),
+                    new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();
@@ -647,7 +647,8 @@ public class GTItems {
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(ThermalFluidStats.create(1000, true,
                     x -> x.getFluid() == GTMaterials.Butane.getFluid() ||
-                            x.getFluid() == GTMaterials.Propane.getFluid()), new ItemFluidContainer()))
+                            x.getFluid() == GTMaterials.Propane.getFluid()),
+                    new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();;
