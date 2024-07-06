@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/lamp",
+  "textures": {
+    "active": "gtceu:block/lamps/light_gray",
+    "active_overlay": "gtceu:block/lamps/light_gray_emissive"
+  }
+}

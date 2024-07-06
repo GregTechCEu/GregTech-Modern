@@ -25,7 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,11 +52,6 @@ public final class ResearchManager {
     }
 
     private ResearchManager() {}
-
-    @ApiStatus.Internal
-    public static void registerScannerLogic() {
-        GTRecipeType.registerCustomScannerLogic(new DataStickCopyScannerLogic());
-    }
 
     /**
      * @param stackCompound the compound contained on the ItemStack to write to
@@ -165,7 +159,7 @@ public final class ResearchManager {
         }
     }
 
-    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomScannerLogic {
+    public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
         private static final int EUT = 2;
         private static final int DURATION = 100;

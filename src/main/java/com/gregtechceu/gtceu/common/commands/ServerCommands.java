@@ -150,22 +150,17 @@ public class ServerCommands {
     }
 
     private static int queryMedicalConditions(ServerPlayer target) throws CommandSyntaxException {
-        IMedicalConditionTracker tracker = GTCapabilityHelper
-                .getMedicalConditionTracker(target);
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
         if (tracker == null) {
             throw EntityArgument.NO_PLAYERS_FOUND.create();
         }
         int count = tracker.getMedicalConditions().size();
         if (count == 0) {
-
             target.sendSystemMessage(
-                    Component.translatable(
-                            "command.gtceu.medical_condition.get.empty",
-                            target.getName()));
+                    Component.translatable("command.gtceu.medical_condition.get.empty", target.getName()));
         } else {
             target.sendSystemMessage(
-                    Component.translatable("command.gtceu.medical_condition.get",
-                            target.getName()));
+                    Component.translatable("command.gtceu.medical_condition.get", target.getName()));
         }
         for (var entry : tracker.getMedicalConditions().object2FloatEntrySet()) {
             String langKey = "command.gtceu.medical_condition.get.element";
@@ -174,10 +169,8 @@ public class ServerCommands {
                 langKey = "command.gtceu.medical_condition.get.element.permanent";
             }
             target.sendSystemMessage(
-                    Component.translatable(
-                            langKey,
-                            Component.translatable("gtceu.medical_condition." +
-                                    entry.getKey().name),
+                    Component.translatable(langKey,
+                            Component.translatable("gtceu.medical_condition." + entry.getKey().name),
                             entry.getFloatValue() / 20f));
         }
         return count;
@@ -187,15 +180,13 @@ public class ServerCommands {
                                               @Nullable MedicalCondition condition) throws CommandSyntaxException {
         int count = 0;
         for (ServerPlayer target : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper
-                    .getMedicalConditionTracker(target);
+            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
             if (tracker == null) {
                 continue;
             }
             if (condition == null) {
                 count += tracker.getMedicalConditions().keySet().size();
-                for (MedicalCondition medicalCondition : tracker.getMedicalConditions()
-                        .keySet()) {
+                for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                     tracker.removeMedicalCondition(medicalCondition);
                 }
             } else {
@@ -209,13 +200,11 @@ public class ServerCommands {
         return count;
     }
 
-    private static int applyMedicalConditions(Collection<ServerPlayer> targets,
-                                              MedicalCondition condition,
+    private static int applyMedicalConditions(Collection<ServerPlayer> targets, MedicalCondition condition,
                                               float strength) throws CommandSyntaxException {
         int success = 0;
         for (ServerPlayer player : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper
-                    .getMedicalConditionTracker(player);
+            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             if (tracker == null) {
                 continue;
             }

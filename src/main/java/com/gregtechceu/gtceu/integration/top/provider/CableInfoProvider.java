@@ -14,11 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.*;
 
-import java.text.DecimalFormat;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_1F;
 
 public class CableInfoProvider implements IProbeInfoProvider {
-
-    public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#.#");
 
     @Override
     public ResourceLocation getID() {

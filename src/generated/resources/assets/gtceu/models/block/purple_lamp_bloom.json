@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/lamp",
+  "textures": {
+    "active": "gtceu:block/lamps/purple",
+    "active_overlay": "gtceu:block/lamps/purple_emissive"
+  }
+}

@@ -50,7 +50,7 @@ public class GTMedicalConditions {
 
     // Material specific Conditions
     public static final MedicalCondition ASBESTOSIS = new MedicalCondition("asbestosis", 0xe3e3e3, 5000,
-            MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, 1, true,
+            MedicalCondition.IdleProgressionType.HEAL, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .6f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .3f),
             new Symptom.ConfiguredSymptom(Symptom.HUNGER, .2f),
@@ -58,7 +58,7 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Asbestos, 4));
     public static final MedicalCondition ARSENICOSIS = new MedicalCondition("arsenicosis", 0xbd4b15, 1000,
-            MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, 1, true,
+            MedicalCondition.IdleProgressionType.HEAL, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.WITHER),
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, .6f),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
@@ -68,13 +68,13 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Arsenic, 4));
     public static final MedicalCondition SILICOSIS = new MedicalCondition("silicosis", 0x5d6c91, 15000,
-            MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, .5f, true,
+            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, 4, .75f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .6f))
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, SiliconDioxide, 4));
     public static final MedicalCondition BERYLLIOSIS = new MedicalCondition("berylliosis", 0x0c6539, 10000,
-            MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, .5f, true,
+            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.WITHER),
             new Symptom.ConfiguredSymptom(Symptom.RANDOM_DAMAGE, 1, .7f),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
@@ -82,7 +82,7 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Beryllium, 4));
     public static final MedicalCondition METHANOL_POISONING = new MedicalCondition("methanol_poisoning", 0xaa8800, 500,
-            MedicalCondition.IdleProgressionType.UNTREATED_PROGRESSION, .5f, true,
+            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.POISONING),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, .75f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .5f),

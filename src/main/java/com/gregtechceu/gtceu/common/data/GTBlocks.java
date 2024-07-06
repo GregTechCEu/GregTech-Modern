@@ -71,8 +71,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -1567,9 +1565,10 @@ public class GTBlocks {
     public static BlockEntry<Block> LIGHT_CONCRETE;
     public static BlockEntry<Block> DARK_CONCRETE;
 
-    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE.block("brittle_charcoal_block", p -> (Block) new RendererBlock(p,
-            Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                    Map.of("all", GTCEu.id("block/misc/brittle_charcoal")) ) : null))
+    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
+            .block("brittle_charcoal_block", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                            Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
             .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
@@ -1652,17 +1651,36 @@ public class GTBlocks {
             .register();
 
     // Lamps
-    @SuppressWarnings("unchecked")
-    public static final BlockEntry<Block>[] LAMPS = new BlockEntry[DyeColor.values().length];
+    public static final Map<DyeColor, BlockEntry<LampBlock>> LAMPS;
+    public static final Map<DyeColor, BlockEntry<LampBlock>> BORDERLESS_LAMPS;
     static {
+        ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> lampBuilder = new ImmutableMap.Builder<>();
         DyeColor[] colors = DyeColor.values();
-        for (int i = 0; i < colors.length; i++) {
-            var dyeColor = colors[i];
-            LAMPS[i] = REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), Block::new)
-                    .initialProperties(() -> Blocks.GLOWSTONE)
-                    .simpleItem()
-                    .register();
+        for (DyeColor dyeColor : colors) {
+            lampBuilder.put(dyeColor,
+                    REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, true))
+                            .initialProperties(() -> Blocks.GLASS)
+                            .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                            .addLayer(() -> RenderType::cutout)
+                            .blockstate(GTModels.lampModel(dyeColor, true))
+                            .item(LampBlockItem::new)
+                            .build()
+                            .register());
         }
+        LAMPS = lampBuilder.build();
+        ImmutableMap.Builder<DyeColor, BlockEntry<LampBlock>> borderlessLampBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            borderlessLampBuilder.put(dyeColor, REGISTRATE
+                    .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, false))
+                    .initialProperties(() -> Blocks.GLASS)
+                    .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .addLayer(() -> RenderType::cutout)
+                    .blockstate(GTModels.lampModel(dyeColor, false))
+                    .item(LampBlockItem::new)
+                    .build()
+                    .register());
+        }
+        BORDERLESS_LAMPS = borderlessLampBuilder.build();
     }
 
     public static <P, T extends Block,

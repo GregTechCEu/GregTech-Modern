@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/lamp_borderless",
+  "textures": {
+    "active": "gtceu:block/lamps/light_blue_borderless"
+  }
+}

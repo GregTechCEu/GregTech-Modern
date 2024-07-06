@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import java.util.List;
 
 public class BrittleCharcoalBlock extends Block {
+
     public BrittleCharcoalBlock(Properties properties) {
         super(properties);
     }
