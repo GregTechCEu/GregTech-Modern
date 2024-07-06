@@ -158,21 +158,21 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         String unit;
         if (durationCurrent.getSeconds() <= 180) {
             currentChargeTime = durationCurrent.getSeconds();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
         } else if (durationCurrent.toMinutes() <= 180) {
             currentChargeTime = durationCurrent.toMinutes();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
         } else {
             currentChargeTime = durationCurrent.toHours();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
         }
 
         if (durationMax.getSeconds() <= 180) {
             maxChargeTime = durationMax.getSeconds();
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
         } else if (durationMax.toMinutes() <= 180) {
             maxChargeTime = durationMax.toMinutes();
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
         } else {
             maxChargeTime = durationMax.toHours();
+            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
         }
 
         if (percentage > 0.5) {
