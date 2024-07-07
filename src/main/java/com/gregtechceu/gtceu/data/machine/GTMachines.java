@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
@@ -652,7 +653,8 @@ public class GTMachines {
                     .register(),
             HIGH_TIERS);
 
-    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName) {
+    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName,
+                                                                            @Nullable Material material) {
         return (stack, list) -> {
             if (stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
                 Tag fluidNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag()
@@ -664,7 +666,15 @@ public class GTMachines {
                         Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE),
                         fluidNbt).getOrThrow();
                 list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(),
-                        tank.getAmount()));
+                        FormattingUtil.formatNumbers(tank.getAmount())));
+            }
+
+            var item = stack.getItem();
+            if (item instanceof DrumMachineItem drumItem && material != null) {
+                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
+                    pipeprops.appendTooltips(list, true, true);
+                }
             }
         };
     }
@@ -678,7 +688,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored"))
+                    .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier))))
@@ -696,7 +706,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored"))
+                    .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
@@ -2532,9 +2542,10 @@ public class GTMachines {
                 .rotationState(RotationState.NONE)
                 .renderer(
                         () -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
-                .tooltipBuilder(createTankTooltips("Fluid"))
+                .tooltipBuilder(createTankTooltips("Fluid", material))
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                        Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity))
+                        Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .compassNode("drum")

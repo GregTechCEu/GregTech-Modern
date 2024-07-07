@@ -3709,7 +3709,7 @@
   "gtceu.universal.tooltip.energy_tier_range": "§aAllowed Voltage Tiers: §f%s §f- %s",
   "gtceu.universal.tooltip.fluid_storage_capacity": "§9Fluid Capacity: §f%d mB",
   "gtceu.universal.tooltip.fluid_storage_capacity_mult": "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each",
-  "gtceu.universal.tooltip.fluid_stored": "§dFluid Stored: §f%s, %d mB",
+  "gtceu.universal.tooltip.fluid_stored": "§2Fluid Stored: §f%s, %d mB",
   "gtceu.universal.tooltip.fluid_transfer_rate": "§bTransfer Rate: §f%d mB/t",
   "gtceu.universal.tooltip.item_storage_capacity": "§6Item Slots: §f%d",
   "gtceu.universal.tooltip.item_storage_total": "§6Item Capacity: §f%d items",

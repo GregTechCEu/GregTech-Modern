@@ -855,7 +855,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
                 "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§2Fluid Stored: §f%s, %d mB");
         provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");

@@ -9,6 +9,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 
 import com.google.common.collect.Lists;
+import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.FluidEmiStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +31,8 @@ public class FluidEmiStackMixin {
     @Inject(method = "getTooltip", at = @At("TAIL"), remap = false)
     private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir) {
         List<Component> tooltips = Lists.newArrayList(Component.empty(), Component.empty());
-        TooltipsHandler.appendFluidTooltips(this.fluid, tooltips, TooltipFlag.NORMAL);
+        TooltipsHandler.appendFluidTooltips(this.fluid, ((EmiStack) (Object) this).getAmount(), tooltips,
+                TooltipFlag.NORMAL);
 
         List<ClientTooltipComponent> list = cir.getReturnValue();
         tooltips.stream()
