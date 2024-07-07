@@ -191,6 +191,24 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
+    public final static MultiblockMachineDefinition LARGE_ALLOY_SMELTER = REGISTRATE
+            .multiblock("large_alloy_smelter", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Alloy ")
+            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.alloy_smelter")))
+            .rotationState(RotationState.ALL)
+            .recipeType(ALLOY_SMELTER_RECIPES)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.SUBTICK_PARALLEL,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .pattern(def -> FactoryBlockPattern.start()
+
+                    .build())
+            .workableCasingRenderer(GTCEu.id("block/casings/gcym/"),
+                    GTCEu.id("block/multiblock/gcym/large_alloy_smelter"))
+            .register();
+
+
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE
             .multiblock("large_electrolyzer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Electrolysis Chamber")
