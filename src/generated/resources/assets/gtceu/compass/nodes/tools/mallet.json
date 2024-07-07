@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:polybenzimidazole_mallet"
+    "res": "gtceu:silicone_rubber_mallet"
   },
   "items": [
     "#forge:tools/mallets"
