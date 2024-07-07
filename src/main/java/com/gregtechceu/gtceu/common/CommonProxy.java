@@ -95,7 +95,6 @@ public class CommonProxy {
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
-        GTIntProviderTypes.init(eventBus);
     }
 
     public static void init() {
