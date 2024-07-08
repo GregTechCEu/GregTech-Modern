@@ -1186,14 +1186,14 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
-                .fluid()
+                .liquid()
                 .color(0x060B0B)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Iron, 1, Chlorine, 3)
                 .buildAndRegister();
 
         Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
-                .fluid()
+                .liquid()
                 .color(0xe8e0be)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Iron, 1, Chlorine, 2)
