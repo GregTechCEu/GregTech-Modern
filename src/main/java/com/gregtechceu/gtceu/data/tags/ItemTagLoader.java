@@ -18,7 +18,7 @@ import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class ItemTagLoader {
@@ -43,6 +43,8 @@ public class ItemTagLoader {
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
+
+        create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).getId());
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
