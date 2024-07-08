@@ -156,8 +156,6 @@ public class ForgeCommonEventListener {
             return;
         }
 
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
-
         Player player = event.player;
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
