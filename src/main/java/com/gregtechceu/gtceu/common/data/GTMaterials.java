@@ -173,6 +173,14 @@ public class GTMaterials {
         rock.setIgnored(Basalt, Blocks.BASALT);
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
+        oreDeepslate.setIgnored(Iron, Blocks.DEEPSLATE_IRON_ORE);
+        oreDeepslate.setIgnored(Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
+        oreDeepslate.setIgnored(Coal, Blocks.DEEPSLATE_COAL_ORE);
+        oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
+        oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
+        oreDeepslate.setIgnored(Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
+        oreDeepslate.setIgnored(Gold, Blocks.DEEPSLATE_GOLD_ORE);
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
