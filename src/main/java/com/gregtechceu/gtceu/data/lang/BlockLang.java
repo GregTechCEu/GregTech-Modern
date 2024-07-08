@@ -91,5 +91,6 @@ public class BlockLang {
         provider.add("block.gtceu.powderbarrel.drops_tooltip",
                 "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
+        provider.add("block.gtceu.normal_optical_pipe.tooltip", "Transmitting Research or Computation Data");
     }
 }
