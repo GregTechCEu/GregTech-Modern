@@ -1,22 +1,15 @@
 package com.gregtechceu.gtceu.api.fluids.store;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public interface FluidStorage {
@@ -53,7 +46,6 @@ public interface FluidStorage {
     public @Nullable Fluid get(@NotNull FluidStorageKey key);
 
     public @Nullable FluidEntry getEntry(@NotNull FluidStorageKey key);
-
 
     /**
      * @param key   the key to associate with the fluid

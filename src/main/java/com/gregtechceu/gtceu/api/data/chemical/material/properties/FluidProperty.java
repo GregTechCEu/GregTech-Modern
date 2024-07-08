@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageImpl;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
+import net.minecraft.world.level.material.Fluid;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,15 +43,16 @@ public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidSto
     @Override
     public void enqueueRegistration(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
         storage.enqueueRegistration(key, builder);
-        if(primaryKey == null) {
+        if (primaryKey == null) {
             primaryKey = key;
         }
     }
 
     @Override
-    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
+    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid,
+                      @Nullable FluidBuilder builder) {
         storage.store(key, fluid, builder);
-        if(primaryKey == null) {
+        if (primaryKey == null) {
             primaryKey = key;
         }
     }
@@ -70,10 +72,9 @@ public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidSto
         return storage.getQueuedBuilder(key);
     }
 
-
     @Override
     public void verifyProperty(MaterialProperties properties) {
-        if(this.primaryKey == null) {
+        if (this.primaryKey == null) {
             throw new IllegalStateException("FluidProperty cannot be empty!");
         }
     }

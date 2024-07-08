@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.world.level.material.Fluid;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +84,7 @@ public class FluidStorageImpl implements FluidStorage {
                     }
                     Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material,
                             entry.getKey(), registrate);
-                    if(!storeNoOverwrites(entry.getKey(), fluid, entry.getValue())) {
+                    if (!storeNoOverwrites(entry.getKey(), fluid, entry.getValue())) {
                         GTCEu.LOGGER.error("{} already has an associated fluid for material {}", material, material);
                     }
                 });
@@ -111,7 +113,7 @@ public class FluidStorageImpl implements FluidStorage {
      * @return if the associations were successfully updated
      */
     private boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid,
-                                     @Nullable FluidBuilder builder) {
+                                      @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             return false;
         }

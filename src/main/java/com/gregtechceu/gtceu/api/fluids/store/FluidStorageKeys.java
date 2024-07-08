@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.UnaryOperator;
+import org.jetbrains.annotations.NotNull;
 
 public final class FluidStorageKeys {
 
@@ -27,7 +26,7 @@ public final class FluidStorageKeys {
                 }
                 if (m.isElement()) {
                     FluidProperty property = m.getProperty(PropertyKey.FLUID);
-                    if(m.isElement() || (property != null && property.getPrimaryKey() != FluidStorageKeys.LIQUID)) {
+                    if (m.isElement() || (property != null && property.getPrimaryKey() != FluidStorageKeys.LIQUID)) {
                         return "gtceu.fluid.gas_generic";
                     }
                 }
@@ -49,9 +48,10 @@ public final class FluidStorageKeys {
 
     private FluidStorageKeys() {}
 
-    private static @NotNull String prefixedRegistredName(@NotNull String prefix, @NotNull FluidStorageKey key, @NotNull Material material) {
+    private static @NotNull String prefixedRegistredName(@NotNull String prefix, @NotNull FluidStorageKey key,
+                                                         @NotNull Material material) {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
-        if(property != null && property.getPrimaryKey() != key) {
+        if (property != null && property.getPrimaryKey() != key) {
             return prefix + material.getName();
         }
         return material.getName();

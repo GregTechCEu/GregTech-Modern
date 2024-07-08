@@ -52,7 +52,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F))
-            /* .behaviors(TorchPlaceBehavior.INSTANCE)*/
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */
             .toolClassNames("pickaxe")
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
