@@ -47,7 +47,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "5446773"
-        def ldLibVersion = "1.0.25.u"
+        def ldLibVersion = "1.0.26"
         def shimmerVersion = "0.2.2"
         def neogradleVersion = "7.0.145"
 
