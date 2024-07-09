@@ -45,8 +45,6 @@ public class ItemTagLoader {
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
-        create(provider, ItemTags.CREEPER_IGNITERS, GTItems.TOOL_LIGHTER_PLATINUM.get());
-        create(provider, ItemTags.CREEPER_IGNITERS, GTItems.TOOL_LIGHTER_INVAR.get());
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
