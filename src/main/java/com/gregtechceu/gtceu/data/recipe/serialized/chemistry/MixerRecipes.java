@@ -48,7 +48,7 @@ public class MixerRecipes {
 
         MIXER_RECIPES.recipeBuilder("cetane_diesel_from_diesel")
                 .inputFluids(Diesel.getFluid(1000))
-                .inputFluids(Tetranitromethane.getFluid(200))
+                .inputFluids(Tetranitromethane.getFluid(20))
                 .outputFluids(CetaneBoostedDiesel.getFluid(1000))
                 .duration(20).EUt(VA[HV]).save(provider);
 
