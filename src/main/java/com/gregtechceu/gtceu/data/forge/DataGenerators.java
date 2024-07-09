@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
-
 import com.gregtechceu.gtceu.data.tags.DamageTagsLoader;
+
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
