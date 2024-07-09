@@ -204,6 +204,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder tieredHullRenderer(ResourceLocation model) {
+        return (MultiblockMachineBuilder) super.tieredHullRenderer(model);
+    }
+
+    @Override
     public MultiblockMachineBuilder overlayTieredHullRenderer(String name) {
         return (MultiblockMachineBuilder) super.overlayTieredHullRenderer(name);
     }
