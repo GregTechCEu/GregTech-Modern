@@ -75,22 +75,6 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (attacker instanceof Player player) {
-            if (target instanceof Creeper creeper) {
-                CompoundTag compound = stack.getOrCreateTag();
-                if ((!canOpen || compound.getBoolean(LIGHTER_OPEN)) && consumeFuel(player, stack)) {
-                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
-                            SoundSource.PLAYERS, 1.0F, GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                    creeper.ignite();
-                    return true;
-                }
-            }
-        }
-        return IInteractionItem.super.hurtEnemy(stack, target, attacker);
-    }
-
-    @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
