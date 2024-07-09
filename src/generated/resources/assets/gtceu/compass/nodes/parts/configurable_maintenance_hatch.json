@@ -8,8 +8,8 @@
   ],
   "page": "gtceu:parts/configurable_maintenance_hatch",
   "position": [
-    -200,
-    100
+    -100,
+    50
   ],
   "section": "gtceu:parts"
 }
