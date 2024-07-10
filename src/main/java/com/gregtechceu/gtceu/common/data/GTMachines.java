@@ -140,6 +140,14 @@ public class GTMachines {
 
     public static Object2IntMap<MachineDefinition> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
+    public static final PartAbility[] INPUT_BUFFER_ABILITIES = new PartAbility[] {
+            PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS,
+    };
+
+    public static final PartAbility[] OUTPUT_BUFFER_ABILITIES = new PartAbility[] {
+            PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS,
+    };
+
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
         GTRegistries.MACHINES.unfreeze();
@@ -376,7 +384,7 @@ public class GTMachines {
             .langValue("Long Distance Item Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
-            .renderer(() -> new TieredHullMachineRenderer(LV, GTCEu.id("block/machine/ld_item_endpoint_machine")))
+            .tieredHullRenderer(GTCEu.id("block/machine/ld_item_endpoint_machine"))
             .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip").toArray(Component[]::new))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
@@ -392,7 +400,7 @@ public class GTMachines {
             .langValue("Long Distance Fluid Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
-            .renderer(() -> new TieredHullMachineRenderer(LV, GTCEu.id("block/machine/ld_fluid_endpoint_machine")))
+            .tieredHullRenderer(GTCEu.id("block/machine/ld_fluid_endpoint_machine"))
             .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.1"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.2"))
@@ -416,7 +424,7 @@ public class GTMachines {
     public static final MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
-                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
+                    .tieredHullRenderer(GTCEu.id("block/machine/pump_machine"))
                     .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -437,7 +445,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
-                    .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/fisher_machine")))
+                    .tieredHullRenderer(GTCEu.id("block/machine/fisher_machine"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
                             Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
@@ -458,8 +466,7 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"),
                             (tier + 1) * (tier + 1)))
-                    .renderer(
-                            () -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/block_breaker_machine")))
+                    .tieredHullRenderer(GTCEu.id("block/machine/block_breaker_machine"))
                     .langValue("%s Block Breaker %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.block_breaker.tooltip"),
                             Component.translatable("gtceu.machine.block_breaker.speed_bonus",
@@ -556,6 +563,24 @@ public class GTMachines {
     // ********* Storage *********//
     //////////////////////////////////////
 
+    public static final MachineDefinition[] BUFFER = registerTieredMachines("buffer",
+            BufferMachine::new,
+            (tier, builder) -> builder
+                    .langValue("%s Buffer %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NONE)
+                    .tieredHullRenderer(GTCEu.id("block/machine/buffer"))
+                    .tooltips(
+                            Component.translatable("gtceu.machine.buffer.tooltip"),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.item_storage_capacity",
+                                    BufferMachine.getInventorySize(tier)),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                                    BufferMachine.getTankSize(tier), BufferMachine.TANK_SIZE))
+                    .compassNode("buffer")
+                    .register(),
+            LV, MV, HV);
+
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
             .add(Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
@@ -602,7 +627,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    (int) Math.min(4000000l * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
+                    (int) Math.min(4000000L * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
             (tier, builder) -> builder
                     .langValue("Super Chest " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -612,7 +637,7 @@ public class GTMachines {
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4000000l * (long) Math.pow(2, tier))))
+                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier))))
                     .compassNode("super_chest")
                     .register(),
             LOW_TIERS);
@@ -620,7 +645,7 @@ public class GTMachines {
     public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
                     tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            (int) Math.min(4000000l * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
+                            (int) Math.min(4000000L * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
             (tier, builder) -> builder
                     .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -631,7 +656,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
                                     /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000l * (long) Math.pow(2, tier))))
+                                            .formatNumbers(4000000L * (long) Math.pow(2, tier))))
                     .compassNode("super_chest")
                     .register(),
             HIGH_TIERS);
@@ -657,7 +682,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000l * (long) FluidHelper.getBucket() * (long) Math.pow(2, tier)),
+                    4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Super Tank " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -667,7 +692,7 @@ public class GTMachines {
                     .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4000000l * (long) Math.pow(2, tier))))
+                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier))))
                     .compassNode("super_tank")
                     .register(),
             LOW_TIERS);
@@ -675,7 +700,7 @@ public class GTMachines {
     public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
                     tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            4000l * (long) FluidHelper.getBucket() * (long) Math.pow(2, tier)),
+                            4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -1049,6 +1074,56 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
+    public static final MachineDefinition[] INPUT_BUFFER = registerTieredMachines(
+            "input_buffer",
+            (holder, tier) -> new BufferPartMachine(holder, tier, IO.IN),
+            (tier, builder) -> builder
+                    .langValue(VNF[tier] + " Input Buffer")
+                    .rotationState(RotationState.ALL)
+                    .abilities(
+                            ConfigHolder.INSTANCE.machines.enableMoreBufferAbility ? INPUT_BUFFER_ABILITIES :
+                                    new PartAbility[] { PartAbility.IMPORT_ITEMS })
+                    .overlayTieredHullRenderer("buffer.import")
+                    .tooltips(
+                            Component.translatable("gtceu.machine.buffer.import.tooltip"),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.item_storage_capacity",
+                                    (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                                    1 + Math.min(9, tier),
+                                    FluidHatchPartMachine.getTankCapacity(
+                                            BufferPartMachine.INITIAL_TANK_CAPACITY, tier)),
+                            Component.translatable("gtceu.universal.enabled"))
+                    .compassNode("buffer_part")
+                    .register(),
+            MULTI_HATCH_TIERS);
+
+    public static final MachineDefinition[] OUTPUT_BUFFER = registerTieredMachines(
+            "output_buffer",
+            (holder, tier) -> new BufferPartMachine(holder, tier, IO.OUT),
+            (tier, builder) -> builder
+                    .langValue(VNF[tier] + " Output Buffer")
+                    .rotationState(RotationState.ALL)
+                    .abilities(
+                            ConfigHolder.INSTANCE.machines.enableMoreBufferAbility ? OUTPUT_BUFFER_ABILITIES :
+                                    new PartAbility[] { PartAbility.EXPORT_ITEMS })
+                    .overlayTieredHullRenderer("buffer.export")
+                    .tooltips(
+                            Component.translatable("gtceu.machine.buffer.export.tooltip"),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.item_storage_capacity",
+                                    (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
+                            Component.translatable(
+                                    "gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                                    1 + Math.min(9, tier),
+                                    FluidHatchPartMachine.getTankCapacity(
+                                            BufferPartMachine.INITIAL_TANK_CAPACITY, tier)),
+                            Component.translatable("gtceu.universal.enabled"))
+                    .compassNode("buffer_part")
+                    .register(),
+            MULTI_HATCH_TIERS);
+
     public static final MachineDefinition[] DIODE = registerTieredMachines("diode",
             DiodePartMachine::new,
             (tier, builder) -> builder
@@ -1074,8 +1149,8 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
                     .renderer(() -> new RotorHolderMachineRenderer(tier))
-                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
-                            LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1),
+                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
+                            LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
                             Component.translatable("gtceu.universal.disabled"))
                     .compassNode("rotor_holder")
                     .register(),
