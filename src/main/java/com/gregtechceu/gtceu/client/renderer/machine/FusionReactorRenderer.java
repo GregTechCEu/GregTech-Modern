@@ -77,4 +77,10 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
     public boolean isGlobalRenderer(BlockEntity blockEntity) {
         return true;
     }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public int getViewDistance() {
+        return 32;
+    }
 }
