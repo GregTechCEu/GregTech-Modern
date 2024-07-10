@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
-import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -138,8 +137,6 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
         GTParticleTypes.init(modBus);
-        // init common features
-        GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
     public static void init() {
