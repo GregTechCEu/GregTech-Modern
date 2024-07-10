@@ -1149,8 +1149,8 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
                     .renderer(() -> new RotorHolderMachineRenderer(tier))
-                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
-                            LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1),
+                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
+                            LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
                             Component.translatable("gtceu.universal.disabled"))
                     .compassNode("rotor_holder")
                     .register(),
