@@ -416,8 +416,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         super.onMachineLoad();
         if (this.isLocked()) {
             setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
-        } else {
-            setFilter(stack -> true);
         }
     }
 }
