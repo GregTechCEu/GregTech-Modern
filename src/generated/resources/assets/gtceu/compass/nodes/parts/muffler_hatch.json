@@ -20,8 +20,8 @@
   ],
   "page": "gtceu:parts/muffler_hatch",
   "position": [
-    -50,
-    0
+    -200,
+    50
   ],
   "section": "gtceu:parts"
 }
