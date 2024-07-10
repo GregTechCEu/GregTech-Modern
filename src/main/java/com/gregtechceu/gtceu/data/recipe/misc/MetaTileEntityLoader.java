@@ -869,7 +869,7 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T',
                 CustomTags.WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_16, "WTW", "WMW", 'M', HULL, 'W', WIRE_HEX, 'T',
-                CustomTags.WOODEN_CHESTS);;
+                CustomTags.WOODEN_CHESTS);
 
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 CustomTags.WOODEN_CHESTS, 'B', CABLE, 'C', CIRCUIT);
@@ -880,6 +880,11 @@ public class MetaTileEntityLoader {
                 CustomTags.WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.ITEM_EXPORT_BUS, " M", " C", 'M', HULL, 'C',
                 CustomTags.WOODEN_CHESTS);
+
+        registerMachineRecipe(provider, GTMachines.INPUT_BUFFER, "PG", "CM", 'P', PIPE_NONUPLE, 'M', HULL, 'G', GLASS,
+                'C', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.OUTPUT_BUFFER, "MG", "CP", 'P', PIPE_NONUPLE, 'M', HULL, 'G', GLASS,
+                'C', CustomTags.WOODEN_CHESTS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wooden_crate", GTMachines.WOODEN_CRATE.asStack(), "RPR",
                 "PsP", "RPR", 'P', ItemTags.PLANKS, 'R', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
@@ -1038,19 +1043,8 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Neutronium), 'U', GTItems.ELECTRIC_PUMP_UV.asStack(),
                 'G', GTItems.FIELD_GENERATOR_ZPM.asStack(), 'H', GTBlocks.HERMETIC_CASING_UHV.asStack());
 
-        // TODO Buffers
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_lv", GTMachines.BUFFER[0].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.LV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_LV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_LV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_mv", GTMachines.BUFFER[1].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.MV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_MV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_MV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_hv", GTMachines.BUFFER[2].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_HV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_HV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
+        registerMachineRecipe(provider, true, GTMachines.BUFFER, "HP", "CV",
+                'H', HULL, 'P', PUMP, 'V', CONVEYOR, 'C', CustomTags.LV_CIRCUITS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMachines.CLEANROOM.asStack(), "FFF", "RHR",
                 "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R',
