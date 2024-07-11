@@ -322,6 +322,15 @@ public class MachineFunctionPresets {
             }
 
             @Override
+            public MachineBuilder<D> tieredHullRenderer(ResourceLocation model) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.tieredHullRenderer(model);
+                }
+                return this;
+            }
+
+            @Override
             public MachineBuilder<D> overlayTieredHullRenderer(String name) {
                 for (var builder : builders) {
                     if (builder == null) continue;
