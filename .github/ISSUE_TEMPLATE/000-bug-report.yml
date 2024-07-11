@@ -19,11 +19,19 @@ body:
         - label: "I have checked that this occurs on the latest version."
           required: true
   - type: input
-    id: version
+    id: gtceu-version
     attributes:
       label: GregTech CEu Version
       description: The version of Gregtech CEu you were using when this bug was encountered. If you do not know where to find this, look for the mod jar file in the mods folder, or in the mods viewer in-game.
       placeholder: "Example: v2.3.4"
+    validations:
+      required: true
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft Version
+      description: The version of Minecraft you were using when this bug was encountered. If you do not know where to find this, in the main menu at the bottom left.
+      placeholder: "Example: 1.20.1"
     validations:
       required: true
   - type: dropdown
