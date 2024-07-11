@@ -73,16 +73,28 @@ public class LampBlock extends Block implements IBlockRendererProvider {
         return state.getValue(INVERTED) != state.getValue(POWERED);
     }
 
-    public boolean isInverted(BlockState state) {
+    public static boolean isInverted(BlockState state) {
         return state.getValue(INVERTED);
     }
 
-    public boolean isLightEnabled(BlockState state) {
+    public static boolean isLightEnabled(BlockState state) {
         return state.getValue(LIGHT);
     }
 
-    public boolean isBloomEnabled(BlockState state) {
+    public static boolean isBloomEnabled(BlockState state) {
         return state.getValue(BLOOM);
+    }
+
+    public static boolean isInverted(CompoundTag tag) {
+        return tag.getBoolean(TAG_INVERTED);
+    }
+
+    public static boolean isLightEnabled(CompoundTag tag) {
+        return tag.getBoolean(TAG_LIT);
+    }
+
+    public static boolean isBloomEnabled(CompoundTag tag) {
+        return tag.getBoolean(TAG_BLOOM);
     }
 
     public CompoundTag getTagFromState(BlockState state) {
@@ -157,11 +169,12 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         if (stack.hasTag()) {
-            if (stack.getTag().getBoolean(TAG_INVERTED))
+            var tag = stack.getTag();
+            if (isInverted(tag))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.inverted"));
-            if (!stack.getTag().getBoolean(TAG_BLOOM))
+            if (!isBloomEnabled(tag))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_bloom"));
-            if (!stack.getTag().getBoolean(TAG_LIT))
+            if (!isLightEnabled(tag))
                 tooltip.add(Component.translatable("block.gtceu.lamp.tooltip.no_light"));
         }
     }

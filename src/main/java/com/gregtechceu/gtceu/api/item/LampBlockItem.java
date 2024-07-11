@@ -17,9 +17,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.common.block.LampBlock.TAG_BLOOM;
-import static com.gregtechceu.gtceu.common.block.LampBlock.TAG_INVERTED;
-import static com.gregtechceu.gtceu.common.block.LampBlock.TAG_LIT;
+import static com.gregtechceu.gtceu.common.block.LampBlock.isBloomEnabled;
+import static com.gregtechceu.gtceu.common.block.LampBlock.isInverted;
+import static com.gregtechceu.gtceu.common.block.LampBlock.isLightEnabled;
 
 @ParametersAreNonnullByDefault
 public class LampBlockItem extends BlockItem implements IItemRendererProvider {
@@ -34,28 +34,17 @@ public class LampBlockItem extends BlockItem implements IItemRendererProvider {
         return (LampBlock) super.getBlock();
     }
 
-    public boolean isInverted(ItemStack stack) {
-        return stack.getTag().getBoolean(TAG_INVERTED);
-    }
-
-    public boolean isLightEnabled(ItemStack stack) {
-        return stack.getTag().getBoolean(TAG_LIT);
-    }
-
-    public boolean isBloomEnabled(ItemStack stack) {
-        return stack.getTag().getBoolean(TAG_BLOOM);
-    }
-
     @Nullable
     @Override
     protected BlockState getPlacementState(BlockPlaceContext context) {
         BlockState returnValue = super.getPlacementState(context);
         ItemStack handItem = context.getItemInHand();
         if (returnValue != null && handItem.hasTag()) {
+            var tag = handItem.getTag();
             returnValue = returnValue
-                    .setValue(LampBlock.INVERTED, handItem.getTag().getBoolean(TAG_INVERTED))
-                    .setValue(LampBlock.BLOOM, handItem.getTag().getBoolean(TAG_BLOOM))
-                    .setValue(LampBlock.LIGHT, handItem.getTag().getBoolean(TAG_LIT));
+                    .setValue(LampBlock.INVERTED, isInverted(tag))
+                    .setValue(LampBlock.BLOOM, isBloomEnabled(tag))
+                    .setValue(LampBlock.LIGHT, isLightEnabled(tag));
         }
         return returnValue;
     }
@@ -71,10 +60,11 @@ public class LampBlockItem extends BlockItem implements IItemRendererProvider {
     public IRenderer getRenderer(ItemStack stack) {
         BlockState state = getBlock().defaultBlockState();
         if (stack.hasTag()) {
+            var tag = stack.getTag();
             state = state
-                    .setValue(LampBlock.INVERTED, stack.getTag().getBoolean(TAG_INVERTED))
-                    .setValue(LampBlock.BLOOM, stack.getTag().getBoolean(TAG_BLOOM))
-                    .setValue(LampBlock.LIGHT, stack.getTag().getBoolean(TAG_LIT));
+                    .setValue(LampBlock.INVERTED, isInverted(tag))
+                    .setValue(LampBlock.BLOOM, isBloomEnabled(tag))
+                    .setValue(LampBlock.LIGHT, isLightEnabled(tag));
         }
         return getBlock().getRenderer(state);
     }

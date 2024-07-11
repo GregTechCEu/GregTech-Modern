@@ -31,8 +31,8 @@ public class GuiGraphicsMixin {
             ToolChargeBarRenderer.renderBarsTool((GuiGraphics) (Object) this, toolItem, stack, x, y);
         } else if (stack.getItem() instanceof IComponentItem componentItem) {
             ToolChargeBarRenderer.renderBarsItem((GuiGraphics) (Object) this, componentItem, stack, x, y);
-        } else if (stack.getItem() instanceof LampBlockItem lampItem) {
-            LampItemOverlayRenderer.renderOverlay((GuiGraphics) (Object) this, lampItem, stack, x, y);
+        } else if (stack.getItem() instanceof LampBlockItem) {
+            LampItemOverlayRenderer.renderOverlay((GuiGraphics) (Object) this, stack, x, y);
         }
     }
 }
