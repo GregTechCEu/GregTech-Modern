@@ -717,8 +717,8 @@ public class LangHandler {
         provider.add("tile.gtceu.reinforced_foam.name", "Reinforced Foam");
         provider.add("tile.gtceu.petrified_foam.name", "Petrified Foam");
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
-        provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
-        multilineLang(provider, "tile.brittle_charcoal.tooltip",
+        provider.add("tile.gtceu.brittle_charcoal.name", "Brittle Charcoal");
+        multilineLang(provider, "tile.gtceu.brittle_charcoal.tooltip",
                 "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
         provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
