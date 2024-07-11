@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * @author KilaBash
@@ -37,9 +35,6 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     public final boolean plasmaProof;
     public final boolean allowPartialFill;
 
-    @Nullable
-    public Predicate<FluidStack> filter;
-
     protected ThermalFluidStats(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof,
                                 boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
         this.capacity = capacity;
@@ -51,26 +46,10 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         this.allowPartialFill = allowPartialFill;
     }
 
-    protected ThermalFluidStats(int capacity, boolean allowPartialFill, Predicate<FluidStack> filter) {
-        this.allowPartialFill = allowPartialFill;
-        this.capacity = capacity;
-        this.filter = filter;
-
-        this.maxFluidTemperature = 0;
-        this.gasProof = false;
-        this.acidProof = false;
-        this.cryoProof = false;
-        this.plasmaProof = false;
-    }
-
     public static ThermalFluidStats create(int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof,
                                            boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
         return new ThermalFluidStats(capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof,
                 allowPartialFill);
-    }
-
-    public static ThermalFluidStats create(int capacity, boolean allowPartialFill, Predicate<FluidStack> filter) {
-        return new ThermalFluidStats(capacity, allowPartialFill, filter);
     }
 
     @Override
@@ -78,14 +57,8 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
                 if (allowPartialFill) {
-                    if (filter != null) {
-                        return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
-                    }
                     return new ThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
                             acidProof, cryoProof, plasmaProof);
-                }
-                if (filter != null) {
-                    return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
                 }
                 return new SimpleThermalFluidHandlerItemStack(itemStack, capacity, maxFluidTemperature, gasProof,
                         acidProof, cryoProof, plasmaProof);
