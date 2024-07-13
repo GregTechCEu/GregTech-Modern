@@ -97,4 +97,16 @@ public class HullMachine extends TieredPartMachine {
             connectedBlockEntity.getMainNode().loadFromNBT(tag.getCompound("grid_node"));
         }
     }
+
+    //////////////////////////////////////
+    // ********** Misc **********//
+    //////////////////////////////////////
+
+    @Override
+    public int tintColor(int index) {
+        if (index == 2) {
+            return GTValues.VC[getTier()];
+        }
+        return super.tintColor(index);
+    }
 }

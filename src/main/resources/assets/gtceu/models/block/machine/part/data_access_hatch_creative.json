@@ -1,23 +1,7 @@
 {
-  "parent": "gtceu:block/overlay_model_front",
+  "parent": "gtceu:block/machine/part/overlay_front_emissive",
   "textures": {
-    "front": "gtceu:block/overlay/machine/overlay_data_hatch_creative",
-    "front_emissive": "gtceu:block/overlay/machine/overlay_data_hatch_creative_emissive"
-  },
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 0],
-      "faces": {
-        "north": {"uv": [0, 0, 16, 16], "texture": "#front", "cullface": "north", "tintindex": 2 }
-      }
-    },
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 0],
-      "faces": {
-        "north": {"uv": [0, 0, 16, 16], "texture": "#front_emissive", "cullface": "north", "tintindex": -102 }
-      }
-    }
-  ]
+    "overlay": "gtceu:block/overlay/machine/overlay_data_hatch_creative",
+    "overlay_emissive": "gtceu:block/overlay/machine/overlay_data_hatch_creative_emissive"
+  }
 }

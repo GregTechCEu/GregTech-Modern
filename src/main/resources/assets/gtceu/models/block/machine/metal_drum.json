@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/cube_2_layer_tintindex",
+  "parent": "gtceu:block/cube_2_layer/tinted_bot/default",
   "textures": {
     "particle": "gtceu:block/storage/drums/drum/side",
     "bot_down": "gtceu:block/storage/drums/drum/bottom",
