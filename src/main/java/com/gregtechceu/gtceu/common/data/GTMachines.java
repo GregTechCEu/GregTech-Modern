@@ -1074,6 +1074,20 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
+    public static final MachineDefinition RESERVOIR_HATCH = REGISTRATE
+            .machine("reservoir_hatch", ReservoirHatchPartMachine::new)
+            .langValue("Reservoir Hatch")
+            .tier(EV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.IMPORT_FLUIDS)
+            .tooltips(
+                    Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                            ReservoirHatchPartMachine.FLUID_AMOUNT),
+                    Component.translatable("gtceu.universal.enabled"))
+            .overlayTieredHullRenderer("reservoir_hatch")
+            .compassNodeSelf()
+            .register();
+
     public static final MachineDefinition[] INPUT_BUFFER = registerTieredMachines(
             "input_buffer",
             (holder, tier) -> new BufferPartMachine(holder, tier, IO.IN),
