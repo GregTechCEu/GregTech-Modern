@@ -14,17 +14,13 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
@@ -110,7 +106,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemTransfer {
+    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank {
 
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
                 InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
@@ -120,13 +116,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
             super(holder, internalBuffer.size(), 0, IO.OUT);
             this.internalBuffer = internalBuffer;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-            GenericStack stack1 = GenericStack.fromItemStack(stack);
-            this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
-            this.machine.onChanged();
         }
 
         @Override
@@ -140,71 +129,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
                             return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
                         }
                     }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
-        }
-
-        @NotNull
-        @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-            if (stack.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-            if (!simulate) {
-                GenericStack stack1 = GenericStack.fromItemStack(stack);
-                this.internalBuffer.insert(stack1.what(), stack1.amount(), Actionable.MODULATE,
-                        this.machine instanceof MEBusPartMachine host ? host.actionSource : IActionSource.empty());
-                this.machine.onChanged();
-            }
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @NotNull
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return ItemStack.EMPTY;
-        }
-
-        @NotNull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return Integer.MAX_VALUE - 1;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
-            for (int i = 0; i < this.internalBuffer.size(); ++i) {
-                stacks[i] = this.internalBuffer.getStack(i);
-            }
-            return stacks;
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof GenericStack[] stacks) {
-                this.internalBuffer.beginBatch();
-                for (int i = 0; i < stacks.length; ++i) {
-                    GenericStack stack = stacks[i];
-                    if (stack == null) continue;
-                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
-                }
-                this.internalBuffer.endBatch();
-            }
         }
 
         @Override

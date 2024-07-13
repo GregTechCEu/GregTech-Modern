@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
@@ -20,15 +21,12 @@ import net.minecraft.server.level.ServerLevel;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
 import appeng.me.helpers.BlockEntityNodeListener;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import lombok.Getter;
 
 import java.util.EnumSet;
 
-import static com.gregtechceu.gtceu.integration.ae2.machine.MEBusPartMachine.ME_UPDATE_INTERVAL;
-
 public abstract class MEHatchPartMachine extends FluidHatchPartMachine
-                                         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+                                         implements IInWorldGridNodeHost, IGridConnectedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEHatchPartMachine.class,
             FluidHatchPartMachine.MANAGED_FIELD_HOLDER);
@@ -48,42 +46,21 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine
                     this.hasFrontFacing() ? EnumSet.of(this.getFrontFacing()) : EnumSet.allOf(Direction.class))
             .setTagName("proxy");
     protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
+
     @DescSynced
+    @Getter @Setter
     protected boolean isOnline;
+
     private IGrid aeProxy;
 
     public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE, args);
     }
 
-    protected boolean shouldSyncME() {
-        return this.getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
-    }
-
     @Override
-    public void setFrontFacing(Direction facing) {
-        super.setFrontFacing(facing);
-        if (isFacingValid(facing)) {
-            this.mainNode
-                    .setExposedOnSides(this.hasFrontFacing() ? EnumSet.of(facing) : EnumSet.allOf(Direction.class));
-        }
-    }
-
-    /**
-     * Update me network connection status.
-     * 
-     * @return the updated status.
-     */
-    public boolean updateMEStatus() {
-        if (this.aeProxy == null) {
-            this.aeProxy = this.mainNode.getGrid();
-        }
-        if (this.aeProxy != null) {
-            this.isOnline = this.mainNode.isOnline() && this.mainNode.isPowered();
-        } else {
-            this.isOnline = false;
-        }
-        return this.isOnline;
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
     }
 
     protected IManagedGridNode createMainNode() {
@@ -98,11 +75,6 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine
             autoIOSubs.unsubscribe();
             autoIOSubs = null;
         }
-    }
-
-    @Override
-    public void saveChanges() {
-        this.onChanged();
     }
 
     @Override

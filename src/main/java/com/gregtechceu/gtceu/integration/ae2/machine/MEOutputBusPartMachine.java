@@ -119,7 +119,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler implements IItemTransfer {
+    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler {
 
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
                 InaccessibleInfiniteSlot.class);
