@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/tinted_cube",
+  "parent": "gtceu:block/cube/default",
   "textures": {
     "particle": "#all",
     "down": "#all",

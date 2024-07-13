@@ -866,7 +866,7 @@ public class GTBlocks {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         BlockEntry<Block> entry = REGISTRATE
                 .block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_bottom_top_tintindex"),
+                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube/tinted/bottom_top"),
                                 Map.of("bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
                                         "side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))) :
