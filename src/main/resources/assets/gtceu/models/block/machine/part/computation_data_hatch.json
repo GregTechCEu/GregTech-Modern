@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/cube/default",
+  "parent": "gtceu:block/machine/part/front_overlay",
   "textures": {
-    "north": "gtceu:block/overlay/machine/overlay_data_hatch_optical"
+    "overlay": "gtceu:block/overlay/machine/overlay_data_hatch_optical"
   }
 }
