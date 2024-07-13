@@ -1,5 +1,5 @@
 {
-	"parent": "gtceu:block/machine/part/overlay_front",
+	"parent": "gtceu:block/overlay/front",
 	"textures": {
 		"particle": "gtceu:block/overlay/machine/overlay_maintenance",
 		"overlay": "gtceu:block/overlay/machine/overlay_maintenance"
