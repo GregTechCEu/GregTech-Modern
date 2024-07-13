@@ -25,6 +25,14 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLY_LINE_RECI
 public class MetaTileEntityMachineRecipeLoader {
 
     public static void init(RecipeOutput provider) {
+        // Reservoir Hatch
+        ASSEMBLER_RECIPES.recipeBuilder("reservoir_hatch")
+                .inputItems(COVER_INFINITE_WATER)
+                .inputItems(FLUID_IMPORT_HATCH[EV])
+                .inputItems(ELECTRIC_PUMP_EV)
+                .outputItems(RESERVOIR_HATCH)
+                .duration(300).EUt(VA[EV]).save(provider);
+
         registerLaserRecipes(provider);
 
         // Energy Output Hatches
