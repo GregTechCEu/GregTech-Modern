@@ -1,0 +1,17 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_buffer"
+  },
+  "items": [
+    "gtceu:lv_buffer",
+    "gtceu:mv_buffer",
+    "gtceu:hv_buffer"
+  ],
+  "page": "gtceu:machines/buffer",
+  "position": [
+    -100,
+    300
+  ],
+  "section": "gtceu:machines"
+}

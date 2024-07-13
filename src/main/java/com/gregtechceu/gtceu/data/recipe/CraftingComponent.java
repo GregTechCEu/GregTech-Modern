@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
@@ -21,6 +20,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Iridium;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Naquadah;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Neutronium;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.NiobiumTitanium;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Titanium;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.TungstenSteel;
 
 public class CraftingComponent {
 
@@ -44,6 +49,7 @@ public class CraftingComponent {
     public static Component HULL;
     public static Component PIPE_NORMAL;
     public static Component PIPE_LARGE;
+    public static Component PIPE_NONUPLE;
     public static Component GLASS;
     public static Component PLATE;
     public static Component HULL_PLATE;
@@ -413,6 +419,17 @@ public class CraftingComponent {
                 { 6, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.NiobiumTitanium) },
                 { 7, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Ultimet) },
                 { 8, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Naquadah) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        PIPE_NONUPLE = new Component(Stream.of(new Object[][] {
+
+                { 4, new UnificationEntry(TagPrefix.pipeNonupleFluid, Titanium) },
+                { 5, new UnificationEntry(TagPrefix.pipeNonupleFluid, TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.pipeNonupleFluid, NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.pipeNonupleFluid, Iridium) },
+                { 8, new UnificationEntry(TagPrefix.pipeNonupleFluid, Naquadah) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.pipeNonupleFluid, Neutronium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
