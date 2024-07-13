@@ -73,7 +73,6 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
         return new ArrayList<>();
     }
 
-
     //////////////////////////////////////
     // ********** Misc **********//
     //////////////////////////////////////
