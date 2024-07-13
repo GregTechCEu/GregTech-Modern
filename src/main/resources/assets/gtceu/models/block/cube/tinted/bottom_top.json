@@ -1,9 +1,9 @@
 {
-  "parent": "gtceu:block/tinted_cube",
+  "parent": "gtceu:block/cube/tinted/default",
   "textures": {
     "particle": "#side",
-    "up": "#end",
-    "down": "#end",
+    "up": "#top",
+    "down": "#bottom",
     "north": "#side",
     "east": "#side",
     "south": "#side",

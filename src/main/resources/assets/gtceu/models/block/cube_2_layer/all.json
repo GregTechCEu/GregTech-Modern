@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/cube_2_layer",
+  "parent": "gtceu:block/cube_2_layer/default",
   "textures": {
     "particle": "#bot_all",
     "bot_down": "#bot_all",

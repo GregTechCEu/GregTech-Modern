@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/overlay_model_front",
+  "parent": "gtceu:block/cube/default",
   "textures": {
-    "front": "gtceu:block/machines/object_holder/overlay_front"
+    "north": "gtceu:block/machines/object_holder/overlay_front"
   }
 }
