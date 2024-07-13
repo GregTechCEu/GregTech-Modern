@@ -1,31 +1,24 @@
 # ChangeLog
 
-Version: 1.3.0
+Version: 1.3.1
 
 ### ADDITIONS:
-- Added the subtitle language values for machine/tool sounds
-- Added various missing, commented out recipes back
-- Added the ability to disable ore processing categories per material
+- Ordered Assembly Lines
+- Integration of Monazite: providing lots of additional functionality to jade
+- Ghost Circuits for fluid hatches
+- Overclocking beyond MAX voltage
+- Much more lamp variants, with bloom support
+- Subtick parallels, if a recipe oc's past 1 tick it does parallels instead
 
 ### CHANGES:
-- Made pollution more bearable
-- Made pollution shrink away slowly (speed is configurable)
-- Made pollution spawn a fixed amount of particles instead of a massive amount
-- Made pollution change the grass/leaf/water color of the area it's in
-- Made singleblock generators produce a small amount of pollution
-- Made air ducts more sensible to use
-- Made all medical conditions be unconditionally removed on death
-- Made normal naquadah not radioactive
-- Made higher-tier air scrubbers have a higher radius
-- Updated ja_jp & zh_cn language files
+- In world multiblock preview now properly works with rotated multiblocks
+- Updated jp and tw lang
+- Fusion Reactors now show a bloom ring when running a recipe
+- Pipes of any kind can be water logged
 
 ### FIXES:
-- Fixed missing null checks on create compatibility machines sometimes causing crashes
-- Fixed fluid parallel logic
-- Fixed GT recipe removal filtering
-- Fixed pipe frame material not loading correctly when a world is loaded
-- Fixed custom veins not generating when no biomes are set
-- Fixed "%s B" and "%s mB" being inverted in the language values
-- Fixed unsafe set operation in recipe logic that could cause crashes
-- Fixed removal of vanilla GT ore veins not working correctly on singleplayer
-- Fixed xaero's minimap spamming the log when it's rendering a material block
+- Disabling hazard config now properly disables everything hazard related
+- Rubber trees spawn chance config now works
+- Singleblock machines can no longer run a recipe beyond its tier
+- Fluid Hatch locking properly saves between world loads
+- Color-changing tooltip now changes colors properly

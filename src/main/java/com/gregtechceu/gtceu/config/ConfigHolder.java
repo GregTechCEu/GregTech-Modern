@@ -17,10 +17,13 @@ import dev.toma.configuration.config.format.ConfigFormats;
 public class ConfigHolder {
 
     public static ConfigHolder INSTANCE;
+    private static final Object LOCK = new Object();
 
     public static void init() {
-        if (INSTANCE == null) {
-            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        synchronized (LOCK) {
+            if (INSTANCE == null) {
+                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+            }
         }
     }
 
@@ -406,6 +409,14 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.",
                 "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
         public boolean orderedAssemblyLineFluids = false;
+
+        @Configurable
+        @Configurable.Comment({
+                "Let Buffer has more ability.",
+                "When enabled it, Buffer will can used to assemble line and so on.",
+                "Need restart Minecraft to apply."
+        })
+        public boolean enableMoreBufferAbility = false;
     }
 
     public static class ToolConfigs {
