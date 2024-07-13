@@ -37,7 +37,7 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
     }
 
     public WorkableCasingMachineRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
-        super(tint ? GTCEu.id("block/tinted_cube_all") : GTCEu.id("block/cube_all"));
+        super(tint ? GTCEu.id("block/cube/tinted/all") : GTCEu.id("block/cube/all"));
         this.overlayModel = new WorkableOverlayModel(workableModel);
         this.baseCasing = baseCasing;
         setTextureOverride(Map.of("all", baseCasing));

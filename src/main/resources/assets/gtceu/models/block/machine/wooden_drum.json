@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/cube",
+  "parent": "gtceu:block/cube/default",
   "textures": {
     "particle": "gtceu:block/storage/drums/wooden_drum/side",
     "down": "gtceu:block/storage/drums/wooden_drum/bottom",

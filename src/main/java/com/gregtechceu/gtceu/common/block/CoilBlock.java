@@ -41,7 +41,7 @@ public class CoilBlock extends ActiveBlock {
                         new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                                 Map.of("all", coilType.getTexture())) :
                         null,
-                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
+                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer/all"),
                         Map.of("bot_all", coilType.getTexture(),
                                 "top_all", ResourceLocation.parse(coilType.getTexture() + "_bloom"))) :
                         null);

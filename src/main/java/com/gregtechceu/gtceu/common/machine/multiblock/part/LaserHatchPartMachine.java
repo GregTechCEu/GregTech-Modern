@@ -72,4 +72,16 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
         }
         return new ArrayList<>();
     }
+
+    //////////////////////////////////////
+    // ********** Misc **********//
+    //////////////////////////////////////
+
+    @Override
+    public int tintColor(int index) {
+        if (index == 2) {
+            return GTValues.VC[getTier()];
+        }
+        return super.tintColor(index);
+    }
 }
