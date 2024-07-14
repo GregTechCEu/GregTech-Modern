@@ -543,6 +543,12 @@ public class GuiTextures {
         }
     }
 
+    // Lamp item overlay
+    public static final ResourceTexture LAMP_NO_BLOOM = new ResourceTexture(
+            "gtceu:textures/gui/item_overlay/lamp_no_bloom.png");
+    public static final ResourceTexture LAMP_NO_LIGHT = new ResourceTexture(
+            "gtceu:textures/gui/item_overlay/lamp_no_light.png");
+
     // ME hatch/bus
     public static final ResourceTexture NUMBER_BACKGROUND = new ResourceTexture(
             "gtceu:textures/gui/widget/number_background.png");
