@@ -552,6 +552,13 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_hatch", GTMachines.COKE_OVEN_HATCH.asStack(),
                 "CD", 'C', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D', GTMachines.WOODEN_DRUM.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
+                GTMachines.CHARCOAL_PILE_IGNITER.asStack(),
+                "ERE", "EHE", "FFF",
+                'E', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze),
+                'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron),
+                'H', GTBlocks.BRONZE_BRICKS_HULL,
+                'F', new ItemStack(Items.FLINT_AND_STEEL));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
                 GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
                 GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', CustomTags.LV_CIRCUITS,
