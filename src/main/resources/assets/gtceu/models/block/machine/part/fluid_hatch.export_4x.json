@@ -1,5 +1,5 @@
 {
-	"parent": "gtceu:block/machine/part/overlay_front_emissive",
+	"parent": "gtceu:block/overlay/front_emissive",
 	"textures": {
 		"particle": "gtceu:block/overlay/machine/overlay_hatch",
 		"overlay": "gtceu:block/overlay/machine/overlay_pipe_out_4x",
