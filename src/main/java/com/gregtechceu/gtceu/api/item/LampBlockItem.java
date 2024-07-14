@@ -18,6 +18,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.common.block.LampBlock.isBloomEnabled;
+import static com.gregtechceu.gtceu.common.block.LampBlock.isInverted;
+import static com.gregtechceu.gtceu.common.block.LampBlock.isLightEnabled;
+
+@ParametersAreNonnullByDefault
 public class LampBlockItem extends BlockItem implements IItemRendererProvider {
 
     public LampBlockItem(LampBlock block, Properties properties) {

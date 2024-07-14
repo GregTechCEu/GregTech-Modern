@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -33,6 +34,10 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class LampBlock extends Block implements IBlockRendererProvider {
 
     public static final BooleanProperty BLOOM = BooleanProperty.create("bloom");
@@ -67,15 +72,15 @@ public class LampBlock extends Block implements IBlockRendererProvider {
         return state.getValue(INVERTED) != state.getValue(POWERED);
     }
 
-    public boolean isInverted(BlockState state) {
+    public static boolean isInverted(BlockState state) {
         return state.getValue(INVERTED);
     }
 
-    public boolean isLightEnabled(BlockState state) {
+    public static boolean isLightEnabled(BlockState state) {
         return state.getValue(LIGHT);
     }
 
-    public boolean isBloomEnabled(BlockState state) {
+    public static boolean isBloomEnabled(BlockState state) {
         return state.getValue(BLOOM);
     }
 
@@ -103,6 +108,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         if (!level.isClientSide) {
             boolean powered = state.getValue(POWERED);
@@ -114,6 +120,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
                                 boolean movedByPiston) {
         if (!level.isClientSide) {
@@ -125,6 +132,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), state.getValue(LIGHT) ? 2 | 8 : 2);
@@ -152,6 +160,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         List<ItemStack> returnValue = super.getDrops(state, params);
         for (ItemStack stack : returnValue) {
