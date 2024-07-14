@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 public class CustomTags {
@@ -102,4 +103,6 @@ public class CustomTags {
 
     public static final TagKey<EntityType<?>> IRON_GOLEMS = TagUtil.createModTag(Registries.ENTITY_TYPE, "iron_golems");
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createModTag(Registries.ENTITY_TYPE, "spiders");
+
+    public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluids");
 }

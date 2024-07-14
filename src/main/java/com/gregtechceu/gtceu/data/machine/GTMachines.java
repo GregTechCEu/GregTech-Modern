@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
@@ -2164,6 +2165,29 @@ public class GTMachines {
             })
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_palladium_substation"),
                     GTCEu.id("block/multiblock/power_substation"))
+            .register();
+
+    public static final MultiblockMachineDefinition CHARCOAL_PILE_IGNITER = REGISTRATE
+            .multiblock("charcoal_pile_igniter", CharcoalPileIgniterMachine::new)
+            .rotationState(RotationState.NONE)
+            .recipeType(DUMMY_RECIPES)
+            .appearanceBlock(BRONZE_HULL)
+            .pattern((def) -> FactoryBlockPattern.start()
+                    .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
+                    .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")
+                    .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DSD ")
+                    .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")
+                    .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
+                    .where('S', controller(blocks(def.getBlock())))
+                    .where('B', blocks(Blocks.BRICKS))
+                    .where('X', blocks(Blocks.DIRT))
+                    .where('D', blocks(Blocks.DIRT))
+                    .where('C', blocks(Blocks.OAK_LOG))
+                    .build())
+            .allowFlip(false)
+            .allowExtendedFacing(false)
+            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+                    GTCEu.id("block/multiblock/charcoal_pile_igniter"))
             .register();
 
     //////////////////////////////////////

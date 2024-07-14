@@ -1,0 +1,20 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:items/platinum_lighter"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "gtceu:lighter_open": 0.0
+      },
+      "model": "gtceu:item/platinum_lighter_closed"
+    },
+    {
+      "predicate": {
+        "gtceu:lighter_open": 1.0
+      },
+      "model": "gtceu:item/platinum_lighter_open"
+    }
+  ]
+}
