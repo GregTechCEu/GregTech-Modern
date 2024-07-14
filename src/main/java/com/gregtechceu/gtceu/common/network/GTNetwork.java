@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZo
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncHazardZoneStrength;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 
+
 import com.lowdragmc.lowdraglib.networking.INetworking;
 import com.lowdragmc.lowdraglib.networking.forge.LDLNetworkingImpl;
 
@@ -16,6 +17,7 @@ public class GTNetwork {
 
     public static void init() {
         NETWORK.registerC2S(CPacketKeysPressed.class);
+        NETWORK.registerC2S(CPacketKeysDown.class);
         NETWORK.registerS2C(SPacketSyncOreVeins.class);
         NETWORK.registerS2C(SPacketSyncFluidVeins.class);
         NETWORK.registerS2C(SPacketSyncBedrockOreVeins.class);

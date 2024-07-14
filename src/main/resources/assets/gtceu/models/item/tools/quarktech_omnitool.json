@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "gtceu:item/tools/omnitool/drill",
+      "predicate": {
+        "gtceu:omnitool": 0.0
+      }
+    },
+    {
+      "model": "gtceu:item/tools/omnitool/cutter",
+      "predicate": {
+        "gtceu:omnitool": 1.0
+      }
+    },
+    {
+      "model": "gtceu:item/tools/omnitool/wrench",
+      "predicate": {
+        "gtceu:omnitool": 2.0
+      }
+    },
+    {
+      "model": "gtceu:item/tools/omnitool/screwdriver",
+      "predicate": {
+        "gtceu:omnitool": 3.0
+      }
+    },
+    {
+      "model": "gtceu:item/tools/omnitool/blade",
+      "predicate": {
+        "gtceu:omnitool": 4.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "gtceu:item/tools/quarktech_omnitool/drill_quarktech_omnitool_chassis",
+    "layer1": "gtceu:item/tools/quarktech_omnitool/drill_quarktech_omnitool_chassis_overlay",
+    "layer2": "gtceu:item/tools/quarktech_omnitool/drill_quarktech_omnitool_chassis_overlay",
+    "layer3": "gtceu:item/tools/quarktech_omnitool/drill_quarktech_omnitool_beam"
+  }
+}

@@ -1,11 +1,17 @@
 package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketKeysDown;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
+import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +23,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -38,34 +45,24 @@ public enum KeyBind {
     ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
     ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
     ARMOR_CHARGING("gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N),
+    QUARK_TOOL_MODE_SWITCH("gtceu.key.quarktool_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_R),
     TOOL_AOE_CHANGE("gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V);
 
     public static final KeyBind[] VALUES = values();
 
     private static double mouseDelta = 0.0;
-
+    @OnlyIn(Dist.CLIENT)
+    private KeyMapping keybinding;
+    @OnlyIn(Dist.CLIENT)
+    private boolean isKeyDown;
+    @OnlyIn(Dist.CLIENT)
+    private boolean isPressed;
+    private final WeakHashMap<ServerPlayer, Boolean> mapping = new WeakHashMap<>();
+    private final WeakHashMap<ServerPlayer, Set<IKeyPressedListener>> listeners = new WeakHashMap<>();
     public static void init() {
         GTCEu.LOGGER.info("Registering KeyBinds");
         if (Platform.isClient()) {
             MinecraftForge.EVENT_BUS.register(KeyBind.class);
-        }
-    }
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public static void onInputEvent(InputEvent.Key event) {
-        List<KeyBind> updating = new ArrayList<>();
-        for (KeyBind keybind : VALUES) {
-            boolean previousPressed = keybind.isPressed;
-            boolean previousKeyDown = keybind.isKeyDown;
-            keybind.isPressed = keybind.isPressed();
-            keybind.isKeyDown = keybind.isKeyDown();
-            if (previousPressed != keybind.isPressed || previousKeyDown != keybind.isKeyDown) {
-                updating.add(keybind);
-            }
-        }
-        if (!updating.isEmpty()) {
-            GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
         }
     }
 
@@ -101,12 +98,40 @@ public enum KeyBind {
 
     @OnlyIn(Dist.CLIENT)
     private Supplier<Supplier<KeyMapping>> keybindingGetter;
-    @OnlyIn(Dist.CLIENT)
-    private KeyMapping keybinding;
-    @OnlyIn(Dist.CLIENT)
-    private boolean isPressed, isKeyDown;
 
-    private final WeakHashMap<ServerPlayer, MutablePair<Boolean, Boolean>> mapping = new WeakHashMap<>();
+
+    /**
+     * Handle Keys which we track for "holds" on the server, meaning if a key is being pressed
+     * down for a prolonged period of time. This is a state which gets saved on the server.
+     */
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            Int2BooleanMap updatingKeyDown = new Int2BooleanOpenHashMap();
+            for (KeyBind keybind : VALUES) {
+                boolean previousKeyDown = keybind.isKeyDown;
+                keybind.isKeyDown = keybind.keybinding.isDown();
+                if (previousKeyDown != keybind.isKeyDown) {
+                    updatingKeyDown.put(keybind.ordinal(), keybind.isKeyDown());
+                }
+            }
+            if (!updatingKeyDown.isEmpty()) {
+                GTNetwork.NETWORK.sendToServer(new CPacketKeysDown(updatingKeyDown));
+            }
+        }
+    }
+
+    public void updateKeyDown(boolean keyDown, ServerPlayer player) {
+        this.mapping.put(player, keyDown);
+    }
+
+    public boolean isKeyDown(Player player) {
+        if (player.level().isClientSide) return keybinding.isDown();
+        // potential NPE here on unboxing if it is returned directly
+        Boolean isKeyDown = mapping.get((ServerPlayer) player);
+        return isKeyDown != null ? isKeyDown : false;
+    }
 
     // For Vanilla/Other Mod keybinds
     // Double Supplier to keep client classes from loading
@@ -135,7 +160,7 @@ public enum KeyBind {
 
     @OnlyIn(Dist.CLIENT)
     public boolean isPressed() {
-        return this.keybinding.isDown();
+        return this.keybinding.consumeClick();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -143,31 +168,44 @@ public enum KeyBind {
         return this.keybinding.isDown();
     }
 
-    public void update(boolean pressed, boolean keyDown, ServerPlayer player) {
-        MutablePair<Boolean, Boolean> pair = this.mapping.get(player);
-        if (pair == null) {
-            this.mapping.put(player, MutablePair.of(pressed, keyDown));
-        } else {
-            pair.left = pressed;
-            pair.right = keyDown;
+    /**
+     * Handle Keys which we track for "presses" on the server, meaning a single input which
+     * sends a packet to the server which informs all listeners.
+     */
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onInputEvent(InputEvent.Key event) {
+        IntList updatingPressed = new IntArrayList();
+        for (KeyBind keybind : VALUES) {
+            if (keybind.keybinding.consumeClick()) {
+                updatingPressed.add(keybind.ordinal());
+            }
+        }
+        if (!updatingPressed.isEmpty()) {
+            GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updatingPressed));
         }
     }
 
-    public boolean isPressed(Player player) {
-        if (player.level().isClientSide) {
-            return isPressed();
-        } else {
-            MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);
-            return pair != null && pair.left;
+    public void onKeyPressed(ServerPlayer player) {
+        Set<IKeyPressedListener> listenerSet = listeners.get(player);
+        if (listenerSet != null && !listenerSet.isEmpty()) {
+            for (var listener : listenerSet) {
+                listener.onKeyPressed(player, this);
+            }
         }
     }
 
-    public boolean isKeyDown(Player player) {
-        if (player.level().isClientSide) {
-            return isKeyDown();
-        } else {
-            MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);
-            return pair != null && pair.right;
+    public void registerListener(ServerPlayer player, IKeyPressedListener listener) {
+        Set<IKeyPressedListener> listenerSet = listeners.computeIfAbsent(player, k -> new HashSet<>());
+        listenerSet.add(listener);
+    }
+
+    public void removeListener(ServerPlayer player, IKeyPressedListener listener) {
+        Set<IKeyPressedListener> listenerSet = listeners.get(player);
+        if (listenerSet != null) {
+            listenerSet.remove(listener);
         }
     }
+
+
 }

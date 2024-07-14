@@ -205,6 +205,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     WRENCH_IV,
                     BUZZSAW,
                     SCREWDRIVER_LV,
+                    QUARKTECH_OMNITOOL
             });
         }
 
