@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/tinted_cube_all_0",
+  "parent": "gtceu:block/cube/tinted/all_0",
   "textures": {
     "all": "gtceu:block/material_sets/rough/raw_ore_block"
   }
