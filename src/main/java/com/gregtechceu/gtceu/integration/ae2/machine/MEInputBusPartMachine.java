@@ -23,11 +23,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -4,72 +4,66 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.ae2.util.SerializableManagedGridNode;
+import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHost;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
-import appeng.me.helpers.BlockEntityNodeListener;
 import lombok.Getter;
+import lombok.Setter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
 
-public abstract class MEHatchPartMachine extends FluidHatchPartMachine
-                                         implements IInWorldGridNodeHost, IGridConnectedMachine {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public abstract class MEHatchPartMachine extends FluidHatchPartMachine implements IGridConnectedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEHatchPartMachine.class,
             FluidHatchPartMachine.MANAGED_FIELD_HOLDER);
+
     protected final static int CONFIG_SIZE = 16;
 
-    @Getter
     @Persisted
-    @ReadOnlyManaged(onDirtyMethod = "onGridNodeDirty",
-                     serializeMethod = "serializeGridNode",
-                     deserializeMethod = "deserializeGridNode")
-    private final SerializableManagedGridNode mainNode = (SerializableManagedGridNode) createMainNode()
-            .setFlags(GridFlags.REQUIRE_CHANNEL)
-            .setVisualRepresentation(getDefinition().getItem())
-            .setIdlePowerUsage(ConfigHolder.INSTANCE.compat.ae2.meHatchEnergyUsage)
-            .setInWorldNode(true)
-            .setExposedOnSides(
-                    this.hasFrontFacing() ? EnumSet.of(this.getFrontFacing()) : EnumSet.allOf(Direction.class))
-            .setTagName("proxy");
-    protected final IActionSource actionSource = IActionSource.ofMachine(mainNode::getNode);
+    protected final GridNodeHost proxy;
 
     @DescSynced
     @Getter @Setter
     protected boolean isOnline;
 
-    private IGrid aeProxy;
+    protected final IActionSource actionSource;
 
     public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE, args);
+        this.proxy = createGridProxy();
+        this.actionSource = IActionSource.ofMachine(proxy.getMainNode()::getNode);
+    }
+
+    protected GridNodeHost createGridProxy() {
+        return new GridNodeHost(this);
     }
 
     @Override
-    public void onRotated(Direction oldFacing, Direction newFacing) {
-        super.onRotated(oldFacing, newFacing);
-        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
+    public IManagedGridNode getMainNode() {
+        return proxy.getMainNode();
     }
 
-    protected IManagedGridNode createMainNode() {
-        return new SerializableManagedGridNode(this, BlockEntityNodeListener.INSTANCE);
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        IGridConnectedMachine.super.onMainNodeStateChanged(reason);
+        this.updateTankSubscription();
     }
 
+    @Override
     protected void updateTankSubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) && getLevel() != null &&
-                GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
+        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) && isOnline()) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -78,47 +72,13 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::createManagedNode));
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        mainNode.destroy();
-    }
-
-    @Override
-    public void onChanged() {
-        super.onChanged();
-        this.updateTankSubscription();
-    }
-
-    protected void createManagedNode() {
-        this.mainNode.create(this.getLevel(), this.getPos());
+    public void onRotated(Direction oldFacing, Direction newFacing) {
+        super.onRotated(oldFacing, newFacing);
+        getMainNode().setExposedOnSides(EnumSet.of(newFacing));
     }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean onGridNodeDirty(SerializableManagedGridNode node) {
-        return node != null && node.isActive() && node.isOnline();
-    }
-
-    @SuppressWarnings("unused")
-    public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
-        return node.serializeNBT();
-    }
-
-    @SuppressWarnings("unused")
-    public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
-        this.mainNode.deserializeNBT(tag);
-        return this.mainNode;
     }
 }

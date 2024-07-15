@@ -1,23 +1,38 @@
-package com.gregtechceu.gtceu.integration.ae2.machine;
+package com.gregtechceu.gtceu.integration.ae2.machine.feature;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.helpers.IGridConnectedBlockEntity;
+
+/**
+ * A machine that can connect to ME network.
+ *
+ * @author GateGuardian
+ * @date : 2024/7/14
+ */
 public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBlockEntity {
 
     int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
+    /**
+     * @return return {@code true} if current machine connected to a valid ME network, {@code false} otherwise.
+     */
     boolean isOnline();
+
     void setOnline(boolean online);
 
+    /**
+     * @return {@code true} if current machine should interact with ME network, {@code false} otherwise.
+     */
     default boolean shouldSyncME() {
         return self().getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
     }
 
     /**
      * Update me network connection status.
+     * 
      * @return the updated status.
      */
     default boolean updateMEStatus() {
@@ -35,5 +50,4 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
     default void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.updateMEStatus();
     }
-
 }

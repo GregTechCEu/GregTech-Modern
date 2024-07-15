@@ -64,7 +64,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 0, this.aeFluidTanks.tanks));
+        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks.tanks));
 
         return group;
     }

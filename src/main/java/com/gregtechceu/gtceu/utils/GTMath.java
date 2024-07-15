@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.MethodsReturnNonnullByDefault;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

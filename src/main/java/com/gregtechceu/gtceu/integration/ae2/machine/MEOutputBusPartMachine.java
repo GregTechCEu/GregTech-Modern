@@ -11,22 +11,17 @@ import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -67,7 +62,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                     GenericStack item = this.internalBuffer.getStack(slot);
                     if (item == null) continue;
                     long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE,
-                            this.actionSource);
+                            actionSource);
                     if (inserted > 0) {
                         item = new GenericStack(item.what(), (item.amount() - inserted));
                     }
@@ -85,7 +80,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
             GenericStack stack = this.internalBuffer.getStack(slot);
             if (stack == null) continue;
-            aeNetwork.insert(stack.what(), stack.amount(), Actionable.MODULATE, this.actionSource);
+            aeNetwork.insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
         }
         super.onUnload();
     }
@@ -121,100 +116,19 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
     private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler {
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                InaccessibleInfiniteSlot.class);
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
 
         private final GenericStackInv internalBuffer;
 
         public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
-            super(holder, internalBuffer.size(), IO.OUT);
+            super(holder, 0, IO.OUT);
             this.internalBuffer = internalBuffer;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-            GenericStack stack1 = GenericStack.fromItemStack(stack);
-            this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
-            this.machine.onChanged();
         }
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                                   @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new ItemStackTransfer(16) {
-
-                @NotNull
-                @Override
-                public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate,
-                                            boolean notifyChanges) {
-                    return InaccessibleInfiniteSlot.this.insertItem(slot, stack, simulate, notifyChanges);
-                }
-            });
-        }
-
-        @NotNull
-        @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-            if (stack.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-            if (!simulate) {
-                GenericStack stack1 = GenericStack.fromItemStack(stack);
-                this.internalBuffer.insert(stack1.what(), stack1.amount(), Actionable.MODULATE,
-                        this.machine instanceof MEBusPartMachine host ? host.actionSource : IActionSource.empty());
-                this.machine.onChanged();
-            }
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @NotNull
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return ItemStack.EMPTY;
-        }
-
-        @NotNull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return Integer.MAX_VALUE - 1;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
-            for (int i = 0; i < this.internalBuffer.size(); ++i) {
-                stacks[i] = this.internalBuffer.getStack(i);
-            }
-            return stacks;
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof GenericStack[] stacks) {
-                this.internalBuffer.beginBatch();
-                for (int i = 0; i < stacks.length; ++i) {
-                    GenericStack stack = stacks[i];
-                    if (stack == null) continue;
-                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
-                }
-                this.internalBuffer.endBatch();
-            }
+            return handleIngredient(io, recipe, left, simulate, handlerIO, storage);
         }
 
         @Override

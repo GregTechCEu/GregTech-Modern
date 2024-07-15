@@ -143,7 +143,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
     }
 
-    public Level getLevel() {
+    public @Nullable Level getLevel() {
         return holder.level();
     }
 

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot.drawSelectionOverlay;
+import static com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigSlot.drawSelectionOverlay;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 
 /**

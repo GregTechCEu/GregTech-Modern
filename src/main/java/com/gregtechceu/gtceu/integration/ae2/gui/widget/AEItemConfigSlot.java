@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 
+import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.utils.Position;
