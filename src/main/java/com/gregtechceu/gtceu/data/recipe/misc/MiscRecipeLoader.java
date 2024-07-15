@@ -69,14 +69,13 @@ public class MiscRecipeLoader {
                 .chancedOutput(gem, Flint, 2500, 0)
                 .save(provider);
 
-        // TODO Matchbox
-        // PACKER_RECIPES.recipeBuilder()
-        // .inputItems(TOOL_MATCHES, 16)
-        // .inputItems(plate, Paper)
-        // .outputItems(TOOL_MATCHBOX)
-        // .duration(64)
-        // .EUt(16)
-        // .save(provider);
+        PACKER_RECIPES.recipeBuilder("matchbox")
+                .inputItems(TOOL_MATCHES, 16)
+                .inputItems(plate, Paper)
+                .outputItems(TOOL_MATCHBOX)
+                .duration(64)
+                .EUt(16)
+                .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("cobblestone")
                 .notConsumable(Blocks.COBBLESTONE.asItem())

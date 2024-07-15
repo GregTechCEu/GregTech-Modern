@@ -2,6 +2,7 @@
   "parent": "item/handheld",
   "textures": {
     "layer0": "gtceu:item/tools/handle",
-    "layer1": "gtceu:item/tools/hoe"
+    "layer1": "gtceu:item/tools/hoe",
+    "layer2": "gtceu:item/tools/hoe_overlay"
   }
 }
