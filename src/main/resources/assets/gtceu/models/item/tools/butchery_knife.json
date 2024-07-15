@@ -2,6 +2,7 @@
   "parent": "item/handheld",
   "textures": {
     "layer0": "gtceu:item/tools/butchery_knife_base",
-    "layer1": "gtceu:item/tools/butchery_knife"
+    "layer1": "gtceu:item/tools/butchery_knife",
+    "layer2": "gtceu:item/tools/butchery_knife_overlay"
   }
 }
