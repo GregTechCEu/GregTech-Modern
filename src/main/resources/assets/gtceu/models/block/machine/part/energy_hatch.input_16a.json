@@ -1,5 +1,5 @@
 {
-	"parent": "gtceu:block/machine/part/overlay_front_2",
+	"parent": "gtceu:block/overlay/tinted/front_2",
 	"textures": {
 		"overlay": "gtceu:block/overlay/machine/overlay_energy_out_ultra"
 	}

@@ -49,16 +49,16 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HangingSignItem;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -73,6 +73,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -89,8 +90,10 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -1562,6 +1565,30 @@ public class GTBlocks {
     public static BlockEntry<Block> MARBLE;
     public static BlockEntry<Block> LIGHT_CONCRETE;
     public static BlockEntry<Block> DARK_CONCRETE;
+
+    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
+            .block("brittle_charcoal", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                            Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
+            .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
+            .loot((table, block) -> table.add(block,
+                    table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
+            .lang("Brittle Charcoal")
+            .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+            .blockstate(NonNullBiConsumer.noop())
+            .item((b, p) -> new RendererBlockItem(b, p) {
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                            TooltipFlag isAdvanced) {
+                    super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                    tooltipComponents.add(1, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.0"));
+                    tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
+                }
+            })
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
 
     public static void generateStoneBlocks() {
         // Stone type blocks

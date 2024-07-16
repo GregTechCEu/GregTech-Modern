@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.util;
+package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.client.util.DrawUtil;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -14,9 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joml.Matrix4f;
 
 public final class ToolChargeBarRenderer {
 
@@ -44,7 +43,7 @@ public final class ToolChargeBarRenderer {
         int x = xPosition + 2;
         int y = yPosition + 13 - offset;
         graphics.fill(RenderType.guiOverlay(), x, y, x + 13, y + (shadow ? 2 : 1), 400, colorShadow);
-        fillHorizontalGradient(graphics, RenderType.guiOverlay(), x, y, x + level, y + 1, left, right, 400);
+        DrawUtil.fillHorizontalGradient(graphics, RenderType.guiOverlay(), x, y, x + level, y + 1, left, right, 400);
         // graphics.fill(RenderType.guiOverlay(), x + BAR_W, y, x + BAR_W - level, y - 1, colorBG);
     }
 
@@ -107,57 +106,6 @@ public final class ToolChargeBarRenderer {
     private static boolean renderDurabilityBar(GuiGraphics graphics, int level, int xPosition, int yPosition) {
         render(graphics, level, xPosition, yPosition, 0, true, colorBarLeftDurability, colorBarRightDurability, true);
         return true;
-    }
-
-    /**
-     * Fills a rectangle with a gradient color from colorFrom to colorTo at the specified z-level using the given render
-     * type and coordinates as the boundaries.
-     *
-     * @param y2         the y-coordinate of the second corner of the rectangle.
-     * @param x2         the x-coordinate of the second corner of the rectangle.
-     * @param y1         the y-coordinate of the first corner of the rectangle.
-     * @param x1         the x-coordinate of the first corner of the rectangle.
-     * @param renderType the render type to use.
-     * @param z          the z-level of the rectangle.
-     * @param colorTo    the ending color of the gradient.
-     * @param colorFrom  the starting color of the gradient.
-     */
-    public static void fillHorizontalGradient(GuiGraphics graphics, RenderType renderType, int x1, int y1, int x2,
-                                              int y2, int colorFrom, int colorTo, int z) {
-        VertexConsumer vertexconsumer = graphics.bufferSource().getBuffer(renderType);
-        fillHorizontalGradient(graphics, vertexconsumer, x1, y1, x2, y2, z, colorFrom, colorTo);
-    }
-
-    /**
-     * The core `fillGradient` method.
-     * <p>
-     * Fills a rectangle with a gradient color from colorFrom to colorTo at the specified z-level using the given render
-     * type and coordinates as the boundaries.
-     *
-     * @param consumer  the {@linkplain VertexConsumer} object for drawing the vertices on screen.
-     * @param x1        the x-coordinate of the first corner of the rectangle.
-     * @param y1        the y-coordinate of the first corner of the rectangle.
-     * @param x2        the x-coordinate of the second corner of the rectangle.
-     * @param y2        the y-coordinate of the second corner of the rectangle.
-     * @param z         the z-level of the rectangle.
-     * @param colorFrom the starting color of the gradient.
-     * @param colorTo   the ending color of the gradient.
-     */
-    private static void fillHorizontalGradient(GuiGraphics graphics, VertexConsumer consumer, int x1, int y1, int x2,
-                                               int y2, int z, int colorFrom, int colorTo) {
-        float a1 = (float) FastColor.ARGB32.alpha(colorFrom) / 255.0F;
-        float r1 = (float) FastColor.ARGB32.red(colorFrom) / 255.0F;
-        float g1 = (float) FastColor.ARGB32.green(colorFrom) / 255.0F;
-        float b1 = (float) FastColor.ARGB32.blue(colorFrom) / 255.0F;
-        float a2 = (float) FastColor.ARGB32.alpha(colorTo) / 255.0F;
-        float r2 = (float) FastColor.ARGB32.red(colorTo) / 255.0F;
-        float g2 = (float) FastColor.ARGB32.green(colorTo) / 255.0F;
-        float b2 = (float) FastColor.ARGB32.blue(colorTo) / 255.0F;
-        Matrix4f matrix4f = graphics.pose().last().pose();
-        consumer.vertex(matrix4f, (float) x1, (float) y1, (float) z).color(r1, g1, b1, a1).endVertex();
-        consumer.vertex(matrix4f, (float) x1, (float) y2, (float) z).color(r1, g1, b1, a1).endVertex();
-        consumer.vertex(matrix4f, (float) x2, (float) y2, (float) z).color(r2, g2, b2, a2).endVertex();
-        consumer.vertex(matrix4f, (float) x2, (float) y1, (float) z).color(r2, g2, b2, a2).endVertex();
     }
 
     private ToolChargeBarRenderer() {}
