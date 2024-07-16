@@ -46,7 +46,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, 16);
-        return new InaccessibleInfiniteSlot(this, this.internalBuffer);
+        return new InaccessibleInfiniteHandler(this, this.internalBuffer);
     }
 
     @Override
@@ -114,13 +114,13 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler {
+    private static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteHandler.class);
 
         private final GenericStackInv internalBuffer;
 
-        public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
+        public InaccessibleInfiniteHandler(MetaMachine holder, GenericStackInv internalBuffer) {
             super(holder, 0, IO.OUT);
             this.internalBuffer = internalBuffer;
         }

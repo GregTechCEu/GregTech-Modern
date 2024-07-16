@@ -48,7 +48,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
     @NotNull
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
-        return new InaccessibleInfiniteSlot(this, this.internalBuffer);
+        return new InaccessibleInfiniteTank(this, this.internalBuffer);
     }
 
     @Override
@@ -106,14 +106,14 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank {
+    private static class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
+                InaccessibleInfiniteTank.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         private final GenericStackInv internalBuffer;
 
-        public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
+        public InaccessibleInfiniteTank(MetaMachine holder, GenericStackInv internalBuffer) {
             super(holder, internalBuffer.size(), 0, IO.OUT);
             this.internalBuffer = internalBuffer;
         }
@@ -126,7 +126,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
                         @Override
                         public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                            return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
+                            return InaccessibleInfiniteTank.this.fill(resource, simulate, notifyChanges);
                         }
                     }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
         }
