@@ -28,6 +28,7 @@ public class FluidEntryRendererMixin {
     private void gtceu$addMaterialTooltip(EntryStack<FluidStack> entry, TooltipContext context,
                                           CallbackInfoReturnable<@Nullable Tooltip> cir,
                                           List<Component> tooltip, long amount) {
-        TooltipsHandler.appendFluidTooltips(entry.getValue().getFluid(), tooltip, context.getFlag());
+        TooltipsHandler.appendFluidTooltips(entry.getValue().getFluid(), entry.getValue().getAmount(), tooltip,
+                context.getFlag());
     }
 }

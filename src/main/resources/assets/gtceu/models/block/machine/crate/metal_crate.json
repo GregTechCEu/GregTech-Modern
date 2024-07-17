@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/tinted_cube_all",
+  "parent": "gtceu:block/cube/tinted/all",
   "textures": {
     "all": "gtceu:block/storage/crates/metal_crate"
   }
