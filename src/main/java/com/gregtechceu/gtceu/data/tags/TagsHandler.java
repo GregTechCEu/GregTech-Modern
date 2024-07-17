@@ -34,7 +34,7 @@ public class TagsHandler {
     }
 
     public static void initFluid(RegistrateTagsProvider<Fluid> provider) {
-        FluidTagLoader.addPlatformSpecificFluidTags(provider);
+        FluidTagLoader.init(provider);
     }
 
     public static void initEntity(RegistrateTagsProvider<EntityType<?>> provider) {
