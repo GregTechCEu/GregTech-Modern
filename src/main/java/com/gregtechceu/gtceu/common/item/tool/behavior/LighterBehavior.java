@@ -107,7 +107,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
             }
 
             BlockPos offset = context.getClickedPos().offset(context.getClickedFace().getNormal());
-            if(context.getLevel().isEmptyBlock(offset)) {
+            if (context.getLevel().isEmptyBlock(offset)) {
                 context.getLevel().setBlock(offset, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
