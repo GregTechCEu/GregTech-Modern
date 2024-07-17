@@ -113,7 +113,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         }
 
         return InteractionResult.FAIL;
