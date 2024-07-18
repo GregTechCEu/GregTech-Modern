@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
 
 /**
  * @Author GlodBlock

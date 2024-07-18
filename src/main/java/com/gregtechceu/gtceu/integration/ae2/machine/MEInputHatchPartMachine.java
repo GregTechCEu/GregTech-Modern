@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.ExportOnlyAESlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

@@ -62,7 +62,7 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     @Override
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) && isOnline()) {
+        if (isWorkingEnabled() && isOnline()) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

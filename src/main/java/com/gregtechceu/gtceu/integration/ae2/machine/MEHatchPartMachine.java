@@ -63,7 +63,7 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     @Override
     protected void updateTankSubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) && isOnline()) {
+        if (isWorkingEnabled() && isOnline()) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

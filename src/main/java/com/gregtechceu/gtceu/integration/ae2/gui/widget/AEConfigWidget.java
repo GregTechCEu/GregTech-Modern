@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

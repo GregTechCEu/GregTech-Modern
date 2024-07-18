@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.utils;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
@@ -15,8 +15,7 @@ import static com.gregtechceu.gtceu.utils.GTMath.split;
 
 public class AEUtil {
 
-    @Nullable
-    public static GenericStack fromFluidStack(FluidStack stack) {
+    public static @Nullable GenericStack fromFluidStack(FluidStack stack) {
         if (stack == null || stack.isEmpty()) return null;
         var key = AEFluidKey.of(stack.getFluid(), stack.getTag());
         return new GenericStack(key, stack.getAmount());

@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 
-import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;

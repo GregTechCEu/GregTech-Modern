@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.ExportOnlyAESlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
