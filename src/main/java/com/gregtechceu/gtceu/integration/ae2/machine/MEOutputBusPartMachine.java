@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.stacks.AEItemKey;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -20,10 +19,12 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import appeng.api.stacks.AEItemKey;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @Author GlodBlock
@@ -47,8 +48,12 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new KeyStorage();
-        this.internalBuffer.setOnContentsChanged(this::onChanged);
         return new InaccessibleInfiniteHandler(this);
+    }
+
+    @Override
+    protected boolean shouldSubscribe() {
+        return super.shouldSubscribe() && !internalBuffer.storage.isEmpty();
     }
 
     @Override
@@ -87,11 +92,12 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         public InaccessibleInfiniteHandler(MetaMachine holder) {
             super(holder, 0, IO.OUT);
+            internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
 
         @Override
         public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                                             @Nullable String slotName, boolean simulate) {
+                                                            @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, handlerIO, new ItemStackTransferDelegate());
         }
 
@@ -118,13 +124,14 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
             @Override
             public ItemStack insertItem(
-                    int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
+                                        int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
                 var key = AEItemKey.of(stack);
                 int count = stack.getCount();
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
                 long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
                 if (changeValue > 0) {
                     internalBuffer.storage.put(key, oldValue + changeValue);
+                    internalBuffer.onChanged();
                     return stack.copyWithCount((int) (count - changeValue));
                 } else {
                     return ItemStack.EMPTY;

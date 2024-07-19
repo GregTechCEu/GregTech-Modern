@@ -1,17 +1,19 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,10 +25,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAware {
 
-    public final Object2LongMap<AEKey> storage = new Object2LongOpenHashMap<>(); //TODO trim periodically or not
+    public final Object2LongMap<AEKey> storage = new Object2LongOpenHashMap<>(); // TODO trim periodically or not
 
     @Nullable
-    @Getter @Setter
+    @Getter
+    @Setter
     private Runnable onContentsChanged;
 
     public void onChanged() {
@@ -39,21 +42,28 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
      * Insert the stacks into the inventory as much as possible
      *
      * @param inventory the inventory into which stacks will be inserted
-     * @param source the source of the action
+     * @param source    the source of the action
      */
     public void insertInventory(MEStorage inventory, IActionSource source) {
         var it = storage.object2LongEntrySet().iterator();
+        boolean changed = false;
         while (it.hasNext()) {
             var entry = it.next();
             var key = entry.getKey();
             var amount = entry.getLongValue();
             long inserted = inventory.insert(key, amount, Actionable.MODULATE,
                     source);
-            if (inserted >= amount) {
-                it.remove();
-            } else {
-                entry.setValue(amount - inserted);
+            if (inserted > 0) {
+                changed = true;
+                if (inserted >= amount) {
+                    it.remove();
+                } else {
+                    entry.setValue(amount - inserted);
+                }
             }
+        }
+        if (changed) {
+            onChanged();
         }
     }
 

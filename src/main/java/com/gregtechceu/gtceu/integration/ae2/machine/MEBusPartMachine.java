@@ -19,8 +19,9 @@ import appeng.api.networking.security.IActionSource;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @ParametersAreNonnullByDefault
@@ -34,7 +35,8 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
     protected final GridNodeHost proxy;
 
     @DescSynced
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean isOnline;
 
     protected final IActionSource actionSource;
@@ -62,12 +64,16 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     @Override
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && isOnline()) {
+        if (shouldSubscribe()) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
             autoIOSubs = null;
         }
+    }
+
+    protected boolean shouldSubscribe() {
+        return isWorkingEnabled() && isOnline();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-
 import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;

@@ -1,19 +1,20 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
+
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,10 +116,15 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
 
             boolean found = false;
             var li = displayList.listIterator();
-            while(li.hasNext()) {
+            while (li.hasNext()) {
                 var stack = li.next();
                 if (stack.what().equals(key)) {
-                    li.set(new GenericStack(key, stack.amount() + delta));
+                    long newAmount = stack.amount() + delta;
+                    if (newAmount > 0) {
+                        li.set(new GenericStack(key, newAmount));
+                    } else {
+                        li.remove();
+                    }
                     found = true;
                     break;
                 }
@@ -181,7 +187,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         this.readListChange(buffer);
     }
 
-    public static class Item extends AEListGridWidget{
+    public static class Item extends AEListGridWidget {
 
         public Item(int x, int y, int slotsY, KeyStorage internalList) {
             super(x, y, slotsY, internalList);
@@ -198,7 +204,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
     }
 
-    public static class Fluid extends AEListGridWidget{
+    public static class Fluid extends AEListGridWidget {
 
         public Fluid(int x, int y, int slotsY, KeyStorage internalList) {
             super(x, y, slotsY, internalList);

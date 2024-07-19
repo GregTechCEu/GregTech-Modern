@@ -55,7 +55,7 @@ public class AEFluidDisplayWidget extends Widget {
         if (fluid != null) {
             FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ?
                     FluidStack.create(key.getFluid(), fluid.amount(), key.getTag()) : FluidStack.empty();
-            DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 17, 17);
+            DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 16, 16);
             String amountStr = String.format("x%,d", fluid.amount());
             drawText(graphics, amountStr, stackX + 20, stackY + 5, 1, 0xFFFFFFFF);
         }
