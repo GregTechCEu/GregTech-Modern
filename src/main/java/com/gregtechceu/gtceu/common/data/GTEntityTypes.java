@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
 import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
+import com.gregtechceu.gtceu.common.entity.PortalEntity;
 import com.gregtechceu.gtceu.common.entity.PowderbarrelEntity;
 
 import net.minecraft.tags.EntityTypeTags;
@@ -31,6 +32,13 @@ public class GTEntityTypes {
             .lang("Industrial TNT")
             .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
             .register();
+
+    public static final EntityEntry<PortalEntity> PORTAL = REGISTRATE
+            .entity("portal", PortalEntity::new, MobCategory.MISC)
+            .lang("Portal")
+            .properties(builder -> builder.fireImmune().clientTrackingRange(64).updateInterval(5))
+            .register();
+
 
     public static void init() {}
 }
