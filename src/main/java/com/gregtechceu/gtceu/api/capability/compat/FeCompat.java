@@ -56,10 +56,10 @@ public class FeCompat {
      *
      * @return amount of EU inserted
      */
-    public static long insertEu(IEnergyStorage storage, long amountEU) {
+    public static long insertEu(IEnergyStorage storage, long amountEU, boolean simulate) {
         int euToFeRatio = ratio(false);
         int feSent = storage.receiveEnergy(toFe(amountEU, euToFeRatio), true);
-        return toEu(storage.receiveEnergy(feSent - (feSent % euToFeRatio), false), euToFeRatio);
+        return toEu(storage.receiveEnergy(feSent - (feSent % euToFeRatio), simulate), euToFeRatio);
     }
 
     /**
@@ -67,9 +67,9 @@ public class FeCompat {
      *
      * @return amount of EU extracted
      */
-    public static long extractEu(IEnergyStorage storage, long amountEU) {
+    public static long extractEu(IEnergyStorage storage, long amountEU, boolean simulate) {
         int euToFeRatio = ratio(false);
         int extract = storage.extractEnergy(toFe(amountEU, euToFeRatio), true);
-        return toEu(storage.extractEnergy(extract - (extract % euToFeRatio), false), euToFeRatio);
+        return toEu(storage.extractEnergy(extract - (extract % euToFeRatio), simulate), euToFeRatio);
     }
 }

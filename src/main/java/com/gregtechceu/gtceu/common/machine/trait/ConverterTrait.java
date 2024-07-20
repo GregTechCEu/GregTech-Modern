@@ -77,7 +77,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
                     machine.getPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
-                        Math.min(getEnergyStored(), voltage * amps));
+                        Math.min(getEnergyStored(), voltage * amps), false);
                 if (energyUsed > 0) {
                     setEnergyStored(getEnergyStored() - energyUsed);
                 }

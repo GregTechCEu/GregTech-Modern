@@ -143,8 +143,8 @@ public class EUToFEProvider extends CapabilityCompatProvider {
         @Override
         public long changeEnergy(long delta) {
             if (delta == 0) return 0;
-            else if (delta < 0) return FeCompat.extractEu(energyStorage, -delta);
-            else return FeCompat.insertEu(energyStorage, delta);
+            else if (delta < 0) return FeCompat.extractEu(energyStorage, -delta, false);
+            else return FeCompat.insertEu(energyStorage, delta, false);
         }
 
         @Override
