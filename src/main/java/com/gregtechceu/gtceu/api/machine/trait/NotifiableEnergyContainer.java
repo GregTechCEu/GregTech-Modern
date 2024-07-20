@@ -197,7 +197,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
                 }
                 return true;
             }
-        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
             IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(stackInSlot);
             if (energyStorage != null && handleForgeEnergyItem(energyStorage, simulate)) {
                 if (!simulate) {

@@ -88,7 +88,7 @@ public class CommonProxy {
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
-            ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
+            ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
 
         GTRegistries.init(eventBus);
