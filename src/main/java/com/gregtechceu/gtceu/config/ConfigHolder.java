@@ -427,23 +427,23 @@ public class ConfigHolder {
 
         public static class SmallBoilers {
             @Configurable
-            @Configurable.Comment({ "The amount of steam a Steam Solid Boiler produces per tick at max temperature.", "Default: 60" })
-            public int solidBoilerBaseOutput = 60;
+            @Configurable.Comment({ "The amount of steam a Steam Solid Boiler produces per second at max temperature.", "Default: 120" })
+            public int solidBoilerBaseOutput = 120;
             @Configurable
-            @Configurable.Comment({ "The amount of steam a High Pressure Steam Solid Boiler produces per tick at max temperature.", "Default: 150" })
-            public int hpSolidBoilerBaseOutput = 150;
+            @Configurable.Comment({ "The amount of steam a High Pressure Steam Solid Boiler produces per second at max temperature.", "Default: 300" })
+            public int hpSolidBoilerBaseOutput = 300;
             @Configurable
-            @Configurable.Comment({ "The amount of steam a Steam Liquid Boiler produces per tick at max temperature.", "Default: 120" })
-            public int liquidBoilerBaseOutput = 120;
+            @Configurable.Comment({ "The amount of steam a Steam Liquid Boiler produces per second at max temperature.", "Default: 240" })
+            public int liquidBoilerBaseOutput = 240;
             @Configurable
-            @Configurable.Comment({ "The amount of steam a High Pressure Steam Liquid Boiler produces per tick at max temperature.", "Default: 300" })
-            public int hpLiquidBoilerBaseOutput = 300;
+            @Configurable.Comment({ "The amount of steam a High Pressure Steam Liquid Boiler produces per second at max temperature.", "Default: 600" })
+            public int hpLiquidBoilerBaseOutput = 600;
             @Configurable
-            @Configurable.Comment({ "The amount of steam a Steam Solar Boiler produces per tick at max temperature.", "Default: 60" })
-            public int solarBoilerBaseOutput = 60;
+            @Configurable.Comment({ "The amount of steam a Steam Solar Boiler produces per second at max temperature.", "Default: 120" })
+            public int solarBoilerBaseOutput = 120;
             @Configurable
-            @Configurable.Comment({ "The amount of steam a High Pressure Steam Solar Boiler produces per tick at max temperature.", "Default: 180" })
-            public int hpSolarBoilerBaseOutput = 180;
+            @Configurable.Comment({ "The amount of steam a High Pressure Steam Solar Boiler produces per second at max temperature.", "Default: 360" })
+            public int hpSolarBoilerBaseOutput = 360;
         }
 
         public static class LargeBoilers {
