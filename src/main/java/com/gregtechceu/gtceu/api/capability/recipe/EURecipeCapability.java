@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
+
+import com.google.common.primitives.Ints;
 
 import java.util.Collection;
 import java.util.List;

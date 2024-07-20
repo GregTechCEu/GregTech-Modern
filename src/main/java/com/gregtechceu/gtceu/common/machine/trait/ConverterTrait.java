@@ -13,8 +13,9 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Getter;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import lombok.Getter;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
@@ -115,12 +116,14 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
         @Override
         public int getEnergyStored() {
-            return FeCompat.toFeBounded(ConverterTrait.this.getEnergyStored(), FeCompat.ratio(feToEu), Integer.MAX_VALUE);
+            return FeCompat.toFeBounded(ConverterTrait.this.getEnergyStored(), FeCompat.ratio(feToEu),
+                    Integer.MAX_VALUE);
         }
 
         @Override
         public int getMaxEnergyStored() {
-            return FeCompat.toFeBounded(ConverterTrait.this.getEnergyCapacity(), FeCompat.ratio(feToEu), Integer.MAX_VALUE);
+            return FeCompat.toFeBounded(ConverterTrait.this.getEnergyCapacity(), FeCompat.ratio(feToEu),
+                    Integer.MAX_VALUE);
         }
 
         @Override

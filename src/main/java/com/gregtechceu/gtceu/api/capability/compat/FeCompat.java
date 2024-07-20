@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.compat;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class FeCompat {
