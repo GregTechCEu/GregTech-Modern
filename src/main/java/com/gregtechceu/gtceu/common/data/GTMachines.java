@@ -165,8 +165,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                                    (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
-                                    ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines(
@@ -177,8 +178,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                                    (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
-                                    ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines(
@@ -189,8 +191,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/solar"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                                    (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
-                                    ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines(
