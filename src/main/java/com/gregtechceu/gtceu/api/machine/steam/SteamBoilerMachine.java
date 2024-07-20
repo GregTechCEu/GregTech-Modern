@@ -196,7 +196,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
-                long fillAmount = (long) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()));
+                long fillAmount = (long) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) / 2);
                 boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, false).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
