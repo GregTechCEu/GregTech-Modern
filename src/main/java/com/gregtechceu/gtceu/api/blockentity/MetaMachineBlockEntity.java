@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -45,6 +44,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import lombok.Getter;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -230,15 +230,15 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                         LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(transfer)));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
-            if (machine instanceof IPlatformEnergyStorage platformEnergyStorage) {
+            if (machine instanceof IEnergyStorage energyStorage) {
                 return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage)));
+                        LazyOptional.of(() -> energyStorage));
             }
-            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IPlatformEnergyStorage.class);
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
                 return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
+                        LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {

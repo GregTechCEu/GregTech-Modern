@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -51,7 +52,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
+        return Math.abs(Ints.saturatedCast(maxVoltage / recipeEUt));
     }
 
     @Override
@@ -67,10 +68,6 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
-    }
-
-    public static int safeCastLongToInt(long v) {
-        return v > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) v;
+        return Math.abs(Ints.saturatedCast(maxVoltage / recipeEUt));
     }
 }

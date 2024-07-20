@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -66,16 +66,16 @@ public class ConverterMachine extends TieredEnergyMachine {
                 playerIn.sendSystemMessage(
                         Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
-                                PlatformEnergyCompat.toNativeLong(
+                                FeCompat.toFeLong(
                                         getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
-                                        PlatformEnergyCompat.ratio(false))));
+                                        FeCompat.ratio(false))));
             } else {
                 setFeToEu(true);
                 playerIn.sendSystemMessage(
                         Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
-                                PlatformEnergyCompat.toNativeLong(
+                                FeCompat.toFeLong(
                                         getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
-                                        PlatformEnergyCompat.ratio(true)),
+                                        FeCompat.ratio(true)),
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage()));
             }
         }
