@@ -1638,26 +1638,39 @@ public class GTBlocks {
         DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
     }
 
-    public static final BlockEntry<Block> FOAM = REGISTRATE
-            .block("foam", Block::new)
-            .initialProperties(() -> Blocks.SLIME_BLOCK)
+    public static final BlockEntry<FoamBlock> FOAM = REGISTRATE
+            .block("foam", p -> new FoamBlock(p, false))
+            .properties(p -> p.strength(0.5F, 0.3F)
+                    .randomTicks()
+                    .sound(SoundType.SNOW)
+                    .pushReaction(PushReaction.DESTROY)
+                    .noOcclusion().noCollission().noLootTable())
             .lang("Foam")
-            .item()
-            .build()
+            .simpleItem()
             .register();
+
+    public static final BlockEntry<FoamBlock> REINFORCED_FOAM = REGISTRATE
+            .block("foam", p -> new FoamBlock(p, true))
+            .initialProperties(FOAM)
+            .lang("Reinforced Foam")
+            .simpleItem()
+            .register();
+
     public static final BlockEntry<Block> PETRIFIED_FOAM = REGISTRATE
             .block("petrified_foam", Block::new)
             .initialProperties(() -> Blocks.STONE)
+            .properties(p -> p.strength(1.0F, 4.0F).sound(SoundType.SNOW))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .lang("Petrified Foam")
-            .item()
-            .build()
+            .simpleItem()
             .register();
     public static final BlockEntry<Block> REINFORCED_STONE = REGISTRATE
             .block("reinforced_stone", Block::new)
             .initialProperties(() -> Blocks.STONE)
+            .properties(p -> p.strength(4.0F, 16.0F))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
             .lang("Reinforced Stone")
-            .item()
-            .build()
+            .simpleItem()
             .register();
 
     // Lamps
