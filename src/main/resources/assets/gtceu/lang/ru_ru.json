@@ -685,7 +685,7 @@
     "block.gtceu.mv_gas_turbine": "§bУлучшенная газовая турбина §r",
     "block.gtceu.mv_hermetic_casing": "Герметичный корпус II",
     "block.gtceu.mv_input_bus": "§bПредметный входной люк (MV)§r",
-    "block.gtceu.mv_input_hatch": "§bПредметный выходной люк (MV)§r",
+    "block.gtceu.mv_input_hatch": "§bЖидкостный входной люк (MV)§r",
     "block.gtceu.mv_item_passthrough_hatch": "Предметный сквозной люк (§bMV§r)",
     "block.gtceu.mv_kinetic_input_box": "§bУлучшенный кинетический входной разъем §r",
     "block.gtceu.mv_kinetic_mixer": "§bУлучшенный кинетический смеситель §r",
