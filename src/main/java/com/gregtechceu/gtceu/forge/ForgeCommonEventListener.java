@@ -73,18 +73,21 @@ public class ForgeCommonEventListener {
         if (event.getEntity().level().isClientSide) {
             return;
         }
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
 
         Player player = event.getEntity();
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
-        if (inventory == null) {
+        if (tracker == null) {
             return;
         }
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(medicalCondition);
             }
+            return;
+        }
+
+        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (inventory == null) {
             return;
         }
         tracker.tick();
