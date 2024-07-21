@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -67,6 +68,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private int rDist = 0;
     @DescSynced
     private int hDist = 0;
+    @DescSynced
+    @RequireRerender
     private boolean isActive;
     private int progressTime = 0;
     private int maxTime = 0;
