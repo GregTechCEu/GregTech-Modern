@@ -2677,11 +2677,13 @@ public class GTMachines {
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
-                                        FeCompat.toFeLong(V[tier] * amperage, FeCompat.ratio(true)), amperage, V[tier],
-                                        GTValues.VNF[tier]),
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(true)),
+                                        amperage, V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage,
                                         V[tier], GTValues.VNF[tier],
-                                        FeCompat.toFeLong(V[tier] * amperage, FeCompat.ratio(false))))
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(false))))
                         .compassNode("converter")
                         .register(),
                 ALL_TIERS);

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.data.attachment.GTAttachmentTypes;
@@ -30,7 +30,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+    public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
         return itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
     }
 
@@ -70,7 +70,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+    public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {

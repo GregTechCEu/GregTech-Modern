@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 
 import org.jetbrains.annotations.NotNull;
+import com.google.common.primitives.Ints;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,7 +54,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
+        return Math.abs(Ints.saturatedCast(maxVoltage / recipeEUt));
     }
 
     @Override
@@ -69,10 +70,6 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         if (recipeEUt == 0) {
             return Integer.MAX_VALUE;
         }
-        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
-    }
-
-    public static int safeCastLongToInt(long v) {
-        return v > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) v;
+        return Math.abs(Ints.saturatedCast(maxVoltage / recipeEUt));
     }
 }

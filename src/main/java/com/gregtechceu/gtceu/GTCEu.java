@@ -75,10 +75,6 @@ public class GTCEu {
                 LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
     }
 
-    public static boolean isRebornEnergyLoaded() {
-        return Platform.isForge() || LDLib.isModLoaded(GTValues.MODID_REBORN_ENERGY);
-    }
-
     public static boolean isAE2Loaded() {
         return LDLib.isModLoaded(GTValues.MODID_APPENG);
     }

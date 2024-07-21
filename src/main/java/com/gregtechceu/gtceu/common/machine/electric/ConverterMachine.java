@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import com.gregtechceu.gtceu.api.capability.FeCompat;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -67,13 +67,15 @@ public class ConverterMachine extends TieredMachine implements IExplosionMachine
                 playerIn.sendSystemMessage(
                         Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
-                                FeCompat.toFeLong(getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
+                                FeCompat.toFeLong(
+                                        getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
                                         FeCompat.ratio(false))));
             } else {
                 setFeToEu(true);
                 playerIn.sendSystemMessage(
                         Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
-                                FeCompat.toFeLong(getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
+                                FeCompat.toFeLong(
+                                        getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
                                         FeCompat.ratio(true)),
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage()));
             }
