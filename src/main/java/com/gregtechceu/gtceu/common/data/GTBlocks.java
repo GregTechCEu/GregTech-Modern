@@ -1645,23 +1645,20 @@ public class GTBlocks {
                     .sound(SoundType.SNOW)
                     .pushReaction(PushReaction.DESTROY)
                     .noOcclusion().noCollission().noLootTable())
-            .lang("Foam")
             .simpleItem()
             .register();
 
-    // public static final BlockEntry<FoamBlock> REINFORCED_FOAM = REGISTRATE
-    // .block("reinforced_foam", p -> new FoamBlock(p, true))
-    // .initialProperties(FOAM)
-    // .lang("Reinforced Foam")
-    // .simpleItem()
-    // .register();
+    public static final BlockEntry<FoamBlock> REINFORCED_FOAM = REGISTRATE
+            .block("reinforced_foam", p -> new FoamBlock(p, true))
+            .initialProperties(FOAM)
+            .simpleItem()
+            .register();
 
     public static final BlockEntry<Block> PETRIFIED_FOAM = REGISTRATE
             .block("petrified_foam", Block::new)
             .initialProperties(() -> Blocks.STONE)
             .properties(p -> p.strength(1.0F, 4.0F).sound(SoundType.SNOW))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
-            .lang("Petrified Foam")
             .simpleItem()
             .register();
     public static final BlockEntry<Block> REINFORCED_STONE = REGISTRATE
@@ -1669,7 +1666,6 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STONE)
             .properties(p -> p.strength(4.0F, 16.0F))
             .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
-            .lang("Reinforced Stone")
             .simpleItem()
             .register();
 

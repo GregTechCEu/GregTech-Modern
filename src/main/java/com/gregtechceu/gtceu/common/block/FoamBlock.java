@@ -58,6 +58,6 @@ public class FoamBlock extends Block {
 
     private BlockState getPetrifiedBlock(BlockState state) {
         var block = isReinforced ? GTBlocks.REINFORCED_STONE : GTBlocks.PETRIFIED_FOAM;
-        return block.getDefaultState()/* .withProperty(COLOR, state.getValue(COLOR)) */;
+        return block.getDefaultState();
     }
 }
