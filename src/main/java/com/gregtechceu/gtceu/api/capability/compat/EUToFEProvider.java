@@ -1,11 +1,8 @@
-package com.gregtechceu.gtceu.api.capability.forge.compat;
+package com.gregtechceu.gtceu.api.capability.compat;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
-import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -16,6 +13,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 public class EUToFEProvider extends CapabilityCompatProvider {
@@ -46,20 +44,20 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
     public class GTEnergyWrapper implements IEnergyContainer {
 
-        private final IPlatformEnergyStorage energyStorage;
+        private final IEnergyStorage energyStorage;
 
         public GTEnergyWrapper(IEnergyStorage energyStorage) {
-            this.energyStorage = GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+            this.energyStorage = energyStorage;
         }
 
         @Override
         public long acceptEnergyFromNetwork(Direction facing, long voltage, long amperage) {
-            long receive = 0;
+            int receive = 0;
 
             // Try to use the internal buffer before consuming a new packet
             if (feBuffer > 0) {
 
-                receive = energyStorage.insert(safeCastLongToInt(feBuffer), true);
+                receive = energyStorage.receiveEnergy(Ints.saturatedCast(feBuffer), true);
 
                 if (receive == 0)
                     return 0;
@@ -67,23 +65,23 @@ public class EUToFEProvider extends CapabilityCompatProvider {
                 // Internal Buffer could provide the max RF the consumer could consume
                 if (feBuffer > receive) {
                     feBuffer -= receive;
-                    energyStorage.insert(receive, false);
+                    energyStorage.receiveEnergy(receive, false);
                     return 0;
 
                     // Buffer could not provide max value, save the remainder and continue processing
                 } else {
-                    receive = safeCastLongToInt(feBuffer);
+                    receive = Ints.saturatedCast(feBuffer);
                     feBuffer = 0;
                 }
             }
 
-            long maxPacket = PlatformEnergyCompat.toNativeLong(voltage, PlatformEnergyCompat.ratio(false));
+            long maxPacket = FeCompat.toFeLong(voltage, FeCompat.ratio(false));
             long maximalValue = maxPacket * amperage;
 
             // Try to consume our remainder buffer plus a fresh packet
             if (receive != 0) {
 
-                long consumable = energyStorage.insert(safeCastLongToInt(maximalValue + receive), true);
+                int consumable = energyStorage.receiveEnergy(Ints.saturatedCast(maximalValue + receive), true);
 
                 // Machine unable to consume any power
                 if (consumable == 0)
@@ -91,13 +89,13 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                 // Only able to consume our buffered amount
                 if (consumable == receive) {
-                    energyStorage.insert(consumable, false);
+                    energyStorage.receiveEnergy(consumable, false);
                     return 0;
                 }
 
                 // Able to consume our full packet as well as our remainder buffer
                 if (consumable == maximalValue + receive) {
-                    energyStorage.insert(consumable, false);
+                    energyStorage.receiveEnergy(consumable, false);
                     return amperage;
                 }
 
@@ -105,19 +103,19 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                 // Able to consume buffered amount plus an even amount of packets (no buffer needed)
                 if (newPower % maxPacket == 0) {
-                    return energyStorage.insert(consumable, false) / maxPacket;
+                    return energyStorage.receiveEnergy(consumable, false) / maxPacket;
                 }
 
                 // Able to consume buffered amount plus some amount of power with a packet remainder
-                int ampsToConsume = safeCastLongToInt((newPower / maxPacket) + 1);
-                feBuffer = safeCastLongToInt((maxPacket * ampsToConsume) - consumable);
-                energyStorage.insert(consumable, false);
+                int ampsToConsume = Ints.saturatedCast((newPower / maxPacket) + 1);
+                feBuffer = Ints.saturatedCast((maxPacket * ampsToConsume) - consumable);
+                energyStorage.receiveEnergy(consumable, false);
                 return ampsToConsume;
 
                 // Else try to draw 1 full packet
             } else {
 
-                long consumable = energyStorage.insert(safeCastLongToInt(maximalValue), true);
+                int consumable = energyStorage.receiveEnergy(Ints.saturatedCast(maximalValue), true);
 
                 // Machine unable to consume any power
                 if (consumable == 0)
@@ -125,19 +123,19 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                 // Able to accept the full amount of power
                 if (consumable == maximalValue) {
-                    energyStorage.insert(consumable, false);
+                    energyStorage.receiveEnergy(consumable, false);
                     return amperage;
                 }
 
                 // Able to consume an even amount of packets
                 if (consumable % maxPacket == 0) {
-                    return energyStorage.insert(consumable, false) / maxPacket;
+                    return energyStorage.receiveEnergy(consumable, false) / maxPacket;
                 }
 
                 // Able to consume power with some amount of power remainder in the packet
-                int ampsToConsume = safeCastLongToInt((consumable / maxPacket) + 1);
-                feBuffer = safeCastLongToInt((maxPacket * ampsToConsume) - consumable);
-                energyStorage.insert(consumable, false);
+                int ampsToConsume = Ints.saturatedCast((consumable / maxPacket) + 1);
+                feBuffer = Ints.saturatedCast((maxPacket * ampsToConsume) - consumable);
+                energyStorage.receiveEnergy(consumable, false);
                 return ampsToConsume;
             }
         }
@@ -145,18 +143,18 @@ public class EUToFEProvider extends CapabilityCompatProvider {
         @Override
         public long changeEnergy(long delta) {
             if (delta == 0) return 0;
-            else if (delta < 0) return PlatformEnergyCompat.extractEu(energyStorage, -delta);
-            else return PlatformEnergyCompat.insertEu(energyStorage, delta);
+            else if (delta < 0) return FeCompat.extractEu(energyStorage, -delta, false);
+            else return FeCompat.insertEu(energyStorage, delta, false);
         }
 
         @Override
         public long getEnergyCapacity() {
-            return PlatformEnergyCompat.toEu(energyStorage.getCapacity(), PlatformEnergyCompat.ratio(false));
+            return FeCompat.toEu(energyStorage.getMaxEnergyStored(), FeCompat.ratio(false));
         }
 
         @Override
         public long getEnergyStored() {
-            return PlatformEnergyCompat.toEu(energyStorage.getAmount(), PlatformEnergyCompat.ratio(false));
+            return FeCompat.toEu(energyStorage.getEnergyStored(), FeCompat.ratio(false));
         }
 
         /**
@@ -179,16 +177,16 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
         @Override
         public long getInputVoltage() {
-            long maxInput = energyStorage.insert(Integer.MAX_VALUE, true);
+            long maxInput = energyStorage.receiveEnergy(Integer.MAX_VALUE, true);
 
             if (maxInput == 0) return 0;
             return GTValues.V[GTUtil
-                    .getTierByVoltage(PlatformEnergyCompat.toEu(maxInput, PlatformEnergyCompat.ratio(false)))];
+                    .getTierByVoltage(FeCompat.toEu(maxInput, FeCompat.ratio(false)))];
         }
 
         @Override
         public boolean inputsEnergy(Direction facing) {
-            return energyStorage.supportsInsertion();
+            return energyStorage.canReceive();
         }
 
         /**
@@ -208,15 +206,5 @@ public class EUToFEProvider extends CapabilityCompatProvider {
         public boolean isOneProbeHidden() {
             return true;
         }
-    }
-
-    /**
-     * Safely cast a Long to an Int without overflow.
-     *
-     * @param v The Long value to cast to an Int.
-     * @return v, casted to Int, or Integer.MAX_VALUE if it would overflow.
-     */
-    public static int safeCastLongToInt(long v) {
-        return v > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) v;
     }
 }
