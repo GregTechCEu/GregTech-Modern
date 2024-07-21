@@ -156,18 +156,20 @@ public class ForgeCommonEventListener {
             return;
         }
 
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
-
         Player player = event.player;
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-        IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
-        if (tracker == null || inventory == null) {
+        if (tracker == null) {
             return;
         }
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(medicalCondition);
             }
+            return;
+        }
+
+        IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
+        if (inventory == null) {
             return;
         }
         tracker.tick();
