@@ -1419,6 +1419,30 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
+        for (int tier : MULTI_HATCH_TIERS) {
+            var tierName = VN[tier].toLowerCase();
+
+            var inputBuffer = INPUT_BUFFER[tier];
+            var outputBuffer = OUTPUT_BUFFER[tier];
+
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider,
+                    "buffer_output_to_input_" + tierName,
+                    inputBuffer.asStack(),
+                    "d",
+                    "B",
+                    'B',
+                    outputBuffer.asStack());
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider,
+                    "buffer_input_to_output_" + tierName,
+                    outputBuffer.asStack(),
+                    "d",
+                    "B",
+                    'B',
+                    inputBuffer.asStack());
+        }
+
         // Steam
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_output_to_input", STEAM_EXPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_IMPORT_BUS.asStack());

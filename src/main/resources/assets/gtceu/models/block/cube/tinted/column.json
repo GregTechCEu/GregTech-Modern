@@ -1,0 +1,12 @@
+{
+  "parent": "gtceu:block/cube/tinted/default",
+  "textures": {
+    "particle": "#side",
+    "up": "#end",
+    "down": "#end",
+    "north": "#side",
+    "east": "#side",
+    "south": "#side",
+    "west": "#side"
+  }
+}

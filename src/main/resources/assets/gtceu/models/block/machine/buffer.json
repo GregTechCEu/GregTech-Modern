@@ -1,0 +1,49 @@
+{
+    "parent": "block/block",
+    "textures": {
+        "particle": "gtceu:block/casings/voltage/lv/side",
+        "bottom": "gtceu:block/casings/voltage/lv/bottom",
+        "top": "gtceu:block/casings/voltage/lv/top",
+        "side": "gtceu:block/casings/voltage/lv/side",
+        "overlay_all": "gtceu:block/overlay/machine/overlay_buffer",
+        "emissive_all": "gtceu:block/overlay/machine/overlay_buffer_emissive"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down", "tintindex": 1 },
+                "up":    { "texture": "#top", "cullface": "up", "tintindex": 1 },
+                "north": { "texture": "#side", "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#side", "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#side", "cullface": "west", "tintindex": 1 },
+                "east":  { "texture": "#side", "cullface": "east", "tintindex": 1 }
+            }
+        },
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#overlay_all", "cullface": "north" },
+                "south": { "texture": "#overlay_all", "cullface": "south" },
+                "up": { "texture": "#overlay_all", "cullface": "up" },
+                "down": { "texture": "#overlay_all", "cullface": "down" },
+                "west": { "texture": "#overlay_all", "cullface": "west" },
+                "east": { "texture": "#overlay_all", "cullface": "east" }
+            }
+        },
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#emissive_all", "cullface": "north", "tintindex": -101, "emissivity": 15 },
+                "south": { "texture": "#emissive_all", "cullface": "south", "tintindex": -101, "emissivity": 15 },
+                "up": { "texture": "#emissive_all", "cullface": "up", "tintindex": -101, "emissivity": 15 },
+                "down": { "texture": "#emissive_all", "cullface": "down", "tintindex": -101, "emissivity": 15 },
+                "west": { "texture": "#emissive_all", "cullface": "west", "tintindex": -101, "emissivity": 15 },
+                "east": { "texture": "#emissive_all", "cullface": "east", "tintindex": -101, "emissivity": 15 }
+            }
+        }
+    ]
+}

@@ -91,6 +91,11 @@ public class MinerMachine extends WorkableTieredMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
@@ -210,10 +215,9 @@ public class MinerMachine extends WorkableTieredMachine
             .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
                 WidgetGroup template = createTemplate(inventorySize).createDefault();
                 SlotWidget batterySlot = createBatterySlot().createDefault();
-                batterySlot.setSelfPosition(new Position(79, 62));
+                batterySlot.setSelfPosition(new Position(100, 10));
                 WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172),
                         template.getSize().height + 8);
-                group.addWidget(batterySlot);
                 Size size = group.getSize();
 
                 template.setSelfPosition(new Position(
@@ -221,6 +225,7 @@ public class MinerMachine extends WorkableTieredMachine
                         (size.height - template.getSize().height) / 2));
 
                 group.addWidget(template);
+                group.addWidget(batterySlot);
                 return group;
             }, (template, machine) -> {
                 if (machine instanceof MinerMachine minerMachine) {

@@ -1,0 +1,6 @@
+{
+    "parent": "gtceu:block/overlay/front",
+    "textures": {
+        "overlay": "gtceu:block/overlay/machine/overlay_water"
+    }
+}
