@@ -1707,8 +1707,8 @@ public class GTBlocks {
     }
 
     // Decorations
-    public static final Map<DyeColor, BlockEntry<Block>> METALSHEETS;
-    public static final Map<DyeColor, BlockEntry<Block>> LARGE_METALSHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> METAL_SHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> LARGE_METAL_SHEETS;
     public static final Map<DyeColor, BlockEntry<Block>> STUDS;
 
     static {
@@ -1725,7 +1725,7 @@ public class GTBlocks {
                     .simpleItem()
                     .register());
         }
-        METALSHEETS = metalsheetBuilder.build();
+        METAL_SHEETS = metalsheetBuilder.build();
 
         ImmutableMap.Builder<DyeColor, BlockEntry<Block>> largeMetalsheetBuilder = new ImmutableMap.Builder<>();
         for (DyeColor dyeColor : colors) {
@@ -1739,7 +1739,7 @@ public class GTBlocks {
                             .simpleItem()
                             .register());
         }
-        LARGE_METALSHEETS = largeMetalsheetBuilder.build();
+        LARGE_METAL_SHEETS = largeMetalsheetBuilder.build();
 
         ImmutableMap.Builder<DyeColor, BlockEntry<Block>> studsBuilder = new ImmutableMap.Builder<>();
         for (DyeColor dyeColor : colors) {
