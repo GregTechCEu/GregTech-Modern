@@ -128,7 +128,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
         var transfer = new CustomItemStackHandler();
         transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null ||
-                GTCapabilityHelper.getForgeEnergyItem(item) != null);
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return transfer;
     }
 
