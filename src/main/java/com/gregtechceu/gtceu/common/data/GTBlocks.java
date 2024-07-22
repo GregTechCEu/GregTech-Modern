@@ -1638,26 +1638,35 @@ public class GTBlocks {
         DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
     }
 
-    public static final BlockEntry<Block> FOAM = REGISTRATE
-            .block("foam", Block::new)
-            .initialProperties(() -> Blocks.SLIME_BLOCK)
-            .lang("Foam")
-            .item()
-            .build()
+    public static final BlockEntry<FoamBlock> FOAM = REGISTRATE
+            .block("foam", p -> new FoamBlock(p, false))
+            .properties(p -> p.strength(0.5F, 0.3F)
+                    .randomTicks()
+                    .sound(SoundType.SNOW)
+                    .pushReaction(PushReaction.DESTROY)
+                    .noOcclusion().noCollission().noLootTable())
+            .simpleItem()
             .register();
+
+    public static final BlockEntry<FoamBlock> REINFORCED_FOAM = REGISTRATE
+            .block("reinforced_foam", p -> new FoamBlock(p, true))
+            .initialProperties(FOAM)
+            .simpleItem()
+            .register();
+
     public static final BlockEntry<Block> PETRIFIED_FOAM = REGISTRATE
             .block("petrified_foam", Block::new)
             .initialProperties(() -> Blocks.STONE)
-            .lang("Petrified Foam")
-            .item()
-            .build()
+            .properties(p -> p.strength(1.0F, 4.0F).sound(SoundType.SNOW))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
+            .simpleItem()
             .register();
     public static final BlockEntry<Block> REINFORCED_STONE = REGISTRATE
             .block("reinforced_stone", Block::new)
             .initialProperties(() -> Blocks.STONE)
-            .lang("Reinforced Stone")
-            .item()
-            .build()
+            .properties(p -> p.strength(4.0F, 16.0F))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+            .simpleItem()
             .register();
 
     // Lamps
@@ -1691,6 +1700,56 @@ public class GTBlocks {
                     .register());
         }
         BORDERLESS_LAMPS = borderlessLampBuilder.build();
+    }
+
+    // Decorations
+    public static final Map<DyeColor, BlockEntry<Block>> METAL_SHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> LARGE_METAL_SHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> STUDS;
+
+    static {
+        DyeColor[] colors = DyeColor.values();
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> metalsheetBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            metalsheetBuilder.put(dyeColor, REGISTRATE.block("%s_metal_sheet".formatted(dyeColor.getName()), Block::new)
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
+                    .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/metalsheet_%s".formatted(dyeColor.getName())))))
+                    .simpleItem()
+                    .register());
+        }
+        METAL_SHEETS = metalsheetBuilder.build();
+
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> largeMetalsheetBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            largeMetalsheetBuilder.put(dyeColor,
+                    REGISTRATE.block("%s_large_metal_sheet".formatted(dyeColor.getName()), Block::new)
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
+                            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/large_metalsheet_%s".formatted(dyeColor.getName())))))
+                            .simpleItem()
+                            .register());
+        }
+        LARGE_METAL_SHEETS = largeMetalsheetBuilder.build();
+
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> studsBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            studsBuilder.put(dyeColor, REGISTRATE.block("%s_studs".formatted(dyeColor.getName()), Block::new)
+                    .initialProperties(() -> Blocks.WHITE_WOOL)
+                    .properties(p -> p.strength(1.5F, 2.5F).mapColor(dyeColor))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.NEEDS_WOOD_TOOL)
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/studs_%s".formatted(dyeColor.getName())))))
+                    .simpleItem()
+                    .register());
+        }
+        STUDS = studsBuilder.build();
     }
 
     public static <P, T extends Block,
