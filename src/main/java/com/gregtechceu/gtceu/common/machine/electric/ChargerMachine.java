@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
@@ -26,6 +27,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -95,7 +97,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected ItemStackTransfer createChargerInventory(Object... args) {
         var itemTransfer = new ItemStackTransfer(this.inventorySize);
         itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                GTCapabilityHelper.getPlatformEnergyItem(item) != null);
+                GTCapabilityHelper.getForgeEnergyItem(item) != null);
         return itemTransfer;
     }
 
@@ -166,9 +168,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     electricItems.add(electricItem);
                 }
             } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
-                var energyStorage = GTCapabilityHelper.getPlatformEnergyItem(electricItemStack);
+                var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                 if (energyStorage != null) {
-                    if (energyStorage.getAmount() < energyStorage.getCapacity()) {
+                    if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
                         electricItems.add(energyStorage);
                     }
                 }
@@ -232,9 +234,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     if (electricItem instanceof IElectricItem item) {
                         charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM),
                                 getTier(), true, false);
-                    } else if (electricItem instanceof IPlatformEnergyStorage energyStorage) {
-                        energy += PlatformEnergyCompat.insertEu(energyStorage,
-                                Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
+                    } else if (electricItem instanceof IEnergyStorage energyStorage) {
+                        energy += FeCompat.insertEu(energyStorage,
+                                Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM), false);
                     }
                     if (charged > 0) {
                         changed = true;
@@ -263,10 +265,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 if (electricItem != null) {
                     energyCapacity += electricItem.getMaxCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
-                    var energyStorage = GTCapabilityHelper.getPlatformEnergyItem(electricItemStack);
+                    var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                     if (energyStorage != null) {
-                        energyCapacity += PlatformEnergyCompat.toEu(energyStorage.getCapacity(),
-                                PlatformEnergyCompat.ratio(false));
+                        energyCapacity += FeCompat.toEu(energyStorage.getMaxEnergyStored(),
+                                FeCompat.ratio(false));
                     }
                 }
             }
@@ -287,10 +289,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 if (electricItem != null) {
                     energyStored += electricItem.getCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
-                    var energyStorage = GTCapabilityHelper.getPlatformEnergyItem(electricItemStack);
+                    var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                     if (energyStorage != null) {
-                        energyStored += PlatformEnergyCompat.toEu(energyStorage.getAmount(),
-                                PlatformEnergyCompat.ratio(false));
+                        energyStored += FeCompat.toEu(energyStorage.getEnergyStored(),
+                                FeCompat.ratio(false));
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.capability.forge;
+package com.gregtechceu.gtceu.api.capability;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
