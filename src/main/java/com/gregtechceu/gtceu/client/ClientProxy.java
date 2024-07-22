@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.compass.GTRecipeViewCreator;
 import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.entity.PortalRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -50,8 +51,7 @@ public class ClientProxy extends CommonProxy {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
-        // TODO portal renderer
-        //event.registerEntityRenderer(GTEntityTypes.PORTAL.get(), GTPortalRenderer::new);
+        event.registerEntityRenderer(GTEntityTypes.PORTAL.get(), PortalRenderer::new);
 
         event.registerBlockEntityRenderer(GTBlockEntities.GT_SIGN.get(), SignRenderer::new);
         event.registerBlockEntityRenderer(GTBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);

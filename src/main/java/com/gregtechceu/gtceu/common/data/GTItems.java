@@ -660,10 +660,11 @@ public class GTItems {
     public static ItemEntry<Item> CARBON_FIBER_PLATE = REGISTRATE.item("carbon_fiber_plate", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "carbon_fiber_plate")).lang("Carbon Fiber Plate")
             .register();
-    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", Item::new)
+    public static ItemEntry<ComponentItem> DUCT_TAPE = REGISTRATE.item("duct_tape", ComponentItem::create)
             .onRegister(compassNode(GTCompassSections.MISC))
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
-            .onRegister(compassNode(GTCompassSections.ITEMS)).register();
+            .onRegister(compassNode(GTCompassSections.ITEMS))
+            .onRegister(attach(new PortalBehavior())).register();
 
     public static ItemEntry<Item> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "iridium_neutron_reflector"))

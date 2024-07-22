@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -10,13 +12,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.function.Function;
 
 public class TeleportHandler {
 
-    public static ServerLevel getWorldByDimensionID(int id) {
-        ServerLevel level = Dimension
+    public static ServerLevel getWorldByDimension(ResourceLocation dimName) {
+        ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, dimName);
+
+        ServerLevel serverLevel = ServerLifecycleHooks.getCurrentServer().getLevel(resourceKey);
+        return serverLevel;
     }
 
     public static void teleport(Entity teleporter, Entity teleportTo) {

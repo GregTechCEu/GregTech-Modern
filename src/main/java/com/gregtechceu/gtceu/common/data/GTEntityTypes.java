@@ -34,7 +34,7 @@ public class GTEntityTypes {
             .register();
 
     public static final EntityEntry<PortalEntity> PORTAL = REGISTRATE
-            .entity("portal", PortalEntity::new, MobCategory.MISC)
+            .<PortalEntity>entity("portal", PortalEntity::new, MobCategory.MISC)
             .lang("Portal")
             .properties(builder -> builder.fireImmune().clientTrackingRange(64).updateInterval(5))
             .register();

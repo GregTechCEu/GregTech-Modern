@@ -7,7 +7,10 @@ import com.gregtechceu.gtceu.utils.GTTeleporter;
 import com.gregtechceu.gtceu.utils.TeleportHandler;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -19,14 +22,14 @@ public class PortalEntity extends Entity {
     private double targetY = 0;
     private double targetZ = 0;
 
-    private int targetDim = 0;
+    private ResourceLocation targetDim;
 
     @Getter
     private int timeToDespawn = 200;
 
 
-    public PortalEntity(Level world) {
-        super(GTEntityTypes.PORTAL.get(), world);
+    public PortalEntity(EntityType<? extends PortalEntity> type, Level world) {
+        super(type, world);
         boardingCooldown = -1;
     }
 
@@ -46,7 +49,7 @@ public class PortalEntity extends Entity {
         this.targetX = compound.getDouble("targetX");
         this.targetY = compound.getDouble("targetY");
         this.targetZ = compound.getDouble("targetZ");
-        this.targetDim = compound.getInt("targetDim");
+        this.targetDim = new ResourceLocation(compound.getString("targetDim"));
     }
 
     @Override
@@ -54,7 +57,7 @@ public class PortalEntity extends Entity {
         compound.putDouble("targetX", this.targetX);
         compound.putDouble("targetY", this.targetY);
         compound.putDouble("targetZ", this.targetZ);
-        compound.putInt("targetDim", this.targetDim);
+        compound.putString("targetDim", this.targetDim.toString());
     }
 
     @Override
@@ -63,21 +66,27 @@ public class PortalEntity extends Entity {
             setRemoved(RemovalReason.KILLED);
         }
 
-        if(!this.level().isClientSide) {
+        if (!this.level().isClientSide) {
             setSharedFlag(6, this.isCurrentlyGlowing());
         }
 
-        if(timeToDespawn == 200) {
+        if (timeToDespawn == 200) {
             playSound(GTSoundEntries.PORTAL_OPENING.getMainEvent(), 0.7f, 1.0f);
         } else if(timeToDespawn == 10) {
             playSound(GTSoundEntries.PORTAL_CLOSING.getMainEvent(), 0.7f, 1.0f);
         }
 
-        if(!this.level().isClientSide) {
-            List<Entity> entities = level().getEntities(this, this.getBoundingBox(), null);
-            for(Entity entity : entities) {
-                if(!(entity instanceof PortalEntity)) {
-                    GTTeleporter teleporter = new GTTeleporter(TeleportHandler.)
+        this.baseTick();
+
+        if (!this.level().isClientSide) {
+            List<Entity> entities = level().getEntities(this, this.getBoundingBox(), EntitySelector.NO_SPECTATORS);
+            for (Entity entity : entities) {
+                if (!(entity instanceof PortalEntity)) {
+                    ServerLevel level = TeleportHandler.getWorldByDimension(targetDim);
+                    GTTeleporter teleporter = new GTTeleporter(level, targetX, targetY, targetZ);
+                    TeleportHandler.teleport(entity, level, teleporter,
+                            targetX + entity.getLookAngle().x, targetY + entity.getLookAngle().y,
+                    targetZ + entity.getLookAngle().z);
                 }
             }
         }
@@ -89,7 +98,7 @@ public class PortalEntity extends Entity {
         super.setRot(yRot, xRot);
     }
 
-    public void setTargetCoordinates(int dim, double x, double y, double z) {
+    public void setTargetCoordinates(ResourceLocation dim, double x, double y, double z) {
         this.targetDim = dim;
         this.targetX = x;
         this.targetY = y;
