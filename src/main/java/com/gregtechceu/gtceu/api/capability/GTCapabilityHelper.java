@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
@@ -30,9 +28,8 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
-        IEnergyStorage energyItemStorage = itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
-        return energyItemStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItemStorage);
+    public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
+        return itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
     }
 
     @Nullable
@@ -71,12 +68,11 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+    public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
-                return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+                return blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
             }
         }
         return null;

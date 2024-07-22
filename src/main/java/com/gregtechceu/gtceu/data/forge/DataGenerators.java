@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.tags.DamageTagsLoader;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -41,7 +42,7 @@ public class DataGenerators {
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
-            generator.addProvider(true, new DatapackBuiltinEntriesProvider(
+            DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
@@ -50,6 +51,8 @@ public class DataGenerators {
                             .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
                             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
                     set));
+            generator.addProvider(true,
+                    new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
         }
     }
 }

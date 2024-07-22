@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
@@ -88,6 +88,7 @@ public class CommonProxy {
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+            ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
 
         GTRegistries.init(eventBus);
