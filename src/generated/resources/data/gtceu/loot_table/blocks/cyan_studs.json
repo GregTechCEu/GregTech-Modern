@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:foam"
+          "name": "gtceu:cyan_studs"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/foam"
+  "random_sequence": "gtceu:blocks/cyan_studs"
 }
