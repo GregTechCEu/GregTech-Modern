@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -40,9 +39,8 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
-                return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
-            }));
+            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap,
+                    LazyOptional.of(() -> new FilteredFluidHandlerItemStack(itemStack, capacity, filter)));
         }
         return LazyOptional.empty();
     }

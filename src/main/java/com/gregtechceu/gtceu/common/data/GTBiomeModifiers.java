@@ -1,7 +1,6 @@
-package com.gregtechceu.gtceu.common.data.forge;
+package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.*;

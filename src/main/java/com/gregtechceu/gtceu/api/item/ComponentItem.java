@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -23,10 +23,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -213,6 +215,16 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                return interactionItem.getUseAnimation(stack);
+            }
+        }
+        return super.getUseAnimation(stack);
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
@@ -343,6 +355,26 @@ public class ComponentItem extends Item
     @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return burnTime;
+    }
+
+    @Override
+    public @Nullable FoodProperties getFoodProperties(ItemStack stack, @Nullable LivingEntity entity) {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getFoodProperties(stack, entity);
+            }
+        }
+        return super.getFoodProperties(stack, entity);
+    }
+
+    @Override
+    public boolean isEdible() {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.isEdible();
+            }
+        }
+        return super.isEdible();
     }
 
     public void burnTime(int burnTime) {
