@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,6 +109,16 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                         transferLimit -= chargedAmount;
                         if (transferLimit == 0L) break;
                     }
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                    var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(itemInSlot);
+                    if (feEnergyItem != null && feEnergyItem.canReceive() &&
+                            feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
+                        long chargedAmount = chargeForgeEnergyItem(transferLimit, electricItem, feEnergyItem);
+                        if (chargedAmount > 0L) {
+                            transferLimit -= chargedAmount;
+                            if (transferLimit == 0L) break;
+                        }
+                    }
                 }
             }
         }
@@ -118,6 +131,16 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             long resultDischarged = source.discharge(maxReceived, source.getTier(), false, true, false);
             target.charge(resultDischarged, source.getTier(), false, false);
             return resultDischarged;
+        }
+        return 0L;
+    }
+
+    private static long chargeForgeEnergyItem(long maxDischargeAmount, IElectricItem source, IEnergyStorage target) {
+        long maxDischarged = source.discharge(maxDischargeAmount, source.getTier(), false, true, true);
+        long received = FeCompat.insertEu(target, maxDischarged, false);
+        if (received > 0L) {
+            source.discharge(received, source.getTier(), false, true, false);
+            return received;
         }
         return 0L;
     }

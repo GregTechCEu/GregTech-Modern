@@ -97,7 +97,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected ItemStackTransfer createChargerInventory(Object... args) {
         var itemTransfer = new ItemStackTransfer(this.inventorySize);
         itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                GTCapabilityHelper.getForgeEnergyItem(item) != null);
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return itemTransfer;
     }
 
