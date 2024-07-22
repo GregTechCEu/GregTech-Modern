@@ -14,6 +14,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -375,6 +376,26 @@ public class ComponentItem extends Item
             }
         }
         return super.isEdible();
+    }
+
+    @Override
+    public SoundEvent getEatingSound() {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getEatingSound();
+            }
+        }
+        return super.getEatingSound();
+    }
+
+    @Override
+    public SoundEvent getDrinkingSound() {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getDrinkingSound();
+            }
+        }
+        return super.getDrinkingSound();
     }
 
     public void burnTime(int burnTime) {

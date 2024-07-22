@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,7 +27,6 @@ public class FoodStats implements IEdibleItem, IInteractionItem, IAddInformation
 
     protected final FoodProperties properties;
 
-    @Getter
     protected final boolean isDrink;
 
     @Nullable
@@ -45,6 +44,11 @@ public class FoodStats implements IEdibleItem, IInteractionItem, IAddInformation
 
     public boolean isEdible() {
         return true;
+    }
+
+    @Override
+    public SoundEvent getEatingSound() {
+        return isDrink ? getDrinkingSound() : IEdibleItem.super.getEatingSound();
     }
 
     @Override
