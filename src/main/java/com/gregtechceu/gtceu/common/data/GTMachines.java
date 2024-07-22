@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -2693,13 +2693,13 @@ public class GTMachines {
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
-                                        PlatformEnergyCompat.toNativeLong(V[tier] * amperage,
-                                                PlatformEnergyCompat.ratio(true)),
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(true)),
                                         amperage, V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage,
                                         V[tier], GTValues.VNF[tier],
-                                        PlatformEnergyCompat.toNativeLong(V[tier] * amperage,
-                                                PlatformEnergyCompat.ratio(false))))
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(false))))
                         .compassNode("converter")
                         .register(),
                 ALL_TIERS);
