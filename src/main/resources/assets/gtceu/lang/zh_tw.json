@@ -5724,7 +5724,7 @@
     "tagprefix.wrench_tip":"%s扳手頂",
     "tile.gtceu.brittle_charcoal.name":"脆木炭塊",
     "tile.gtceu.brittle_charcoal.tooltip.0":"產自木炭堆點火器。",
-    "tile.gtceu.brittle_charcoal.tooltip.1":"破壞可掉落木炭。",
+    "tile.gtceu.brittle_charcoal.tooltip.1":"採掘以獲得木炭。",
     "tile.gtceu.foam.name":"建築泡沫",
     "tile.gtceu.petrified_foam.name":"石化建築泡沫",
     "tile.gtceu.reinforced_foam.name":"強化建築泡沫",
