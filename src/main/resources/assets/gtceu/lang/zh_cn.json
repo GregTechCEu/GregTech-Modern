@@ -2326,7 +2326,7 @@
     "cover.conveyor.ore_dictionary.title.1":"（*可作通配符）",
     "cover.conveyor.title":"传送带覆盖板配置（%s）",
     "cover.conveyor.transfer_rate":"§7物品/秒",
-    "cover.detector_base.message_inverted_state":"监控状态： 反相",
+    "cover.detector_base.message_inverted_state":"监控状态：反相",
     "cover.detector_base.message_normal_state":"监控状态：普通",
     "cover.ender_fluid_link.incomplete_hex.0":"输入的颜色不正确！",
     "cover.ender_fluid_link.incomplete_hex.1":"输入正确的八位十六进制颜色码方可应用",
