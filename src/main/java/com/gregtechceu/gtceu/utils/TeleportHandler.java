@@ -63,7 +63,7 @@ public class TeleportHandler {
             });
         }
 
-        teleporter.setPos(teleportToX, teleportToY, teleportToZ);
+        teleporter.teleportTo(teleportToX, teleportToY, teleportToZ);
     }
 
     public static void teleport(Entity teleporter, ServerLevel dimension, ITeleporter customTeleporter, double teleportToX, double teleportToY, double teleportToZ) {
@@ -84,6 +84,6 @@ public class TeleportHandler {
             teleporter.changeDimension(dimension, customTeleporter);
         }
 
-        teleporter.setPos(teleportToX, teleportToY, teleportToZ);
+        teleporter.teleportTo(teleportToX, teleportToY, teleportToZ);
     }
 }

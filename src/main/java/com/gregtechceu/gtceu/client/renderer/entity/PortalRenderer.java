@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.client.renderer.entity;
 
 import com.gregtechceu.gtceu.common.entity.PortalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -27,7 +30,7 @@ public class PortalRenderer<T extends PortalEntity> extends EntityRenderer<T> {
 
     @Override
     public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+        //super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
 
         poseStack.pushPose();
         poseStack.translate(0.0f, 0.5f + 0.5f, 0.0f);
@@ -56,8 +59,16 @@ public class PortalRenderer<T extends PortalEntity> extends EntityRenderer<T> {
         }
         poseStack.translate(0, translateY, 0);
         poseStack.scale(scaleX, scaleY, scaleZ);
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(texture));
+        PoseStack.Pose pose = poseStack.last();
+        consumer.vertex(pose.pose(),0, 0, 0).color(1,1,1,1).uv(0,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
+        consumer.vertex(pose.pose(),1, 0, 0).color(1,1,1,1).uv(1,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
+        consumer.vertex(pose.pose(),1, 1, 0).color(1,1,1,1).uv(1,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
+        consumer.vertex(pose.pose(),0, 1, 0).color(1,1,1,1).uv(0,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
 
         poseStack.popPose();
+
+        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 }
