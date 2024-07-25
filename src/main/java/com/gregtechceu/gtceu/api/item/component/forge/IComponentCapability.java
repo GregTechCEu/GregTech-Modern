@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.component;
+package com.gregtechceu.gtceu.api.item.component.forge;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;

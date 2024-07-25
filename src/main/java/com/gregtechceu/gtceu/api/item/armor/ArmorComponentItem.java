@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.NonNullList;

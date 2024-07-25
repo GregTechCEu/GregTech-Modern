@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
