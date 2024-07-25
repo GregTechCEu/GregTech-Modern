@@ -38,10 +38,12 @@ public class FoodStats implements IEdibleItem, IInteractionItem, IAddInformation
         this.containerItem = containerItem;
     }
 
+    @Override
     public FoodProperties getFoodProperties(ItemStack stack, @Nullable LivingEntity entity) {
         return properties;
     }
 
+    @Override
     public boolean isEdible() {
         return true;
     }
