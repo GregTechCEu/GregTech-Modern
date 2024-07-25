@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * Simple {@link IEdibleItem} implementation
+ * Simple {@link IEdibleItem} implementation.
  *
  * @author GateGuardian
  * @date : 2024/7/22
