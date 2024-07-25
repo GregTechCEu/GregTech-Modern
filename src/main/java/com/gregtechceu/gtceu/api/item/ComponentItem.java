@@ -403,7 +403,7 @@ public class ComponentItem extends Item
     }
 
     /**
-     * Attempts to get an fully charged variant of this electric item
+     * Attempts to get a fully charged variant of this electric item
      *
      * @param chargeAmount amount of charge
      * @return charged electric item stack
