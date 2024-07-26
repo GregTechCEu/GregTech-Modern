@@ -158,6 +158,16 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     @Override
+    default int getEfficiency() {
+        return getRecipeLogic().getProgress();
+    }
+
+    @Override
+    default int getMaxEfficiency() {
+        return getRecipeLogic().getMaxProgress();
+    }
+
+    @Override
     default boolean isActive() {
         return getRecipeLogic().isActive();
     }

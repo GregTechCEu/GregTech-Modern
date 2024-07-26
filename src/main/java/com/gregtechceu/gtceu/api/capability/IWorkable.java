@@ -11,9 +11,19 @@ public interface IWorkable extends IControllable {
     int getProgress();
 
     /**
-     * @return progress machine need to complete it's stuff
+     * @return progress machine need to complete its stuff
      */
     int getMaxProgress();
+
+    /**
+     * @return current efficiency of machine
+     */
+    int getEfficiency();
+
+    /**
+     * @return max efficiency of machine
+     */
+    int getMaxEfficiency();
 
     /**
      * @return true is machine is active

@@ -7,8 +7,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -90,6 +93,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     protected int duration;
     @Getter
+    @Setter
+    @Persisted
+    protected int efficiency;
+    @Getter
+    @Persisted
+    protected int maxEfficiency;
+    @Getter
     @Persisted
     protected int fuelTime;
     @Getter
@@ -136,6 +146,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         lastOriginRecipe = null;
         progress = 0;
         duration = 0;
+        efficiency = 0;
+        maxEfficiency = 0;
         isActive = false;
         fuelTime = 0;
         lastFailedMatches = null;
@@ -219,6 +231,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
         var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
+            modified = modified.copy();
+            //modified.duration =
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
                     modified.matchTickRecipe(machine).isSuccess()) {
@@ -248,6 +262,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     }
                     progress++;
                     totalContinuousRunningTime++;
+
+
                 } else {
                     setWaiting(result.reason().get());
                 }
@@ -464,6 +480,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     markLastRecipeDirty();
                 }
             }
+            if (efficiency < maxEfficiency) {
+                efficiency++;
+            }
             // try it again
             if (!recipeDirty &&
                     lastRecipe.matchRecipe(this.machine).isSuccess() &&
@@ -474,6 +493,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setStatus(Status.IDLE);
                 progress = 0;
                 duration = 0;
+                efficiency = 0;
                 isActive = false;
             }
         }
@@ -557,6 +577,32 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Override
     public boolean showFancyTooltip() {
         return isWaiting();
+    }
+
+    public static double getEfficiencyOverclock(int efficiencyTicks) {
+        return Math.pow(2.0, efficiencyTicks / 32.0);
+    }
+
+    private long getRecipeMaxEu(long recipeEu, int duration, long maxEu) {
+        return Math.min(recipeEu * duration, (int) Math.floor(maxEu * getEfficiencyOverclock(this.efficiency)));
+    }
+
+    private int getRecipeMaxEfficiencyTicks(GTRecipe recipe) {
+        long eu = RecipeHelper.getInputEUt(recipe);
+        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(recipe);
+
+        long totalEu = eu * recipe.duration;
+        for (int ticks = 0; true; ++ticks) {
+            long maxEu = 0;
+            if (this.machine instanceof IOverclockMachine overclockMachine) {
+                maxEu = overclockMachine.getOverclockVoltage();
+            } else if (this.machine instanceof ITieredMachine tieredMachine) {
+                maxEu = tieredMachine.getMaxVoltage();
+            }
+
+            if (getRecipeMaxEu(eu, recipe.duration, maxEu) == Math.min(maxEu, totalEu))
+                return ticks;
+        }
     }
 
     protected Map<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
