@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -615,10 +616,40 @@ public class GTItems {
             .register();
 
     // TODO Lighter
-    public static ItemEntry<Item> TOOL_MATCHES;
-    public static ItemEntry<Item> TOOL_MATCHBOX;
-    public static ItemEntry<Item> TOOL_LIGHTER_INVAR;
-    public static ItemEntry<Item> TOOL_LIGHTER_PLATINUM;
+    public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
+            .lang("Matches")
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(false, false, false)))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::create)
+            .lang("Matchbox")
+            .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(false, true, false, Items.PAPER, 16)))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::create)
+            .lang("Invar Lighter")
+            .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(FilteredFluidContainer.create(100, true,
+                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                    new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
+            .item("platinum_lighter", ComponentItem::create)
+            .lang("Platinum Lighter")
+            .properties(p -> p.stacksTo(1).rarity(Rarity.UNCOMMON))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(FilteredFluidContainer.create(1000, true,
+                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                    new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
+            .register();;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "raw_carbon_fibers")).lang("Raw Carbon Fibers")

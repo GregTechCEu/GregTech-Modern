@@ -207,7 +207,8 @@ public class ConfigHolder {
     public static class WorldGenConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Rubber Tree spawn chance (% per chunk)", "Default: 0.5" })
+        @Configurable.Comment({ "Rubber Tree spawn chance (decimal % per chunk)", "Default: 0.5" })
+        @Configurable.DecimalRange(min = 0f, max = 1f)
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
@@ -408,6 +409,14 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether the Assembly Line should require the fluid inputs to be in order.",
                 "(Requires Ordered Assembly Line Item Inputs to be enabled.)", "Default: false" })
         public boolean orderedAssemblyLineFluids = false;
+
+        @Configurable
+        @Configurable.Comment({
+                "Let Buffer has more ability.",
+                "When enabled it, Buffer will can used to assemble line and so on.",
+                "Need restart Minecraft to apply."
+        })
+        public boolean enableMoreBufferAbility = false;
     }
 
     public static class ToolConfigs {

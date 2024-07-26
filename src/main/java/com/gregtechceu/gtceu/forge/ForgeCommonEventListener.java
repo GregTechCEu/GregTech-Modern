@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
+import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -155,10 +155,21 @@ public class ForgeCommonEventListener {
         if (event.side == LogicalSide.CLIENT || event.phase != TickEvent.Phase.END) {
             return;
         }
+
         Player player = event.player;
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null) {
+            return;
+        }
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
+                tracker.removeMedicalCondition(medicalCondition);
+            }
+            return;
+        }
+
         IItemHandler inventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
-        if (tracker == null || inventory == null) {
+        if (inventory == null) {
             return;
         }
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
@@ -219,8 +230,10 @@ public class ForgeCommonEventListener {
     public static void levelTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
-            EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
-            LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
+                LocalizedHazardSavedData.getOrCreate(serverLevel).tick();
+            }
         }
     }
 
@@ -240,9 +253,9 @@ public class ForgeCommonEventListener {
             GTNetwork.NETWORK.sendToPlayer(
                     new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), serverPlayer);
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
-            }
+
             ServerLevel level = (ServerLevel) event.getEntity().level();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),

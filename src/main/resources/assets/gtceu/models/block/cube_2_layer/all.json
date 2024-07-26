@@ -1,0 +1,18 @@
+{
+  "parent": "gtceu:block/cube_2_layer/default",
+  "textures": {
+    "particle": "#bot_all",
+    "bot_down": "#bot_all",
+    "bot_up": "#bot_all",
+    "bot_north": "#bot_all",
+    "bot_east": "#bot_all",
+    "bot_south": "#bot_all",
+    "bot_west": "#bot_all",
+    "top_down": "#top_all",
+    "top_up": "#top_all",
+    "top_north": "#top_all",
+    "top_east": "#top_all",
+    "top_south": "#top_all",
+    "top_west": "#top_all"
+  }
+}

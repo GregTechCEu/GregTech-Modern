@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
-import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
@@ -89,6 +88,7 @@ public class CommonProxy {
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+            ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
 
         GTRegistries.init(eventBus);
@@ -96,8 +96,6 @@ public class CommonProxy {
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
-        // init common features
-        GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
     public static void init() {

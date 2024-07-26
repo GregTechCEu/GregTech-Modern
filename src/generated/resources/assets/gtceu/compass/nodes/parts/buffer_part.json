@@ -1,0 +1,36 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:ev_input_buffer"
+  },
+  "items": [
+    "gtceu:ev_input_buffer",
+    "gtceu:iv_input_buffer",
+    "gtceu:luv_input_buffer",
+    "gtceu:zpm_input_buffer",
+    "gtceu:uv_input_buffer",
+    "gtceu:uhv_input_buffer",
+    "gtceu:uev_input_buffer",
+    "gtceu:uiv_input_buffer",
+    "gtceu:uxv_input_buffer",
+    "gtceu:opv_input_buffer",
+    "gtceu:max_input_buffer",
+    "gtceu:ev_output_buffer",
+    "gtceu:iv_output_buffer",
+    "gtceu:luv_output_buffer",
+    "gtceu:zpm_output_buffer",
+    "gtceu:uv_output_buffer",
+    "gtceu:uhv_output_buffer",
+    "gtceu:uev_output_buffer",
+    "gtceu:uiv_output_buffer",
+    "gtceu:uxv_output_buffer",
+    "gtceu:opv_output_buffer",
+    "gtceu:max_output_buffer"
+  ],
+  "page": "gtceu:parts/buffer_part",
+  "position": [
+    -50,
+    100
+  ],
+  "section": "gtceu:parts"
+}

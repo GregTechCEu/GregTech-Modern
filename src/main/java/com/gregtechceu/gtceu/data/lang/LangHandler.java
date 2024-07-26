@@ -717,8 +717,8 @@ public class LangHandler {
         provider.add("tile.gtceu.reinforced_foam.name", "Reinforced Foam");
         provider.add("tile.gtceu.petrified_foam.name", "Petrified Foam");
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
-        provider.add("tile.brittle_charcoal.name", "Brittle Charcoal");
-        multilineLang(provider, "tile.brittle_charcoal.tooltip",
+        provider.add("tile.gtceu.brittle_charcoal.name", "Brittle Charcoal");
+        multilineLang(provider, "tile.gtceu.brittle_charcoal.tooltip",
                 "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
         provider.add("metaitem.prospector.mode.ores", "§aOre Prospection Mode§r");
         provider.add("metaitem.prospector.mode.fluid", "§bFluid Prospection Mode§r");
@@ -861,7 +861,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
                 "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§2Fluid Stored: §f%s, %d mB");
         provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
