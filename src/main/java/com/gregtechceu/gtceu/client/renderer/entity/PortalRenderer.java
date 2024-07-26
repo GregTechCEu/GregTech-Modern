@@ -62,10 +62,10 @@ public class PortalRenderer<T extends PortalEntity> extends EntityRenderer<T> {
 
         VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(texture));
         PoseStack.Pose pose = poseStack.last();
-        consumer.vertex(pose.pose(),0, 0, 0).color(1,1,1,1).uv(0,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
-        consumer.vertex(pose.pose(),1, 0, 0).color(1,1,1,1).uv(1,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
-        consumer.vertex(pose.pose(),1, 1, 0).color(1,1,1,1).uv(1,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
-        consumer.vertex(pose.pose(),0, 1, 0).color(1,1,1,1).uv(0,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0,0,1).endVertex();
+        consumer.vertex(pose.pose(),0, 0, 0).color(1,1,1,1).uv(0,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(1,0,1).endVertex();
+        consumer.vertex(pose.pose(),1, 0, 0).color(1,1,1,1).uv(1,0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(1,0,1).endVertex();
+        consumer.vertex(pose.pose(),1, 1, 0).color(1,1,1,1).uv(1,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(1,0,1).endVertex();
+        consumer.vertex(pose.pose(),0, 1, 0).color(1,1,1,1).uv(0,1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(1,0,1).endVertex();
 
         poseStack.popPose();
 
