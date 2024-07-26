@@ -13,17 +13,20 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -195,6 +198,16 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                return interactionItem.getUseAnimation(stack);
+            }
+        }
+        return super.getUseAnimation(stack);
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
@@ -314,12 +327,42 @@ public class ComponentItem extends Item
         return burnTime;
     }
 
+    @Override
+    public @Nullable FoodProperties getFoodProperties(ItemStack stack, @Nullable LivingEntity entity) {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getFoodProperties(stack, entity);
+            }
+        }
+        return super.getFoodProperties(stack, entity);
+    }
+
+    @Override
+    public SoundEvent getEatingSound() {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getEatingSound();
+            }
+        }
+        return super.getEatingSound();
+    }
+
+    @Override
+    public SoundEvent getDrinkingSound() {
+        for (IItemComponent component : components) {
+            if (component instanceof IEdibleItem foodBehavior) {
+                return foodBehavior.getDrinkingSound();
+            }
+        }
+        return super.getDrinkingSound();
+    }
+
     public void burnTime(int burnTime) {
         this.burnTime = burnTime;
     }
 
     /**
-     * Attempts to get an fully charged variant of this electric item
+     * Attempts to get a fully charged variant of this electric item
      *
      * @param chargeAmount amount of charge
      * @return charged electric item stack

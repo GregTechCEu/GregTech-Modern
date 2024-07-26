@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.forge;
+package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.material.material.Material;

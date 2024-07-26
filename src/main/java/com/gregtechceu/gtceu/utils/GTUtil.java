@@ -21,6 +21,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -464,5 +465,18 @@ public class GTUtil {
             default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
+    }
+
+    public static void addPotionTooltip(List<FoodProperties.PossibleEffect> effects, List<Component> list) {
+        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        effects.forEach(pair -> {
+            var effect = pair.getFirst();
+            float probability = pair.getSecond();
+            list.add(Component.translatable("gtceu.tooltip.potion.each",
+                    Component.translatable(effect.getDescriptionId()),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
+                    effect.getDuration(),
+                    100 * probability));
+        });
     }
 }

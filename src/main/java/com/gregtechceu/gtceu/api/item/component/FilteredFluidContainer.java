@@ -3,18 +3,17 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,25 +37,20 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
-                return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
-            }));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        FluidStack tank = FluidTransferHelper.getFluidContained(stack);
+        if (!tank.isEmpty()) {
+            tooltipComponents
+                    .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(),
+                            FormattingUtil.formatNumbers(tank.getAmount())));
         }
-        return LazyOptional.empty();
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        if (stack.hasTag()) {
-            FluidStack tank = FluidTransferHelper.getFluidContained(stack);
-            if (tank != null) {
-                tooltipComponents
-                        .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                                tank.getAmount()));
-            }
-        }
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> {
+            return new FilteredFluidHandlerItemStack(stack, capacity, filter);
+        }, item);
     }
 }

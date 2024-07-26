@@ -33,9 +33,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
+import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
@@ -302,9 +302,11 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
             .register();
-    public static ItemEntry<Item> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", Item::new)
+    public static ItemEntry<ComponentItem> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", ComponentItem::create)
             .lang("Chocolate Coin")
-            .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(attach(new FoodStats(GTFoods.CHOCOLATE, false,
+                    () -> ChemicalHelper.get(TagPrefix.foil, GTMaterials.Gold))))
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
             .register();
@@ -699,10 +701,10 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(100, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                    x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
-                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
+                    (itemStack) -> itemStack.get(GTDataComponents.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
             .item("platinum_lighter", ComponentItem::create)
@@ -711,10 +713,10 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
             .onRegister(attach(FilteredFluidContainer.create(1000, true,
-                    x -> x.getFluid().is(CustomTags.LIGHTER_FLUIDS)),
+                    x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
-                    (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
+                    (itemStack) -> itemStack.get(GTDataComponents.LIGHTER_OPEN) ? 1.0f : 0.0f))
             .register();;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)
@@ -2273,9 +2275,9 @@ public class GTItems {
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", Item::new)
+    public static ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
             .lang("Purple Drink")
-            .properties(p -> p.food(GTFoods.DRINK))
+            .onRegister(attach(new FoodStats(GTFoods.DRINK, true, () -> Items.GLASS_BOTTLE.getDefaultInstance())))
             .onRegister(compassNode(GTCompassSections.MISC))
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::new)
