@@ -35,18 +35,18 @@ dependencies {
     modCompileOnly forge.flywheel
 
     // JEI
-    modCompileOnly(forge.jei.common.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.impl) { transitive = false }
+    modImplementation(forge.jei.common.api) { transitive = false }
+    modImplementation(forge.jei.forge.api) { transitive = false }
+    modImplementation(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
-    modImplementation forge.rei.forge
+    modCompileOnly forge.rei.forge
 
     // EMI
-    modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modCompileOnly forge.emi
+    modImplementation("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
+    modImplementation forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }

@@ -5663,6 +5663,7 @@
   "recipe.capability.su.name": "ssǝɹʇS ǝʇɐǝɹƆ",
   "recipe.condition.biome.tooltip": "%s :ǝɯoıᗺ",
   "recipe.condition.dimension.tooltip": "%s :uoısuǝɯıᗡ",
+  "recipe.condition.dimension_marker.tooltip": ":uoısuǝɯıᗡ",
   "recipe.condition.eu_to_start.tooltip": "%d :ʇɹɐʇs oʇ ∩Ǝ",
   "recipe.condition.pos_y.tooltip": "%d =< ʎ =< %d :ןǝʌǝꞀ ʎ",
   "recipe.condition.rain.tooltip": "%d :ןǝʌǝꞀ uıɐᴚ",
