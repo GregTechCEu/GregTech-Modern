@@ -83,8 +83,8 @@ public class FirstDegreeMaterials {
         Bone = new Material.Builder(GTCEu.id("bone"))
                 .dust(1)
                 .color(0xfcfbed).secondaryColor(0xa0a38b)
-                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
-                .components(Calcium, 1)
+                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
+                .components(Calcium, 3)
                 .buildAndRegister();
 
         Brass = new Material.Builder(GTCEu.id("brass"))
