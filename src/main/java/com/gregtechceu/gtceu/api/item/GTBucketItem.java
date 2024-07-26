@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.forge;
+package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
