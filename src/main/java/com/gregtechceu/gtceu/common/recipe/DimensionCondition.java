@@ -1,14 +1,24 @@
 package com.gregtechceu.gtceu.common.recipe;
 
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import com.google.gson.JsonObject;
 import lombok.NoArgsConstructor;
@@ -42,6 +52,22 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.dimension.tooltip", dimension);
+    }
+
+    public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
+        DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
+                new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
+        ItemStack item = dimMarker.getMarker();
+        ItemStackTransfer transfer = new ItemStackTransfer(1);
+        SlotWidget dimSlot = new SlotWidget(transfer, 0, xOffset, yOffset, false, false)
+                .setIngredientIO(IngredientIO.INPUT);
+        transfer.setStackInSlot(0, item);
+        if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
+            dimSlot.setOverlay(
+                    new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
+                            .scale(0.75f).transform(-3.0f, 5.0f));
+        }
+        return dimSlot;
     }
 
     public ResourceLocation getDimension() {

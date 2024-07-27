@@ -1634,7 +1634,7 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(14)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true, false)))
+                            .or(Predicates.autoAbilities(true, false, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
