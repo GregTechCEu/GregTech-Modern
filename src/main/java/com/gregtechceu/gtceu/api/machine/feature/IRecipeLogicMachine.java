@@ -129,6 +129,17 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         return true;
     }
 
+    /**
+     * whether to do an "efficiency" modifier for this machine type.
+     * Efficiency makes it so that running the same recipe multiple times in a row makes it faster.
+     * 
+     * @see ConfigHolder.MachineConfigs#doEfficiencyModifier
+     * @return whether to enable the efficiency modifier if config is enabled.
+     */
+    default boolean doEfficiencyModifier() {
+        return true;
+    }
+
     default boolean shouldWorkingPlaySound() {
         return ConfigHolder.INSTANCE.machines.machineSounds &&
                 (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());

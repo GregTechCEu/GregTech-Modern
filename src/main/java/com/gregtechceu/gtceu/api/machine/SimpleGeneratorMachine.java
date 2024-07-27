@@ -120,6 +120,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         spreadEnvironmentalHazard();
     }
 
+    @Override
+    public boolean doEfficiencyModifier() {
+        return false;
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -152,7 +157,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
                                     new CompoundTag(),
                                     Collections.emptyList(),
                                     false, false));
-                    createEnergyBar().setupUI(template, generatorMachine);
                 }
             }));
 }

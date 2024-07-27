@@ -18,9 +18,12 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
@@ -325,6 +328,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
                 batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
                 group.addWidget(batterySlot);
+
+                if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
+                    ProgressWidget efficiencyBar = createEfficiencyBar().createDefault();
+                    efficiencyBar.setSelfPosition(new Position(group.getSize().width, 16));
+                    group.addWidget(efficiencyBar);
+                }
+
                 group.addWidget(template);
 
                 // TODO fix this.
@@ -353,12 +363,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                                     Collections.emptyList(),
                                     false, false));
                     createBatterySlot().setupUI(template, tieredMachine);
+                    createEfficiencyBar().setupUI(template, tieredMachine);
                     // createCircuitConfigurator().setupUI(template, tieredMachine);
                 }
             }));
 
     /**
-     * Create an energy bar widget.
+     * Create a battery slot widget.
      */
     protected static EditableUI<SlotWidget, SimpleTieredMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
@@ -375,7 +386,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     /**
-     * Create an energy bar widget.
+     * Create a circuit configurator widget.
      */
     protected static EditableUI<GhostCircuitSlotWidget, SimpleTieredMachine> createCircuitConfigurator() {
         return new EditableUI<>("circuit_configurator", GhostCircuitSlotWidget.class, () -> {
@@ -388,6 +399,25 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             slotWidget.setCanTakeItems(false);
             slotWidget.setHoverTooltips(
                     LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
+        });
+    }
+
+    /**
+     * Create an efficiency bar widget.
+     */
+    protected static EditableUI<ProgressWidget, SimpleTieredMachine> createEfficiencyBar() {
+        return new EditableUI<>("efficiency_bar", ProgressWidget.class, () -> {
+            var progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 6, 48,
+                    GuiTextures.PROGRESS_BAR_EFFICIENCY);
+            progressWidget.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
+            return progressWidget;
+        }, (progressWidget, machine) -> {
+            progressWidget.setProgressSupplier(() -> (double) machine.getRecipeLogic().getEfficiency() /
+                    machine.getRecipeLogic().getMaxEfficiency());
+            progressWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.efficiency_bar.tooltip",
+                    FormattingUtil.formatNumber0Places((float) machine.getRecipeLogic().getEfficiency() /
+                            machine.getRecipeLogic().getMaxEfficiency() * 100f))
+                    .toArray(Component[]::new));
         });
     }
 

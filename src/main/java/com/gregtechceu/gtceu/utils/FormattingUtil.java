@@ -175,6 +175,11 @@ public class FormattingUtil {
     }
 
     @NotNull
+    public static String formatNumber0Places(float number) {
+        return DECIMAL_FORMAT_0F.format(number);
+    }
+
+    @NotNull
     public static String formatNumber2Places(float number) {
         return DECIMAL_FORMAT_2F.format(number);
     }

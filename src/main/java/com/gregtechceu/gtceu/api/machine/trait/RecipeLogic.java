@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -100,9 +98,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     protected int maxEfficiency;
     @Persisted
-    protected long lastBaseEu = -1;
-    @Persisted
-    protected long lastMaxEu = -1;
+    protected long lastBaseDuration = -1;
     @Getter
     @Persisted
     protected int fuelTime;
@@ -234,11 +230,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match);
+        var modified = match;
+        if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier && machine.doEfficiencyModifier()) {
+            modified = modified.copy();
+            modified.duration = getRecipeDuration(match);
+        }
+        modified = machine.fullModifyRecipe(modified);
         if (modified != null) {
-            if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
-                modified.duration = getRecipeDuration(modified);
-            }
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
                     modified.matchTickRecipe(machine).isSuccess()) {
@@ -269,14 +267,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     progress++;
                     totalContinuousRunningTime++;
 
-                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
-                        long eu = RecipeHelper.getInputEUt(lastRecipe) * lastRecipe.duration;
-                        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(lastRecipe) * lastRecipe.duration;
-                        long maxEu = getMachineMaxVoltage(this.getMachine());
-                        if (lastBaseEu != eu || lastMaxEu != maxEu) {
-                            lastBaseEu = eu;
-                            lastMaxEu = maxEu;
-                            maxEfficiency = getRecipeMaxEfficiency(lastRecipe);
+                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier && machine.doEfficiencyModifier()) {
+                        long currentDuration = lastOriginRecipe.duration;
+                        if (lastBaseDuration != currentDuration) {
+                            lastBaseDuration = currentDuration;
+                            maxEfficiency = getRecipeMaxEfficiency(lastOriginRecipe);
                             efficiency = Math.min(efficiency, maxEfficiency);
                         }
                     }
@@ -491,7 +486,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = lastOriginRecipe;
-                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
+                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier && machine.doEfficiencyModifier()) {
+                        modified = modified.copy();
                         modified.duration = getRecipeDuration(modified);
                     }
                     modified = machine.fullModifyRecipe(lastOriginRecipe);
@@ -607,36 +603,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return Math.pow(2.0, efficiency / 32.0);
     }
 
-    public static long getMachineMaxVoltage(MetaMachine machine) {
-        if (machine instanceof IOverclockMachine overclockMachine) {
-            return overclockMachine.getOverclockVoltage();
-        } else if (machine instanceof ITieredMachine tieredMachine) {
-            return tieredMachine.getMaxVoltage();
-        }
-        return 0;
-    }
-
-    private long getRecipeMaxEu(long recipeEu, long recipeTotalEu, long maxEu, int efficiency) {
-        long baseEu = Math.max(maxEu / 4, recipeEu);
-        return Math.min(recipeTotalEu, Math.min((int) Math.floor(baseEu * getEfficiencyOverclock(efficiency)), maxEu));
+    private int getRecipeMaxDuration(int efficiency) {
+        return (int) Math.floor(getEfficiencyOverclock(efficiency));
     }
 
     private int getRecipeDuration(GTRecipe recipe) {
-        long eu = RecipeHelper.getInputEUt(recipe);
-        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(recipe);
-        long maxEu = getMachineMaxVoltage(this.getMachine());
-        long recipeMaxEu = getRecipeMaxEu(eu, eu * recipe.duration, maxEu, this.efficiency);
-        return Math.max(recipe.duration - (int) (maxEu / recipeMaxEu) + 1, 1);
+        int recipeDuration = getRecipeMaxDuration(this.efficiency);
+        return Math.max(recipe.duration - recipeDuration, 1);
     }
 
     private int getRecipeMaxEfficiency(GTRecipe recipe) {
-        long eu = RecipeHelper.getInputEUt(recipe);
-        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(recipe);
-
-        long totalEu = eu * recipe.duration;
         for (int ticks = 0; true; ++ticks) {
-            long maxEu = getMachineMaxVoltage(this.getMachine());
-            if (getRecipeMaxEu(eu, totalEu, maxEu, ticks) == Math.min(maxEu, totalEu))
+            if (getRecipeMaxDuration(ticks) >= recipe.duration)
                 return ticks;
         }
     }

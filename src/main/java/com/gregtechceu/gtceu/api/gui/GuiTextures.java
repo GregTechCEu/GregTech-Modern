@@ -477,6 +477,8 @@ public class GuiTextures {
             "gtceu:textures/gui/progress_bar/progress_bar_research_station_2.png");
     public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_BASE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_research_station_base.png");
+    public static final ResourceTexture PROGRESS_BAR_EFFICIENCY = new ResourceTexture(
+            "gtceu:textures/gui/progress_bar/progress_bar_efficiency.png");
 
     // JEI
     public static final ResourceTexture INFO_ICON = new ResourceTexture("gtceu:textures/gui/widget/information.png");
