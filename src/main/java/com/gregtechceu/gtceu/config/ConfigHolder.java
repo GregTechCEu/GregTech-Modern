@@ -411,7 +411,9 @@ public class ConfigHolder {
         public boolean orderedAssemblyLineFluids = false;
 
         @Configurable
-        @Configurable.Comment({ "Whether to add a Modern Industrialization-like machine efficiency modifier to all machines.",
+        @Configurable.Comment({
+                "Whether to add a Modern Industrialization-like machine efficiency modifier to all machines.",
+                "Will make machines speed up the more of a single recipe is crafted in a row",
                 "Default: false" })
         public boolean doEfficiencyModifier = false;
 

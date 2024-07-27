@@ -461,7 +461,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
      *                      <br>
      *                      return max expecting rate --- 2
      */
-    public static record ActionResult(boolean isSuccess, @Nullable Supplier<Component> reason, float expectingRate) {
+    public record ActionResult(boolean isSuccess, @Nullable("isSuccess == true") Supplier<Component> reason,
+                               float expectingRate) {
 
         public final static ActionResult SUCCESS = new ActionResult(true, null, 0);
         public final static ActionResult FAIL_NO_REASON = new ActionResult(true, null, 0);

@@ -135,7 +135,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         boolean value = super.onWorking();
         // check lubricant
         val totalContinuousRunningTime = recipeLogic.getTotalContinuousRunningTime();
-        if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0)) {
+        if (totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0) {
             // insufficient lubricant
             if (!getLubricantRecipe().handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches())) {
                 recipeLogic.interruptRecipe();

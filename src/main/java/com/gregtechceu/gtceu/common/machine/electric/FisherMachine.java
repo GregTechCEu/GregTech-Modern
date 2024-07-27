@@ -302,6 +302,16 @@ public class FisherMachine extends TieredEnergyMachine
         return false;
     }
 
+    @Override
+    public int getEfficiency() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxEfficiency() {
+        return 0;
+    }
+
     //////////////////////////////////////
     // ******* Auto Output *******//
     //////////////////////////////////////

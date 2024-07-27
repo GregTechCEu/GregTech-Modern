@@ -99,6 +99,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     @Persisted
     protected int maxEfficiency;
+    @Persisted
+    protected long lastBaseEu = -1;
+    @Persisted
+    protected long lastMaxEu = -1;
     @Getter
     @Persisted
     protected int fuelTime;
@@ -128,6 +132,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings("unused")
     protected void onActiveSynced(boolean newActive, boolean oldActive) {
         getMachine().scheduleRenderUpdate();
     }
@@ -231,8 +236,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
         var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
-            modified = modified.copy();
-            //modified.duration =
+            if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
+                modified.duration = getRecipeDuration(modified);
+            }
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
                     modified.matchTickRecipe(machine).isSuccess()) {
@@ -263,7 +269,17 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     progress++;
                     totalContinuousRunningTime++;
 
-
+                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
+                        long eu = RecipeHelper.getInputEUt(lastRecipe) * lastRecipe.duration;
+                        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(lastRecipe) * lastRecipe.duration;
+                        long maxEu = getMachineMaxVoltage(this.getMachine());
+                        if (lastBaseEu != eu || lastMaxEu != maxEu) {
+                            lastBaseEu = eu;
+                            lastMaxEu = maxEu;
+                            maxEfficiency = getRecipeMaxEfficiency(lastRecipe);
+                            efficiency = Math.min(efficiency, maxEfficiency);
+                        }
+                    }
                 } else {
                     setWaiting(result.reason().get());
                 }
@@ -287,8 +303,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (progress > 0 && machine.dampingWhenWaiting()) {
             if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
                 this.progress = 1;
+                efficiency = 0;
             } else {
                 this.progress = Math.max(1, progress - 2);
+                if (efficiency > 0) {
+                    efficiency--;
+                }
             }
         }
     }
@@ -470,7 +490,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe);
+                    var modified = lastOriginRecipe;
+                    if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier) {
+                        modified.duration = getRecipeDuration(modified);
+                    }
+                    modified = machine.fullModifyRecipe(lastOriginRecipe);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -579,28 +603,40 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return isWaiting();
     }
 
-    public static double getEfficiencyOverclock(int efficiencyTicks) {
-        return Math.pow(2.0, efficiencyTicks / 32.0);
+    public static double getEfficiencyOverclock(int efficiency) {
+        return Math.pow(2.0, efficiency / 32.0);
     }
 
-    private long getRecipeMaxEu(long recipeEu, int duration, long maxEu) {
-        return Math.min(recipeEu * duration, (int) Math.floor(maxEu * getEfficiencyOverclock(this.efficiency)));
+    public static long getMachineMaxVoltage(MetaMachine machine) {
+        if (machine instanceof IOverclockMachine overclockMachine) {
+            return overclockMachine.getOverclockVoltage();
+        } else if (machine instanceof ITieredMachine tieredMachine) {
+            return tieredMachine.getMaxVoltage();
+        }
+        return 0;
     }
 
-    private int getRecipeMaxEfficiencyTicks(GTRecipe recipe) {
+    private long getRecipeMaxEu(long recipeEu, long recipeTotalEu, long maxEu, int efficiency) {
+        long baseEu = Math.max(maxEu / 4, recipeEu);
+        return Math.min(recipeTotalEu, Math.min((int) Math.floor(baseEu * getEfficiencyOverclock(efficiency)), maxEu));
+    }
+
+    private int getRecipeDuration(GTRecipe recipe) {
+        long eu = RecipeHelper.getInputEUt(recipe);
+        eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(recipe);
+        long maxEu = getMachineMaxVoltage(this.getMachine());
+        long recipeMaxEu = getRecipeMaxEu(eu, eu * recipe.duration, maxEu, this.efficiency);
+        return Math.max(recipe.duration - (int) (maxEu / recipeMaxEu) + 1, 1);
+    }
+
+    private int getRecipeMaxEfficiency(GTRecipe recipe) {
         long eu = RecipeHelper.getInputEUt(recipe);
         eu = eu != 0 ? eu : RecipeHelper.getOutputEUt(recipe);
 
         long totalEu = eu * recipe.duration;
         for (int ticks = 0; true; ++ticks) {
-            long maxEu = 0;
-            if (this.machine instanceof IOverclockMachine overclockMachine) {
-                maxEu = overclockMachine.getOverclockVoltage();
-            } else if (this.machine instanceof ITieredMachine tieredMachine) {
-                maxEu = tieredMachine.getMaxVoltage();
-            }
-
-            if (getRecipeMaxEu(eu, recipe.duration, maxEu) == Math.min(maxEu, totalEu))
+            long maxEu = getMachineMaxVoltage(this.getMachine());
+            if (getRecipeMaxEu(eu, totalEu, maxEu, ticks) == Math.min(maxEu, totalEu))
                 return ticks;
         }
     }
