@@ -1083,7 +1083,7 @@ public class GTMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .tooltips(
                     Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                            ReservoirHatchPartMachine.FLUID_AMOUNT),
+                            FormattingUtil.formatNumbers(ReservoirHatchPartMachine.FLUID_AMOUNT)),
                     Component.translatable("gtceu.universal.enabled"))
             .overlayTieredHullRenderer("reservoir_hatch")
             .compassNodeSelf()
@@ -2259,10 +2259,12 @@ public class GTMachines {
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                                FormattingUtil
+                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
                     } else {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                slots, FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                                slots, FormattingUtil
+                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
                     }
 
                     return builder.register();
@@ -2283,16 +2285,19 @@ public class GTMachines {
                         .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp,
-                                        GTValues.V[tier + 1], GTValues.VNF[tier + 1], baseAmp * 4, GTValues.V[tier],
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
+                                        baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
+                                        GTValues.VNF[tier + 1],
+                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up", baseAmp * 4,
-                                        GTValues.V[tier], GTValues.VNF[tier], baseAmp, GTValues.V[tier + 1],
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up",
+                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier],
+                                        baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
                                         GTValues.VNF[tier + 1]))
                         .compassNode("transformer")
                         .register(),
-                GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV,
-                GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
+                GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV)); // UHV not needed, as a UV transformer
+                                                                               // transforms up to UHV
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name,

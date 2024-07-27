@@ -937,7 +937,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -947,7 +948,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -956,7 +958,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 16 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -965,7 +968,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -974,7 +978,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -984,7 +989,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 16 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -994,7 +1000,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 64 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1004,7 +1011,8 @@ public class GTItems {
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(
-                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                FormattingUtil.formatNumbers(1280 * 64 * 64 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
