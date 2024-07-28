@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
+import appeng.api.networking.IManagedGridNode;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
@@ -20,6 +21,7 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import lombok.Getter;
 
 import java.util.EnumSet;
+import java.util.function.Consumer;
 
 /**
  * A MachineTrait that is only used for hosting grid node and does not provide grid node capability.
@@ -28,9 +30,9 @@ import java.util.EnumSet;
  * @author GateGuardian
  * @date : 2024/7/14
  */
-public class GridNodeHost extends MachineTrait {
+public class GridNodeHolder extends MachineTrait {
 
-    protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHost.class);
+    protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHolder.class);
 
     @Getter
     @Persisted
@@ -39,7 +41,9 @@ public class GridNodeHost extends MachineTrait {
                      deserializeMethod = "deserializeGridNode")
     protected final SerializableManagedGridNode mainNode = createMainNode();
 
-    public GridNodeHost(IGridConnectedMachine machine) {
+    private Consumer<IManagedGridNode> consumer;
+
+    public GridNodeHolder(IGridConnectedMachine machine) {
         super(machine.self());
     }
 
@@ -72,6 +76,10 @@ public class GridNodeHost extends MachineTrait {
 
     protected void createManagedNode() {
         this.mainNode.create(machine.getLevel(), machine.getPos());
+    }
+
+    public void customize(Consumer<IManagedGridNode> consumer) {
+        this.consumer = consumer;
     }
 
     @Override

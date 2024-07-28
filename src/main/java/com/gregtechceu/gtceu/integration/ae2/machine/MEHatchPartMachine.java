@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHost;
+import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -33,7 +33,7 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
     protected final static int CONFIG_SIZE = 16;
 
     @Persisted
-    protected final GridNodeHost proxy;
+    protected final GridNodeHolder nodeHolder;
 
     @DescSynced
     @Getter
@@ -44,17 +44,17 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE, args);
-        this.proxy = createGridProxy();
-        this.actionSource = IActionSource.ofMachine(proxy.getMainNode()::getNode);
+        this.nodeHolder = createGridProxy();
+        this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
-    protected GridNodeHost createGridProxy() {
-        return new GridNodeHost(this);
+    protected GridNodeHolder createGridProxy() {
+        return new GridNodeHolder(this);
     }
 
     @Override
     public IManagedGridNode getMainNode() {
-        return proxy.getMainNode();
+        return nodeHolder.getMainNode();
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHost;
+import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -32,7 +32,7 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
             ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    protected final GridNodeHost proxy;
+    protected final GridNodeHolder nodeHolder;
 
     @DescSynced
     @Getter
@@ -43,17 +43,17 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     public MEBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, args);
-        this.proxy = createGridProxy();
-        this.actionSource = IActionSource.ofMachine(proxy.getMainNode()::getNode);
+        this.nodeHolder = createGridProxy();
+        this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
-    protected GridNodeHost createGridProxy() {
-        return new GridNodeHost(this);
+    protected GridNodeHolder createGridProxy() {
+        return new GridNodeHolder(this);
     }
 
     @Override
     public IManagedGridNode getMainNode() {
-        return proxy.getMainNode();
+        return nodeHolder.getMainNode();
     }
 
     @Override
