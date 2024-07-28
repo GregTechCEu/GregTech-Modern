@@ -599,7 +599,8 @@ public class BlockPattern {
                     c1[2] = -c1[2]; // flip Z-axis
                 }
             }
-        } else {
+        }
+        else {
             for (int i = 0; i < 3; i++) {
                 switch (structureDir[i].getActualFacing(facing)) {
                     case UP -> c1[1] = c0[i];
@@ -611,9 +612,9 @@ public class BlockPattern {
                 }
             }
             if (upwardsFacing == Direction.WEST || upwardsFacing == Direction.EAST) {
-                int xOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepX() :
+                int xOffset = upwardsFacing == Direction.EAST ? facing.getClockWise().getStepX() :
                         facing.getClockWise().getOpposite().getStepX();
-                int zOffset = upwardsFacing == Direction.WEST ? facing.getClockWise().getStepZ() :
+                int zOffset = upwardsFacing == Direction.EAST ? facing.getClockWise().getStepZ() :
                         facing.getClockWise().getOpposite().getStepZ();
                 int tmp;
                 if (xOffset == 0) {

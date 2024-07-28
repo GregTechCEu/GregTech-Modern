@@ -165,8 +165,8 @@ public class MultiblockInWorldPreviewRenderer {
                     offset = switch (front) {
                         case NORTH, UP, DOWN -> offset.rotate(Rotation.NONE);
                         case SOUTH -> offset.rotate(Rotation.CLOCKWISE_180);
-                        case WEST -> offset.rotate(Rotation.COUNTERCLOCKWISE_90);
-                        case EAST -> offset.rotate(Rotation.CLOCKWISE_90);
+                        case EAST -> offset.rotate(Rotation.COUNTERCLOCKWISE_90);
+                        case WEST -> offset.rotate(Rotation.CLOCKWISE_90);
                     };
 
                     Rotation r = up == Direction.NORTH ? Rotation.NONE : up == Direction.EAST ? Rotation.CLOCKWISE_90 :
@@ -217,32 +217,32 @@ public class MultiblockInWorldPreviewRenderer {
     private static BlockPos rotateByFrontAxis(BlockPos pos, Direction front, Rotation rotation) {
         if (front.getAxis() == Direction.Axis.X) {
             return switch (rotation) {
-                default -> pos;
-                case CLOCKWISE_90 -> new BlockPos(pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
-                        -front.getAxisDirection().getStep() * -pos.getY());
-                case CLOCKWISE_180 -> new BlockPos(pos.getX(), -pos.getY(), -pos.getZ());
-                case COUNTERCLOCKWISE_90 -> new BlockPos(pos.getX(), front.getAxisDirection().getStep() * pos.getZ(),
-                        -front.getAxisDirection().getStep() * pos.getY());
+                default -> new BlockPos(-pos.getX(), pos.getY(), -pos.getZ());
+                case CLOCKWISE_90 -> new BlockPos(-pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        front.getAxisDirection().getStep() * -pos.getY());
+                case CLOCKWISE_180 -> new BlockPos(-pos.getX(), -pos.getY(), pos.getZ());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(-pos.getX(), front.getAxisDirection().getStep() * pos.getZ(),
+                        front.getAxisDirection().getStep() * pos.getY());
             };
         } else if (front.getAxis() == Direction.Axis.Y) {
             return switch (rotation) {
-                default -> new BlockPos(-pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
-                        -front.getAxisDirection().getStep() * pos.getY());
-                case CLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * pos.getY(),
-                        -front.getAxisDirection().getStep() * pos.getZ(), pos.getX());
-                case CLOCKWISE_180 -> new BlockPos(pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
-                        front.getAxisDirection().getStep() * pos.getY());
-                case COUNTERCLOCKWISE_90 -> new BlockPos(front.getAxisDirection().getStep() * pos.getY(),
-                        -front.getAxisDirection().getStep() * pos.getZ(), -pos.getX());
+                default -> new BlockPos(-front.getAxisDirection().getStep() * pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        -pos.getY());
+                case CLOCKWISE_90 -> new BlockPos(pos.getY(),
+                        -front.getAxisDirection().getStep() * pos.getZ(), -front.getAxisDirection().getStep() * pos.getX());
+                case CLOCKWISE_180 -> new BlockPos(front.getAxisDirection().getStep() * pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        pos.getY());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(-pos.getY(),
+                        -front.getAxisDirection().getStep() * pos.getZ(), front.getAxisDirection().getStep() * pos.getX());
             };
         } else if (front.getAxis() == Direction.Axis.Z) {
             return switch (rotation) {
                 default -> pos;
-                case CLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * pos.getY(),
-                        front.getAxisDirection().getStep() * pos.getX(), pos.getZ());
-                case CLOCKWISE_180 -> new BlockPos(-pos.getX(), -pos.getY(), pos.getZ());
-                case COUNTERCLOCKWISE_90 -> new BlockPos(-front.getAxisDirection().getStep() * -pos.getY(),
+                case CLOCKWISE_90 -> new BlockPos(front.getAxisDirection().getStep() * pos.getY(),
                         -front.getAxisDirection().getStep() * pos.getX(), pos.getZ());
+                case CLOCKWISE_180 -> new BlockPos(-pos.getX(), -pos.getY(), pos.getZ());
+                case COUNTERCLOCKWISE_90 -> new BlockPos(front.getAxisDirection().getStep() * -pos.getY(),
+                        front.getAxisDirection().getStep() * pos.getX(), pos.getZ());
             };
         }
         return pos;
