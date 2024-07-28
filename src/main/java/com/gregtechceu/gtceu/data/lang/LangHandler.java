@@ -200,6 +200,9 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.hv_drill", "%s Drill (HV)");
         replace(provider, "item.gtceu.tool.ev_drill", "%s Drill (EV)");
         replace(provider, "item.gtceu.tool.iv_drill", "%s Drill (IV)");
+        replace(provider, "item.gtceu.tool.lv_wirecutter", "%s Wire Cutter (LV)");
+        replace(provider, "item.gtceu.tool.hv_wirecutter", "%s Wire Cutter (HV)");
+        replace(provider, "item.gtceu.tool.iv_wirecutter", "%s Wire Cutter (IV)");
         replace(provider, "item.gtceu.tool.mining_hammer", "%s Mining Hammer");
         provider.add("item.gtceu.tool.mining_hammer.tooltip",
                 "§8Mines a large area at once (unless you're crouching)");
