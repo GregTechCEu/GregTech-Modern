@@ -18,6 +18,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
@@ -109,7 +110,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                 .widget(new LabelWidget(7, 7, "CWUt"))
                 .widget(new TextFieldWidget(9, 20, 122, 16, () -> String.valueOf(maxCWUt),
                         value -> maxCWUt = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new LabelWidget(7, 42, "Average Requested CWUt"))
+                .widget(new LabelWidget(7, 42, Component.translatable("gtceu.creative.computation.average")))
                 .widget(new LabelWidget(7, 54, () -> String.valueOf(lastRequestedCWUt)))
                 .widget(new SwitchWidget(9, 66, 122, 20, (clickData, value) -> setActive(value))
                         .setSupplier(this::isActive)
