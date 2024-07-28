@@ -150,7 +150,7 @@ public class WorkableOverlayModel {
             if (upwardsFacing.getAxis() == Direction.Axis.Z) {
                 matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
             }
-            if(frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
+            if (frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
                 matrix.rotate(Mth.PI, 0, 0, 1);
             }
         }

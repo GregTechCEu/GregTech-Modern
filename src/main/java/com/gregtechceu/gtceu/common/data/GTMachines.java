@@ -1817,7 +1817,7 @@ public class GTMachines {
                                 .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
                                 .aisle("######DCD######", "####GG###GG####", "######UCU######")
                                 .aisle("###############", "######WGW######", "###############")
-                                .where('M', controller, Direction.SOUTH)
+                                .where('M', controller, Direction.NORTH)
                                 .where('C', FusionReactorMachine.getCasingState(tier))
                                 .where('G', FUSION_GLASS.get())
                                 .where('K', FusionReactorMachine.getCoilState(tier))

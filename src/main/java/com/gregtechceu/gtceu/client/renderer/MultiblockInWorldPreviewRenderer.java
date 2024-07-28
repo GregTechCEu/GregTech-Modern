@@ -226,14 +226,18 @@ public class MultiblockInWorldPreviewRenderer {
             };
         } else if (front.getAxis() == Direction.Axis.Y) {
             return switch (rotation) {
-                default -> new BlockPos(-front.getAxisDirection().getStep() * pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                default -> new BlockPos(-front.getAxisDirection().getStep() * pos.getX(),
+                        -front.getAxisDirection().getStep() * pos.getZ(),
                         -pos.getY());
                 case CLOCKWISE_90 -> new BlockPos(pos.getY(),
-                        -front.getAxisDirection().getStep() * pos.getZ(), -front.getAxisDirection().getStep() * pos.getX());
-                case CLOCKWISE_180 -> new BlockPos(front.getAxisDirection().getStep() * pos.getX(), -front.getAxisDirection().getStep() * pos.getZ(),
+                        -front.getAxisDirection().getStep() * pos.getZ(),
+                        -front.getAxisDirection().getStep() * pos.getX());
+                case CLOCKWISE_180 -> new BlockPos(front.getAxisDirection().getStep() * pos.getX(),
+                        -front.getAxisDirection().getStep() * pos.getZ(),
                         pos.getY());
                 case COUNTERCLOCKWISE_90 -> new BlockPos(-pos.getY(),
-                        -front.getAxisDirection().getStep() * pos.getZ(), front.getAxisDirection().getStep() * pos.getX());
+                        -front.getAxisDirection().getStep() * pos.getZ(),
+                        front.getAxisDirection().getStep() * pos.getX());
             };
         } else if (front.getAxis() == Direction.Axis.Z) {
             return switch (rotation) {
