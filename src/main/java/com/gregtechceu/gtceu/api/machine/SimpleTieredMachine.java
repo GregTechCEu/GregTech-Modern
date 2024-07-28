@@ -126,7 +126,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
 
     protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
-        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
+        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return transfer;
     }
 

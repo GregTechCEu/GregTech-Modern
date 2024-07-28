@@ -20,6 +20,7 @@
   "mixins": [
     "AbstractRegistrateAccessor",
     "BlockBehaviourAccessor",
+    "BlockMixin",
     "BlockPropertiesAccessor",
     "ChunkGeneratorMixin",
     "ChunkMixin",

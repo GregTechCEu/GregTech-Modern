@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -1802,32 +1802,32 @@ public class GTMachines {
                         List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
 
                         MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
-                                .aisle("###############", "######EME######", "###############")
+                                .aisle("###############", "######NMN######", "###############")
                                 .aisle("######DCD######", "####GG###GG####", "######UCU######")
-                                .aisle("####CC###CC####", "###w##EGE##s###", "####CC###CC####")
-                                .aisle("###C#######C###", "##nKeG###GeKn##", "###C#######C###")
-                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
+                                .aisle("####CC###CC####", "###w##SGS##e###", "####CC###CC####")
+                                .aisle("###C#######C###", "##nKsG###GsKn##", "###C#######C###")
+                                .aisle("##C#########C##", "#G#e#######w#G#", "##C#########C##")
                                 .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("#D###########D#", "W#E#########W#E", "#U###########U#")
                                 .aisle("#C###########C#", "G#G#########G#G", "#C###########C#")
-                                .aisle("#D###########D#", "N#S#########N#S", "#U###########U#")
+                                .aisle("#D###########D#", "W#E#########W#E", "#U###########U#")
                                 .aisle("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                .aisle("##C#########C##", "#G#s#######w#G#", "##C#########C##")
-                                .aisle("###C#######C###", "##eKnG###GnKe##", "###C#######C###")
-                                .aisle("####CC###CC####", "###w##WGW##s###", "####CC###CC####")
+                                .aisle("##C#########C##", "#G#e#######w#G#", "##C#########C##")
+                                .aisle("###C#######C###", "##sKnG###GnKs##", "###C#######C###")
+                                .aisle("####CC###CC####", "###w##NGN##e###", "####CC###CC####")
                                 .aisle("######DCD######", "####GG###GG####", "######UCU######")
-                                .aisle("###############", "######WGW######", "###############")
-                                .where('M', controller, Direction.SOUTH)
+                                .aisle("###############", "######SGS######", "###############")
+                                .where('M', controller, Direction.NORTH)
                                 .where('C', FusionReactorMachine.getCasingState(tier))
                                 .where('G', FUSION_GLASS.get())
                                 .where('K', FusionReactorMachine.getCoilState(tier))
-                                .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
-                                .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
-                                .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
-                                .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
+                                .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
+                                .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
+                                .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
+                                .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
                                 .where('w', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.WEST)
-                                .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
-                                .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
+                                .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
+                                .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
                                 .where('n', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.NORTH)
                                 .where('U', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.UP)
                                 .where('D', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.DOWN)
@@ -2693,13 +2693,13 @@ public class GTMachines {
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
-                                        PlatformEnergyCompat.toNativeLong(V[tier] * amperage,
-                                                PlatformEnergyCompat.ratio(true)),
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(true)),
                                         amperage, V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage,
                                         V[tier], GTValues.VNF[tier],
-                                        PlatformEnergyCompat.toNativeLong(V[tier] * amperage,
-                                                PlatformEnergyCompat.ratio(false))))
+                                        FeCompat.toFeLong(V[tier] * amperage,
+                                                FeCompat.ratio(false))))
                         .compassNode("converter")
                         .register(),
                 ALL_TIERS);
