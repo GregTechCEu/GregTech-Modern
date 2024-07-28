@@ -40,9 +40,8 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> {
-                return new FilteredFluidHandlerItemStack(itemStack, capacity, filter);
-            }));
+            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap,
+                    LazyOptional.of(() -> new FilteredFluidHandlerItemStack(itemStack, capacity, filter)));
         }
         return LazyOptional.empty();
     }

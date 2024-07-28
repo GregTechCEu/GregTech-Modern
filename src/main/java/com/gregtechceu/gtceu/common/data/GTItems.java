@@ -235,9 +235,11 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
             .register();
-    public static ItemEntry<Item> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", Item::new)
+    public static ItemEntry<ComponentItem> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", ComponentItem::create)
             .lang("Chocolate Coin")
-            .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(attach(new FoodStats(GTFoods.CHOCOLATE, false,
+                    () -> ChemicalHelper.get(TagPrefix.foil, GTMaterials.Gold))))
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
             .register();
@@ -2221,9 +2223,9 @@ public class GTItems {
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", Item::new)
+    public static ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
             .lang("Purple Drink")
-            .properties(p -> p.food(GTFoods.DRINK))
+            .onRegister(attach(new FoodStats(GTFoods.DRINK, true, () -> Items.GLASS_BOTTLE.getDefaultInstance())))
             .onRegister(compassNode(GTCompassSections.MISC))
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)
