@@ -148,13 +148,13 @@ public class GTOreVeinWidget extends WidgetGroup {
             var transfer = new ItemStackTransfer(dimMarkers.length);
             for (int i = 0; i < dimMarkers.length; i++) {
                 var dimMarker = dimMarkers[i];
-                var markerItem = dimMarker.getMarker();
+                var icon = dimMarker.getIcon();
                 int row = Math.floorDiv(i, rowSlots);
                 SlotWidget dimSlot = new SlotWidget(transfer, i,
                         5 + (16 + interval) * (i - row * rowSlots),
                         yPosition + 18 * row,
                         false, false).setIngredientIO(IngredientIO.INPUT);
-                transfer.setStackInSlot(i, markerItem);
+                transfer.setStackInSlot(i, icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.setOverlay(
                             new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
