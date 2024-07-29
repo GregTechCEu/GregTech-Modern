@@ -32,8 +32,8 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    public void onAddedToWorld() {
-        super.onAddedToWorld();
+    public void onAddedToLevel() {
+        super.onAddedToLevel();
         ticksUntilExplosion = 80 + level().random.nextInt(60);
     }
 

@@ -39,7 +39,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     }
 
     @Override
-    public void generateAssetJsons(KubeAssetGenerator generator) {}
+    public void generateAssets(KubeAssetGenerator generator) {}
 
     @Override
     protected ItemBuilder getOrCreateItemBuilder() {

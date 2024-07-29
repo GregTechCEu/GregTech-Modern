@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -73,10 +74,10 @@ public interface GTRecipeSchema {
 
         @HideFromJS
         @Override
-        public GTKubeRecipe id(ResourceLocation _id) {
+        public GTKubeRecipe id(KubeResourceLocation _id) {
             this.idWithoutType = ResourceLocation.fromNamespaceAndPath(
-                    _id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(),
-                    _id.getPath());
+                    _id.wrapped().getNamespace().equals("kubejs") ? this.type.id.getNamespace() : _id.wrapped().getNamespace(),
+                    _id.wrapped().getPath());
             this.id = ResourceLocation.fromNamespaceAndPath(idWithoutType.getNamespace(),
                     "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
             return this;
