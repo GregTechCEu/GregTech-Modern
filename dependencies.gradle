@@ -20,7 +20,7 @@ dependencies {
     // JEI
     jeiCompileOnly(forge.jei.common.api) { transitive = false }
     jeiCompileOnly(forge.jei.forge.api) { transitive = false }
-    jeiImplementation(forge.jei.forge.impl) { transitive = false }
+    jeiCompileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
     reiCompileOnlyApi forge.rei.plugin
@@ -29,7 +29,7 @@ dependencies {
 
     // EMI
     emiCompileOnlyApi("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    emiCompileOnly forge.emi
+    emiImplementation forge.emi
 
     // TOP
     topCompileOnlyApi(forge.theoneprobe) { transitive = false }
