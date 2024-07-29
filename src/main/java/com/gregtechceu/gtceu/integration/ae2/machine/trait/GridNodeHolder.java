@@ -34,21 +34,27 @@ public class GridNodeHolder extends MachineTrait {
 
     protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHolder.class);
 
+    private static final Consumer<IManagedGridNode> NOOP = node -> {};
+
     @Getter
     @Persisted
     @ReadOnlyManaged(onDirtyMethod = "onGridNodeDirty",
                      serializeMethod = "serializeGridNode",
                      deserializeMethod = "deserializeGridNode")
-    protected final SerializableManagedGridNode mainNode = createMainNode();
-
-    private Consumer<IManagedGridNode> consumer;
+    protected final SerializableManagedGridNode mainNode;
 
     public GridNodeHolder(IGridConnectedMachine machine) {
         super(machine.self());
+        this.mainNode = createManagedNode(NOOP);
     }
 
-    protected SerializableManagedGridNode createMainNode() {
-        return (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) machine,
+    public GridNodeHolder(IGridConnectedMachine machine, Consumer<IManagedGridNode> customizer) {
+        super(machine.self());
+        this.mainNode = createManagedNode(customizer);
+    }
+
+    protected SerializableManagedGridNode createManagedNode(Consumer<IManagedGridNode> customizer) {
+        var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) machine,
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setVisualRepresentation(machine.getDefinition().getItem())
@@ -58,13 +64,19 @@ public class GridNodeHolder extends MachineTrait {
                         machine.hasFrontFacing() ? EnumSet.of(machine.getFrontFacing()) :
                                 EnumSet.allOf(Direction.class))
                 .setTagName("proxy");
+        customizer.accept(node);
+        return node;
+    }
+
+    protected void createMainNode() {
+        this.mainNode.create(machine.getLevel(), machine.getPos());
     }
 
     @Override
     public void onMachineLoad() {
         super.onMachineLoad();
         if (machine.getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::createManagedNode));
+            serverLevel.getServer().tell(new TickTask(0, this::createMainNode));
         }
     }
 
@@ -72,14 +84,6 @@ public class GridNodeHolder extends MachineTrait {
     public void onMachineUnLoad() {
         super.onMachineUnLoad();
         mainNode.destroy();
-    }
-
-    protected void createManagedNode() {
-        this.mainNode.create(machine.getLevel(), machine.getPos());
-    }
-
-    public void customize(Consumer<IManagedGridNode> consumer) {
-        this.consumer = consumer;
     }
 
     @Override

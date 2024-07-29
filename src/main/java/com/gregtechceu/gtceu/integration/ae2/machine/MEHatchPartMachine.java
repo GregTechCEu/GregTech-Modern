@@ -44,11 +44,11 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE, args);
-        this.nodeHolder = createGridProxy();
+        this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
-    protected GridNodeHolder createGridProxy() {
+    protected GridNodeHolder createNodeHolder() {
         return new GridNodeHolder(this);
     }
 

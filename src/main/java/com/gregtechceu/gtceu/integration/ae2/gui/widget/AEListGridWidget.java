@@ -135,6 +135,8 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
     }
 
+    protected abstract void toPacket(FriendlyByteBuf buffer, AEKey key);
+
     protected abstract AEKey fromPacket(FriendlyByteBuf buffer);
 
     protected abstract Widget createDisplayWidget(int x, int y, int index);
@@ -194,6 +196,11 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
 
         @Override
+        protected void toPacket(FriendlyByteBuf buffer, AEKey key) {
+            key.writeToPacket(buffer);
+        }
+
+        @Override
         protected AEKey fromPacket(FriendlyByteBuf buffer) {
             return AEItemKey.fromPacket(buffer);
         }
@@ -208,6 +215,11 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
 
         public Fluid(int x, int y, int slotsY, KeyStorage internalList) {
             super(x, y, slotsY, internalList);
+        }
+
+        @Override
+        protected void toPacket(FriendlyByteBuf buffer, AEKey key) {
+            key.writeToPacket(buffer);
         }
 
         @Override

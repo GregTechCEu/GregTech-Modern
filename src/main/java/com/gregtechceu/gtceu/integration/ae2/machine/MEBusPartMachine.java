@@ -43,11 +43,11 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     public MEBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
         super(holder, GTValues.UHV, io, args);
-        this.nodeHolder = createGridProxy();
+        this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
-    protected GridNodeHolder createGridProxy() {
+    protected GridNodeHolder createNodeHolder() {
         return new GridNodeHolder(this);
     }
 
