@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEListGridWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -77,7 +77,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
         group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // Config slots
+        // Display
         group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
 
         return group;

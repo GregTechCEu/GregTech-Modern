@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
-import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
@@ -29,9 +30,9 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawGradientRect;
  * @Description A configurable slot
  * @Date 2023/4/22-0:30
  */
-public class AEConfigSlot extends Widget implements IGhostIngredientTarget {
+public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget {
 
-    protected AEConfigWidget parentWidget;
+    protected ConfigWidget parentWidget;
     protected int index;
     protected final static int REMOVE_ID = 1000;
     protected final static int UPDATE_ID = 1001;
@@ -39,7 +40,7 @@ public class AEConfigSlot extends Widget implements IGhostIngredientTarget {
     protected final static int PICK_UP_ID = 1003;
     protected boolean select = false;
 
-    public AEConfigSlot(Position pos, Size size, AEConfigWidget widget, int index) {
+    public AEConfigSlotWidget(Position pos, Size size, ConfigWidget widget, int index) {
         super(pos, size);
         this.parentWidget = widget;
         this.index = index;

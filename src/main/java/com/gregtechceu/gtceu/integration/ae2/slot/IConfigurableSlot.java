@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.utils;
+package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import appeng.api.stacks.GenericStack;
 

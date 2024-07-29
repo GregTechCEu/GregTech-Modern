@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.utils.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
@@ -31,9 +32,9 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
  * @Description A configurable slot for {@link ItemStack}
  * @Date 2023/4/22-0:48
  */
-public class AEItemConfigSlot extends AEConfigSlot {
+public class AEItemConfigSlotWidget extends AEConfigSlotWidget {
 
-    public AEItemConfigSlot(int x, int y, AEConfigWidget widget, int index) {
+    public AEItemConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
 

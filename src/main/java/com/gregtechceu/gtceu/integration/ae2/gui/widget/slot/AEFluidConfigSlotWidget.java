@@ -1,9 +1,11 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.utils.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -42,11 +44,11 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
  * @Description A configurable slot for {@link com.lowdragmc.lowdraglib.side.fluid.FluidStack}
  * @Date 2023/4/21-0:50
  */
-public class AEFluidConfigSlot extends AEConfigSlot {
+public class AEFluidConfigSlotWidget extends AEConfigSlotWidget {
 
     public static final int LOAD_PHANTOM_FLUID_STACK_FROM_NBT = 13;
 
-    public AEFluidConfigSlot(int x, int y, AEConfigWidget widget, int index) {
+    public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
 
@@ -263,8 +265,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
     }
 
     private int tryClickContainer(boolean isShiftKeyDown) {
-        MEInputHatchPartMachine.ExportOnlyAEFluid fluidTank = this.parentWidget
-                .getConfig(this.index) instanceof MEInputHatchPartMachine.ExportOnlyAEFluid fluid ? fluid : null;
+        ExportOnlyAEFluidSlot fluidTank = this.parentWidget
+                .getConfig(this.index) instanceof ExportOnlyAEFluidSlot fluid ? fluid : null;
         if (fluidTank == null) return -1;
         Player player = gui.entityPlayer;
         ItemStack currentStack = gui.getModularUIContainer().getCarried();

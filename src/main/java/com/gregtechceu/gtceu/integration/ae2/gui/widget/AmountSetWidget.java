@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.utils.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -21,14 +21,14 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringSized;
  * @Description The amount set widget for config slot
  * @Date 2023/4/21-21:20
  */
-public class AmountSetSlot extends Widget {
+public class AmountSetWidget extends Widget {
 
     private int index = -1;
     @Getter
     private final TextFieldWidget amountText;
-    private final AEConfigWidget parentWidget;
+    private final ConfigWidget parentWidget;
 
-    public AmountSetSlot(int x, int y, AEConfigWidget widget) {
+    public AmountSetWidget(int x, int y, ConfigWidget widget) {
         super(x, y, 80, 30);
         this.parentWidget = widget;
         this.amountText = new TextFieldWidget(x + 3, y + 12, 65, 13, this::getAmountStr, this::setNewAmount)

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.utils;
+package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
