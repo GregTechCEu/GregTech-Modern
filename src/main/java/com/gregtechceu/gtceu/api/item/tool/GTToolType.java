@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Spider;
@@ -50,6 +51,7 @@ public class GTToolType {
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)/*
                                                                                     * .behaviors(TorchPlaceBehavior.
@@ -221,6 +223,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
@@ -236,6 +239,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 2)
@@ -251,6 +255,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().aoe(2, 2, 4)
@@ -266,6 +271,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().aoe(3, 3, 6)
@@ -281,6 +287,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().aoe(4, 4, 8)

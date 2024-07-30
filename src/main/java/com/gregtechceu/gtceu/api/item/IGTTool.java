@@ -911,20 +911,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (stack.getItem() instanceof IGTTool gtTool) {
-            boolean isCorrectToolType = gtTool.getToolClasses(stack).stream()
-                    .anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
-            if (!isCorrectToolType) {
-                return false;
-            }
-
-            final int totalLevel = gtTool.getTotalHarvestLevel(stack);
-            List<Tier> tiers = TierSortingRegistry.getSortedTiers().stream()
-                    .filter(tier -> tier.getLevel() == totalLevel)
-                    .toList();
-            Tier tier = !tiers.isEmpty() ? tiers.get(tiers.size() - 1) : null;
-
-            if (tier == null) return false;
-            return TierSortingRegistry.isCorrectTierForDrops(tier, state);
+            return isToolEffective(state, gtTool.getToolClasses(stack), gtTool.getTotalHarvestLevel(stack));
         }
         return stack.getItem().isCorrectToolForDrops(state);
     }
