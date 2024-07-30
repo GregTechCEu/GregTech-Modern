@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +42,7 @@ import net.minecraftforge.common.Tags;
 
 import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -505,5 +507,18 @@ public class GTUtil {
             default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
+    }
+
+    public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
+        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        effects.forEach(pair -> {
+            var effect = pair.getFirst();
+            float probability = pair.getSecond();
+            list.add(Component.translatable("gtceu.tooltip.potion.each",
+                    Component.translatable(effect.getDescriptionId()),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
+                    effect.getDuration(),
+                    100 * probability));
+        });
     }
 }
