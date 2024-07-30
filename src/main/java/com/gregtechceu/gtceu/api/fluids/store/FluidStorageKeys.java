@@ -13,13 +13,13 @@ public final class FluidStorageKeys {
 
     public static final FluidStorageKey LIQUID = new FluidStorageKey(GTCEu.id("liquid"),
             MaterialIconType.liquid,
-            m -> prefixedRegistredName("liquid_", FluidStorageKeys.LIQUID, m),
+            m -> prefixedRegisteredName("liquid_", FluidStorageKeys.LIQUID, m),
             m -> m.hasProperty(PropertyKey.DUST) ? "gtceu.fluid.liquid_generic" : "gtceu.fluid.generic",
             FluidState.LIQUID, 0);
 
     public static final FluidStorageKey GAS = new FluidStorageKey(GTCEu.id("gas"),
             MaterialIconType.gas,
-            m -> prefixedRegistredName("gaseous_", FluidStorageKeys.GAS, m),
+            m -> m.getName() + "_gas",
             m -> {
                 if (m.hasProperty(PropertyKey.DUST)) {
                     return "gtceu.fluid.gas_vapor";
@@ -48,7 +48,7 @@ public final class FluidStorageKeys {
 
     private FluidStorageKeys() {}
 
-    private static @NotNull String prefixedRegistredName(@NotNull String prefix, @NotNull FluidStorageKey key,
+    private static @NotNull String prefixedRegisteredName(@NotNull String prefix, @NotNull FluidStorageKey key,
                                                          @NotNull Material material) {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
         if (property != null && property.getPrimaryKey() != key) {
