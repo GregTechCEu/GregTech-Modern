@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,7 +58,9 @@ public class GTJEIPlugin implements IModPlugin {
         registry.addRecipeCategories(new GTBedrockFluidInfoCategory(jeiHelpers));
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType));
+                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
+                    registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType));
+                }
             }
         }
     }

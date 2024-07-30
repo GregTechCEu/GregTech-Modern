@@ -72,10 +72,6 @@ public class BlockLang {
         replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
         replace(provider, "block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
 
-        // todo multiblock tanks
-        // replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
-
-        // todo fusion
         replace(provider, "block.gtceu.superconducting_coil", "Superconducting Coil Block");
         replace(provider, "block.gtceu.fusion_coil", "Fusion Coil Block");
         replace(provider, "block.gtceu.fusion_casing", "Fusion Machine Casing");
@@ -91,5 +87,8 @@ public class BlockLang {
         provider.add("block.gtceu.powderbarrel.drops_tooltip",
                 "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
+
+        provider.add("block.gtceu.normal_laser_pipe.tooltip", "Transmitting power with §fno loss§7 in straight lines");
+        provider.add("block.gtceu.normal_optical_pipe.tooltip", "Transmitting §fComputation§7 or §fResearch Data§7");
     }
 }
