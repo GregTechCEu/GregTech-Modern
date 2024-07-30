@@ -981,6 +981,11 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        public Builder kjs$components(ImmutableList<MaterialStackWrapper> components) {
+            compositionSupplier = components;
+            return this;
+        }
+
         /**
          * Add {@link MaterialFlags} to this Material.<br>
          * Dependent Flags (for example, {@link MaterialFlags#GENERATE_LONG_ROD} requiring
