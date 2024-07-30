@@ -28,7 +28,8 @@ public class DimensionMarker {
     @Getter
     public final int tier; // not only used to represent dimension tier, but also for sorting
 
-    @Getter @Nullable
+    @Getter
+    @Nullable
     private final String overrideName; // there may be other uses, so we store it
 
     private final SupplierMemoizer.MemoizedSupplier<ItemStack> iconSupplier;

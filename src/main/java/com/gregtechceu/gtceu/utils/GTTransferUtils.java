@@ -262,7 +262,8 @@ public class GTTransferUtils {
     }
 
     public static ItemStack extractItemAccountNotifiableList(
-            IItemTransfer handler, int slot, int amount, boolean simulate) {
+                                                             IItemTransfer handler, int slot, int amount,
+                                                             boolean simulate) {
         if (handler instanceof ItemTransferList transferList) {
             int index = 0;
             for (var transfer : transferList.transfers) {
