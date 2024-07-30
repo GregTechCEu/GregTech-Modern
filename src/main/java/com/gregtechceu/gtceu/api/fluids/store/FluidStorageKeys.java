@@ -19,7 +19,7 @@ public final class FluidStorageKeys {
 
     public static final FluidStorageKey GAS = new FluidStorageKey(GTCEu.id("gas"),
             MaterialIconType.gas,
-            m -> m.getName() + "_gas",
+            m -> postfixedRegisteredName("_gas", FluidStorageKeys.GAS, m),
             m -> {
                 if (m.hasProperty(PropertyKey.DUST)) {
                     return "gtceu.fluid.gas_vapor";
@@ -53,6 +53,15 @@ public final class FluidStorageKeys {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
         if (property != null && property.getPrimaryKey() != key) {
             return prefix + material.getName();
+        }
+        return material.getName();
+    }
+
+    private static @NotNull String postfixedRegisteredName(@NotNull String postfix, @NotNull FluidStorageKey key,
+                                                           @NotNull Material material) {
+        FluidProperty property = material.getProperty(PropertyKey.FLUID);
+        if (property != null && property.getPrimaryKey() != key) {
+            return material.getName() + postfix;
         }
         return material.getName();
     }

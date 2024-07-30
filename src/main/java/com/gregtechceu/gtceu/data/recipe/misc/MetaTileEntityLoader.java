@@ -554,7 +554,7 @@ public class MetaTileEntityLoader {
                 'E', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze),
                 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
-                'F', new ItemStack(Items.FLINT_AND_STEEL));
+                'F', Items.FLINT_AND_STEEL);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
                 GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
                 GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', CustomTags.LV_CIRCUITS,
