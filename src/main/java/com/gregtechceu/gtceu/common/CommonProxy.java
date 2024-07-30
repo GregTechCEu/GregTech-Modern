@@ -325,7 +325,7 @@ public class CommonProxy {
                     event.getPackType(),
                     Pack.Position.BOTTOM,
                     GTDynamicResourcePack::new));
-        } else {
+        } else if (event.getPackType() == PackType.SERVER_DATA) {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
