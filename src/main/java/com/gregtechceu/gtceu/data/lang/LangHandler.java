@@ -1297,6 +1297,9 @@ public class LangHandler {
         provider.add("gtceu.subtitle.metal_pipe", "Destruction_Metal_Pole_L_Wave_2_0_0.wav");
 
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
+
+        provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
+        provider.add("gtceu.tooltip.potion.each", "   §e%s %s§r for §c%s§r ticks with a §a%s%%§r chance of happening");
     }
 
     /**
