@@ -84,10 +84,11 @@ public class TooltipsHandler {
 
                 attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
             }
-
-            tooltips.add(3, Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
-            if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-                tooltips.add(4, Component.translatable("gtceu.fluid.temperature.cryogenic"));
+            if (tooltips.size() > 3) {
+                tooltips.add(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
+                if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
+                    tooltips.add(Component.translatable("gtceu.fluid.temperature.cryogenic"));
+                }
             }
 
             if (material.hasProperty(PropertyKey.INGOT)) {

@@ -36,7 +36,7 @@ public final class FluidStorageKeys {
 
     public static final FluidStorageKey PLASMA = new FluidStorageKey(GTCEu.id("plasma"),
             MaterialIconType.plasma,
-            m -> m.getName() + "_plasma" ,
+            m -> m.getName() + "_plasma",
             m -> "gtceu.fluid.plasma",
             FluidState.PLASMA, -1);
 
@@ -49,7 +49,7 @@ public final class FluidStorageKeys {
     private FluidStorageKeys() {}
 
     private static @NotNull String prefixedRegisteredName(@NotNull String prefix, @NotNull FluidStorageKey key,
-                                                         @NotNull Material material) {
+                                                          @NotNull Material material) {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
         if (property != null && property.getPrimaryKey() != key) {
             return prefix + material.getName();
