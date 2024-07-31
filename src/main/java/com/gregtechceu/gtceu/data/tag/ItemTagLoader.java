@@ -33,6 +33,8 @@ public class ItemTagLoader {
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
+        create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).getId());
+
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)

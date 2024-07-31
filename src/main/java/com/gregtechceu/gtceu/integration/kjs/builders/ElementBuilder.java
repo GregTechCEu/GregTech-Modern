@@ -14,7 +14,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public ElementBuilder(ResourceLocation i, Object... args) {
         super(i);
-        // special handling if somehow called from create(name, type, args...) (it does that)
+        // Special handling if somehow called from create(name, type, args...) (it does that)
         protons = args[0] instanceof Number number ? number.intValue() : Double.valueOf(args[0].toString()).intValue();
         neutrons = ((Number) args[1]).intValue();
         halfLifeSeconds = ((Number) args[2]).intValue();

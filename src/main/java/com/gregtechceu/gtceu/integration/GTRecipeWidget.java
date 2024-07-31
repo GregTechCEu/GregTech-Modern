@@ -12,11 +12,13 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.recipe.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -127,7 +129,12 @@ public class GTRecipeWidget extends WidgetGroup {
         yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
+            if (condition instanceof DimensionCondition dimCondition) {
+                addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT + 4,
+                        Component.translatable("recipe.condition.dimension_marker.tooltip")));
+                addWidget(dimCondition.setupDimensionMarkers(53 - xOffset, yOffset - 4)
+                        .setBackgroundTexture(IGuiTexture.EMPTY));
+            } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));

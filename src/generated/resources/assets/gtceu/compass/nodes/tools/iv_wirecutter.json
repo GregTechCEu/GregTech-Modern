@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:silicone_rubber_plunger"
+    "res": "gtceu:iv_aluminium_wirecutter"
   },
   "items": [
-    "#c:tools/plungers"
+    "#forge:tools/wire_cutters"
   ],
-  "page": "gtceu:tools/plunger",
+  "page": "gtceu:tools/iv_wirecutter",
   "position": [
     -150,
-    250
+    100
   ],
   "section": "gtceu:tools"
 }

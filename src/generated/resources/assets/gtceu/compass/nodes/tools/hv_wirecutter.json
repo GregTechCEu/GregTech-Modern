@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:iv_aluminium_wrench"
+    "res": "gtceu:hv_aluminium_wirecutter"
   },
   "items": [
-    "#c:tools/wrenches"
+    "#forge:tools/wire_cutters"
   ],
-  "page": "gtceu:tools/iv_wrench",
+  "page": "gtceu:tools/hv_wirecutter",
   "position": [
     -250,
-    200
+    150
   ],
   "section": "gtceu:tools"
 }

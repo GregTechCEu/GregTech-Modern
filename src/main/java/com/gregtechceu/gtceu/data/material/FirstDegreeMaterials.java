@@ -83,8 +83,8 @@ public class FirstDegreeMaterials {
         Bone = new Material.Builder(GTCEu.id("bone"))
                 .dust(1)
                 .color(0xfcfbed).secondaryColor(0xa0a38b)
-                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
-                .components(Calcium, 1)
+                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
+                .components(Calcium, 3)
                 .buildAndRegister();
 
         Brass = new Material.Builder(GTCEu.id("brass"))
@@ -1186,14 +1186,14 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
-                .fluid()
+                .liquid()
                 .color(0x060B0B)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Iron, 1, Chlorine, 3)
                 .buildAndRegister();
 
         Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
-                .fluid()
+                .liquid()
                 .color(0xe8e0be)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Iron, 1, Chlorine, 2)

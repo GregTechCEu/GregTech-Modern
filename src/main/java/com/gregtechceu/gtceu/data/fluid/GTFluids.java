@@ -34,7 +34,7 @@ public class GTFluids {
                 var fluidProperty = material.getProperty(PropertyKey.FLUID);
 
                 if (fluidProperty != null) {
-                    fluidProperty.getStorage().registerFluids(material, registrate);
+                    fluidProperty.registerFluids(material, registrate);
                 }
             }
         }

@@ -652,6 +652,17 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)));
 
+    public static final TagPrefix toolHeadWireCutter = new TagPrefix("wireCutterHead")
+            .itemTable(() -> GTItems.MATERIAL_ITEMS)
+            .langValue("%s Wire Cutter Head")
+            .materialAmount(GTValues.M * 4)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadWireCutter)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
+
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix("turbineBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)

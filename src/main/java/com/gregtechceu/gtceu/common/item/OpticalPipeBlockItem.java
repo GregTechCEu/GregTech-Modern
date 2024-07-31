@@ -30,7 +30,6 @@ public class OpticalPipeBlockItem extends PipeBlockItem implements IItemRenderer
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
                                 TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, tooltip, isAdvanced);
         tooltip.add(Component.translatable("block.gtceu.normal_optical_pipe.tooltip"));
 
         if (GTUtil.isShiftDown()) {
