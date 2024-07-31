@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -283,8 +284,14 @@ public class MaterialBlock extends AppearanceBlock {
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
-            double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
+           double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
             double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);
+            if(livingEntity instanceof Player player) {
+                boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
+
+
+            }
+            /*
             Vec3 deltaMovement = livingEntity.getDeltaMovement();
             livingEntity.resetFallDistance();
             float f = 0.15F;
@@ -302,7 +309,17 @@ public class MaterialBlock extends AppearanceBlock {
 
             deltaMovement = new Vec3(d0, d2, d1);
 
-            entity.setDeltaMovement(deltaMovement);
+            entity.setDeltaMovement(deltaMovement);*/
+            double d5 = livingEntity.getDeltaMovement().y;
+            Vec3 vec31 = livingEntity.getDeltaMovement();
+            livingEntity.setDeltaMovement(vec31.x, d5 * 0.6, vec31.z);
+            livingEntity.resetFallDistance();
+            livingEntity.setSharedFlag(7, false);
         }
+    }
+
+    private static void fly(Player player, double value) {
+        var motion = player.getDeltaMovement();
+        player.setDeltaMovement(motion.x(), value, motion.z());
     }
 }
