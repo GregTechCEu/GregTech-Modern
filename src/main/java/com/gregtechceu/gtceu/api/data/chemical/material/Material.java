@@ -211,10 +211,7 @@ public class Material implements Comparable<Material> {
             throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
-        FluidStorageKey key = prop.getPrimaryKey();
-        Fluid fluid = null;
-
-        if (key != null) fluid = prop.getStorage().get(key);
+        Fluid fluid = prop.get(prop.getPrimaryKey());
         if (fluid != null) return fluid;
 
         fluid = getFluid(FluidStorageKeys.LIQUID);
@@ -233,7 +230,7 @@ public class Material implements Comparable<Material> {
             throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
-        return prop.getStorage().get(key);
+        return prop.get(key);
     }
 
     /**
@@ -600,7 +597,7 @@ public class Material implements Comparable<Material> {
         public Builder fluid(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
             properties.ensureSet(PropertyKey.FLUID);
             FluidProperty property = properties.getProperty(PropertyKey.FLUID);
-            property.getStorage().enqueueRegistration(key, builder);
+            property.enqueueRegistration(key, builder);
             return this;
         }
 
@@ -878,7 +875,6 @@ public class Material implements Comparable<Material> {
             if (prop == null) dust(harvestLevel, 0);
             else if (prop.getHarvestLevel() == 2) prop.setHarvestLevel(harvestLevel);
             properties.ensureSet(PropertyKey.POLYMER);
-            properties.ensureSet(PropertyKey.FLUID);
             return this;
         }
 

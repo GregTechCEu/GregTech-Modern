@@ -105,7 +105,7 @@ public class OrganicChemistryMaterials {
                 .polymer()
                 .liquid(new FluidBuilder().temperature(1450))
                 .color(0x464441).secondaryColor(0x382e1b)
-                .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
+                .flags(GENERATE_FOIL)
                 .toolStats(
                         ToolProperty.Builder.of(1.0F, 1.0F, 1024, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER)
                                 .build())
