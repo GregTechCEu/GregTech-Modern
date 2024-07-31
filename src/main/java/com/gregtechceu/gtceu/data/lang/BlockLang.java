@@ -88,7 +88,8 @@ public class BlockLang {
                 "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
 
-        provider.add("block.gtceu.normal_laser_pipe.tooltip", "§7Transmitting power with §fno loss§7 in straight lines");
+        provider.add("block.gtceu.normal_laser_pipe.tooltip",
+                "§7Transmitting power with §fno loss§7 in straight lines");
         provider.add("block.gtceu.normal_optical_pipe.tooltip", "§7Transmitting §fComputation§7 or §fResearch Data§7");
     }
 }
