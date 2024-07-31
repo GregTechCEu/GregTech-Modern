@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_knife"
+    "res": "gtceu:lv_aluminium_wirecutter"
   },
   "items": [
-    "#forge:tools/knives"
+    "#forge:tools/wire_cutters"
   ],
-  "page": "gtceu:tools/knife",
+  "page": "gtceu:tools/lv_wirecutter",
   "position": [
     -300,
-    250
+    150
   ],
   "section": "gtceu:tools"
 }
