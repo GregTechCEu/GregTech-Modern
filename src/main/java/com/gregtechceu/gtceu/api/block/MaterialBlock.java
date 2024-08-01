@@ -23,6 +23,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -282,14 +283,25 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
-            double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
-            double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);
+        /*if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
             if (livingEntity instanceof Player player) {
                 boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
+                double potentialYDelta = 0.0;
+                Vec3 deltaMovement = livingEntity.getDeltaMovement();
+                float f = 0.15F;
+                double d0 = Mth.clamp(deltaMovement.x, -f, f);
+                double d1 = Mth.clamp(deltaMovement.z, -f, f);
+                potentialYDelta = Math.max(deltaMovement.y, -f);
+                if(descendKeyDown) {
+                    potentialYDelta = 0.0f;
+                }
+                if(player.horizontalCollision) {
+                    potentialYDelta = f * 2;
+                }
 
+                player.setDeltaMovement(d0, potentialYDelta, d1);
             }
-            /*
+            *//*
              * Vec3 deltaMovement = livingEntity.getDeltaMovement();
              * livingEntity.resetFallDistance();
              * float f = 0.15F;
@@ -308,13 +320,13 @@ public class MaterialBlock extends AppearanceBlock {
              * deltaMovement = new Vec3(d0, d2, d1);
              * 
              * entity.setDeltaMovement(deltaMovement);
-             */
+             *//*
             double d5 = livingEntity.getDeltaMovement().y;
             Vec3 vec31 = livingEntity.getDeltaMovement();
             livingEntity.setDeltaMovement(vec31.x, 0.0, vec31.z);
             livingEntity.resetFallDistance();
             livingEntity.setSharedFlag(7, false);
-        }
+        }*/
     }
 
     private static void fly(Player player, double value) {
