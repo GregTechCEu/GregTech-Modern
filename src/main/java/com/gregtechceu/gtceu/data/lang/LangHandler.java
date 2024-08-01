@@ -267,6 +267,8 @@ public class LangHandler {
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
         provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
+        provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
+        provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
         provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
         provider.add("metaarmor.jetpack.hover.disable", "Jetpack: Hover Mode Disabled");
         provider.add("metaarmor.jetpack.emergency_hover_mode", "Emergency Hover Mode Enabled!");
@@ -290,6 +292,7 @@ public class LangHandler {
         provider.add("metaarmor.hud.status.enabled", "§aON");
         provider.add("metaarmor.hud.status.disabled", "§cOFF");
         provider.add("metaarmor.hud.energy_lvl", "Energy Level: %s");
+        provider.add("metaarmor.hud.engine_enabled", "Engine Enabled: %s");
         provider.add("metaarmor.hud.fuel_lvl", "Fuel Level: %s");
         provider.add("metaarmor.hud.hover_mode", "Hover Mode: %s");
         provider.add("mataarmor.hud.supply_mode", "Supply Mode: %s");

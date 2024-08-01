@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -66,61 +67,85 @@ public interface IJetpack {
 
     boolean hasEnergy(ItemStack stack);
 
-    default void performFlying(@NotNull Player player, boolean hover, ItemStack stack) {
+    default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
+        double deltaY = player.getDeltaMovement().y();
+
+
+        /*if(!hover || !flightEnabled) {
+            if(player.position().y() < player.level().getMinBuildHeight() - 5) {
+                performEHover(stack, player);
+                flightEnabled = true;
+                hover = true;
+            }
+            else {
+                if(!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
+                    if(!player.onGround() && !player.isSwimming()) {
+                        performEHover(stack, player);
+                        flightEnabled = true;
+                        hover = true;
+                    }
+                }
+            }
+        }*/
+
+        if (!flightEnabled) {
+            return;
+        }
+
         boolean flyKeyDown = KeyBind.VANILLA_JUMP.isKeyDown(player);
         boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
 
-        double deltaY = player.getDeltaMovement().y();
 
         double hoverSpeed = descendKeyDown ? getVerticalHoverSpeed() : getVerticalHoverSlowSpeed();
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
         double currentSpeedVertical = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
-
 
         if (!player.isInWater() && !player.isInLava() && canUseEnergy(stack, getEnergyPerUse())) {
             drainEnergy(stack, (int) (player.isSprinting() ?
                     Math.round(getEnergyPerUse() * getSprintEnergyModifier()) : getEnergyPerUse()));
 
             double potentialY;
+            boolean editMotion = false;
             if (hasEnergy(stack)) {
                 if (hover) {
-                    if(flyKeyDown && descendKeyDown) {
+                    if (flyKeyDown && descendKeyDown) {
                         potentialY = getVerticalHoverSlowSpeed();
-                    }
-                    else if (flyKeyDown) {
+                    } else if (flyKeyDown) {
                         potentialY = getVerticalHoverSpeed();
-                    }
-                    else if(descendKeyDown) {
+                    } else if (descendKeyDown) {
                         potentialY = -getVerticalHoverSpeed();
-                    }
-                    else {
+                    } else {
                         potentialY = 0.0;
                     }
 
                     if (player.isFallFlying()) { // if the player is hovering negate fall motion
                         player.stopFallFlying();
                     }
+                    editMotion = true;
                 } else {
                     if (flyKeyDown) {
                         potentialY = currentSpeedVertical;
-                    }
-                    else {
+                        editMotion = true;
+                        if (descendKeyDown) {
+                            potentialY -= currentSpeedVertical;
+                        }
+                    } else {
                         potentialY = -hoverSpeed;
                     }
                 }
                 potentialY = Math.min(deltaY + currentAccel, potentialY);
-                player.sendSystemMessage(Component.literal("fly speed: " + potentialY));
-                setYMotion(player, potentialY);
-
+                // player.sendSystemMessage(Component.literal("fly speed: " + potentialY));
+                if (editMotion)
+                    setYMotion(player, potentialY);
 
                 float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
                         getSidewaysSpeed());
                 float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
                         speedSideways);
 
-                //player.hurtMarked = true; // why is this necessary?
+                // player.hurtMarked = true; // why is this necessary?
 
-                //make sure they arent using elytra movement
+                // make sure they arent using elytra movement
                 if (!player.isFallFlying()) {
                     if (KeyBind.VANILLA_FORWARD.isKeyDown(player)) {
                         player.moveRelative(speedForward, new Vec3(0, 0, speedForward));
@@ -145,13 +170,23 @@ public interface IJetpack {
 
             }
             ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
-            //}
+            // }
         }
     }
 
     private static void setYMotion(Player player, double value) {
         var motion = player.getDeltaMovement();
         player.setDeltaMovement(motion.x(), value, motion.z());
+    }
+
+    private static void performEHover(ItemStack stack, Player player) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if(tag.contains("enabled"))
+            tag.putBoolean("enabled", true);
+        if(tag.contains("hover"))
+            tag.putBoolean("hover", true);
+        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        stack.setTag(tag);
     }
 
     private static void addYMotion(Player player, double value) {
