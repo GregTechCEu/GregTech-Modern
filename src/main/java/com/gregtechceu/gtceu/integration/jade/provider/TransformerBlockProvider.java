@@ -56,15 +56,6 @@ public class TransformerBlockProvider extends CapabilityBlockProvider<Transforme
                             "A)")));
         }
 
-        /*
-         * boolean higherAmpFace = block.getHitResult().getDirection() ==
-         * Direction.from3DDataValue(capData.getInt("side"));
-         * if(transformUp) {
-         * tooltip.add(Component.translatable((higherAmpFace ? "gtceu.top.transform_output" :
-         * "gtceu.top.transform_input"),
-         * (GTValues.VNF[voltage] + "(" + amp * 4 + "A)")));
-         * }
-         */
         if (block.getHitResult().getDirection() == Direction.from3DDataValue(capData.getInt("side"))) {
             tooltip.add(
                     Component.translatable((transformUp ? "gtceu.top.transform_output" : "gtceu.top.transform_input"),
