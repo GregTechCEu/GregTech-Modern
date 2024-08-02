@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
 
+import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -281,56 +282,77 @@ public class MaterialBlock extends AppearanceBlock {
         return false;
     }
 
-    @Override
+    /*@Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        return;*/
+
         /*if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
             if (livingEntity instanceof Player player) {
                 boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
-                double potentialYDelta = 0.0;
                 Vec3 deltaMovement = livingEntity.getDeltaMovement();
+
                 float f = 0.15F;
                 double d0 = Mth.clamp(deltaMovement.x, -f, f);
                 double d1 = Mth.clamp(deltaMovement.z, -f, f);
-                potentialYDelta = Math.max(deltaMovement.y, -f);
-                if(descendKeyDown) {
-                    potentialYDelta = 0.0f;
+
+
+                if(descendKeyDown && (deltaMovement.y() < 0.0 || player.isFallFlying())) {
+                    player.setDeltaMovement(d0, -deltaMovement.y(), d1);
                 }
                 if(player.horizontalCollision) {
-                    potentialYDelta = f * 2;
+                    player.setDeltaMovement(d0, 0.3, d1);
                 }
 
-                player.setDeltaMovement(d0, potentialYDelta, d1);
             }
-            *//*
-             * Vec3 deltaMovement = livingEntity.getDeltaMovement();
-             * livingEntity.resetFallDistance();
-             * float f = 0.15F;
-             * double d0 = Mth.clamp(deltaMovement.x, -f, f);
-             * double d1 = Mth.clamp(deltaMovement.z, -f, f);
-             * double d2 = Math.max(deltaMovement.y, -f);
-             * if (d2 < 0.0 && !livingEntity.getFeetBlockState().isScaffolding(livingEntity) &&
-             * livingEntity.isSuppressingSlidingDownLadder() &&
-             * livingEntity instanceof Player) {
-             * d2 = Math.min(deltaMovement.y + currentAccel, 0.0D);
-             * }
-             * if (livingEntity.horizontalCollision) {
-             * d2 = 0.3;
-             * }
-             * 
-             * deltaMovement = new Vec3(d0, d2, d1);
-             * 
-             * entity.setDeltaMovement(deltaMovement);
-             *//*
-            double d5 = livingEntity.getDeltaMovement().y;
-            Vec3 vec31 = livingEntity.getDeltaMovement();
-            livingEntity.setDeltaMovement(vec31.x, 0.0, vec31.z);
-            livingEntity.resetFallDistance();
-            livingEntity.setSharedFlag(7, false);
-        }*/
-    }
 
-    private static void fly(Player player, double value) {
+
+        }*/
+
+        /*
+         * float f = 0.15F;
+         * double d0 = Mth.clamp(deltaMovement.x, -f, f);
+         * double d1 = Mth.clamp(deltaMovement.z, -f, f);
+         * potentialYDelta = Math.max(deltaMovement.y, -f);
+         * if(descendKeyDown) {
+         * potentialYDelta = 0.0f;
+         * }
+         * if(player.horizontalCollision) {
+         * potentialYDelta = f * 2;
+         * }
+         * 
+         * player.setDeltaMovement(d0, potentialYDelta, d1);
+         * }
+         *//*
+            * Vec3 deltaMovement = livingEntity.getDeltaMovement();
+            * livingEntity.resetFallDistance();
+            * float f = 0.15F;
+            * double d0 = Mth.clamp(deltaMovement.x, -f, f);
+            * double d1 = Mth.clamp(deltaMovement.z, -f, f);
+            * double d2 = Math.max(deltaMovement.y, -f);
+            * if (d2 < 0.0 && !livingEntity.getFeetBlockState().isScaffolding(livingEntity) &&
+            * livingEntity.isSuppressingSlidingDownLadder() &&
+            * livingEntity instanceof Player) {
+            * d2 = Math.min(deltaMovement.y + currentAccel, 0.0D);
+            * }
+            * if (livingEntity.horizontalCollision) {
+            * d2 = 0.3;
+            * }
+            * 
+            * deltaMovement = new Vec3(d0, d2, d1);
+            * 
+            * entity.setDeltaMovement(deltaMovement);
+            *//*
+               * double d5 = livingEntity.getDeltaMovement().y;
+               * Vec3 vec31 = livingEntity.getDeltaMovement();
+               * livingEntity.setDeltaMovement(vec31.x, 0.0, vec31.z);
+               * livingEntity.resetFallDistance();
+               * livingEntity.setSharedFlag(7, false);
+               * }
+               */
+    //}
+
+    /*private static void fly(Player player, double value) {
         var motion = player.getDeltaMovement();
         player.setDeltaMovement(motion.x(), value, motion.z());
-    }
+    }*/
 }

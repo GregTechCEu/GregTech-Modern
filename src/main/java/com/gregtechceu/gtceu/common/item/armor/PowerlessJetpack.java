@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GradientUtil;
@@ -214,17 +215,19 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         IFluidTransfer internalTank = getIFluidHandlerItem(stack);
         if (internalTank != null) {
             com.lowdragmc.lowdraglib.side.fluid.FluidStack fluidStack = internalTank.drain(1, false);
-            if (previousRecipe != null && fluidStack != null &&
+            if (previousRecipe != null && !fluidStack.isEmpty() &&
                     FluidRecipeCapability.CAP.of(previousRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
                             .test(fluidStack) &&
                     fluidStack.getAmount() > 0) {
                 currentRecipe = previousRecipe;
                 return;
-            } else if (fluidStack != null) {
+            } else if (!fluidStack.isEmpty()) {
                 Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables
                         .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
                 FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+                handler.getStorages()[0].setFluid(fluidStack);
                 table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
+                table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
                 IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
 
                     @Override
@@ -254,8 +257,9 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     public FluidStack getFuel() {
         if (currentRecipe != null) {
-            return FluidRecipeCapability.CAP.of(currentRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
-                    .getStacks()[0];
+            var recipeInputs = currentRecipe.inputs.get(FluidRecipeCapability.CAP);
+            FluidIngredient fluid = FluidRecipeCapability.CAP.of(recipeInputs.get(0).content);
+            return fluid.getStacks()[0];
         }
 
         return FluidStack.empty();

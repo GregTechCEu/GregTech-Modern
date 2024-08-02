@@ -70,23 +70,24 @@ public interface IJetpack {
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
         double deltaY = player.getDeltaMovement().y();
 
-
-        /*if(!hover || !flightEnabled) {
-            if(player.position().y() < player.level().getMinBuildHeight() - 5) {
-                performEHover(stack, player);
-                flightEnabled = true;
-                hover = true;
-            }
-            else {
-                if(!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
-                    if(!player.onGround() && !player.isSwimming()) {
-                        performEHover(stack, player);
-                        flightEnabled = true;
-                        hover = true;
-                    }
-                }
-            }
-        }*/
+        /*
+         * if(!hover || !flightEnabled) {
+         * if(player.position().y() < player.level().getMinBuildHeight() - 5) {
+         * performEHover(stack, player);
+         * flightEnabled = true;
+         * hover = true;
+         * }
+         * else {
+         * if(!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
+         * if(!player.onGround() && !player.isSwimming()) {
+         * performEHover(stack, player);
+         * flightEnabled = true;
+         * hover = true;
+         * }
+         * }
+         * }
+         * }
+         */
 
         if (!flightEnabled) {
             return;
@@ -95,12 +96,12 @@ public interface IJetpack {
         boolean flyKeyDown = KeyBind.VANILLA_JUMP.isKeyDown(player);
         boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
 
-
         double hoverSpeed = descendKeyDown ? getVerticalHoverSpeed() : getVerticalHoverSlowSpeed();
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
         double currentSpeedVertical = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
 
-        if (!player.isInWater() && !player.isInLava() && canUseEnergy(stack, getEnergyPerUse())) {
+        // !player.isInWater() && !player.isInLava()
+        if (!player.onGround() && canUseEnergy(stack, getEnergyPerUse())) {
             drainEnergy(stack, (int) (player.isSprinting() ?
                     Math.round(getEnergyPerUse() * getSprintEnergyModifier()) : getEnergyPerUse()));
 
@@ -161,7 +162,8 @@ public interface IJetpack {
                     }
                 }
 
-                if (!player.level().isClientSide) {
+                // ensure that the player is actually using the jetpack to cancel fall damage
+                if (!player.level().isClientSide && (hover || flyKeyDown)) {
                     player.fallDistance = 0;
                     if (player instanceof ServerPlayer) {
                         ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
@@ -181,9 +183,9 @@ public interface IJetpack {
 
     private static void performEHover(ItemStack stack, Player player) {
         CompoundTag tag = stack.getOrCreateTag();
-        if(tag.contains("enabled"))
+        if (tag.contains("enabled"))
             tag.putBoolean("enabled", true);
-        if(tag.contains("hover"))
+        if (tag.contains("hover"))
             tag.putBoolean("hover", true);
         player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
         stack.setTag(tag);
