@@ -188,6 +188,8 @@ public class GTMaterials {
                 .addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4 + ring.materialAmount() * 2));
         toolHeadWrench
                 .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
+        toolHeadWireCutter
+                .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
 
         pipeTinyFluid.setIgnored(Wood);
         pipeHugeFluid.setIgnored(Wood);

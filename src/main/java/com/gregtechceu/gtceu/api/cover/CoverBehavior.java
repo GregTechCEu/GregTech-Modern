@@ -152,7 +152,8 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
             if (playerIn instanceof ServerPlayer serverPlayer) {
                 CoverUIFactory.INSTANCE.openUI(this, serverPlayer);
             }
-            return InteractionResult.SUCCESS;
+            playerIn.swing(hand);
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
     }

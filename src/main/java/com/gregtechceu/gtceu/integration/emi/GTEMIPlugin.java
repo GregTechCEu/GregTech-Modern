@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -45,7 +46,7 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
                 }
             }

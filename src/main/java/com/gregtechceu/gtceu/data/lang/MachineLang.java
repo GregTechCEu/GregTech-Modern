@@ -310,13 +310,13 @@ public class MachineLang {
         provider.add("gtceu.machine.transformer.tooltip_tool_usage",
                 "Starts as §fTransform Down§7, use Screwdriver to change");
         provider.add("gtceu.machine.transformer.tooltip_transform_down",
-                "§aTransform Down: §f%dA %d EU (%s§f) -> %dA %d EU (%s§f)");
+                "§aTransform Down: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
         provider.add("gtceu.machine.transformer.message_transform_down",
-                "Transforming Down, In: %d EU %dA, Out: %d EU %dA");
+                "Transforming Down, In: %s EU %dA, Out: %s EU %dA");
         provider.add("gtceu.machine.transformer.tooltip_transform_up",
-                "§cTransform Up: §f%dA %d EU (%s§f) -> %dA %d EU (%s§f)");
+                "§cTransform Up: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
         provider.add("gtceu.machine.transformer.message_transform_up",
-                "Transforming Up, In: %d EU %dA, Out: %d EU %dA");
+                "Transforming Up, In: %s EU %dA, Out: %s EU %dA");
 
         provider.add("gtceu.machine.diode.message", "Max Amperage throughput: %s");
         provider.add("gtceu.machine.diode.tooltip_tool_usage",
@@ -400,6 +400,11 @@ public class MachineLang {
         provider.add("gtceu.machine.world_accelerator.working_area_random", "  Random Tick Mode:§f %dx%d");
         provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
+
+        // Scanner
+        provider.add("gtceu.scanner.copy_stick_from", "§oStick to Copy");
+        provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");
+        provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
 
         // HPCA Components
         provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
