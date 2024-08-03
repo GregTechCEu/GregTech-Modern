@@ -222,7 +222,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
         builder.save(provider);
 
@@ -301,7 +301,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
         builder.save(provider);
 
@@ -347,7 +347,7 @@ public class VanillaRecipeHelper {
                     builder.requires(tag);
                 } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
             } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+                builder.requires(ToolHelper.getToolFromSymbol(c).itemTags.get(0));
             }
         }
         builder.save(provider);

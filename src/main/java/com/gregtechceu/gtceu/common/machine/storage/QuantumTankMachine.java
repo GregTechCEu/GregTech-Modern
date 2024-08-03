@@ -307,12 +307,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                     setAllowInputFromOutputSideFluids(false);
                     playerIn.sendSystemMessage(
                             Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
-                                    .append(Component.translatable("gtceu.creative.chest.fluid")));
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
                 } else {
                     setAllowInputFromOutputSideFluids(true);
                     playerIn.sendSystemMessage(
                             Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
-                                    .append(Component.translatable("gtceu.creative.chest.fluid")));
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
                 }
             }
             return ItemInteractionResult.SUCCESS;
