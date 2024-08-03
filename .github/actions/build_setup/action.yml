@@ -5,7 +5,7 @@ inputs:
   update-cache:
     description: If cache should be updated
     required: false
-    default: true
+    default: 'false'
 
 runs:
   using: 'composite'
