@@ -35,6 +35,7 @@ import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
@@ -73,10 +74,11 @@ public interface GTRecipeSchema {
 
         @HideFromJS
         @Override
-        public GTKubeRecipe id(ResourceLocation _id) {
+        public GTKubeRecipe id(KubeResourceLocation _id) {
             this.idWithoutType = ResourceLocation.fromNamespaceAndPath(
-                    _id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(),
-                    _id.getPath());
+                    _id.wrapped().getNamespace().equals("kubejs") ? this.type.id.getNamespace() :
+                            _id.wrapped().getNamespace(),
+                    _id.wrapped().getPath());
             this.id = ResourceLocation.fromNamespaceAndPath(idWithoutType.getNamespace(),
                     "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
             return this;
