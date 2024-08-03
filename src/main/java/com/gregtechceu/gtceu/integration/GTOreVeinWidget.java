@@ -153,7 +153,7 @@ public class GTOreVeinWidget extends WidgetGroup {
                 SlotWidget dimSlot = new SlotWidget(transfer, i,
                         5 + (16 + interval) * (i - row * rowSlots),
                         yPosition + 18 * row,
-                        false, false).setIngredientIO(IngredientIO.INPUT);
+                        false, false).setIngredientIO(IngredientIO.CATALYST);
                 transfer.setStackInSlot(i, markerItem);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.setOverlay(

@@ -147,8 +147,8 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new OreDataLoader());
-        event.addListener(new FluidVeinLoader());
+        event.addListener(new GTOreLoader());
+        event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
     }
 

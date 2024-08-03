@@ -24,6 +24,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -206,10 +207,15 @@ public class BedrockFluidDefinition {
             return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
         }
 
-        public BedrockFluidDefinition register() {
-            var definition = new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount,
+        @ApiStatus.Internal
+        public BedrockFluidDefinition build() {
+            return new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount,
                     depletionChance, depletedYield, fluid, biomes, dimensions);
-            GTBedrockFluids.toReRegister.put(name, definition);
+        }
+
+        public BedrockFluidDefinition register() {
+            var definition = build();
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(name, definition);
             return definition;
         }
     }

@@ -55,7 +55,6 @@ public class GTOres {
     private static int largestIndicatorOffset = 0;
 
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
-    public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
 
     //////////////////////////////////////
     // ******** End Vein *********//

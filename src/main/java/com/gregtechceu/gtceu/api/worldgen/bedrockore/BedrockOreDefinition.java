@@ -220,7 +220,7 @@ public class BedrockOreDefinition {
         public BedrockOreDefinition register() {
             var definition = new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance,
                     depletedYield, materials, biomes, dimensions);
-            GTOres.toReRegisterBedrock.put(name, definition);
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.registerOrOverride(name, definition);
             return definition;
         }
     }

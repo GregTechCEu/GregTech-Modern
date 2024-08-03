@@ -30,17 +30,15 @@ import org.apache.logging.log4j.Logger;
 import java.util.Iterator;
 import java.util.Map;
 
-public class OreDataLoader extends SimpleJsonResourceReloadListener {
+public class GTOreLoader extends SimpleJsonResourceReloadListener {
 
-    public static OreDataLoader INSTANCE;
     public static final Gson GSON_INSTANCE = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient()
             .create();
     private static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public OreDataLoader() {
+    public GTOreLoader() {
         super(GSON_INSTANCE, FOLDER);
-        INSTANCE = this;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         GTOres.init();
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.ORE_VEINS));
         if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+            KJSCallWrapper.fireKJSEvent();
         }
 
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
@@ -107,10 +105,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         return GTOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow();
     }
 
-    /**
-     * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
-     */
-    public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+    public static final class KJSCallWrapper {
 
         public static void fireKJSEvent() {
             GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTOreVeinEventJS());
