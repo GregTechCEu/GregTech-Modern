@@ -114,7 +114,8 @@ public class GTBedrockFluids {
         toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
     }
 
-    public static BedrockFluidDefinition create(ResourceLocation id, Consumer<BedrockFluidDefinition.Builder> consumer) {
+    public static BedrockFluidDefinition create(ResourceLocation id,
+                                                Consumer<BedrockFluidDefinition.Builder> consumer) {
         BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
         consumer.accept(builder);
 
