@@ -81,10 +81,10 @@ public class GTRecipeTypeUI {
 
     @Getter
     @Setter
-    private boolean JEIVisible = true;
+    private boolean XEIVisible = true;
 
     private CompoundTag customUICache;
-    private Size jeiSize;
+    private Size xeiSize;
     @Getter
     private int originalWidth;
 
@@ -132,15 +132,15 @@ public class GTRecipeTypeUI {
 
     public void reloadCustomUI() {
         this.customUICache = null;
-        this.jeiSize = null;
+        this.xeiSize = null;
     }
 
     public Size getJEISize() {
-        Size size = this.jeiSize;
+        Size size = this.xeiSize;
         if (size == null) {
             var originalSize = createEditableUITemplate(false, false).createDefault().getSize();
             this.originalWidth = originalSize.width;
-            this.jeiSize = size = new Size(Math.max(originalWidth, 150),
+            this.xeiSize = size = new Size(Math.max(originalWidth, 150),
                     getPropertyHeightShift() + 5 + originalSize.height);
         }
         return size;
@@ -394,7 +394,7 @@ public class GTRecipeTypeUI {
      * @return the height used to determine size of background texture in JEI
      */
     public int getPropertyHeightShift() {
-        int maxPropertyCount = recipeType.getMaxTooltips() + recipeType.getDataInfos().size();
+        int maxPropertyCount = maxTooltips + recipeType.getDataInfos().size();
         return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
     }
 

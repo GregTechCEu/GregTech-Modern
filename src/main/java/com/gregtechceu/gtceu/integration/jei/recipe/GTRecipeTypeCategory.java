@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.Util;
@@ -66,7 +67,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     public static void registerRecipes(IRecipeRegistration registration) {
         for (net.minecraft.world.item.crafting.RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
                             Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType)
                                     .stream()
@@ -89,12 +90,14 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
-            for (MachineDefinition machine : GTRegistries.MACHINES) {
-                if (machine.getRecipeTypes() != null) {
-                    for (GTRecipeType type : machine.getRecipeTypes()) {
-                        if (type == gtRecipeType) {
-                            registration.addRecipeCatalyst(machine.asStack(),
-                                    GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
+            if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
+                for (MachineDefinition machine : GTRegistries.MACHINES) {
+                    if (machine.getRecipeTypes() != null) {
+                        for (GTRecipeType type : machine.getRecipeTypes()) {
+                            if (type == gtRecipeType) {
+                                registration.addRecipeCatalyst(machine.asStack(),
+                                        GTRecipeTypeCategory.TYPES.apply(gtRecipeType));
+                            }
                         }
                     }
                 }
