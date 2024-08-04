@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
-import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

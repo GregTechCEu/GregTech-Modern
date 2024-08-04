@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
