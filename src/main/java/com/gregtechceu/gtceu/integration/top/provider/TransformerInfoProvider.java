@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.jade.provider;
+package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -7,22 +7,17 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
 import org.jetbrains.annotations.Nullable;
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.config.IPluginConfig;
 
-public class TransformerBlockProvider extends CapabilityBlockProvider<TransformerMachine> {
-
-    public TransformerBlockProvider() {
-        super(GTCEu.id("transformer_provider"));
-    }
+public class TransformerInfoProvider extends CapabilityInfoProvider<TransformerMachine> {
 
     @Override
     protected @Nullable TransformerMachine getCapability(Level level, BlockPos pos, @Nullable Direction side) {
@@ -33,37 +28,37 @@ public class TransformerBlockProvider extends CapabilityBlockProvider<Transforme
     }
 
     @Override
-    protected void write(CompoundTag data, TransformerMachine machine) {
-        data.putInt("side", machine.getFrontFacing().get3DDataValue());
-        data.putBoolean("transformUp", machine.isTransformUp());
-        data.putInt("baseAmp", machine.getBaseAmp());
-        data.putInt("baseVoltage", machine.getTier());
-    }
+    protected void addProbeInfo(TransformerMachine capability, IProbeInfo probeInfo, Player player,
+                                BlockEntity blockEntity, IProbeHitData data) {
+        boolean transformUp = capability.isTransformUp();
+        int voltage = capability.getTier();
+        int amp = capability.getBaseAmp();
+        int side = capability.getFrontFacing().get3DDataValue();
 
-    @Override
-    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
-                              BlockEntity blockEntity, IPluginConfig config) {
-        boolean transformUp = capData.getBoolean("transformUp");
-        int voltage = capData.getInt("baseVoltage");
-        int amp = capData.getInt("baseAmp");
+        IProbeInfo verticalPane = probeInfo.vertical(probeInfo.defaultLayoutStyle().spacing(0));
         if (transformUp) {
-            tooltip.add(Component.translatable("gtceu.top.transform_up",
+            verticalPane.text(Component.translatable("gtceu.top.transform_up",
                     (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A) -> " + GTValues.VNF[voltage + 1] + " §r(" + amp +
                             "A)")));
         } else {
-            tooltip.add(Component.translatable("gtceu.top.transform_down",
+            verticalPane.text(Component.translatable("gtceu.top.transform_down",
                     (GTValues.VNF[voltage + 1] + " §r(" + amp + "A) -> " + GTValues.VNF[voltage] + " §r(" + amp * 4 +
                             "A)")));
         }
 
-        if (block.getHitResult().getDirection() == Direction.from3DDataValue(capData.getInt("side"))) {
-            tooltip.add(
+        if (data.getSideHit() == Direction.from3DDataValue(side)) {
+            verticalPane.text(
                     Component.translatable((transformUp ? "gtceu.top.transform_output" : "gtceu.top.transform_input"),
                             (GTValues.VNF[voltage + 1] + " §r(" + amp + "A)")));
         } else {
-            tooltip.add(
+            verticalPane.text(
                     Component.translatable((transformUp ? "gtceu.top.transform_input" : "gtceu.top.transform_output"),
                             (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A)")));
         }
+    }
+
+    @Override
+    public ResourceLocation getID() {
+        return GTCEu.id("transformer_provider");
     }
 }
