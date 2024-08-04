@@ -93,7 +93,6 @@ public interface IJetpack {
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
         double currentSpeedVertical = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
 
-        // !player.isInWater() && !player.isInLava()
         if (!player.onGround() && canUseEnergy(stack, getEnergyPerUse())) {
             drainEnergy(stack, (int) (player.isSprinting() ?
                     Math.round(getEnergyPerUse() * getSprintEnergyModifier()) : getEnergyPerUse()));
@@ -135,8 +134,6 @@ public interface IJetpack {
                         getSidewaysSpeed());
                 float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
                         speedSideways);
-
-                // player.hurtMarked = true; // why is this necessary?
 
                 // make sure they arent using elytra movement
                 if (!player.isFallFlying()) {

@@ -80,7 +80,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 NIGHTVISION_DURATION;
-        byte runningTimer = data.contains("consumerTicks") ? data.getByte("consumerTicks") : RUNNING_TIMER;
+        byte runningTimer = data.contains("runningTimer") ? data.getByte("runningTimer") : RUNNING_TIMER;
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
@@ -158,7 +158,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
 
             if (runningTimer > 0) runningTimer--;
-            data.putByte("consumerTicks", runningTimer);
+            data.putByte("runningTimer", runningTimer);
         } else if (type == ArmorItem.Type.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = KeyBind.VANILLA_JUMP.isKeyDown(player);
