@@ -1,6 +1,7 @@
 {
-  "parent": "gtceu:block/cube/tinted/all_0",
+  "parent": "gtceu:block/cube_2_layer/tinted_both/all_translucent",
   "textures": {
-    "all": "gtceu:block/material_sets/rough/block"
+    "bot_all": "gtceu:block/material_sets/rough/block",
+    "top_all": "gtceu:block/material_sets/rough/block_secondary"
   }
 }
