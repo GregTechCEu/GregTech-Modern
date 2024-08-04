@@ -337,7 +337,10 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS notConsumableFluid(GTRecipeComponents.FluidIngredientJS fluid) {
-            chancedFluidInput(fluid, 0, 0);
+            int lastChance = this.chance;
+            this.chance = 0;
+            inputFluids(fluid);
+            this.chance = lastChance;
             return this;
         }
 
@@ -346,6 +349,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
@@ -356,7 +364,13 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
@@ -369,6 +383,11 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
@@ -379,7 +398,13 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
@@ -404,19 +429,33 @@ public interface GTRecipeSchema {
             }
 
             String[] split = fraction.split("/");
-            if (split.length != 2) {
-                GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+            if (split.length > 2) {
+                GTCEu.LOGGER.error(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
                         fraction, new Throwable());
                 return this;
             }
 
             int chance;
             int maxChance;
+
+            if (split.length == 1) {
+                try {
+                    chance = Integer.parseInt(split[0]);
+                } catch (NumberFormatException e) {
+                    GTCEu.LOGGER.error(
+                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
+                            fraction, new Throwable());
+                    return this;
+                }
+                return chancedOutput(stack, chance, tierChanceBoost);
+            }
             try {
                 chance = Integer.parseInt(split[0]);
                 maxChance = Integer.parseInt(split[1]);
             } catch (NumberFormatException e) {
-                GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                GTCEu.LOGGER.error(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
                         fraction, new Throwable());
                 return this;
             }
@@ -452,19 +491,12 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction, tierChanceBoost);
+            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
+                    tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
             return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
-        }
-
-        public GTRecipeJS chancedOutput(Item item, int count, String fraction, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(new ItemStack(item, count)), fraction, tierChanceBoost);
-        }
-
-        public GTRecipeJS chancedOutput(Item item, String fraction, int tierChanceBoost) {
-            return chancedOutput(item, 1, fraction, tierChanceBoost);
         }
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
@@ -473,19 +505,34 @@ public interface GTRecipeSchema {
             }
 
             String[] split = fraction.split("/");
-            if (split.length != 2) {
-                GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+            if (split.length > 2) {
+                GTCEu.LOGGER.error(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
                         fraction, new Throwable());
                 return this;
             }
 
             int chance;
             int maxChance;
+
+            if (split.length == 1) {
+                try {
+                    chance = Integer.parseInt(split[0]);
+                } catch (NumberFormatException e) {
+                    GTCEu.LOGGER.error(
+                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
+                            fraction, new Throwable());
+                    return this;
+                }
+                return chancedFluidOutput(stack, chance, tierChanceBoost);
+            }
+
             try {
                 chance = Integer.parseInt(split[0]);
                 maxChance = Integer.parseInt(split[1]);
             } catch (NumberFormatException e) {
-                GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                GTCEu.LOGGER.error(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
                         fraction, new Throwable());
                 return this;
             }

@@ -424,8 +424,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
-        chancedInput(fluid, 0, 0);
-        return this;
+        return notConsumableFluid(FluidIngredient.of(
+                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()), fluid.getAmount()));
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidIngredient ingredient) {

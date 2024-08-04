@@ -1243,7 +1243,7 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
         provider.add("gtceu.gui.content.chance_1_logic", "Chance: %s%% (%s)");
         provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
-        provider.add("gtceu.gui.content.count_range", "§6%s - %s x");
+        provider.add("gtceu.gui.content.count_range", "%s-%sx");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

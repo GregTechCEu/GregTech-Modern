@@ -63,6 +63,10 @@ public class SizedIngredient extends Ingredient {
 
     public static Ingredient copy(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
+            if (sizedIngredient.inner instanceof IntProviderIngredient intProviderIngredient) {
+                return copy(intProviderIngredient);
+            }
+
             var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
             if (sizedIngredient.itemStacks != null) {
                 copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
@@ -111,6 +115,9 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public ItemStack @NotNull [] getItems() {
+        if (getInner() instanceof IntProviderIngredient intProviderIngredient) {
+            return intProviderIngredient.getItems();
+        }
         if (itemStacks == null)
             itemStacks = Arrays.stream(inner.getItems()).map(i -> {
                 ItemStack ic = i.copy();

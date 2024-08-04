@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
 
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
@@ -37,6 +36,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -535,11 +535,20 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    //@formatter:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",
-                                countProvider.getMinValue(), countProvider.getMaxValue()));
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    } else if (this.of(content.content) instanceof SizedIngredient sizedIngredient &&
+                            sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
+                        IntProvider countProvider = ingredient.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
                     }
+                    //@formatter:on
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
@@ -550,7 +559,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     // Maps ingredients to Either <(Tag with count), ItemStack>s
     @SuppressWarnings("deprecation")
-    private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
+    private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(final Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
             if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
@@ -639,8 +648,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 return items;
             }));
         } else if (ingredient instanceof IntProviderIngredient intProvider) {
-            final int amount = (int) (intProvider.getCountProvider().getMinValue() +
-                    intProvider.getCountProvider().getMaxValue() * ProgressWidget.JEIProgress.getAsDouble());
+            final int amount = 1;
             if (intProvider.getInner() instanceof IntersectionIngredient intersection) {
                 List<Ingredient> children = ((IntersectionIngredientAccessor) intersection).getChildren();
                 if (children.isEmpty()) {
@@ -693,7 +701,17 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 ((IngredientAccessor) ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
                     return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), 1)));
                 }
-        return Either.right(Arrays.stream(ingredient.getItems()).toList());
+        return Either.right(Arrays.stream(ingredient.getItems()).map(stack -> {
+            //@formatter:off
+            if (ingredient instanceof IntProviderIngredient) {
+                stack.setCount(1);
+            } else if (ingredient instanceof SizedIngredient sized &&
+                    sized.getInner() instanceof IntProviderIngredient) {
+                stack.setCount(1);
+            }
+            //@formatter:on
+            return stack;
+        }).toList());
     }
 
     @Override

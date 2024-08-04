@@ -120,6 +120,9 @@ public class IngredientEquality {
 
     public static boolean ingredientEquals(Ingredient first, Ingredient second) {
         if (first == second) return true;
+        if ((first == null) != (second == null)) {
+            return false;
+        }
 
         if (first instanceof SizedIngredient sized1) {
             if (second instanceof SizedIngredient sized2) {

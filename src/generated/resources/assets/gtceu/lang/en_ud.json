@@ -2690,7 +2690,7 @@
   "gtceu.gui.content.chance_0_short": "ɹ§ƆNɔ§",
   "gtceu.gui.content.chance_1": "%s%% :ǝɔuɐɥƆ",
   "gtceu.gui.content.chance_1_logic": ")%s( %s%% :ǝɔuɐɥƆ",
-  "gtceu.gui.content.count_range": "x %s - %s9§",
+  "gtceu.gui.content.count_range": "x%s-%s",
   "gtceu.gui.content.per_tick": "ɹ§ʞɔı⟘ ɹǝԀ pǝɔnpoɹԀ/pǝɯnsuoƆɐ§",
   "gtceu.gui.content.tier_boost": "ɹǝıʇ/%s%%+ :ǝɔuɐɥƆ ɹǝı⟘",
   "gtceu.gui.content.tips.per_second_short": "ɹ§puoɔǝs/ɐ§",

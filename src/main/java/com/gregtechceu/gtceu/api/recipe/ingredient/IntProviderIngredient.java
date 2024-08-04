@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,9 +33,11 @@ public class IntProviderIngredient extends Ingredient {
 
     @Getter
     protected final IntProvider countProvider;
+    @Setter
     protected Integer sampledCount = null;
     @Getter
     protected final Ingredient inner;
+    @Setter
     protected ItemStack[] itemStacks = null;
 
     public IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
@@ -59,11 +62,9 @@ public class IntProviderIngredient extends Ingredient {
     @Override
     public ItemStack @NotNull [] getItems() {
         if (itemStacks == null)
-            itemStacks = Arrays.stream(inner.getItems()).map(i -> {
-                ItemStack ic = i.copy();
-                ic.setCount(getSampledCount(GTValues.RNG));
-                return ic;
-            }).toArray(ItemStack[]::new);
+            itemStacks = Arrays.stream(inner.getItems())
+                    .map(i -> i.copyWithCount(getSampledCount(GTValues.RNG)))
+                    .toArray(ItemStack[]::new);
         return itemStacks;
     }
 

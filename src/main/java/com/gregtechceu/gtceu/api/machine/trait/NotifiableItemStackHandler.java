@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -132,6 +133,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         } else if (io == IO.OUT) {
             while (iterator.hasNext()) {
                 Ingredient ingredient = iterator.next();
+                if (ingredient instanceof IntProviderIngredient intProvider) {
+                    intProvider.setItemStacks(null);
+                    intProvider.setSampledCount(null);
+                }
                 var items = ingredient.getItems();
                 if (items.length == 0) {
                     iterator.remove();

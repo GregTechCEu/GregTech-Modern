@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.recipe.content;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -12,6 +14,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -72,6 +75,7 @@ public class Content {
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height);
+                drawRangeAmount(graphics, x, y, width, height);
                 if (LDLib.isEmiLoaded()) {
                     drawEmiAmount(graphics, x, y, width, height);
                 }
@@ -80,6 +84,26 @@ public class Content {
                 }
             }
         };
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+        if (content instanceof SizedIngredient sized && sized.getInner() instanceof IntProviderIngredient ingredient) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 400);
+            graphics.pose().scale(0.5f, 0.5f, 1);
+            int min = ingredient.getCountProvider().getMinValue();
+            int max = ingredient.getCountProvider().getMaxValue();
+            String s = String.format("%s-%s", min, max);
+            Font fontRenderer = Minecraft.getInstance().font;
+            // 5 == max num of characters that fit in a slot at 0.5x render size
+            if (s.length() > 5) {
+                graphics.pose().scale(0.5f, 0.5f, 1);
+            }
+            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
+                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+            graphics.pose().popPose();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
