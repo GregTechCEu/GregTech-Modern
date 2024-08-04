@@ -42,15 +42,17 @@ public abstract class ChanceLogic {
             for (Content entry : chancedEntries) {
                 int cached = getCachedChance(entry, cache);
 
-                int chance = getChance(entry, boostFunction, baseTier, machineTier) + cached;
+                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
+                int chance = newChance + cached;
                 int maxChance = entry.maxChance;
                 if (passesChance(chance, maxChance)) {
                     do {
                         builder.add(entry);
                         chance -= maxChance;
+                        newChance -= maxChance;
                     } while (passesChance(chance, maxChance));
                 }
-                updateCachedChance(entry.content, cache, chance);
+                updateCachedChance(entry.content, cache, newChance / 2 + cached);
             }
 
             List<Content> list = builder.build();
@@ -82,11 +84,12 @@ public abstract class ChanceLogic {
             for (Content entry : chancedEntries) {
                 int cached = getCachedChance(entry, cache);
 
-                int chance = getChance(entry, boostFunction, baseTier, machineTier) + cached;
+                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
+                int chance = newChance + cached;
                 if (!passesChance(chance, entry.maxChance)) {
                     failed = true;
                 }
-                updateCachedChance(entry.content, cache, chance);
+                updateCachedChance(entry.content, cache, newChance / 2 + cached);
             }
             return failed ? null : ImmutableList.copyOf(chancedEntries);
         }
@@ -116,11 +119,12 @@ public abstract class ChanceLogic {
             for (Content entry : chancedEntries) {
                 int cached = getCachedChance(entry, cache);
 
-                int chance = getChance(entry, boostFunction, baseTier, machineTier) + cached;
+                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
+                int chance = newChance + cached;
                 if (passesChance(chance, entry.maxChance) && selected == null) {
                     selected = entry;
                 }
-                updateCachedChance(entry.content, cache, chance);
+                updateCachedChance(entry.content, cache, newChance / 2 + cached);
             }
             return selected == null ? null : Collections.singletonList(selected);
         }
