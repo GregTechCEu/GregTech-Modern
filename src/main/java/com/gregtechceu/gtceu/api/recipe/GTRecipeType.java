@@ -77,9 +77,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Setter
     @Getter
-    protected int maxTooltips = 3;
-    @Setter
-    @Getter
     protected boolean isFuelRecipeType;
     @Getter
     @Setter
@@ -165,6 +162,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
         this.recipeUI.setUiBuilder(uiBuilder);
+        return this;
+    }
+
+    public GTRecipeType setMaxTooltips(int maxTooltips) {
+        this.recipeUI.setMaxTooltips(maxTooltips);
+        return this;
+    }
+
+    public GTRecipeType setXEIVisible(boolean XEIVisible) {
+        this.recipeUI.setXEIVisible(XEIVisible);
         return this;
     }
 

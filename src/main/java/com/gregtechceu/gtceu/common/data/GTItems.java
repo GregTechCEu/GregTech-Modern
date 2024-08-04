@@ -2234,7 +2234,7 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
             .lang("Purple Drink")
-            .onRegister(attach(new FoodStats(GTFoods.DRINK, true, () -> Items.GLASS_BOTTLE.getDefaultInstance())))
+            .onRegister(attach(new FoodStats(GTFoods.DRINK, true, Items.GLASS_BOTTLE::getDefaultInstance)))
             .onRegister(compassNode(GTCompassSections.MISC))
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)
@@ -2668,7 +2668,7 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE
-            .item("sus_record", p -> new RecordItem(15, () -> GTSoundEntries.SUS_RECORD.getMainEvent(), p, 820))
+            .item("sus_record", p -> new RecordItem(15, GTSoundEntries.SUS_RECORD::getMainEvent, p, 820))
             .lang("Music Disc")
             .register();
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)

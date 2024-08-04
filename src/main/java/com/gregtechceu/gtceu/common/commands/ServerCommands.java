@@ -41,9 +41,9 @@ import static net.minecraft.commands.Commands.*;
 public class ServerCommands {
 
     private static final SimpleCommandExceptionType ERROR_CLEAR_EVERYTHING_FAILED = new SimpleCommandExceptionType(
-            Component.translatable("effect.clear.everything.failed"));
+            Component.translatable("commands.effect.clear.everything.failed"));
     private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
-            Component.translatable("effect.give.failed"));
+            Component.translatable("commands.effect.give.failed"));
 
     public static List<LiteralArgumentBuilder<CommandSourceStack>> createServerCommands() {
         return List.of(
