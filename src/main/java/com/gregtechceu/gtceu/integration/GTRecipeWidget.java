@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.recipe.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -269,13 +270,14 @@ public class GTRecipeWidget extends WidgetGroup {
 
     public static void setConsumedChance(Content content, List<Component> tooltips) {
         var chance = content.chance;
-        if (chance < 1) {
+        if (chance < ChanceLogic.getMaxChancedValue()) {
+            float chanceFloat = 100 * (float) content.chance / content.maxChance;
             tooltips.add(chance == 0 ?
                     Component.translatable("gtceu.gui.content.chance_0") :
-                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
+                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chanceFloat));
             if (content.tierChanceBoost != 0) {
                 tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
-                        content.tierChanceBoost * 100));
+                        content.tierChanceBoost / 100.0f));
             }
         }
     }

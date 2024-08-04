@@ -262,7 +262,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             Ingredient recipeIngredient = ItemRecipeCapability.CAP.of(content.content);
             int ingredientCount = recipeIngredient instanceof SizedIngredient sizedIngredient ?
                     sizedIngredient.getAmount() : 1;
-            if (content.chance == 0.0f) {
+            if (content.chance == 0) {
                 notConsumableMap.computeIfPresent(recipeIngredient, (k, v) -> v + ingredientCount);
                 notConsumableMap.putIfAbsent(recipeIngredient, ingredientCount);
             } else {
@@ -483,7 +483,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             }
             if (content != null) {
-                slot.setXEIChance(content.chance);
+                slot.setXEIChance((float) content.chance / content.maxChance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
                     if (index >=
@@ -590,5 +590,10 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), 1)));
                 }
         return Either.right(Arrays.stream(ingredient.getItems()).toList());
+    }
+
+    @Override
+    public Object2IntMap<Ingredient> makeChanceCache() {
+        return new Object2IntOpenCustomHashMap<>(IngredientEquality.IngredientHashStrategy.INSTANCE);
     }
 }

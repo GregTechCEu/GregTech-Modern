@@ -138,7 +138,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             Content chance = recipeWrapper.getChance(i / 2 + itemInputs.size());
             IGuiTexture overlay = null;
             if (chance != null) {
-                xeiChance = chance.chance;
+                xeiChance = (float) chance.chance / chance.maxChance;
                 overlay = chance.createOverlay(false);
             }
             if (itemOutputs.get(slotIndex).isEmpty()) {

@@ -267,7 +267,7 @@ public class OreRecipeHandler {
                 .inputFluids(Water.getFluid(1000))
                 .circuitMeta(1)
                 .outputItems(crushedPurifiedOre)
-                .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, "1/3", 0)
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
@@ -275,7 +275,7 @@ public class OreRecipeHandler {
                 .inputItems(crushedPrefix, material)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(crushedPurifiedOre)
-                .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, "1/3", 0)
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .duration(200)
                 .save(provider);
@@ -284,7 +284,7 @@ public class OreRecipeHandler {
                 .inputItems(crushedPrefix, material)
                 .outputItems(crushedCentrifugedOre)
                 .chancedOutput(TagPrefix.dust, property.getOreByProduct(1, material), property.getByProductMultiplier(),
-                        3333, 0)
+                        "1/3", 0)
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
@@ -366,7 +366,7 @@ public class OreRecipeHandler {
                     .recipeBuilder("centrifuge_" + material.getName() + "_purified_ore_to_refined_ore")
                     .inputItems(purifiedPrefix, material)
                     .outputItems(crushedCentrifugedStack)
-                    .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
+                    .chancedOutput(TagPrefix.dust, byproductMaterial, "1/3", 0)
                     .save(provider);
         }
 
@@ -428,7 +428,7 @@ public class OreRecipeHandler {
                 .duration((int) (material.getMass() * 4)).EUt(24);
 
         if (byproduct.hasProperty(PropertyKey.DUST)) {
-            builder.chancedOutput(TagPrefix.dust, byproduct, 1111, 0);
+            builder.chancedOutput(TagPrefix.dust, byproduct, "1/9", 0);
         } else {
             builder.outputFluids(byproduct.getFluid(L / 9));
         }
@@ -473,7 +473,7 @@ public class OreRecipeHandler {
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_" + material.getName() + "_pure_dust_to_dust")
                 .inputItems(purePrefix, material)
                 .outputItems(dustStack)
-                .chancedOutput(TagPrefix.dust, byproductMaterial, 1111, 0)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, "1/9", 0)
                 .duration(100)
                 .EUt(5)
                 .save(provider);

@@ -270,8 +270,8 @@ public class SeparationRecipes {
                 .inputItems(dust, Stone)
                 .chancedOutput(dust, Quartzite, 2500, 0)
                 .chancedOutput(dust, PotassiumFeldspar, 2500, 0)
-                .chancedOutput(dust, Marble, 2222, 0)
-                .chancedOutput(dust, Biotite, 1111, 0)
+                .chancedOutput(dust, Marble, "2/9", 0)
+                .chancedOutput(dust, Biotite, "1/9", 0)
                 .chancedOutput(dust, MetalMixture, 825, 80)
                 .chancedOutput(dust, Sodalite, 550, 55)
                 .save(provider);
@@ -280,8 +280,8 @@ public class SeparationRecipes {
                 .inputItems(dust, MetalMixture)
                 .chancedOutput(dust, Hematite, 2500, 0)
                 .chancedOutput(dust, Bauxite, 2500, 0)
-                .chancedOutput(dust, Pyrolusite, 2222, 0)
-                .chancedOutput(dust, Barite, 1111, 0)
+                .chancedOutput(dust, Pyrolusite, "2/9", 0)
+                .chancedOutput(dust, Barite, "1/9", 0)
                 .chancedOutput(dust, Chromite, 825, 80)
                 .chancedOutput(dust, Ilmenite, 550, 55)
                 .save(provider);

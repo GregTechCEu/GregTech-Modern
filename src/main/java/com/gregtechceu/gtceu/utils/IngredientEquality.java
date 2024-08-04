@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import com.gregtechceu.gtceu.core.mixins.*;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +11,7 @@ import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.Hash;
 
 import java.util.*;
 
@@ -136,5 +134,42 @@ public class IngredientEquality {
 
     private static boolean cmp(Ingredient first, Ingredient second) {
         return IngredientEquality.INGREDIENT_COMPARATOR.compare(first, second) == 0;
+    }
+
+    public static final class IngredientHashStrategy implements Hash.Strategy<Ingredient> {
+
+        public static final IngredientHashStrategy INSTANCE = new IngredientHashStrategy();
+        private static final ItemStackHashStrategy ITEM_STACK_HASH_STRATEGY = ItemStackHashStrategy.comparingAll();
+
+        @Override
+        public int hashCode(Ingredient o) {
+            int hashCode = 0;
+            if (o instanceof StrictNBTIngredientAccessor strict) {
+                hashCode = ITEM_STACK_HASH_STRATEGY.hashCode(strict.getStack()) * 31;
+            } else if (o instanceof PartialNBTIngredientAccessor partial) {
+                hashCode = partial.getNbt().hashCode() * 31;
+                hashCode += partial.getItems().hashCode() * 31;
+            } else if (o instanceof IntersectionIngredientAccessor intersection) {
+                for (Ingredient ingredient : intersection.getChildren()) {
+                    hashCode += this.hashCode(ingredient) * 31;
+                }
+            } else if (o instanceof IngredientAccessor ingredient) {
+                for (Ingredient.Value value : ingredient.getValues()) {
+                    if (value instanceof TagValueAccessor tagValue) {
+                        hashCode += tagValue.getTag().hashCode();
+                    } else {
+                        for (ItemStack stack : value.getItems()) {
+                            hashCode += ITEM_STACK_HASH_STRATEGY.hashCode(stack);
+                        }
+                    }
+                }
+            }
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(Ingredient a, Ingredient b) {
+            return IngredientEquality.ingredientEquals(a, b);
+        }
     }
 }
