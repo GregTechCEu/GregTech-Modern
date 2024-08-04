@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
@@ -23,7 +22,6 @@ import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.DevProperties;
-import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 
@@ -41,9 +39,6 @@ public class GTRegistryInfo<K, V> {
     public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass,
                                  BuilderFactory<T> factory) {}
 
-    public static final MaterialRegistry KJS_MATERIAL_REGISTRY = MaterialRegistryManager.getInstance()
-            .createRegistry(KubeJS.MOD_ID);
-
     public static final Map<ResourceLocation, GTRegistryInfo<?, ?>> MAP = new LinkedHashMap<>();
     public static final Set<ResourceLocation> EXTRA_IDS = new HashSet<>();
 
@@ -51,7 +46,8 @@ public class GTRegistryInfo<K, V> {
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
     public static final GTRegistryInfo<String, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
-    public static final GTRegistryInfo<String, Material> MATERIAL = add(KJS_MATERIAL_REGISTRY, Material.class);
+    public static final GTRegistryInfo<String, Material> MATERIAL = add(
+            MaterialRegistryManager.getInstance().getRegistry(GTCEu.MOD_ID), Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES,
             GTRecipeType.class);
     public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES,
