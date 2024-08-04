@@ -56,45 +56,48 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         }
         GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, new GTArmor());
         byte toggleTimer = data.toggleTimer();
+        int nightVisionTimer = data.nightVisionTimer();
         if (type == ArmorItem.Type.HELMET) {
-            boolean nightvision = data.nightVision();
+            boolean nightVision = data.nightVision();
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+                nightVision = !nightVision;
                 toggleTimer = 5;
-                if (!nightvision && item.getCharge() >= 4) {
-                    nightvision = true;
-                    if (!world.isClientSide)
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.enabled"), true);
-                } else if (nightvision) {
-                    nightvision = false;
-                    disableNightVision(world, player, true);
+                if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
+                    nightVision = false;
+                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                 } else {
-                    if (!world.isClientSide) {
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
-                    }
-                }
-
-                if (!world.isClientSide) {
-                    final boolean finalNightvision = nightvision;
-                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                            data1 -> data1.setNightVision(finalNightvision));
+                    player.displayClientMessage(Component
+                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
-            if (nightvision && !world.isClientSide && item.getCharge() >= 4) {
+            if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
-                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999, 0, true, false));
-                item.discharge((4), this.tier, true, false, false);
+                if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET) {
+                    nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
+                    player.addEffect(
+                            new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
+                                    false));
+                    item.discharge(4, this.tier, true, false, false);
+                }
+            } else {
+                player.removeEffect(MobEffects.NIGHT_VISION);
             }
-
-            if (!world.isClientSide && toggleTimer > 0) {
-                --toggleTimer;
-                final byte finalToggleTimer = toggleTimer;
-                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                        data1 -> data1.setToggleTimer(finalToggleTimer));
-            }
+            final boolean finalNightvision = nightVision;
+            itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                    data1 -> data1.setNightVision(finalNightvision));
         } else if (type == ArmorItem.Type.BOOTS) {
             updateStepHeight(player);
         }
+
+        if (nightVisionTimer > 0) nightVisionTimer--;
+        if (toggleTimer > 0) toggleTimer--;
+
+        final int finalNightVisionTimer = nightVisionTimer;
+        final byte finalToggleTimer = toggleTimer;
+        itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                data1 -> data1.setNightVisionTimer(finalNightVisionTimer)
+                        .setToggleTimer(finalToggleTimer));
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {

@@ -35,6 +35,7 @@ public class AdvancedJetpack extends Jetpack {
         GTArmor data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, new GTArmor());
         boolean hoverMode = data.hover();
         byte toggleTimer = data.toggleTimer();
+        boolean jetpackEnabled = data.enabled();
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hoverMode = !hoverMode;
@@ -42,21 +43,34 @@ public class AdvancedJetpack extends Jetpack {
             final boolean finalHoverMode = hoverMode;
             stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHoverMode));
             if (!world.isClientSide) {
-                if (hoverMode)
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
-                else
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.disable"), true);
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
             }
         }
 
-        performFlying(player, hoverMode, stack);
+        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            jetpackEnabled = !jetpackEnabled;
+            toggleTimer = 5;
+            final boolean finalJetpackEnabled = jetpackEnabled;
+            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data -> data.setEnabled(finalJetpackEnabled));
+            if (!world.isClientSide) {
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
+                        true);
+            }
+        }
+
+        performFlying(player, jetpackEnabled, hoverMode, stack);
 
         if (toggleTimer > 0) toggleTimer--;
 
         final boolean finalHoverMode = hoverMode;
         final byte finalToggleTimer = toggleTimer;
+        final boolean finalJetpackEnabled = jetpackEnabled;
         stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                component -> component.setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
+                component -> component.setHover(finalHoverMode)
+                        .setToggleTimer(finalToggleTimer)
+                        .setEnabled(finalJetpackEnabled));
     }
 
     @Override

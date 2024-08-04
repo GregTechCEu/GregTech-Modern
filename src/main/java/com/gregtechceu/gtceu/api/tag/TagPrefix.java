@@ -715,6 +715,8 @@ public class TagPrefix {
 
     public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
+            .unformattedTagPath("frames")
+            .unformattedTagPath("climbable", true)
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)

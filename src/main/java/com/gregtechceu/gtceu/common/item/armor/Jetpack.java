@@ -51,27 +51,43 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
             return;
         }
         byte toggleTimer = data.toggleTimer();
-        boolean hover = data.hover();
+        boolean hoverMode = data.hover();
+        boolean jetpackEnabled = data.enabled();
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hover = !hover;
+            hoverMode = !hoverMode;
             toggleTimer = 5;
             final boolean finalHover = hover;
             stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
             if (!world.isClientSide) {
-                if (hover) player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
-                else player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.disable"), true);
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
             }
         }
 
-        performFlying(player, hover, stack);
+        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            jetpackEnabled = !jetpackEnabled;
+            toggleTimer = 5;
+            final boolean finalEnabled = jetpackEnabled;
+            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalEnabled));
+            if (!world.isClientSide) {
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
+                        true);
+            }
+        }
+
+        performFlying(player, jetpackEnabled, hoverMode, stack);
 
         if (toggleTimer > 0) toggleTimer--;
 
-        final boolean finalHover = hover;
+        final boolean finalHover = hoverMode;
         final byte finalToggleTimer = toggleTimer;
+        final boolean finalEnabled = jetpackEnabled;
         stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                data1 -> data1.setHover(finalHover).setToggleTimer(finalToggleTimer));
+                data1 -> data1.setHover(finalHover)
+                        .setToggleTimer(finalToggleTimer)
+                        .setEnabled(finalEnabled));
     }
 
     @Override
@@ -123,9 +139,16 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         addCapacityHUD(item, this.HUD);
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            Component status = (data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
-                    Component.translatable("metaarmor.hud.status.disabled"));
-            Component result = Component.translatable("metaarmor.hud.hover_mode", status);
+            Component status = data.enabled() ?
+                    Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
+            this.HUD.newString(result);
+
+            status = data.hover() ?
+                    Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            result = Component.translatable("metaarmor.hud.hover_mode", status);
             this.HUD.newString(result);
         }
         this.HUD.draw(guiGraphics);
@@ -137,10 +160,14 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         super.addInfo(itemStack, lines);
         GTArmor data = itemStack.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            Component status = Component.translatable("metaarmor.hud.status.disabled");
+            Component state = data.enabled() ? Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
+
+            state = Component.translatable("metaarmor.hud.status.disabled");
             if (data.hover())
-                status = Component.translatable("metaarmor.hud.status.enabled");
-            lines.add(Component.translatable("metaarmor.hud.hover_mode", status));
+                state = Component.translatable("metaarmor.hud.status.enabled");
+            lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
         }
     }
 
