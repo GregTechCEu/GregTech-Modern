@@ -58,7 +58,7 @@ public class NaquadahRecipes {
                 .save(provider);
 
         // ENRICHED NAQUADAH PROCESS
-
+ 
         CENTRIFUGE_RECIPES.recipeBuilder("impure_enriched_naquadah_solution_separation").EUt(VA[EV]).duration(400)
                 .inputFluids(ImpureEnrichedNaquadahSolution.getFluid(2000))
                 .outputItems(dust, TriniumSulfide)
