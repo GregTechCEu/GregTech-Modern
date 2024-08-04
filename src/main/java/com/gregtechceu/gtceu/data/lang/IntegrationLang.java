@@ -44,10 +44,10 @@ public class IntegrationLang {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
         provider.add("gtceu.top.energy_production", "Producing");
-        provider.add("gtceu.top.transform_up", "§cStep Up§r");
-        provider.add("gtceu.top.transform_down", "§aStep Down§r");
-        provider.add("gtceu.top.transform_input", "§6Input:§r");
-        provider.add("gtceu.top.transform_output", "§9Output:§r");
+        provider.add("gtceu.top.transform_up", "§cStep Up§r %s");
+        provider.add("gtceu.top.transform_down", "§aStep Down§r %s");
+        provider.add("gtceu.top.transform_input", "§6Input:§r %s");
+        provider.add("gtceu.top.transform_output", "§9Output:§r %s");
         provider.add("gtceu.top.convert_eu", "Converting §eEU§r -> §cFE§r");
         provider.add("gtceu.top.convert_fe", "Converting §cFE§r -> §eEU§r");
         provider.add("gtceu.top.fuel_min_consume", "Needs");
