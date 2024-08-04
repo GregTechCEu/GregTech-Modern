@@ -268,16 +268,24 @@ public class GTRecipeWidget extends WidgetGroup {
         updateScreen();
     }
 
-    public static void setConsumedChance(Content content, List<Component> tooltips) {
+    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips) {
         var chance = content.chance;
         if (chance < ChanceLogic.getMaxChancedValue()) {
-            float chanceFloat = 100 * (float) content.chance / content.maxChance;
-            tooltips.add(chance == 0 ?
-                    Component.translatable("gtceu.gui.content.chance_0") :
-                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chanceFloat));
-            if (content.tierChanceBoost != 0) {
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
-                        content.tierChanceBoost / 100.0f));
+            if (chance == 0) {
+                tooltips.add(Component.translatable("gtceu.gui.content.chance_0"));
+            } else {
+                float chanceFloat = 100 * (float) content.chance / content.maxChance;
+                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                    tooltips.add(Component.translatable("gtceu.gui.content.chance_1_logic",
+                            FormattingUtil.formatNumber2Places(chanceFloat), logic.getTranslation())
+                            .withStyle(ChatFormatting.YELLOW));
+                } else {
+                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chanceFloat));
+                }
+                if (content.tierChanceBoost != 0) {
+                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
+                            content.tierChanceBoost / 100.0f));
+                }
             }
         }
     }

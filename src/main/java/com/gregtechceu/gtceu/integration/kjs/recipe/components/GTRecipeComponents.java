@@ -25,12 +25,12 @@ import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.*;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.util.TinyMap;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;
@@ -284,10 +284,66 @@ public class GTRecipeComponents {
             return FluidIngredientJS.of(from);
         }
     };
+    public static final RecipeComponent<InputItem> INPUT_ITEM_OUT = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "input_item_out";
+        }
+
+        @Override
+        public ComponentRole role() {
+            return ComponentRole.OUTPUT;
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return InputItem.class;
+        }
+
+        @Override
+        public boolean hasPriority(RecipeJS recipe, Object from) {
+            return recipe.outputItemHasPriority(from);
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, InputItem value) {
+            return recipe.writeInputItem(value);
+        }
+
+        @Override
+        public InputItem read(RecipeJS recipe, Object from) {
+            return recipe.readInputItem(from);
+        }
+
+        @Override
+        public boolean isInput(RecipeJS recipe, InputItem value, ReplacementMatch match) {
+            return match instanceof ItemMatch m && value.validForMatching() && m.contains(value.ingredient);
+        }
+
+        @Override
+        public String checkEmpty(RecipeKey<InputItem> key, InputItem value) {
+            if (value.isEmpty()) {
+                return "Ingredient '" + key.name + "' can't be empty!";
+            }
+
+            return "";
+        }
+
+        @Override
+        public RecipeComponent<TinyMap<Character, InputItem>> asPatternKey() {
+            return MapRecipeComponent.ITEM_PATTERN_KEY;
+        }
+
+        @Override
+        public String toString() {
+            return componentType();
+        }
+    };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
-    public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(ItemComponents.OUTPUT,
+    public static final ContentJS<InputItem> ITEM_OUT = new ContentJS<>(INPUT_ITEM_OUT,
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);

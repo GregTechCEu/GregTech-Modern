@@ -41,6 +41,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -532,9 +533,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (content != null) {
                 slot.setXEIChance((float) content.chance / content.maxChance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >=
-                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    GTRecipeWidget.setConsumedChance(content,
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
+                        IntProvider countProvider = ingredient.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue()));
+                    }
+                    if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });

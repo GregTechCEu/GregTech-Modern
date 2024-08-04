@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableList;
@@ -57,8 +58,8 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull String getTranslationKey() {
-            return "gtceu.chance_logic.or";
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.or");
         }
 
         @Override
@@ -91,8 +92,8 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull String getTranslationKey() {
-            return "gtceu.chance_logic.and";
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.and");
         }
 
         @Override
@@ -125,8 +126,8 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull String getTranslationKey() {
-            return "gtceu.chance_logic.xor";
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.xor");
         }
 
         @Override
@@ -149,8 +150,8 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull String getTranslationKey() {
-            return "gtceu.chance_logic.none";
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.none");
         }
 
         @Override
@@ -249,7 +250,7 @@ public abstract class ChanceLogic {
     }
 
     @NotNull
-    public abstract String getTranslationKey();
+    public abstract Component getTranslation();
 
     @ApiStatus.Internal
     public static void init() {

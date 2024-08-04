@@ -190,10 +190,14 @@ public abstract class RecipeCapability<T> {
 
     /**
      * Create a cache map for chanced outputs
-     * 
+     *
      * @return a map of this capability's content type -> integer
      */
     public Object2IntMap<T> makeChanceCache() {
         return new Object2IntOpenHashMap<>();
+    }
+
+    public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
+        return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
     }
 }

@@ -65,15 +65,6 @@ public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeCompone
     }
 
     @Override
-    public String checkEmpty(RecipeKey<Map<K, V>> key, Map<K, V> value) {
-        if (value.isEmpty()) {
-            return "Map '" + key.name + "' can't be empty!";
-        }
-
-        return "";
-    }
-
-    @Override
     public boolean isInput(RecipeJS recipe, Map<K, V> value, ReplacementMatch match) {
         for (var entry : value.entrySet()) {
             if (component.isInput(recipe, entry.getValue(), match)) {

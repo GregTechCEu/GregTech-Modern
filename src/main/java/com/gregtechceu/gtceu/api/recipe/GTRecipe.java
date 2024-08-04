@@ -212,8 +212,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
                                             Map<RecipeCapability<?>, List<Content>> contents,
-                                            boolean tick) {
-        RecipeRunner runner = new RecipeRunner(this, io, tick, holder, Collections.emptyMap(), true);
+                                            boolean isTick) {
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, Collections.emptyMap(), true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
             if (result == null)
@@ -246,10 +246,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return handleRecipe(io, holder, false, io == IO.IN ? inputs : outputs, chanceCaches);
     }
 
-    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, boolean perTick,
+    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, boolean isTick,
                                 Map<RecipeCapability<?>, List<Content>> contents,
                                 Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        RecipeRunner runner = new RecipeRunner(this, io, perTick, holder, chanceCaches, false);
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, chanceCaches, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handled = runner.handle(entry);
             if (handled == null)
@@ -420,6 +420,30 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
 
         return outputs;
+    }
+
+    /**
+     * Get the chance logic for a recipe capability + io + tick io combination
+     * 
+     * @param cap the recipe capability to get the chance logic for
+     * @param io  the {@link IO} of the chanche per-tick logic or the normal one
+     * @return the chance logic for the aforementioned combination. Defaults to {@link ChanceLogic#OR}.
+     */
+    public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
+        if (io == IO.OUT) {
+            if (isTick) {
+                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        } else if (io == IO.IN) {
+            if (isTick) {
+                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        }
+        return ChanceLogic.OR;
     }
 
     /**

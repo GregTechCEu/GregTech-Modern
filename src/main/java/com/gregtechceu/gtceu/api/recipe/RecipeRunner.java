@@ -34,7 +34,7 @@ class RecipeRunner {
 
     private final GTRecipe recipe;
     private final IO io;
-    private final boolean perTick;
+    private final boolean isTick;
     private final IRecipeCapabilityHolder holder;
     private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
@@ -46,12 +46,12 @@ class RecipeRunner {
     private ContentSlots content;
     private ContentSlots search;
 
-    public RecipeRunner(GTRecipe recipe, IO io, boolean perTick,
+    public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                         boolean simulated) {
         this.recipe = recipe;
         this.io = io;
-        this.perTick = perTick;
+        this.isTick = isTick;
         this.holder = holder;
         this.chanceCaches = chanceCaches;
         this.capabilityProxies = holder.getCapabilitiesProxy();
@@ -84,7 +84,7 @@ class RecipeRunner {
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         RecipeCapability<?> cap = entry.getKey();
         ChanceBoostFunction function = recipe.getType().getChanceFunction();
-        ChanceLogic logic = getChanceLogicForCapability(cap);
+        ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
         List<Content> chancedContents = new ArrayList<>();
         for (Content cont : entry.getValue()) {
             // For simulated handling, search/content are the same instance, so there's no need to switch between them
@@ -207,22 +207,5 @@ class RecipeRunner {
                 if (content.content == null && content.slots.isEmpty()) break;
             }
         }
-    }
-
-    private ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap) {
-        if (io == IO.OUT) {
-            if (perTick) {
-                return recipe.tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            } else {
-                return recipe.outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            }
-        } else if (io == IO.IN) {
-            if (perTick) {
-                return recipe.tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            } else {
-                return recipe.inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            }
-        }
-        return ChanceLogic.OR;
     }
 }

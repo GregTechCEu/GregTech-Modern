@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.LDLib;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -206,7 +204,6 @@ public interface GTRecipeSchema {
             for (ItemStack itemStack : inputs) {
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-                    throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
             return input(ItemRecipeCapability.CAP,
@@ -261,7 +258,7 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
-        public GTRecipeJS itemOutputs(OutputItem... outputs) {
+        public GTRecipeJS itemOutputs(InputItem... outputs) {
             return outputItems(outputs);
         }
 
@@ -273,22 +270,21 @@ public interface GTRecipeSchema {
             return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
         }
 
-        public GTRecipeJS outputItems(OutputItem... outputs) {
-            for (OutputItem itemStack : outputs) {
+        public GTRecipeJS outputItems(InputItem... outputs) {
+            for (InputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
-                    LDLib.LOGGER.error("gt recipe {} output items is empty", id);
-                    throw new IllegalArgumentException(id + ": output items is empty");
+                    GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
                 }
             }
             return output(ItemRecipeCapability.CAP, (Object[]) outputs);
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
-            return outputItems(OutputItem.of(new ItemStack(input, amount)));
+            return outputItems(InputItem.of(new ItemStack(input, amount)));
         }
 
         public GTRecipeJS outputItems(Item input) {
-            return outputItems(OutputItem.of(new ItemStack(input)));
+            return outputItems(InputItem.of(new ItemStack(input)));
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material) {
@@ -296,7 +292,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material, int count) {
-            return outputItems(OutputItem.of(ChemicalHelper.get(orePrefix, material, count)));
+            return outputItems(InputItem.of(ChemicalHelper.get(orePrefix, material, count)));
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine) {
@@ -304,7 +300,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(OutputItem.of(machine.asStack(count)));
+            return outputItems(InputItem.of(machine.asStack(count)));
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
@@ -360,11 +356,10 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(OutputItem stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
-            this.chance = stack.hasChance() ?
-                    (int) (stack.getChance() > 1 ? stack.getChance() : stack.getChance() * 10000) : chance;
+            this.chance = chance;
             this.tierChanceBoost = tierChanceBoost;
             outputItems(stack);
             this.chance = lastChance;
@@ -396,14 +391,14 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat), chance), chance, tierChanceBoost);
+            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat, count), chance), chance, tierChanceBoost);
+            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS chancedOutput(OutputItem stack, String fraction, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(InputItem stack, String fraction, int tierChanceBoost) {
             if (stack.isEmpty()) {
                 return this;
             }
@@ -457,7 +452,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(ChemicalHelper.get(prefix, material, count)), fraction, tierChanceBoost);
+            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
@@ -465,7 +460,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(Item item, int count, String fraction, int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(new ItemStack(item, count)), fraction, tierChanceBoost);
+            return chancedOutput(InputItem.of(new ItemStack(item, count)), fraction, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(Item item, String fraction, int tierChanceBoost) {
