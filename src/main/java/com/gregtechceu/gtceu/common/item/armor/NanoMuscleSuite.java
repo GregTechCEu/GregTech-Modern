@@ -38,6 +38,10 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @OnlyIn(Dist.CLIENT)
     protected ArmorUtils.ModularHUD HUD;
 
+    private static final int MIN_NIGHTVISION_CHARGE = 4;
+    private static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
+    private static final int NIGHT_VISION_RESET = 11 * 20;
+
     public NanoMuscleSuite(ArmorItem.Type slot, int energyPerUse, long maxCapacity, int tier) {
         super(energyPerUse, maxCapacity, tier, slot);
         if (Platform.isClient() && this.shouldDrawHUD()) {
@@ -52,43 +56,46 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         if (item == null) {
             return;
         }
-        CompoundTag nbtData = itemStack.getOrCreateTag();
-        byte toggleTimer = nbtData.getByte("toggleTimer");
+        CompoundTag data = itemStack.getOrCreateTag();
+        byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
+        int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
+                NIGHTVISION_DURATION;
         if (type == ArmorItem.Type.HELMET) {
-            boolean nightvision = nbtData.getBoolean("Nightvision");
+            boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+                nightVision = !nightVision;
                 toggleTimer = 5;
-                if (!nightvision && item.getCharge() >= 4) {
-                    nightvision = true;
-                    if (!world.isClientSide)
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.enabled"), true);
-                } else if (nightvision) {
-                    nightvision = false;
-                    disableNightVision(world, player, true);
+                if (item.getCharge() < MIN_NIGHTVISION_CHARGE) {
+                    nightVision = false;
+                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                 } else {
-                    if (!world.isClientSide) {
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
-                    }
-                }
-
-                if (!world.isClientSide) {
-                    nbtData.putBoolean("Nightvision", nightvision);
+                    player.displayClientMessage(Component
+                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
-            if (nightvision && !world.isClientSide && item.getCharge() >= 4) {
+            if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
-                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999, 0, true, false));
-                item.discharge((4), this.tier, true, false, false);
+                if (nightVisionTimer <= NIGHT_VISION_RESET) {
+                    nightVisionTimer = NIGHTVISION_DURATION;
+                    player.addEffect(
+                            new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHTVISION_DURATION, 0, true, false));
+                    item.discharge((4), this.tier, true, false, false);
+                }
+            } else {
+                player.removeEffect(MobEffects.NIGHT_VISION);
             }
+            data.putBoolean("nightVision", nightVision);
 
-            if (!world.isClientSide && toggleTimer > 0) {
-                --toggleTimer;
-                nbtData.putByte("toggleTimer", toggleTimer);
-            }
         } else if (type == ArmorItem.Type.BOOTS) {
             updateStepHeight(player);
         }
+
+        if (nightVisionTimer > 0) nightVisionTimer--;
+        if (toggleTimer > 0) toggleTimer--;
+
+        data.putInt("nightVisionTimer", nightVisionTimer);
+        data.putByte("toggleTimer", toggleTimer);
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
