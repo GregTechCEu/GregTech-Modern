@@ -70,17 +70,17 @@ public interface IJetpack {
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
         double deltaY = player.getDeltaMovement().y();
 
-         if(!hover || !flightEnabled) {
-             if (player.position().y() < player.level().getMinBuildHeight() - 5) {
-                 performEHover(stack, player);
-             } else {
-                 if (!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
-                     if (!player.onGround() && !player.isSwimming()) {
-                         performEHover(stack, player);
-                     }
-                 }
-             }
-         }
+        if (!hover || !flightEnabled) {
+            if (player.position().y() < player.level().getMinBuildHeight() - 5) {
+                performEHover(stack, player);
+            } else {
+                if (!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
+                    if (!player.onGround() && !player.isSwimming()) {
+                        performEHover(stack, player);
+                    }
+                }
+            }
+        }
 
         if (!flightEnabled) {
             return;
