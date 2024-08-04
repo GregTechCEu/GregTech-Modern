@@ -38,10 +38,6 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @OnlyIn(Dist.CLIENT)
     protected ArmorUtils.ModularHUD HUD;
 
-    private static final int MIN_NIGHTVISION_CHARGE = 4;
-    private static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
-    private static final int NIGHT_VISION_RESET = 11 * 20;
-
     public NanoMuscleSuite(ArmorItem.Type slot, int energyPerUse, long maxCapacity, int tier) {
         super(energyPerUse, maxCapacity, tier, slot);
         if (Platform.isClient() && this.shouldDrawHUD()) {
@@ -59,13 +55,13 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         CompoundTag data = itemStack.getOrCreateTag();
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
-                NIGHTVISION_DURATION;
+                ArmorUtils.NIGHTVISION_DURATION;
         if (type == ArmorItem.Type.HELMET) {
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
-                if (item.getCharge() < MIN_NIGHTVISION_CHARGE) {
+                if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                 } else {
@@ -76,10 +72,11 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
-                if (nightVisionTimer <= NIGHT_VISION_RESET) {
-                    nightVisionTimer = NIGHTVISION_DURATION;
+                if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET) {
+                    nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
                     player.addEffect(
-                            new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHTVISION_DURATION, 0, true, false));
+                            new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
+                                    false));
                     item.discharge((4), this.tier, true, false, false);
                 }
             } else {

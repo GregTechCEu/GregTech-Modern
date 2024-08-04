@@ -154,8 +154,8 @@ public interface IJetpack {
                 // ensure that the player is actually using the jetpack to cancel fall damage
                 if (!player.level().isClientSide && (hover || flyKeyDown)) {
                     player.fallDistance = 0;
-                    if (player instanceof ServerPlayer) {
-                        ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.connection.aboveGroundTickCount = 0;
                     }
                 }
 

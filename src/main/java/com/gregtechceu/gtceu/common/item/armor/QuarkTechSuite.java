@@ -47,9 +47,6 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
     private float charge = 0.0F;
-    private static final int MIN_NIGHTVISION_CHARGE = 4;
-    private static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
-    private static final int NIGHT_VISION_RESET = 11 * 20; // 11 seconds is before the flashing
     private static final byte RUNNING_TIMER = 10; // .5 seconds
     private static final double LEGGING_ACCEL = 0.085D;
 
@@ -79,7 +76,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         CompoundTag data = itemStack.getOrCreateTag();
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
-                NIGHTVISION_DURATION;
+                ArmorUtils.NIGHTVISION_DURATION;
         byte runningTimer = data.contains("runningTimer") ? data.getByte("runningTimer") : RUNNING_TIMER;
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
@@ -97,7 +94,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
-                if (item.getCharge() < MIN_NIGHTVISION_CHARGE) {
+                if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                 } else {
@@ -108,10 +105,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
-                if (nightVisionTimer <= NIGHT_VISION_RESET) {
-                    nightVisionTimer = NIGHTVISION_DURATION;
+                if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET) {
+                    nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
                     player.addEffect(
-                            new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHTVISION_DURATION, 0, true, false));
+                            new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
+                                    false));
                     item.discharge((4), this.tier, true, false, false);
                 }
             } else {
