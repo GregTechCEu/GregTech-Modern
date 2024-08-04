@@ -70,24 +70,17 @@ public interface IJetpack {
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
         double deltaY = player.getDeltaMovement().y();
 
-        /*
-         * if(!hover || !flightEnabled) {
-         * if(player.position().y() < player.level().getMinBuildHeight() - 5) {
-         * performEHover(stack, player);
-         * flightEnabled = true;
-         * hover = true;
-         * }
-         * else {
-         * if(!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
-         * if(!player.onGround() && !player.isSwimming()) {
-         * performEHover(stack, player);
-         * flightEnabled = true;
-         * hover = true;
-         * }
-         * }
-         * }
-         * }
-         */
+         if(!hover || !flightEnabled) {
+             if (player.position().y() < player.level().getMinBuildHeight() - 5) {
+                 performEHover(stack, player);
+             } else {
+                 if (!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
+                     if (!player.onGround() && !player.isSwimming()) {
+                         performEHover(stack, player);
+                     }
+                 }
+             }
+         }
 
         if (!flightEnabled) {
             return;
@@ -135,7 +128,6 @@ public interface IJetpack {
                     }
                 }
                 potentialY = Math.min(deltaY + currentAccel, potentialY);
-                // player.sendSystemMessage(Component.literal("fly speed: " + potentialY));
                 if (editMotion)
                     setYMotion(player, potentialY);
 
@@ -172,7 +164,6 @@ public interface IJetpack {
 
             }
             ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
-            // }
         }
     }
 
@@ -189,6 +180,15 @@ public interface IJetpack {
             tag.putBoolean("hover", true);
         player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
         stack.setTag(tag);
+
+        if (!player.level().isClientSide) {
+            player.fallDistance = 0;
+            if (player instanceof ServerPlayer) {
+                ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
+            }
+        }
+
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     private static void addYMotion(Player player, double value) {
