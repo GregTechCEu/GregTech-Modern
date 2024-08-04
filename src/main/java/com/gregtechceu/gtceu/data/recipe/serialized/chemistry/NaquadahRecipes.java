@@ -63,7 +63,7 @@ public class NaquadahRecipes {
                 .inputFluids(ImpureEnrichedNaquadahSolution.getFluid(2000))
                 .outputItems(dust, TriniumSulfide)
                 .outputItems(dust, AntimonyTrifluoride, 2)
-                .outputFluids(EnrichedNaquadahSolution.getFluid(1000))
+                .outputFluids(EnrichedNaquadahSolution.getFluid(500))
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("enriched_naquadah_solution_separation").EUt(VA[HV]).duration(100)
@@ -87,12 +87,12 @@ public class NaquadahRecipes {
                 .outputFluids(SulfuricAcid.getFluid(1000))
                 .save(provider);
 
-        DISTILLATION_RECIPES.recipeBuilder("enriched_naquadah_waste_separation").EUt(VA[HV]).duration(300)
-                .inputFluids(EnrichedNaquadahWaste.getFluid(2000))
-                .chancedOutput(dust, BariumSulfide, 5000, 0)
-                .outputFluids(SulfuricAcid.getFluid(500))
-                .outputFluids(EnrichedNaquadahSolution.getFluid(250))
-                .outputFluids(NaquadriaSolution.getFluid(100))
+        DISTILLATION_RECIPES.recipeBuilder("enriched_naquadah_waste_separation").EUt(VA[HV]).duration(600)
+                .inputFluids(EnrichedNaquadahWaste.getFluid(4000))
+                .outputItems(dust, BariumSulfide)
+                .outputFluids(SulfuricAcid.getFluid(1000))
+                .outputFluids(EnrichedNaquadahSolution.getFluid(700))
+                .outputFluids(NaquadriaSolution.getFluid(300))
                 .save(provider);
 
         // NAQUADRIA PROCESS
@@ -101,7 +101,7 @@ public class NaquadahRecipes {
                 .inputFluids(ImpureNaquadriaSolution.getFluid(2000))
                 .outputItems(dust, IndiumPhosphide)
                 .outputItems(dust, AntimonyTrifluoride, 2)
-                .outputFluids(NaquadriaSolution.getFluid(1000))
+                .outputFluids(NaquadriaSolution.getFluid(500))
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("naquadria_solution_separation").EUt(VA[HV]).duration(100)
@@ -124,12 +124,12 @@ public class NaquadahRecipes {
                 .outputFluids(SulfuricAcid.getFluid(1000))
                 .save(provider);
 
-        DISTILLATION_RECIPES.recipeBuilder("naquadria_waste_separation").EUt(VA[HV]).duration(300)
-                .inputFluids(NaquadriaWaste.getFluid(2000))
-                .chancedOutput(dust, GalliumSulfide, 5000, 0)
-                .outputFluids(SulfuricAcid.getFluid(500))
-                .outputFluids(NaquadriaSolution.getFluid(250))
-                .outputFluids(EnrichedNaquadahSolution.getFluid(100))
+        DISTILLATION_RECIPES.recipeBuilder("naquadria_waste_separation").EUt(VA[HV]).duration(600)
+                .inputFluids(NaquadriaWaste.getFluid(4000))
+                .outputItems(dust, GalliumSulfide)
+                .outputFluids(SulfuricAcid.getFluid(1000))
+                .outputFluids(NaquadriaSolution.getFluid(700))
+                .outputFluids(EnrichedNaquadahSolution.getFluid(300))
                 .save(provider);
 
         // TRINIUM
