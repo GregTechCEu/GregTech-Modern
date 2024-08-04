@@ -511,9 +511,10 @@ public class ToolHelper {
     }
 
     private static Tier getTier(int harvestLevel) {
-        return TierSortingRegistry.getSortedTiers().stream()
-                .dropWhile(tier -> tier.getLevel() < harvestLevel || tier.getLevel() > harvestLevel).findAny()
-                .orElse(Tiers.WOOD);
+        List<Tier> tiers = TierSortingRegistry.getSortedTiers().stream()
+                .filter(tier -> tier.getLevel() == harvestLevel)
+                .toList();
+        return !tiers.isEmpty() ? tiers.get(tiers.size() - 1) : Tiers.WOOD;
     }
 
     public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
