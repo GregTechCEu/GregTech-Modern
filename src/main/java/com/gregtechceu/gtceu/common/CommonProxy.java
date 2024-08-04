@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
@@ -92,6 +93,7 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
 
+        GTValueProviderTypes.init(eventBus);
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
@@ -226,6 +228,7 @@ public class CommonProxy {
         event.enqueueWork(() -> {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
+            CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
         });
     }
 

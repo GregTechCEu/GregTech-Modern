@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.*;
 
@@ -123,11 +124,23 @@ public class IngredientEquality {
         if (first instanceof SizedIngredient sized1) {
             if (second instanceof SizedIngredient sized2) {
                 return cmp(sized1.getInner(), sized2.getInner());
+            } else if (second instanceof IntProviderIngredient intProvider2) {
+                return cmp(sized1.getInner(), intProvider2.getInner());
             } else {
-                return cmp(sized1, second);
+                return cmp(sized1.getInner(), second);
+            }
+        } else if (first instanceof IntProviderIngredient intProvider1) {
+            if (second instanceof IntProviderIngredient intProvider2) {
+                return cmp(intProvider1.getInner(), intProvider2.getInner());
+            } else if (second instanceof SizedIngredient sized) {
+                return cmp(intProvider1.getInner(), sized.getInner());
+            } else {
+                return cmp(intProvider1.getInner(), second);
             }
         } else if (second instanceof SizedIngredient sized2) {
             return cmp(first, sized2.getInner());
+        } else if (second instanceof IntProviderIngredient intProvider2) {
+            return cmp(first, intProvider2.getInner());
         }
         return cmp(first, second);
     }
