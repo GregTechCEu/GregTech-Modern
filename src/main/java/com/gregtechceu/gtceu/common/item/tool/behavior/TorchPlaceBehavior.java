@@ -91,6 +91,7 @@ public class TorchPlaceBehavior implements IToolBehavior {
                 }
                 if (context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), slotStack)) {
                     var blockPlaceContext = new BlockPlaceContext(context) {
+
                         @Override
                         public ItemStack getItemInHand() {
                             return slotStack;
@@ -103,7 +104,8 @@ public class TorchPlaceBehavior implements IToolBehavior {
                         context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(),
                                 SoundSource.BLOCKS,
                                 (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                        //Shrinking the stack resulted in 2 torches being used. Getting rid of the original line magically fixes it, in both creative and survival. Don't ask why, I don't have a single clue.
+                        // Shrinking the stack resulted in 2 torches being used. Getting rid of the original line
+                        // magically fixes it, in both creative and survival. Don't ask why, I don't have a single clue.
                         return true;
                     }
                 }
