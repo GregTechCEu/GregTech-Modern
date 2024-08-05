@@ -148,7 +148,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        CompoundTag data = itemStack.getTag();
+        CompoundTag data = itemStack.getOrCreateTag();
 
         Component state;
         boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");

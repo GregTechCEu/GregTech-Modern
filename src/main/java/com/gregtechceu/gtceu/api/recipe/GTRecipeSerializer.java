@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
@@ -21,10 +22,7 @@ import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author KilaBash
@@ -36,7 +34,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
     public Map<RecipeCapability<?>, List<Content>> capabilitiesFromJson(JsonObject json) {
-        Map<RecipeCapability<?>, List<Content>> capabilities = new HashMap<>();
+        Map<RecipeCapability<?>, List<Content>> capabilities = new IdentityHashMap<>();
         for (String key : json.keySet()) {
             JsonArray contentsJson = json.getAsJsonArray(key);
             RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(key);
@@ -49,6 +47,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             }
         }
         return capabilities;
+    }
+
+    public Map<RecipeCapability<?>, ChanceLogic> chanceLogicsFromJson(JsonObject json) {
+        Map<RecipeCapability<?>, ChanceLogic> chanceLogics = new IdentityHashMap<>();
+        for (String key : json.keySet()) {
+            String value = json.get(key).getAsString();
+            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(key), GTRegistries.CHANCE_LOGICS.get(value));
+        }
+        return chanceLogics;
     }
 
     @Override
@@ -66,6 +73,23 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 json.has("outputs") ? json.getAsJsonObject("outputs") : new JsonObject());
         Map<RecipeCapability<?>, List<Content>> tickOutputs = capabilitiesFromJson(
                 json.has("tickOutputs") ? json.getAsJsonObject("tickOutputs") : new JsonObject());
+
+        Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = chanceLogicsFromJson(
+                json.has("inputChanceLogics") ?
+                        json.getAsJsonObject("inputChanceLogics") :
+                        new JsonObject());
+        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = chanceLogicsFromJson(
+                json.has("tickInputChanceLogics") ?
+                        json.getAsJsonObject("tickInputChanceLogics") :
+                        new JsonObject());
+        Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = chanceLogicsFromJson(
+                json.has("outputChanceLogics") ?
+                        json.getAsJsonObject("outputChanceLogics") :
+                        new JsonObject());
+        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = chanceLogicsFromJson(
+                json.has("tickOutputChanceLogics") ?
+                        json.getAsJsonObject("tickOutputChanceLogics") :
+                        new JsonObject());
         List<RecipeCondition> conditions = new ArrayList<>();
         JsonArray conditionsJson = json.has("recipeConditions") ? json.getAsJsonArray("recipeConditions") :
                 new JsonArray();
@@ -88,7 +112,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         boolean isFuel = GsonHelper.getAsBoolean(json, "isFuel", false);
         return new GTRecipe((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(recipeType)), id,
-                inputs, outputs, tickInputs, tickOutputs, conditions, ingredientActions, data, duration, isFuel);
+                inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, isFuel);
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(FriendlyByteBuf buf) {
@@ -133,6 +159,20 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
+
+        Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = buf.readMap(
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+        Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = buf.readMap(
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = buf.readMap(
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = buf.readMap(
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+
         List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(),
                 GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
@@ -145,8 +185,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         boolean isFuel = buf.readBoolean();
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
-        GTRecipe recipe = new GTRecipe(type, id, inputs, outputs, tickInputs, tickOutputs, conditions,
-                ingredientActions, data, duration, isFuel);
+        GTRecipe recipe = new GTRecipe(type, id,
+                inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, isFuel);
 
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
@@ -168,6 +210,20 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
+
+        buf.writeMap(recipe.inputChanceLogics,
+                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+        buf.writeMap(recipe.outputChanceLogics,
+                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+        buf.writeMap(recipe.tickInputChanceLogics,
+                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+        buf.writeMap(recipe.tickOutputChanceLogics,
+                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
         if (GTCEu.isKubeJSLoaded()) {
             KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);

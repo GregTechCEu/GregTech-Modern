@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -118,7 +119,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 if (engineMachine.isOxygenBoosted) { // boost production
                     recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
                     long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
-                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
                 } else {
                     recipe = parallelResult.getFirst();
                 }
@@ -135,7 +137,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         val totalContinuousRunningTime = recipeLogic.getTotalContinuousRunningTime();
         if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0)) {
             // insufficient lubricant
-            if (!getLubricantRecipe().handleRecipeIO(IO.IN, this)) {
+            if (!getLubricantRecipe().handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches())) {
                 recipeLogic.interruptRecipe();
                 return false;
             }
@@ -144,7 +146,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 20 == 0) && isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
             this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() &&
-                    boosterRecipe.handleRecipeIO(IO.IN, this);
+                    boosterRecipe.handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches());
         }
         return value;
     }
