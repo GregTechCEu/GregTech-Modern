@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +44,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, List<Content>> outputs;
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
     public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
+
+    public final Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
+
     public final List<RecipeCondition> conditions;
     // for KubeJS. actual type is List<IngredientAction>.
     // Must be List<?> to not cause crashes without KubeJS.
@@ -59,6 +67,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, List<Content>> outputs,
                     Map<RecipeCapability<?>, List<Content>> tickInputs,
                     Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
                     List<RecipeCondition> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
@@ -66,10 +78,17 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     boolean isFuel) {
         this.recipeType = recipeType;
         this.id = id;
+
         this.inputs = inputs;
         this.outputs = outputs;
         this.tickInputs = tickInputs;
         this.tickOutputs = tickOutputs;
+
+        this.inputChanceLogics = inputChanceLogics;
+        this.outputChanceLogics = outputChanceLogics;
+        this.tickInputChanceLogics = tickInputChanceLogics;
+        this.tickOutputChanceLogics = tickOutputChanceLogics;
+
         this.conditions = conditions;
         this.ingredientActions = ingredientActions;
         this.data = data;
@@ -95,9 +114,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id, copyContents(inputs, null), copyContents(outputs, null),
-                copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, isFuel);
+        return new GTRecipe(recipeType, id,
+                copyContents(inputs, null), copyContents(outputs, null),
+                copyContents(tickInputs, null), copyContents(tickOutputs, null),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -105,8 +127,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier),
-                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions),
+        var copied = new GTRecipe(recipeType, id,
+                copyContents(inputs, modifier), copyContents(outputs, modifier),
+                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
@@ -175,18 +201,19 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     private ActionResult matchRecipe(IRecipeCapabilityHolder holder, boolean tick) {
         if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
 
-        var result = matchRecipeContents(IO.IN, holder, tick ? tickInputs : inputs);
+        var result = matchRecipeContents(IO.IN, holder, tick ? tickInputs : inputs, tick);
         if (!result.isSuccess()) return result;
 
-        result = matchRecipeContents(IO.OUT, holder, tick ? tickOutputs : outputs);
+        result = matchRecipeContents(IO.OUT, holder, tick ? tickOutputs : outputs, tick);
         if (!result.isSuccess()) return result;
 
         return ActionResult.SUCCESS;
     }
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
-                                            Map<RecipeCapability<?>, List<Content>> contents) {
-        RecipeRunner runner = new RecipeRunner(this, io, holder, true);
+                                            Map<RecipeCapability<?>, List<Content>> contents,
+                                            boolean isTick) {
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, Collections.emptyMap(), true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
             if (result == null)
@@ -207,19 +234,22 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return ActionResult.SUCCESS;
     }
 
-    public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder) {
+    public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder,
+                                      Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(io, holder, io == IO.IN ? tickInputs : tickOutputs);
+        return handleRecipe(io, holder, true, io == IO.IN ? tickInputs : tickOutputs, chanceCaches);
     }
 
-    public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder) {
+    public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder,
+                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(io, holder, io == IO.IN ? inputs : outputs);
+        return handleRecipe(io, holder, false, io == IO.IN ? inputs : outputs, chanceCaches);
     }
 
-    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder,
-                                Map<RecipeCapability<?>, List<Content>> contents) {
-        RecipeRunner runner = new RecipeRunner(this, io, holder, false);
+    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, boolean isTick,
+                                Map<RecipeCapability<?>, List<Content>> contents,
+                                Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, chanceCaches, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handled = runner.handle(entry);
             if (handled == null)
@@ -339,7 +369,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             List<Content> nonChanced = new ArrayList<>();
             List<Content> chanced = new ArrayList<>();
             for (Content content : current.getOrDefault(key, List.of())) {
-                if (content.chance <= 0 || content.chance >= 1) nonChanced.add(content);
+                if (content.chance <= 0 || content.chance >= content.maxChance) nonChanced.add(content);
                 else chanced.add(content);
             }
 
@@ -390,6 +420,30 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
 
         return outputs;
+    }
+
+    /**
+     * Get the chance logic for a recipe capability + io + tick io combination
+     * 
+     * @param cap the recipe capability to get the chance logic for
+     * @param io  the {@link IO} of the chanche per-tick logic or the normal one
+     * @return the chance logic for the aforementioned combination. Defaults to {@link ChanceLogic#OR}.
+     */
+    public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
+        if (io == IO.OUT) {
+            if (isTick) {
+                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        } else if (io == IO.IN) {
+            if (isTick) {
+                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        }
+        return ChanceLogic.OR;
     }
 
     /**

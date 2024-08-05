@@ -1206,7 +1206,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
-        provider.add("config.jade.plugin_gtceu.transformer_provider", "[GTCEu] Transformer Info");
+        provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
@@ -1241,7 +1241,14 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_1_logic", "Chance: %s%% (%s)");
         provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.count_range", "%s-%sx");
+
+        provider.add("gtceu.chance_logic.or", "OR");
+        provider.add("gtceu.chance_logic.and", "AND");
+        provider.add("gtceu.chance_logic.xor", "XOR");
+        provider.add("gtceu.chance_logic.none", "NONE");
 
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
         provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");

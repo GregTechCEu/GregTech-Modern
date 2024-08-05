@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -57,19 +58,26 @@ import java.util.function.UnaryOperator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
 public class GTRecipeBuilder {
 
-    public final Map<RecipeCapability<?>, List<Content>> input = new HashMap<>();
-    public final Map<RecipeCapability<?>, List<Content>> tickInput = new HashMap<>();
-    public final Map<RecipeCapability<?>, List<Content>> output = new HashMap<>();
-    public final Map<RecipeCapability<?>, List<Content>> tickOutput = new HashMap<>();
+    public final Map<RecipeCapability<?>, List<Content>> input = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, List<Content>> tickInput = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, List<Content>> output = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, List<Content>> tickOutput = new IdentityHashMap<>();
+
+    public final Map<RecipeCapability<?>, ChanceLogic> inputChanceLogic = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, ChanceLogic> outputChanceLogic = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogic = new IdentityHashMap<>();
+    public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogic = new IdentityHashMap<>();
+
+    public final List<RecipeCondition> conditions = new ArrayList<>();
+
     @NotNull
     public CompoundTag data = new CompoundTag();
-    public final List<RecipeCondition> conditions = new ArrayList<>();
     @Setter
     public ResourceLocation id;
     @Setter
@@ -83,9 +91,11 @@ public class GTRecipeBuilder {
     @Setter
     public String uiName;
     @Setter
-    public float chance = 1;
+    public int chance = ChanceLogic.getMaxChancedValue();
     @Setter
-    public float tierChanceBoost = 0;
+    public int maxChance = ChanceLogic.getMaxChancedValue();
+    @Setter
+    public int tierChanceBoost = 0;
     @Setter
     public boolean isFuel = false;
     @Setter
@@ -106,6 +116,10 @@ public class GTRecipeBuilder {
         toCopy.outputs.forEach((k, v) -> this.output.put(k, new ArrayList<>(v)));
         toCopy.tickInputs.forEach((k, v) -> this.tickInput.put(k, new ArrayList<>(v)));
         toCopy.tickOutputs.forEach((k, v) -> this.tickOutput.put(k, new ArrayList<>(v)));
+        this.inputChanceLogic.putAll(toCopy.inputChanceLogics);
+        this.outputChanceLogic.putAll(toCopy.outputChanceLogics);
+        this.tickInputChanceLogic.putAll(toCopy.tickInputChanceLogics);
+        this.tickOutputChanceLogic.putAll(toCopy.tickOutputChanceLogics);
         this.conditions.addAll(toCopy.conditions);
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
@@ -130,6 +144,10 @@ public class GTRecipeBuilder {
         this.output.forEach((k, v) -> copy.output.put(k, new ArrayList<>(v)));
         this.tickInput.forEach((k, v) -> copy.tickInput.put(k, new ArrayList<>(v)));
         this.tickOutput.forEach((k, v) -> copy.tickOutput.put(k, new ArrayList<>(v)));
+        copy.inputChanceLogic.putAll(this.inputChanceLogic);
+        copy.outputChanceLogic.putAll(this.outputChanceLogic);
+        copy.tickInputChanceLogic.putAll(this.tickInputChanceLogic);
+        copy.tickOutputChanceLogic.putAll(this.tickOutputChanceLogic);
         copy.conditions.addAll(this.conditions);
         copy.data = this.data.copy();
         copy.duration = this.duration;
@@ -149,28 +167,28 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T... obj) {
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder inputs(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
     public <T> GTRecipeBuilder outputs(RecipeCapability<T> capability, Object... obj) {
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
         return this;
     }
 
@@ -366,7 +384,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(ItemStack itemStack) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputItems(itemStack);
         this.chance = lastChance;
@@ -374,7 +392,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(Ingredient ingredient) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputItems(ingredient);
         this.chance = lastChance;
@@ -382,7 +400,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(Item item) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputItems(item);
         this.chance = lastChance;
@@ -390,7 +408,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(Supplier<? extends Item> item) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputItems(item);
         this.chance = lastChance;
@@ -398,7 +416,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(TagPrefix orePrefix, Material material) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material);
         this.chance = lastChance;
@@ -406,12 +424,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
-        chancedInput(fluid, 0, 0);
-        return this;
+        return notConsumableFluid(FluidIngredient.of(
+                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()), fluid.getAmount()));
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidIngredient ingredient) {
-        float lastChance = this.chance;
+        int lastChance = this.chance;
         this.chance = 0;
         inputFluids(ingredient);
         this.chance = lastChance;
@@ -423,10 +441,15 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
-        float lastChance = this.chance;
-        float lastTierChanceBoost = this.tierChanceBoost;
-        this.chance = chance / 10000f;
-        this.tierChanceBoost = tierChanceBoost / 10000f;
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        int lastChance = this.chance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
         inputItems(stack);
         this.chance = lastChance;
         this.tierChanceBoost = lastTierChanceBoost;
@@ -434,10 +457,15 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
-        float lastChance = this.chance;
-        float lastTierChanceBoost = this.tierChanceBoost;
-        this.chance = chance / 10000f;
-        this.tierChanceBoost = tierChanceBoost / 10000f;
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        int lastChance = this.chance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
         inputFluids(stack);
         this.chance = lastChance;
         this.tierChanceBoost = lastTierChanceBoost;
@@ -445,10 +473,15 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
-        float lastChance = this.chance;
-        float lastTierChanceBoost = this.tierChanceBoost;
-        this.chance = chance / 10000f;
-        this.tierChanceBoost = tierChanceBoost / 10000f;
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        int lastChance = this.chance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
         outputItems(stack);
         this.chance = lastChance;
         this.tierChanceBoost = lastTierChanceBoost;
@@ -456,10 +489,15 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
-        float lastChance = this.chance;
-        float lastTierChanceBoost = this.tierChanceBoost;
-        this.chance = chance / 10000f;
-        this.tierChanceBoost = tierChanceBoost / 10000f;
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        int lastChance = this.chance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
         outputFluids(stack);
         this.chance = lastChance;
         this.tierChanceBoost = lastTierChanceBoost;
@@ -472,6 +510,171 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction, int tierChanceBoost) {
+        if (stack.isEmpty()) {
+            return this;
+        }
+
+        String[] split = fraction.split("/");
+        if (split.length != 2) {
+            GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                    fraction, new Throwable());
+            return this;
+        }
+
+        int chance;
+        int maxChance;
+        try {
+            chance = Integer.parseInt(split[0]);
+            maxChance = Integer.parseInt(split[1]);
+        } catch (NumberFormatException e) {
+            GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                    fraction, new Throwable());
+            return this;
+        }
+
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+            return this;
+        }
+
+        int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
+        chance *= scalar;
+        maxChance *= scalar;
+
+        int lastChance = this.chance;
+        int lastMaxChance = this.maxChance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.maxChance = maxChance;
+        this.tierChanceBoost = tierChanceBoost;
+        outputItems(stack);
+        this.chance = lastChance;
+        this.maxChance = lastMaxChance;
+        this.tierChanceBoost = lastTierChanceBoost;
+
+        return this;
+    }
+
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
+                                         int tierChanceBoost) {
+        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
+        return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput(Item item, int count, String fraction, int tierChanceBoost) {
+        return chancedOutput(new ItemStack(item, count), fraction, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput(Item item, String fraction, int tierChanceBoost) {
+        return chancedOutput(item, 1, fraction, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction, int tierChanceBoost) {
+        if (stack.isEmpty()) {
+            return this;
+        }
+
+        String[] split = fraction.split("/");
+        if (split.length != 2) {
+            GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                    fraction, new Throwable());
+            return this;
+        }
+
+        int chance;
+        int maxChance;
+        try {
+            chance = Integer.parseInt(split[0]);
+            maxChance = Integer.parseInt(split[1]);
+        } catch (NumberFormatException e) {
+            GTCEu.LOGGER.error("Fraction was not parsed correctly! Expected format is \"1/3\". Actual: \"{}\".",
+                    fraction, new Throwable());
+            return this;
+        }
+
+        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+            return this;
+        }
+        if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
+            GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
+                    ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+            return this;
+        }
+
+        int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
+        chance *= scalar;
+        maxChance *= scalar;
+
+        int lastChance = this.chance;
+        int lastMaxChance = this.maxChance;
+        int lastTierChanceBoost = this.tierChanceBoost;
+        this.chance = chance;
+        this.maxChance = maxChance;
+        this.tierChanceBoost = tierChanceBoost;
+        outputFluids(stack);
+        this.chance = lastChance;
+        this.maxChance = lastMaxChance;
+        this.tierChanceBoost = lastTierChanceBoost;
+
+        return this;
+    }
+
+    /**
+     * Set a chanced output logic for a specific capability.
+     * all capabilities default to OR logic if not set.
+     * 
+     * @param cap   the {@link RecipeCapability} to set the logic for
+     * @param logic the {@link ChanceLogic} to use
+     * @return this builder
+     */
+    public GTRecipeBuilder chancedOutputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
+        this.outputChanceLogic.put(cap, logic);
+        return this;
+    }
+
+    public GTRecipeBuilder chancedItemOutputLogic(ChanceLogic logic) {
+        return chancedOutputLogic(ItemRecipeCapability.CAP, logic);
+    }
+
+    public GTRecipeBuilder chancedFluidOutputLogic(ChanceLogic logic) {
+        return chancedOutputLogic(FluidRecipeCapability.CAP, logic);
+    }
+
+    public GTRecipeBuilder chancedInputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
+        this.inputChanceLogic.put(cap, logic);
+        return this;
+    }
+
+    public GTRecipeBuilder chancedItemInputLogic(ChanceLogic logic) {
+        return chancedInputLogic(ItemRecipeCapability.CAP, logic);
+    }
+
+    public GTRecipeBuilder chancedFluidInputLogic(ChanceLogic logic) {
+        return chancedInputLogic(FluidRecipeCapability.CAP, logic);
+    }
+
+    public GTRecipeBuilder chancedTickOutputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
+        this.tickOutputChanceLogic.put(cap, logic);
+        return this;
+    }
+
+    public GTRecipeBuilder chancedTickInputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
+        this.tickInputChanceLogic.put(cap, logic);
+        return this;
     }
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
@@ -741,6 +944,12 @@ public class GTRecipeBuilder {
         json.add("outputs", capabilitiesToJson(output));
         json.add("tickInputs", capabilitiesToJson(tickInput));
         json.add("tickOutputs", capabilitiesToJson(tickOutput));
+
+        json.add("inputChanceLogics", chanceLogicsToJson(inputChanceLogic));
+        json.add("outputChanceLogics", chanceLogicsToJson(outputChanceLogic));
+        json.add("tickInputChanceLogics", chanceLogicsToJson(tickInputChanceLogic));
+        json.add("tickOutputChanceLogics", chanceLogicsToJson(tickOutputChanceLogic));
+
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();
             for (RecipeCondition condition : conditions) {
@@ -764,6 +973,16 @@ public class GTRecipeBuilder {
                 contentsJson.add(cap.serializer.toJsonContent(content));
             }
             jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
+        });
+        return jsonObject;
+    }
+
+    public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
+        JsonObject jsonObject = new JsonObject();
+        chanceLogics.forEach((cap, logic) -> {
+            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap);
+            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic);
+            jsonObject.addProperty(capId, logicId);
         });
         return jsonObject;
     }
@@ -815,8 +1034,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRawRecipe() {
-        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"), input, output,
-                tickInput, tickOutput, conditions, List.of(), data, duration, isFuel);
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+                input, output, tickInput, tickOutput,
+                inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
+                conditions, List.of(), data, duration, isFuel);
     }
 
     //////////////////////////////////////

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -240,7 +241,8 @@ public class GTRecipeModifiers {
             int parallelValue = result.getSecond();
             recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
-            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
             return recipe;
         }
         return null;

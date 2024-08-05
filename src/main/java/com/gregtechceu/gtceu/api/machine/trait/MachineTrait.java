@@ -6,9 +6,11 @@ import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -47,6 +49,16 @@ public abstract class MachineTrait implements IEnhancedManaged {
     public void onMachineLoad() {}
 
     public void onMachineUnLoad() {}
+
+    /**
+     * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
+     *
+     * @param tag     the CompoundTag to load data from
+     * @param forDrop if the save is done for dropping the machine as an item.
+     */
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {}
+
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {}
 
     @Override
     public void scheduleRenderUpdate() {
