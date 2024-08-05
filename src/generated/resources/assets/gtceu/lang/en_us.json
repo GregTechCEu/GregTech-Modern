@@ -2298,7 +2298,7 @@
   "config.jade.plugin_gtceu.recipe_logic_provider": "[GTCEu] Recipe Logic",
   "config.jade.plugin_gtceu.recipe_output_info": "[GTCEu] Recipe Output Info",
   "config.jade.plugin_gtceu.stained_color": "[GTCEu] Stained Block Info",
-  "config.jade.plugin_gtceu.transformer_provider": "[GTCEu] Transformer Info",
+  "config.jade.plugin_gtceu.transformer": "[GTCEu] Transformer Info",
   "config.jade.plugin_gtceu.workable_provider": "[GTCEu] Workable",
   "cover.advanced_energy_detector.invert.disabled.0": "Output: Normal",
   "cover.advanced_energy_detector.invert.disabled.1": "",
