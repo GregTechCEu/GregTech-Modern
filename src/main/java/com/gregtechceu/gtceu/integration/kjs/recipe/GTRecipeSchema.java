@@ -15,10 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -30,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -258,6 +256,40 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
+        public GTRecipeJS itemInputsRanged(InputItem ingredient, int min, int max) {
+            return inputItemsRanged(ingredient.ingredient, min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
+            return input(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS inputItemsRanged(ItemStack stack, int min, int max) {
+            return input(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS inputItemsRanged(Item item, int min, int max) {
+            return inputItemsRanged(new ItemStack(item), min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(TagKey<Item> item, int min, int max) {
+            return input(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(SizedIngredient.create(item, 1), UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS inputItemsRanged(Supplier<? extends Item> item, int min, int max) {
+            return inputItemsRanged(Ingredient.of(item.get()), min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+            return inputItemsRanged(ChemicalHelper.getTag(orePrefix, material), min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(MachineDefinition machine, int min, int max) {
+            return inputItemsRanged(machine.asStack(), min, max);
+        }
+
         public GTRecipeJS itemOutputs(InputItem... outputs) {
             return outputItems(outputs);
         }
@@ -301,6 +333,36 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
             return outputItems(InputItem.of(machine.asStack(count)));
+        }
+
+        public GTRecipeJS itemOutputsRanged(OutputItem ingredient, int min, int max) {
+            return outputItemsRanged(ingredient.item, min, max);
+        }
+
+        public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
+            return output(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {
+            return output(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS outputItemsRanged(Item item, int min, int max) {
+            return outputItemsRanged(new ItemStack(item), min, max);
+        }
+
+        public GTRecipeJS outputItemsRanged(TagKey<Item> item, int min, int max) {
+            return output(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(SizedIngredient.create(item, 1), UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS outputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+            return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), min, max);
+        }
+
+        public GTRecipeJS outputItemsRanged(MachineDefinition machine, int min, int max) {
+            return outputItemsRanged(machine.asStack(), min, max);
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
