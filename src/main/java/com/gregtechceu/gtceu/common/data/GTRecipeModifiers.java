@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -185,7 +187,7 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
                     100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
@@ -196,13 +198,8 @@ public class GTRecipeModifiers {
                 return null;
             }
             return RecipeHelper.applyOverclock(
-                    new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> OverclockingLogic
-                            .heatingCoilOverclockingLogic(
-                                    Math.abs(recipeEUt),
-                                    maxVoltage,
-                                    duration,
-                                    amountOC,
-                                    blastFurnaceTemperature,
+                    new OverclockingLogic((params1, result1, maxVoltage) -> OverclockingLogic.heatingCoilOC(
+                            params, result, maxVoltage, blastFurnaceTemperature,
                                     recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0)),
                     recipe, coilMachine.getOverclockVoltage());
         }
@@ -258,8 +255,8 @@ public class GTRecipeModifiers {
                                 maxVoltage,
                                 duration,
                                 amountOC,
-                                OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR,
-                                OverclockingLogic.STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
+                                OverclockingLogic.STD_DURATION_FACTOR,
+                                OverclockingLogic.STD_VOLTAGE_FACTOR);
 
                         result[0] = GTRecipeModifiers.accurateParallel(machine, recipe, parallel.getRight(),
                                 modifyDuration);

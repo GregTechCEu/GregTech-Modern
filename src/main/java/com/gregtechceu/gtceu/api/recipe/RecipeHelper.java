@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
  * @implNote RecipeHelper
  */
 public class RecipeHelper {
+
+    private final OCParams ocParams = new OCParams();
+    private final OCResult ocResult = new OCResult();
 
     public static long getInputEUt(GTRecipe recipe) {
         return recipe.getTickInputContents(EURecipeCapability.CAP).stream()
@@ -96,7 +101,7 @@ public class RecipeHelper {
      * @param recipe the recipe to overclock
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    public static LongIntPair performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
+    public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
                                                   long maxOverclockVoltage) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = maxOverclockVoltage < Integer.MAX_VALUE ? logic.getOverclockForTier(maxOverclockVoltage) :
@@ -104,11 +109,12 @@ public class RecipeHelper {
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
         // and the maximum tier that the machine can overclock to.
         int numberOfOCs = maximumTier - recipeTier;
-        if (numberOfOCs <= 0) return LongIntPair.of(EUt, recipe.duration);
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
-        return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
+        ocParams.initialize(EUt, recipe.duration, numberOfOCs);
+        logic.getLogic().runOverclockingLogic(ocParams, ocResult, maxOverclockVoltage);
+        ocParams.reset();
     }
 
     public static <T> List<T> getInputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {
