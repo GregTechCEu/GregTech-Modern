@@ -35,6 +35,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import com.mojang.serialization.MapCodec;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * @author KilaBash
@@ -118,4 +119,7 @@ public final class GTRegistries {
     public static RegistryAccess builtinRegistry() {
         return Platform.getFrozenRegistry();
     }
+
+    @ApiStatus.Internal
+    public static void initClass() {}
 }

@@ -151,6 +151,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerEvents(EventGroupRegistry registry) {
+        GTRegistries.initClass();
         registry.register(GTCEuStartupEvents.GROUP);
         registry.register(GTCEuServerEvents.GROUP);
     }
