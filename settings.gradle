@@ -26,7 +26,7 @@ dependencyResolutionManagement {
         def reiVersion = "16.0.744"
         def emiVersion = "1.1.10"
         def ae2Version = "19.0.4-alpha"
-        def kjsVersion = "2100.7.0-build.117"
+        def kjsVersion = "2100.7.0-build.120"
 
         // NeoForge
         def neoForgeVersion = "21.0.143"

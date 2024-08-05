@@ -110,7 +110,8 @@ import java.util.stream.Stream;
 public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
-    public void registerBuilderTypes(BuilderTypeRegistry registry) {
+    public void init() {
+        GTRegistries.initClass();
         GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
 
         GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
@@ -141,7 +142,10 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
         GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
+    }
 
+    @Override
+    public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.of(Registries.BLOCK, reg -> {
             reg.add("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
             reg.add("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
@@ -151,7 +155,6 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerEvents(EventGroupRegistry registry) {
-        GTRegistries.initClass();
         registry.register(GTCEuStartupEvents.GROUP);
         registry.register(GTCEuServerEvents.GROUP);
     }

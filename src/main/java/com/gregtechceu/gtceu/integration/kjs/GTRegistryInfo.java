@@ -158,7 +158,7 @@ public class GTRegistryInfo<K, V> {
     }
 
     public void postEvent() {
-        GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, registryKey, new GTRegistryEventJS<>(this));
+        GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, registryKey.toString(), new GTRegistryEventJS<>(this));
     }
 
     public static void registerFor(ResourceLocation registry) {

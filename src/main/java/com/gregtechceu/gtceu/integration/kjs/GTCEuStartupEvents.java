@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 
-import net.minecraft.resources.ResourceLocation;
-
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.event.EventTargetType;
@@ -16,7 +14,7 @@ public interface GTCEuStartupEvents {
 
     EventGroup GROUP = EventGroup.of("GTCEuStartupEvents");
 
-    EventTargetType<ResourceLocation> REGISTRY_EXTRA = EventTargetType.create(ResourceLocation.class)
+    EventTargetType<String> REGISTRY_EXTRA = EventTargetType.create(String.class)
             .validator(GTCEuStartupEvents::validateRegistry);
 
     private static boolean validateRegistry(Object o) {
@@ -28,7 +26,7 @@ public interface GTCEuStartupEvents {
         }
     }
 
-    TargetedEventHandler<ResourceLocation> REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class)
+    TargetedEventHandler<String> REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class)
             .requiredTarget(REGISTRY_EXTRA);
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
 }
