@@ -33,6 +33,7 @@ import net.neoforged.neoforge.fluids.crafting.*;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -196,7 +197,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
-        Map<FluidKey, Long> fluidStacks = Objects
+        Map<FluidKey, Integer> fluidStacks = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
                         Collections::<IRecipeHandler<?>>emptyList)
                 .stream()
@@ -209,39 +210,40 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe input fluids to account for duplicated fluids,
         // so their sum is counted against the total of fluids available in the input
-        Map<FluidKey, Long> fluidCountMap = new HashMap<>();
-        Map<FluidKey, Long> notConsumableMap = new HashMap<>();
+        Map<SizedFluidIngredient, Integer> fluidCountMap = new HashMap<>();
+        Map<SizedFluidIngredient, Integer> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             SizedFluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
-            final long fluidAmount = fluidInput.amount();
+            final int fluidAmount = fluidInput.amount();
             if (content.chance == 0.0f) {
-                notConsumableMap.computeIfPresent(new FluidKey(fluidInput.getFluids()[0]),
+                notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
-                notConsumableMap.putIfAbsent(new FluidKey(fluidInput.getFluids()[0]), fluidAmount);
+                notConsumableMap.putIfAbsent(fluidInput, fluidAmount);
             } else {
-                fluidCountMap.computeIfPresent(new FluidKey(fluidInput.getFluids()[0]),
+                fluidCountMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
-                fluidCountMap.putIfAbsent(new FluidKey(fluidInput.getFluids()[0]), fluidAmount);
+                fluidCountMap.putIfAbsent(fluidInput, fluidAmount);
             }
         }
 
         // Iterate through the recipe inputs, excluding the not consumable fluids from the fluid inventory map
-        for (Map.Entry<FluidKey, Long> notConsumableFluid : notConsumableMap.entrySet()) {
-            long needed = notConsumableFluid.getValue();
-            long available = 0;
+        for (Map.Entry<SizedFluidIngredient, Integer> notConsumableFluid : notConsumableMap.entrySet()) {
+            int needed = notConsumableFluid.getValue();
+            int available = 0;
             // For every fluid gathered from the fluid inputs.
-            for (Map.Entry<FluidKey, Long> inputFluid : fluidStacks.entrySet()) {
+            for (Map.Entry<FluidKey, Integer> inputFluid : fluidStacks.entrySet()) {
                 // Strip the Non-consumable tags here, as FluidKey compares the tags, which causes finding matching
                 // fluids
                 // in the input tanks to fail, because there is nothing in those hatches with a non-consumable tag
-                if (notConsumableFluid.getKey().equals(inputFluid.getKey())) {
+                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().component);
+                if (notConsumableFluid.getKey().equals(stack)) {
                     available = inputFluid.getValue();
                     if (available > needed) {
                         inputFluid.setValue(available - needed);
                         needed -= available;
                         break;
                     } else {
-                        inputFluid.setValue(0L);
+                        inputFluid.setValue(0);
                         notConsumableFluid.setValue(needed - available);
                         needed -= available;
                     }
@@ -266,12 +268,13 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         }
 
         // Iterate through the fluid inputs in the recipe
-        for (Map.Entry<FluidKey, Long> fs : fluidCountMap.entrySet()) {
+        for (Map.Entry<SizedFluidIngredient, Integer> fs : fluidCountMap.entrySet()) {
             long needed = fs.getValue();
             long available = 0;
             // For every fluid gathered from the fluid inputs.
-            for (Map.Entry<FluidKey, Long> inputFluid : fluidStacks.entrySet()) {
-                if (fs.getKey().equals(inputFluid.getKey())) {
+            for (Map.Entry<FluidKey, Integer> inputFluid : fluidStacks.entrySet()) {
+                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().component);
+                if (fs.getKey().test(stack)) {
                     available += inputFluid.getValue();
                 }
             }
@@ -337,11 +340,11 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI);
             if (content != null) {
-                tank.setXEIChance(content.chance);
+                tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >=
-                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    GTRecipeWidget.setConsumedChance(content,
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });

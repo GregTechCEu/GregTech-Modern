@@ -53,6 +53,78 @@ public class GTRecipeComponents {
             return "resource_location";
         }
     };
+    public static final RecipeComponent<RecipeCapability<?>> RECIPE_CAPABILITY = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "recipe_capability";
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return RecipeCapability.class;
+        }
+
+        @Override
+        public TypeDescJS constructorDescription(DescriptionContext ctx) {
+            return TypeDescJS.STRING;
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, RecipeCapability<?> value) {
+            return new JsonPrimitive(GTRegistries.RECIPE_CAPABILITIES.getKey(value));
+        }
+
+        @Override
+        public RecipeCapability<?> read(RecipeJS recipe, Object from) {
+            if (from instanceof RecipeCapability<?> capability) {
+                return capability;
+            }
+            return from instanceof CharSequence c ? GTRegistries.RECIPE_CAPABILITIES.get(c.toString()) :
+                    GTRegistries.RECIPE_CAPABILITIES.get(String.valueOf(from));
+        }
+
+        @Override
+        public String toString() {
+            return componentType();
+        }
+    };
+    public static final RecipeComponent<ChanceLogic> CHANCE_LOGIC = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "chance_logic";
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return ChanceLogic.class;
+        }
+
+        @Override
+        public TypeDescJS constructorDescription(DescriptionContext ctx) {
+            return TypeDescJS.STRING;
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, ChanceLogic value) {
+            return new JsonPrimitive(GTRegistries.CHANCE_LOGICS.getKey(value));
+        }
+
+        @Override
+        public ChanceLogic read(RecipeJS recipe, Object from) {
+            if (from instanceof ChanceLogic capability) {
+                return capability;
+            }
+            return from instanceof CharSequence c ? GTRegistries.CHANCE_LOGICS.get(c.toString()) :
+                    GTRegistries.CHANCE_LOGICS.get(String.valueOf(from));
+        }
+
+        @Override
+        public String toString() {
+            return componentType();
+        }
+    };
 
     public static final RecipeComponent<RecipeCondition> RECIPE_CONDITION = new RecipeComponent<>() {
 
@@ -84,6 +156,9 @@ public class GTRecipeComponents {
     public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent(true);
     public static final CapabilityMapComponent OUT = new CapabilityMapComponent(false);
     public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(true);
+
+    public static final RecipeComponent<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP = new JavaMapRecipeComponent<>(
+            RECIPE_CAPABILITY, CHANCE_LOGIC);
 
     /**
      * First in pair is in, second is out

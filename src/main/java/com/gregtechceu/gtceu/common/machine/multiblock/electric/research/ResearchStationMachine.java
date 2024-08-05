@@ -122,10 +122,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
                 if (recipe.isFuel) return false;
                 if (!holder.hasProxies()) return false;
-                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs);
+                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs, false);
                 if (!result.isSuccess()) return false;
                 if (recipe.hasTick()) {
-                    result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs);
+                    result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs, true);
                     return result.isSuccess();
                 }
                 return true;
@@ -174,7 +174,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
         public GTRecipe.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-            var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs);
+            var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs, false);
             if (!result.isSuccess()) return result;
             return GTRecipe.ActionResult.SUCCESS;
         }
@@ -182,7 +182,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         public GTRecipe.ActionResult matchTickRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (recipe.hasTick()) {
                 if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs);
+                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs, true);
                 if (!result.isSuccess()) return result;
             }
             return GTRecipe.ActionResult.SUCCESS;

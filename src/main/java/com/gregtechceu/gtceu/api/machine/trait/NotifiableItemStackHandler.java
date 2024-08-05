@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -134,12 +136,21 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         } else if (io == IO.OUT) {
             while (iterator.hasNext()) {
                 SizedIngredient ingredient = iterator.next();
+                int newCount = Integer.MIN_VALUE;
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider) {
+                    intProvider.setItemStacks(null);
+                    intProvider.setSampledCount(null);
+                    newCount = intProvider.getSampledCount(GTValues.RNG);
+                }
                 var items = ingredient.getItems();
                 if (items.length == 0) {
                     iterator.remove();
                     continue;
                 }
                 ItemStack output = items[0];
+                if (newCount != Integer.MIN_VALUE) {
+                    output.setCount(newCount);
+                }
                 if (!output.isEmpty()) {
                     for (int i = 0; i < capability.getSlots(); i++) {
                         ItemStack leftStack = ItemStack.EMPTY;

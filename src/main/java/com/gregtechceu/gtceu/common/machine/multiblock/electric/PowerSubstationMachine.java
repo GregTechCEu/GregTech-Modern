@@ -354,14 +354,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
         CompoundTag bankTag = energyBank.writeToNBT(new CompoundTag());
         tag.put("energyBank", bankTag);
     }
 
     @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
         super.loadCustomPersistedData(tag);
         energyBank.readFromNBT(tag.getCompound("energyBank"));
     }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -9,12 +10,17 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
+import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
+import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.*;
@@ -26,11 +32,14 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -79,9 +88,20 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @Override
     public SizedIngredient copyWithModifier(SizedIngredient content, ContentModifier modifier) {
-        return content instanceof SizedIngredient sizedIngredient ?
-                new SizedIngredient(sizedIngredient.ingredient(), modifier.apply(sizedIngredient.count()).intValue()) :
-                new SizedIngredient(content.ingredient(), modifier.apply(1).intValue());
+        if (content instanceof SizedIngredient sizedIngredient) {
+            return new SizedIngredient(sizedIngredient.ingredient(),
+                    modifier.apply(sizedIngredient.count()).intValue());
+        } else if (content.ingredient() instanceof IntProviderIngredient intProviderIngredient) {
+            return new SizedIngredient(new IntProviderIngredient(intProviderIngredient.getInner(),
+                    new FlooredInt(
+                            new AddedFloat(
+                                    new MultipliedFloat(
+                                            new CastedFloat(intProviderIngredient.getCountProvider()),
+                                            ConstantFloat.of((float) modifier.getMultiplier())),
+                                    ConstantFloat.of((float) modifier.getAddition())))),
+                    1);
+        }
+        return new SizedIngredient(content.ingredient(), modifier.apply(1).intValue());
     }
 
     @Override
@@ -102,6 +122,35 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 case CompoundIngredient compound -> {
                     for (Ingredient inner : compound.children()) {
                         ingredients.addAll(convertToMapIngredient(inner));
+                    }
+                }
+                case IntProviderIngredient intProvider -> {
+                    switch (intProvider.getInner().getCustomIngredient()) {
+                        case DataComponentIngredient component when component.isStrict() -> ingredients
+                                .addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
+                        case DataComponentIngredient component when !component.isStrict() -> ingredients
+                                .addAll(MapItemStackWeakDataComponentIngredient.from(component.toVanilla()));
+                        case IntCircuitIngredient circuit -> ingredients
+                                .addAll(MapItemStackDataComponentIngredient.from(circuit));
+                        case IntersectionIngredient intersection -> ingredients
+                                .add(new MapItemIntersectionIngredient(intersection));
+                        case CompoundIngredient compound -> {
+                            for (Ingredient inner : compound.children()) {
+                                ingredients.addAll(convertToMapIngredient(inner));
+                            }
+                        }
+                        case null, default -> {
+                            for (Ingredient.Value value : ingredient.ingredient().getValues()) {
+                                if (value instanceof Ingredient.TagValue tagValue) {
+                                    ingredients.add(new MapItemTagIngredient(tagValue.tag()));
+                                } else {
+                                    Collection<ItemStack> stacks = value.getItems();
+                                    for (ItemStack stack : stacks) {
+                                        ingredients.add(new MapItemStackIngredient(stack, ingredient.ingredient()));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 case null, default -> {
@@ -165,6 +214,9 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 }
                 if (isEqual) continue;
                 if (ingredient.ingredient().getCustomIngredient() instanceof IntCircuitIngredient) {
+                    list.addFirst(ingredient);
+                } else if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider &&
+                        intProvider.getInner().getCustomIngredient() instanceof IntCircuitIngredient) {
                     list.addFirst(ingredient);
                 } else {
                     list.add(ingredient);
@@ -257,7 +309,12 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         Object2IntOpenHashMap<Ingredient> countableMap = new Object2IntOpenHashMap<>();
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
             SizedIngredient recipeIngredient = ItemRecipeCapability.CAP.of(content.content);
-            int ingredientCount = recipeIngredient.count();
+            int ingredientCount;
+            if (recipeIngredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProviderIngredient) {
+                ingredientCount = intProviderIngredient.getSampledCount(GTValues.RNG);
+            } else {
+                ingredientCount = recipeIngredient.count();
+            }
             if (content.chance == 0.0f) {
                 notConsumableMap.computeIfPresent(recipeIngredient.ingredient(), (k, v) -> v + ingredientCount);
                 notConsumableMap.putIfAbsent(recipeIngredient.ingredient(), ingredientCount);
@@ -478,11 +535,25 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 }
             }
             if (content != null) {
-                slot.setXEIChance(content.chance);
+                slot.setXEIChance((float) content.chance / content.maxChance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >=
-                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    GTRecipeWidget.setConsumedChance(content,
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    //@formatter:off
+                    if (this.of(content.content).ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
+                        IntProvider countProvider = ingredient.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    } else if (this.of(content.content) instanceof SizedIngredient sizedIngredient &&
+                            sizedIngredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
+                        IntProvider countProvider = ingredient.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    }
+                    //@formatter:on
+                    if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
@@ -535,11 +606,65 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 }
                 return items;
             }));
+        } else if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider) {
+            if (intProvider.getInner().getCustomIngredient() instanceof IntersectionIngredient intersection) {
+                List<Ingredient> children = intersection.children();
+                if (children.isEmpty()) {
+                    return Either.right(null);
+                }
+                var childEither = mapItem(new SizedIngredient(children.getFirst(), amount));
+                return Either.right(childEither.map(tags -> {
+                    List<ItemStack> tagItems = tags.stream()
+                            .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
+                                    pair.getSecond()))
+                            .flatMap(pair -> pair.getFirst().flatMap(
+                                    tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                            .collect(Collectors.toList());
+                    ListIterator<ItemStack> iterator = tagItems.listIterator();
+                    iteratorLoop:
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                continue iteratorLoop;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return tagItems;
+                }, items -> {
+                    items = new ArrayList<>(items);
+                    ListIterator<ItemStack> iterator = items.listIterator();
+                    iteratorLoop:
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                continue iteratorLoop;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return items;
+                }));
+            } else if (intProvider.getInner().getCustomIngredient() == null &&
+                    intProvider.getInner().getValues().length > 0 &&
+                    intProvider.getInner().getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+            }
+
         } else if (ingredient.ingredient().getCustomIngredient() == null &&
                 ingredient.ingredient().getValues().length > 0 &&
                 ingredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                    return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
-                }
-        return Either.right(Arrays.stream(ingredient.getItems()).toList());
+            return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+        }
+        return Either.right(Arrays.stream(ingredient.getItems()).map(stack -> {
+            if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient) {
+                stack.setCount(1);
+            }
+            return stack;
+        }).toList());
     }
 }

@@ -38,13 +38,13 @@ public class GTTransferUtils {
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
             FluidStack currentFluid = sourceHandler.getFluidInTank(i);
-            if (currentFluid == FluidStack.EMPTY || currentFluid.getAmount() == 0 || !fluidFilter.test(currentFluid)) {
+            if (currentFluid.isEmpty() || !fluidFilter.test(currentFluid)) {
                 continue;
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
-            FluidStack fluidStack = sourceHandler.drain(currentFluid, IFluidHandler.FluidAction.SIMULATE);
-            if (fluidStack == FluidStack.EMPTY || fluidStack.getAmount() == 0) {
+            FluidStack fluidStack = sourceHandler.drain(currentFluid, true);
+            if (fluidStack.isEmpty()) {
                 continue;
             }
 

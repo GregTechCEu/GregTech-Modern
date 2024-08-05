@@ -132,12 +132,12 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        GTRegistries.init(modBus);
-        GTFeatures.init(modBus);
-        GTCommandArguments.init(modBus);
-        GTMobEffects.init(modBus);
-        GTAttachmentTypes.init(modBus);
-        GTParticleTypes.init(modBus);
+        GTValueProviderTypes.init(eventBus);
+        GTRegistries.init(eventBus);
+        GTFeatures.init(eventBus);
+        GTCommandArguments.init(eventBus);
+        GTMobEffects.init(eventBus);
+        GTParticleTypes.init(eventBus);
     }
 
     public static void init() {
@@ -174,6 +174,7 @@ public class CommonProxy {
         GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
         GTDimensionMarkers.init();
+        ChanceLogic.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
 

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+
 import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.core.HolderLookup;
@@ -40,8 +42,9 @@ public interface IContentSerializer<T> {
     default void toNetworkContent(RegistryFriendlyByteBuf buf, Content content) {
         T inner = (T) content.getContent();
         toNetwork(buf, inner);
-        buf.writeFloat(content.chance);
-        buf.writeFloat(content.tierChanceBoost);
+        buf.writeVarInt(content.chance);
+        buf.writeVarInt(content.maxChance);
+        buf.writeVarInt(content.tierChanceBoost);
         buf.writeBoolean(content.slotName != null);
         if (content.slotName != null) {
             buf.writeUtf(content.slotName);
@@ -54,8 +57,9 @@ public interface IContentSerializer<T> {
 
     default Content fromNetworkContent(RegistryFriendlyByteBuf buf) {
         T inner = fromNetwork(buf);
-        float chance = buf.readFloat();
-        float tierChanceBoost = buf.readFloat();
+        int chance = buf.readVarInt();
+        int maxChance = buf.readVarInt();
+        int tierChanceBoost = buf.readVarInt();
         String slotName = null;
         if (buf.readBoolean()) {
             slotName = buf.readUtf();
@@ -64,7 +68,7 @@ public interface IContentSerializer<T> {
         if (buf.readBoolean()) {
             uiName = buf.readUtf();
         }
-        return new Content(inner, chance, tierChanceBoost, slotName, uiName);
+        return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +76,7 @@ public interface IContentSerializer<T> {
         JsonObject json = new JsonObject();
         json.add("content", toJson((T) content.getContent(), provider));
         json.addProperty("chance", content.chance);
+        json.addProperty("maxChance", content.maxChance);
         json.addProperty("tierChanceBoost", content.tierChanceBoost);
         if (content.slotName != null)
             json.addProperty("slotName", content.slotName);
@@ -82,11 +87,26 @@ public interface IContentSerializer<T> {
 
     default Content fromJsonContent(JsonElement json, HolderLookup.Provider provider) {
         JsonObject jsonObject = json.getAsJsonObject();
-        T inner = fromJson(jsonObject.get("content"), provider);
-        float chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsFloat() : 1;
-        float tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsFloat() : 0;
+        T inner = fromJson(jsonObject.get("content"));
+        int chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsInt() : ChanceLogic.getMaxChancedValue();
+        int maxChance = jsonObject.has("maxChance") ? jsonObject.get("maxChance").getAsInt() :
+                ChanceLogic.getMaxChancedValue();
+        int tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsInt() : 0;
         String slotName = jsonObject.has("slotName") ? jsonObject.get("slotName").getAsString() : null;
         String uiName = jsonObject.has("uiName") ? jsonObject.get("uiName").getAsString() : null;
-        return new Content(inner, chance, tierChanceBoost, slotName, uiName);
+        return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
+    }
+
+    default Tag toNbt(T content) {
+        return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, this.toJson(content));
+    }
+
+    default Tag toNbtGeneric(Object content) {
+        return toNbt((T) content);
+    }
+
+    default T fromNbt(Tag tag) {
+        var json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tag);
+        return fromJson(json);
     }
 }
