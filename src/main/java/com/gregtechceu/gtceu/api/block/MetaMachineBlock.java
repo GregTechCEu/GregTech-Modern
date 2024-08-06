@@ -51,6 +51,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -234,12 +235,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var drops = super.getDrops(state, builder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
-            for (Direction direction : GTUtil.DIRECTIONS) {
-                machine.getCoverContainer().removeCover(direction, null);
-            }
-            if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
-                machineModifyDrops.onDrops(drops, (Player) entity);
-            }
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
@@ -260,7 +255,19 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 if (getMachine(pLevel, pPos) instanceof IMachineLife machineLife) {
                     machineLife.onMachineRemoved();
                 }
-
+                var machine = getMachine(pLevel, pPos);
+                if (machine != null) {
+                    for (Direction direction : GTUtil.DIRECTIONS) {
+                        machine.getCoverContainer().removeCover(direction, null);
+                    }
+                    if (machine instanceof IMachineModifyDrops machineModifyDrops) {
+                        List<ItemStack> drops = new ArrayList<ItemStack>();
+                        machineModifyDrops.onDrops(drops, null);
+                        for (ItemStack dropStack : drops) {
+                            Block.popResource(pLevel, pPos, dropStack);
+                        }
+                    }
+                }
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
                 pLevel.removeBlockEntity(pPos);
             } else if (rotationState != RotationState.NONE) { // old block different facing
