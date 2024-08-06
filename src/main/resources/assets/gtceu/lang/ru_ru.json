@@ -7289,7 +7289,7 @@
     "material.gtceu.hot_debrominated_brine": "Горячий дебромированный соляной раствор",
     "block.gtceu.brown_large_metal_sheet": "Крупный коричневый лист металла",
     "block.gtceu.uev_transformer_16a": "Силовой трансформатор (§aUEV§r)",
-    "block.gtceu.normal_optical_pipe.tooltip": "Передает данные Исследования или Вычислений",
+    "block.gtceu.normal_optical_pipe.tooltip": "§7Передает данные §fИсследования§7 или §fВычислений§7",
     "block.gtceu.opv_transformer_16a": "Силовой трансформатор (§9OpV§r)",
     "block.gtceu.purple_large_metal_sheet": "Крупный фиолетовый лист металла",
     "block.gtceu.red_large_metal_sheet": "Крупный красный лист металла",
@@ -7368,5 +7368,6 @@
     "item.gtceu.tool.iv_wirecutter": "Электрокусачки (%s §eIV§r)",
     "tagprefix.wire_cutter_head": "%s (Насадка кусачек)",
     "block.gtceu.creative_computation_provider": "Творческий источник вычислений",
-    "block.gtceu.normal_laser_pipe.tooltip": "§7Передача энергии §fбез потерь§7 по прямым линиям"
+    "block.gtceu.normal_laser_pipe.tooltip": "§7Передача энергии §fбез потерь§7 по прямым линиям",
+    "compass.node.gtceu.machines/creative_computation_provider": "Творческий источник вычислений"
 }
