@@ -41,7 +41,7 @@ public class TorchPlaceBehavior implements IToolBehavior {
         Player player = context.getPlayer();
         InteractionHand hand = context.getHand();
 
-        ItemStack pickaxeStack = player.getItemInHand(hand);  // Preserve the pickaxe stack
+        ItemStack pickaxeStack = player.getItemInHand(hand);  // Preserve the tool stack
         CompoundTag behaviourTag = ToolHelper.getBehaviorsTag(pickaxeStack);
         if (!behaviourTag.getBoolean(TORCH_PLACING_KEY)) {
             return InteractionResult.PASS;
@@ -104,8 +104,9 @@ public class TorchPlaceBehavior implements IToolBehavior {
                         context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(),
                                 SoundSource.BLOCKS,
                                 (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                        // Shrinking the stack resulted in 2 torches being used. Getting rid of the original line
-                        // magically fixes it, in both creative and survival. Don't ask why, I don't have a single clue.
+                        if (!context.getPlayer().isCreative() && context.getLevel().isClientSide) {
+                            slotStack.shrink(1);
+                        }
                         return true;
                     }
                 }
