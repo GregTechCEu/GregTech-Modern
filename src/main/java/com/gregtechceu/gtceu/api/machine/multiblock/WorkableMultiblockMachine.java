@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -189,17 +191,17 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
+    public final GTRecipe doModifyRecipe(GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
-        return getRealRecipe(recipe);
+        return getRealRecipe(recipe, params, result);
     }
 
     @Nullable
-    protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().apply(self(), recipe);
+    protected GTRecipe getRealRecipe(GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+        return self().getDefinition().getRecipeModifier().apply(self(), recipe, params, result);
     }
 
     public void updateActiveBlocks(boolean active) {

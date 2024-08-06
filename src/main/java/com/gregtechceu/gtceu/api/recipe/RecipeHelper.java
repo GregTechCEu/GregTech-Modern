@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -28,10 +29,6 @@ import java.util.stream.Collectors;
  * @implNote RecipeHelper
  */
 public class RecipeHelper {
-
-    private final OCParams ocParams = new OCParams();
-    private final OCResult ocResult = new OCResult();
-
     public static long getInputEUt(GTRecipe recipe) {
         return recipe.getTickInputContents(EURecipeCapability.CAP).stream()
                 .map(Content::getContent)
@@ -71,23 +68,23 @@ public class RecipeHelper {
     public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
-            var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (overclockResult.leftLong() != EUt || recipe.duration != overclockResult.rightInt()) {
+            var ocResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
+            if (ocResult.getEut() != EUt || recipe.duration != ocResult.getDuration()) {
                 recipe = recipe.copy();
-                recipe.duration = overclockResult.rightInt();
+                recipe.duration = ocResult.getDuration();
                 for (Content content : recipe.getTickInputContents(EURecipeCapability.CAP)) {
-                    content.content = overclockResult.leftLong();
+                    content.content = ocResult.getEut();
                 }
             }
         }
         EUt = getOutputEUt(recipe);
         if (EUt > 0) {
-            var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (overclockResult.leftLong() != EUt || recipe.duration != overclockResult.rightInt()) {
+            var ocResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
+            if (ocResult.getEut() != EUt || recipe.duration != ocResult.getDuration()) {
                 recipe = recipe.copy();
-                recipe.duration = overclockResult.rightInt();
+                recipe.duration = ocResult.getDuration();
                 for (Content content : recipe.getTickOutputContents(EURecipeCapability.CAP)) {
-                    content.content = overclockResult.leftLong();
+                    content.content = ocResult.getEut();
                 }
             }
         }
@@ -101,7 +98,7 @@ public class RecipeHelper {
      * @param recipe the recipe to overclock
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
+    public static OCResult performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
                                                   long maxOverclockVoltage) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = maxOverclockVoltage < Integer.MAX_VALUE ? logic.getOverclockForTier(maxOverclockVoltage) :
@@ -112,9 +109,17 @@ public class RecipeHelper {
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
+        OCParams ocParams = new OCParams();
+        OCResult ocResult = new OCResult();
         ocParams.initialize(EUt, recipe.duration, numberOfOCs);
-        logic.getLogic().runOverclockingLogic(ocParams, ocResult, maxOverclockVoltage);
+        if(ocParams.getOcAmount() <= 0) {
+            // number of OCs is <=0, so do not overclock
+            ocResult.init(ocParams.getEut(), ocParams.getDuration());
+        } else {
+            logic.getLogic().runOverclockingLogic(ocParams, ocResult, maxOverclockVoltage);
+        }
         ocParams.reset();
+        return ocResult;
     }
 
     public static <T> List<T> getInputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {

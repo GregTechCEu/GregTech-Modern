@@ -100,7 +100,7 @@ public class GTRecipeModifiers {
 
         @Nullable
         @Override
-        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
+        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
                 if (RecipeHelper.getRecipeEUtTier(recipe) / recipe.parallels > overclockMachine.getMaxOverclockTier()) {
                     return null;
@@ -245,12 +245,11 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, boolean modifyDuration) {
+    public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, ) {
         if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-            final Pair<GTRecipe, Integer>[] result = new Pair[] { null };
             RecipeHelper.applyOverclock(
                     new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> {
-                        var parallel = OverclockingLogic.standardOverclockingLogicWithSubTickParallelCount(
+                        OverclockingLogic.subTickParallelOC(
                                 Math.abs(recipeEUt),
                                 maxVoltage,
                                 duration,
