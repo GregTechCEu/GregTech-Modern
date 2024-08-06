@@ -7366,5 +7366,7 @@
     "compass.node.gtceu.materials/wire_cutter_head": "Насадка кусачек",
     "item.gtceu.tool.hv_wirecutter": "Электрокусачки (%s §6HV§r)",
     "item.gtceu.tool.iv_wirecutter": "Электрокусачки (%s §eIV§r)",
-    "tagprefix.wire_cutter_head": "%s (Насадка кусачек)"
+    "tagprefix.wire_cutter_head": "%s (Насадка кусачек)",
+    "block.gtceu.creative_computation_provider": "Творческий источник вычислений",
+    "block.gtceu.normal_laser_pipe.tooltip": "§7Передача энергии §fбез потерь§7 по прямым линиям"
 }
