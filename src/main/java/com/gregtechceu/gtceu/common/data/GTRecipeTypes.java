@@ -417,7 +417,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
-            .addCustomRecipeLogic(new ResearchManager.DataStickCopyScannerLogic())
             .setScanner(true)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);

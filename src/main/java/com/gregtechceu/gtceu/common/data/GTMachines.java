@@ -165,7 +165,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines(
@@ -176,7 +178,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines(
@@ -187,7 +191,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/solar"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 360 : 120) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines(
@@ -601,6 +607,14 @@ public class GTMachines {
             .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
+
+    public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
+            .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
+            .rotationState(RotationState.NONE)
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .compassNodeSelf()
+            .register();
+
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
@@ -1189,19 +1203,25 @@ public class GTMachines {
     //////////////////////////////////////
     public static final MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze",
             CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
-            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800,
-            1);
+            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.bronzeBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.bronzeBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel",
             CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
-            GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
+            GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.steelBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.steelBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium",
             CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
-            GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200,
-            1);
+            GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.titaniumBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.titaniumBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel",
             CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
-            BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
+            BoilerFireboxType.TUNGSTENSTEEL_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.tungstensteelBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.tungstensteelBoilerHeatSpeed);
 
     public static final MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
             .rotationState(RotationState.ALL)

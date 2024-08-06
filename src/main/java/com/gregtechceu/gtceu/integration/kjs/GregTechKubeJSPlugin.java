@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
@@ -168,7 +169,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("compoundTag", GTRecipeComponents.TAG);
         event.register("recipeCondition", GTRecipeComponents.RECIPE_CONDITION);
         event.register("resourceLocation", GTRecipeComponents.RESOURCE_LOCATION);
-        event.register("resourceLocation", GTRecipeComponents.RESOURCE_LOCATION);
+        event.register("recipeCapability", GTRecipeComponents.RECIPE_CAPABILITY);
+        event.register("chanceLogic", GTRecipeComponents.CHANCE_LOGIC);
         event.register("gtRecipeInputs", GTRecipeComponents.IN);
         event.register("gtRecipeTickInputs", GTRecipeComponents.TICK_IN);
         event.register("gtRecipeOutputs", GTRecipeComponents.OUT);
@@ -182,6 +184,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtEuOut", GTRecipeComponents.EU_OUT);
         event.register("gtSuIn", GTRecipeComponents.SU_IN);
         event.register("gtSuOut", GTRecipeComponents.SU_OUT);
+
+        event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
 
         event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
         event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
@@ -205,6 +209,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
+        event.add("ChanceLogic", ChanceLogic.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
@@ -293,6 +298,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
+            return null;
+        });
+        typeWrappers.register(ChanceLogic.class, (ctx, o) -> {
+            if (o instanceof ChanceLogic capability) return capability;
+            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(chars.toString());
             return null;
         });
 

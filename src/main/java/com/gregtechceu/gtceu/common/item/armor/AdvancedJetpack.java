@@ -33,24 +33,35 @@ public class AdvancedJetpack extends Jetpack {
         CompoundTag data = stack.getOrCreateTag();
         boolean hoverMode = data.contains("hover") && data.getBoolean("hover");
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
+        boolean jetpackEnabled = !data.contains("enabled") || data.getBoolean("enabled");
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hoverMode = !hoverMode;
             toggleTimer = 5;
             data.putBoolean("hover", hoverMode);
             if (!world.isClientSide) {
-                if (hoverMode)
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
-                else
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.disable"), true);
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
             }
         }
 
-        performFlying(player, hoverMode, stack);
+        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            jetpackEnabled = !jetpackEnabled;
+            toggleTimer = 5;
+            data.putBoolean("enabled", jetpackEnabled);
+            if (!world.isClientSide) {
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
+                        true);
+            }
+        }
+
+        performFlying(player, jetpackEnabled, hoverMode, stack);
 
         if (toggleTimer > 0) toggleTimer--;
 
         data.putBoolean("hover", hoverMode);
+        data.putBoolean("enabled", jetpackEnabled);
         data.putByte("toggleTimer", toggleTimer);
     }
 

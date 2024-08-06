@@ -33,6 +33,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -211,7 +212,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
             long fluidAmount = fluidInput.getAmount();
-            if (content.chance == 0.0f) {
+            if (content.chance == 0) {
                 notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
                 notConsumableMap.putIfAbsent(fluidInput, fluidAmount);
@@ -335,11 +336,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI);
             if (content != null) {
-                tank.setXEIChance(content.chance);
+                tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >=
-                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    GTRecipeWidget.setConsumedChance(content,
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
@@ -366,5 +367,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         } else {
             return Either.right(fluids);
         }
+    }
+
+    @Override
+    public Object2IntMap<FluidIngredient> makeChanceCache() {
+        return super.makeChanceCache();
     }
 }

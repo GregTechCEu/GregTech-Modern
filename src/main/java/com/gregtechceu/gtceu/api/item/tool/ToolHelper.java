@@ -425,7 +425,8 @@ public class ToolHelper {
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
                 GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
+                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine,
+                        be.getMetaMachine().recipeLogic.getChanceCaches())) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix == null) {

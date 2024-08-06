@@ -34,16 +34,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
+public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
 
-    public static FluidVeinLoader INSTANCE;
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
     private static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public FluidVeinLoader() {
+    public BedrockFluidLoader() {
         super(GSON_INSTANCE, FOLDER);
-        INSTANCE = this;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
         ModLoader.get().postEvent(
                 new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS, BedrockFluidDefinition.class));
         if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+            KJSCallWrapper.fireKJSEvent();
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
@@ -91,10 +89,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
         return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 
-    /**
-     * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
-     */
-    public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+    public static final class KJSCallWrapper {
 
         public static void fireKJSEvent() {
             GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTFluidVeinEventJS());

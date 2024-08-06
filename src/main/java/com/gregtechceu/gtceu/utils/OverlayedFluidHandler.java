@@ -113,7 +113,7 @@ public class OverlayedFluidHandler {
 
             OverlayedTank overlayedTank = this.overlayedTanks.get(i);
             FluidStack fluid = overlayedTank.fluid;
-            if (fluid == null || fluid.getAmount() == 0) {
+            if (fluid.isEmpty()) {
                 stb.append("None 0 / ").append(overlayedTank.property.getCapacity());
             } else {
                 stb.append(FluidHelper.getDisplayName(fluid)).append(' ').append(fluid.getAmount())

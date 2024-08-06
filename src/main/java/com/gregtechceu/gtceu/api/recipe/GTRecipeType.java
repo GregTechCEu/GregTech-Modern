@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
@@ -59,6 +60,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private GTRecipeBuilder recipeBuilder;
     @Getter
     @Setter
+    private ChanceBoostFunction chanceFunction = ChanceBoostFunction.OVERCLOCK;
+    @Getter
+    @Setter
     private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);
     @Getter
     private final Byte2ObjectMap<IGuiTexture> slotOverlays = new Byte2ObjectArrayMap<>();
@@ -75,9 +79,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected SoundEntry sound;
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
-    @Setter
-    @Getter
-    protected int maxTooltips = 3;
     @Setter
     @Getter
     protected boolean isFuelRecipeType;
@@ -165,6 +166,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
         this.recipeUI.setUiBuilder(uiBuilder);
+        return this;
+    }
+
+    public GTRecipeType setMaxTooltips(int maxTooltips) {
+        this.recipeUI.setMaxTooltips(maxTooltips);
+        return this;
+    }
+
+    public GTRecipeType setXEIVisible(boolean XEIVisible) {
+        this.recipeUI.setXEIVisible(XEIVisible);
         return this;
     }
 

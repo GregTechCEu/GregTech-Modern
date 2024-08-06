@@ -401,6 +401,11 @@ public class MachineLang {
         provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
 
+        // Scanner
+        provider.add("gtceu.scanner.copy_stick_from", "§oStick to Copy");
+        provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");
+        provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
+
         // HPCA Components
         provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
         provider.add("gtceu.machine.hpca.heat_sink_component.tooltip", "Free cooling! Is anything free?");
@@ -903,6 +908,7 @@ public class MachineLang {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.energy.sink", "Sink");
         provider.add("gtceu.creative.energy.source", "Source");
+        provider.add("gtceu.creative.computation.average", "Average Requested CWUt");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
     }

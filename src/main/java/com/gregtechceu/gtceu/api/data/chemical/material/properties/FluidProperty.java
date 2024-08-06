@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 @NoArgsConstructor
 public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidStorage {
 
-    @Getter
     private final FluidStorageImpl storage = new FluidStorageImpl();
     @Getter
     @Setter

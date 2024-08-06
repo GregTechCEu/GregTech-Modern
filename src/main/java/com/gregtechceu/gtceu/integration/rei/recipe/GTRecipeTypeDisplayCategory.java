@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
@@ -24,6 +25,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
@@ -72,19 +74,32 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
     public static void registerDisplays(DisplayRegistry registry) {
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                registry.registerRecipeFiller(GTRecipe.class, gtRecipeType, GTRecipeDisplay::new);
+                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
+                    registry.registerRecipeFiller(GTRecipe.class, gtRecipeType, GTRecipeDisplay::new);
+
+                    if (gtRecipeType.isScanner()) {
+                        List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
+                        if (!scannerRecipes.isEmpty()) {
+                            scannerRecipes.stream()
+                                    .map(GTRecipeDisplay::new)
+                                    .forEach(registry::add);
+                        }
+                    }
+                }
             }
         }
     }
 
     public static void registerWorkStations(CategoryRegistry registry) {
         for (GTRecipeType gtRecipeType : GTRegistries.RECIPE_TYPES) {
-            for (MachineDefinition machine : GTRegistries.MACHINES) {
-                if (machine.getRecipeTypes() != null) {
-                    for (GTRecipeType type : machine.getRecipeTypes()) {
-                        if (type == gtRecipeType) {
-                            registry.addWorkstations(GTRecipeTypeDisplayCategory.CATEGORIES.apply(gtRecipeType),
-                                    EntryStacks.of(machine.asStack()));
+            if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
+                for (MachineDefinition machine : GTRegistries.MACHINES) {
+                    if (machine.getRecipeTypes() != null) {
+                        for (GTRecipeType type : machine.getRecipeTypes()) {
+                            if (type == gtRecipeType) {
+                                registry.addWorkstations(GTRecipeTypeDisplayCategory.CATEGORIES.apply(gtRecipeType),
+                                        EntryStacks.of(machine.asStack()));
+                            }
                         }
                     }
                 }

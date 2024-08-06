@@ -13,6 +13,7 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,9 @@ public class SizedIngredient extends Ingredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
+    @Getter
     protected final int amount;
+    @Getter
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
 
@@ -60,6 +63,10 @@ public class SizedIngredient extends Ingredient {
 
     public static Ingredient copy(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
+            if (sizedIngredient.inner instanceof IntProviderIngredient intProviderIngredient) {
+                return copy(intProviderIngredient);
+            }
+
             var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
             if (sizedIngredient.itemStacks != null) {
                 copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
@@ -68,16 +75,18 @@ public class SizedIngredient extends Ingredient {
             return copied;
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
             return circuit.copy();
+        } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
+            var copied = new IntProviderIngredient(intProviderIngredient.inner, intProviderIngredient.countProvider);
+            if (intProviderIngredient.itemStacks != null) {
+                copied.itemStacks = Arrays.stream(intProviderIngredient.itemStacks).map(ItemStack::copy)
+                        .toArray(ItemStack[]::new);
+            }
+            if (intProviderIngredient.sampledCount != null) {
+                copied.sampledCount = intProviderIngredient.sampledCount;
+            }
+            return copied;
         }
         return SizedIngredient.create(ingredient);
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public Ingredient getInner() {
-        return inner;
     }
 
     @Override
@@ -106,6 +115,9 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public ItemStack @NotNull [] getItems() {
+        if (getInner() instanceof IntProviderIngredient intProviderIngredient) {
+            return intProviderIngredient.getItems();
+        }
         if (itemStacks == null)
             itemStacks = Arrays.stream(inner.getItems()).map(i -> {
                 ItemStack ic = i.copy();
