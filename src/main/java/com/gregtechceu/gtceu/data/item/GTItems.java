@@ -2643,7 +2643,7 @@ public class GTItems {
                                     100_000_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                                     ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Leggings")
+            .lang("QuarkTech™ Suite Boots")
             .properties(p -> p.rarity(Rarity.RARE))
             .tag(CustomTags.PPE_ARMOR)
             .register();
