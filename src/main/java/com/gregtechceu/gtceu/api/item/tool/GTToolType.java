@@ -51,6 +51,7 @@ public class GTToolType {
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(ItemTags.PICKAXES)
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b
                     .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), -2.8F, 1))
                     .blockBreaking().attackDamage(1.0F)/* .behaviors(TorchPlaceBehavior.INSTANCE) */)
@@ -241,6 +242,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -259,6 +261,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -277,6 +280,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -295,6 +299,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -313,6 +318,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),

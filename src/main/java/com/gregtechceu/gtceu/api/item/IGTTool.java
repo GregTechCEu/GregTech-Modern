@@ -765,6 +765,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
     }
 
+    default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        if (stack.getItem() instanceof IGTTool gtTool) {
+            return isToolEffective(stack, state, gtTool.getToolClasses(stack), gtTool.getTotalHarvestLevel(stack));
+        }
+        return stack.isCorrectToolForDrops(state);
+    }
+
     @OnlyIn(Dist.CLIENT)
     static ItemColor tintColor() {
         return (itemStack, index) -> {

@@ -42,6 +42,25 @@ public class CustomTags {
     public static final TagKey<Item> OpV_CIRCUITS = TagUtil.createModItemTag("circuits/opv");
     public static final TagKey<Item> MAX_CIRCUITS = TagUtil.createModItemTag("circuits/max");
 
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Item>[] CIRCUITS = new TagKey[] {
+            ULV_CIRCUITS,
+            LV_CIRCUITS,
+            MV_CIRCUITS,
+            HV_CIRCUITS,
+            EV_CIRCUITS,
+            IV_CIRCUITS,
+            LuV_CIRCUITS,
+            ZPM_CIRCUITS,
+            UV_CIRCUITS,
+            UHV_CIRCUITS,
+            UEV_CIRCUITS,
+            UIV_CIRCUITS,
+            UXV_CIRCUITS,
+            OpV_CIRCUITS,
+            MAX_CIRCUITS
+    };
+
     public static final TagKey<Item> ULV_BATTERIES = TagUtil.createModItemTag("batteries/ulv");
     public static final TagKey<Item> LV_BATTERIES = TagUtil.createModItemTag("batteries/lv");
     public static final TagKey<Item> MV_BATTERIES = TagUtil.createModItemTag("batteries/mv");
@@ -52,6 +71,20 @@ public class CustomTags {
     public static final TagKey<Item> ZPM_BATTERIES = TagUtil.createModItemTag("batteries/zpm");
     public static final TagKey<Item> UV_BATTERIES = TagUtil.createModItemTag("batteries/uv");
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
+
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Item>[] BATTERIES = new TagKey[] {
+            ULV_BATTERIES,
+            LV_BATTERIES,
+            MV_BATTERIES,
+            HV_BATTERIES,
+            EV_BATTERIES,
+            IV_BATTERIES,
+            LuV_BATTERIES,
+            ZPM_BATTERIES,
+            UV_BATTERIES,
+            UHV_BATTERIES
+    };
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
 
