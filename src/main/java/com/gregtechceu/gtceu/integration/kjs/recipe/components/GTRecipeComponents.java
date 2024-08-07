@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 
 import net.minecraft.nbt.CompoundTag;
@@ -56,73 +58,35 @@ public class GTRecipeComponents {
     public static final RecipeComponent<RecipeCapability<?>> RECIPE_CAPABILITY = new RecipeComponent<>() {
 
         @Override
-        public String componentType() {
-            return "recipe_capability";
+        public Codec<RecipeCapability<?>> codec() {
+            return RecipeCapability.DIRECT_CODEC;
         }
 
         @Override
-        public Class<?> componentClass() {
-            return RecipeCapability.class;
-        }
-
-        @Override
-        public TypeDescJS constructorDescription(DescriptionContext ctx) {
-            return TypeDescJS.STRING;
-        }
-
-        @Override
-        public JsonElement write(RecipeJS recipe, RecipeCapability<?> value) {
-            return new JsonPrimitive(GTRegistries.RECIPE_CAPABILITIES.getKey(value));
-        }
-
-        @Override
-        public RecipeCapability<?> read(RecipeJS recipe, Object from) {
-            if (from instanceof RecipeCapability<?> capability) {
-                return capability;
-            }
-            return from instanceof CharSequence c ? GTRegistries.RECIPE_CAPABILITIES.get(c.toString()) :
-                    GTRegistries.RECIPE_CAPABILITIES.get(String.valueOf(from));
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(RecipeCapability.class);
         }
 
         @Override
         public String toString() {
-            return componentType();
+            return "recipe_capability";
         }
     };
     public static final RecipeComponent<ChanceLogic> CHANCE_LOGIC = new RecipeComponent<>() {
 
         @Override
-        public String componentType() {
-            return "chance_logic";
+        public Codec<ChanceLogic> codec() {
+            return GTRegistries.CHANCE_LOGICS.codec();
         }
 
         @Override
-        public Class<?> componentClass() {
-            return ChanceLogic.class;
-        }
-
-        @Override
-        public TypeDescJS constructorDescription(DescriptionContext ctx) {
-            return TypeDescJS.STRING;
-        }
-
-        @Override
-        public JsonElement write(RecipeJS recipe, ChanceLogic value) {
-            return new JsonPrimitive(GTRegistries.CHANCE_LOGICS.getKey(value));
-        }
-
-        @Override
-        public ChanceLogic read(RecipeJS recipe, Object from) {
-            if (from instanceof ChanceLogic capability) {
-                return capability;
-            }
-            return from instanceof CharSequence c ? GTRegistries.CHANCE_LOGICS.get(c.toString()) :
-                    GTRegistries.CHANCE_LOGICS.get(String.valueOf(from));
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(ChanceLogic.class);
         }
 
         @Override
         public String toString() {
-            return componentType();
+            return "chance_logic";
         }
     };
 
