@@ -256,40 +256,6 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
-        public GTRecipeJS itemInputsRanged(InputItem ingredient, int min, int max) {
-            return inputItemsRanged(ingredient.ingredient, min, max);
-        }
-
-        public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
-            return input(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient, UniformInt.of(min, max)));
-        }
-
-        public GTRecipeJS inputItemsRanged(ItemStack stack, int min, int max) {
-            return input(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
-        }
-
-        public GTRecipeJS inputItemsRanged(Item item, int min, int max) {
-            return inputItemsRanged(new ItemStack(item), min, max);
-        }
-
-        public GTRecipeJS inputItemsRanged(TagKey<Item> item, int min, int max) {
-            return input(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(SizedIngredient.create(item, 1), UniformInt.of(min, max)));
-        }
-
-        public GTRecipeJS inputItemsRanged(Supplier<? extends Item> item, int min, int max) {
-            return inputItemsRanged(Ingredient.of(item.get()), min, max);
-        }
-
-        public GTRecipeJS inputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
-            return inputItemsRanged(ChemicalHelper.getTag(orePrefix, material), min, max);
-        }
-
-        public GTRecipeJS inputItemsRanged(MachineDefinition machine, int min, int max) {
-            return inputItemsRanged(machine.asStack(), min, max);
-        }
-
         public GTRecipeJS itemOutputs(InputItem... outputs) {
             return outputItems(outputs);
         }
@@ -335,8 +301,8 @@ public interface GTRecipeSchema {
             return outputItems(InputItem.of(machine.asStack(count)));
         }
 
-        public GTRecipeJS itemOutputsRanged(OutputItem ingredient, int min, int max) {
-            return outputItemsRanged(ingredient.item, min, max);
+        public GTRecipeJS itemOutputsRanged(InputItem ingredient, int min, int max) {
+            return output(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient.ingredient, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
@@ -348,21 +314,8 @@ public interface GTRecipeSchema {
                     new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
         }
 
-        public GTRecipeJS outputItemsRanged(Item item, int min, int max) {
-            return outputItemsRanged(new ItemStack(item), min, max);
-        }
-
-        public GTRecipeJS outputItemsRanged(TagKey<Item> item, int min, int max) {
-            return output(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(SizedIngredient.create(item, 1), UniformInt.of(min, max)));
-        }
-
         public GTRecipeJS outputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
             return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), min, max);
-        }
-
-        public GTRecipeJS outputItemsRanged(MachineDefinition machine, int min, int max) {
-            return outputItemsRanged(machine.asStack(), min, max);
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
@@ -371,17 +324,6 @@ public interface GTRecipeSchema {
             this.chance = 0;
             this.maxChance = 0;
             inputItems(itemStack);
-            this.chance = lastChance;
-            this.maxChance = lastMaxChance;
-            return this;
-        }
-
-        public GTRecipeJS notConsumable(Supplier<? extends Item> item) {
-            int lastChance = this.chance;
-            int lastMaxChance = this.maxChance;
-            this.chance = 0;
-            this.maxChance = 0;
-            inputItems(item);
             this.chance = lastChance;
             this.maxChance = lastMaxChance;
             return this;
@@ -426,23 +368,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        @HideFromJS
-        public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
-            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
-            }
-            int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
-            this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
-            outputItems(stack);
-            this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
-            return this;
-        }
-
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -460,8 +385,9 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        @HideFromJS
-        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
+
+
+        public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                         ChanceLogic.getMaxChancedValue(), chance, new Throwable());
@@ -471,7 +397,7 @@ public interface GTRecipeSchema {
             int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
             this.tierChanceBoost = tierChanceBoost;
-            outputFluids(stack);
+            outputItems(stack);
             this.chance = lastChance;
             this.tierChanceBoost = lastTierChanceBoost;
             return this;
@@ -503,7 +429,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = Integer.parseInt(split[0]);
+                    chance = (int)Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
@@ -561,6 +487,27 @@ public interface GTRecipeSchema {
             return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
         }
 
+
+        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
+            int lastChance = this.chance;
+            int lastTierChanceBoost = this.tierChanceBoost;
+            this.chance = chance;
+            this.tierChanceBoost = tierChanceBoost;
+            outputFluids(stack);
+            this.chance = lastChance;
+            this.tierChanceBoost = lastTierChanceBoost;
+            return this;
+        }
+
+        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, double chance, double tierChanceBoost) {
+            return chancedFluidOutput(stack, (int) chance, (int) tierChanceBoost);
+        }
+
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
             if (stack.getAmount() == 0) {
                 return this;
@@ -579,7 +526,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = Integer.parseInt(split[0]);
+                    chance = (int)Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
