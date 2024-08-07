@@ -302,7 +302,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS itemOutputsRanged(InputItem ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient.ingredient, UniformInt.of(min, max)));
+            return output(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(ingredient.ingredient, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
@@ -385,8 +386,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-
-
         public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
@@ -429,7 +428,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = (int)Double.parseDouble(split[0]);
+                    chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
@@ -487,7 +486,6 @@ public interface GTRecipeSchema {
             return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
         }
 
-
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
@@ -526,7 +524,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = (int)Double.parseDouble(split[0]);
+                    chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
