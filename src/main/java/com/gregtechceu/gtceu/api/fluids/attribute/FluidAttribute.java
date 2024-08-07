@@ -11,13 +11,13 @@ import java.util.function.Consumer;
 public final class FluidAttribute {
 
     private final ResourceLocation resourceLocation;
-    private final Consumer<List<Component>> fluidTooltip;
-    private final Consumer<List<Component>> containerTooltip;
+    private final Consumer<Consumer<Component>> fluidTooltip;
+    private final Consumer<Consumer<Component>> containerTooltip;
     private final int hashCode;
 
     public FluidAttribute(@NotNull ResourceLocation resourceLocation,
-                          @NotNull Consumer<List<@NotNull Component>> fluidTooltip,
-                          @NotNull Consumer<List<@NotNull Component>> containerTooltip) {
+                          @NotNull Consumer<Consumer<@NotNull Component>> fluidTooltip,
+                          @NotNull Consumer<Consumer<@NotNull Component>> containerTooltip) {
         this.resourceLocation = resourceLocation;
         this.fluidTooltip = fluidTooltip;
         this.containerTooltip = containerTooltip;
@@ -28,11 +28,11 @@ public final class FluidAttribute {
         return resourceLocation;
     }
 
-    public void appendFluidTooltips(@NotNull List<@NotNull Component> tooltip) {
+    public void appendFluidTooltips(@NotNull Consumer<@NotNull Component> tooltip) {
         fluidTooltip.accept(tooltip);
     }
 
-    public void appendContainerTooltips(@NotNull List<@NotNull Component> tooltip) {
+    public void appendContainerTooltips(@NotNull Consumer<@NotNull Component> tooltip) {
         containerTooltip.accept(tooltip);
     }
 
