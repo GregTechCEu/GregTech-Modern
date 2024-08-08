@@ -280,7 +280,7 @@ public class SecondDegreeMaterials {
         SteelMagnetic = new Material.Builder(GTCEu.id("magnetic_steel"))
                 .ingot()
                 .color(0xa7a7a7).secondaryColor(0x121c37).iconSet(MAGNETIC)
-                .flags(GENERATE_ROD, IS_MAGNETIC)
+                .flags(GENERATE_ROD, IS_MAGNETIC, GENERATE_DENSE)
                 .components(Steel, 1)
                 .ingotSmeltInto(Steel)
                 .arcSmeltInto(Steel)
