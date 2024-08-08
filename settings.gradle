@@ -47,6 +47,7 @@ dependencyResolutionManagement {
         def ldLibVersion = "1.0.26"
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.4"
+        def lombokPluginVersion = "8.7.1"
         
         forge {
             version("forgeShortVersion", forgeVersion)
@@ -130,6 +131,9 @@ dependencyResolutionManagement {
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)
+
+            def lombok = version("lombok", lombokPluginVersion)
+            plugin("lombok", "io.freefair.lombok").versionRef(lombok)
         }
     }
 }
