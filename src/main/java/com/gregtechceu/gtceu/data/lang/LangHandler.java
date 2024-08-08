@@ -267,6 +267,8 @@ public class LangHandler {
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
+        provider.add("metaarmor.nms.boosted_jump.enabled", "NanoMuscle™ Suite: Jump Boost Enabled");
+        provider.add("metaarmor.nms.boosted_jump.disabled", "NanoMuscle™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
@@ -1189,6 +1191,8 @@ public class LangHandler {
         provider.add("fluid.tile.water", "Water");
         provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
+        provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
+        provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
         provider.add("gtceu.debug.f3_h.enabled",
@@ -1206,6 +1210,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
+        provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         // gui
