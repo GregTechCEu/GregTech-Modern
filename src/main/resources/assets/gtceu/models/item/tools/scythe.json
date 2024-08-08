@@ -1,8 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "gtceu:item/tools/handle",
-    "layer1": "gtceu:item/tools/scythe",
-    "layer2": "gtceu:item/tools/scythe_overlay"
+    "layer0": "gtceu:item/tools/handle_scythe",
+    "layer1": "gtceu:item/tools/scythe"
   }
 }

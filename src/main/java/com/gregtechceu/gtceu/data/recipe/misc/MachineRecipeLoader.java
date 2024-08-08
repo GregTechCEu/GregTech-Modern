@@ -1420,7 +1420,7 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : MULTI_HATCH_TIERS) {
+        for (int tier : BUFFER_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
             var inputBuffer = INPUT_BUFFER[tier];
