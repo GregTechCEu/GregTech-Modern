@@ -5736,6 +5736,7 @@
   "recipe.condition.pos_y.tooltip": "Y Level: %d <= Y <= %d",
   "recipe.condition.rain.tooltip": "Rain Level: %d",
   "recipe.condition.rock_breaker.tooltip": "Fluid blocks around",
+  "recipe.condition.adjacent_block.tooltip": "Blocks around",
   "recipe.condition.rpm.tooltip": "RPM: %d",
   "recipe.condition.steam_vent.tooltip": "Clean steam vent",
   "recipe.condition.thunder.tooltip": "Thunder Level: %d",
