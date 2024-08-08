@@ -51,6 +51,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     protected static final Map<Holder<MobEffect>, Integer> potionRemovalCost = new IdentityHashMap<>();
     private float charge = 0.0F;
     private static final byte RUNNING_TIMER = 10; // .5 seconds
+    private static final byte JUMPING_TIMER = 10; // .5 seconds
     private static final double LEGGING_ACCEL = 0.085D;
 
     @OnlyIn(Dist.CLIENT)
@@ -80,6 +81,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         byte toggleTimer = data.toggleTimer();
         int nightVisionTimer = data.nightVisionTimer();
         byte runningTimer = data.runningTimer();
+        byte boostedJumpTimer = data.boostedJumpTimer();
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
@@ -88,24 +90,6 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
-            int air = player.getAirSupply();
-            if (item.canUse(energyPerUse / 100) && air < 100) {
-                player.setAirSupply(air + 200);
-                item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                ret = true;
-            }
-
-            if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
-                int slotId = -1;
-                IItemHandler playerInv = player.getCapability(Capabilities.ItemHandler.ENTITY);
-                if (playerInv instanceof IItemHandlerModifiable items) {
-                    for (int i = 0; i < items.getSlots(); i++) {
-                        ItemStack current = items.getStackInSlot(i);
-                        if (current.getFoodProperties(player) != null) {
-                            slotId = i;
-                            break;
-                        }
-                    }
             ret = supplyAir(item, player) || supplyFood(item, player);
 
             removeNegativeEffects(item, player);
@@ -182,36 +166,59 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (runningTimer > 0) runningTimer--;
             final int finalRunningTimer = runningTimer;
             itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                    data1 -> data1.setRunningTimr(finalRunningTimer));
+                    data1 -> data1.setRunningTimer(finalRunningTimer));
         } else if (type == ArmorItem.Type.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = KeyBind.VANILLA_JUMP.isKeyDown(player);
-            if (!world.isClientSide) {
-                boolean onGround = data.onGround();
-                if (onGround && !player.onGround() && jumping) {
-                    item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                    ret = true;
-                }
-            } else {
-                if (canUseEnergy && player.onGround()) {
-                    this.charge = 1.0F;
-                }
+            boolean boostedJump = data.boostedJump();
+            if (boostedJumpTimer == 0 && KeyBind.BOOTS_ENABLE.isKeyDown(player)) {
+                boostedJump = !boostedJump;
+                boostedJumpTimer = JUMPING_TIMER;
+                player.displayClientMessage(Component
+                        .translatable("metaarmor.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+            }
+            if (boostedJump) {
+                if (!world.isClientSide) {
+                    boolean onGround = data.onGround();
+                    if (onGround && !player.onGround() && jumping) {
+                        item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                        ret = true;
+                    }
 
-                Vec3 delta = player.getDeltaMovement();
-                if (delta.y >= 0.0D && this.charge > 0.0F && !player.isInWater()) {
-                    if (jumping) {
-                        if (this.charge == 1.0F) {
-                            player.setDeltaMovement(delta.x * 3.6D, delta.y, delta.z * 3.6D);
+                    if (player.onGround() != onGround) {
+                        final boolean finalOnGround = onGround;
+                        itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                                data1 -> data1.setOnGround(finalOnGround));
+                    }
+                } else {
+                    if (canUseEnergy && player.onGround()) {
+                        this.charge = 1.0F;
+                    }
+
+                    Vec3 delta = player.getDeltaMovement();
+                    if (delta.y >= 0.0D && this.charge > 0.0F && !player.isInWater()) {
+                        if (jumping) {
+                            if (this.charge == 1.0F) {
+                                player.setDeltaMovement(delta.x * 3.6D, delta.y, delta.z * 3.6D);
+                            }
+                            // gives an arc path for movement force
+                            player.addDeltaMovement(new Vec3(0.0, this.charge * 0.32, 0.0));
+                            this.charge = (float) (this.charge * 0.7D);
+                        } else if (this.charge < 1.0F) {
+                            this.charge = 0.0F;
                         }
-                        // gives an arc path for movement force
-                        player.addDeltaMovement(new Vec3(0.0, this.charge * 0.32, 0.0));
-                        this.charge = (float) (this.charge * 0.7D);
-                    } else if (this.charge < 1.0F) {
-                        this.charge = 0.0F;
                     }
                 }
             }
             updateStepHeight(player);
+
+            if (boostedJumpTimer > 0) boostedJumpTimer--;
+
+            final boolean finalBoostedJump = boostedJump;
+            final byte finalBoostedJumpTimer = boostedJumpTimer;
+            itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                    data1 -> data1.setBoostedJump(finalBoostedJump)
+                            .setBoostedJumpTimer(finalBoostedJumpTimer));
         }
 
         if (ret) {
