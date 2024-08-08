@@ -119,7 +119,7 @@ public class TagPrefix {
                     GTCEu.id("block/red_granite"));
 
     public static final TagPrefix oreMarble = oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Red Granite %s Ore")
+            .langValue("Marble %s Ore")
             .registerOre(
                     () -> GTBlocks.MARBLE.getDefaultState(), () -> GTMaterials.Marble, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -226,6 +226,7 @@ public class TagPrefix {
             .idPattern("purified_%s_ore")
             .defaultTagPath("purified_ores/%s")
             .defaultTagPath("purified_ores")
+            .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
@@ -991,6 +992,11 @@ public class TagPrefix {
         return this;
     }
 
+    public TagPrefix customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+        this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
+        return this;
+    }
+
     public TagPrefix miningToolTag(TagKey<Block> tag) {
         this.miningToolTag.add(tag);
         return this;
@@ -1024,12 +1030,13 @@ public class TagPrefix {
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@NotNull Material mat) {
         return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat))
+                .filter(Objects::nonNull)
                 .toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getAllItemTags(@NotNull Material mat) {
-        return tags.stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+        return tags.stream().map(type -> type.getTag(this, mat)).filter(Objects::nonNull).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")

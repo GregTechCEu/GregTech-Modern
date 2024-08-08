@@ -38,6 +38,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new StainedColorProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new TransformerBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new PrimitivePumpBlockProvider(), BlockEntity.class);
 
         registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }
@@ -59,6 +60,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new StainedColorProvider(), Block.class);
         registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
         registration.registerBlockComponent(new TransformerBlockProvider(), Block.class);
+        registration.registerBlockComponent(new PrimitivePumpBlockProvider(), Block.class);
 
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
