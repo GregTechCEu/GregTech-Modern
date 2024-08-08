@@ -321,23 +321,17 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
             int lastChance = this.chance;
-            int lastMaxChance = this.maxChance;
             this.chance = 0;
-            this.maxChance = 0;
             inputItems(itemStack);
             this.chance = lastChance;
-            this.maxChance = lastMaxChance;
             return this;
         }
 
         public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
             int lastChance = this.chance;
-            int lastMaxChance = this.maxChance;
             this.chance = 0;
-            this.maxChance = 0;
             inputItems(orePrefix, material);
             this.chance = lastChance;
-            this.maxChance = lastMaxChance;
             return this;
         }
 

@@ -323,26 +323,6 @@ public class GTRecipeBuilder {
         return inputItems(machine.asStack(count));
     }
 
-    public GTRecipeBuilder inputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return inputItems(IntProviderIngredient.create(SizedIngredient.create(output), intProvider));
-    }
-
-    public GTRecipeBuilder inputItemsRanged(Item input, IntProvider intProvider) {
-        return inputItemsRanged(new ItemStack(input), intProvider);
-    }
-
-    public GTRecipeBuilder inputItemsRanged(Supplier<? extends ItemLike> output, IntProvider intProvider) {
-        return inputItemsRanged(new ItemStack(output.get().asItem()), intProvider);
-    }
-
-    public GTRecipeBuilder inputItemsRanged(TagPrefix orePrefix, Material material, IntProvider intProvider) {
-        return inputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), intProvider);
-    }
-
-    public GTRecipeBuilder inputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
-        return inputItemsRanged(machine.asStack(), intProvider);
-    }
-
     public GTRecipeBuilder outputItems(Ingredient... inputs) {
         return output(ItemRecipeCapability.CAP, inputs);
     }
