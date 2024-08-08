@@ -50,9 +50,9 @@ public class PolarizingRecipeHandler {
     }
 
     private static int getVoltageMultiplier(Material material) {
-        if (material == GTMaterials.Steel || material == GTMaterials.Iron)  return VH[LV];
-        if (material == GTMaterials.Neodymium)  return VH[HV];
-        if (material == GTMaterials.Samarium)  return VH[IV];
+        if (material == GTMaterials.Steel || material == GTMaterials.Iron) return VH[LV];
+        if (material == GTMaterials.Neodymium) return VH[HV];
+        if (material == GTMaterials.Samarium) return VH[IV];
         return material.getBlastTemperature() >= 1200 ? VA[LV] : 2;
     }
 }
