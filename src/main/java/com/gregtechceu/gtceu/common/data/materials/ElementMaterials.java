@@ -24,7 +24,7 @@ public class ElementMaterials {
 
     public static void register() {
         Actinium = new Material.Builder(GTCEu.id("actinium"))
-                .color(0xC3D1FF).secondaryColor(0x353d41).iconSet(METALLIC)
+                .color(0xC3D1FF).secondaryColor(0x397090).iconSet(METALLIC)
                 .element(GTElements.Ac)
                 .buildAndRegister();
 
