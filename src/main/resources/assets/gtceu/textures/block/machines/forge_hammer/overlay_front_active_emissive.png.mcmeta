@@ -1,0 +1,12 @@
+{
+  "animation": {
+    "frametime": 2,
+    "frames": [
+      { "index": 0, "time": 5 },
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}
