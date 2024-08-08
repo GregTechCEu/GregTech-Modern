@@ -3,7 +3,35 @@
     "interpolate": false,
     "frametime": 2,
     "frames": [
-      0, 1, 2, 3, 4, 3, 2, 1
+      { "index": 1, "time": 40 },
+      0,
+	  3,
+      { "index": 5, "time": 60 },
+      7,
+	  8,
+	  7,
+	  3,
+      { "index": 4, "time": 50 },
+	  0,
+      { "index": 6, "time": 30 },
+      7,
+	  8,
+	  7,
+      { "index": 1, "time": 40 },
+      0,
+	  3,
+      { "index": 5, "time": 60 },
+      7,
+	  8,
+	  7,
+	  3,
+      { "index": 4, "time": 50 },
+	  0,
+      { "index": 6, "time": 30 },
+      { "index": 0, "time": 120 },
+      7,
+	  8,
+	  7
     ]
   }
 }
