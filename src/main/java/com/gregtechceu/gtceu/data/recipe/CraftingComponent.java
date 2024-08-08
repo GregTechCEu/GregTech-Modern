@@ -135,6 +135,7 @@ public class CraftingComponent {
                 { 6, GTItems.ELECTRIC_PUMP_LuV.asStack() },
                 { 7, GTItems.ELECTRIC_PUMP_ZPM.asStack() },
                 { 8, GTItems.ELECTRIC_PUMP_UV.asStack() },
+                { FALLBACK, GTItems.ELECTRIC_PUMP_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
