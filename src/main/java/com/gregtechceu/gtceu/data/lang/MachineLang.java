@@ -596,7 +596,7 @@ public class MachineLang {
         provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
                 "Allows to run up to 256 recipes in parallel.");
-        //Hatch Limits - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
+        // Hatch Limits - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
         provider.add("gtceu.multiblock.exact_hatch_1.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
         // More tooltips
         provider.add("gtceu.machine.primitive_water_pump.tooltip", "Endervoir at Home");
