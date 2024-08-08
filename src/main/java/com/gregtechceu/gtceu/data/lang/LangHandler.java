@@ -878,9 +878,9 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
-        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of Steam while working");
+        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of §fSteam §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant",
-                "Uses §f%d mB/hr §7of Lubricant while working");
+                "Uses §f%d mB/hr §7of §6Lubricant §fwhile working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
@@ -905,8 +905,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
-        provider.add("gtceu.recipe.environmental_hazard.reverse", "Area must be free of %s");
-        provider.add("gtceu.recipe.environmental_hazard", "Area must have %s");
+        provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");
+        provider.add("gtceu.recipe.environmental_hazard", "§cArea must have %s");
         provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
         provider.add("gtceu.recipe.research", "Requires Research");
