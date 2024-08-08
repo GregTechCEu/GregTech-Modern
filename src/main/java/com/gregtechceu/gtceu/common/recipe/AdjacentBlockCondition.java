@@ -4,15 +4,18 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 
 public class AdjacentBlockCondition extends RecipeCondition {
 
     public final static AdjacentBlockCondition INSTANCE = new AdjacentBlockCondition();
+
     @Override
     public String getType() {
         return "adjacent_block";
