@@ -5,12 +5,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.*;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -23,7 +26,11 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -47,6 +54,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public interface GTRecipeSchema {
@@ -187,35 +195,36 @@ public interface GTRecipeSchema {
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
-        public GTKubeRecipe outputFluids(FluidStack... outputs) {
-            return output(FluidRecipeCapability.CAP, (Object[]) outputs);
+        public GTKubeRecipe itemOutputsRanged(SizedIngredient ingredient, int min, int max) {
+            return output(ItemRecipeCapability.CAP, new SizedIngredient(new IntProviderIngredient(ingredient.ingredient(), UniformInt.of(min, max)).toVanilla(), 1));
         }
 
-        public GTKubeRecipe inputStress(float stress) {
-            return input(StressRecipeCapability.CAP, stress);
+        public GTKubeRecipe outputItemsRanged(Ingredient ingredient, int min, int max) {
+            return output(ItemRecipeCapability.CAP, new SizedIngredient(new IntProviderIngredient(ingredient, UniformInt.of(min, max)).toVanilla(), 1));
         }
 
-        public GTKubeRecipe outputStress(float stress) {
-            return output(StressRecipeCapability.CAP, stress);
+        public GTKubeRecipe outputItemsRanged(ItemStack stack, int min, int max) {
+            return output(ItemRecipeCapability.CAP,
+                    new IntProviderIngredient(Ingredient.of(stack), UniformInt.of(min, max)));
+        }
+
+        public GTKubeRecipe outputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+            return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), min, max);
         }
 
         public GTKubeRecipe notConsumableItem(SizedIngredient itemStack) {
             int lastChance = this.chance;
             this.chance = 0;
-            this.maxChance = 0;
             inputItems(itemStack);
             this.chance = lastChance;
-            this.maxChance = lastMaxChance;
             return this;
         }
 
-        public GTKubeRecipe notConsumableFluid(SizedFluidIngredient fluid) {
+        public GTKubeRecipe notConsumableItem(TagPrefix orePrefix, Material material) {
             int lastChance = this.chance;
             this.chance = 0;
-            this.maxChance = 0;
-            inputFluids(itemStack);
+            inputItems(SizedIngredient.of(ChemicalHelper.get(orePrefix, material).getItem(), 1));
             this.chance = lastChance;
-            this.maxChance = lastMaxChance;
             return this;
         }
 
@@ -257,7 +266,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
+        public GTKubeRecipe chancedFluidInput(SizedFluidIngredient stack, int chance,
                                             int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
@@ -274,32 +283,16 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe chancedFluidOutput(FluidStack stack, int chance, int tierChanceBoost) {
-            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
-            }
-            int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
-            this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
-            outputFluids(stack);
-            this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
-            return this;
-        }
-
         public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), 1), chance, tierChanceBoost);
         }
 
         public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), count), chance, tierChanceBoost);
         }
 
-        public GTKubeRecipe chancedOutput(InputItem stack, String fraction, int tierChanceBoost) {
-            if (stack.isEmpty()) {
+        public GTKubeRecipe chancedOutput(SizedIngredient stack, String fraction, int tierChanceBoost) {
+            if (stack.count() == 0 || stack.ingredient().isEmpty()) {
                 return this;
             }
 
@@ -316,7 +309,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = Integer.parseInt(split[0]);
+                    chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
@@ -366,7 +359,7 @@ public interface GTRecipeSchema {
 
         public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(prefix, material).getItem(), count), fraction,
                     tierChanceBoost);
         }
 
@@ -374,8 +367,28 @@ public interface GTRecipeSchema {
             return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
         }
 
+        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, int chance, int tierChanceBoost) {
+            if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
+                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                return this;
+            }
+            int lastChance = this.chance;
+            int lastTierChanceBoost = this.tierChanceBoost;
+            this.chance = chance;
+            this.tierChanceBoost = tierChanceBoost;
+            outputFluids(stack);
+            this.chance = lastChance;
+            this.tierChanceBoost = lastTierChanceBoost;
+            return this;
+        }
+
+        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, double chance, double tierChanceBoost) {
+            return chancedFluidOutput(stack, (int) chance, (int) tierChanceBoost);
+        }
+
         public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, String fraction, int tierChanceBoost) {
-            if (stack.getAmount() == 0) {
+            if (stack.amount() == 0) {
                 return this;
             }
 
@@ -392,7 +405,7 @@ public interface GTRecipeSchema {
 
             if (split.length == 1) {
                 try {
-                    chance = Integer.parseInt(split[0]);
+                    chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
                     GTCEu.LOGGER.error(
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
@@ -485,11 +498,12 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
-            return input(FluidRecipeCapability.CAP, (Object[]) inputs);
+        public GTKubeRecipe outputFluids(FluidStack... outputs) {
+            return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTKubeRecipe outputFluids(FluidStack... outputs) {
+        @HideFromJS
+        public GTKubeRecipe outputFluids(SizedFluidIngredient... outputs) {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
@@ -751,19 +765,16 @@ public interface GTRecipeSchema {
     RecipeKey<CapabilityMap> ALL_TICK_OUTPUTS = GTRecipeComponents.TICK_OUT.key("tickOutputs", ComponentRole.OUTPUT)
             .defaultOptional();
 
-    RecipeKey<CapabilityMap> ALL_OUTPUTS = GTRecipeComponents.OUT.key("outputs").defaultOptional();
-    RecipeKey<CapabilityMap> ALL_TICK_OUTPUTS = GTRecipeComponents.TICK_OUT.key("tickOutputs").defaultOptional();
-
     RecipeKey<Map<RecipeCapability<?>, ChanceLogic>> INPUT_CHANCE_LOGICS = GTRecipeComponents.CHANCE_LOGIC_MAP
-            .key("inputChanceLogics").defaultOptional();
+            .key("inputChanceLogics", ComponentRole.OTHER).defaultOptional();
     RecipeKey<Map<RecipeCapability<?>, ChanceLogic>> OUTPUT_CHANCE_LOGICS = GTRecipeComponents.CHANCE_LOGIC_MAP
-            .key("outputChanceLogics").defaultOptional();
+            .key("outputChanceLogics", ComponentRole.OTHER).defaultOptional();
     RecipeKey<Map<RecipeCapability<?>, ChanceLogic>> TICK_INPUT_CHANCE_LOGICS = GTRecipeComponents.CHANCE_LOGIC_MAP
-            .key("tickInputChanceLogics").defaultOptional();
+            .key("tickInputChanceLogics", ComponentRole.OTHER).defaultOptional();
     RecipeKey<Map<RecipeCapability<?>, ChanceLogic>> TICK_OUTPUT_CHANCE_LOGICS = GTRecipeComponents.CHANCE_LOGIC_MAP
-            .key("tickOutputChanceLogics").defaultOptional();
+            .key("tickOutputChanceLogics", ComponentRole.OTHER).defaultOptional();
 
-    RecipeSchema SCHEMA = new RecipeSchema(GTKubeRecipe.class, GTKubeRecipe::new, DURATION, DATA, CONDITIONS, ALL_INPUTS,
+    RecipeSchema SCHEMA = new RecipeSchema(DURATION, DATA, CONDITIONS, ALL_INPUTS,
             ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS,
             INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS,
             IS_FUEL)

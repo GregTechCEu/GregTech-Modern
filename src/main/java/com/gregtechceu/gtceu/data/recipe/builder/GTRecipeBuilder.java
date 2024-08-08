@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.common.recipe.*;
@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -333,17 +334,8 @@ public class GTRecipeBuilder {
         return inputItems(machine.asStack(count));
     }
 
-    // for kjs
-    public GTRecipeBuilder itemOutputs(ItemStack... outputs) {
-        return outputItems(outputs);
-    }
-
-    public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry) {
-        return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
-    }
-
-    public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry, int count) {
-        return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+    public GTRecipeBuilder outputItems(SizedIngredient... inputs) {
+        return output(ItemRecipeCapability.CAP, inputs);
     }
 
     public GTRecipeBuilder outputItems(ItemStack output) {
@@ -398,6 +390,26 @@ public class GTRecipeBuilder {
         return outputItems(machine.asStack(count));
     }
 
+    public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
+        return outputItems(new SizedIngredient(new IntProviderIngredient(Ingredient.of(output), intProvider).toVanilla(), 1));
+    }
+
+    public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {
+        return outputItemsRanged(new ItemStack(input), intProvider);
+    }
+
+    public GTRecipeBuilder outputItemsRanged(Supplier<? extends ItemLike> output, IntProvider intProvider) {
+        return outputItemsRanged(new ItemStack(output.get().asItem()), intProvider);
+    }
+
+    public GTRecipeBuilder outputItemsRanged(TagPrefix orePrefix, Material material, IntProvider intProvider) {
+        return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), intProvider);
+    }
+
+    public GTRecipeBuilder outputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
+        return outputItemsRanged(machine.asStack(), intProvider);
+    }
+
     public GTRecipeBuilder notConsumable(ItemStack itemStack) {
         int lastChance = this.chance;
         this.chance = 0;
@@ -434,6 +446,14 @@ public class GTRecipeBuilder {
         int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material);
+        this.chance = lastChance;
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumable(TagPrefix orePrefix, Material material, int count) {
+        int lastChance = this.chance;
+        this.chance = 0;
+        inputItems(orePrefix, material, count);
         this.chance = lastChance;
         return this;
     }
