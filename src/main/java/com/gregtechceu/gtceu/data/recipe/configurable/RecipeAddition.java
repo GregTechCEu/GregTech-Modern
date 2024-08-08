@@ -1140,7 +1140,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "oxidized_cut_copper_slab_saw",
                 new ItemStack(Blocks.OXIDIZED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.OXIDIZED_CUT_COPPER));
         VanillaRecipeHelper.addShapedRecipe(provider, "weathered_cut_copper_slab_saw",
-                new ItemStack(Blocks.WEATHERED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.OXIDIZED_CUT_COPPER));
+                new ItemStack(Blocks.WEATHERED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WEATHERED_CUT_COPPER));
         VanillaRecipeHelper.addShapedRecipe(provider, "waxed_cut_copper_slab_saw",
                 new ItemStack(Blocks.WAXED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WAXED_CUT_COPPER));
         VanillaRecipeHelper.addShapedRecipe(provider, "waxed_exposed_cut_copper_slab_saw",
@@ -1151,7 +1151,7 @@ public class RecipeAddition {
                 new ItemStack(Blocks.WAXED_OXIDIZED_CUT_COPPER));
         VanillaRecipeHelper.addShapedRecipe(provider, "waxed_weathered_cut_copper_slab_saw",
                 new ItemStack(Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB), "sS", 'S',
-                new ItemStack(Blocks.WAXED_OXIDIZED_CUT_COPPER));
+                new ItemStack(Blocks.WAXED_WEATHERED_CUT_COPPER));
         VanillaRecipeHelper.addShapedRecipe(provider, "purpur_slab_saw", new ItemStack(Blocks.PURPUR_SLAB), "sS", 'S',
                 new ItemStack(Blocks.PURPUR_BLOCK));
         VanillaRecipeHelper.addShapedRecipe(provider, "end_stone_brick_slab_saw",
