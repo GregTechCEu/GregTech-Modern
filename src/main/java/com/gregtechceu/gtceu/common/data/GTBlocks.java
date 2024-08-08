@@ -40,7 +40,6 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
