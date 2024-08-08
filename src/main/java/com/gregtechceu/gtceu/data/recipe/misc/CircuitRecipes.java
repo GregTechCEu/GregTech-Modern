@@ -262,44 +262,44 @@ public class CircuitRecipes {
 
         // Wafer cutting
         CUTTER_RECIPES.recipeBuilder("cut_hasoc").duration(900).EUt(VA[IV]).inputItems(HIGHLY_ADVANCED_SOC_WAFER)
-                .outputItems(HIGHLY_ADVANCED_SOC, 6)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(HIGHLY_ADVANCED_SOC, 6).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_asoc").duration(900).EUt(VA[EV]).inputItems(ADVANCED_SYSTEM_ON_CHIP_WAFER)
-                .outputItems(ADVANCED_SYSTEM_ON_CHIP, 6)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(ADVANCED_SYSTEM_ON_CHIP, 6).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_soc").duration(900).EUt(VA[HV]).inputItems(SYSTEM_ON_CHIP_WAFER)
-                .outputItems(SYSTEM_ON_CHIP, 6)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(SYSTEM_ON_CHIP, 6).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_ssoc").duration(900).EUt(64).inputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER)
                 .outputItems(SIMPLE_SYSTEM_ON_CHIP, 6).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_ram").duration(900).EUt(96).inputItems(RANDOM_ACCESS_MEMORY_WAFER)
                 .outputItems(RANDOM_ACCESS_MEMORY, 32).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_qbit_cpu").duration(900).EUt(VA[EV])
                 .inputItems(QUBIT_CENTRAL_PROCESSING_UNIT_WAFER).outputItems(QUBIT_CENTRAL_PROCESSING_UNIT, 4)
-                /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_ulpic").duration(900).EUt(VA[MV])
                 .inputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER).outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT, 6)
                 .save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_lpic").duration(900).EUt(VA[HV])
                 .inputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER).outputItems(LOW_POWER_INTEGRATED_CIRCUIT, 4)
-                /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_pic").duration(900).EUt(VA[EV]).inputItems(POWER_INTEGRATED_CIRCUIT_WAFER)
-                .outputItems(POWER_INTEGRATED_CIRCUIT, 4)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(POWER_INTEGRATED_CIRCUIT, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_hpic").duration(900).EUt(VA[IV])
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT_WAFER).outputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_uhpic").duration(900).EUt(VA[LuV])
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER)
                 .outputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_nor").duration(900).EUt(192).inputItems(NOR_MEMORY_CHIP_WAFER)
-                .outputItems(NOR_MEMORY_CHIP, 16)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(NOR_MEMORY_CHIP, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_nand").duration(900).EUt(192).inputItems(NAND_MEMORY_CHIP_WAFER)
-                .outputItems(NAND_MEMORY_CHIP, 32)/* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .outputItems(NAND_MEMORY_CHIP, 32).cleanroom(CleanroomType.CLEANROOM).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_cpu").duration(900).EUt(VA[MV]).inputItems(CENTRAL_PROCESSING_UNIT_WAFER)
                 .outputItems(CENTRAL_PROCESSING_UNIT, 8).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_ilc").duration(900).EUt(64).inputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER)
                 .outputItems(INTEGRATED_LOGIC_CIRCUIT, 8).save(provider);
         CUTTER_RECIPES.recipeBuilder("cut_nano_cpu").duration(900).EUt(VA[HV])
                 .inputItems(NANO_CENTRAL_PROCESSING_UNIT_WAFER).outputItems(NANO_CENTRAL_PROCESSING_UNIT, 8)
-                /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
+                .cleanroom(CleanroomType.CLEANROOM).save(provider);
     }
 
     private static void componentRecipes(Consumer<FinishedRecipe> provider) {
