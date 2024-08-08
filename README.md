@@ -27,7 +27,8 @@ Additionally, the [Minecraft Development plugin](https://plugins.jetbrains.com/p
 
 
 ## Credited Works
-- Most textures are originally from the **[ZedTech GTCEu Resourcepack](https://github.com/brachy84/zedtech-ceu)**, with some changes made by the community.
+- Most textures are originally from [Gregtech: Refreshed](https://modrinth.com/resourcepack/gregtech-refreshed) by @ULSTICK. With some consistency edits and additions by @Ghostipedia.
+- Some textures are originally from the **[ZedTech GTCEu Resourcepack](https://github.com/brachy84/zedtech-ceu)**, with some changes made by the community.
 - New material item textures by @TTFTCUTS and @Rosethorns.
 - Wooden Forms, World Accelerators, and the Extreme Combustion Engine are from the **[GregTech: New Horizons Modpack](https://www.curseforge.com/minecraft/modpacks/gt-new-horizons)**.
 - Primitive Water Pump is from the **[IMPACT: GREGTECH EDITION Modpack](https://gtimpact.space/)**.
