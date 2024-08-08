@@ -3931,7 +3931,7 @@
   "gtceu.universal.tooltip.requires_redstone": "§4Requires Redstone power",
   "gtceu.universal.tooltip.silk_touch": "Silk Touch: ",
   "gtceu.universal.tooltip.terrain_resist": "This Machine will not explode when exposed to the Elements",
-  "gtceu.universal.tooltip.uses_per_hour_lubricant": "Uses §f%d mB/hr §7of §6Lubricant §fwhile working",
+  "gtceu.universal.tooltip.uses_per_hour_lubricant": "Uses §f%d mB/hr §7of §6Lubricant §7while working",
   "gtceu.universal.tooltip.uses_per_op": "Uses §f%d EU/operation",
   "gtceu.universal.tooltip.uses_per_second": "Uses §f%d EU/s §7while working",
   "gtceu.universal.tooltip.uses_per_tick": "Uses §f%d EU/t §7while working",

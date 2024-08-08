@@ -880,7 +880,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of §fSteam §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant",
-                "Uses §f%d mB/hr §7of §6Lubricant §fwhile working");
+                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
