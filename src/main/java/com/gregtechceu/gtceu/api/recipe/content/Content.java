@@ -94,13 +94,15 @@ public class Content {
             int min = ingredient.getCountProvider().getMinValue();
             int max = ingredient.getCountProvider().getMaxValue();
             String s = String.format("%s-%s", min, max);
+            int color = 0xFFFFFF;
             Font fontRenderer = Minecraft.getInstance().font;
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
-                graphics.pose().scale(0.5f, 0.5f, 1);
+                s = "X-Y";
+                color = 0xEE0000;
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
-                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+                    (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
     }
