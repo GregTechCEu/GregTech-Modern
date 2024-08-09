@@ -97,7 +97,7 @@ public class TooltipsHandler {
                     if (remainder != 0) {
                         fluidAmount += String.format(" + %d mB", remainder);
                     }
-                    tooltips.add(2, Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
+                    tooltips.add(Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(fluidAmount)));
                 }
             }
