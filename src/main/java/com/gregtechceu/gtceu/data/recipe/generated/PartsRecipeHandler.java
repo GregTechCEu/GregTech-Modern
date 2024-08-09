@@ -52,7 +52,8 @@ public class PartsRecipeHandler {
 
     public static void processBolt(TagPrefix boltPrefix, Material material, DustProperty property,
                                    Consumer<FinishedRecipe> provider) {
-        ItemStack boltStack = ChemicalHelper.get(boltPrefix, material);
+        ItemStack boltStack = ChemicalHelper.get(boltPrefix, material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
         ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
@@ -429,17 +430,20 @@ public class PartsRecipeHandler {
                     .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
+            var materialOutput = material.hasFlag(IS_MAGNETIC) ?
+                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
             if (ConfigHolder.INSTANCE.recipes.harderRods) {
-                builder.outputItems(rod, material);
-                builder.outputItems(dustSmall, material, 2);
+                builder.outputItems(rod, materialOutput);
+                builder.outputItems(dustSmall, materialOutput, 2);
             } else {
-                builder.outputItems(rod, material, 2);
+                builder.outputItems(rod, materialOutput, 2);
             }
             builder.save(provider);
         }
 
         if (material.hasFlag(GENERATE_BOLT_SCREW)) {
-            ItemStack boltStack = ChemicalHelper.get(bolt, material);
+            ItemStack boltStack = ChemicalHelper.get(bolt, material.hasFlag(IS_MAGNETIC) ?
+                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
             CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_rod_to_bolt")
                     .inputItems(stickPrefix, material)
                     .outputItems(GTUtil.copyAmount(4, boltStack))
@@ -456,8 +460,10 @@ public class PartsRecipeHandler {
 
     public static void processLongStick(TagPrefix longStickPrefix, Material material, DustProperty property,
                                         Consumer<FinishedRecipe> provider) {
-        ItemStack stack = ChemicalHelper.get(longStickPrefix, material);
-        ItemStack stickStack = ChemicalHelper.get(rod, material);
+        ItemStack stack = ChemicalHelper.get(longStickPrefix, material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        ItemStack stickStack = ChemicalHelper.get(rod, material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_long_rod_to_rod")
                 .inputItems(longStickPrefix, material)
@@ -548,21 +554,23 @@ public class PartsRecipeHandler {
 
     public static void processRound(TagPrefix roundPrefix, Material material, IngotProperty property,
                                     Consumer<FinishedRecipe> provider) {
+        var outputMaterial = material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
         if (!material.hasFlag(NO_SMASHING)) {
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_%s", material.getName()),
-                    ChemicalHelper.get(round, material),
+                    ChemicalHelper.get(round, outputMaterial),
                     "fN", "Nh", 'N', new UnificationEntry(nugget, material));
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_from_ingot_%s", material.getName()),
-                    ChemicalHelper.get(round, material, 4),
+                    ChemicalHelper.get(round, outputMaterial, 4),
                     "fIh", 'I', new UnificationEntry(ingot, material));
         }
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_nugget_to_round")
                 .EUt(VA[ULV]).duration(100)
                 .inputItems(nugget, material)
-                .outputItems(round, material)
+                .outputItems(round, outputMaterial)
                 .save(provider);
     }
 
