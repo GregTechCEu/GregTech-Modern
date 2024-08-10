@@ -687,7 +687,8 @@ public class GTItems {
                 }
 
                 @Override
-                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                            TooltipFlag isAdvanced) {
                     super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
                     tooltipComponents.add(Component.translatable("item.gtceu.basic_tape.tooltip"));
                 }
