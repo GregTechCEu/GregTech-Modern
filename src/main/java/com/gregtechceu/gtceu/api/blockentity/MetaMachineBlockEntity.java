@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -48,10 +49,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author KilaBash
@@ -63,6 +61,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
+    @Setter
+    private UUID owner;
+    @Setter
+    @Getter
+    private String ownerName;
     private final long offset = GTValues.RNG.nextInt(20);
 
     protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -80,6 +83,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
+    }
+
+    @Override
+    public UUID getOwner() {
+        return owner;
     }
 
     @Override

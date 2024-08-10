@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 /**
@@ -118,6 +119,11 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
+    }
+
+    @Override
+    public UUID getOwner() {
+        return null;
     }
 
     @Override
