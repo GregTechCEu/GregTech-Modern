@@ -25,10 +25,12 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,17 +43,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author KilaBash
@@ -63,6 +64,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
+    @Setter
+    @DescSynced
+    private UUID owner;
+    @Setter
+    @Getter
+    @DescSynced
+    private String ownerName;
     private final long offset = GTValues.RNG.nextInt(20);
 
     protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -80,6 +88,15 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
+    }
+
+    @Override
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public boolean ownerOnline() {
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(ownerName) != null;
     }
 
     @Override
@@ -316,5 +333,21 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (owner != null)
+            tag.putUUID("owner", owner);
+        if (ownerName != null)
+            tag.putString("ownerName", ownerName);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("owner")) this.owner = tag.getUUID("owner");
+        if (tag.contains("ownerName")) this.ownerName = tag.getString("ownerName");
     }
 }
