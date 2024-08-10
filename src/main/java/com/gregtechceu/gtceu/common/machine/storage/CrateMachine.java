@@ -105,7 +105,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
                                    BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isCrouching() && !isTaped) {
-            if (stack.is(GTItems.DUCT_TAPE.asItem())) {
+            if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
