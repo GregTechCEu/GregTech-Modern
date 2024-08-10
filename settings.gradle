@@ -18,18 +18,19 @@ dependencyResolutionManagement {
     versionCatalogs {
         // Minecraft Version
         def minecraftVersionVeryOld = "1.20.1"
-        def minecraftVersion = "1.21"
+        def minecraftVersionOld = "1.21"
+        def minecraftVersion = "1.21.1"
 
         // Mod Dependencies Versions
         // Common
         def jeiVersion = "19.5.2.66"
         def reiVersion = "16.0.744"
-        def emiVersion = "1.1.10"
+        def emiVersion = "1.1.11"
         def ae2Version = "19.0.4-alpha"
         def kjsVersion = "2100.7.0-build.120"
 
         // NeoForge
-        def neoForgeVersion = "21.0.143"
+        def neoForgeVersion = "21.1.4"
         def registrateForgeVersion = "MC1.21-1.3.0+16"
         def createForgeVersion = "0.5.1.d-9"
         def flywheelForgeVersion = "0.6.9-5"
@@ -38,7 +39,7 @@ dependencyResolutionManagement {
         def worldStripperForgeFile = "4578579"
 
         // Libs
-        def parchmentVersion = "2024.06.23" // https://parchmentmc.org/docs/getting-started
+        def parchmentVersion = "2024.07.28" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def spotlessVersion = "6.25.0"
         def vineFlowerVersion = "1.+"
@@ -54,7 +55,7 @@ dependencyResolutionManagement {
             library("neoForge", "net.neoforged", "neoforge").versionRef(neoForge)
 
             def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-neoforge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersion}").versionRef(ldLib)
+            library("ldlib-neoforge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersionOld}").versionRef(ldLib)
 
             def shimmer = version("shimmer", "${minecraftVersionVeryOld}-${shimmerVersion}")
             library("shimmer-forge", "com.lowdragmc.shimmer", "Shimmer-forge").versionRef(shimmer)
@@ -69,16 +70,16 @@ dependencyResolutionManagement {
             library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersionVeryOld}").versionRef(flywheel)
 
             def jei = version("jei", jeiVersion)
-            library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
-            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersion}-neoforge-api").versionRef(jei)
-            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersion}-neoforge").versionRef(jei)
+            library("jei-common-api", "mezz.jei", "jei-${minecraftVersionOld}-common-api").versionRef(jei)
+            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersionOld}-neoforge-api").versionRef(jei)
+            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersionOld}-neoforge").versionRef(jei)
 
             def rei = version("rei", reiVersion)
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-neoforge").versionRef(rei)
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-neoforge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-neoforge").versionRef(rei)
 
-            def emi = version("emi", emiVersion + "+" + minecraftVersion)
+            def emi = version("emi", emiVersion + "+" + minecraftVersionOld)
             library("emi", "dev.emi", "emi-neoforge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
@@ -104,6 +105,7 @@ dependencyResolutionManagement {
             version("parchment", parchmentVersion)
 
             version("minecraft", minecraftVersion)
+            version("minecraftOld", minecraftVersionOld)
             version("minecraftVeryOld", minecraftVersionVeryOld)
 
             def shadow = version("shadow", shadowVersion)

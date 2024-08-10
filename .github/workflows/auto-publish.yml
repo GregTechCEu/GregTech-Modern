@@ -78,6 +78,7 @@ jobs:
             neoforge
           game-versions: |
             ${{ github.ref_name }}
+            1.21.1
           game-version-filter: none
           java: |
             21
