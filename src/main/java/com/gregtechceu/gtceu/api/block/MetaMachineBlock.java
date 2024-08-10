@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -131,8 +130,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {
             var machine = getMachine(pLevel, pPos);
-            if(machine != null && machine.holder instanceof MetaMachineBlockEntity mTE) {
-                if(player instanceof ServerPlayer sPlayer) {
+            if (machine != null && machine.holder instanceof MetaMachineBlockEntity mTE) {
+                if (player instanceof ServerPlayer sPlayer) {
                     mTE.setOwner(sPlayer.getUUID());
                     mTE.setOwnerName(sPlayer.getName().getString());
                 }
