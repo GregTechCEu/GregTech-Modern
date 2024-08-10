@@ -282,6 +282,7 @@ public class GCyMMachines {
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     Component.translatable("gtceu.assembler")))
             .tooltips(GTMachines.defaultEnvironmentRequirement())
@@ -317,6 +318,7 @@ public class GCyMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     Component.translatable("gtceu.circuit_assembler")))
+            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)

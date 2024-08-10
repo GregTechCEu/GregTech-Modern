@@ -40,7 +40,6 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -757,7 +756,7 @@ public class GTBlocks {
     // HPCA, AT
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE
             .block("computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
@@ -768,7 +767,7 @@ public class GTBlocks {
             .register();
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE
             .block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
