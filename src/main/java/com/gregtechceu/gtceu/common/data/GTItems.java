@@ -48,13 +48,16 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
@@ -662,7 +665,12 @@ public class GTItems {
     public static ItemEntry<Item> CARBON_FIBER_PLATE = REGISTRATE.item("carbon_fiber_plate", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "carbon_fiber_plate")).lang("Carbon Fiber Plate")
             .register();
-    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", Item::new)
+    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", (p) -> (Item)new Item(new Item.Properties()) {
+                    @Override
+                    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+                        return true;
+                    }
+                })
             .onRegister(compassNode(GTCompassSections.MISC))
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
             .onRegister(compassNode(GTCompassSections.ITEMS)).register();
