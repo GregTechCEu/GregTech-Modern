@@ -7401,5 +7401,6 @@
     "gtceu.scanner.copy_stick_to": "§oКопия",
     "gtceu.tooltip.potion.each": "   §e%s %s§r на §c%s§r тиков с §a%s%%§r шансом",
     "metaarmor.jetpack.flight.disable": "Джетпак: Полет выкл",
-    "metaarmor.jetpack.flight.enable": "Джетпак: Полет вкл"
+    "metaarmor.jetpack.flight.enable": "Джетпак: Полет вкл",
+    "config.jade.plugin_gtceu.primitive_pump": "[GTCEu] Примитивная помпа"
 }
