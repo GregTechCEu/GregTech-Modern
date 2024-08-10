@@ -665,12 +665,14 @@ public class GTItems {
     public static ItemEntry<Item> CARBON_FIBER_PLATE = REGISTRATE.item("carbon_fiber_plate", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "carbon_fiber_plate")).lang("Carbon Fiber Plate")
             .register();
-    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", (p) -> (Item)new Item(new Item.Properties()) {
-                    @Override
-                    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
-                        return true;
-                    }
-                })
+    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE
+            .item("duct_tape", (p) -> (Item) new Item(new Item.Properties()) {
+
+                @Override
+                public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+                    return true;
+                }
+            })
             .onRegister(compassNode(GTCompassSections.MISC))
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
             .onRegister(compassNode(GTCompassSections.ITEMS)).register();
