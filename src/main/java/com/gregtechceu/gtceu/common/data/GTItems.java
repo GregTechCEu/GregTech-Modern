@@ -57,6 +57,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
@@ -79,6 +80,7 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -675,6 +677,23 @@ public class GTItems {
             })
             .onRegister(compassNode(GTCompassSections.MISC))
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
+            .onRegister(compassNode(GTCompassSections.ITEMS)).register();
+    public static ItemEntry<Item> BASIC_TAPE = REGISTRATE
+            .item("basic_tape", (p) -> (Item) new Item(new Item.Properties()) {
+
+                @Override
+                public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+                    return true;
+                }
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+                    super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                    tooltipComponents.add(Component.translatable("item.gtceu.basic_tape.tooltip"));
+                }
+            })
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .lang("Tape")
             .onRegister(compassNode(GTCompassSections.ITEMS)).register();
 
     public static ItemEntry<Item> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", Item::new)

@@ -121,7 +121,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
         super.loadCustomPersistedData(tag);
         inventory.loadCustomPersistedData(tag.getCompound("inventory"));
         if (tag.contains("taped")) {
-            this.isTaped = tag.getBoolean("tag");
+            this.isTaped = tag.getBoolean("taped");
         }
     }
 
