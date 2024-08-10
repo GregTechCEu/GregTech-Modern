@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -60,6 +61,11 @@ public class ItemTagLoader {
         // todo match ae2 certus quartz tag
         // OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem,
         // GTMaterials.CertusQuartz));
+
+        // add treated and untreated wood plates to vanilla planks tag
+        provider.addTag(ItemTags.PLANKS)
+                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, TreatedWood).getId()))
+                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, Wood).getId()));
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, String tagName, ResourceLocation... rls) {
