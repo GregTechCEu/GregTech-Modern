@@ -4,7 +4,7 @@ static def isJetBrainsRuntime() {
 
 subsystems {
     parchment {
-        minecraftVersion = libs.versions.minecraft.get()
+        minecraftVersion = libs.versions.minecraftOld.get()
         mappingsVersion = libs.versions.parchment.get()
     }
 }
