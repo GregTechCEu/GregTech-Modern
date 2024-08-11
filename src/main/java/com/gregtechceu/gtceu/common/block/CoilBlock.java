@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
-
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
