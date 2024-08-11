@@ -92,7 +92,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
             if (isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
-            getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip));
+            getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
         } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
             if (showToolsInfo) {
                 tooltip.add(Component.translatable("gtceu.tooltip.tool_fluid_hold_shift"));
