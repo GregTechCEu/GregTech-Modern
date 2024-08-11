@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.ChatFormatting;
@@ -27,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
@@ -39,6 +41,7 @@ import com.simibubi.create.foundation.utility.Lang;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,6 +63,13 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     private final long offset = GTValues.RNG.nextInt(20);
     public float workingSpeed;
     public boolean reActivateSource;
+    @Setter
+    @DescSynced
+    private UUID owner;
+    @Setter
+    @Getter
+    @DescSynced
+    private String ownerName;
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -123,7 +133,12 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
 
     @Override
     public UUID getOwner() {
-        return null;
+        return owner;
+    }
+
+    @Override
+    public boolean ownerOnline() {
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
     }
 
     @Override

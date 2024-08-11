@@ -15,7 +15,6 @@ import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Dummy machine BE used for wrapping {@link DummyRecipeLogicMachine}s
@@ -44,11 +43,6 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
 
     @Override
     public MultiManagedStorage getRootStorage() {
-        return null;
-    }
-
-    @Override
-    public UUID getOwner() {
         return null;
     }
 }

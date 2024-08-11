@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -201,9 +200,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
-                if (machineBlockEntity instanceof MetaMachineBlockEntity mmBE)
-                    list.add(Component.translatable("behavior.portable_scanner.machine_ownership", mmBE.getOwnerName(),
-                            mmBE.ownerOnline()));
+
+                list.add(Component.translatable("behavior.portable_scanner.machine_ownership",
+                        machineBlockEntity.getOwnerName(),
+                        machineBlockEntity.ownerOnline()));
 
                 if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&
                         multi.isAllowExtendedFacing()) {
