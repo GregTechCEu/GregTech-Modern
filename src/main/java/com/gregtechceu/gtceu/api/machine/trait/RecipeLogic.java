@@ -350,6 +350,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void setupRecipe(GTRecipe recipe) {
         if (handleFuelRecipe()) {
             if (!machine.beforeWorking(recipe)) {
+                setStatus(Status.IDLE);
+                progress = 0;
+                duration = 0;
+                isActive = false;
                 return;
             }
             recipe.preWorking(this.machine);
