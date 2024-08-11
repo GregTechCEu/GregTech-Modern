@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
@@ -26,6 +27,7 @@ import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -342,6 +344,15 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             if (content != null) {
                 tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
+                    SizedFluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
+                    if (ingredient.getFluids().length > 0) {
+                        FluidStack stack = ingredient.getFluids()[0];
+                        TooltipsHandler.appendFluidTooltips(stack.getFluid(),
+                                stack.getAmount(),
+                                tooltips::add,
+                                TooltipFlag.NORMAL);
+                    }
+
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
                     if (isTickSlot(index, io, recipe)) {

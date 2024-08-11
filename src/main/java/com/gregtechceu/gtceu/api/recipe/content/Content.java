@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -93,9 +92,7 @@ public class Content {
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height);
                 drawRangeAmount(graphics, x, y, width, height);
-                if (LDLib.isEmiLoaded()) {
-                    drawEmiAmount(graphics, x, y, width, height);
-                }
+                drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
@@ -126,7 +123,7 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
         if (content instanceof SizedFluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
