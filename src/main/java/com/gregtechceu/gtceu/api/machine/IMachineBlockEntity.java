@@ -84,17 +84,16 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
         getMetaMachine().loadCustomPersistedData(tag);
     }
 
-    default void setOwner(UUID uuid) {}
+    default void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {}
 
-    default void setOwnerName(String name) {}
-
-    default UUID getOwner() {
+    default UUID getOwnerUUID() {
         return null;
     }
 
     default String getOwnerName() {
         return null;
     }
+    default Class<?> getOwnerType() { return Object.class; }
 
     default boolean ownerOnline() {
         return false;

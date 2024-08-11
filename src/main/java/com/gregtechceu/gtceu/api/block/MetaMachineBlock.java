@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -16,6 +17,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
+import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
+import dev.ftb.mods.ftbteams.api.Team;
+import dev.ftb.mods.ftbteams.api.TeamManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,7 +55,9 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -129,8 +136,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var machine = getMachine(pLevel, pPos);
             if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {
-                    machine.holder.setOwner(sPlayer.getUUID());
-                    machine.holder.setOwnerName(sPlayer.getName().getString());
+                    setMachineOwner(machine, sPlayer);
                 }
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
@@ -142,6 +148,19 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (machine instanceof IMachineLife machineLife) {
                 machineLife.onMachinePlaced(player, pStack);
             }
+        }
+    }
+
+    public void setMachineOwner(MetaMachine machine, ServerPlayer player) {
+        if(GTCEu.isFTBTeamsLoaded()) {
+            Optional<Team> team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(player.getUUID());
+            if(team.isPresent()) {
+                UUID teamUUID = team.get().getTeamId();
+                String name = team.get().getShortName();
+                machine.holder.setOwner(teamUUID, Team.class, name);
+            }
+        } else {
+            machine.holder.setOwner(player.getUUID(), ServerPlayer.class, player.getName().getString());
         }
     }
 

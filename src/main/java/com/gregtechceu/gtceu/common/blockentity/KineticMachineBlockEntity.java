@@ -63,13 +63,12 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     private final long offset = GTValues.RNG.nextInt(20);
     public float workingSpeed;
     public boolean reActivateSource;
-    @Setter
     @DescSynced
     private UUID owner;
-    @Setter
     @Getter
     @DescSynced
     private String ownerName;
+    private Class<?> ownerType;
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -132,13 +131,25 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     @Override
-    public UUID getOwner() {
+    public UUID getOwnerUUID() {
         return owner;
+    }
+
+    @Override
+    public void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {
+        this.owner = uuid;
+        this.ownerType = ownerType;
+        this.ownerName = ownerName;
     }
 
     @Override
     public boolean ownerOnline() {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
+    }
+
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
     }
 
     @Override
