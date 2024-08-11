@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -128,10 +127,10 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {
             var machine = getMachine(pLevel, pPos);
-            if (machine != null && machine.holder instanceof MetaMachineBlockEntity mTE) {
+            if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {
-                    mTE.setOwner(sPlayer.getUUID());
-                    mTE.setOwnerName(sPlayer.getName().getString());
+                    machine.holder.setOwner(sPlayer.getUUID());
+                    machine.holder.setOwnerName(sPlayer.getName().getString());
                 }
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {

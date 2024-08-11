@@ -65,6 +65,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Getter
     public final MetaMachine metaMachine;
     @Setter
+    @Getter
     @DescSynced
     private UUID owner;
     @Setter
@@ -91,12 +92,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public UUID getOwner() {
-        return owner;
-    }
-
     public boolean ownerOnline() {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(ownerName) != null;
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
     }
 
     @Override

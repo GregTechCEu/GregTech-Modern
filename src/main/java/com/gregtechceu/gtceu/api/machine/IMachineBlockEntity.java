@@ -13,6 +13,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.UUID;
+
 /**
  * A simple compound Interface for all my TileEntities.
  * <p/>
@@ -80,5 +82,21 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
     default void loadCustomPersistedData(CompoundTag tag) {
         IAutoPersistBlockEntity.super.loadCustomPersistedData(tag);
         getMetaMachine().loadCustomPersistedData(tag);
+    }
+
+    default void setOwner(UUID uuid) {}
+
+    default void setOwnerName(String name) {}
+
+    default UUID getOwner() {
+        return null;
+    }
+
+    default String getOwnerName() {
+        return null;
+    }
+
+    default boolean ownerOnline() {
+        return false;
     }
 }
