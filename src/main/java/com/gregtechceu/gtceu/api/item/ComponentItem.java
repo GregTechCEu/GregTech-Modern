@@ -11,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -32,6 +33,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
+import net.minecraft.world.level.LevelReader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -320,6 +322,17 @@ public class ComponentItem extends Item
             }
         }
         return super.hasCraftingRemainingItem(stack);
+    }
+
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+        boolean result = false;
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                result |= interactionItem.sneakBypassUse(stack, level, pos, player);
+            }
+        }
+        return result;
     }
 
     @Override

@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.common.item.TapeBehaviour;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
@@ -728,9 +729,17 @@ public class GTItems {
     public static ItemEntry<Item> CARBON_FIBER_PLATE = REGISTRATE.item("carbon_fiber_plate", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "carbon_fiber_plate")).lang("Carbon Fiber Plate")
             .register();
-    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", Item::new)
-            .onRegister(compassNode(GTCompassSections.MISC))
+    public static ItemEntry<ComponentItem> DUCT_TAPE = REGISTRATE
+            .item("duct_tape", ComponentItem::create)
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach(new TapeBehaviour()))
+            .onRegister(compassNode(GTCompassSections.ITEMS)).register();
+    public static ItemEntry<ComponentItem> BASIC_TAPE = REGISTRATE
+            .item("basic_tape", ComponentItem::create)
+            .lang("Tape")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach(new TapeBehaviour()))
             .onRegister(compassNode(GTCompassSections.ITEMS)).register();
 
     public static ItemEntry<Item> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", Item::new)

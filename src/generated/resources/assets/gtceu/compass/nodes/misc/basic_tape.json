@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:purple_drink"
+    "res": "gtceu:basic_tape"
   },
   "items": [
-    "gtceu:purple_drink"
+    "gtceu:basic_tape"
   ],
-  "page": "gtceu:misc/purple_drink",
+  "page": "gtceu:misc/basic_tape",
   "position": [
-    -250,
-    200
+    -300,
+    100
   ],
   "section": "gtceu:misc"
 }
