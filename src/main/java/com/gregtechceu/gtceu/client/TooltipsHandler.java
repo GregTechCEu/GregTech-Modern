@@ -12,10 +12,13 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
@@ -45,6 +48,9 @@ public class TooltipsHandler {
                     !unificationEntry.material.getChemicalFormula().isEmpty())
                 tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
                         .withStyle(ChatFormatting.YELLOW));
+        }
+        if (stack.getItem() instanceof BucketItem bucket) {
+            appendFluidTooltips(bucket.getFluid(), FluidHelper.getBucket(), tooltips::add, flag);
         }
 
         // Block/Item custom tooltips

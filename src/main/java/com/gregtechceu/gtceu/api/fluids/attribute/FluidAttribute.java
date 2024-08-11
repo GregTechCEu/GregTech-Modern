@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public final class FluidAttribute {
