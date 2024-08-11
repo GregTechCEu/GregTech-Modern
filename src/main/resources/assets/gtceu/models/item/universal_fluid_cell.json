@@ -3,8 +3,7 @@
   "parent": "forge:item/default",
   "textures": {
     "base": "gtceu:item/universal_fluid_cell/base",
-    "fluid": "gtceu:item/universal_fluid_cell/overlay",
-    "cover": "gtceu:item/universal_fluid_cell/base"
+    "fluid": "gtceu:item/universal_fluid_cell/overlay"
   },
   "fluid": "minecraft:empty"
 }

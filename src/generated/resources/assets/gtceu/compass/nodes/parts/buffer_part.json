@@ -1,11 +1,9 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:ev_input_buffer"
+    "res": "gtceu:luv_input_buffer"
   },
   "items": [
-    "gtceu:ev_input_buffer",
-    "gtceu:iv_input_buffer",
     "gtceu:luv_input_buffer",
     "gtceu:zpm_input_buffer",
     "gtceu:uv_input_buffer",

@@ -57,11 +57,11 @@ public class DimensionCondition extends RecipeCondition {
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
-        ItemStack item = dimMarker.getMarker();
+        ItemStack icon = dimMarker.getIcon();
         ItemStackTransfer transfer = new ItemStackTransfer(1);
         SlotWidget dimSlot = new SlotWidget(transfer, 0, xOffset, yOffset, false, false)
                 .setIngredientIO(IngredientIO.INPUT);
-        transfer.setStackInSlot(0, item);
+        transfer.setStackInSlot(0, icon);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
             dimSlot.setOverlay(
                     new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))

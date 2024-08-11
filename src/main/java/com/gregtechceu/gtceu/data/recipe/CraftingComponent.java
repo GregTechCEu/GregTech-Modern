@@ -135,6 +135,7 @@ public class CraftingComponent {
                 { 6, GTItems.ELECTRIC_PUMP_LuV.asStack() },
                 { 7, GTItems.ELECTRIC_PUMP_ZPM.asStack() },
                 { 8, GTItems.ELECTRIC_PUMP_UV.asStack() },
+                { FALLBACK, GTItems.ELECTRIC_PUMP_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -519,6 +520,7 @@ public class CraftingComponent {
                 { 6, GTItems.ELECTRIC_MOTOR_LuV.asStack() },
                 { 7, GTItems.ELECTRIC_MOTOR_ZPM.asStack() },
                 { 8, GTItems.ELECTRIC_MOTOR_UV.asStack() },
+                { FALLBACK, GTItems.ELECTRIC_MOTOR_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -557,6 +559,7 @@ public class CraftingComponent {
                 { 6, GTItems.SENSOR_LuV.asStack() },
                 { 7, GTItems.SENSOR_ZPM.asStack() },
                 { 8, GTItems.SENSOR_UV.asStack() },
+                { FALLBACK, GTItems.SENSOR_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -613,6 +616,7 @@ public class CraftingComponent {
                 { 6, GTItems.ELECTRIC_PISTON_LUV.asStack() },
                 { 7, GTItems.ELECTRIC_PISTON_ZPM.asStack() },
                 { 8, GTItems.ELECTRIC_PISTON_UV.asStack() },
+                { FALLBACK, GTItems.ELECTRIC_PISTON_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -636,6 +640,7 @@ public class CraftingComponent {
                 { 6, GTItems.EMITTER_LuV.asStack() },
                 { 7, GTItems.EMITTER_ZPM.asStack() },
                 { 8, GTItems.EMITTER_UV.asStack() },
+                { FALLBACK, GTItems.EMITTER_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -682,6 +687,7 @@ public class CraftingComponent {
                 { 6, GTItems.ROBOT_ARM_LuV.asStack() },
                 { 7, GTItems.ROBOT_ARM_ZPM.asStack() },
                 { 8, GTItems.ROBOT_ARM_UV.asStack() },
+                { FALLBACK, GTItems.ROBOT_ARM_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 

@@ -126,6 +126,7 @@ public class GTMachines {
     public static final int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
     public static final int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
     public static final int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public static final int[] BUFFER_HATCH_TIERS = GTValues.tiersBetween(LuV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
             tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) *
@@ -1126,7 +1127,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.enabled"))
                     .compassNode("buffer_part")
                     .register(),
-            MULTI_HATCH_TIERS);
+            BUFFER_HATCH_TIERS);
 
     public static final MachineDefinition[] OUTPUT_BUFFER = registerTieredMachines(
             "output_buffer",
@@ -2051,7 +2052,7 @@ public class GTMachines {
             HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"),
             GTCEu.id("block/multiblock/generator/large_steam_turbine"));
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
@@ -2064,7 +2065,7 @@ public class GTMachines {
             IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
     @SuppressWarnings("removal")
@@ -2678,7 +2679,7 @@ public class GTMachines {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
-                .renderer(() -> new MachineRenderer(
+                .renderer(() -> new CrateRenderer(
                         GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
