@@ -37,6 +37,7 @@ public class CoilBlock extends ActiveBlock {
 
     public ICoilType coilType;
 
+    //@formatter:off
     public CoilBlock(Properties properties, ICoilType coilType) {
         this(properties, coilType, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                 Map.of("all", coilType.getTexture())) : null,
@@ -45,6 +46,7 @@ public class CoilBlock extends ActiveBlock {
                                 "top_all", new ResourceLocation(coilType.getTexture() + "_bloom"))) :
                         null);
     }
+    //@formatter:on
 
     @SuppressWarnings("DataFlowIssue")
     public CoilBlock(Properties properties, ICoilType coilType,
