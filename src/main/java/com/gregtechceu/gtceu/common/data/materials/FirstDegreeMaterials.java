@@ -325,7 +325,7 @@ public class FirstDegreeMaterials {
         Magnalium = new Material.Builder(GTCEu.id("magnalium"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(929))
-                .color(0xadc5e8).secondaryColor(0x522a77).iconSet(METALLIC)
+                .color(0x98b9e9).secondaryColor(0x2f0b51).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Magnesium, 1, Aluminium, 2)
                 .rotorStats(100, 105, 2.0f, 256)
@@ -353,7 +353,7 @@ public class FirstDegreeMaterials {
         Nichrome = new Material.Builder(GTCEu.id("nichrome"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1818))
-                .color(0xebe6d6).secondaryColor(0x282b42).iconSet(METALLIC)
+                .color(0xaf94b2).secondaryColor(0x5b4c6a).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
                 .components(Nickel, 4, Chromium, 1)
                 .cableProperties(GTValues.V[EV], 4, 4)
@@ -362,7 +362,7 @@ public class FirstDegreeMaterials {
 
         NiobiumNitride = new Material.Builder(GTCEu.id("niobium_nitride"))
                 .ingot().fluid()
-                .color(0x949599).secondaryColor(0x262528).iconSet(BRIGHT)
+                .color(0x574457).secondaryColor(0x332e3c).iconSet(BRIGHT)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Niobium, 1, Nitrogen, 1)
                 .cableProperties(GTValues.V[6], 1, 1)
@@ -499,7 +499,7 @@ public class FirstDegreeMaterials {
 
         Ruridit = new Material.Builder(GTCEu.id("ruridit"))
                 .ingot(3)
-                .color(0xFFFFFF).secondaryColor(0xc5c5c5).iconSet(BRIGHT)
+                .color(0x88b5b9).secondaryColor(0x4e885c).iconSet(BRIGHT)
                 .flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_LONG_ROD, GENERATE_FRAME, GENERATE_BOLT_SCREW)
                 .components(Ruthenium, 2, Iridium, 1)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.EV], 1600)
@@ -571,7 +571,7 @@ public class FirstDegreeMaterials {
         SolderingAlloy = new Material.Builder(GTCEu.id("soldering_alloy"))
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(544))
-                .color(0x9d9da1).secondaryColor(0x8181a1)
+                .color(0x8c8ca7).secondaryColor(0x8675a7)
                 .components(Tin, 6, Lead, 3, Antimony, 1)
                 .buildAndRegister();
 
@@ -778,7 +778,7 @@ public class FirstDegreeMaterials {
         Osmiridium = new Material.Builder(GTCEu.id("osmiridium"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(3012))
-                .color(0xe5dcef).secondaryColor(0x241a44).iconSet(METALLIC)
+                .color(0x47adb6).secondaryColor(0x241a44).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_ROTOR, GENERATE_ROUND,
                         GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Iridium, 3, Osmium, 1)
@@ -814,7 +814,7 @@ public class FirstDegreeMaterials {
         GalliumArsenide = new Material.Builder(GTCEu.id("gallium_arsenide"))
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(1511))
-                .color(0xe6ebff).secondaryColor(0xA0A0A0)
+                .color(0x938fff).secondaryColor(0x8c548c)
                 .appendFlags(STD_METAL, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Arsenic, 1, Gallium, 1)
                 .blastTemp(1200, GasTier.LOW, GTValues.VA[MV], 1200)
@@ -835,7 +835,7 @@ public class FirstDegreeMaterials {
         IndiumGalliumPhosphide = new Material.Builder(GTCEu.id("indium_gallium_phosphide"))
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(350))
-                .color(0xf3e5f9).secondaryColor(0x67596c)
+                .color(0xa77bd7).secondaryColor(0x4e546b)
                 .appendFlags(STD_METAL, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Indium, 1, Gallium, 1, Phosphorus, 1)
                 .buildAndRegister();
@@ -1081,7 +1081,7 @@ public class FirstDegreeMaterials {
 
         TungstenCarbide = new Material.Builder(GTCEu.id("tungsten_carbide"))
                 .ingot(4).fluid()
-                .color(0x6b6478).secondaryColor(0x392e44).iconSet(METALLIC)
+                .color(0x635480).secondaryColor(0x392e44).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME,
                         DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Tungsten, 1, Carbon, 1)
@@ -1314,7 +1314,7 @@ public class FirstDegreeMaterials {
         MercuryBariumCalciumCuprate = new Material.Builder(GTCEu.id("mercury_barium_calcium_cuprate"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1075))
-                .color(0x777777).secondaryColor(0x3f2e2e).iconSet(SHINY)
+                .color(0x928547).secondaryColor(0x3f2e2e).iconSet(SHINY)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Mercury, 1, Barium, 2, Calcium, 2, Copper, 3, Oxygen, 8)
                 .cableProperties(GTValues.V[HV], 4, 0, true, 78)
@@ -1367,7 +1367,7 @@ public class FirstDegreeMaterials {
                 GTCEu.id("enriched_naquadah_trinium_europium_duranide"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(5930))
-                .color(0xc5c1a4).secondaryColor(0x2b0645).iconSet(METALLIC)
+                .color(0xc6b083).secondaryColor(0x45063d).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(NaquadahEnriched, 4, Trinium, 3, Europium, 2, Duranium, 1)
                 .cableProperties(GTValues.V[GTValues.UV], 16, 0, true, 3)
@@ -1408,7 +1408,7 @@ public class FirstDegreeMaterials {
 
         OsmiumTetroxide = new Material.Builder(GTCEu.id("osmium_tetroxide"))
                 .dust()
-                .color(0xACAD71).secondaryColor(0x291f34).iconSet(METALLIC)
+                .color(0x578d9f).secondaryColor(0x394117).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Osmium, 1, Oxygen, 4)
                 // TODO Osmium tetroxide poisoning .hazard(HazardProperty.HazardTrigger.ANY)
@@ -1416,7 +1416,7 @@ public class FirstDegreeMaterials {
 
         IridiumChloride = new Material.Builder(GTCEu.id("iridium_chloride"))
                 .dust()
-                .color(0x373c09).secondaryColor(0x012213).iconSet(FINE)
+                .color(0x41460c).secondaryColor(0x00542e).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iridium, 1, Chlorine, 3)
                 .buildAndRegister();
