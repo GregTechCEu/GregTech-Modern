@@ -82,6 +82,10 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
     }
 
+    public static boolean isFTBTeamsLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_FTBTEAMS);
+    }
+
     @Deprecated(forRemoval = true, since = "1.0.21")
     public static boolean isHighTier() {
         return GTCEuAPI.isHighTier();

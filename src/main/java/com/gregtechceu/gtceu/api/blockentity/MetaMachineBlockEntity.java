@@ -64,14 +64,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
-    @Setter
-    @Getter
     @DescSynced
     private UUID owner;
-    @Setter
     @Getter
     @DescSynced
     private String ownerName;
+    private Class<?> ownerType;
     private final long offset = GTValues.RNG.nextInt(20);
 
     protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -92,8 +90,25 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
+    public UUID getOwnerUUID() {
+        return this.owner;
+    }
+
+    @Override
+    public void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {
+        this.owner = uuid;
+        this.ownerType = ownerType;
+        this.ownerName = ownerName;
+    }
+
+    @Override
     public boolean ownerOnline() {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
+    }
+
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
     }
 
     @Override
