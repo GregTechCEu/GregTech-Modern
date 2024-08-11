@@ -525,6 +525,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTKubeRecipe addData(String key, int data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putInt(key, data);
@@ -532,6 +533,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTKubeRecipe addData(String key, long data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putLong(key, data);
@@ -539,21 +541,29 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTKubeRecipe addData(String key, String data) {
+        public GTKubeRecipe addDataString(String key, String data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putString(key, data);
             save();
             return this;
         }
 
-        public GTKubeRecipe addData(String key, Float data) {
+        @HideFromJS
+        public GTKubeRecipe addData(String key, float data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putFloat(key, data);
             save();
             return this;
         }
 
-        public GTKubeRecipe addData(String key, boolean data) {
+        public GTKubeRecipe addDataNumber(String key, double data) {
+            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
+            getValue(DATA).putDouble(key, data);
+            save();
+            return this;
+        }
+
+        public GTKubeRecipe addDataBool(String key, boolean data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putBoolean(key, data);
             save();
@@ -577,7 +587,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe disableDistilleryRecipes(boolean flag) {
-            return addData("disable_distillery", flag);
+            return addDataBool("disable_distillery", flag);
         }
 
         public GTKubeRecipe fusionStartEU(long eu) {
@@ -585,15 +595,15 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe researchScan(boolean isScan) {
-            return addData("scan_for_research", isScan);
+            return addDataBool("scan_for_research", isScan);
         }
 
         public GTKubeRecipe durationIsTotalCWU(boolean durationIsTotalCWU) {
-            return addData("duration_is_total_cwu", durationIsTotalCWU);
+            return addDataBool("duration_is_total_cwu", durationIsTotalCWU);
         }
 
         public GTKubeRecipe hideDuration(boolean hideDuration) {
-            return addData("hide_duration", hideDuration);
+            return addDataBool("hide_duration", hideDuration);
         }
 
         //////////////////////////////////////
