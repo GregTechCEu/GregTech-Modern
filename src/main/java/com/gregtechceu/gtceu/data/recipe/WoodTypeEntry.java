@@ -76,6 +76,10 @@ public final class WoodTypeEntry {
     public final Item boat;
     @Nullable
     public final String boatRecipeName;
+    @Nullable
+    public final Item chestBoat;
+    @Nullable
+    public final String chestBoatRecipeName;
     public final Material material;
 
     public final boolean addLogOreDict;
@@ -92,6 +96,7 @@ public final class WoodTypeEntry {
     public final boolean addFenceGatesUnificationInfo;
     public final boolean addStairsUnificationInfo;
     public final boolean addBoatsUnificationInfo;
+    public final boolean addChestBoatsUnificationInfo;
     public final boolean generateLogToPlankRecipe;
 
     /**
@@ -109,6 +114,7 @@ public final class WoodTypeEntry {
                           @Nullable Item fenceGate, @Nullable String fenceGateRecipeName,
                           @Nullable Item stairs, @Nullable String stairsRecipeName, boolean addStairsCraftingRecipe,
                           @Nullable Item boat, @Nullable String boatRecipeName,
+                          @Nullable Item chestBoat, @Nullable String chestBoatRecipeName,
                           @Nullable Material material,
                           boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict,
                           boolean addSlabsOreDict,
@@ -116,7 +122,8 @@ public final class WoodTypeEntry {
                           boolean addPlanksUnificationInfo, boolean addDoorsUnificationInfo,
                           boolean addSlabsUnificationInfo, boolean addFencesUnificationInfo,
                           boolean addFenceGatesUnificationInfo, boolean addStairsUnificationInfo,
-                          boolean addBoatsUnificationInfo, boolean generateLogToPlankRecipe) {
+                          boolean addBoatsUnificationInfo, boolean addChestBoatsUnificationInfo,
+                          boolean generateLogToPlankRecipe) {
         this.modid = modid;
         this.woodName = woodName;
         this.logTag = logTag;
@@ -144,6 +151,8 @@ public final class WoodTypeEntry {
         this.addStairsCraftingRecipe = addStairsCraftingRecipe;
         this.boat = boat;
         this.boatRecipeName = boatRecipeName;
+        this.chestBoat = chestBoat;
+        this.chestBoatRecipeName = chestBoatRecipeName;
         this.material = material != null ? material : GTMaterials.Wood;
 
         this.addLogOreDict = addLogOreDict;
@@ -160,6 +169,7 @@ public final class WoodTypeEntry {
         this.addFenceGatesUnificationInfo = addFenceGatesUnificationInfo;
         this.addStairsUnificationInfo = addStairsUnificationInfo;
         this.addBoatsUnificationInfo = addBoatsUnificationInfo;
+        this.addChestBoatsUnificationInfo = addChestBoatsUnificationInfo;
         this.generateLogToPlankRecipe = generateLogToPlankRecipe;
     }
 
@@ -207,6 +217,8 @@ public final class WoodTypeEntry {
         private boolean addStairsCraftingRecipe;
         private Item boat = null;
         private String boatRecipeName;
+        private Item chestBoat = null;
+        private String chestBoatRecipeName;
         @Nullable
         private Material material = null;
 
@@ -225,6 +237,7 @@ public final class WoodTypeEntry {
         private boolean addFenceGatesUnificationInfo;
         private boolean addStairsUnificationInfo;
         private boolean addBoatsUnificationInfo;
+        private boolean addChestBoatsUnificationInfo;
         private boolean generateLogToPlankRecipe = true;
 
         /**
@@ -437,6 +450,19 @@ public final class WoodTypeEntry {
         }
 
         /**
+         * Add an entry for a boat with chest
+         *
+         * @param chestBoat           the boat to add
+         * @param chestBoatRecipeName the recipe name for crafting the boat
+         * @return this
+         */
+        public Builder chestBoat(@NotNull Item chestBoat, @Nullable String chestBoatRecipeName) {
+            this.chestBoat = chestBoat;
+            this.chestBoatRecipeName = chestBoatRecipeName;
+            return this;
+        }
+
+        /**
          * Specify material for wood entry. If not provided, {@link GTMaterials#Wood} will be used
          *
          * @param material material for wood entry
@@ -462,7 +488,7 @@ public final class WoodTypeEntry {
          * @return this
          */
         public Builder registerAllUnificationInfo() {
-            return registerUnificationInfo(true, true, true, true, true, true, true);
+            return registerUnificationInfo(true, true, true, true, true, true, true, true);
         }
 
         /**
@@ -499,10 +525,11 @@ public final class WoodTypeEntry {
          * @param fenceGate whether to add unification info for fence gates
          * @param stairs    whether to add unification info for stairs
          * @param boat      whether to add unification info for boats
+         * @param chestBoat      whether to add unification info for chest boats
          * @return this
          */
         public Builder registerUnificationInfo(boolean planks, boolean door, boolean slab, boolean fence,
-                                               boolean fenceGate, boolean stairs, boolean boat) {
+                                               boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat) {
             this.addPlanksUnificationInfo = planks;
             this.addDoorsUnificationInfo = door;
             this.addSlabsUnificationInfo = slab;
@@ -510,6 +537,7 @@ public final class WoodTypeEntry {
             this.addFenceGatesUnificationInfo = fenceGate;
             this.addStairsUnificationInfo = stairs;
             this.addBoatsUnificationInfo = boat;
+            this.addChestBoatsUnificationInfo = chestBoat;
             return this;
         }
 
@@ -544,13 +572,13 @@ public final class WoodTypeEntry {
                     slab, slabRecipeName, addSlabsCraftingRecipe,
                     fence, fenceRecipeName, fenceGate, fenceGateRecipeName,
                     stairs, stairsRecipeName, addStairsCraftingRecipe,
-                    boat, boatRecipeName,
+                    boat, boatRecipeName, chestBoat, chestBoatRecipeName,
                     material,
                     addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
                     addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
                     addDoorsUnificationInfo, addSlabsUnificationInfo, addFencesUnificationInfo,
                     addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo,
-                    generateLogToPlankRecipe);
+                    addChestBoatsUnificationInfo, generateLogToPlankRecipe);
         }
     }
 }
