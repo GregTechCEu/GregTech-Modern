@@ -46,7 +46,7 @@ dependencyResolutionManagement {
         def configurationVersion = "5573796"
         def ldLibVersion = "1.0.26.b"
         def shimmerVersion = "0.2.2"
-        def neogradleVersion = "7.0.157"
+        def neogradleVersion = "7.0.158"
 
         forge {
             version("forgeShortVersion", neoForgeVersion)
