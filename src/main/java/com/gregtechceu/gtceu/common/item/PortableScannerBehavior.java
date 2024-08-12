@@ -202,14 +202,15 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
+                if(machineBlockEntity.getOwnerUUID() != null) {
+                    list.add(Component.translatable("behavior.portable_scanner.machine_ownership",
+                            machineBlockEntity.getOwnerName(),
+                            machineBlockEntity.ownerOnline()));
 
-                list.add(Component.translatable("behavior.portable_scanner.machine_ownership",
-                        machineBlockEntity.getOwnerName(),
-                        machineBlockEntity.ownerOnline()));
-
-                if(GTCEu.isFTBTeamsLoaded()) {
-                    if (Team.class.isAssignableFrom(machineBlockEntity.getOwnerType())) {
-                        list.add(Component.literal("FTB Teams"));
+                    if (GTCEu.isFTBTeamsLoaded()) {
+                        if (Team.class.isAssignableFrom(machineBlockEntity.getOwnerType())) {
+                            list.add(Component.literal("FTB Teams"));
+                        }
                     }
                 }
 
