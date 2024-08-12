@@ -42,6 +42,7 @@ public class ItemTagLoader {
         create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).getId());
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
+        create(provider, lens, Color.Purple, GTItems.MATERIAL_ITEMS.get(lens, Amethyst).getId());
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
@@ -51,12 +52,6 @@ public class ItemTagLoader {
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
                 .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
-        // TODO add to planks mc tag?
-        // for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
-        // for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {
-        // ChemicalHelper.registerUnificationEntry(woodPlateStack, TagPrefix.plank, material);
-        // }
-        // }
 
         // todo match ae2 certus quartz tag
         // OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem,
