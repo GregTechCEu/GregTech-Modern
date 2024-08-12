@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.GenericStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 

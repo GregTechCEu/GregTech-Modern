@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTransfer {
@@ -64,12 +66,19 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
                     this.stock = null;
                 }
             }
-            if (notifyChanges && this.onContentsChanged != null) {
-                this.onContentsChanged.run();
+            if (notifyChanges) {
+                onContentsChanged();
             }
             return result;
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void onContentsChanged() {
+        if (onContentsChanged != null) {
+            onContentsChanged.run();
+        }
     }
 
     @Override
@@ -79,7 +88,7 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
         } else {
             this.stock = GenericStack.sum(this.stock, stack);
         }
-        this.onContentsChanged.run();
+        onContentsChanged();
     }
 
     @Override

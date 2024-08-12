@@ -4,25 +4,31 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.transfer.item.BigItemStackTransfer;
+
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import net.minecraft.core.NonNullList;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
+public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements IConfigurableSlotList {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class,
             NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    public ExportOnlyAEItemSlot[] inventory;
+    @Getter
+    protected ExportOnlyAEItemSlot[] inventory;
+
+    private ItemStackTransfer itemTransfer;
 
     public ExportOnlyAEItemList(MetaMachine holder, int slots) {
         super(holder, 0, IO.IN);
@@ -41,23 +47,17 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
         this.machine.onChanged();
     }
 
+    public ItemStackTransfer getTransfer() {
+        if (this.itemTransfer == null) {
+            this.itemTransfer = new ItemStackTransferDelegate(inventory);
+        }
+        return itemTransfer;
+    }
+
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                               @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO,
-                new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY,
-                        Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
-
-                    @NotNull
-                    @Override
-                    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                        ItemStack extracted = super.extractItem(slot, amount, simulate, notifyChanges);
-                        if (!extracted.isEmpty()) {
-                            inventory[slot].extractItem(0, amount, simulate, notifyChanges);
-                        }
-                        return extracted;
-                    }
-                });
+        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
     }
 
     @Override
@@ -100,6 +100,24 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
     }
 
     @Override
+    public IConfigurableSlot getConfigurableSlot(int index) {
+        return inventory[index];
+    }
+
+    @Override
+    public int getConfigurableSlots() {
+        return inventory.length;
+    }
+
+    public boolean isAutoPull() {
+        return false;
+    }
+
+    public boolean isStocking() {
+        return false;
+    }
+
+    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
@@ -118,10 +136,10 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
             return inventory.length;
         }
 
-//        @Override
-//        public ItemStack getStackInSlot(int slot) {
-//            return inventory[slot].getStack();
-//        }
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return inventory[slot].getStackInSlot(0);
+        }
 
         @Override
         public void setStackInSlot(int slot, ItemStack stack) {
@@ -130,16 +148,16 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
 
         @Override
         public ItemStack insertItem(
-                int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
+                                    int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
             return stack;
         }
 
-//        @Override
-//        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-//            if (amount == 0) return ItemStack.EMPTY;
-//            validateSlotIndex(slot);
-//            return inventory[slot].extract(amount, simulate);
-//        }
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+            if (amount == 0) return ItemStack.EMPTY;
+            validateSlotIndex(slot);
+            return inventory[slot].extractItem(0, amount, simulate);
+        }
 
         @Override
         protected void validateSlotIndex(int slot) {
@@ -158,14 +176,17 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler {
             return false;
         }
 
-//        @Override
-//        public ItemStackTransfer copy() {
-//            var copy = new BigItemStackTransfer(getSlots(), true, Integer.MAX_VALUE);
-//            for (int i = 0; i < inventory.length; i++) {
-//                copy.setStackInSlot(i, getStackInSlot(i));
-//            }
-//            return copy;
-//        }
+        @Override
+        public ItemStackTransfer copy() {
+            // must return a completely new transfer
+            // because recipe testing uses copy transfer instead of simulated operations
+            // we use BigItemStackTransfer because ItemStackTransfer does not support inserting or extracting ItemStack
+            // that exceeding the stack limit
+            var copy = new BigItemStackTransfer(getSlots(), true, Integer.MAX_VALUE);
+            for (int i = 0; i < inventory.length; i++) {
+                copy.setStackInSlot(i, getStackInSlot(i));
+            }
+            return copy;
+        }
     }
-
 }

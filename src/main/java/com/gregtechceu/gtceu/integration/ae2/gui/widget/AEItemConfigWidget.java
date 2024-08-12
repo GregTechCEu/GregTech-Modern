@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEItemConfigSlotWidget;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
+
+import appeng.api.stacks.GenericStack;
 
 /**
  * @Author GlodBlock
@@ -12,8 +14,11 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
  */
 public class AEItemConfigWidget extends ConfigWidget {
 
-    public AEItemConfigWidget(int x, int y, IConfigurableSlot[] config) {
-        super(x, y, config);
+    private final ExportOnlyAEItemList itemList;
+
+    public AEItemConfigWidget(int x, int y, ExportOnlyAEItemList list) {
+        super(x, y, list.getInventory(), list.isStocking());
+        this.itemList = list;
     }
 
     @Override
@@ -27,5 +32,13 @@ public class AEItemConfigWidget extends ConfigWidget {
             line = index / 8;
             this.addWidget(new AEItemConfigSlotWidget((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
         }
+    }
+
+    public boolean hasStackInConfig(GenericStack stack) {
+        return itemList.hasStackInConfig(stack, true);
+    }
+
+    public boolean isAutoPull() {
+        return itemList.isAutoPull();
     }
 }

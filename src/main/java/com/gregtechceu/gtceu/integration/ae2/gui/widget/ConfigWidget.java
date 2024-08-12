@@ -9,10 +9,13 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
 
 public abstract class ConfigWidget extends WidgetGroup {
 
@@ -23,8 +26,12 @@ public abstract class ConfigWidget extends WidgetGroup {
     protected AmountSetWidget amountSetWidget;
     protected final static int UPDATE_ID = 1000;
 
-    public ConfigWidget(int x, int y, IConfigurableSlot[] config) {
+    @Getter
+    protected final boolean isStocking;
+
+    public ConfigWidget(int x, int y, IConfigurableSlot[] config, boolean isStocking) {
         super(new Position(x, y), new Size(config.length / 2 * 18, 18 * 4 + 2));
+        this.isStocking = isStocking;
         this.config = config;
         this.init();
         this.amountSetWidget = new AmountSetWidget(31, -50, this);
@@ -46,6 +53,7 @@ public abstract class ConfigWidget extends WidgetGroup {
         this.amountSetWidget.getAmountText().setVisible(false);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.amountSetWidget.isVisible()) {
@@ -63,6 +71,10 @@ public abstract class ConfigWidget extends WidgetGroup {
     }
 
     abstract void init();
+
+    public abstract boolean hasStackInConfig(GenericStack stack);
+
+    public abstract boolean isAutoPull();
 
     @Override
     public void detectAndSendChanges() {
@@ -105,6 +117,7 @@ public abstract class ConfigWidget extends WidgetGroup {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
-import appeng.api.networking.IManagedGridNode;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
@@ -16,6 +15,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IManagedGridNode;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import lombok.Getter;

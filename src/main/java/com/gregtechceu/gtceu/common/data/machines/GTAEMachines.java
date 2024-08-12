@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
-
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingHatchPartMachine;
+
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.EV;
@@ -26,7 +26,11 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .overlayTieredHullRenderer("me_item_bus.import")
-            .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"))
+            .tooltips(
+                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                    Component.translatable("gtceu.machine.me.item_import.tooltip"),
+                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("gtceu.universal.enabled"))
             .compassNode("item_bus")
             .register();
 
@@ -37,7 +41,13 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .overlayTieredHullRenderer("me_item_bus.import")
-            .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"))
+            .tooltips(
+                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
+                    Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
+                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
+                    Component.translatable("gtceu.universal.enabled"))
             .compassNode("item_bus")
             .register();
 
@@ -62,7 +72,11 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .overlayTieredHullRenderer("me_fluid_hatch.import")
-            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"))
+            .tooltips(
+                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
+                    Component.translatable("gtceu.machine.me.fluid_import.tooltip"),
+                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("gtceu.universal.enabled"))
             .compassNode("fluid_hatch")
             .register();
 
@@ -73,7 +87,13 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .overlayTieredHullRenderer("me_fluid_hatch.import")
-            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"))
+            .tooltips(
+                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
+                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.0"),
+                    Component.translatable("gtceu.machine.me_import_fluid_hatch.configs.tooltip"),
+                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.1"),
+                    Component.translatable("gtceu.universal.enabled"))
             .compassNode("fluid_hatch")
             .register();
 
@@ -84,7 +104,11 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_FLUIDS)
             .overlayTieredHullRenderer("me_fluid_hatch.export")
-            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"))
+            .tooltips(
+                    Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
+                    Component.translatable("gtceu.machine.me.fluid_export.tooltip"),
+                    Component.translatable("gtceu.machine.me.export.tooltip"),
+                    Component.translatable("gtceu.universal.enabled"))
             .compassNode("fluid_hatch")
             .register();
 

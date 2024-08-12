@@ -1,32 +1,42 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IDataStickIntractable;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.Actionable;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
 import org.jetbrains.annotations.NotNull;
 
-public class MEInputHatchPartMachine extends MEHatchPartMachine
-                                     implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class MEInputHatchPartMachine extends MEHatchPartMachine implements IDataStickIntractable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted
-    private ExportOnlyAEFluidList aeFluidTanks;
+    protected ExportOnlyAEFluidList aeFluidTanks;
 
     public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
@@ -35,7 +45,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     @Override
     @NotNull
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots, 0, IO.IN);
+        this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots);
         return aeFluidTanks;
     }
 
@@ -49,7 +59,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks.tanks));
+        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks));
 
         return group;
     }
@@ -67,7 +77,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
         if (this.updateMEStatus()) {
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidTanks.tanks) {
+            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidTanks.getInventory()) {
                 // Try to clear the wrong fluid
                 GenericStack exceedFluid = aeTank.exceedStack();
                 if (exceedFluid != null) {
@@ -92,6 +102,73 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 }
             }
             this.updateTankSubscription();
+        }
+    }
+
+    protected void flushInventory() {
+        // no-op, nothing to send back to the network
+    }
+
+    @Override
+    public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
+        if (!isRemote()) {
+            CompoundTag tag = new CompoundTag();
+            tag.put("MEInputHatch", writeConfigToTag());
+            dataStick.setTag(tag);
+            dataStick.setHoverName(Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
+            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
+        }
+        return true;
+    }
+
+    protected CompoundTag writeConfigToTag() {
+        CompoundTag tag = new CompoundTag();
+        CompoundTag configStacks = new CompoundTag();
+        tag.put("ConfigStacks", configStacks);
+        for (int i = 0; i < CONFIG_SIZE; i++) {
+            var slot = this.aeFluidTanks.getInventory()[i];
+            GenericStack config = slot.getConfig();
+            if (config == null) {
+                continue;
+            }
+            CompoundTag stackNbt = GenericStack.writeTag(config);
+            configStacks.put(Integer.toString(i), stackNbt);
+        }
+        tag.putByte("GhostCircuit",
+                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+        return tag;
+    }
+
+    @Override
+    public final InteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
+        CompoundTag tag = dataStick.getTag();
+        if (tag == null || !tag.contains("MEInputHatch")) {
+            return InteractionResult.PASS;
+        }
+
+        if (!isRemote()) {
+            readConfigFromTag(tag.getCompound("MEInputHatch"));
+            this.updateTankSubscription();
+            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
+        }
+        return InteractionResult.sidedSuccess(isRemote());
+    }
+
+    protected void readConfigFromTag(CompoundTag tag) {
+        if (tag.contains("ConfigStacks")) {
+            CompoundTag configStacks = tag.getCompound("ConfigStacks");
+            for (int i = 0; i < CONFIG_SIZE; i++) {
+                String key = Integer.toString(i);
+                if (configStacks.contains(key)) {
+                    CompoundTag configTag = configStacks.getCompound(key);
+                    this.aeFluidTanks.getInventory()[i].setConfig(GenericStack.readTag(configTag));
+                } else {
+                    this.aeFluidTanks.getInventory()[i].setConfig(null);
+                }
+            }
+        }
+        if (tag.contains("GhostCircuit")) {
+            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
         }
     }
 

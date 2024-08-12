@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
-import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
-import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -15,11 +13,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.stacks.GenericStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,7 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawGradientRect;
  * @Description A configurable slot
  * @Date 2023/4/22-0:30
  */
-public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget {
+public class AEConfigSlotWidget extends Widget {
 
     protected ConfigWidget parentWidget;
     protected int index;
@@ -46,6 +44,7 @@ public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget
         this.index = index;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
@@ -53,9 +52,17 @@ public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget
         if (slot.getConfig() == null && mouseOverConfig(mouseX, mouseY)) {
             List<Component> hoverStringList = new ArrayList<>();
             hoverStringList.add(Component.translatable("gtceu.gui.config_slot"));
-            hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set"));
-            hoverStringList.add(Component.translatable("gtceu.gui.config_slot.scroll"));
-            hoverStringList.add(Component.translatable("gtceu.gui.config_slot.remove"));
+            if (parentWidget.isAutoPull()) {
+                hoverStringList.add(Component.translatable("gtceu.gui.config_slot.auto_pull_managed"));
+            } else {
+                if (!parentWidget.isStocking()) {
+                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set"));
+                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.scroll"));
+                } else {
+                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set_only"));
+                }
+                hoverStringList.add(Component.translatable("gtceu.gui.config_slot.remove"));
+            }
             graphics.renderTooltip(Minecraft.getInstance().font, hoverStringList, Optional.empty(), mouseX, mouseY);
         }
     }
@@ -74,11 +81,6 @@ public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget
         return isMouseOver(position.x, position.y + 18, 18, 18, mouseX, mouseY);
     }
 
-    @Override
-    public List<Target> getPhantomTargets(Object ingredient) {
-        return Collections.emptyList();
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static void drawSelectionOverlay(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.disableDepthTest();
@@ -87,5 +89,12 @@ public class AEConfigSlotWidget extends Widget implements IGhostIngredientTarget
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
+    }
+
+    // Method for server-side validation of an attempted new configured item
+    protected boolean isStackValidForSlot(GenericStack stack) {
+        if (stack == null || stack.amount() < 0) return true;
+        if (!parentWidget.isStocking()) return true;
+        return !parentWidget.hasStackInConfig(stack);
     }
 }

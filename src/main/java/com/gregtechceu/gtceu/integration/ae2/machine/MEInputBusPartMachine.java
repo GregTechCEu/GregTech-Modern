@@ -2,28 +2,41 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IDataStickIntractable;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
-
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 
-public class MEInputBusPartMachine extends MEBusPartMachine {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickIntractable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
             MEBusPartMachine.MANAGED_FIELD_HOLDER);
-    private final static int CONFIG_SIZE = 16;
+    protected final static int CONFIG_SIZE = 16;
 
-    private ExportOnlyAEItemList aeItemHandler;
+    protected ExportOnlyAEItemList aeItemHandler;
 
     public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
@@ -42,7 +55,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine {
 
         if (this.updateMEStatus()) {
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEItemSlot aeSlot : this.aeItemHandler.inventory) {
+            for (ExportOnlyAEItemSlot aeSlot : this.aeItemHandler.getInventory()) {
                 // Try to clear the wrong item
                 GenericStack exceedItem = aeSlot.exceedStack();
                 if (exceedItem != null) {
@@ -70,6 +83,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine {
         }
     }
 
+    protected void flushInventory() {
+        // no-op, nothing to send back to the network
+    }
+
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
@@ -79,9 +96,72 @@ public class MEInputBusPartMachine extends MEBusPartMachine {
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler.inventory));
+        group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
 
         return group;
+    }
+
+    @Override
+    public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
+        if (!isRemote()) {
+            CompoundTag tag = new CompoundTag();
+            tag.put("MEInputBus", writeConfigToTag());
+            dataStick.setTag(tag);
+            dataStick.setHoverName(Component.translatable("gtceu.machine.me.item_import.data_stick.name"));
+            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
+        }
+        return true;
+    }
+
+    protected CompoundTag writeConfigToTag() {
+        CompoundTag tag = new CompoundTag();
+        CompoundTag configStacks = new CompoundTag();
+        tag.put("ConfigStacks", configStacks);
+        for (int i = 0; i < CONFIG_SIZE; i++) {
+            var slot = this.aeItemHandler.getInventory()[i];
+            GenericStack config = slot.getConfig();
+            if (config == null) {
+                continue;
+            }
+            CompoundTag stackNbt = GenericStack.writeTag(config);
+            configStacks.put(Integer.toString(i), stackNbt);
+        }
+        tag.putByte("GhostCircuit",
+                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+        return tag;
+    }
+
+    @Override
+    public final InteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
+        CompoundTag tag = dataStick.getTag();
+        if (tag == null || !tag.contains("MEInputBus")) {
+            return InteractionResult.PASS;
+        }
+
+        if (!isRemote()) {
+            readConfigFromTag(tag.getCompound("MEInputBus"));
+            this.updateInventorySubscription();
+            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
+        }
+        return InteractionResult.sidedSuccess(isRemote());
+    }
+
+    protected void readConfigFromTag(CompoundTag tag) {
+        if (tag.contains("ConfigStacks")) {
+            CompoundTag configStacks = tag.getCompound("ConfigStacks");
+            for (int i = 0; i < CONFIG_SIZE; i++) {
+                String key = Integer.toString(i);
+                if (configStacks.contains(key)) {
+                    CompoundTag configTag = configStacks.getCompound(key);
+                    this.aeItemHandler.getInventory()[i].setConfig(GenericStack.readTag(configTag));
+                } else {
+                    this.aeItemHandler.getInventory()[i].setConfig(null);
+                }
+            }
+        }
+        if (tag.contains("GhostCircuit")) {
+            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+        }
     }
 
     @Override
