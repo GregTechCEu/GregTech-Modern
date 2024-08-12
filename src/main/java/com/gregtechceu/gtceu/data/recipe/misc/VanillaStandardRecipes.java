@@ -93,6 +93,15 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.BLUE_ICE)).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust").inputItems(dust, Ice).outputItems(new ItemStack(Blocks.ICE))
                 .save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("dripstone_block_from_pointed_dripstone")
+                .inputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
+                .outputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
+                .save(provider);
+
+        FORGE_HAMMER_RECIPES.recipeBuilder("pointed_dripstone_from_dripstone_block")
+                .inputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
+                .outputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
+                .save(provider);
 
         PACKER_RECIPES.recipeBuilder("hay_block")
                 .inputItems(new ItemStack(Items.WHEAT, 9))
@@ -102,7 +111,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("melon")
-                .inputItems(new ItemStack(Items.MELON, 9))
+                .inputItems(new ItemStack(Items.MELON_SLICE, 9))
                 .circuitMeta(9)
                 .outputItems(new ItemStack(Blocks.MELON))
                 .duration(200).EUt(2)
@@ -425,6 +434,18 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.TORCH, 8))
                 .duration(100).EUt(1).save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("soul_torch")
+                .inputItems(new ItemStack(Blocks.TORCH))
+                .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
+                .outputItems(new ItemStack(Blocks.SOUL_TORCH))
+                .duration(100).EUt(1).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
+                .inputItems(new ItemStack(Blocks.LANTERN))
+                .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
+                .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
+                .duration(100).EUt(1).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("oak_fence")
                 .inputItems(new ItemStack(Blocks.OAK_PLANKS, 1))
                 .outputItems(new ItemStack(Blocks.OAK_FENCE))
@@ -519,6 +540,8 @@ public class VanillaStandardRecipes {
                 new UnificationEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ",
                 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
+        VanillaRecipeHelper.addShapedRecipe(provider, "soul_torch", new ItemStack(Blocks.SOUL_TORCH, 1), "WB",
+                'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.TORCH));
 
         ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(4).inputItems(dust, Redstone)
                 .inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1))
@@ -925,15 +948,27 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.WHITE_WOOL))
                 .duration(100).EUt(4).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone")
+        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone_from_vine")
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputItems(new ItemStack(Blocks.VINE))
                 .outputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE))
                 .duration(40).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_stone_bricks")
+        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone_from_moss_block")
+                .inputItems(new ItemStack(Blocks.COBBLESTONE))
+                .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
+                .outputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE))
+                .duration(40).EUt(1).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("mossy_stone_bricks_from_vine")
                 .inputItems(new ItemStack(Blocks.STONE_BRICKS))
                 .inputItems(new ItemStack(Blocks.VINE))
+                .outputItems(new ItemStack(Blocks.MOSSY_STONE_BRICKS))
+                .duration(40).EUt(1).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("mossy_stone_bricks_from_moss_block")
+                .inputItems(new ItemStack(Blocks.STONE_BRICKS))
+                .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
                 .outputItems(new ItemStack(Blocks.MOSSY_STONE_BRICKS))
                 .duration(40).EUt(1).save(provider);
 
@@ -1120,6 +1155,25 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("armor_stand").duration(30).EUt(VA[ULV])
                 .inputItems(new ItemStack(Blocks.SMOOTH_STONE_SLAB, 1)).inputItems(new ItemStack(Items.STICK, 6))
                 .outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);
+
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("candle")
+                .inputFluids(Wax.getFluid(144))
+                .inputItems(new ItemStack(Items.STRING))
+                .outputItems(new ItemStack(Blocks.CANDLE, 2))
+                .duration(20).EUt(1).save(provider);
+
+        // I realise these next two recipes may genuinely NEVER be used by someone, so feel free to remove them.
+        // At the same time, they don't really change anything by being there? Idk
+        CENTRIFUGE_RECIPES.recipeBuilder("muddy_mangrove_roots")
+                .inputItems(new ItemStack(Blocks.MUDDY_MANGROVE_ROOTS))
+                .outputItems(new ItemStack(Blocks.MANGROVE_ROOTS))
+                .outputItems(new ItemStack(Blocks.MUD))
+                .duration(20).EUt(1).save(provider);
+
+        MACERATOR_RECIPES.recipeBuilder("disc_fragment_5")
+                .inputItems(new ItemStack(Items.MUSIC_DISC_5))
+                .outputItems(new ItemStack(Items.DISC_FRAGMENT_5, 9))
+                .duration(100).EUt(6).save(provider);
     }
 
     /**
@@ -1236,6 +1290,26 @@ public class VanillaStandardRecipes {
         EXTRACTOR_RECIPES.recipeBuilder("beetroot_dye")
                 .inputItems(new ItemStack(Items.BEETROOT))
                 .outputItems(new ItemStack(Items.RED_DYE, 2))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("torchflower_dye")
+                .inputItems(new ItemStack(Items.TORCHFLOWER))
+                .outputItems(new ItemStack(Items.ORANGE_DYE, 2))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("pitcher_dye")
+                .inputItems(new ItemStack(Items.PITCHER_PLANT))
+                .outputItems(new ItemStack(Items.CYAN_DYE, 3))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("pink_petals_dye")
+                .inputItems(new ItemStack(Items.PINK_PETALS))
+                .outputItems(new ItemStack(Items.PINK_DYE, 2))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("sea_pickle_dye")
+                .inputItems(new ItemStack(Items.SEA_PICKLE))
+                .outputItems(new ItemStack(Items.LIME_DYE, 2))
                 .save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("dark_prismarine")
