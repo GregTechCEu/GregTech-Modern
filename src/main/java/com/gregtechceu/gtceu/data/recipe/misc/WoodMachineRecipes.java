@@ -359,11 +359,12 @@ public class WoodMachineRecipes {
         }
 
         /*
-        TODO should this really be included?
-         if (entry.chestBoat != null && entry.addChestBoatsUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.chestBoat,
-                    new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
-        }*/
+         * TODO should this really be included?
+         * if (entry.chestBoat != null && entry.addChestBoatsUnificationInfo) {
+         * ChemicalHelper.registerMaterialInfo(entry.chestBoat,
+         * new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
+         * }
+         */
     }
 
     /**
@@ -595,7 +596,8 @@ public class WoodMachineRecipes {
                 if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                     if (entry.boat != null) {
 
-                        VanillaRecipeHelper.addShapedRecipe(provider, hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat",
+                        VanillaRecipeHelper.addShapedRecipe(provider,
+                                hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat",
                                 new ItemStack(entry.chestBoat),
                                 " B ", "SCS", " w ",
                                 'B', entry.boat,
@@ -604,7 +606,8 @@ public class WoodMachineRecipes {
                     }
                 } else {
                     if (!hasChestBoatRecipe) {
-                        VanillaRecipeHelper.addShapelessRecipe(provider, name + "_chest_boat", new ItemStack(entry.chestBoat),
+                        VanillaRecipeHelper.addShapelessRecipe(provider, name + "_chest_boat",
+                                new ItemStack(entry.chestBoat),
                                 entry.boat, Tags.Items.CHESTS);
                     }
                 }
@@ -616,8 +619,9 @@ public class WoodMachineRecipes {
                         .outputItems(entry.chestBoat)
                         .circuitMeta(16)
                         .duration(100).EUt(4).save(provider);
+            }
         }
-    }}
+    }
 
     /**
      * Standard recipes for GT woods

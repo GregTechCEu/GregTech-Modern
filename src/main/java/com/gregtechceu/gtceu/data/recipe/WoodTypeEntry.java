@@ -525,7 +525,7 @@ public final class WoodTypeEntry {
          * @param fenceGate whether to add unification info for fence gates
          * @param stairs    whether to add unification info for stairs
          * @param boat      whether to add unification info for boats
-         * @param chestBoat      whether to add unification info for chest boats
+         * @param chestBoat whether to add unification info for chest boats
          * @return this
          */
         public Builder registerUnificationInfo(boolean planks, boolean door, boolean slab, boolean fence,
