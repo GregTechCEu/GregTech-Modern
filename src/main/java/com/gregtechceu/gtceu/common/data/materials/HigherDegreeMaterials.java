@@ -25,6 +25,7 @@ public class HigherDegreeMaterials {
                 .gem(1)
                 .color(0xb5e45a).secondaryColor(0x001430).iconSet(SHINY)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
+                .components(EnderPearl, 1, Blaze, 1)
                 .buildAndRegister();
 
         Diatomite = new Material.Builder(GTCEu.id("diatomite"))

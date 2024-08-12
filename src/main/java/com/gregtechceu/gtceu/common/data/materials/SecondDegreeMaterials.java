@@ -74,8 +74,15 @@ public class SecondDegreeMaterials {
         Amethyst = new Material.Builder(GTCEu.id("amethyst"))
                 .gem(3).ore()
                 .color(0xcfa0f3).secondaryColor(0x734fbc).iconSet(RUBY)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
                 .components(SiliconDioxide, 4, Iron, 1)
+                .buildAndRegister();
+
+        Echo = new Material.Builder(GTCEu.id("echo"))
+                .gem(3)
+                .color(0x002b2d).iconSet(RUBY)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, GENERATE_ROD)
+                .components(SiliconDioxide, 3, Sculk, 2)
                 .buildAndRegister();
 
         Lapis = new Material.Builder(GTCEu.id("lapis"))
@@ -543,6 +550,11 @@ public class SecondDegreeMaterials {
                 .gas()
                 .color(0x8f681e)
                 .components(Steam, 3, Chlorine, 1)
+                .buildAndRegister();
+
+        Wax = new Material.Builder(GTCEu.id("wax"))
+                .ingot().fluid()
+                .color(0xfabf29)
                 .buildAndRegister();
     }
 }
