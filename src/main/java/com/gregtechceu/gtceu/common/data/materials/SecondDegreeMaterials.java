@@ -551,10 +551,5 @@ public class SecondDegreeMaterials {
                 .color(0x8f681e)
                 .components(Steam, 3, Chlorine, 1)
                 .buildAndRegister();
-
-        Wax = new Material.Builder(GTCEu.id("wax"))
-                .ingot().fluid()
-                .color(0xfabf29)
-                .buildAndRegister();
     }
 }

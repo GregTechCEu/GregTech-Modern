@@ -566,5 +566,11 @@ public class UnknownCompositionMaterials {
                 .dust(1)
                 .color(0x015a5c).secondaryColor(0x001616).iconSet(ROUGH)
                 .buildAndRegister();
+
+        Wax = new Material.Builder(GTCEu.id("wax"))
+                .ingot().fluid()
+                .color(0xfabf29)
+                .flags(NO_SMELTING)
+                .buildAndRegister();
     }
 }
