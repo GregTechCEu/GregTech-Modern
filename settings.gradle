@@ -48,6 +48,7 @@ dependencyResolutionManagement {
         def ldLibVersion = "1.0.26.c"
         def shimmerVersion = "0.2.2"
         def neogradleVersion = "7.0.158"
+        def lombokPluginVersion = "8.7.1"
 
         forge {
             version("forgeShortVersion", neoForgeVersion)
@@ -122,6 +123,9 @@ dependencyResolutionManagement {
 
             def neogradle = version("neogradle", neogradleVersion)
             plugin("neogradle", "net.neoforged.gradle.userdev").versionRef(neogradle)
+
+            def lombok = version("lombok", lombokPluginVersion)
+            plugin("lombok", "io.freefair.lombok").versionRef(lombok)
         }
     }
 }
