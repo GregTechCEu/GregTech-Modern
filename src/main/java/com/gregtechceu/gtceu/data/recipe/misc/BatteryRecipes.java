@@ -389,7 +389,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_cluster")
                 .inputItems(WETWARE_CIRCUIT_BOARD)
                 .inputItems(plate, Americium, 16)
-                .inputItems(WETWARE_SUPER_COMPUTER_UV, 4)
+                .inputItems(CustomTags.UV_CIRCUITS, 4)
                 .inputItems(ENERGY_MODULE)
                 .inputItems(FIELD_GENERATOR_ZPM)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
