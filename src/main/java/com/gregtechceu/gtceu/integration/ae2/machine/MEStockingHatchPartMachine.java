@@ -309,15 +309,17 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 long extracted = aeNetwork.extract(key, maxDrain, action, actionSource);
 
                 if (extracted > 0) {
-                    FluidStack resultStack = this.stock.what() instanceof AEFluidKey fluidKey ?
+                    FluidStack resultStack = key instanceof AEFluidKey fluidKey ?
                             AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.empty();
-                    // may as well update the display here
-                    this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
-                    if (this.stock.amount() == 0) {
-                        this.stock = null;
-                    }
-                    if (notifyChanges && this.onContentsChanged != null) {
-                        this.onContentsChanged.run();
+                    if (!simulate) {
+                        // may as well update the display here
+                        this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
+                        if (this.stock.amount() == 0) {
+                            this.stock = null;
+                        }
+                        if (notifyChanges && this.onContentsChanged != null) {
+                            this.onContentsChanged.run();
+                        }
                     }
                     return resultStack;
                 }

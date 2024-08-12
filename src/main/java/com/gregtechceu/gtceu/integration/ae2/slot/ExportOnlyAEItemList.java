@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.transfer.item.BigItemStackTransfer;
 
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -178,15 +177,13 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
 
         @Override
         public ItemStackTransfer copy() {
-            // must return a completely new transfer
             // because recipe testing uses copy transfer instead of simulated operations
-            // we use BigItemStackTransfer because ItemStackTransfer does not support inserting or extracting ItemStack
-            // that exceeding the stack limit
-            var copy = new BigItemStackTransfer(getSlots(), true, Integer.MAX_VALUE);
-            for (int i = 0; i < inventory.length; i++) {
-                copy.setStackInSlot(i, getStackInSlot(i));
-            }
-            return copy;
+           return new ItemStackTransferDelegate(inventory) {
+               @Override
+               public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                   return super.extractItem(slot, amount, true, notifyChanges);
+               }
+           };
         }
     }
 }

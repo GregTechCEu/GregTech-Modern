@@ -120,7 +120,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
                 long amount = resource.getAmount();
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
                 long changeValue = Math.min(Long.MAX_VALUE - oldValue, amount);
-                if (changeValue > 0) {
+                if (changeValue > 0 && !simulate) {
                     internalBuffer.storage.put(key, oldValue + changeValue);
                     internalBuffer.onChanged();
                 }
@@ -144,7 +144,13 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
             @Override
             public FluidStorage copy() {
-                return new FluidStorageDelegate();
+                // because recipe testing uses copy transfer instead of simulated operations
+                return new FluidStorageDelegate() {
+                    @Override
+                    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                        return super.fill(tank, resource, true, notifyChanges);
+                    }
+                };
             }
         }
     }

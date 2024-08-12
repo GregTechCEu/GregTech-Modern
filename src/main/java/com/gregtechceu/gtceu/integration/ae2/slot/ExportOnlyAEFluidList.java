@@ -42,7 +42,7 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     public FluidStorage[] getStorages() {
         if (this.fluidStorages == null) {
             this.fluidStorages = Arrays.stream(this.inventory)
-                    .map(tank -> new FluidStorageDelegate(tank.getCapacity(), tank)).toArray(FluidStorage[]::new);
+                    .map(FluidStorageDelegate::new).toArray(FluidStorage[]::new);
             return this.fluidStorages;
         } else {
             return this.fluidStorages;
@@ -52,6 +52,11 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     @Override
     public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         return 0;
+    }
+
+    @Override
+    public boolean supportsFill(int tank) {
+        return false;
     }
 
     @Override
@@ -139,8 +144,8 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
 
         private final ExportOnlyAEFluidSlot fluid;
 
-        public FluidStorageDelegate(long capacity, ExportOnlyAEFluidSlot fluid) {
-            super(capacity);
+        public FluidStorageDelegate(ExportOnlyAEFluidSlot fluid) {
+            super(0);
             this.fluid = fluid;
         }
 
@@ -158,14 +163,24 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
 
         @Override
         public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChange) {
-            return fluid.fill(tank, resource, simulate, notifyChange);
+            return 0;
+        }
+
+        @Override
+        public boolean supportsFill(int tank) {
+            return false;
         }
 
         @Override
         public FluidStorage copy() {
-            // must return a completely new storage
             // because recipe testing uses copy storage instead of simulated operations
-            return new FluidStorage(this.fluid.getFluid());
+            return new FluidStorageDelegate(fluid) {
+                @NotNull
+                @Override
+                public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+                    return super.drain(maxDrain, true, notifyChanges);
+                }
+            };
         }
     }
 }

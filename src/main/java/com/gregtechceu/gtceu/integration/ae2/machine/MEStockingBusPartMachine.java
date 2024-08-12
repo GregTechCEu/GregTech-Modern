@@ -329,15 +329,17 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                     long extracted = aeNetwork.extract(key, amount, action, actionSource);
 
                     if (extracted > 0) {
-                        ItemStack resultStack = this.stock.what() instanceof AEItemKey itemKey ?
+                        ItemStack resultStack = key instanceof AEItemKey itemKey ?
                                 itemKey.toStack((int) extracted) : ItemStack.EMPTY;
-                        // may as well update the display here
-                        this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
-                        if (this.stock.amount() == 0) {
-                            this.stock = null;
-                        }
-                        if (notifyChanges && this.onContentsChanged != null) {
-                            this.onContentsChanged.run();
+                        if (!simulate) {
+                            // may as well update the display here
+                            this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
+                            if (this.stock.amount() == 0) {
+                                this.stock = null;
+                            }
+                            if (notifyChanges && this.onContentsChanged != null) {
+                                this.onContentsChanged.run();
+                            }
                         }
                         return resultStack;
                     }

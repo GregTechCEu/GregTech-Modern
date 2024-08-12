@@ -130,8 +130,10 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
                 long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
                 if (changeValue > 0) {
-                    internalBuffer.storage.put(key, oldValue + changeValue);
-                    internalBuffer.onChanged();
+                    if (!simulate) {
+                        internalBuffer.storage.put(key, oldValue + changeValue);
+                        internalBuffer.onChanged();
+                    }
                     return stack.copyWithCount((int) (count - changeValue));
                 } else {
                     return ItemStack.EMPTY;
@@ -150,7 +152,13 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
             @Override
             public ItemStackTransfer copy() {
-                return new ItemStackTransferDelegate();
+                // because recipe testing uses copy transfer instead of simulated operations
+                return new ItemStackTransferDelegate() {
+                    @Override
+                    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
+                        return super.insertItem(slot, stack, true, notifyChanges);
+                    }
+                };
             }
         }
     }
