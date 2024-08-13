@@ -41,11 +41,11 @@ public class LargeBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
         for (int i = 0; i < inputs.getSlots(); ++i) {
             ItemStack input = inputs.getStackInSlot(i);
             if (input.isEmpty() || !FluidTransferHelper.getFluidContained(input).isEmpty()) {
-                return null;
+                continue;
             }
             var burnTime = GTUtil.getItemBurnTime(input);
             if (burnTime > 0) {
-                LARGE_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(input.getItem()))
+                return LARGE_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(input.getItem()))
                         .inputItems(input.copyWithCount(1))
                         .duration(burnTime / 80)
                         .build();
