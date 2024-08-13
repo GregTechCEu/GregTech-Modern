@@ -632,6 +632,9 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Blocks.CALIBRATED_SCULK_SENSOR))
                     .duration(200).EUt(16).save(provider);
 
+            ASSEMBLER_RECIPES.recipeBuilder("target").duration(100).EUt(16).inputItems(Items.REDSTONE, 4)
+                    .inputItems(Items.HAY_BLOCK).outputItems(new ItemStack(Blocks.TARGET)).save(provider);
+
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "piston_bronze", new ItemStack(Blocks.PISTON, 1), "WWW",
                     "CBC", "CRC",
