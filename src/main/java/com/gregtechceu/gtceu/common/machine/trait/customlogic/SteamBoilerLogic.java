@@ -41,11 +41,11 @@ public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
         for (int i = 0; i < inputs.getSlots(); ++i) {
             ItemStack input = inputs.getStackInSlot(i);
             if (input.isEmpty() || !FluidTransferHelper.getFluidContained(input).isEmpty()) {
-                return null;
+                continue;
             }
             var burnTime = GTUtil.getItemBurnTime(input);
             if (burnTime > 0) {
-                STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(input.getItem()))
+                return STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(input.getItem()))
                         .inputItems(input.copyWithCount(1))
                         .duration(burnTime * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                         .build();
