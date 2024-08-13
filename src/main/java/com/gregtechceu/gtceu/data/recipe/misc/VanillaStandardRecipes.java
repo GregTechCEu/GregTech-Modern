@@ -1162,14 +1162,8 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.CANDLE, 2))
                 .duration(20).EUt(1).save(provider);
 
-        // I realise these next two recipes may genuinely NEVER be used by someone, so feel free to remove them.
+        // I realise this recipe may genuinely NEVER be used by someone, so feel free to remove them.
         // At the same time, they don't really change anything by being there? Idk
-        CENTRIFUGE_RECIPES.recipeBuilder("muddy_mangrove_roots")
-                .inputItems(new ItemStack(Blocks.MUDDY_MANGROVE_ROOTS))
-                .outputItems(new ItemStack(Blocks.MANGROVE_ROOTS))
-                .outputItems(new ItemStack(Blocks.MUD))
-                .duration(20).EUt(1).save(provider);
-
         MACERATOR_RECIPES.recipeBuilder("disc_fragment_5")
                 .inputItems(new ItemStack(Items.MUSIC_DISC_5))
                 .outputItems(new ItemStack(Items.DISC_FRAGMENT_5, 9))
