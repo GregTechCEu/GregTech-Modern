@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -75,9 +74,7 @@ public class Content {
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height);
                 drawRangeAmount(graphics, x, y, width, height);
-                if (LDLib.isEmiLoaded()) {
-                    drawEmiAmount(graphics, x, y, width, height);
-                }
+                drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
@@ -94,19 +91,21 @@ public class Content {
             int min = ingredient.getCountProvider().getMinValue();
             int max = ingredient.getCountProvider().getMaxValue();
             String s = String.format("%s-%s", min, max);
+            int color = 0xFFFFFF;
             Font fontRenderer = Minecraft.getInstance().font;
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
-                graphics.pose().scale(0.5f, 0.5f, 1);
+                s = "X-Y";
+                color = 0xEE0000;
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
-                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+                    (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
         if (content instanceof FluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);

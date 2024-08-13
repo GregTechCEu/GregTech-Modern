@@ -7,6 +7,7 @@ plugins {
     alias libs.plugins.machete // automatic jar compressing on build
     alias libs.plugins.shadow
     alias libs.plugins.spotless
+    alias libs.plugins.lombok
 }
 
 apply plugin: "dev.architectury.loom"
@@ -47,4 +48,8 @@ tasks.withType(JavaCompile) {
 machete {
     // disable machete locally for faster builds
     enabled = false
+}
+
+lombok {
+    version = "1.18.32"
 }
