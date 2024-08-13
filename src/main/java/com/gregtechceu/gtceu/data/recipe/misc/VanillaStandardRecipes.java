@@ -1028,6 +1028,42 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6)
                 .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.WARPED_SIGN, 3).save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("oak_hanging_sign").duration(100).EUt(4).inputItems(Items.STRIPPED_OAK_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.OAK_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("spruce_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_SPRUCE_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.SPRUCE_HANGING_SIGN, 5).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("birch_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_BIRCH_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.BIRCH_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("jungle_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_JUNGLE_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.JUNGLE_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("acacia_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_ACACIA_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.ACACIA_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cherry_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_CHERRY_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.CHERRY_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_DARK_OAK_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.DARK_OAK_HANGING_SIGN, 6)
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("mangrove_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_MANGROVE_LOG, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.MANGROVE_HANGING_SIGN, 6)
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bamboo_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_BAMBOO_BLOCK, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.BAMBOO_HANGING_SIGN, 6).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("crimson_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_CRIMSON_HYPHAE, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.CRIMSON_HANGING_SIGN, 6)
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("warped_hanging_sign").duration(100).EUt(4)
+                .inputItems(Items.STRIPPED_WARPED_HYPHAE, 6)
+                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.WARPED_HANGING_SIGN, 6).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3))
                 .outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
 
