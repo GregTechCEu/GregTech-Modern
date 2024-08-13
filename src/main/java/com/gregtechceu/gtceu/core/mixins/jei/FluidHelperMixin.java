@@ -17,7 +17,8 @@ public class FluidHelperMixin {
 
     @Inject(method = "getTooltip(Lmezz/jei/api/gui/builder/ITooltipBuilder;Lnet/minecraftforge/fluids/FluidStack;Lnet/minecraft/world/item/TooltipFlag;)V",
             at = @At("TAIL"),
-            remap = false)
+            remap = false,
+            require = 0)
     private void gtceu$injectFluidTooltips(ITooltipBuilder tooltip, FluidStack ingredient, TooltipFlag tooltipFlag,
                                            CallbackInfo ci) {
         TooltipsHandler.appendFluidTooltips(ingredient.getFluid(), ingredient.getAmount(), tooltip::add, tooltipFlag);
