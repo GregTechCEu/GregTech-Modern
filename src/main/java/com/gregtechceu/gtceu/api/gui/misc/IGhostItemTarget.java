@@ -28,15 +28,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
     @OnlyIn(Dist.CLIENT)
     @Override
     default List<Target> getPhantomTargets(Object ingredient) {
-        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack itemEmiStack) {
-            Item item = itemEmiStack.getKeyOfType(Item.class);
-            ingredient = item == null ? null : new ItemStack(item, (int) itemEmiStack.getAmount());
-            if (ingredient instanceof ItemStack itemStack) {
-                itemStack.setTag(itemEmiStack.getNbt());
-            }
-        }
-
-        if (!(ingredient instanceof ItemStack)) {
+        if (!(convertIngredient(ingredient) instanceof ItemStack)) {
             return Collections.emptyList();
         } else {
             final Rect2i rectangle = getRectangleBox();
@@ -48,13 +40,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
                 }
 
                 public void accept(@NotNull Object ingredient) {
-                    if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack itemEmiStack) {
-                        Item item = itemEmiStack.getKeyOfType(Item.class);
-                        ingredient = item == null ? null : new ItemStack(item, (int) itemEmiStack.getAmount());
-                        if (ingredient instanceof ItemStack itemStack) {
-                            itemStack.setTag(itemEmiStack.getNbt());
-                        }
-                    }
+                    ingredient = convertIngredient(ingredient);
 
                     if (ingredient instanceof ItemStack stack) {
                         acceptItem(stack);
@@ -62,5 +48,16 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
                 }
             } });
         }
+    }
+
+    default Object convertIngredient(Object ingredient) {
+        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack itemEmiStack) {
+            Item item = itemEmiStack.getKeyOfType(Item.class);
+            ingredient = item == null ? null : new ItemStack(item, (int) itemEmiStack.getAmount());
+            if (ingredient instanceof ItemStack itemStack) {
+                itemStack.setTag(itemEmiStack.getNbt());
+            }
+        }
+        return ingredient;
     }
 }

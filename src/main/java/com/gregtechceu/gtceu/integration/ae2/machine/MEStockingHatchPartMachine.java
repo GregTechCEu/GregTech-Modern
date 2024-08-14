@@ -39,7 +39,6 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -67,11 +66,44 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         this.autoPullTest = $ -> false;
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
     @Override
-    protected @NotNull NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    public void addedToController(IMultiController controller) {
+        super.addedToController(controller);
+        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            // wait for 1 tick
+            // we should not access the part list at this time
+            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
+        }
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        this.autoPullTest = $ -> false;
+        if (this.autoPull) {
+            this.aeFluidHandler.clearInventory(0);
+        }
+        super.removedFromController(controller);
+    }
+
+    @Override
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
         return this.aeFluidHandler;
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
     @Override
     public void autoIO() {
@@ -101,26 +133,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     protected void flushInventory() {
         // no-op, nothing to send back to the network
-    }
-
-    @Override
-    public void addedToController(IMultiController controller) {
-        super.addedToController(controller);
-        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            // wait for 1 tick
-            // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
-        }
-    }
-
-    @Override
-    public void removedFromController(IMultiController controller) {
-        this.autoPullTest = $ -> false;
-        if (this.autoPull) {
-            this.aeFluidHandler.clearInventory(0);
-        }
-        super.removedFromController(controller);
     }
 
     @Override
@@ -193,11 +205,19 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         aeFluidHandler.clearInventory(index);
     }
 
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
+
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IAutoPullPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
     }
+
+    ////////////////////////////////
+    // ******* Interaction *******//
+    ////////////////////////////////
 
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
@@ -214,6 +234,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
         return InteractionResult.sidedSuccess(isRemote());
     }
+
+    ////////////////////////////////
+    // ****** Configuration ******//
+    ////////////////////////////////
 
     @Override
     protected CompoundTag writeConfigToTag() {
@@ -241,11 +265,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         // set auto pull first to avoid issues with clearing the config after reading from the data stick
         this.setAutoPull(false);
         super.readConfigFromTag(tag);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class ExportOnlyAEStockingFluidList extends ExportOnlyAEFluidList {
@@ -297,7 +316,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
 
         @Override
-        public @NotNull FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
             if (this.stock != null && this.config != null) {
                 // Extract the items from the real net to either validate (simulate)
                 // or extract (modulate) when this is called

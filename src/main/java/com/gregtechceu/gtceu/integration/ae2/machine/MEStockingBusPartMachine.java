@@ -38,7 +38,6 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -63,11 +62,49 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         this.autoPullTest = $ -> false;
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
+    @Override
+    public void addedToController(IMultiController controller) {
+        super.addedToController(controller);
+        // ensure that no other stocking bus on this multiblock is configured to hold the same item.
+        // that we have in our own bus.
+        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
+        // also ensure that our current config is valid given other inputs
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            // wait for 1 tick
+            // we should not access the part list at this time
+            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
+        }
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        // block auto-pull from working when not in a formed multiblock
+        this.autoPullTest = $ -> false;
+        if (this.autoPull) {
+            // may as well clear if we are auto-pull, no reason to preserve the config
+            this.aeItemHandler.clearInventory(0);
+        }
+        super.removedFromController(controller);
+    }
+
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
     @Override
     public void autoIO() {
@@ -98,31 +135,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     protected void flushInventory() {
         // no-op, nothing to send back to the network
-    }
-
-    @Override
-    public void addedToController(IMultiController controller) {
-        super.addedToController(controller);
-        // ensure that no other stocking bus on this multiblock is configured to hold the same item.
-        // that we have in our own bus.
-        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
-        // also ensure that our current config is valid given other inputs
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            // wait for 1 tick
-            // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
-        }
-    }
-
-    @Override
-    public void removedFromController(IMultiController controller) {
-        // block auto-pull from working when not in a formed multiblock
-        this.autoPullTest = $ -> false;
-        if (this.autoPull) {
-            // may as well clear if we are auto-pull, no reason to preserve the config
-            this.aeItemHandler.clearInventory(0);
-        }
-        super.removedFromController(controller);
     }
 
     @Override
@@ -213,6 +225,10 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         aeItemHandler.clearInventory(index);
     }
 
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
+
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IAutoPullPart.super.attachConfigurators(configuratorPanel);
@@ -234,6 +250,10 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
         return InteractionResult.sidedSuccess(isRemote());
     }
+
+    ////////////////////////////////
+    // ****** Configuration ******//
+    ////////////////////////////////
 
     @Override
     protected CompoundTag writeConfigToTag() {
@@ -261,11 +281,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         // set auto pull first to avoid issues with clearing the config after reading from the data stick
         this.setAutoPull(false);
         super.readConfigFromTag(tag);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private class ExportOnlyAEStockingItemList extends ExportOnlyAEItemList {
@@ -316,7 +331,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
             if (slot == 0 && this.stock != null) {
                 if (this.config != null) {
                     // Extract the items from the real net to either validate (simulate)

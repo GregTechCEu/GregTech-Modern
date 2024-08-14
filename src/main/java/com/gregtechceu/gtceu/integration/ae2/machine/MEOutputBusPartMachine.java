@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.stacks.AEItemKey;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -45,11 +46,24 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         super(holder, IO.OUT, args);
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteHandler(this);
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
     @Override
     protected boolean shouldSubscribe() {
@@ -69,6 +83,10 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         }
     }
 
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
+
     @Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
@@ -77,35 +95,36 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
         group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // Display
+        // display list
         group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
 
         return group;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
+        private ItemStackTransfer itemTransfer;
+
         public InaccessibleInfiniteHandler(MetaMachine holder) {
-            super(holder, 0, IO.OUT);
+            super(holder, 0, IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
+        }
+
+        public ItemStackTransfer getTransfer() {
+            if (this.itemTransfer == null) {
+                this.itemTransfer = new ItemStackTransferDelegate();
+            }
+            return itemTransfer;
         }
 
         @Override
         public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                                             @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, handlerIO, new ItemStackTransferDelegate());
+            return handleIngredient(io, recipe, left, simulate, handlerIO, getTransfer());
         }
 
+        @NoArgsConstructor
         private class ItemStackTransferDelegate extends ItemStackTransfer {
-
-            public ItemStackTransferDelegate() {
-                super();
-            }
 
             @Override
             public int getSlots() {

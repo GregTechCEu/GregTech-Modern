@@ -22,7 +22,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.stacks.AEFluidKey;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -44,12 +43,25 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         super(holder, IO.IN, args);
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
     @Override
-    @NotNull
+
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteTank(this);
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
     @Override
     protected boolean shouldSubscribe() {
@@ -69,8 +81,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         }
     }
 
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
+
     @Override
-    @NotNull
+
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
         // ME Network status
@@ -78,29 +94,33 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
         group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // slots
+        // display list
         group.addWidget(new AEListGridWidget.Fluid(5, 20, 3, this.internalBuffer));
 
         return group;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
+        private FluidStorage[] fluidStorages;
+
         public InaccessibleInfiniteTank(MetaMachine holder) {
-            super(holder, 0, 0, IO.OUT);
+            super(holder, 0, 0, IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
+        }
+
+        @Override
+        public FluidStorage[] getStorages() {
+            if (this.fluidStorages == null) {
+                this.fluidStorages = new FluidStorage[] { new FluidStorageDelegate() };
+            }
+            return this.fluidStorages;
         }
 
         @Override
         public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
                                                                  @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
-                    new FluidStorage[] { new FluidStorageDelegate() });
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
         }
 
         private class FluidStorageDelegate extends FluidStorage {

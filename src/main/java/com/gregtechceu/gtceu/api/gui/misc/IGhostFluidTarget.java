@@ -30,16 +30,7 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
     @OnlyIn(Dist.CLIENT)
     @Override
     default List<Target> getPhantomTargets(Object ingredient) {
-        if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
-        }
-
-        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
-            Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
-            ingredient = fluid == null ? FluidStack.empty() :
-                    FluidStack.create(fluid, fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
-        }
-
+        ingredient = convertIngredient(ingredient);
         if (!(ingredient instanceof FluidStack) && drainFrom(ingredient) == null) {
             return Collections.emptyList();
         } else {
@@ -52,16 +43,7 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
                 }
 
                 public void accept(@NotNull Object ingredient) {
-                    if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStackx) {
-                        ingredient = FluidStack.create(fluidStackx.getFluid(), fluidStackx.getAmount(),
-                                fluidStackx.getTag());
-                    }
-
-                    if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
-                        Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
-                        ingredient = fluid == null ? FluidStack.empty() :
-                                FluidStack.create(fluid, fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
-                    }
+                    ingredient = convertIngredient(ingredient);
 
                     FluidStack ingredientStack;
                     if (ingredient instanceof FluidStack fluidStack) {
@@ -76,5 +58,18 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
                 }
             } });
         }
+    }
+
+    default Object convertIngredient(Object ingredient) {
+        if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+            ingredient = FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
+        }
+
+        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
+            Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
+            ingredient = fluid == null ? FluidStack.empty() :
+                    FluidStack.create(fluid, fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
+        }
+        return ingredient;
     }
 }

@@ -48,9 +48,6 @@ public class AmountSetWidget extends Widget {
             return "0";
         }
         IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
-        if (slot.getConfig() != null && slot.getConfig().amount() > 1000) {
-            return "1000";
-        }
         if (slot.getConfig() != null) {
             return String.valueOf(slot.getConfig().amount());
         }

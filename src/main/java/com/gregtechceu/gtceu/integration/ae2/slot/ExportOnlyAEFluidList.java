@@ -43,10 +43,8 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         if (this.fluidStorages == null) {
             this.fluidStorages = Arrays.stream(this.inventory)
                     .map(FluidStorageDelegate::new).toArray(FluidStorage[]::new);
-            return this.fluidStorages;
-        } else {
-            return this.fluidStorages;
         }
+        return this.fluidStorages;
     }
 
     @Override

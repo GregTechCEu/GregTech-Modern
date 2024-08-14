@@ -21,8 +21,24 @@ public class AEUtil {
         return new GenericStack(key, stack.getAmount());
     }
 
+    public static FluidStack toFluidStack(GenericStack stack) {
+        var key = stack.what();
+        if (key instanceof AEFluidKey fluidKey) {
+            return toFluidStack(fluidKey, stack.amount());
+        }
+        return FluidStack.empty();
+    }
+
     public static FluidStack toFluidStack(AEFluidKey key, long amount) {
         return FluidStack.create(key.getFluid(), amount, key.getTag());
+    }
+
+    public static ItemStack[] toItemStacks(GenericStack stack) {
+        var key = stack.what();
+        if (key instanceof AEItemKey itemKey) {
+            return toItemStacks(itemKey, stack.amount());
+        }
+        return new ItemStack[0];
     }
 
     public static ItemStack[] toItemStacks(AEItemKey key, long amount) {

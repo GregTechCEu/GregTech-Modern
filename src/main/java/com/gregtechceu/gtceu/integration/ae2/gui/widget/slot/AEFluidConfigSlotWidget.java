@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
@@ -26,6 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,26 +62,28 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (this.select) {
             GuiTextures.SELECT_BOX.draw(graphics, mouseX, mouseY, position.x, position.y, 18, 18);
         }
+
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (config != null) {
-            FluidStack stack = config.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), config.amount(), key.getTag()) : FluidStack.empty();
-
-            DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
-            if (!parentWidget.isStocking()) {
-                String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
-                drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
+            var stack = AEUtil.toFluidStack(config);
+            if (!stack.isEmpty()) {
+                DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
+                if (!parentWidget.isStocking()) {
+                    String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
+                    drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
+                }
             }
         }
         if (stock != null) {
-            FluidStack stack = stock.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), stock.amount(), key.getTag()) : FluidStack.empty();
-
-            DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
-            String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
-            drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
+            var stack = AEUtil.toFluidStack(stock);
+            if (!stack.isEmpty()) {
+                DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
+                String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
+                drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
+            }
         }
+
         if (mouseOverConfig(mouseX, mouseY)) {
             drawSelectionOverlay(graphics, stackX, stackY, 16, 16);
         } else if (mouseOverStock(mouseX, mouseY)) {
@@ -249,8 +253,14 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
     @OnlyIn(Dist.CLIENT)
     @Override
     public void acceptFluid(FluidStack fluidStack) {
-        CompoundTag compound = fluidStack.saveToTag(new CompoundTag());
-        writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
+        if (fluidStack.getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
+            fluidStack.setAmount(1000L);
+        }
+
+        if (!fluidStack.isEmpty()) {
+            CompoundTag compound = fluidStack.saveToTag(new CompoundTag());
+            writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

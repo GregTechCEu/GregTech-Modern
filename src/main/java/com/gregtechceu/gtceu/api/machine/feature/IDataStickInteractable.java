@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public interface IDataStickIntractable extends IInteractedMachine {
+public interface IDataStickInteractable extends IInteractedMachine {
 
     @Override
     default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,

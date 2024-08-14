@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IDataStickIntractable;
+import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickIntractable, IMachineLife {
+public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickInteractable, IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
             MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -43,11 +43,29 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         super(holder, IO.IN, args);
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
+    @Override
+    public void onMachineRemoved() {
+        flushInventory();
+    }
+
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
     @Override
     public void autoIO() {
@@ -84,11 +102,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         }
     }
 
-    @Override
-    public void onMachineRemoved() {
-        flushInventory();
-    }
-
     protected void flushInventory() {
         if (this.updateMEStatus()) {
             MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
@@ -101,6 +114,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
             }
         }
     }
+
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
 
     @Override
     public Widget createUIWidget() {
@@ -116,6 +133,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         return group;
     }
 
+    ////////////////////////////////
+    // ******* Interaction *******//
+    ////////////////////////////////
+
     @Override
     public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
         if (!isRemote()) {
@@ -126,24 +147,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
         return true;
-    }
-
-    protected CompoundTag writeConfigToTag() {
-        CompoundTag tag = new CompoundTag();
-        CompoundTag configStacks = new CompoundTag();
-        tag.put("ConfigStacks", configStacks);
-        for (int i = 0; i < CONFIG_SIZE; i++) {
-            var slot = this.aeItemHandler.getInventory()[i];
-            GenericStack config = slot.getConfig();
-            if (config == null) {
-                continue;
-            }
-            CompoundTag stackNbt = GenericStack.writeTag(config);
-            configStacks.put(Integer.toString(i), stackNbt);
-        }
-        tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
-        return tag;
     }
 
     @Override
@@ -159,6 +162,28 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
         return InteractionResult.sidedSuccess(isRemote());
+    }
+
+    ////////////////////////////////
+    // ****** Configuration ******//
+    ////////////////////////////////
+
+    protected CompoundTag writeConfigToTag() {
+        CompoundTag tag = new CompoundTag();
+        CompoundTag configStacks = new CompoundTag();
+        tag.put("ConfigStacks", configStacks);
+        for (int i = 0; i < CONFIG_SIZE; i++) {
+            var slot = this.aeItemHandler.getInventory()[i];
+            GenericStack config = slot.getConfig();
+            if (config == null) {
+                continue;
+            }
+            CompoundTag stackTag = GenericStack.writeTag(config);
+            configStacks.put(Integer.toString(i), stackTag);
+        }
+        tag.putByte("GhostCircuit",
+                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+        return tag;
     }
 
     protected void readConfigFromTag(CompoundTag tag) {
@@ -177,10 +202,5 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         if (tag.contains("GhostCircuit")) {
             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

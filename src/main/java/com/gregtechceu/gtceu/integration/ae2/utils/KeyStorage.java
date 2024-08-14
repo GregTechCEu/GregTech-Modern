@@ -32,12 +32,6 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
     @Setter
     private Runnable onContentsChanged;
 
-    public void onChanged() {
-        if (onContentsChanged != null) {
-            onContentsChanged.run();
-        }
-    }
-
     /**
      * Insert the stacks into the inventory as much as possible
      *
@@ -64,6 +58,12 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
         }
         if (changed) {
             onChanged();
+        }
+    }
+
+    public void onChanged() {
+        if (onContentsChanged != null) {
+            onContentsChanged.run();
         }
     }
 
