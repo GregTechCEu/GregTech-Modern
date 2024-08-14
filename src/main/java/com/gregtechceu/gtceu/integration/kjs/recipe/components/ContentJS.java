@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import net.minecraft.util.GsonHelper;
@@ -32,6 +33,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
         JsonObject object = new JsonObject();
         object.add("content", baseComponent.write(recipe, baseComponent.read(recipe, value.content)));
         object.addProperty("chance", value.chance);
+        object.addProperty("maxChance", value.maxChance);
         object.addProperty("tierChanceBoost", value.tierChanceBoost);
         if (value.slotName != null) {
             object.addProperty("slotName", value.slotName);
@@ -47,11 +49,12 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
         if (from instanceof Content) return (Content) from;
         else if (from instanceof JsonObject json) {
             Object content = baseComponent.read(recipe, json.get("content"));
-            float chance = GsonHelper.getAsFloat(json, "chance", 1.0f);
-            float tierChanceBoost = GsonHelper.getAsFloat(json, "tierChanceBoost", 0.0f);
+            int chance = GsonHelper.getAsInt(json, "chance", ChanceLogic.getMaxChancedValue());
+            int maxChance = GsonHelper.getAsInt(json, "maxChance", ChanceLogic.getMaxChancedValue());
+            int tierChanceBoost = GsonHelper.getAsInt(json, "tierChanceBoost", 0);
             String slotName = GsonHelper.getAsString(json, "slotName", null);
             String uiName = GsonHelper.getAsString(json, "uiName", null);
-            return new Content(content, chance, tierChanceBoost, slotName, uiName);
+            return new Content(content, chance, maxChance, tierChanceBoost, slotName, uiName);
         }
         return null;
     }
@@ -70,12 +73,14 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
         return isInput(recipe, original, match) ? new Content(
                 baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with),
-                original.chance, original.tierChanceBoost, original.slotName, original.uiName) : original;
+                original.chance, original.maxChance, original.tierChanceBoost, original.slotName, original.uiName) :
+                original;
     }
 
     @Override
     public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
-        return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with), original.chance,
-                original.tierChanceBoost, original.slotName, original.uiName) : original;
+        return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with),
+                original.chance, original.maxChance, original.tierChanceBoost, original.slotName, original.uiName) :
+                original;
     }
 }

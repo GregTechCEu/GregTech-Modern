@@ -18,6 +18,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -81,7 +82,7 @@ public class HullMachine extends TieredPartMachine {
     }
 
     @Override
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
         if (GTCEu.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
             CompoundTag nbt = new CompoundTag();
@@ -91,7 +92,7 @@ public class HullMachine extends TieredPartMachine {
     }
 
     @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
         super.loadCustomPersistedData(tag);
         if (GTCEu.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
             connectedBlockEntity.getMainNode().loadFromNBT(tag.getCompound("grid_node"));

@@ -209,9 +209,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
      * @param tag     the CompoundTag to load data from
      * @param forDrop if the save is done for dropping the machine as an item.
      */
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {}
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+        for (MachineTrait trait : this.getTraits()) {
+            trait.saveCustomPersistedData(tag, forDrop);
+        }
+    }
 
-    public void loadCustomPersistedData(CompoundTag tag) {}
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+        for (MachineTrait trait : this.getTraits()) {
+            trait.loadCustomPersistedData(tag);
+        }
+    }
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
@@ -345,8 +353,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (this instanceof IMufflableMachine mufflableMachine) {
             if (!isRemote()) {
                 mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
+                playerIn.sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
+                        "gtceu.machine.muffle.on" : "gtceu.machine.muffle.off"));
             }
-
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
@@ -366,6 +376,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (!isRemote()) {
                 setFrontFacing(gridSide);
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         } else {
             if (isRemote())
@@ -387,6 +398,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                     autoOutputFluid.setOutputFacingFluids(gridSide);
                 }
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
     }
@@ -400,6 +412,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                         "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
@@ -435,6 +448,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 }
             }
             if (flag) {
+                playerIn.swing(hand);
                 return InteractionResult.SUCCESS;
             }
         } else {
@@ -453,6 +467,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 }
             }
             if (flag) {
+                playerIn.swing(hand);
                 return InteractionResult.SUCCESS;
             }
         }

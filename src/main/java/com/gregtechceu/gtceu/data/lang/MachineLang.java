@@ -310,13 +310,13 @@ public class MachineLang {
         provider.add("gtceu.machine.transformer.tooltip_tool_usage",
                 "Starts as §fTransform Down§7, use Screwdriver to change");
         provider.add("gtceu.machine.transformer.tooltip_transform_down",
-                "§aTransform Down: §f%dA %d EU (%s§f) -> %dA %d EU (%s§f)");
+                "§aTransform Down: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
         provider.add("gtceu.machine.transformer.message_transform_down",
-                "Transforming Down, In: %d EU %dA, Out: %d EU %dA");
+                "Transforming Down, In: %s EU %dA, Out: %s EU %dA");
         provider.add("gtceu.machine.transformer.tooltip_transform_up",
-                "§cTransform Up: §f%dA %d EU (%s§f) -> %dA %d EU (%s§f)");
+                "§cTransform Up: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
         provider.add("gtceu.machine.transformer.message_transform_up",
-                "Transforming Up, In: %d EU %dA, Out: %d EU %dA");
+                "Transforming Up, In: %s EU %dA, Out: %s EU %dA");
 
         provider.add("gtceu.machine.diode.message", "Max Amperage throughput: %s");
         provider.add("gtceu.machine.diode.tooltip_tool_usage",
@@ -400,6 +400,11 @@ public class MachineLang {
         provider.add("gtceu.machine.world_accelerator.working_area_random", "  Random Tick Mode:§f %dx%d");
         provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
+
+        // Scanner
+        provider.add("gtceu.scanner.copy_stick_from", "§oStick to Copy");
+        provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");
+        provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
 
         // HPCA Components
         provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
@@ -584,14 +589,15 @@ public class MachineLang {
         provider.add("gtceu.multiblock.advanced_processing_array.description",
                 "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
         // Parallel
-        provider.add("gtceu.multiblock.parallelizable.tooltip",
-                "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+
         provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "Allows to run up to 4 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "Allows to run up to 16 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
                 "Allows to run up to 256 recipes in parallel.");
-
+        // Hatch Limits - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
+        provider.add("gtceu.multiblock.exact_hatch_1.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
         // More tooltips
         provider.add("gtceu.machine.primitive_water_pump.tooltip", "Endervoir at Home");
         provider.add("gtceu.machine.primitive_blast_furnace.bronze.tooltip", "Making your first Steel");
@@ -925,6 +931,7 @@ public class MachineLang {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.energy.sink", "Sink");
         provider.add("gtceu.creative.energy.source", "Source");
+        provider.add("gtceu.creative.computation.average", "Average Requested CWUt");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
     }

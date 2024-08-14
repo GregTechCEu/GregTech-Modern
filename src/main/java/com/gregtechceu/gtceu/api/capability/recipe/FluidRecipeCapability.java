@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
@@ -29,10 +30,12 @@ import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -211,7 +214,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
             long fluidAmount = fluidInput.getAmount();
-            if (content.chance == 0.0f) {
+            if (content.chance == 0) {
                 notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);
                 notConsumableMap.putIfAbsent(fluidInput, fluidAmount);
@@ -335,11 +338,20 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI);
             if (content != null) {
-                tank.setXEIChance(content.chance);
+                tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
-                    GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >=
-                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
+                    if (ingredient.getStacks().length > 0) {
+                        FluidStack stack = ingredient.getStacks()[0];
+                        TooltipsHandler.appendFluidTooltips(stack.getFluid(),
+                                stack.getAmount(),
+                                tooltips::add,
+                                TooltipFlag.NORMAL);
+                    }
+
+                    GTRecipeWidget.setConsumedChance(content,
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                    if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
@@ -366,5 +378,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         } else {
             return Either.right(fluids);
         }
+    }
+
+    @Override
+    public Object2IntMap<FluidIngredient> makeChanceCache() {
+        return super.makeChanceCache();
     }
 }

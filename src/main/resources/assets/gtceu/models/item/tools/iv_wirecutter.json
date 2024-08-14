@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/electric_wirecutter_base_iv",
+    "layer1": "gtceu:item/tools/electric_wirecutter_head"
+  }
+}

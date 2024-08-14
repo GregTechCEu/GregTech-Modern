@@ -44,6 +44,7 @@ import net.minecraftforge.fml.ModLoader;
 import com.simibubi.create.AllBlocks;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -417,7 +418,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
-            .addCustomRecipeLogic(new ResearchManager.DataStickCopyScannerLogic())
             .setScanner(true)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
@@ -666,7 +666,8 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start", data.getLong("eu_to_start")));
+            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
+                    NumberFormat.getCompactNumberInstance().format(data.getLong("eu_to_start"))));
 
     public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
 

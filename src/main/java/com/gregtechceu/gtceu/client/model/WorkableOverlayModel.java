@@ -150,10 +150,13 @@ public class WorkableOverlayModel {
             if (upwardsFacing.getAxis() == Direction.Axis.Z) {
                 matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
             }
+            if (frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
+                matrix.rotate(Mth.PI, 0, 0, 1);
+            }
         }
 
         Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0,
-                frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
+                frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? 1 : -1);
 
         if (frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE &&
                 frontFacing.getAxis() != Direction.Axis.Y) {

@@ -2,6 +2,11 @@
   "values": [
     "gtceu:pump_deck",
     "gtceu:powderbarrel",
-    "gtceu:industrial_tnt"
+    "gtceu:industrial_tnt",
+    "gtceu:stripped_rubber_log",
+    "gtceu:rubber_wood",
+    "gtceu:stripped_rubber_wood",
+    "gtceu:rubber_stairs",
+    "gtceu:treated_wood_stairs"
   ]
 }

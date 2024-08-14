@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -27,6 +31,9 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 public class MetaTileEntityMachineRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        // this needs to exist here now :)
+        CraftingComponent.initializeComponents();
+
         // Reservoir Hatch
         ASSEMBLER_RECIPES.recipeBuilder("reservoir_hatch")
                 .inputItems(COVER_INFINITE_WATER)
@@ -291,362 +298,133 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(1000).EUt(VA[UHV]).save(provider);
 
         // Power Transformers
+        for (int tier = 0; tier < POWER_TRANSFORMER.length; tier++) {
+            var hatch = POWER_TRANSFORMER[tier];
+            if (hatch == null) continue;
+            var materialPrime = ((UnificationEntry) CraftingComponent.CABLE_HEX.getIngredient(tier)).material;
+            var materialSecond = ((UnificationEntry) CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier)).material;
 
-        ASSEMBLER_RECIPES.recipeBuilder("ulv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[ULV])
-                .inputItems(ELECTRIC_PUMP_LV)
-                .inputItems(cableGtOctal, Tin)
-                .inputItems(cableGtHex, Lead, 2)
-                .inputItems(springSmall, Lead)
-                .inputItems(spring, Tin)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[ULV])
-                .duration(200).EUt(VA[ULV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("lv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[LV])
-                .inputItems(ELECTRIC_PUMP_LV)
-                .inputItems(cableGtOctal, Copper)
-                .inputItems(cableGtHex, Tin, 2)
-                .inputItems(springSmall, Tin)
-                .inputItems(spring, Copper)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[LV])
-                .duration(200).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("mv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[MV])
-                .inputItems(ELECTRIC_PUMP_MV)
-                .inputItems(cableGtOctal, Gold)
-                .inputItems(cableGtHex, Copper, 2)
-                .inputItems(springSmall, Copper)
-                .inputItems(spring, Gold)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[MV])
-                .duration(200).EUt(VA[MV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("hv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[HV])
-                .inputItems(ELECTRIC_PUMP_MV)
-                .inputItems(cableGtOctal, Aluminium)
-                .inputItems(cableGtHex, Gold, 2)
-                .inputItems(springSmall, Gold)
-                .inputItems(spring, Aluminium)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[HV])
-                .duration(200).EUt(VA[HV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("ev_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[EV])
-                .inputItems(ELECTRIC_PUMP_HV)
-                .inputItems(cableGtOctal, Tungsten)
-                .inputItems(cableGtHex, Aluminium, 2)
-                .inputItems(springSmall, Aluminium)
-                .inputItems(spring, Tungsten)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[EV])
-                .duration(200).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("iv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[IV])
-                .inputItems(ELECTRIC_PUMP_HV)
-                .inputItems(cableGtOctal, NiobiumTitanium)
-                .inputItems(cableGtHex, Tungsten, 2)
-                .inputItems(springSmall, Tungsten)
-                .inputItems(spring, NiobiumTitanium)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[IV])
-                .duration(200).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("luv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[LuV])
-                .inputItems(ELECTRIC_PUMP_EV)
-                .inputItems(cableGtOctal, VanadiumGallium)
-                .inputItems(cableGtHex, NiobiumTitanium, 2)
-                .inputItems(springSmall, NiobiumTitanium)
-                .inputItems(spring, VanadiumGallium)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[LuV])
-                .duration(200).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[ZPM])
-                .inputItems(ELECTRIC_PUMP_EV)
-                .inputItems(cableGtOctal, YttriumBariumCuprate)
-                .inputItems(cableGtHex, VanadiumGallium, 2)
-                .inputItems(springSmall, VanadiumGallium)
-                .inputItems(spring, YttriumBariumCuprate)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[ZPM])
-                .duration(200).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_power_transformer")
-                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
-                .inputItems(ELECTRIC_PUMP_IV)
-                .inputItems(cableGtOctal, Europium)
-                .inputItems(cableGtHex, YttriumBariumCuprate, 2)
-                .inputItems(springSmall, YttriumBariumCuprate)
-                .inputItems(spring, Europium)
-                .inputFluids(Lubricant.getFluid(2000))
-                .outputItems(POWER_TRANSFORMER[UV])
-                .duration(200).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_power_transformer")
+                    .inputItems(HI_AMP_TRANSFORMER_4A[tier])
+                    .inputItems((ItemStack) CraftingComponent.PUMP.getIngredient((tier / 2 + 1)))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_HEX.getIngredient(tier))
+                    .inputItems(springSmall, materialPrime)
+                    .inputItems(spring, materialSecond)
+                    .inputFluids(Lubricant.getFluid(2000))
+                    .outputItems(hatch)
+                    .duration(100).EUt(VA[tier]).save(provider);
+        }
 
         // 4A Energy Hatches
+        for (int tier = 0; tier < ENERGY_INPUT_HATCH_4A.length; tier++) {
+            var hatch = ENERGY_INPUT_HATCH_4A[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_ev")
-                .inputItems(ENERGY_INPUT_HATCH[EV])
-                .inputItems(wireGtQuadruple, Aluminium, 2)
-                .inputItems(plate, Titanium, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[EV])
-                .duration(100).EUt(VA[HV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_iv")
-                .inputItems(ENERGY_INPUT_HATCH[IV])
-                .inputItems(wireGtQuadruple, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[IV])
-                .duration(100).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_luv")
-                .inputItems(ENERGY_INPUT_HATCH[LuV])
-                .inputItems(wireGtQuadruple, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[LuV])
-                .duration(100).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_zpm")
-                .inputItems(ENERGY_INPUT_HATCH[ZPM])
-                .inputItems(wireGtQuadruple, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[ZPM])
-                .duration(100).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_uv")
-                .inputItems(ENERGY_INPUT_HATCH[UV])
-                .inputItems(wireGtQuadruple, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[UV])
-                .duration(100).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_uhv")
-                .inputItems(ENERGY_INPUT_HATCH[UHV])
-                .inputItems(wireGtQuadruple, Europium, 2)
-                .inputItems(plate, Neutronium, 2)
-                .outputItems(ENERGY_INPUT_HATCH_4A[UHV])
-                .duration(100).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(ENERGY_INPUT_HATCH[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_QUAD.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 2)
+                    .outputItems(hatch)
+                    .duration(100).EUt(VA[tier]).save(provider);
+        }
 
         // 16A Energy Hatches
+        for (int tier = 0; tier < ENERGY_INPUT_HATCH_16A.length; tier++) {
+            var hatch = ENERGY_INPUT_HATCH_16A[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_ev")
-                .inputItems(TRANSFORMER[IV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[EV])
-                .inputItems(wireGtOctal, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 4)
-                .outputItems(ENERGY_INPUT_HATCH_16A[EV])
-                .duration(200).EUt(VA[EV]).save(provider);
+            MachineDefinition transformer;
+            if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
+                transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
+            } else {
+                transformer = TRANSFORMER[tier];
+            }
 
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_iv")
-                .inputItems(TRANSFORMER[LuV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[IV])
-                .inputItems(wireGtOctal, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 4)
-                .outputItems(ENERGY_INPUT_HATCH_16A[IV])
-                .duration(200).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_luv")
-                .inputItems(TRANSFORMER[ZPM])
-                .inputItems(ENERGY_INPUT_HATCH_4A[LuV])
-                .inputItems(wireGtOctal, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 4)
-                .outputItems(ENERGY_INPUT_HATCH_16A[LuV])
-                .duration(200).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_zpm")
-                .inputItems(TRANSFORMER[UV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[ZPM])
-                .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 4)
-                .outputItems(ENERGY_INPUT_HATCH_16A[ZPM])
-                .duration(200).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_uv")
-                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
-                .inputItems(ENERGY_INPUT_HATCH_4A[UV], 2)
-                .inputItems(wireGtOctal, Europium, 2)
-                .inputItems(plate, Neutronium, 4)
-                .outputItems(ENERGY_INPUT_HATCH_16A[UV])
-                .duration(200).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(transformer)
+                    .inputItems(ENERGY_INPUT_HATCH_4A[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_OCT.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 4)
+                    .outputItems(hatch)
+                    .duration(200).EUt(VA[tier]).save(provider);
+        }
 
         // 64A Substation Energy Hatches
+        for (int tier = 0; tier < SUBSTATION_ENERGY_INPUT_HATCH.length; tier++) {
+            var hatch = SUBSTATION_ENERGY_INPUT_HATCH[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_ev")
-                .inputItems(POWER_TRANSFORMER[IV])
-                .inputItems(ENERGY_INPUT_HATCH_16A[EV])
-                .inputItems(wireGtHex, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 6)
-                .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[EV])
-                .duration(400).EUt(VA[EV]).save(provider);
+            MachineDefinition transformer;
+            if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
+                transformer = POWER_TRANSFORMER[tier - 1];
+            } else {
+                transformer = POWER_TRANSFORMER[tier];
+            }
 
-        ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_iv")
-                .inputItems(POWER_TRANSFORMER[LuV])
-                .inputItems(ENERGY_INPUT_HATCH_16A[IV])
-                .inputItems(wireGtHex, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 6)
-                .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[IV])
-                .duration(400).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_luv")
-                .inputItems(POWER_TRANSFORMER[ZPM])
-                .inputItems(ENERGY_INPUT_HATCH_16A[LuV])
-                .inputItems(wireGtHex, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 6)
-                .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[LuV])
-                .duration(400).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_zpm")
-                .inputItems(POWER_TRANSFORMER[UV])
-                .inputItems(ENERGY_INPUT_HATCH_16A[ZPM])
-                .inputItems(wireGtHex, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 6)
-                .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[ZPM])
-                .duration(400).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_uv")
-                .inputItems(POWER_TRANSFORMER[UV])
-                .inputItems(ENERGY_INPUT_HATCH_16A[UV])
-                .inputItems(wireGtHex, Europium, 2)
-                .inputItems(plate, Neutronium, 6)
-                .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[UV])
-                .duration(400).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(transformer)
+                    .inputItems(ENERGY_INPUT_HATCH_16A[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_HEX.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 6)
+                    .outputItems(hatch)
+                    .duration(400).EUt(VA[tier]).save(provider);
+        }
 
         // 4A Dynamo Hatches
+        for (int tier = 0; tier < ENERGY_OUTPUT_HATCH_4A.length; tier++) {
+            var hatch = ENERGY_OUTPUT_HATCH_4A[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_ev")
-                .inputItems(ENERGY_OUTPUT_HATCH[EV])
-                .inputItems(wireGtQuadruple, Aluminium, 2)
-                .inputItems(plate, Titanium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[EV])
-                .duration(100).EUt(VA[HV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_iv")
-                .inputItems(ENERGY_OUTPUT_HATCH[IV])
-                .inputItems(wireGtQuadruple, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[IV])
-                .duration(100).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_luv")
-                .inputItems(ENERGY_OUTPUT_HATCH[LuV])
-                .inputItems(wireGtQuadruple, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
-                .duration(100).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_zpm")
-                .inputItems(TRANSFORMER[ZPM])
-                .inputItems(ENERGY_OUTPUT_HATCH[ZPM])
-                .inputItems(wireGtQuadruple, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
-                .duration(100).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_uv")
-                .inputItems(ENERGY_OUTPUT_HATCH[UV])
-                .inputItems(wireGtQuadruple, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[UV])
-                .duration(100).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_uhv")
-                .inputItems(ENERGY_OUTPUT_HATCH[UHV])
-                .inputItems(wireGtQuadruple, Europium, 2)
-                .inputItems(plate, Neutronium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_4A[UHV])
-                .duration(100).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(ENERGY_OUTPUT_HATCH[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_QUAD.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 2)
+                    .outputItems(hatch)
+                    .duration(100).EUt(VA[tier - 1]).save(provider);
+        }
 
         // 16A Dynamo Hatches
+        for (int tier = 0; tier < ENERGY_OUTPUT_HATCH_16A.length; tier++) {
+            var hatch = ENERGY_OUTPUT_HATCH_16A[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_ev")
-                .inputItems(TRANSFORMER[IV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[EV])
-                .inputItems(wireGtOctal, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 4)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[EV])
-                .duration(200).EUt(VA[EV]).save(provider);
+            MachineDefinition transformer;
+            if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
+                transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
+            } else {
+                transformer = TRANSFORMER[tier];
+            }
 
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_iv")
-                .inputItems(TRANSFORMER[LuV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[IV])
-                .inputItems(wireGtOctal, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 4)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[IV])
-                .duration(200).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_luv")
-                .inputItems(TRANSFORMER[ZPM])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
-                .inputItems(wireGtOctal, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 4)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[LuV])
-                .duration(200).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_zpm")
-                .inputItems(TRANSFORMER[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
-                .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 4)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[ZPM])
-                .duration(200).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_uv")
-                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[5])
-                .inputItems(wireGtOctal, Europium, 2)
-                .inputItems(plate, Neutronium, 4)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[4])
-                .duration(200).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(transformer)
+                    .inputItems(ENERGY_OUTPUT_HATCH_4A[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_OCT.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 4)
+                    .outputItems(hatch)
+                    .duration(200).EUt(VA[tier]).save(provider);
+        }
 
         // 64A Substation Dynamo Hatches
+        for (int tier = 0; tier < SUBSTATION_ENERGY_OUTPUT_HATCH.length; tier++) {
+            var hatch = SUBSTATION_ENERGY_OUTPUT_HATCH[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_ev")
-                .inputItems(POWER_TRANSFORMER[IV])
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[EV])
-                .inputItems(wireGtHex, Tungsten, 2)
-                .inputItems(plate, TungstenSteel, 6)
-                .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[EV])
-                .duration(400).EUt(VA[EV]).save(provider);
+            MachineDefinition transformer;
+            if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
+                transformer = POWER_TRANSFORMER[tier - 1];
+            } else {
+                transformer = POWER_TRANSFORMER[tier];
+            }
 
-        ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_iv")
-                .inputItems(POWER_TRANSFORMER[LuV])
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[IV])
-                .inputItems(wireGtHex, NiobiumTitanium, 2)
-                .inputItems(plate, RhodiumPlatedPalladium, 6)
-                .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[IV])
-                .duration(400).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_luv")
-                .inputItems(POWER_TRANSFORMER[ZPM])
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[LuV])
-                .inputItems(wireGtHex, VanadiumGallium, 2)
-                .inputItems(plate, NaquadahAlloy, 6)
-                .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[LuV])
-                .duration(400).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_zpm")
-                .inputItems(POWER_TRANSFORMER[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[ZPM])
-                .inputItems(wireGtHex, YttriumBariumCuprate, 2)
-                .inputItems(plate, Darmstadtium, 6)
-                .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[ZPM])
-                .duration(400).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_uv")
-                .inputItems(POWER_TRANSFORMER[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[UV])
-                .inputItems(wireGtHex, Europium, 2)
-                .inputItems(plate, Neutronium, 6)
-                .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[UV])
-                .duration(400).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_" + GTValues.VN[tier].toLowerCase())
+                    .inputItems(transformer)
+                    .inputItems(ENERGY_OUTPUT_HATCH_16A[tier])
+                    .inputItems((UnificationEntry) CraftingComponent.WIRE_HEX.getIngredient(tier), 2)
+                    .inputItems((UnificationEntry) CraftingComponent.PLATE.getIngredient(tier), 6)
+                    .outputItems(hatch)
+                    .duration(400).EUt(VA[tier]).save(provider);
+        }
 
         // Maintenance Hatch
 
@@ -823,252 +601,101 @@ public class MetaTileEntityMachineRecipeLoader {
         }
     }
 
-    // TODO clean this up with a CraftingComponent rework
     private static void registerLaserRecipes(Consumer<FinishedRecipe> provider) {
         // 256A Laser Target Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_target_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond)
-                .inputItems(EMITTER_IV)
-                .inputItems(ELECTRIC_PUMP_IV)
-                .inputItems(cableGtSingle, Platinum, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_INPUT_HATCH_256[IV])
-                .duration(300).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_INPUT_HATCH_256.length; tier++) {
+            var hatch = LASER_INPUT_HATCH_256[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_256a_laser_target_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond)
-                .inputItems(EMITTER_LuV)
-                .inputItems(ELECTRIC_PUMP_LuV)
-                .inputItems(cableGtSingle, NiobiumTitanium, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_INPUT_HATCH_256[LuV])
-                .duration(300).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_256a_laser_target_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond)
-                .inputItems(EMITTER_ZPM)
-                .inputItems(ELECTRIC_PUMP_ZPM)
-                .inputItems(cableGtSingle, VanadiumGallium, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_INPUT_HATCH_256[ZPM])
-                .duration(300).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_256a_laser_target_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond)
-                .inputItems(EMITTER_UV)
-                .inputItems(ELECTRIC_PUMP_UV)
-                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_INPUT_HATCH_256[UV])
-                .duration(300).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_256a_laser_target_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond)
+                    .inputItems((ItemStack) CraftingComponent.EMITTER.getIngredient(tier))
+                    .inputItems((ItemStack) CraftingComponent.PUMP.getIngredient(tier))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE.getIngredient(tier), 4)
+                    .circuitMeta(1)
+                    .outputItems(hatch)
+                    .duration(300).EUt(VA[tier]).save(provider);
+        }
 
         // 256A Laser Source Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_source_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond)
-                .inputItems(SENSOR_IV)
-                .inputItems(ELECTRIC_PUMP_IV)
-                .inputItems(cableGtSingle, Platinum, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_OUTPUT_HATCH_256[IV])
-                .duration(300).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_OUTPUT_HATCH_256.length; tier++) {
+            var hatch = LASER_OUTPUT_HATCH_256[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_256a_laser_source_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond)
-                .inputItems(SENSOR_LuV)
-                .inputItems(ELECTRIC_PUMP_LuV)
-                .inputItems(cableGtSingle, NiobiumTitanium, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_OUTPUT_HATCH_256[LuV])
-                .duration(300).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_256a_laser_source_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond)
-                .inputItems(SENSOR_ZPM)
-                .inputItems(ELECTRIC_PUMP_ZPM)
-                .inputItems(cableGtSingle, VanadiumGallium, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_OUTPUT_HATCH_256[ZPM])
-                .duration(300).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_256a_laser_source_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond)
-                .inputItems(SENSOR_UV)
-                .inputItems(ELECTRIC_PUMP_UV)
-                .inputItems(cableGtSingle, YttriumBariumCuprate, 4)
-                .circuitMeta(1)
-                .outputItems(LASER_OUTPUT_HATCH_256[UV])
-                .duration(300).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_256a_laser_source_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond)
+                    .inputItems((ItemStack) CraftingComponent.SENSOR.getIngredient(tier))
+                    .inputItems((ItemStack) CraftingComponent.PUMP.getIngredient(tier))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE.getIngredient(tier), 4)
+                    .circuitMeta(1)
+                    .outputItems(hatch)
+                    .duration(300).EUt(VA[tier]).save(provider);
+        }
 
         // 1024A Laser Target Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_1024a_laser_target_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(EMITTER_IV, 2)
-                .inputItems(ELECTRIC_PUMP_IV, 2)
-                .inputItems(cableGtDouble, Platinum, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_INPUT_HATCH_1024[IV])
-                .duration(600).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_INPUT_HATCH_1024.length; tier++) {
+            var hatch = LASER_INPUT_HATCH_1024[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_1024a_laser_target_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(EMITTER_LuV, 2)
-                .inputItems(ELECTRIC_PUMP_LuV, 2)
-                .inputItems(cableGtDouble, NiobiumTitanium, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_INPUT_HATCH_1024[LuV])
-                .duration(600).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_1024a_laser_target_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(EMITTER_ZPM, 2)
-                .inputItems(ELECTRIC_PUMP_ZPM, 2)
-                .inputItems(cableGtDouble, VanadiumGallium, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_INPUT_HATCH_1024[ZPM])
-                .duration(600).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_1024a_laser_target_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(EMITTER_UV, 2)
-                .inputItems(ELECTRIC_PUMP_UV, 2)
-                .inputItems(cableGtDouble, YttriumBariumCuprate, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_INPUT_HATCH_1024[UV])
-                .duration(600).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_1024a_laser_target_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond, 2)
+                    .inputItems(((ItemStack) CraftingComponent.EMITTER.getIngredient(tier)).copyWithCount(2))
+                    .inputItems(((ItemStack) CraftingComponent.PUMP.getIngredient(tier)).copyWithCount(2))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_DOUBLE.getIngredient(tier), 4)
+                    .circuitMeta(2)
+                    .outputItems(hatch)
+                    .duration(600).EUt(VA[tier]).save(provider);
+        }
 
         // 1024A Laser Source Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_1024a_laser_source_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(SENSOR_IV, 2)
-                .inputItems(ELECTRIC_PUMP_IV, 2)
-                .inputItems(cableGtDouble, Platinum, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_OUTPUT_HATCH_1024[IV])
-                .duration(600).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_OUTPUT_HATCH_1024.length; tier++) {
+            var hatch = LASER_OUTPUT_HATCH_1024[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_1024a_laser_source_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(SENSOR_LuV, 2)
-                .inputItems(ELECTRIC_PUMP_LuV, 2)
-                .inputItems(cableGtDouble, NiobiumTitanium, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_OUTPUT_HATCH_1024[LuV])
-                .duration(600).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_1024a_laser_source_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(SENSOR_ZPM, 2)
-                .inputItems(ELECTRIC_PUMP_ZPM, 2)
-                .inputItems(cableGtDouble, VanadiumGallium, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_OUTPUT_HATCH_1024[ZPM])
-                .duration(600).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_1024a_laser_source_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond, 2)
-                .inputItems(SENSOR_UV, 2)
-                .inputItems(ELECTRIC_PUMP_UV, 2)
-                .inputItems(cableGtDouble, YttriumBariumCuprate, 4)
-                .circuitMeta(2)
-                .outputItems(LASER_OUTPUT_HATCH_1024[UV])
-                .duration(600).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_1024a_laser_source_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond, 2)
+                    .inputItems(((ItemStack) CraftingComponent.SENSOR.getIngredient(tier)).copyWithCount(2))
+                    .inputItems(((ItemStack) CraftingComponent.PUMP.getIngredient(tier)).copyWithCount(2))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_DOUBLE.getIngredient(tier), 4)
+                    .circuitMeta(2)
+                    .outputItems(hatch)
+                    .duration(600).EUt(VA[tier]).save(provider);
+        }
 
         // 4096A Laser Target Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_4096a_laser_target_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(EMITTER_IV, 4)
-                .inputItems(ELECTRIC_PUMP_IV, 4)
-                .inputItems(cableGtQuadruple, Platinum, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_INPUT_HATCH_4096[IV])
-                .duration(1200).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_INPUT_HATCH_4096.length; tier++) {
+            var hatch = LASER_INPUT_HATCH_4096[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_4096a_laser_target_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(EMITTER_LuV, 4)
-                .inputItems(ELECTRIC_PUMP_LuV, 4)
-                .inputItems(cableGtQuadruple, NiobiumTitanium, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_INPUT_HATCH_4096[LuV])
-                .duration(1200).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_4096a_laser_target_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(EMITTER_ZPM, 4)
-                .inputItems(ELECTRIC_PUMP_ZPM, 4)
-                .inputItems(cableGtQuadruple, VanadiumGallium, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_INPUT_HATCH_4096[ZPM])
-                .duration(1200).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_4096a_laser_target_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(EMITTER_UV, 4)
-                .inputItems(ELECTRIC_PUMP_UV, 4)
-                .inputItems(cableGtQuadruple, YttriumBariumCuprate, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_INPUT_HATCH_4096[UV])
-                .duration(1200).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_4096a_laser_target_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond, 4)
+                    .inputItems(((ItemStack) CraftingComponent.EMITTER.getIngredient(tier)).copyWithCount(4))
+                    .inputItems(((ItemStack) CraftingComponent.PUMP.getIngredient(tier)).copyWithCount(4))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_QUAD.getIngredient(tier), 4)
+                    .circuitMeta(3)
+                    .outputItems(hatch)
+                    .duration(1200).EUt(VA[tier]).save(provider);
+        }
 
         // 4096A Laser Source Hatches
-        ASSEMBLER_RECIPES.recipeBuilder("iv_4096a_laser_source_hatch")
-                .inputItems(HULL[IV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(SENSOR_IV, 4)
-                .inputItems(ELECTRIC_PUMP_IV, 4)
-                .inputItems(cableGtQuadruple, Platinum, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_OUTPUT_HATCH_4096[IV])
-                .duration(1200).EUt(VA[IV]).save(provider);
+        for (int tier = 0; tier < LASER_OUTPUT_HATCH_4096.length; tier++) {
+            var hatch = LASER_OUTPUT_HATCH_4096[tier];
+            if (hatch == null) continue;
 
-        ASSEMBLER_RECIPES.recipeBuilder("luv_4096a_laser_source_hatch")
-                .inputItems(HULL[LuV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(SENSOR_LuV, 4)
-                .inputItems(ELECTRIC_PUMP_LuV, 4)
-                .inputItems(cableGtQuadruple, NiobiumTitanium, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_OUTPUT_HATCH_4096[LuV])
-                .duration(1200).EUt(VA[LuV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("zpm_4096a_laser_source_hatch")
-                .inputItems(HULL[ZPM])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(SENSOR_ZPM, 4)
-                .inputItems(ELECTRIC_PUMP_ZPM, 4)
-                .inputItems(cableGtQuadruple, VanadiumGallium, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_OUTPUT_HATCH_4096[ZPM])
-                .duration(1200).EUt(VA[ZPM]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("uv_4096a_laser_source_hatch")
-                .inputItems(HULL[UV])
-                .inputItems(lens, Diamond, 4)
-                .inputItems(SENSOR_UV, 4)
-                .inputItems(ELECTRIC_PUMP_UV, 4)
-                .inputItems(cableGtQuadruple, YttriumBariumCuprate, 4)
-                .circuitMeta(3)
-                .outputItems(LASER_OUTPUT_HATCH_4096[UV])
-                .duration(1200).EUt(VA[UV]).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_4096a_laser_output_hatch")
+                    .inputItems(HULL[tier])
+                    .inputItems(lens, Diamond, 4)
+                    .inputItems(((ItemStack) CraftingComponent.SENSOR.getIngredient(tier)).copyWithCount(4))
+                    .inputItems(((ItemStack) CraftingComponent.PUMP.getIngredient(tier)).copyWithCount(4))
+                    .inputItems((UnificationEntry) CraftingComponent.CABLE_QUAD.getIngredient(tier), 4)
+                    .circuitMeta(3)
+                    .outputItems(hatch)
+                    .duration(1200).EUt(VA[tier]).save(provider);
+        }
     }
 }

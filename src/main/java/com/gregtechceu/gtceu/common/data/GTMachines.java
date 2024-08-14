@@ -126,6 +126,7 @@ public class GTMachines {
     public static final int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
     public static final int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
     public static final int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public static final int[] BUFFER_HATCH_TIERS = GTValues.tiersBetween(LuV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
             tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) *
@@ -165,7 +166,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines(
@@ -176,7 +179,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines(
@@ -187,7 +192,9 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/solar"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
-                            (pressure ? 360 : 120) * FluidHelper.getBucket() / 20000))
+                            (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
+                                    ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
+                                    FluidHelper.getBucket() / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines(
@@ -601,6 +608,14 @@ public class GTMachines {
             .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
+
+    public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
+            .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
+            .rotationState(RotationState.NONE)
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .compassNodeSelf()
+            .register();
+
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
@@ -1083,7 +1098,7 @@ public class GTMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .tooltips(
                     Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                            ReservoirHatchPartMachine.FLUID_AMOUNT),
+                            FormattingUtil.formatNumbers(ReservoirHatchPartMachine.FLUID_AMOUNT)),
                     Component.translatable("gtceu.universal.enabled"))
             .overlayTieredHullRenderer("reservoir_hatch")
             .compassNodeSelf()
@@ -1112,7 +1127,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.enabled"))
                     .compassNode("buffer_part")
                     .register(),
-            MULTI_HATCH_TIERS);
+            BUFFER_HATCH_TIERS);
 
     public static final MachineDefinition[] OUTPUT_BUFFER = registerTieredMachines(
             "output_buffer",
@@ -1189,19 +1204,25 @@ public class GTMachines {
     //////////////////////////////////////
     public static final MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze",
             CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
-            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800,
-            1);
+            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.bronzeBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.bronzeBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel",
             CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
-            GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
+            GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.steelBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.steelBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium",
             CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
-            GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200,
-            1);
+            GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.titaniumBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.titaniumBoilerHeatSpeed);
     public static final MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel",
             CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
-            BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
+            BoilerFireboxType.TUNGSTENSTEEL_FIREBOX,
+            ConfigHolder.INSTANCE.machines.largeBoilers.tungstensteelBoilerMaxTemperature,
+            ConfigHolder.INSTANCE.machines.largeBoilers.tungstensteelBoilerHeatSpeed);
 
     public static final MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
             .rotationState(RotationState.ALL)
@@ -1634,7 +1655,7 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(14)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, true, false)))
+                            .or(Predicates.autoAbilities(true, false, false)))
                     .where('#', Predicates.air())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
@@ -2031,7 +2052,7 @@ public class GTMachines {
             HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"),
             GTCEu.id("block/multiblock/generator/large_steam_turbine"));
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
@@ -2044,7 +2065,7 @@ public class GTMachines {
             IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
     @SuppressWarnings("removal")
@@ -2259,10 +2280,12 @@ public class GTMachines {
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                                FormattingUtil
+                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
                     } else {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                slots, FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                                slots, FormattingUtil
+                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
                     }
 
                     return builder.register();
@@ -2283,16 +2306,19 @@ public class GTMachines {
                         .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp,
-                                        GTValues.V[tier + 1], GTValues.VNF[tier + 1], baseAmp * 4, GTValues.V[tier],
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
+                                        baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
+                                        GTValues.VNF[tier + 1],
+                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up", baseAmp * 4,
-                                        GTValues.V[tier], GTValues.VNF[tier], baseAmp, GTValues.V[tier + 1],
+                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up",
+                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier],
+                                        baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
                                         GTValues.VNF[tier + 1]))
                         .compassNode("transformer")
                         .register(),
-                GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV,
-                GTValues.ZPM, GTValues.UV); // UHV not needed, as a UV transformer transforms up to UHV
+                GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV)); // UHV not needed, as a UV transformer
+                                                                               // transforms up to UHV
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name,
@@ -2653,7 +2679,7 @@ public class GTMachines {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
-                .renderer(() -> new MachineRenderer(
+                .renderer(() -> new CrateRenderer(
                         GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())

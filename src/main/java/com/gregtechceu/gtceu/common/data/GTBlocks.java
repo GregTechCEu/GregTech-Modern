@@ -40,7 +40,6 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -446,6 +445,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
+                .lang("Optical Fiber Cable")
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .blockstate(NonNullBiConsumer.noop())
@@ -756,7 +756,7 @@ public class GTBlocks {
     // HPCA, AT
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE
             .block("computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
@@ -767,7 +767,7 @@ public class GTBlocks {
             .register();
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE
             .block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
@@ -1163,6 +1163,7 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
             .lang("Stripped Rubber Log")
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
     public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
@@ -1171,6 +1172,7 @@ public class GTBlocks {
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1179,6 +1181,7 @@ public class GTBlocks {
             .lang("Stripped Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()),
                     provider.blockTexture(ctx.get())))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
 
@@ -1298,7 +1301,7 @@ public class GTBlocks {
             .block("rubber_stairs", (p) -> new StairBlock(RUBBER_PLANK::getDefaultState, p))
             .initialProperties(() -> Blocks.SPRUCE_STAIRS)
             .lang("Rubber Stairs")
-            .tag(BlockTags.STAIRS)
+            .tag(BlockTags.STAIRS, BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.stairsBlock(ctx.getEntry(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get())))
             .item()
             .tag(ItemTags.STAIRS)
@@ -1462,7 +1465,7 @@ public class GTBlocks {
             .block("treated_wood_stairs", (p) -> new StairBlock(TREATED_WOOD_PLANK::getDefaultState, p))
             .initialProperties(() -> Blocks.SPRUCE_STAIRS)
             .lang("Treated Wood Stairs")
-            .tag(BlockTags.STAIRS)
+            .tag(BlockTags.STAIRS, BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.stairsBlock(ctx.getEntry(),
                     prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
             .item()

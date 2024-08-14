@@ -8,11 +8,6 @@ dependencies {
 
     forge forge.minecraftForge
 
-
-    // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     // tests
@@ -42,11 +37,11 @@ dependencies {
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
-    modImplementation forge.rei.forge
+    modCompileOnly forge.rei.forge
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modCompileOnly forge.emi
+    modImplementation forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
@@ -73,9 +68,9 @@ dependencies {
     include(forge.configuration)
 
     // Shimmer
-    modImplementation(forge.shimmer.forge) { transitive = false }
-    modImplementation("maven.modrinth:embeddium:0.3.19+mc1.20.1")
-    modImplementation("maven.modrinth:oculus:1.20.1-1.7.0")
+    modCompileOnly(forge.shimmer.forge) { transitive = false }
+    modCompileOnly("maven.modrinth:embeddium:0.3.19+mc1.20.1")
+    modCompileOnly("maven.modrinth:oculus:1.20.1-1.7.0")
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)
