@@ -141,6 +141,16 @@ public class RecipeAddition {
                 'L', ItemTags.LOGS,
                 'P', ItemTags.PLANKS,
                 'F', new ItemStack(Items.FLINT));
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "barrel", new ItemStack(Blocks.BARREL), "PSP",
+                "PsP", "PSP",
+                'P', ItemTags.PLANKS,
+                'S', ItemTags.WOODEN_SLABS);
+
+        ASSEMBLER_RECIPES.recipeBuilder("barrel")
+                .inputItems(ItemTags.PLANKS, 7)
+                .outputItems(new ItemStack(Blocks.BARREL))
+                .duration(100).EUt(4).save(provider);
     }
 
     private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {
@@ -1210,16 +1220,6 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "turtle_helmet", new ItemStack(Items.TURTLE_HELMET), "SSS",
                     "SrS",
                     'S', new ItemStack(Items.SCUTE));
-
-            VanillaRecipeHelper.addShapedRecipe(provider, "barrel", new ItemStack(Blocks.BARREL), "PSP",
-                    "PsP", "PSP",
-                    'P', ItemTags.PLANKS,
-                    'S', ItemTags.WOODEN_SLABS);
-
-            ASSEMBLER_RECIPES.recipeBuilder("barrel")
-                    .inputItems(ItemTags.PLANKS, 7) // needs circuit probably
-                    .outputItems(new ItemStack(Blocks.BARREL))
-                    .duration(100).EUt(4).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "scaffolding", new ItemStack(Blocks.SCAFFOLDING, 3), "BSB",
                     "BWB", "BrB",
