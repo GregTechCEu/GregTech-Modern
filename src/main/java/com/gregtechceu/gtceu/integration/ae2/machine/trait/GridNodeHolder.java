@@ -34,8 +34,6 @@ public class GridNodeHolder extends MachineTrait {
 
     protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHolder.class);
 
-    private static final Consumer<IManagedGridNode> NOOP = node -> {};
-
     @Getter
     @Persisted
     @ReadOnlyManaged(onDirtyMethod = "onGridNodeDirty",
@@ -45,7 +43,7 @@ public class GridNodeHolder extends MachineTrait {
 
     public GridNodeHolder(IGridConnectedMachine machine) {
         super(machine.self());
-        this.mainNode = createManagedNode(NOOP);
+        this.mainNode = createManagedNode(node -> {});
     }
 
     public GridNodeHolder(IGridConnectedMachine machine, Consumer<IManagedGridNode> customizer) {

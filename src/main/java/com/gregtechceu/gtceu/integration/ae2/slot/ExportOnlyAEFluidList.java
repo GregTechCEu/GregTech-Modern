@@ -176,7 +176,7 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
 
                 @NotNull
                 @Override
-                public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+                public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
                     return super.drain(maxDrain, true, notifyChanges);
                 }
             };
