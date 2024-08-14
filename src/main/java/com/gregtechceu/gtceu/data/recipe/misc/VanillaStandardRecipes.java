@@ -1200,7 +1200,7 @@ public class VanillaStandardRecipes {
 
         // I realise this recipe may genuinely NEVER be used by someone, so feel free to remove them.
         // At the same time, they don't really change anything by being there? Idk
-        MACERATOR_RECIPES.recipeBuilder("disc_fragment_5")
+        FORGE_HAMMER_RECIPES.recipeBuilder("disc_fragment_5")
                 .inputItems(new ItemStack(Items.MUSIC_DISC_5))
                 .outputItems(new ItemStack(Items.DISC_FRAGMENT_5, 9))
                 .duration(100).EUt(6).save(provider);
