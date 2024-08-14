@@ -237,7 +237,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         }
 
         if (!fluidStack.isEmpty()) {
-            writeClientAction(REMOVE_ID, fluidStack::writeToBuf);
+            writeClientAction(UPDATE_ID, fluidStack::writeToBuf);
         }
     }
 
