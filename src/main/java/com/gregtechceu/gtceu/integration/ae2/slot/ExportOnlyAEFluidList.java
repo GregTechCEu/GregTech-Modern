@@ -31,7 +31,7 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     private FluidStorage[] fluidStorages;
 
     public ExportOnlyAEFluidList(MetaMachine machine, int slots) {
-       this(machine, slots, ExportOnlyAEFluidSlot::new);
+        this(machine, slots, ExportOnlyAEFluidSlot::new);
     }
 
     public ExportOnlyAEFluidList(MetaMachine machine, int slots, Supplier<ExportOnlyAEFluidSlot> slotFactory) {
