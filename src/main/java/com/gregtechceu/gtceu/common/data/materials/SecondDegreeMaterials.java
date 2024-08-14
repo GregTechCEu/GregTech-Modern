@@ -128,7 +128,7 @@ public class SecondDegreeMaterials {
 
         TungstenSteel = new Material.Builder(GTCEu.id("tungsten_steel"))
                 .ingot(4).fluid()
-                .color(0xadb8df).secondaryColor(0x03192f).iconSet(METALLIC)
+                .color(0x687ece).secondaryColor(0x03192f).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_DENSE, GENERATE_FRAME,
                         GENERATE_SPRING, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Steel, 1, Tungsten, 1)
@@ -143,7 +143,7 @@ public class SecondDegreeMaterials {
         CobaltBrass = new Material.Builder(GTCEu.id("cobalt_brass"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1202))
-                .color(0xbbac82).secondaryColor(0x596338).iconSet(METALLIC)
+                .color(0xbaa365).secondaryColor(0x596338).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR)
                 .components(Brass, 7, Aluminium, 1, Cobalt, 1)
                 .toolStats(ToolProperty.Builder.of(2.5F, 2.0F, 1024, 2)
@@ -197,7 +197,7 @@ public class SecondDegreeMaterials {
 
         VanadiumMagnetite = new Material.Builder(GTCEu.id("vanadium_magnetite"))
                 .dust().ore()
-                .color(0x8a94a2).secondaryColor(0x170322).iconSet(METALLIC)
+                .color(0x505d70).secondaryColor(0x170322).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Magnetite, 1, Vanadium, 1)
                 .buildAndRegister();
@@ -251,7 +251,7 @@ public class SecondDegreeMaterials {
 
         Trona = new Material.Builder(GTCEu.id("trona"))
                 .dust(1).ore(2, 1)
-                .color(0xe7e7b4).secondaryColor(0x87875F).iconSet(METALLIC)
+                .color(0xe6e6a5).secondaryColor(0x87875F).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 3, Carbon, 2, Hydrogen, 1, Water, 2, Oxygen, 6)
                 .buildAndRegister();
@@ -291,7 +291,7 @@ public class SecondDegreeMaterials {
         VanadiumSteel = new Material.Builder(GTCEu.id("vanadium_steel"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(2073))
-                .color(0xd4d1f1).secondaryColor(0x19140d).iconSet(SHINY)
+                .color(0xb59fcc).secondaryColor(0x19140d).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR)
                 .components(Vanadium, 1, Chromium, 1, Steel, 7)
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
