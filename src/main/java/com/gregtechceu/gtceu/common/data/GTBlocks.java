@@ -1465,7 +1465,7 @@ public class GTBlocks {
             .block("treated_wood_stairs", (p) -> new StairBlock(TREATED_WOOD_PLANK::getDefaultState, p))
             .initialProperties(() -> Blocks.SPRUCE_STAIRS)
             .lang("Treated Wood Stairs")
-            .tag(BlockTags.STAIRS)
+            .tag(BlockTags.STAIRS, BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.stairsBlock(ctx.getEntry(),
                     prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
             .item()
