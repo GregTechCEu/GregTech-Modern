@@ -90,7 +90,7 @@ public class OrganicChemistryMaterials {
         PolyphenyleneSulfide = new Material.Builder(GTCEu.id("polyphenylene_sulfide"))
                 .polymer()
                 .liquid(new FluidBuilder().temperature(500))
-                .color(0x30302e).secondaryColor(0x071d26)
+                .color(0x5e5e08).secondaryColor(0x2c373c)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 4, Sulfur, 1)
                 .buildAndRegister();
@@ -142,7 +142,7 @@ public class OrganicChemistryMaterials {
         Polycaprolactam = new Material.Builder(GTCEu.id("polycaprolactam"))
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(493))
-                .color(0xf3f2e9).secondaryColor(0xe0e0dc)
+                .color(0x3f3d2d).secondaryColor(0x43432e)
                 .appendFlags(STD_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .buildAndRegister();
@@ -150,7 +150,7 @@ public class OrganicChemistryMaterials {
         Polytetrafluoroethylene = new Material.Builder(GTCEu.id("polytetrafluoroethylene"))
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(600))
-                .color(0xFFFFFF).secondaryColor(0x919187)
+                .color(0x6e6e6e).secondaryColor(0x202020)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
                 .toolStats(
                         ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
@@ -552,7 +552,7 @@ public class OrganicChemistryMaterials {
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))
                 .ingot().fluid()
-                .color(0xc1d0d7).secondaryColor(0x929d73)
+                .color(0x3e7051).secondaryColor(0x535648)
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION, NO_SMASHING)
                 .components(Butyraldehyde, 1, PolyvinylAcetate, 1)
                 .buildAndRegister();
