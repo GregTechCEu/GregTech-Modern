@@ -27,12 +27,14 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSeriali
 
     @Getter
     @Setter
+    @Nullable
     protected GenericStack config;
     @Getter
     @Setter
+    @Nullable
     protected GenericStack stock;
 
-    public ExportOnlyAESlot(GenericStack config, GenericStack stock) {
+    public ExportOnlyAESlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
         this.config = config;
         this.stock = stock;
     }

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IAutoPullPart;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -22,8 +21,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +35,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -46,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart, IAutoPullPart {
+public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -55,6 +53,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Persisted
     @Getter
     private boolean autoPull;
+
+    @Setter
     private Predicate<GenericStack> autoPullTest;
 
     public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -69,25 +69,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        // ensure that no other stocking bus on this multiblock is configured to hold the same item.
-        // that we have in our own bus.
-        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
-        // also ensure that our current config is valid given other inputs
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            // wait for 1 tick
-            // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
-        }
+        IMEStockingPart.super.addedToController(controller);
     }
 
     @Override
     public void removedFromController(IMultiController controller) {
-        // block auto-pull from working when not in a formed multiblock
-        this.autoPullTest = $ -> false;
-        if (this.autoPull) {
-            // may as well clear if we are auto-pull, no reason to preserve the config
-            this.aeItemHandler.clearInventory(0);
-        }
+        IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
     }
 
@@ -115,7 +102,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
             for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
                 var config = slot.getConfig();
-                if (slot.getConfig() == null) {
+                if (config == null) {
                     slot.setStock(null);
                 } else {
                     // Try to fill the slot
@@ -231,7 +218,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IAutoPullPart.super.attachConfigurators(configuratorPanel);
+        IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
     }
 
@@ -286,17 +273,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     private class ExportOnlyAEStockingItemList extends ExportOnlyAEItemList {
 
         public ExportOnlyAEStockingItemList(MetaMachine holder, int slots) {
-            super(holder, slots);
-            this.inventory = new ExportOnlyAEStockingItemSlot[slots];
-            for (int i = 0; i < slots; i++) {
-                this.inventory[i] = new ExportOnlyAEStockingItemSlot();
-                this.inventory[i].setOnContentsChanged(this::onContentsChanged);
-            }
-        }
-
-        @Override
-        public ExportOnlyAEStockingItemSlot[] getInventory() {
-            return (ExportOnlyAEStockingItemSlot[]) super.getInventory();
+            super(holder, slots, ExportOnlyAEStockingItemSlot::new);
         }
 
         @Override
@@ -326,7 +303,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             super();
         }
 
-        public ExportOnlyAEStockingItemSlot(GenericStack config, GenericStack stock) {
+        public ExportOnlyAEStockingItemSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
             super(config, stock);
         }
 

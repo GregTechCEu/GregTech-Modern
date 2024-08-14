@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements IConfigurableSlotList {
 
@@ -30,10 +31,14 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     private ItemStackTransfer itemTransfer;
 
     public ExportOnlyAEItemList(MetaMachine holder, int slots) {
+        this(holder, slots, ExportOnlyAEItemSlot::new);
+    }
+
+    public ExportOnlyAEItemList(MetaMachine holder, int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
         super(holder, 0, IO.IN);
         this.inventory = new ExportOnlyAEItemSlot[slots];
         for (int i = 0; i < slots; i++) {
-            this.inventory[i] = new ExportOnlyAEItemSlot(null, null);
+            this.inventory[i] = slotFactory.get();
         }
         for (ExportOnlyAEItemSlot slot : this.inventory) {
             slot.setOnContentsChanged(this::onContentsChanged);

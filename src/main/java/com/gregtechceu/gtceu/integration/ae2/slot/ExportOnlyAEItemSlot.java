@@ -8,6 +8,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTransfer {
 
@@ -15,7 +16,7 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
         super();
     }
 
-    public ExportOnlyAEItemSlot(GenericStack config, GenericStack stock) {
+    public ExportOnlyAEItemSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
         super(config, stock);
     }
 

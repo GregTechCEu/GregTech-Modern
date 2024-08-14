@@ -161,7 +161,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
         }
         if (id == UPDATE_ID) {
             ItemStack item = buffer.readItem();
-            var stack = new GenericStack(AEItemKey.of(item.getItem(), item.getTag()), item.getCount());
+            var stack = GenericStack.fromItemStack(item);
             if (!isStackValidForSlot(stack)) return;
             slot.setConfig(stack);
             this.parentWidget.enableAmount(this.index);

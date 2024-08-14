@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IAutoPullPart;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -24,8 +23,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +36,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -47,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implements IMEStockingPart, IAutoPullPart {
+public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implements IMEStockingPart {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEStockingHatchPartMachine.class, MEInputHatchPartMachine.MANAGED_FIELD_HOLDER);
@@ -59,6 +57,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Getter
     private boolean autoPull;
 
+    @Setter
     private Predicate<GenericStack> autoPullTest;
 
     public MEStockingHatchPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -73,20 +72,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        this.autoPullTest = stack -> !this.testConfiguredInOtherPart(stack);
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            // wait for 1 tick
-            // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
-        }
+        IMEStockingPart.super.addedToController(controller);
     }
 
     @Override
     public void removedFromController(IMultiController controller) {
-        this.autoPullTest = $ -> false;
-        if (this.autoPull) {
-            this.aeFluidHandler.clearInventory(0);
-        }
+        IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
     }
 
@@ -211,7 +202,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IAutoPullPart.super.attachConfigurators(configuratorPanel);
+        IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
     }
 
@@ -270,11 +261,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     private class ExportOnlyAEStockingFluidList extends ExportOnlyAEFluidList {
 
         public ExportOnlyAEStockingFluidList(MetaMachine holder, int slots) {
-            super(holder, slots);
-            this.inventory = new ExportOnlyAEStockingFluidSlot[slots];
-            for (int i = 0; i < slots; i++) {
-                this.inventory[i] = new ExportOnlyAEStockingFluidSlot();
-            }
+            super(holder, slots, ExportOnlyAEStockingFluidSlot::new);
         }
 
         @Override
@@ -304,7 +291,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             super();
         }
 
-        public ExportOnlyAEStockingFluidSlot(GenericStack config, GenericStack stock) {
+        public ExportOnlyAEStockingFluidSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
             super(config, stock);
         }
 

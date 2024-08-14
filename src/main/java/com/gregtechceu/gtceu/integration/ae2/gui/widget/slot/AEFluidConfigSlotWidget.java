@@ -44,8 +44,6 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
  */
 public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
 
-    public static final int LOAD_PHANTOM_FLUID_STACK_FROM_NBT = 13;
-
     public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
@@ -68,7 +66,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (config != null) {
             var stack = AEUtil.toFluidStack(config);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
+                DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 16, 16);
                 if (!parentWidget.isStocking()) {
                     String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
                     drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
@@ -78,7 +76,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (stock != null) {
             var stack = AEUtil.toFluidStack(stock);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
+                DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 16, 16);
                 String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
                 drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
             }
@@ -125,10 +123,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 FluidStack fluid = FluidTransferHelper.getFluidContained(hold);
 
                 if (fluid != null) {
-                    writeClientAction(UPDATE_ID, buf -> {
-                        buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                        buf.writeVarLong(fluid.getAmount());
-                    });
+                    writeClientAction(UPDATE_ID, fluid::writeToBuf);
                 }
 
                 if (!parentWidget.isStocking()) {
@@ -163,17 +158,13 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.create(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
-                    buffer.readVarLong());
-            var stack = new GenericStack(AEFluidKey.of(fluid.getFluid(), fluid.getTag()), fluid.getAmount());
+            FluidStack fluid = FluidStack.readFromBuf(buffer);
+            var stack = AEUtil.fromFluidStack(fluid);
             if (!isStackValidForSlot(stack)) return;
             slot.setConfig(stack);
             this.parentWidget.enableAmount(this.index);
             if (fluid != FluidStack.empty()) {
-                writeUpdateInfo(UPDATE_ID, buf -> {
-                    buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
-                });
+                writeUpdateInfo(UPDATE_ID, fluid::writeToBuf);
             }
         }
         if (id == AMOUNT_CHANGE_ID) {
@@ -190,17 +181,6 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 if (clickResult >= 0) {
                     writeUpdateInfo(PICK_UP_ID, buf -> buf.writeVarInt(clickResult));
                 }
-            }
-        }
-        if (id == LOAD_PHANTOM_FLUID_STACK_FROM_NBT) {
-            FluidStack fluid = FluidStack.loadFromTag(buffer.readNbt());
-            slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
-            this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.empty()) {
-                writeUpdateInfo(UPDATE_ID, buf -> {
-                    buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
-                });
             }
         }
     }
@@ -258,8 +238,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         }
 
         if (!fluidStack.isEmpty()) {
-            CompoundTag compound = fluidStack.saveToTag(new CompoundTag());
-            writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
+            writeClientAction(REMOVE_ID, fluidStack::writeToBuf);
         }
     }
 

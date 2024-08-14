@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfigurableSlotList {
 
@@ -30,10 +31,14 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     private FluidStorage[] fluidStorages;
 
     public ExportOnlyAEFluidList(MetaMachine machine, int slots) {
+       this(machine, slots, ExportOnlyAEFluidSlot::new);
+    }
+
+    public ExportOnlyAEFluidList(MetaMachine machine, int slots, Supplier<ExportOnlyAEFluidSlot> slotFactory) {
         super(machine, slots, 0, IO.IN);
         this.inventory = new ExportOnlyAEFluidSlot[slots];
         for (int i = 0; i < slots; i++) {
-            this.inventory[i] = new ExportOnlyAEFluidSlot(null, null);
+            this.inventory[i] = slotFactory.get();
             this.inventory[i].setOnContentsChanged(this::onContentsChanged);
         }
     }

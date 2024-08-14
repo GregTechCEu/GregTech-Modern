@@ -7,6 +7,7 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidStorage {
 
@@ -14,7 +15,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
         super();
     }
 
-    public ExportOnlyAEFluidSlot(GenericStack config, GenericStack stock) {
+    public ExportOnlyAEFluidSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
         super(config, stock);
     }
 
@@ -32,7 +33,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     @NotNull
     public FluidStack getFluid() {
         if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
-            return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(),
+            return FluidStack.create(fluidKey.getFluid(), this.stock.amount(),
                     fluidKey.getTag());
         }
         return FluidStack.empty();
@@ -95,8 +96,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
-    @NotNull
-    public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+    public @NotNull FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
         if (this.stock == null || !(this.stock.what() instanceof AEFluidKey fluidKey)) {
             return FluidStack.empty();
         }
