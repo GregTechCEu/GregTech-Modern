@@ -69,8 +69,8 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     protected @NotNull NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        this.aeFluidTanks = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
-        return this.aeFluidTanks;
+        this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
+        return this.aeFluidHandler;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
         if (this.updateMEStatus()) {
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot slot : aeFluidTanks.getInventory()) {
+            for (ExportOnlyAEFluidSlot slot : aeFluidHandler.getInventory()) {
                 var config = slot.getConfig();
                 if (config == null) {
                     slot.setStock(null);
@@ -118,14 +118,14 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void removedFromController(IMultiController controller) {
         this.autoPullTest = $ -> false;
         if (this.autoPull) {
-            this.aeFluidTanks.clearInventory(0);
+            this.aeFluidHandler.clearInventory(0);
         }
         super.removedFromController(controller);
     }
 
     @Override
     public IConfigurableSlotList getSlotList() {
-        return aeFluidTanks;
+        return aeFluidHandler;
     }
 
     @Override
@@ -137,7 +137,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             for (IMultiPart part : controller.getParts()) {
                 if (part instanceof MEStockingHatchPartMachine hatch) {
                     if (hatch == this) continue;
-                    if (hatch.aeFluidTanks.hasStackInConfig(config, false)) {
+                    if (hatch.aeFluidHandler.hasStackInConfig(config, false)) {
                         return true;
                     }
                 }
@@ -151,7 +151,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         this.autoPull = autoPull;
         if (!isRemote()) {
             if (!this.autoPull) {
-                this.aeFluidTanks.clearInventory(0);
+                this.aeFluidHandler.clearInventory(0);
             } else if (updateMEStatus()) {
                 this.refreshList();
                 updateTankSubscription();
@@ -162,7 +162,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     private void refreshList() {
         IGrid grid = this.getMainNode().getGrid();
         if (grid == null) {
-            aeFluidTanks.clearInventory(0);
+            aeFluidHandler.clearInventory(0);
             return;
         }
 
@@ -183,14 +183,14 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
 
-            var slot = this.aeFluidTanks.getInventory()[index];
+            var slot = this.aeFluidHandler.getInventory()[index];
             slot.setConfig(new GenericStack(what, 1));
             slot.setStock(new GenericStack(what, request));
             slot.onContentsChanged();
             index++;
         }
 
-        aeFluidTanks.clearInventory(index);
+        aeFluidHandler.clearInventory(index);
     }
 
     @Override

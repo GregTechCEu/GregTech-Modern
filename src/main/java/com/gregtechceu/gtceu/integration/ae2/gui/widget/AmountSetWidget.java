@@ -9,6 +9,8 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
 import lombok.Getter;
@@ -58,7 +60,13 @@ public class AmountSetWidget extends Widget {
     public void setNewAmount(String amount) {
         try {
             long newAmount = Long.parseLong(amount);
-            writeClientAction(1, buf -> buf.writeVarLong(newAmount));
+            if (this.index < 0) {
+                return;
+            }
+            IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
+            if (newAmount > 0 && slot.getConfig() != null) {
+                slot.setConfig(new GenericStack(slot.getConfig().what(), newAmount));
+            }
         } catch (NumberFormatException ignore) {}
     }
 
@@ -67,18 +75,10 @@ public class AmountSetWidget extends Widget {
         super.handleClientAction(id, buffer);
         if (id == 0) {
             this.index = buffer.readVarInt();
-        } else if (id == 1) {
-            if (this.index < 0) {
-                return;
-            }
-            IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
-            long newAmt = buffer.readVarLong();
-            if (newAmt > 0 && slot.getConfig() != null) {
-                slot.setConfig(new GenericStack(slot.getConfig().what(), newAmt));
-            }
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);

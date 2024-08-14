@@ -178,12 +178,13 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         @Override
         public ItemStackTransfer copy() {
             // because recipe testing uses copy transfer instead of simulated operations
-           return new ItemStackTransferDelegate(inventory) {
-               @Override
-               public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                   return super.extractItem(slot, amount, true, notifyChanges);
-               }
-           };
+            return new ItemStackTransferDelegate(inventory) {
+
+                @Override
+                public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                    return super.extractItem(slot, amount, true, notifyChanges);
+                }
+            };
         }
     }
 }

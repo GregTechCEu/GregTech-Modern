@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickIntractable;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
@@ -30,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickIntractable {
+public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickIntractable, IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
             MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -83,8 +84,22 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         }
     }
 
+    @Override
+    public void onMachineRemoved() {
+        flushInventory();
+    }
+
     protected void flushInventory() {
-        // no-op, nothing to send back to the network
+        if (this.updateMEStatus()) {
+            MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
+
+            for (var aeSlot : aeItemHandler.getInventory()) {
+                GenericStack stock = aeSlot.getStock();
+                if (stock != null) {
+                    storage.insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                }
+            }
+        }
     }
 
     @Override

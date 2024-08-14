@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickIntractable;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
@@ -31,12 +32,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEInputHatchPartMachine extends MEHatchPartMachine implements IDataStickIntractable {
+public class MEInputHatchPartMachine extends MEHatchPartMachine implements IDataStickIntractable, IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
-    protected ExportOnlyAEFluidList aeFluidTanks;
+    protected ExportOnlyAEFluidList aeFluidHandler;
 
     public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
@@ -45,8 +46,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     @Override
     @NotNull
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots);
-        return aeFluidTanks;
+        this.aeFluidHandler = new ExportOnlyAEFluidList(this, slots);
+        return aeFluidHandler;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks));
+        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
 
         return group;
     }
@@ -67,7 +68,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     @Override
     public void onLoad() {
         super.onLoad();
-        tankSubs = this.aeFluidTanks.addChangedListener(this::updateTankSubscription);
+        tankSubs = this.aeFluidHandler.addChangedListener(this::updateTankSubscription);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
 
         if (this.updateMEStatus()) {
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidTanks.getInventory()) {
+            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidHandler.getInventory()) {
                 // Try to clear the wrong fluid
                 GenericStack exceedFluid = aeTank.exceedStack();
                 if (exceedFluid != null) {
@@ -105,8 +106,22 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         }
     }
 
+    @Override
+    public void onMachineRemoved() {
+        flushInventory();
+    }
+
     protected void flushInventory() {
-        // no-op, nothing to send back to the network
+        if (this.updateMEStatus()) {
+            MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
+
+            for (var aeSlot : aeFluidHandler.getInventory()) {
+                GenericStack stock = aeSlot.getStock();
+                if (stock != null) {
+                    storage.insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                }
+            }
+        }
     }
 
     @Override
@@ -126,7 +141,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         CompoundTag configStacks = new CompoundTag();
         tag.put("ConfigStacks", configStacks);
         for (int i = 0; i < CONFIG_SIZE; i++) {
-            var slot = this.aeFluidTanks.getInventory()[i];
+            var slot = this.aeFluidHandler.getInventory()[i];
             GenericStack config = slot.getConfig();
             if (config == null) {
                 continue;
@@ -161,9 +176,9 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
                 String key = Integer.toString(i);
                 if (configStacks.contains(key)) {
                     CompoundTag configTag = configStacks.getCompound(key);
-                    this.aeFluidTanks.getInventory()[i].setConfig(GenericStack.readTag(configTag));
+                    this.aeFluidHandler.getInventory()[i].setConfig(GenericStack.readTag(configTag));
                 } else {
-                    this.aeFluidTanks.getInventory()[i].setConfig(null);
+                    this.aeFluidHandler.getInventory()[i].setConfig(null);
                 }
             }
         }

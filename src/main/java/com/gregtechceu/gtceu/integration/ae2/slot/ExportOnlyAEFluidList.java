@@ -175,6 +175,7 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         public FluidStorage copy() {
             // because recipe testing uses copy storage instead of simulated operations
             return new FluidStorageDelegate(fluid) {
+
                 @NotNull
                 @Override
                 public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @author GlodBlock
- * @Description A export only slot to hold {@link appeng.api.stacks.GenericStack}
+ * @Description An export only slot to hold {@link appeng.api.stacks.GenericStack}
  * @date 2023/4/22-13:42
  */
 public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSerializable<CompoundTag>,

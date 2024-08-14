@@ -20,13 +20,6 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
     }
 
     @Override
-    public ExportOnlyAEItemSlot copy() {
-        return new ExportOnlyAEItemSlot(
-                this.config == null ? null : copy(this.config),
-                this.stock == null ? null : copy(this.stock));
-    }
-
-    @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         // NO-OP
     }
@@ -99,6 +92,13 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return false;
+    }
+
+    @Override
+    public ExportOnlyAEItemSlot copy() {
+        return new ExportOnlyAEItemSlot(
+                this.config == null ? null : copy(this.config),
+                this.stock == null ? null : copy(this.stock));
     }
 
     @Deprecated

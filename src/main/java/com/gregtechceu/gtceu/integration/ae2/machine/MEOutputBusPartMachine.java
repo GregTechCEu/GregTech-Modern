@@ -154,6 +154,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             public ItemStackTransfer copy() {
                 // because recipe testing uses copy transfer instead of simulated operations
                 return new ItemStackTransferDelegate() {
+
                     @Override
                     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
                         return super.insertItem(slot, stack, true, notifyChanges);
