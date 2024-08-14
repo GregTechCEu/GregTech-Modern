@@ -76,6 +76,7 @@ public class PolymerRecipes {
                 .duration(160).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("vinyl_chloride_from_chlorine")
+                .circuitMeta(1)
                 .inputFluids(Chlorine.getFluid(2000))
                 .inputFluids(Ethylene.getFluid(1000))
                 .outputFluids(VinylChloride.getFluid(1000))
