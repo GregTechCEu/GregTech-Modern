@@ -345,9 +345,9 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
         // TODO Add extruder/laser engraver recipes for all vanilla stones to keep parity with GT stones
-        // registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));
-        // registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_vine"));
+        registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
+        registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));
+        registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_vine"));
         // registry.accept(new ResourceLocation("minecraft:deepslate_bricks"));
         // registry.accept(new ResourceLocation("minecraft:cracked_nether_bricks"));
         // registry.accept(new ResourceLocation("minecraft:chiseled_nether_bricks"));
