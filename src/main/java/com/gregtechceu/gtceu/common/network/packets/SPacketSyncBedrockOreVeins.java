@@ -62,7 +62,9 @@ public class SPacketSyncBedrockOreVeins implements IPacket {
         }
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
         for (var entry : veins.entrySet()) {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
+            if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.containKey(entry.getKey())) {
+                GTRegistries.BEDROCK_ORE_DEFINITIONS.register(entry.getKey(), entry.getValue());
+            }
         }
         if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();

@@ -60,7 +60,9 @@ public class SPacketSyncOreVeins implements IPacket {
         }
         GTRegistries.ORE_VEINS.registry().clear();
         for (var entry : veins.entrySet()) {
-            GTRegistries.ORE_VEINS.registerOrOverride(entry.getKey(), entry.getValue());
+            if (!GTRegistries.ORE_VEINS.containKey(entry.getKey())) {
+                GTRegistries.ORE_VEINS.register(entry.getKey(), entry.getValue());
+            }
         }
         if (!GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.freeze();

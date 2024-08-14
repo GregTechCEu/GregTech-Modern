@@ -62,7 +62,9 @@ public class SPacketSyncFluidVeins implements IPacket {
         }
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
         for (var entry : veins.entrySet()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
+            if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.containKey(entry.getKey())) {
+                GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(entry.getKey(), entry.getValue());
+            }
         }
         if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
