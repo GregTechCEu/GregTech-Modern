@@ -276,7 +276,7 @@ public class FisherMachine extends TieredEnergyMachine
                 useBait |= tryFillCache(itemStack);
 
             if (useBait)
-                this.baitHandler.getStackInSlot(0).shrink(1);
+                this.baitHandler.storage.extractItem(0, 1, false);
             updateFishingUpdateSubscription();
             progress = -1;
         }
