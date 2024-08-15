@@ -46,11 +46,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BufferPartMachine extends TieredIOPartMachine
+public class DualHatchPartMachine extends TieredIOPartMachine
                                implements IDistinctPart, IMachineModifyDrops {
 
     public static final long INITIAL_TANK_CAPACITY = 4 * FluidHelper.getBucket();
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BufferPartMachine.class,
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
@@ -79,7 +79,7 @@ public class BufferPartMachine extends TieredIOPartMachine
     private boolean hasFluidTransfer;
     private boolean hasItemTransfer;
 
-    public BufferPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
