@@ -681,7 +681,8 @@ public class GTRecipeTypes {
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
                     NumberFormat.getCompactNumberInstance().format(data.getLong("eu_to_start"))));
 
-    public static final GTRecipeType DUMMY_RECIPES = new GTRecipeType(GTCEu.id("dummy"), DUMMY);
+    public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
+            .setXEIVisible(false);
 
     //////////////////////////////////////
     // ****** Integration *******//

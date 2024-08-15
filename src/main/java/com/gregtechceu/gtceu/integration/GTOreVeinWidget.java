@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -190,12 +191,12 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public String getOreName(GTOreDefinition oreDefinition) {
-        ResourceLocation id = GTRegistries.ORE_VEINS.getKey(oreDefinition);
+        ResourceLocation id = ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
 
     public String getFluidName(BedrockFluidDefinition fluid) {
-        ResourceLocation id = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid);
+        ResourceLocation id = ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
         return id.getPath();
     }
 }

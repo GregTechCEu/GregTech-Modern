@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.nbt.CompoundTag;
@@ -61,16 +62,8 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
     }
 
     public static void execute(SPacketSyncFluidVeins packet, IPayloadContext handler) {
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
-        }
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
-        for (var entry : packet.veins.entrySet()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
-        }
-        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
+        ClientProxy.CLIENT_FLUID_VEINS.clear();
+        ClientProxy.CLIENT_FLUID_VEINS.putAll(packet.veins);
     }
 
     @Override

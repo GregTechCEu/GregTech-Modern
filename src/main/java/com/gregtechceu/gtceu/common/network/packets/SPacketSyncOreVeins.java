@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 
+import com.gregtechceu.gtceu.client.ClientProxy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -59,16 +60,8 @@ public class SPacketSyncOreVeins implements CustomPacketPayload {
     }
 
     public static void execute(SPacketSyncOreVeins packet, IPayloadContext handler) {
-        if (GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.unfreeze();
-        }
-        GTRegistries.ORE_VEINS.registry().clear();
-        for (var entry : packet.veins.entrySet()) {
-            GTRegistries.ORE_VEINS.registerOrOverride(entry.getKey(), entry.getValue());
-        }
-        if (!GTRegistries.ORE_VEINS.isFrozen()) {
-            GTRegistries.ORE_VEINS.freeze();
-        }
+        ClientProxy.CLIENT_ORE_VEINS.clear();
+        ClientProxy.CLIENT_ORE_VEINS.putAll(packet.veins);
     }
 
     @Override

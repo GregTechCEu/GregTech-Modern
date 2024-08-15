@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
@@ -28,6 +28,6 @@ public class GTBedrockFluid extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid);
+        return ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
     }
 }
