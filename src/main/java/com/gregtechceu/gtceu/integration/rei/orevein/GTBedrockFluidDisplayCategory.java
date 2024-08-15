@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
@@ -59,7 +59,7 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (BedrockFluidDefinition fluid : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
+        for (BedrockFluidDefinition fluid : ClientProxy.CLIENT_FLUID_VEINS.values()) {
             registry.add(new GTBedrockFluidDisplay(fluid));
         }
     }
