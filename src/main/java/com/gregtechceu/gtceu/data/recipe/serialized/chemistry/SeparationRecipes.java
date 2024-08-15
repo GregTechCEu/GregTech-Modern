@@ -314,6 +314,12 @@ public class SeparationRecipes {
                 .outputFluids(Water.getFluid(1000))
                 .save(provider);
 
+        CENTRIFUGE_RECIPES.recipeBuilder("muddy_mangrove_roots")
+                .inputItems(new ItemStack(Blocks.MUDDY_MANGROVE_ROOTS))
+                .outputItems(new ItemStack(Blocks.MANGROVE_ROOTS))
+                .outputItems(new ItemStack(Blocks.MUD))
+                .duration(20).EUt(1).save(provider);
+
         // Electrolyzer
         ELECTROLYZER_RECIPES.recipeBuilder("sodium_bisulfate_electrolysis")
                 .inputItems(dust, SodiumBisulfate, 7)
@@ -496,6 +502,11 @@ public class SeparationRecipes {
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
                 .outputFluids(SeedOil.getFluid(6))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
+                .outputFluids(SeedOil.getFluid(8))
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_cod").duration(16).EUt(4)

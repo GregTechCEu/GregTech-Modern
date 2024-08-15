@@ -74,8 +74,15 @@ public class SecondDegreeMaterials {
         Amethyst = new Material.Builder(GTCEu.id("amethyst"))
                 .gem(3).ore()
                 .color(0xcfa0f3).secondaryColor(0x734fbc).iconSet(RUBY)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
                 .components(SiliconDioxide, 4, Iron, 1)
+                .buildAndRegister();
+
+        Echo = new Material.Builder(GTCEu.id("echo"))
+                .gem(3)
+                .color(0x002b2d).iconSet(RUBY)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, GENERATE_ROD)
+                .components(SiliconDioxide, 3, Sculk, 2)
                 .buildAndRegister();
 
         Lapis = new Material.Builder(GTCEu.id("lapis"))
@@ -280,7 +287,7 @@ public class SecondDegreeMaterials {
         SteelMagnetic = new Material.Builder(GTCEu.id("magnetic_steel"))
                 .ingot()
                 .color(0xa7a7a7).secondaryColor(0x121c37).iconSet(MAGNETIC)
-                .flags(GENERATE_ROD, IS_MAGNETIC)
+                .flags(GENERATE_ROD, IS_MAGNETIC, GENERATE_DENSE)
                 .components(Steel, 1)
                 .ingotSmeltInto(Steel)
                 .arcSmeltInto(Steel)

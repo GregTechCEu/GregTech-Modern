@@ -62,6 +62,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.OAK_FENCE_GATE, "oak_fence_gate")
                             .stairs(Items.OAK_STAIRS, "oak_stairs")
                             .boat(Items.OAK_BOAT, "oak_boat")
+                            .chestBoat(Items.OAK_CHEST_BOAT, "oak_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "spruce")
@@ -77,6 +78,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.SPRUCE_FENCE_GATE, "spruce_fence_gate")
                             .stairs(Items.SPRUCE_STAIRS, "spruce_stairs")
                             .boat(Items.SPRUCE_BOAT, "spruce_boat")
+                            .chestBoat(Items.SPRUCE_CHEST_BOAT, "spruce_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "birch")
@@ -92,6 +94,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.BIRCH_FENCE_GATE, "birch_fence_gate")
                             .stairs(Items.BIRCH_STAIRS, "birch_stairs")
                             .boat(Items.BIRCH_BOAT, "birch_boat")
+                            .chestBoat(Items.BIRCH_CHEST_BOAT, "birch_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "jungle")
@@ -107,6 +110,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.JUNGLE_FENCE_GATE, "jungle_fence_gate")
                             .stairs(Items.JUNGLE_STAIRS, "jungle_stairs")
                             .boat(Items.JUNGLE_BOAT, "jungle_boat")
+                            .chestBoat(Items.JUNGLE_CHEST_BOAT, "jungle_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "acacia")
@@ -122,6 +126,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.ACACIA_FENCE_GATE, "acacia_fence_gate")
                             .stairs(Items.ACACIA_STAIRS, "acacia_stairs")
                             .boat(Items.ACACIA_BOAT, "acacia_boat")
+                            .chestBoat(Items.ACACIA_CHEST_BOAT, "acacia_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "dark_oak")
@@ -137,6 +142,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.DARK_OAK_FENCE_GATE, "dark_oak_fence_gate")
                             .stairs(Items.DARK_OAK_STAIRS, "dark_oak_stairs")
                             .boat(Items.DARK_OAK_BOAT, "dark_oak_boat")
+                            .chestBoat(Items.DARK_OAK_CHEST_BOAT, "dark_oak_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
@@ -151,6 +157,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.BAMBOO_FENCE_GATE, "bamboo_fence_gate")
                             .stairs(Items.BAMBOO_STAIRS, "bamboo_stairs")
                             .boat(Items.BAMBOO_RAFT, "bamboo_raft")
+                            .chestBoat(Items.BAMBOO_CHEST_RAFT, "bamboo_chest_raft")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "cherry")
@@ -166,6 +173,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.CHERRY_FENCE_GATE, "cherry_fence_gate")
                             .stairs(Items.CHERRY_STAIRS, "cherry_stairs")
                             .boat(Items.CHERRY_BOAT, "cherry_boat")
+                            .chestBoat(Items.CHERRY_CHEST_BOAT, "cherry_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "mangrove")
@@ -181,6 +189,7 @@ public class WoodMachineRecipes {
                             .fenceGate(Items.MANGROVE_FENCE_GATE, "mangrove_fence_gate")
                             .stairs(Items.MANGROVE_STAIRS, "mangrove_stairs")
                             .boat(Items.MANGROVE_BOAT, "mangrove_boat")
+                            .chestBoat(Items.MANGROVE_CHEST_BOAT, "mangrove_chest_boat")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
@@ -344,6 +353,14 @@ public class WoodMachineRecipes {
             ChemicalHelper.registerMaterialInfo(entry.boat,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M * 5)));
         }
+
+        /*
+         * TODO should this really be included?
+         * if (entry.chestBoat != null && entry.addChestBoatsUnificationInfo) {
+         * ChemicalHelper.registerMaterialInfo(entry.chestBoat,
+         * new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
+         * }
+         */
     }
 
     /**
@@ -568,6 +585,37 @@ public class WoodMachineRecipes {
                     .outputItems(entry.boat)
                     .circuitMeta(15)
                     .duration(100).EUt(4).save(provider);
+
+            // chest boat
+            if (entry.chestBoat != null) {
+                final boolean hasChestBoatRecipe = entry.chestBoatRecipeName != null;
+                if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                    if (entry.boat != null) {
+
+                        VanillaRecipeHelper.addShapedRecipe(provider,
+                                hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat",
+                                new ItemStack(entry.chestBoat),
+                                " B ", "SCS", " w ",
+                                'B', entry.boat,
+                                'S', new UnificationEntry(bolt, Wood),
+                                'C', Tags.Items.CHESTS_WOODEN);
+                    }
+                } else {
+                    if (!hasChestBoatRecipe) {
+                        VanillaRecipeHelper.addShapelessRecipe(provider, name + "_chest_boat",
+                                new ItemStack(entry.chestBoat),
+                                entry.boat, Tags.Items.CHESTS);
+                    }
+                }
+
+                // plank -> boat assembling
+                ASSEMBLER_RECIPES.recipeBuilder(name + "_chest_boat")
+                        .inputItems(new ItemStack(entry.boat))
+                        .inputItems(Tags.Items.CHESTS)
+                        .outputItems(entry.chestBoat)
+                        .circuitMeta(16)
+                        .duration(100).EUt(4).save(provider);
+            }
         }
     }
 
