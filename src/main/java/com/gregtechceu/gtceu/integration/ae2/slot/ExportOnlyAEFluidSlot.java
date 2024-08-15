@@ -30,6 +30,19 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
+    public void setStock(@Nullable GenericStack stack) {
+        if (this.stock == null && stack == null) {
+            return;
+        } else if (stack == null) {
+            this.stock = null;
+        } else {
+            if (stack.equals(stock)) return;
+            this.stock = stack;
+        }
+        onContentsChanged();
+    }
+
+    @Override
     @NotNull
     public FluidStack getFluid() {
         if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {

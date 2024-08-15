@@ -73,43 +73,46 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         if (!this.shouldSyncME()) return;
 
         if (this.updateMEStatus()) {
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEItemSlot aeSlot : this.aeItemHandler.getInventory()) {
-                // Try to clear the wrong item
-                GenericStack exceedItem = aeSlot.exceedStack();
-                if (exceedItem != null) {
-                    long total = exceedItem.amount();
-                    long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (inserted > 0) {
-                        aeSlot.extractItem(0, (int) inserted, false);
-                        continue;
-                    } else {
-                        aeSlot.extractItem(0, (int) total, false);
-                    }
-                }
-                // Fill it
-                GenericStack reqItem = aeSlot.requestStack();
-                if (reqItem != null) {
-                    long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (extracted != 0) {
-                        aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
-                    }
-                }
-            }
+            this.syncME();
             this.updateInventorySubscription();
         }
     }
 
-    protected void flushInventory() {
-        if (this.updateMEStatus()) {
-            MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
+    protected void syncME() {
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        for (ExportOnlyAEItemSlot aeSlot : this.aeItemHandler.getInventory()) {
+            // Try to clear the wrong item
+            GenericStack exceedItem = aeSlot.exceedStack();
+            if (exceedItem != null) {
+                long total = exceedItem.amount();
+                long inserted = networkInv.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (inserted > 0) {
+                    aeSlot.extractItem(0, (int) inserted, false);
+                    continue;
+                } else {
+                    aeSlot.extractItem(0, (int) total, false);
+                }
+            }
+            // Fill it
+            GenericStack reqItem = aeSlot.requestStack();
+            if (reqItem != null) {
+                long extracted = networkInv.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (extracted != 0) {
+                    aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
+                }
+            }
+        }
+    }
 
+    protected void flushInventory() {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             for (var aeSlot : aeItemHandler.getInventory()) {
                 GenericStack stock = aeSlot.getStock();
                 if (stock != null) {
-                    storage.insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
                 }
             }
         }

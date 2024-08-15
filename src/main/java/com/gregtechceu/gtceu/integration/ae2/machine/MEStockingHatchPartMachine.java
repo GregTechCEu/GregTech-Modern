@@ -98,27 +98,29 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     public void autoIO() {
-        if (!this.isWorkingEnabled()) return;
+        super.autoIO();
+        if (autoPull && getOffsetTimer() % 100 == 0) {
+            refreshList();
+            syncME();
+        }
+    }
 
-        if (this.updateMEStatus()) {
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot slot : aeFluidHandler.getInventory()) {
-                var config = slot.getConfig();
-                if (config == null) {
-                    slot.setStock(null);
-                } else {
-                    // Try to fill the slot
-                    var key = config.what();
-                    long result = aeNetwork.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                    slot.setStock(new GenericStack(key, result));
-                    slot.onContentsChanged();
+    @Override
+    protected void syncME() {
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        for (ExportOnlyAEFluidSlot slot : aeFluidHandler.getInventory()) {
+            var config = slot.getConfig();
+            if (config != null) {
+                // Try to fill the slot
+                var key = config.what();
+                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+                if (extracted > 0) {
+                    slot.setStock(new GenericStack(key, extracted));
+                    continue;
                 }
             }
-            this.updateTankSubscription();
+            slot.setStock(null);
         }
-
-        if (!autoPull || !(getOffsetTimer() % 100 == 0)) return;
-        refreshList();
     }
 
     @Override
@@ -189,7 +191,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             var slot = this.aeFluidHandler.getInventory()[index];
             slot.setConfig(new GenericStack(what, 1));
             slot.setStock(new GenericStack(what, request));
-            slot.onContentsChanged();
             index++;
         }
 

@@ -72,43 +72,46 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         if (!this.shouldSyncME()) return;
 
         if (this.updateMEStatus()) {
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidHandler.getInventory()) {
-                // Try to clear the wrong fluid
-                GenericStack exceedFluid = aeTank.exceedStack();
-                if (exceedFluid != null) {
-                    long total = exceedFluid.amount();
-                    long inserted = aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (inserted > 0) {
-                        aeTank.drain(inserted, false);
-                        continue;
-                    } else {
-                        aeTank.drain(total, false);
-                    }
-                }
-                // Fill it
-                GenericStack reqFluid = aeTank.requestStack();
-                if (reqFluid != null) {
-                    long extracted = aeNetwork.extract(reqFluid.what(), reqFluid.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (extracted > 0) {
-                        aeTank.addStack(new GenericStack(reqFluid.what(), extracted));
-                    }
-                }
-            }
+            this.syncME();
             this.updateTankSubscription();
         }
     }
 
-    protected void flushInventory() {
-        if (this.updateMEStatus()) {
-            MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
+    protected void syncME() {
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        for (ExportOnlyAEFluidSlot aeTank : this.aeFluidHandler.getInventory()) {
+            // Try to clear the wrong fluid
+            GenericStack exceedFluid = aeTank.exceedStack();
+            if (exceedFluid != null) {
+                long total = exceedFluid.amount();
+                long inserted = networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (inserted > 0) {
+                    aeTank.drain(inserted, false);
+                    continue;
+                } else {
+                    aeTank.drain(total, false);
+                }
+            }
+            // Fill it
+            GenericStack reqFluid = aeTank.requestStack();
+            if (reqFluid != null) {
+                long extracted = networkInv.extract(reqFluid.what(), reqFluid.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (extracted > 0) {
+                    aeTank.addStack(new GenericStack(reqFluid.what(), extracted));
+                }
+            }
+        }
+    }
 
+    protected void flushInventory() {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             for (var aeSlot : aeFluidHandler.getInventory()) {
                 GenericStack stock = aeSlot.getStock();
                 if (stock != null) {
-                    storage.insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
                 }
             }
         }

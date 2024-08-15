@@ -86,6 +86,19 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
     }
 
     @Override
+    public void setStock(@Nullable GenericStack stack) {
+        if (this.stock == null && stack == null) {
+            return;
+        } else if (stack == null) {
+            this.stock = null;
+        } else {
+            if (stack.equals(stock)) return;
+            this.stock = stack;
+        }
+        onContentsChanged();
+    }
+
+    @Override
     public int getSlotLimit(int slot) {
         return Integer.MAX_VALUE;
     }
