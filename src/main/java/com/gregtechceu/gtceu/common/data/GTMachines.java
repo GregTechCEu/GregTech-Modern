@@ -1118,11 +1118,11 @@ public class GTMachines {
                             Component.translatable("gtceu.machine.buffer.import.tooltip"),
                             Component.translatable(
                                     "gtceu.universal.tooltip.item_storage_capacity",
-                                    (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
+                                    (int) Math.pow(tier - 4, 2)),
                             Component.translatable(
                                     "gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                    1 + Math.min(9, tier),
-                                    FluidHatchPartMachine.getTankCapacity(
+                                    tier - 4,
+                                    BufferPartMachine.getTankCapacity(
                                             BufferPartMachine.INITIAL_TANK_CAPACITY, tier)),
                             Component.translatable("gtceu.universal.enabled"))
                     .compassNode("buffer_part")

@@ -471,6 +471,7 @@ public class LangHandler {
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
         replace(provider, GTMaterials.RTMAlloy.getUnlocalizedName(), "RTM Alloy");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA Steel");
 
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
