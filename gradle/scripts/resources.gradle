@@ -16,10 +16,16 @@ tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             version             : version,
             mod_id              : mod_id,
-            forge_version       : forgeVers[0] + "." + forgeVers[1], // only specify major version of forge
-            loader_version      : loader_version,
-            kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             minecraft_version   : libs.versions.minecraft.get(),
+            loader_version      : loader_version,
+            forge_version       : forgeVers[0] + "." + forgeVers[1], // only specify major version of forge
+            configuration_version: forge.versions.configuration.get(),
+            kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
+            ldlib_version       : forge.versions.ldlib.get(),
+            jei_version         : forge.versions.jei.get(),
+            emi_version         : forge.versions.emi.get(),
+            top_version         : forge.versions.theoneprobe.get(),
+            jade_version        : forge.versions.jade.get(),
             mod_license         : mod_license,
             mod_name            : mod_name,
             mod_description     : mod_description,
