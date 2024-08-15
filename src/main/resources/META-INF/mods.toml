@@ -52,14 +52,14 @@ side = "BOTH"
 modId = "jei"
 mandatory = false
 versionRange = "[${jei_version},)"
-ordering = "BEFORE"
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "emi"
 mandatory = false
 versionRange = "[${emi_version},)"
-ordering = "BEFORE"
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
