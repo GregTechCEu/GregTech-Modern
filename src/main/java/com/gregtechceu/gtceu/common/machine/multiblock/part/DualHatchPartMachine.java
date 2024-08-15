@@ -47,7 +47,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DualHatchPartMachine extends TieredIOPartMachine
-                               implements IDistinctPart, IMachineModifyDrops {
+                                  implements IDistinctPart, IMachineModifyDrops {
 
     public static final long INITIAL_TANK_CAPACITY = 4 * FluidHelper.getBucket();
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
