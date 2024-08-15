@@ -1,10 +1,13 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
+import com.gregtechceu.gtceu.api.gui.misc.IGhostFluidTarget;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
-import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
@@ -17,23 +20,20 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
-
-import static com.gregtechceu.gtceu.utils.GTUtil.getFluidFromContainer;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
 /**
@@ -41,14 +41,13 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
  * @Description A configurable slot for {@link com.lowdragmc.lowdraglib.side.fluid.FluidStack}
  * @Date 2023/4/21-0:50
  */
-public class AEFluidConfigSlot extends AEConfigSlot {
+public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
 
-    public static final int LOAD_PHANTOM_FLUID_STACK_FROM_NBT = 13;
-
-    public AEFluidConfigSlot(int x, int y, AEConfigWidget widget, int index) {
+    public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
         super(new Position(x, y), new Size(18, 18 * 2), widget, index);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
@@ -56,30 +55,32 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         GenericStack config = slot.getConfig();
         GenericStack stock = slot.getStock();
-        GuiTextures.FLUID_SLOT.draw(graphics, mouseX, mouseY, position.x, position.y, 18, 18);
-        GuiTextures.FLUID_SLOT.draw(graphics, mouseX, mouseY, position.x, position.y + 18, 18, 18);
-        GuiTextures.CONFIG_ARROW.draw(graphics, mouseX, mouseY, position.x, position.y, 18, 18);
+        drawSlots(graphics, mouseX, mouseY, position.x, position.y, parentWidget.isAutoPull());
         if (this.select) {
             GuiTextures.SELECT_BOX.draw(graphics, mouseX, mouseY, position.x, position.y, 18, 18);
         }
+
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (config != null) {
-            FluidStack stack = config.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), config.amount(), key.getTag()) : FluidStack.empty();
-
-            DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
-            String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
-            drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
+            var stack = AEUtil.toFluidStack(config);
+            if (!stack.isEmpty()) {
+                DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 16, 16);
+                if (!parentWidget.isStocking()) {
+                    String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
+                    drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
+                }
+            }
         }
         if (stock != null) {
-            FluidStack stack = stock.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), stock.amount(), key.getTag()) : FluidStack.empty();
-
-            DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
-            String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
-            drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
+            var stack = AEUtil.toFluidStack(stock);
+            if (!stack.isEmpty()) {
+                DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 16, 16);
+                String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
+                drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
+            }
         }
+
         if (mouseOverConfig(mouseX, mouseY)) {
             drawSelectionOverlay(graphics, stackX, stackY, 16, 16);
         } else if (mouseOverStock(mouseX, mouseY)) {
@@ -87,31 +88,55 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    private void drawSlots(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean autoPull) {
+        if (autoPull) {
+            GuiTextures.SLOT_DARK.draw(graphics, mouseX, mouseY, x, y, 18, 18);
+            GuiTextures.CONFIG_ARROW_DARK.draw(graphics, mouseX, mouseY, x, y, 18, 18);
+        } else {
+            GuiTextures.FLUID_SLOT.draw(graphics, mouseX, mouseY, x, y, 18, 18);
+            GuiTextures.CONFIG_ARROW.draw(graphics, mouseX, mouseY, x, y, 18, 18);
+        }
+        GuiTextures.SLOT_DARK.draw(graphics, mouseX, mouseY, x, y + 18, 18, 18);
+    }
+
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (mouseOverConfig(mouseX, mouseY)) {
+            // don't allow manual interaction with config slots when auto pull is enabled
+            if (parentWidget.isAutoPull()) {
+                return false;
+            }
+
             if (button == 1) {
                 // Right click to clear
-                this.parentWidget.disableAmount();
                 writeClientAction(REMOVE_ID, buf -> {});
+
+                if (!parentWidget.isStocking()) {
+                    this.parentWidget.disableAmount();
+                }
             } else if (button == 0) {
                 // Left click to set/select
                 ItemStack hold = this.gui.getModularUIContainer().getCarried();
                 FluidStack fluid = FluidTransferHelper.getFluidContained(hold);
 
                 if (fluid != null) {
-                    writeClientAction(UPDATE_ID, buf -> {
-                        buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                        buf.writeVarLong(fluid.getAmount());
-                    });
+                    writeClientAction(UPDATE_ID, fluid::writeToBuf);
                 }
-                this.parentWidget.enableAmount(this.index);
-                this.select = true;
+
+                if (!parentWidget.isStocking()) {
+                    this.parentWidget.enableAmount(this.index);
+                    this.select = true;
+                }
             }
             return true;
         } else if (mouseOverStock(mouseX, mouseY)) {
             // Left click to pick up
             if (button == 0) {
+                if (parentWidget.isStocking()) {
+                    return false;
+                }
                 GenericStack stack = this.parentWidget.getDisplay(this.index).getStock();
                 if (stack != null) {
                     writeClientAction(PICK_UP_ID, buf -> buf.writeBoolean(isShiftDown()));
@@ -132,15 +157,13 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.create(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
-                    buffer.readVarLong());
-            slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
+            FluidStack fluid = FluidStack.readFromBuf(buffer);
+            var stack = AEUtil.fromFluidStack(fluid);
+            if (!isStackValidForSlot(stack)) return;
+            slot.setConfig(stack);
             this.parentWidget.enableAmount(this.index);
             if (fluid != FluidStack.empty()) {
-                writeUpdateInfo(UPDATE_ID, buf -> {
-                    buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
-                });
+                writeUpdateInfo(UPDATE_ID, fluid::writeToBuf);
             }
         }
         if (id == AMOUNT_CHANGE_ID) {
@@ -159,19 +182,9 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 }
             }
         }
-        if (id == LOAD_PHANTOM_FLUID_STACK_FROM_NBT) {
-            FluidStack fluid = FluidStack.loadFromTag(buffer.readNbt());
-            slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
-            this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.empty()) {
-                writeUpdateInfo(UPDATE_ID, buf -> {
-                    buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
-                });
-            }
-        }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);
@@ -208,35 +221,31 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public List<Target> getPhantomTargets(Object ingredient) {
-        if (getFluidFromContainer(ingredient) == null) {
-            return Collections.emptyList();
-        }
+    public Rect2i getRectangleBox() {
         Rect2i rectangle = toRectangleBox();
         rectangle.setHeight(rectangle.getHeight() / 2);
-        return Lists.newArrayList(new Target() {
-
-            @NotNull
-            @Override
-            public Rect2i getArea() {
-                return rectangle;
-            }
-
-            @Override
-            public void accept(@NotNull Object ingredient) {
-                FluidStack stack = getFluidFromContainer(ingredient);
-
-                if (stack != null) {
-                    CompoundTag compound = stack.saveToTag(new CompoundTag());
-                    writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
-                }
-            }
-        });
+        return rectangle;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void acceptFluid(FluidStack fluidStack) {
+        if (fluidStack.getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
+            fluidStack.setAmount(1000L);
+        }
+
+        if (!fluidStack.isEmpty()) {
+            writeClientAction(UPDATE_ID, fluidStack::writeToBuf);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+        // Only allow the amount scrolling if not stocking, as amount is useless for stocking
+        if (parentWidget.isStocking()) return false;
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         Rect2i rectangle = toRectangleBox();
         rectangle.setHeight(rectangle.getHeight() / 2);
@@ -262,8 +271,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
     }
 
     private int tryClickContainer(boolean isShiftKeyDown) {
-        MEInputHatchPartMachine.ExportOnlyAEFluid fluidTank = this.parentWidget
-                .getConfig(this.index) instanceof MEInputHatchPartMachine.ExportOnlyAEFluid fluid ? fluid : null;
+        ExportOnlyAEFluidSlot fluidTank = this.parentWidget
+                .getConfig(this.index) instanceof ExportOnlyAEFluidSlot fluid ? fluid : null;
         if (fluidTank == null) return -1;
         Player player = gui.entityPlayer;
         ItemStack currentStack = gui.getModularUIContainer().getCarried();

@@ -6,35 +6,30 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidGridWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
+import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.GridHelper;
 import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.api.stacks.AEFluidKey;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.stream.Stream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class MEOutputHatchPartMachine extends MEHatchPartMachine
                                       implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
@@ -42,67 +37,21 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
             MEOutputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    private SerializableGenericStackInv internalBuffer;
+    private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
     }
 
+    /////////////////////////////////
+    // ***** Machine LifeCycle ****//
+    /////////////////////////////////
+
     @Override
-    @NotNull
+
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
-        return new InaccessibleInfiniteSlot(this, this.internalBuffer);
-    }
-
-    @Override
-    @NotNull
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
-        // ME Network status
-        group.addWidget(new LabelWidget(10, 15, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-
-        // Config slots
-        group.addWidget(new AEFluidGridWidget(16, 25, 3, this.internalBuffer));
-
-        return group;
-    }
-
-    @Override
-    protected void autoIO() {
-        if (getLevel().isClientSide) return;
-        if (!this.isWorkingEnabled()) return;
-        if (!this.shouldSyncME()) return;
-
-        if (this.updateMEStatus()) {
-            if (!this.internalBuffer.isEmpty()) {
-                MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-                for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
-                    GenericStack item = this.internalBuffer.getStack(slot);
-                    if (item == null) continue;
-                    long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (inserted > 0) {
-                        item = new GenericStack(item.what(), (item.amount() - inserted));
-                    }
-                    this.internalBuffer.setStack(slot, item);
-                }
-            }
-            this.updateTankSubscription();
-        }
-    }
-
-    @Override
-    protected void updateTankSubscription() {
-        if (isWorkingEnabled() && !internalBuffer.isEmpty() && this.getLevel() != null &&
-                GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
-            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
-        } else if (autoIOSubs != null) {
-            autoIOSubs.unsubscribe();
-            autoIOSubs = null;
-        }
+        this.internalBuffer = new KeyStorage();
+        return new InaccessibleInfiniteTank(this);
     }
 
     @Override
@@ -110,106 +59,120 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemTransfer {
+    /////////////////////////////////
+    // ********** Sync ME *********//
+    /////////////////////////////////
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
+    @Override
+    protected boolean shouldSubscribe() {
+        return super.shouldSubscribe() && !internalBuffer.storage.isEmpty();
+    }
 
-        private final GenericStackInv internalBuffer;
+    @Override
+    protected void autoIO() {
+        if (!this.shouldSyncME()) return;
 
-        public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
-            super(holder, internalBuffer.size(), 0, IO.OUT);
-            this.internalBuffer = internalBuffer;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-            GenericStack stack1 = GenericStack.fromItemStack(stack);
-            this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
-            this.machine.onChanged();
-        }
-
-        @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
-                    Stream.generate(() -> new FluidStorage(0) {
-
-                        @Override
-                        public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                            return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
-                        }
-                    }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
-        }
-
-        @NotNull
-        @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-            if (stack.isEmpty()) {
-                return ItemStack.EMPTY;
+        if (this.updateMEStatus()) {
+            var grid = getMainNode().getGrid();
+            if (grid != null && !internalBuffer.storage.isEmpty()) {
+                internalBuffer.insertInventory(grid.getStorageService().getInventory(), actionSource);
             }
-            if (!simulate) {
-                GenericStack stack1 = GenericStack.fromItemStack(stack);
-                this.internalBuffer.insert(stack1.what(), stack1.amount(), Actionable.MODULATE,
-                        this.machine instanceof MEBusPartMachine host ? host.actionSource : IActionSource.empty());
-                this.machine.onChanged();
+            this.updateTankSubscription();
+        }
+    }
+
+    ///////////////////////////////
+    // ********** GUI ***********//
+    ///////////////////////////////
+
+    @Override
+
+    public Widget createUIWidget() {
+        WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
+        // ME Network status
+        group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
+                "gtceu.gui.me_network.online" :
+                "gtceu.gui.me_network.offline"));
+        group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
+        // display list
+        group.addWidget(new AEListGridWidget.Fluid(5, 20, 3, this.internalBuffer));
+
+        return group;
+    }
+
+    private class InaccessibleInfiniteTank extends NotifiableFluidTank {
+
+        private FluidStorage[] fluidStorages;
+
+        public InaccessibleInfiniteTank(MetaMachine holder) {
+            super(holder, 0, 0, IO.OUT, IO.NONE);
+            internalBuffer.setOnContentsChanged(this::onContentsChanged);
+        }
+
+        @Override
+        public FluidStorage[] getStorages() {
+            if (this.fluidStorages == null) {
+                this.fluidStorages = new FluidStorage[] { new FluidStorageDelegate() };
             }
-            return ItemStack.EMPTY;
+            return this.fluidStorages;
         }
 
         @Override
-        public int getSlots() {
-            return 1;
+        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                 @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
         }
 
-        @NotNull
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return ItemStack.EMPTY;
-        }
+        private class FluidStorageDelegate extends FluidStorage {
 
-        @NotNull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return Integer.MAX_VALUE - 1;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
-            for (int i = 0; i < this.internalBuffer.size(); ++i) {
-                stacks[i] = this.internalBuffer.getStack(i);
+            public FluidStorageDelegate() {
+                super(0L);
             }
-            return stacks;
-        }
 
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof GenericStack[] stacks) {
-                this.internalBuffer.beginBatch();
-                for (int i = 0; i < stacks.length; ++i) {
-                    GenericStack stack = stacks[i];
-                    if (stack == null) continue;
-                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
+            @Override
+            public void setFluid(FluidStack fluid) {
+                // NO-OP
+            }
+
+            @Override
+            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                var key = AEFluidKey.of(resource.getFluid(), resource.getTag());
+                long amount = resource.getAmount();
+                long oldValue = internalBuffer.storage.getOrDefault(key, 0);
+                long changeValue = Math.min(Long.MAX_VALUE - oldValue, amount);
+                if (changeValue > 0 && !simulate) {
+                    internalBuffer.storage.put(key, oldValue + changeValue);
+                    internalBuffer.onChanged();
                 }
-                this.internalBuffer.endBatch();
+                return changeValue;
             }
-        }
 
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
+            @Override
+            public boolean supportsFill(int tank) {
+                return false;
+            }
+
+            @Override
+            public boolean supportsDrain(int tank) {
+                return false;
+            }
+
+            @Override
+            public boolean isFluidValid(FluidStack stack) {
+                return false;
+            }
+
+            @Override
+            public FluidStorage copy() {
+                // because recipe testing uses copy transfer instead of simulated operations
+                return new FluidStorageDelegate() {
+
+                    @Override
+                    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                        return super.fill(tank, resource, true, notifyChanges);
+                    }
+                };
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -9,6 +9,8 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
 import lombok.Getter;
@@ -21,14 +23,14 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringSized;
  * @Description The amount set widget for config slot
  * @Date 2023/4/21-21:20
  */
-public class AmountSetSlot extends Widget {
+public class AmountSetWidget extends Widget {
 
     private int index = -1;
     @Getter
     private final TextFieldWidget amountText;
-    private final AEConfigWidget parentWidget;
+    private final ConfigWidget parentWidget;
 
-    public AmountSetSlot(int x, int y, AEConfigWidget widget) {
+    public AmountSetWidget(int x, int y, ConfigWidget widget) {
         super(x, y, 80, 30);
         this.parentWidget = widget;
         this.amountText = new TextFieldWidget(x + 3, y + 12, 65, 13, this::getAmountStr, this::setNewAmount)
@@ -46,9 +48,6 @@ public class AmountSetSlot extends Widget {
             return "0";
         }
         IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
-        if (slot.getConfig() != null && slot.getConfig().amount() > 1000) {
-            return "1000";
-        }
         if (slot.getConfig() != null) {
             return String.valueOf(slot.getConfig().amount());
         }
@@ -58,7 +57,13 @@ public class AmountSetSlot extends Widget {
     public void setNewAmount(String amount) {
         try {
             long newAmount = Long.parseLong(amount);
-            writeClientAction(1, buf -> buf.writeVarLong(newAmount));
+            if (this.index < 0) {
+                return;
+            }
+            IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
+            if (newAmount > 0 && slot.getConfig() != null) {
+                slot.setConfig(new GenericStack(slot.getConfig().what(), newAmount));
+            }
         } catch (NumberFormatException ignore) {}
     }
 
@@ -67,18 +72,10 @@ public class AmountSetSlot extends Widget {
         super.handleClientAction(id, buffer);
         if (id == 0) {
             this.index = buffer.readVarInt();
-        } else if (id == 1) {
-            if (this.index < 0) {
-                return;
-            }
-            IConfigurableSlot slot = this.parentWidget.getConfig(this.index);
-            long newAmt = buffer.readVarLong();
-            if (newAmt > 0 && slot.getConfig() != null) {
-                slot.setConfig(new GenericStack(slot.getConfig().what(), newAmt));
-            }
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
