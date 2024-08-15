@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @author GlodBlock
- * @implNote An export only slot to hold {@link appeng.api.stacks.GenericStack}
+ * @Description An export only slot to hold {@link appeng.api.stacks.GenericStack}
  * @date 2023/4/22-13:42
  */
 public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag>,
@@ -28,12 +28,14 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
 
     @Getter
     @Setter
+    @Nullable
     protected GenericStack config;
     @Getter
     @Setter
+    @Nullable
     protected GenericStack stock;
 
-    public ExportOnlyAESlot(GenericStack config, GenericStack stock) {
+    public ExportOnlyAESlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
         this.config = config;
         this.stock = stock;
     }

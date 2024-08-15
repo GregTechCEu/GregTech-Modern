@@ -742,6 +742,28 @@ public class MachineLang {
         provider.add("gtceu.machine.me.item_import.tooltip", "Fetches items from an ME network automatically.");
         provider.add("gtceu.machine.me.export.tooltip",
                 "Has infinite capacity before connecting to ME network.");
+        multiLang(provider, "gtceu.machine.me.stocking_item.tooltip", "Retrieves items directly from the ME network",
+                "Auto-Pull from ME mode will automatically stock the first 16 items in the ME system, updated every 5 seconds.");
+        multiLang(provider, "gtceu.machine.me.stocking_fluid.tooltip", "Retrieves fluids directly from the ME network",
+                "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
+        provider.add("gtceu.machine.me_import_item_hatch.configs.tooltip",
+                "Keeps 16 item types in stock");
+        provider.add("gtceu.machine.me_import_fluid_hatch.configs.tooltip",
+                "Keeps 16 fluid types in stock");
+        provider.add("gtceu.machine.me.stocking_auto_pull_enabled",
+                "Auto-Pull Enabled");
+        provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
+                "Auto-Pull Disabled");
+        provider.add("gtceu.machine.me.copy_paste.tooltip",
+                "Left-click with Data Stick to copy settings, right-click to apply");
+        provider.add("gtceu.machine.me.import_copy_settings",
+                "Saved settings to Data Stick");
+        provider.add("gtceu.machine.me.import_paste_settings",
+                "Applied settings from Data Stick");
+        provider.add("gtceu.machine.me.item_import.data_stick.name",
+                "§oME Input Bus Configuration Data");
+        provider.add("gtceu.machine.me.fluid_import.data_stick.name",
+                "§oME Input Hatch Configuration Data");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");

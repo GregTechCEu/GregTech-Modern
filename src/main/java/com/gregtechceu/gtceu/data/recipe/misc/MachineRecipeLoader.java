@@ -1465,15 +1465,17 @@ public class MachineRecipeLoader {
 
         if (GTCEu.isAE2Loaded()) {
             VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
-                    GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B',
-                    GTAEMachines.FLUID_EXPORT_HATCH.asStack());
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output",
-                    GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B',
-                    GTAEMachines.FLUID_IMPORT_HATCH.asStack());
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input",
-                    GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output",
-                    GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack());
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.gui.widget;
+package com.gregtechceu.gtceu.integration.ae2.gui.widget.list;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot.drawSelectionOverlay;
+import static com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotWidget.drawSelectionOverlay;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 
 /**
@@ -55,7 +55,7 @@ public class AEFluidDisplayWidget extends Widget {
         if (fluid != null) {
             // TODO fix nbt once AE2 1.20.5 is out
             FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ?
-                    new FluidStack(key.getFluid(), (int) fluid.amount()/* , key.getTag() */) : FluidStack.EMPTY;
+                    key.toStack((int) fluid.amount()) : FluidStack.EMPTY;
             DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 17, 17);
             String amountStr = String.format("x%,d", fluid.amount());
             drawText(graphics, amountStr, stackX + 20, stackY + 5, 1, 0xFFFFFFFF);

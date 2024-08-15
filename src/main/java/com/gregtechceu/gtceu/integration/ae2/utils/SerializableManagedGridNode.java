@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.ae2.util;
+package com.gregtechceu.gtceu.integration.ae2.utils;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

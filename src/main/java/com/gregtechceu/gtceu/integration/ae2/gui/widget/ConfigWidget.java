@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot;
-import com.gregtechceu.gtceu.integration.ae2.util.AmountSetSlot;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotWidget;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -14,21 +13,28 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import appeng.api.stacks.GenericStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
-public abstract class AEConfigWidget extends WidgetGroup {
+public abstract class ConfigWidget extends WidgetGroup {
 
     protected final IConfigurableSlot[] config;
     protected IConfigurableSlot[] cached;
     protected Int2ObjectMap<IConfigurableSlot> changeMap = new Int2ObjectOpenHashMap<>();
     protected IConfigurableSlot[] displayList;
-    protected AmountSetSlot amountSetWidget;
+    protected AmountSetWidget amountSetWidget;
     protected final static int UPDATE_ID = 1000;
 
-    public AEConfigWidget(int x, int y, IConfigurableSlot[] config) {
+    @Getter
+    protected final boolean isStocking;
+
+    public ConfigWidget(int x, int y, IConfigurableSlot[] config, boolean isStocking) {
         super(new Position(x, y), new Size(config.length / 2 * 18, 18 * 4 + 2));
+        this.isStocking = isStocking;
         this.config = config;
         this.init();
-        this.amountSetWidget = new AmountSetSlot(31, -50, this);
+        this.amountSetWidget = new AmountSetWidget(31, -50, this);
         this.addWidget(this.amountSetWidget);
         this.addWidget(this.amountSetWidget.getAmountText());
         this.amountSetWidget.setVisible(false);
@@ -47,6 +53,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
         this.amountSetWidget.getAmountText().setVisible(false);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.amountSetWidget.isVisible()) {
@@ -55,7 +62,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
             }
         }
         for (Widget w : this.widgets) {
-            if (w instanceof AEConfigSlot slot) {
+            if (w instanceof AEConfigSlotWidget slot) {
                 slot.setSelect(false);
             }
         }
@@ -64,6 +71,10 @@ public abstract class AEConfigWidget extends WidgetGroup {
     }
 
     abstract void init();
+
+    public abstract boolean hasStackInConfig(GenericStack stack);
+
+    public abstract boolean isAutoPull();
 
     @Override
     public void detectAndSendChanges() {
@@ -106,6 +117,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);
