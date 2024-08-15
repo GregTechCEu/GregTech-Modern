@@ -14,6 +14,7 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import lombok.Getter;
@@ -24,6 +25,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
@@ -73,6 +75,12 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.registerRecipeFiller(GTRecipe.class, gtRecipeType, GTRecipeDisplay::new);
+                List<RecipeHolder<GTRecipe>> extraRecipes = gtRecipeType.getRepresentativeRecipes();
+                if (!extraRecipes.isEmpty()) {
+                    for (RecipeHolder<GTRecipe> recipe : extraRecipes) {
+                        registry.add(new GTRecipeDisplay(recipe), recipe);
+                    }
+                }
             }
         }
     }

@@ -54,7 +54,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> {
-            if (FluidTransferHelper.getFluidContained(itemStack) != null) {
+            if (!FluidTransferHelper.getFluidContained(itemStack).isEmpty()) {
                 return false;
             }
             return FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
@@ -62,7 +62,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
                 return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                     var list = recipe.value().inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
                     if (!list.isEmpty()) {
-                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems())
+                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.getFirst().content).getItems())
                                 .map(ItemStack::getItem).anyMatch(i -> i == item);
                     }
                     return false;

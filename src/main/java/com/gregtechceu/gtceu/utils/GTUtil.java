@@ -22,7 +22,6 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -327,8 +326,8 @@ public class GTUtil {
                 itemStack.getCount() / divisor != 0;
     }
 
-    public static int getItemBurnTime(Item item) {
-        return item.getDefaultInstance().getBurnTime(RecipeType.SMELTING);
+    public static int getItemBurnTime(ItemStack item) {
+        return item.getBurnTime(RecipeType.SMELTING);
     }
 
     public static int getPumpBiomeModifier(Holder<Biome> biome) {

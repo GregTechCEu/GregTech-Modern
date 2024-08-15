@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.LargeBoilerLogic;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
@@ -83,6 +85,7 @@ public class GTRecipeTypes {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
+            .addCustomRecipeLogic(new SteamBoilerLogic())
             .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 
@@ -496,6 +499,7 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
             .setMaxTooltips(1)
+            .addCustomRecipeLogic(new LargeBoilerLogic())
             .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType COKE_OVEN_RECIPES = register("coke_oven", MULTIBLOCK).setMaxIOSize(1, 1, 0, 1)

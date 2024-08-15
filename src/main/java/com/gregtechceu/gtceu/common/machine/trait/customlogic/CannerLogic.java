@@ -72,7 +72,7 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                     }
                     fluidStack1 = fluidStack1.copy();
                     fluidStack1.setAmount(
-                            fluidHandlerItem.fill(new FluidStack(fluidStack1.getFluid(), (int) fluidStack1.getAmount()),
+                            fluidHandlerItem.fill(new FluidStack(fluidStack1.getFluid(), fluidStack1.getAmount()),
                                     IFluidHandler.FluidAction.EXECUTE));
                     if (fluidStack1.getAmount() > 0) {
                         return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))

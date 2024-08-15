@@ -35,6 +35,10 @@ public class GTRecipeTypeEmiCategory extends EmiRecipeCategory {
                 Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType).stream()
                         .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(gtRecipeType), recipe))
                         .forEach(registry::addRecipe);
+                gtRecipeType.getRepresentativeRecipes()
+                        .stream()
+                        .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(gtRecipeType), recipe))
+                        .forEach(registry::addRecipe);
             }
         }
     }

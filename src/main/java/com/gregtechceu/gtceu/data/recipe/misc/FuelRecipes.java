@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -16,16 +13,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class FuelRecipes {
 
     public static void init(RecipeOutput provider) {
-        for (Item item : BuiltInRegistries.ITEM) {
-            var burnTime = GTUtil.getItemBurnTime(item);
-            if (burnTime > 0) {
-                STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(item))
-                        .inputItems(item)
-                        .duration(burnTime * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
-                        .save(provider);
-            }
-        }
-
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
                 .duration(600 * 12)
