@@ -111,7 +111,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             for (var aeSlot : aeFluidHandler.getInventory()) {
                 GenericStack stock = aeSlot.getStock();
                 if (stock != null) {
-                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE,
+                            actionSource);
                 }
             }
         }

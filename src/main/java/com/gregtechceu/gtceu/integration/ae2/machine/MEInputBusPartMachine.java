@@ -112,7 +112,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
             for (var aeSlot : aeItemHandler.getInventory()) {
                 GenericStack stock = aeSlot.getStock();
                 if (stock != null) {
-                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE,
+                            actionSource);
                 }
             }
         }
