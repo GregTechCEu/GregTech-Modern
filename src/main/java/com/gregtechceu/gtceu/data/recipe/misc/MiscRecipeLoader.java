@@ -387,12 +387,6 @@ public class MiscRecipeLoader {
                     .save(provider);
         }
 
-        // Glass Fluid Extraction
-        EXTRACTOR_RECIPES.recipeBuilder("extract_glass_block")
-                .inputItems(new ItemStack(Blocks.GLASS))
-                .outputFluids(Glass.getFluid(L))
-                .duration(20).EUt(30).save(provider);
-
         // Glass Plate in Alloy Smelter
         ALLOY_SMELTER_RECIPES.recipeBuilder("glass_plate")
                 .inputItems(dust, Glass, 2)
