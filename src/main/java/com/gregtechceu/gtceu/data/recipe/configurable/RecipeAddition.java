@@ -1303,7 +1303,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "respawn_anchor", new ItemStack(Items.RESPAWN_ANCHOR), "CCC",
                     "GGG", "CCC",
-                    'L', new ItemStack(Items.CRYING_OBSIDIAN),
+                    'C', new ItemStack(Items.CRYING_OBSIDIAN),
                     'G', new UnificationEntry(plate, Glowstone));
 
             ASSEMBLER_RECIPES.recipeBuilder("respawn_anchor")
