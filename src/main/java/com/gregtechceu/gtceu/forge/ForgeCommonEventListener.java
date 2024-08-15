@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
@@ -354,6 +355,34 @@ public class ForgeCommonEventListener {
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
+            }
+        });
+
+        event.getMappings(Registries.BLOCK, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus" -> mapping.remap(GTAEMachines.ITEM_IMPORT_BUS_ME.getBlock());
+                case "adv_stocking_bus" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlock());
+                case "stocking_hatch" -> mapping.remap(GTAEMachines.FLUID_IMPORT_HATCH_ME.getBlock());
+                case "adv_stocking_hatch" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlock());
+            }
+        });
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus" -> mapping.remap(GTAEMachines.ITEM_IMPORT_BUS_ME.getBlockEntityType());
+                case "adv_stocking_bus" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlockEntityType());
+                case "stocking_hatch" -> mapping.remap(GTAEMachines.FLUID_IMPORT_HATCH_ME.getBlockEntityType());
+                case "adv_stocking_hatch" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlockEntityType());
+            }
+        });
+        event.getMappings(Registries.ITEM, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus" -> mapping.remap(GTAEMachines.ITEM_IMPORT_BUS_ME.getItem());
+                case "adv_stocking_bus" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getItem());
+                case "stocking_hatch" -> mapping.remap(GTAEMachines.FLUID_IMPORT_HATCH_ME.getItem());
+                case "adv_stocking_hatch" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getItem());
             }
         });
 
