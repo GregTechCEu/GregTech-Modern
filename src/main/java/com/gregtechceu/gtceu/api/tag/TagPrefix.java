@@ -206,6 +206,7 @@ public class TagPrefix {
     public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
             .idPattern("raw_%s_block")
             .defaultTagPath("storage_blocks/raw_%s")
+            .unformattedTagPath("storage_blocks")
             .langValue("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
