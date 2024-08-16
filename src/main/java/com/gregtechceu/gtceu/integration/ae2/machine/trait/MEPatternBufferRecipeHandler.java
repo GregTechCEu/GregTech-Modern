@@ -141,7 +141,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
                                                   boolean simulate) {
             if (io != IO.IN) return left;
             var machine = getMachine();
-            machine.getCircuitInventory().handleRecipeInner(io, recipe, left, slotName, simulate);
+            machine.getCircuitInventorySimulated().handleRecipeInner(io, recipe, left, slotName, simulate);
             machine.getShareInventory().handleRecipeInner(io, recipe, left, slotName, simulate);
             return handleItemInner(recipe, left, simulate);
         }

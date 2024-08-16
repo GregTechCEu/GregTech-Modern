@@ -113,7 +113,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Getter
     @Persisted
-    protected final NotifiableItemStackHandler circuitInventory;
+    protected final NotifiableItemStackHandler circuitInventorySimulated;
 
     @Getter
     @Persisted
@@ -162,7 +162,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             this.internalInventory[i] = new InternalSlot();
         }
         getMainNode().addService(ICraftingProvider.class, this);
-        this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+        this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidHelper.getBucket(), IO.IN, IO.NONE);
@@ -278,7 +278,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
-        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
         configuratorPanel.attachConfigurators(new MEFancyInvConfigurator(
                 shareInventory.storage, Component.translatable("gui.gregiceng.share_inventory.title"))
                 .setTooltips(List.of(
@@ -423,7 +423,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
-                ItemStack circuitStack = circuitInventory.storage.getStackInSlot(0);
+                ItemStack circuitStack = circuitInventorySimulated.storage.getStackInSlot(0);
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
 
@@ -456,7 +456,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, patternInventory);
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(drops, circuitInventory.storage);
+            clearInventory(drops, circuitInventorySimulated.storage);
         }
     }
 

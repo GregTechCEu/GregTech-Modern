@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -62,7 +61,7 @@ public class MEPatternBufferProxy extends TieredIOPartMachine {
                     () -> getIOBuffer().recipeHandler.getFluidOutputHandler());
             shareFluidHandler.setHandlerSupplier(() -> getIOBuffer().shareTank);
             shareItemHandler.setHandlerSupplier(() -> getIOBuffer().shareInventory);
-            circuitHandler.setHandlerSupplier(() -> getIOBuffer().circuitInventory);
+            circuitHandler.setHandlerSupplier(() -> getIOBuffer().circuitInventorySimulated);
             return true;
         } else {
             return false;
