@@ -723,9 +723,12 @@ public class MachineLang {
         provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
-        provider.add("block.gtceu.pattern_buffer.desc.0", "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
-        provider.add("block.gtceu.pattern_buffer.desc.1", "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
-        provider.add("block.gtceu.pattern_buffer.desc.2", "§fLink §6Pattern Buffer Assistants §fwith a §bdatastick §fto link machines together!");
+        provider.add("block.gtceu.pattern_buffer.desc.0",
+                "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
+        provider.add("block.gtceu.pattern_buffer.desc.1",
+                "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
+        provider.add("block.gtceu.pattern_buffer.desc.2",
+                "§fLink §6Pattern Buffer Assistants §fwith a §bdatastick §fto link machines together!");
 
         provider.add("gtceu.machine.buffer.import.tooltip", "Item and Fluid Input for Multiblocks");
         provider.add("gtceu.machine.buffer.export.tooltip", "Item and Fluid Output for Multiblocks");

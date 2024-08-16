@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -109,7 +107,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Getter
     @Persisted
-    @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own version.
+    @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
+                // version.
     private final ItemStackTransfer patternInventory = new ItemStackTransfer(MAX_PATTERN_COUNT);
 
     @Getter
@@ -144,8 +143,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Nullable
     protected TickableSubscription updateSubs;
-    //If you allow them to toggle the state of said multi (via the button from the port) it just bricks itself, and it's too tangled in for me to figure out, CC screret or onion for help
-    //This is a very rudimentary fix for it. But it WORKS.
+
+    // If you allow them to toggle the state of said multi (via the button from the port) it just bricks itself, and
+    // it's too tangled in for me to figure out, CC screret or onion for help
+    // This is a very rudimentary fix for it. But it WORKS.
     @Override
     public boolean isWorkingEnabled() {
         return true;
@@ -264,15 +265,16 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     // TODO LORD HELP ME
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        // yeah so like if you turn it off it just breaks the entire part, so going to force override to keep it enabled always.
-//        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
-//                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
-//                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-//                this::isWorkingEnabled,
-//                (clickData, pressed) -> this.setWorkingEnabled(pressed))
-//                .setTooltipsSupplier(pressed -> List.of(Component.translatable(
-//                        pressed ? "gui.gregiceng.auto_return.desc.enabled" :
-//                                "gui.gregiceng.auto_return.desc.disabled"))));
+        // yeah so like if you turn it off it just breaks the entire part, so going to force override to keep it enabled
+        // always.
+        // configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+        // GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
+        // GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
+        // this::isWorkingEnabled,
+        // (clickData, pressed) -> this.setWorkingEnabled(pressed))
+        // .setTooltipsSupplier(pressed -> List.of(Component.translatable(
+        // pressed ? "gui.gregiceng.auto_return.desc.enabled" :
+        // "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.BUTTON), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
