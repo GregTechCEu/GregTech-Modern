@@ -37,6 +37,7 @@ dependencyResolutionManagement {
         def topForgeVersion = "1.20.4_neo-11.0.0-1"
         def jadeForgeVersion = "5366595"
         def worldStripperForgeFile = "4578579"
+        def javdVersion = "4803995"
 
         // Libs
         def parchmentVersion = "2024.07.28" // https://parchmentmc.org/docs/getting-started
@@ -100,6 +101,9 @@ dependencyResolutionManagement {
 
             def ae2 = version("ae2", ae2Version)
             library("ae2", "appeng", "appliedenergistics2-neoforge").versionRef(ae2)
+
+            def javd = version("javd", javdVersion)
+            library("javd", "curse.maven", "javd-370890").versionRef(javd)
         }
 
         libs {

@@ -86,4 +86,8 @@ public class GTCEu {
     public static boolean isShimmerLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
     }
+
+    public static boolean isJAVDLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_JAVD);
+    }
 }

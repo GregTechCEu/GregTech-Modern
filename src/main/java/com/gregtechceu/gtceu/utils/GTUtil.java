@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -16,8 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -432,7 +435,11 @@ public class GTUtil {
             return false;
         }
 
-        return world.isDay();
+        ResourceLocation javdVoidBiome = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_JAVD, "void");
+        if (GTCEu.isJAVDLoaded() &&
+                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+            return !world.isDay();
+        } else return world.isDay();
     }
 
     public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
@@ -470,8 +477,8 @@ public class GTUtil {
     public static void addPotionTooltip(List<FoodProperties.PossibleEffect> effects, List<Component> list) {
         list.add(Component.translatable("gtceu.tooltip.potion.header"));
         effects.forEach(pair -> {
-            var effect = pair.getFirst();
-            float probability = pair.getSecond();
+            var effect = pair.effect();
+            float probability = pair.effect().getDuration();
             list.add(Component.translatable("gtceu.tooltip.potion.each",
                     Component.translatable(effect.getDescriptionId()),
                     Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
