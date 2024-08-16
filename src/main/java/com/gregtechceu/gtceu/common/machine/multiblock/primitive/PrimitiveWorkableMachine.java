@@ -91,8 +91,8 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void afterWorking() {
-        super.afterWorking();
+    public boolean onWorking() {
         spreadEnvironmentalHazard();
+        return super.onWorking();
     }
 }

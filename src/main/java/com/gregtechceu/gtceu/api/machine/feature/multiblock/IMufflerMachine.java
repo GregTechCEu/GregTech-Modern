@@ -83,8 +83,13 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default boolean afterWorking(IWorkableMultiController controller) {
+    default boolean onWorking(IWorkableMultiController controller) {
         spreadEnvironmentalHazard();
+        return IMultiPart.super.onWorking(controller);
+    }
+
+    @Override
+    default boolean afterWorking(IWorkableMultiController controller) {
         val supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());

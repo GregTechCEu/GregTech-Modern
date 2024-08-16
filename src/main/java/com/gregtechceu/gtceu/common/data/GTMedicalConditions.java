@@ -97,4 +97,13 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .25f))
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(1000)));
+    public static final MedicalCondition POLLUTION_SMOG = new MedicalCondition("pollution_smog",
+            0x7d7d5b, 2000, MedicalCondition.IdleProgressionType.HEAL, 1, false,
+            new Symptom.ConfiguredSymptom(Symptom.DEATH),
+            new Symptom.ConfiguredSymptom(Symptom.WEAK_POISONING, 2, .90f),
+            new Symptom.ConfiguredSymptom(Symptom.NAUSEA, 2, .75f),
+            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
+            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .25f))
+            .setRecipeModifier(builder -> builder
+                    .outputFluids(SulfurDioxide.getFluid(1000)));
 }

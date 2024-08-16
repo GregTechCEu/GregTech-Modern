@@ -21,7 +21,7 @@ public interface IEnvironmentalHazardEmitter extends IMachineFeature {
      * @return the medical condition this hazard emitter creates.
      */
     default MedicalCondition getConditionToEmit() {
-        return GTMedicalConditions.CARBON_MONOXIDE_POISONING;
+        return GTMedicalConditions.POLLUTION_SMOG;
     }
 
     /**

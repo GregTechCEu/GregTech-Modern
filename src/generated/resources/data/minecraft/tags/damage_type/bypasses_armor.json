@@ -13,6 +13,7 @@
     "gtceu:medical_condition/berylliosis",
     "gtceu:medical_condition/methanol_poisoning",
     "gtceu:medical_condition/carbon_monoxide_poisoning",
+    "gtceu:medical_condition/pollution_smog",
     "gtceu:heat",
     "gtceu:chemical",
     "gtceu:radiation",

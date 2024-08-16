@@ -13,13 +13,19 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.AIR_SCRUBBER_RECIP
 public class AirScrubberRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        AIR_SCRUBBER_RECIPES.recipeBuilder("carbon_monoxide_poisoning")
+        AIR_SCRUBBER_RECIPES.recipeBuilder("pollution_smog_cleaning")
+                .circuitMeta(1)
+                .outputFluids(CarbonMonoxide.getFluid(1000))
+                .environmentalHazard(GTMedicalConditions.POLLUTION_SMOG)
+                .duration(200).EUt(VHA[LV]).save(provider);
+        //TODO: Expose to a Config Holder below EXCLUDING Rads when GTM get's Nuclear from 1.12 - In the event Packdevs wish to use them.
+        //Otherwise they are just bloat :thumbsup:
+        /*
+            AIR_SCRUBBER_RECIPES.recipeBuilder("carbon_monoxide_poisoning")
                 .circuitMeta(1)
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .environmentalHazard(GTMedicalConditions.CARBON_MONOXIDE_POISONING)
                 .duration(200).EUt(VHA[LV]).save(provider);
-
-        /*
          * AIR_SCRUBBER_RECIPES.recipeBuilder("carcinogen")
          * .circuitMeta(2)
          * // TODO radioactive waste output

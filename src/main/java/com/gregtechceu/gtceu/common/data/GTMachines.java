@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
+import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -1306,7 +1307,8 @@ public class GTMachines {
                     () -> new ItemLike[] { GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
-            .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
+            .tooltips(
+                    Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
             .additionalDisplay((controller, components) -> {
@@ -1319,6 +1321,9 @@ public class GTMachines {
                                                             100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) +
                                                     "K")
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
+                }
+                if (controller instanceof IEnvironmentalHazardEmitter hazardEmitter && controller.isFormed()){
+                    //TODO ; GET THE RATE..
                 }
             })
             .compassSections(GTCompassSections.TIER[MV])

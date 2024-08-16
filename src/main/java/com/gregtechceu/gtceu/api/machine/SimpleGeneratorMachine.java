@@ -114,12 +114,12 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         return capability != EURecipeCapability.CAP;
     }
 
+    //TODO : CONSIDER Per/Second or a elegant solution for/if performance is impacted negatively
     @Override
-    public void afterWorking() {
-        super.afterWorking();
+    public boolean onWorking() {
         spreadEnvironmentalHazard();
+        return super.onWorking();
     }
-
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
