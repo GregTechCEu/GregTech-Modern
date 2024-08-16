@@ -170,6 +170,10 @@ public class GuiTextures {
     public static final ResourceTexture IO_CONFIG_COVER_SETTINGS = new ResourceTexture(
             "gtceu:textures/gui/icon/io_config/cover_settings.png");
 
+    public static final ResourceTexture PATTERN_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/pattern_overlay.png");
+    public static final ResourceTexture REFUND_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/refund_overlay.png");
     // INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture(
             "gtceu:textures/gui/base/indicator_no_energy.png");

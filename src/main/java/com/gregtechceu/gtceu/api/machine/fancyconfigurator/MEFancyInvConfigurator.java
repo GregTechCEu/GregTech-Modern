@@ -35,12 +35,9 @@ public class MEFancyInvConfigurator implements IFancyConfigurator {
         this.inventory = inventory;
         this.title = title;
     }
-
-    // TODO: Actual Texture - Ask Gate if we can use the ones from GE for the PatternBufferPort (tbh for all slot
-    // textures lol)
     @Override
     public IGuiTexture getIcon() {
-        return GuiTextures.HPCA_ICON_BRIDGE_COMPONENT;
+        return GuiTextures.BUTTON_ITEM_OUTPUT;
     }
 
     @Override

@@ -276,7 +276,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         // pressed ? "gui.gregiceng.auto_return.desc.enabled" :
         // "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
-                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.BUTTON), this::refundAll)
+                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         configuratorPanel.attachConfigurators(new MEFancyInvConfigurator(
@@ -312,7 +312,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                             return stack;
                         })
                         .setChangeListener(() -> onPatternChange(finalI))
-                        .setBackground(GuiTextures.SLOT, GuiTextures.HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT);
+                        .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
                 group.addWidget(slot);
             }
         }
@@ -585,7 +585,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             while (iterator.hasNext()) {
                 Ingredient ingredient = iterator.next();
                 SLOT_LOOKUP:
-                for (ItemStack stack : itemInventory) { // TODO 改变循环的的次序，这在大数量检测时是有用的
+                for (ItemStack stack : itemInventory) {
                     if (ingredient.test(stack)) {
                         ItemStack[] ingredientStacks = ingredient.getItems();
                         for (ItemStack ingredientStack : ingredientStacks) {
@@ -610,7 +610,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             }
             return left.isEmpty() ? null : left;
         }
-        // TODO 是否要提前结束循环
+
 
         public @Nullable List<FluidIngredient> handleFluidInternal(
                                                                    List<FluidIngredient> left, boolean simulate) {

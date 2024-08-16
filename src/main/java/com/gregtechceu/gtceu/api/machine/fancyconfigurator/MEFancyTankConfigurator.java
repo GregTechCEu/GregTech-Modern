@@ -37,7 +37,7 @@ public class MEFancyTankConfigurator implements IFancyConfigurator {
 
     @Override
     public IGuiTexture getIcon() {
-        return GuiTextures.HPCA_ICON_ACTIVE_COOLER_COMPONENT;
+        return GuiTextures.BUTTON_FLUID_OUTPUT;
     }
 
     @Override
