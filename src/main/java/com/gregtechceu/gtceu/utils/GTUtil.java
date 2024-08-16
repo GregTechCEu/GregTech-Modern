@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
-import com.unrealdinnerbone.javd.JAVDRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -444,7 +443,8 @@ public class GTUtil {
         }
 
         ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.isJAVDLoaded() && world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+        if (GTCEu.isJAVDLoaded() &&
+                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
             return !world.isDay();
         } else return world.isDay();
     }
