@@ -611,7 +611,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return left.isEmpty() ? null : left;
         }
 
-
         public @Nullable List<FluidIngredient> handleFluidInternal(
                                                                    List<FluidIngredient> left, boolean simulate) {
             Iterator<FluidIngredient> iterator = left.iterator();

@@ -35,6 +35,7 @@ public class MEFancyInvConfigurator implements IFancyConfigurator {
         this.inventory = inventory;
         this.title = title;
     }
+
     @Override
     public IGuiTexture getIcon() {
         return GuiTextures.BUTTON_ITEM_OUTPUT;

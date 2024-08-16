@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class WrappedRecipeHandlerTrait<K> implements IRecipeHandlerTrait<K> {
+
     private final IO handlerIO;
     private final RecipeCapability<K> capability;
 
@@ -31,7 +34,8 @@ public class WrappedRecipeHandlerTrait<K> implements IRecipeHandlerTrait<K> {
 
     @Override
     public List<K> handleRecipeInner(
-            IO io, GTRecipe recipe, List<K> left, @Nullable String slotName, boolean simulate) {
+                                     IO io, GTRecipe recipe, List<K> left, @Nullable String slotName,
+                                     boolean simulate) {
         var handler = handlerSupplier.get();
         if (handler != null) {
             return handler.handleRecipeInner(io, recipe, left, slotName, simulate);

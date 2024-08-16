@@ -11,19 +11,23 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.WrappedRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class MEPatternBufferProxy extends TieredIOPartMachine {
+
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferProxy.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     private final WrappedRecipeHandlerTrait<Ingredient> itemInputHandler;

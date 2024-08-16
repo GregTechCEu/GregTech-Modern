@@ -21,10 +21,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -51,7 +51,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
-        if (researchData == null){
+        if (researchData == null) {
             if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
                 int[] posArray = stack.getOrCreateTag().getIntArray("pos");
                 tooltipComponents.add(Component.translatable(
@@ -59,23 +59,26 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                         Component.literal("" + posArray[0]).withStyle(ChatFormatting.LIGHT_PURPLE),
                         Component.literal("" + posArray[1]).withStyle(ChatFormatting.LIGHT_PURPLE),
                         Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
-            } return;
+            }
+            return;
         } else {
-        Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
-        if (recipes != null && !recipes.isEmpty()) {
-            tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
-            Collection<ItemStack> added = new ObjectOpenHashSet<>();
-            for (GTRecipe recipe : recipes) {
-                ItemStack output = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
-                if (added.add(output)) {
-                    tooltipComponents.add(
-                            Component.translatable("behavior.data_item.assemblyline.data", output.getDisplayName()));
+            Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+            if (recipes != null && !recipes.isEmpty()) {
+                tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
+                Collection<ItemStack> added = new ObjectOpenHashSet<>();
+                for (GTRecipe recipe : recipes) {
+                    ItemStack output = ItemRecipeCapability.CAP
+                            .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                    if (added.add(output)) {
+                        tooltipComponents.add(
+                                Component.translatable("behavior.data_item.assemblyline.data",
+                                        output.getDisplayName()));
+                    }
                 }
             }
         }
-       }
     }
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
@@ -89,7 +92,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             MetaMachine machine = machineBlockEntity.getMetaMachine();
             Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
             if (machine instanceof MEPatternBufferPartMachine && researchData == null) {
-                stack.getOrCreateTag().putIntArray("pos", new int[] {pos.getX(), pos.getY(), pos.getZ()});
+                stack.getOrCreateTag().putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
                 return InteractionResult.SUCCESS;
             } else if (machine instanceof MEPatternBufferProxy proxy) {
                 if (stack.hasTag()) {
