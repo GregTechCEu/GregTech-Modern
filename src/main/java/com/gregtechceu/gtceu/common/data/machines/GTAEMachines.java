@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -109,10 +110,12 @@ public class GTAEMachines {
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
             .tier(LuV)
+            .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
                     PartAbility.EXPORT_ITEMS)
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("me_pattern_buffer")
+            .langValue("ME Pattern Buffer")
             .tooltips(
                     Component.translatable("block.gtceu.pattern_buffer.desc.0"),
                     Component.translatable("block.gtceu.pattern_buffer.desc.1"),

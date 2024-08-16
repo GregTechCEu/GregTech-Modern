@@ -41,7 +41,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
     protected ExportOnlyAEItemList aeItemHandler;
 
     public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, GTValues.EV, IO.IN, args);
+        super(holder, IO.IN, args);
     }
 
     /////////////////////////////////

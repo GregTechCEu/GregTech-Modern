@@ -44,7 +44,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, GTValues.EV, IO.OUT, args);
+        super(holder, IO.OUT, args);
     }
 
     /////////////////////////////////
