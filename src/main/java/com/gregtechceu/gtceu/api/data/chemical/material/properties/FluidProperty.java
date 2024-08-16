@@ -31,8 +31,7 @@ public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidSto
     @Setter
     private FluidStorageKey primaryKey = null;
 
-    @ApiStatus.Internal
-    public FluidProperty(@NotNull FluidStorageImpl storage, @Nullable FluidStorageKey primaryKey) {
+    private FluidProperty(@NotNull FluidStorageImpl storage, @Nullable FluidStorageKey primaryKey) {
         this.storage = storage;
         this.primaryKey = primaryKey;
     }

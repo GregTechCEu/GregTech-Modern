@@ -31,8 +31,7 @@ public class FluidStorageImpl implements FluidStorage {
         this.map = new Object2ObjectOpenHashMap<>();
     }
 
-    @ApiStatus.Internal
-    public FluidStorageImpl(Map<FluidStorageKey, FluidEntry> map) {
+    private FluidStorageImpl(Map<FluidStorageKey, FluidEntry> map) {
         this.map = map;
     }
 
