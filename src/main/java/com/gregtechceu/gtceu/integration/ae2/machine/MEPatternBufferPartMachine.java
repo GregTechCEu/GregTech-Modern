@@ -144,6 +144,15 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Nullable
     protected TickableSubscription updateSubs;
+    //If you allow them to toggle the state of said multi (via the button from the port) it just bricks itself, and it's too tangled in for me to figure out, CC screret or onion for help
+    //This is a very rudimentary fix for it. But it WORKS.
+    @Override
+    public boolean isWorkingEnabled() {
+        return true;
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean ignored) {}
 
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.BOTH, args);
@@ -255,15 +264,15 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     // TODO LORD HELP ME
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        // TODO AUTO RETURN TEXT
-        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
-                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
-                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-                this::isWorkingEnabled,
-                (clickData, pressed) -> this.setWorkingEnabled(pressed))
-                .setTooltipsSupplier(pressed -> List.of(Component.translatable(
-                        pressed ? "gui.gregiceng.auto_return.desc.enabled" :
-                                "gui.gregiceng.auto_return.desc.disabled"))));
+        // yeah so like if you turn it off it just breaks the entire part, so going to force override to keep it enabled always.
+//        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+//                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
+//                GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
+//                this::isWorkingEnabled,
+//                (clickData, pressed) -> this.setWorkingEnabled(pressed))
+//                .setTooltipsSupplier(pressed -> List.of(Component.translatable(
+//                        pressed ? "gui.gregiceng.auto_return.desc.enabled" :
+//                                "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.BUTTON), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
