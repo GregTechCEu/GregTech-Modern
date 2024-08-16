@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -26,9 +27,8 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
-import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,8 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputHatchPartMachine extends MEHatchPartMachine
-                                      implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEOutputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
@@ -62,6 +61,17 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
     }
 
     @Override
+    public void onMachineRemoved() {
+        var grid = getMainNode().getGrid();
+        if (grid != null && !internalBuffer.isEmpty()) {
+            for (var entry : internalBuffer) {
+                grid.getStorageService().getInventory().insert(entry.getKey(), entry.getLongValue(),
+                        Actionable.MODULATE, actionSource);
+            }
+        }
+    }
+
+    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
@@ -81,7 +91,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
         if (this.updateMEStatus()) {
             var grid = getMainNode().getGrid();
-            if (grid != null && !internalBuffer.storage.isEmpty()) {
+            if (grid != null && !internalBuffer.isEmpty()) {
                 internalBuffer.insertInventory(grid.getStorageService().getInventory(), actionSource);
             }
             this.updateTankSubscription();

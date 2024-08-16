@@ -3,12 +3,17 @@ package com.gregtechceu.gtceu.integration.ae2.slot;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidStorage {
 
     public ExportOnlyAEFluidSlot() {
@@ -30,7 +35,19 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
-    @NotNull
+    public void setStock(@Nullable GenericStack stack) {
+        if (this.stock == null && stack == null) {
+            return;
+        } else if (stack == null) {
+            this.stock = null;
+        } else {
+            if (stack.equals(stock)) return;
+            this.stock = stack;
+        }
+        onContentsChanged();
+    }
+
+    @Override
     public FluidStack getFluid() {
         if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
             return FluidStack.create(fluidKey.getFluid(), this.stock.amount(),
@@ -45,6 +62,11 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
+    public boolean isFluidValid(FluidStack stack) {
+        return false;
+    }
+
+    @Override
     public long getFluidAmount() {
         return this.stock != null ? this.stock.amount() : 0;
     }
@@ -56,12 +78,12 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
-        return false;
+    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        return 0;
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public long fill(FluidStack resource, boolean doFill) {
         return 0;
     }
 
@@ -70,23 +92,11 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
         return false;
     }
 
-    @NotNull
     @Override
     public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         return this.drain(resource, simulate, notifyChanges);
     }
 
-    @Override
-    public boolean supportsDrain(int tank) {
-        return tank == 0;
-    }
-
-    @Override
-    public long fill(FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @NotNull
     @Override
     public FluidStack drain(FluidStack resource, boolean doDrain, boolean notifyChanges) {
         if (this.getFluid().isFluidEqual(resource)) {
@@ -96,7 +106,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Override
-    public @NotNull FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+    public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
         if (this.stock == null || !(this.stock.what() instanceof AEFluidKey fluidKey)) {
             return FluidStack.empty();
         }
@@ -110,6 +120,11 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
             if (notifyChanges) onContentsChanged();
         }
         return result;
+    }
+
+    @Override
+    public boolean supportsDrain(int tank) {
+        return tank == 0;
     }
 
     @Override
@@ -127,7 +142,6 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidSto
     }
 
     @Deprecated
-    @NotNull
     @Override
     public Object createSnapshot() {
         return Pair.of(this.config, this.stock);

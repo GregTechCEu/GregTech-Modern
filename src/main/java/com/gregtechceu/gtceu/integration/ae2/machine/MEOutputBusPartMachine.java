@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputBusPartMachine extends MEBusPartMachine {
+public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -61,6 +63,17 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     @Override
+    public void onMachineRemoved() {
+        var grid = getMainNode().getGrid();
+        if (grid != null && !internalBuffer.isEmpty()) {
+            for (var entry : internalBuffer) {
+                grid.getStorageService().getInventory().insert(entry.getKey(), entry.getLongValue(),
+                        Actionable.MODULATE, actionSource);
+            }
+        }
+    }
+
+    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
@@ -80,7 +93,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         if (this.updateMEStatus()) {
             var grid = getMainNode().getGrid();
-            if (grid != null && !internalBuffer.storage.isEmpty()) {
+            if (grid != null && !internalBuffer.isEmpty()) {
                 internalBuffer.insertInventory(grid.getStorageService().getInventory(), actionSource);
             }
             this.updateInventorySubscription();

@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -17,6 +20,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -26,8 +32,10 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Set;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -52,7 +60,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEFluidList(this, slots);
         return aeFluidHandler;
     }
@@ -72,43 +80,47 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         if (!this.shouldSyncME()) return;
 
         if (this.updateMEStatus()) {
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEFluidSlot aeTank : this.aeFluidHandler.getInventory()) {
-                // Try to clear the wrong fluid
-                GenericStack exceedFluid = aeTank.exceedStack();
-                if (exceedFluid != null) {
-                    int total = (int) exceedFluid.amount();
-                    int inserted = (int) aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (inserted > 0) {
-                        aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
-                        continue;
-                    } else {
-                        aeTank.drain(total, IFluidHandler.FluidAction.EXECUTE);
-                    }
-                }
-                // Fill it
-                GenericStack reqFluid = aeTank.requestStack();
-                if (reqFluid != null) {
-                    long extracted = aeNetwork.extract(reqFluid.what(), reqFluid.amount(), Actionable.MODULATE,
-                            this.actionSource);
-                    if (extracted > 0) {
-                        aeTank.addStack(new GenericStack(reqFluid.what(), extracted));
-                    }
-                }
-            }
+            this.syncME();
             this.updateTankSubscription();
         }
     }
 
-    protected void flushInventory() {
-        if (this.updateMEStatus()) {
-            MEStorage storage = this.getMainNode().getGrid().getStorageService().getInventory();
+    protected void syncME() {
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        for (ExportOnlyAEFluidSlot aeTank : this.aeFluidHandler.getInventory()) {
+            // Try to clear the wrong fluid
+            GenericStack exceedFluid = aeTank.exceedStack();
+            if (exceedFluid != null) {
+                int total = (int) exceedFluid.amount();
+                int inserted = (int) networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (inserted > 0) {
+                    aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
+                    continue;
+                } else {
+                    aeTank.drain(total, IFluidHandler.FluidAction.EXECUTE);
+                }
+            }
+            // Fill it
+            GenericStack reqFluid = aeTank.requestStack();
+            if (reqFluid != null) {
+                long extracted = networkInv.extract(reqFluid.what(), reqFluid.amount(), Actionable.MODULATE,
+                        this.actionSource);
+                if (extracted > 0) {
+                    aeTank.addStack(new GenericStack(reqFluid.what(), extracted));
+                }
+            }
+        }
+    }
 
+    protected void flushInventory() {
+        var grid = getMainNode().getGrid();
+        if (grid != null) {
             for (var aeSlot : aeFluidHandler.getInventory()) {
                 GenericStack stock = aeSlot.getStock();
                 if (stock != null) {
-                    storage.insert(stock.what(), stock.amount(), Actionable.MODULATE, actionSource);
+                    grid.getStorageService().getInventory().insert(stock.what(), stock.amount(), Actionable.MODULATE,
+                            actionSource);
                 }
             }
         }
@@ -140,9 +152,9 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
         if (!isRemote()) {
             CompoundTag tag = new CompoundTag();
-            tag.put("MEInputHatch", writeConfigToTag());
+            tag.put("MEInputHatch", writeConfigToTag(player.registryAccess()));
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
+            dataStick.set(DataComponents.ITEM_NAME, Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
         return true;
@@ -156,7 +168,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         }
 
         if (!isRemote()) {
-            readConfigFromTag(tag.getCompound("MEInputHatch"));
+            readConfigFromTag(player.registryAccess(), tag.getCompound("MEInputHatch"));
             this.updateTankSubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
@@ -167,7 +179,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     // ****** Configuration ******//
     ////////////////////////////////
 
-    protected CompoundTag writeConfigToTag() {
+    protected CompoundTag writeConfigToTag(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         CompoundTag configStacks = new CompoundTag();
         tag.put("ConfigStacks", configStacks);
@@ -177,7 +189,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             if (config == null) {
                 continue;
             }
-            CompoundTag stackTag = GenericStack.writeTag(config);
+            CompoundTag stackTag = GenericStack.writeTag(provider, config);
             configStacks.put(Integer.toString(i), stackTag);
         }
         tag.putByte("GhostCircuit",
@@ -185,14 +197,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         return tag;
     }
 
-    protected void readConfigFromTag(CompoundTag tag) {
+    protected void readConfigFromTag(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("ConfigStacks")) {
             CompoundTag configStacks = tag.getCompound("ConfigStacks");
             for (int i = 0; i < CONFIG_SIZE; i++) {
                 String key = Integer.toString(i);
                 if (configStacks.contains(key)) {
                     CompoundTag configTag = configStacks.getCompound(key);
-                    this.aeFluidHandler.getInventory()[i].setConfig(GenericStack.readTag(configTag));
+                    this.aeFluidHandler.getInventory()[i].setConfig(GenericStack.readTag(provider, configTag));
                 } else {
                     this.aeFluidHandler.getInventory()[i].setConfig(null);
                 }
@@ -201,5 +213,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         if (tag.contains("GhostCircuit")) {
             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
         }
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return Set.of(orientation.getSide(RelativeSide.FRONT));
     }
 }

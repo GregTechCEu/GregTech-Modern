@@ -45,12 +45,6 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
     }
 
-    @Override
-    public void onContentsChanged() {
-        super.onContentsChanged();
-        this.machine.onChanged();
-    }
-
     public ItemStackTransfer getTransfer() {
         if (this.itemTransfer == null) {
             this.itemTransfer = new ItemStackTransferDelegate(inventory);
@@ -59,19 +53,18 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                              @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
-    }
-
-    @Override
-    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        // NO-OP
+    public int getSlotLimit(int slot) {
+        return Integer.MAX_VALUE;
     }
 
     @Override
     public int getSlots() {
         return inventory.length;
+    }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        // NO-OP
     }
 
     @NotNull
@@ -99,8 +92,9 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return Integer.MAX_VALUE;
+    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                              @Nullable String slotName, boolean simulate) {
+        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
     }
 
     @Override
