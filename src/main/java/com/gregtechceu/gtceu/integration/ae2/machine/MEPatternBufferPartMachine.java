@@ -1,20 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.stacks.*;
-import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageHelper;
-import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.crafting.pattern.ProcessingPatternItem;
-import appeng.helpers.patternprovider.PatternContainer;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -41,6 +26,7 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWi
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTNBTUtils;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -54,10 +40,7 @@ import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -69,20 +52,43 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.implementations.blockentities.PatternContainerGroup;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.stacks.*;
+import appeng.api.storage.MEStorage;
+import appeng.api.storage.StorageHelper;
+import appeng.crafting.pattern.EncodedPatternItem;
+import appeng.crafting.pattern.ProcessingPatternItem;
+import appeng.helpers.patternprovider.PatternContainer;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEPatternBufferPartMachine extends MEBusPartMachine
-        implements IMachineModifyDrops, ICraftingProvider, PatternContainer {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
+                                        implements IMachineModifyDrops, ICraftingProvider, PatternContainer {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
     private static final int MAX_PATTERN_COUNT = 6 * 9;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
+
         @Override
         public int size() {
             return MAX_PATTERN_COUNT;
@@ -122,8 +128,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Persisted
     protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
-    private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap =
-            HashBiMap.create(MAX_PATTERN_COUNT);
+    private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
 
     @DescSynced
     @Persisted
@@ -133,8 +138,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private boolean needPatternSync;
 
     @Getter
-    protected Object2LongOpenHashMap<AEKey> returnBuffer =
-            new Object2LongOpenHashMap<>(); // FIXME NPE
+    protected Object2LongOpenHashMap<AEKey> returnBuffer = new Object2LongOpenHashMap<>(); // FIXME NPE
 
     protected final MEPatternBufferRecipeHandler recipeHandler = new MEPatternBufferRecipeHandler(this);
 
@@ -246,21 +250,20 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     //////////////////////////////////////
-    // **********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
-    //TODO LORD HELP ME
+    // TODO LORD HELP ME
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        //TODO AUTO RETURN TEXT
+        // TODO AUTO RETURN TEXT
         configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                 GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
                 this::isWorkingEnabled,
                 (clickData, pressed) -> this.setWorkingEnabled(pressed))
                 .setTooltipsSupplier(pressed -> List.of(Component.translatable(
-                        pressed
-                                ? "gui.gregiceng.auto_return.desc.enabled"
-                                : "gui.gregiceng.auto_return.desc.disabled"))));
+                        pressed ? "gui.gregiceng.auto_return.desc.enabled" :
+                                "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.BUTTON), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
@@ -323,9 +326,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        if (!getMainNode().isActive()
-                || !detailsSlotMap.containsKey(patternDetails)
-                || !checkInput(inputHolder)) {
+        if (!getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) || !checkInput(inputHolder)) {
             return false;
         }
 
@@ -348,8 +349,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             var illegal = input.keySet().stream()
                     .map(AEKey::getType)
                     .map(AEKeyType::getId)
-                    .anyMatch(id -> !id.equals(AEKeyType.items().getId())
-                            && !id.equals(AEKeyType.fluids().getId()));
+                    .anyMatch(id -> !id.equals(AEKeyType.items().getId()) && !id.equals(AEKeyType.fluids().getId()));
             if (illegal) return false;
         }
         return true;
@@ -413,20 +413,20 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Collections.emptyList());
             } else {
                 ItemStack circuitStack = circuitInventory.storage.getStackInSlot(0);
-                int circuitConfiguration =
-                        circuitStack.isEmpty() ? -1 : IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
+                int circuitConfiguration = circuitStack.isEmpty() ? -1 :
+                        IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
 
-                Component groupName = circuitConfiguration != -1
-                        ? Component.translatable(controllerDefinition.getDescriptionId())
-                        .append(" - " + circuitConfiguration)
-                        : Component.translatable(controllerDefinition.getDescriptionId());
+                Component groupName = circuitConfiguration != -1 ?
+                        Component.translatable(controllerDefinition.getDescriptionId())
+                                .append(" - " + circuitConfiguration) :
+                        Component.translatable(controllerDefinition.getDescriptionId());
 
                 return new PatternContainerGroup(
                         AEItemKey.of(controllerDefinition.asStack()), groupName, Collections.emptyList());
             }
         } else {
             // has customName
-            //TODO: Actually give it the right AEItemKey rather than dirt and feeding it its own name lmoa
+            // TODO: Actually give it the right AEItemKey rather than dirt and feeding it its own name lmoa
             if (!customName.isEmpty()) {
                 return new PatternContainerGroup(
                         AEItemKey.of(Blocks.DIRT),
@@ -526,8 +526,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     var key = AEItemKey.of(stack);
                     if (key == null) continue;
 
-                    long inserted =
-                            StorageHelper.poweredInsert(energy, networkInv, key, stack.getCount(), actionSource);
+                    long inserted = StorageHelper.poweredInsert(energy, networkInv, key, stack.getCount(),
+                            actionSource);
                     if (inserted > 0) {
                         stack.shrink((int) inserted);
                         if (stack.isEmpty()) {
@@ -602,7 +602,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         // TODO 是否要提前结束循环
 
         public @Nullable List<FluidIngredient> handleFluidInternal(
-                List<FluidIngredient> left, boolean simulate) {
+                                                                   List<FluidIngredient> left, boolean simulate) {
             Iterator<FluidIngredient> iterator = left.iterator();
             while (iterator.hasNext()) {
                 FluidIngredient fluidStack = iterator.next();
@@ -669,8 +669,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 } else {
                     GTCEu.LOGGER
                             .warn(
-                                    "An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: "
-                                            + tagItemStack);
+                                    "An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: " +
+                                            tagItemStack);
                 }
             }
             ListTag fluidInv = tag.getList("fluidInventory", Tag.TAG_COMPOUND);
@@ -684,8 +684,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 } else {
                     GTCEu.LOGGER
                             .warn(
-                                    "An error occurred while loading contents of ME Crafting Input Bus. This fluid has been voided: "
-                                            + tagFluidStack);
+                                    "An error occurred while loading contents of ME Crafting Input Bus. This fluid has been voided: " +
+                                            tagFluidStack);
                 }
             }
         }

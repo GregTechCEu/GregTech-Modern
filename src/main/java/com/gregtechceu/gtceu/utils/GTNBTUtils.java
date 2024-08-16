@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class GTNBTUtils {
+
     public static CompoundTag writeItemStack(ItemStack itemStack, CompoundTag compoundTag) {
         ResourceLocation resourceLocation = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
         compoundTag.putString("id", resourceLocation.toString());

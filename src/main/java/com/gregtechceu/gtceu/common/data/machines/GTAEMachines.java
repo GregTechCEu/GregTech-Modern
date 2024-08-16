@@ -109,7 +109,8 @@ public class GTAEMachines {
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
             .tier(LuV)
-            .abilities(PartAbility.IMPORT_ITEMS,PartAbility.IMPORT_FLUIDS,PartAbility.EXPORT_FLUIDS,PartAbility.EXPORT_ITEMS)
+            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
+                    PartAbility.EXPORT_ITEMS)
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("me_pattern_buffer")
             .tooltips(

@@ -2,20 +2,25 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
+import net.minecraft.network.chat.Component;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
+
 @Accessors(chain = true)
 public class AETextInputButtonWidget extends WidgetGroup {
+
     @Setter
     private Consumer<String> onConfirm;
 

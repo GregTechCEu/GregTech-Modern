@@ -1,45 +1,47 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
-
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 public class AEPatternViewSlotWidget extends SlotWidget {
+
     protected IGuiTexture occupiedTexture;
 
     public AEPatternViewSlotWidget() {}
 
     public AEPatternViewSlotWidget(
-            Container inventory,
-            int slotIndex,
-            int xPosition,
-            int yPosition,
-            boolean canTakeItems,
-            boolean canPutItems) {
+                                   Container inventory,
+                                   int slotIndex,
+                                   int xPosition,
+                                   int yPosition,
+                                   boolean canTakeItems,
+                                   boolean canPutItems) {
         super(inventory, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
     }
 
     public AEPatternViewSlotWidget(
-            IItemTransfer itemHandler,
-            int slotIndex,
-            int xPosition,
-            int yPosition,
-            boolean canTakeItems,
-            boolean canPutItems) {
+                                   IItemTransfer itemHandler,
+                                   int slotIndex,
+                                   int xPosition,
+                                   int yPosition,
+                                   boolean canTakeItems,
+                                   boolean canPutItems) {
         super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
     }
 
     public AEPatternViewSlotWidget(
-            IItemTransfer itemHandler, int slotIndex, int xPosition, int yPosition) {
+                                   IItemTransfer itemHandler, int slotIndex, int xPosition, int yPosition) {
         super(itemHandler, slotIndex, xPosition, yPosition);
     }
 
@@ -48,8 +50,7 @@ public class AEPatternViewSlotWidget extends SlotWidget {
     }
 
     public AEPatternViewSlotWidget setOccupiedTexture(IGuiTexture... occupiedTexture) {
-        this.occupiedTexture =
-                occupiedTexture.length > 1 ? new GuiTextureGroup(occupiedTexture) : occupiedTexture[0];
+        this.occupiedTexture = occupiedTexture.length > 1 ? new GuiTextureGroup(occupiedTexture) : occupiedTexture[0];
         return this;
     }
 
@@ -81,5 +82,4 @@ public class AEPatternViewSlotWidget extends SlotWidget {
             hoverTexture.draw(graphics, mouseX, mouseY, pos.x, pos.y, size.width, size.height);
         }
     }
-    
 }
