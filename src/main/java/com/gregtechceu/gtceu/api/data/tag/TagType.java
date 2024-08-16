@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import lombok.Getter;
 
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public class TagType {
 
@@ -16,6 +17,7 @@ public class TagType {
     @Getter
     private boolean isParentTag = false;
     private BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
+    private Predicate<Material> filter;
 
     private TagType(String tagPath) {
         this.tagPath = tagPath;
@@ -68,7 +70,15 @@ public class TagType {
         return type;
     }
 
+    public static TagType withCustomFilter(String tagPath, boolean isVanilla, Predicate<Material> filter) {
+        TagType type = new TagType(tagPath);
+        type.filter = filter;
+        type.formatter = (prefix, material) -> TagUtil.createItemTag(type.tagPath, isVanilla);
+        return type;
+    }
+
     public TagKey<Item> getTag(TagPrefix prefix, Material material) {
+        if (filter != null && material != null && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
 }

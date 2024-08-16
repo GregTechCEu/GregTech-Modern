@@ -100,6 +100,7 @@ public class GTMaterials {
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
+        gem.setIgnored(Echo, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -122,6 +123,7 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
+        ingot.setIgnored(Wax, Items.HONEYCOMB);
 
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
@@ -155,6 +157,7 @@ public class GTMaterials {
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
+        block.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
 
         rock.setIgnored(Marble, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
         rock.setIgnored(Granite, Blocks.GRANITE);
@@ -171,6 +174,7 @@ public class GTMaterials {
         rock.setIgnored(Endstone, Blocks.END_STONE);
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
+        rock.setIgnored(Sculk, Blocks.SCULK);
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
 
@@ -247,6 +251,7 @@ public class GTMaterials {
         rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
         block.modifyMaterialAmount(Amethyst, 4);
+        block.modifyMaterialAmount(Echo, 4);
         block.modifyMaterialAmount(Glowstone, 4);
         block.modifyMaterialAmount(NetherQuartz, 4);
         block.modifyMaterialAmount(CertusQuartz, 4);
@@ -257,6 +262,8 @@ public class GTMaterials {
         block.modifyMaterialAmount(Glass, 1);
         block.modifyMaterialAmount(Ice, 1);
         block.modifyMaterialAmount(Obsidian, 1);
+        block.modifyMaterialAmount(Sculk, 1);
+        block.modifyMaterialAmount(Wax, 4);
 
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
@@ -877,6 +884,7 @@ public class GTMaterials {
     public static Material Lapotron;
     public static Material UUMatter;
     public static Material PCBCoolant;
+    public static Material Sculk;
 
     /**
      * Second Degree Compounds
@@ -887,6 +895,7 @@ public class GTMaterials {
     public static Material Olivine;
     public static Material Opal;
     public static Material Amethyst;
+    public static Material Echo;
     public static Material Lapis;
     public static Material Blaze;
     public static Material Apatite;
@@ -942,6 +951,7 @@ public class GTMaterials {
     public static Material DebrominatedBrine;
     public static Material BrominatedChlorineVapor;
     public static Material AcidicBromineExhaust;
+    public static Material Wax;
 
     /**
      * Third Degree Materials

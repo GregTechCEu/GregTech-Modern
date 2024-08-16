@@ -227,6 +227,12 @@ public class OreRecipeHandler {
                 .inputItems(rawOre, material, 9)
                 .outputItems(rawOreBlock, material)
                 .duration(300).EUt(2).save(provider);
+
+        FORGE_HAMMER_RECIPES.recipeBuilder("decompress_" + material.getName() + "to_raw_ore")
+                .inputItems(rawOreBlock, material)
+                .outputItems(rawOre, material, 9)
+                .circuitMeta(2)
+                .duration(300).EUt(2).save(provider);
     }
 
     public static void processCrushedOre(TagPrefix crushedPrefix, Material material, OreProperty property,

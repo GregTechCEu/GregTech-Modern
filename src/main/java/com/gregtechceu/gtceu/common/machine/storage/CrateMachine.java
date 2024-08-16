@@ -6,21 +6,33 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -33,7 +45,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops {
+public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops, IMachineLife,
+                          IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
@@ -47,6 +60,10 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     private final Material material;
     @Getter
     private final int inventorySize;
+    @Getter
+    @RequireRerender
+    @DescSynced
+    private boolean isTaped;
 
     @Persisted
     public final NotifiableItemStackHandler inventory;
@@ -84,7 +101,64 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     }
 
     @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isCrouching() && !isTaped) {
+            if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
+                if (!player.isCreative()) {
+                    stack.shrink(1);
+                }
+                isTaped = true;
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    @Override
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        inventory.loadCustomPersistedData(tag.getCompound("inventory"));
+        if (tag.contains("taped")) {
+            this.isTaped = tag.getBoolean("taped");
+        }
+    }
+
+    @Override
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        tag.put("inventory", inventory.storage.serializeNBT());
+        tag.putBoolean("taped", isTaped);
+    }
+
+    @Override
+    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
+        IMachineLife.super.onMachinePlaced(player, stack);
+        CompoundTag tag = stack.getTag();
+        if (tag != null) {
+            this.isTaped = tag.contains("taped") && tag.getBoolean("taped");
+            if (isTaped) {
+                this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+            }
+
+            tag.remove("taped");
+            this.isTaped = false;
+        }
+    }
+
+    @Override
+    public void saveToItem(CompoundTag tag) {
+        IDropSaveMachine.super.saveToItem(tag);
+        if (isTaped) {
+            tag.putBoolean("taped", isTaped);
+            tag.put("inventory", inventory.storage.serializeNBT());
+        }
+    }
+
+    @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        MetaMachine.clearInventory(drops, inventory.storage);
+        if (!isTaped)
+            MetaMachine.clearInventory(drops, inventory.storage);
     }
 }

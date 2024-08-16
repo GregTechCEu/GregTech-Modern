@@ -63,7 +63,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.maintenance.hard_hammer", "Plating is dented");
         provider.add("gtceu.top.maintenance.wire_cutter", "Wires burned out");
         provider.add("gtceu.top.maintenance.crowbar", "That doesn't belong there");
-        provider.add("gtceu.top.primitive_pump_production", "Production:");
+        provider.add("gtceu.top.primitive_pump_production", "Production: %s mB/s");
         provider.add("gtceu.top.filter.label", "Filter:");
         provider.add("gtceu.top.link_cover.color", "Color:");
         provider.add("gtceu.top.mode.export", "Exporting");

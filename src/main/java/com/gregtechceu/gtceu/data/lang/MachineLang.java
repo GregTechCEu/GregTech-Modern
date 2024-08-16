@@ -589,14 +589,15 @@ public class MachineLang {
         provider.add("gtceu.multiblock.advanced_processing_array.description",
                 "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
         // Parallel
-        provider.add("gtceu.multiblock.parallelizable.tooltip",
-                "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+
         provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "Allows to run up to 4 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "Allows to run up to 16 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
                 "Allows to run up to 256 recipes in parallel.");
-
+        // Hatch Limits - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
+        provider.add("gtceu.multiblock.exact_hatch_1.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
         // More tooltips
         provider.add("gtceu.machine.primitive_water_pump.tooltip", "Endervoir at Home");
         provider.add("gtceu.machine.primitive_blast_furnace.bronze.tooltip", "Making your first Steel");
@@ -741,6 +742,28 @@ public class MachineLang {
         provider.add("gtceu.machine.me.item_import.tooltip", "Fetches items from an ME network automatically.");
         provider.add("gtceu.machine.me.export.tooltip",
                 "Has infinite capacity before connecting to ME network.");
+        multiLang(provider, "gtceu.machine.me.stocking_item.tooltip", "Retrieves items directly from the ME network",
+                "Auto-Pull from ME mode will automatically stock the first 16 items in the ME system, updated every 5 seconds.");
+        multiLang(provider, "gtceu.machine.me.stocking_fluid.tooltip", "Retrieves fluids directly from the ME network",
+                "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
+        provider.add("gtceu.machine.me_import_item_hatch.configs.tooltip",
+                "Keeps 16 item types in stock");
+        provider.add("gtceu.machine.me_import_fluid_hatch.configs.tooltip",
+                "Keeps 16 fluid types in stock");
+        provider.add("gtceu.machine.me.stocking_auto_pull_enabled",
+                "Auto-Pull Enabled");
+        provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
+                "Auto-Pull Disabled");
+        provider.add("gtceu.machine.me.copy_paste.tooltip",
+                "Left-click with Data Stick to copy settings, right-click to apply");
+        provider.add("gtceu.machine.me.import_copy_settings",
+                "Saved settings to Data Stick");
+        provider.add("gtceu.machine.me.import_paste_settings",
+                "Applied settings from Data Stick");
+        provider.add("gtceu.machine.me.item_import.data_stick.name",
+                "§oME Input Bus Configuration Data");
+        provider.add("gtceu.machine.me.fluid_import.data_stick.name",
+                "§oME Input Hatch Configuration Data");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");

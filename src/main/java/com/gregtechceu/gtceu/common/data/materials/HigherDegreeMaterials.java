@@ -25,6 +25,7 @@ public class HigherDegreeMaterials {
                 .gem(1)
                 .color(0xb5e45a).secondaryColor(0x001430).iconSet(SHINY)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
+                .components(EnderPearl, 1, Blaze, 1)
                 .buildAndRegister();
 
         Diatomite = new Material.Builder(GTCEu.id("diatomite"))
@@ -45,7 +46,7 @@ public class HigherDegreeMaterials {
 
         BlueSteel = new Material.Builder(GTCEu.id("blue_steel"))
                 .ingot(3).fluid()
-                .color(0xa5bdda).secondaryColor(0x24245f).iconSet(METALLIC)
+                .color(0x779ac6).secondaryColor(0x191948).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FRAME, GENERATE_GEAR)
                 .components(RoseGold, 1, Brass, 1, Steel, 2, BlackSteel, 4)
                 .toolStats(ToolProperty.Builder.of(15.0F, 6.0F, 1024, 3)
@@ -121,7 +122,7 @@ public class HigherDegreeMaterials {
 
         HSSS = new Material.Builder(GTCEu.id("hsss"))
                 .ingot(4).fluid()
-                .color(0xae9abe).secondaryColor(0x66000e).iconSet(METALLIC)
+                .color(0xa482bf).secondaryColor(0x66000e).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR,
                         GENERATE_ROUND, GENERATE_FOIL, GENERATE_GEAR)
                 .components(HSSG, 6, Iridium, 2, Osmium, 1)
@@ -131,7 +132,7 @@ public class HigherDegreeMaterials {
 
         IridiumMetalResidue = new Material.Builder(GTCEu.id("iridium_metal_residue"))
                 .dust()
-                .color(0x5C5D68).secondaryColor(0x462941).iconSet(METALLIC)
+                .color(0x484a5e).secondaryColor(0x3e1c38).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iridium, 1, Chlorine, 3, PlatinumSludgeResidue, 1)
                 .buildAndRegister();
@@ -196,7 +197,7 @@ public class HigherDegreeMaterials {
         BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1400))
-                .color(0x64B4FF).iconSet(METALLIC)
+                .color(0x64B4FF).secondaryColor(0x3c7dba).iconSet(METALLIC)
                 .flags(GENERATE_PLATE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Electrotine, 4, Silver, 1)
                 .cableProperties(GTValues.V[GTValues.HV], 2, 1)
