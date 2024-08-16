@@ -528,14 +528,12 @@ public class SecondDegreeMaterials {
         RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
                 .liquid()
                 .color(0x9f6b26)
-                .components(Water, 4, Salt, 20, Magnesium, 3, Lithium, 2, Bromine, 1)
                 .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
         DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
                 .liquid()
                 .color(0xab8c6d)
-                .components(Water, 4, Salt, 20, Magnesium, 3, Lithium, 2)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .buildAndRegister();
 

@@ -80,29 +80,16 @@ public class BrineRecipes {
 
     public static void iodineProcess(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("brine_acidification")
-                .inputFluids(HotBrine.getFluid(1000))
+                .inputFluids(HotBrine.getFluid(2000))
                 .inputFluids(HydrochloricAcid.getFluid(1000))
-                .outputFluids(HotDebrominatedBrine.getFluid(1000))
-                .outputFluids(DiluteIodineSolution.getFluid(1000))
+                .outputFluids(HotAlkalineDebrominatedBrine.getFluid(2000))
+                .outputFluids(HydrogenIodide.getFluid(1000))
                 .duration(100).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution")
-                .inputFluids(DiluteIodineSolution.getFluid(1000))
-                .inputFluids(Chlorine.getFluid(2000))
-                .outputFluids(Iodide.getFluid(1000))
-                .outputFluids(HydrochloricAcid.getFluid(2000))
-                .duration(1000).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution_reduction")
-                .inputFluids(Iodide.getFluid(1000))
-                .inputFluids(Water.getFluid(2000))
-                .inputFluids(SulfurDioxide.getFluid(1000))
-                .outputFluids(IodineSolution.getFluid(2000))
-                .outputFluids(SulfuricAcid.getFluid(1000))
-                .duration(1000).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution_reduction")
-                .inputFluids(IodineSolution.getFluid(2000))
-                .inputFluids(Chlorine.getFluid(1000))
+        CHEMICAL_RECIPES.recipeBuilder("iodine")
+                .inputFluids(HydrogenIodide.getFluid(2000))
+                .inputFluids(Oxygen.getFluid(1000))
                 .outputItems(dust, Iodine, 1)
-                .outputFluids(HydrochloricAcid.getFluid(2000))
+                .outputFluids(Water.getFluid(1000))
                 .duration(1000).EUt(VHA[HV]).save(provider);
     }
 }
