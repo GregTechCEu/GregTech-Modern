@@ -609,8 +609,8 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
-            .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
+    public static final MachineDefinition CREATIVE_COMPUTER = REGISTRATE
+            .machine("creative_computer", CreativeComputationProviderMachine::new)
             .rotationState(RotationState.NONE)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()

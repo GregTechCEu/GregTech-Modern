@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:creative_computer"
+  },
+  "items": [
+    "gtceu:creative_computer"
+  ],
+  "page": "gtceu:machines/creative_computer",
+  "position": [
+    -400,
+    350
+  ],
+  "section": "gtceu:machines"
+}
