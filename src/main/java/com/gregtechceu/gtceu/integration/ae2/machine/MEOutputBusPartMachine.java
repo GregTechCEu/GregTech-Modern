@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -43,7 +44,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+        super(holder, GTValues.EV, IO.OUT, args);
     }
 
     /////////////////////////////////
