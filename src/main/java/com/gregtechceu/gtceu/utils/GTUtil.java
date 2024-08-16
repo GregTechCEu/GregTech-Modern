@@ -16,11 +16,13 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
+import com.unrealdinnerbone.javd.JAVDRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -441,7 +443,11 @@ public class GTUtil {
             return false;
         }
 
-        return world.isDay();
+        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
+        if (GTCEu.isJAVDLoaded() && world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+            GTCEu.LOGGER.info("JAVD biome detected");
+            return !world.isDay();
+        } else return world.isDay();
     }
 
     public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
