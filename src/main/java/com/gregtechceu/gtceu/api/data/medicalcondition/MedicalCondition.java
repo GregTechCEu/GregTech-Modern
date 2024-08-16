@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;

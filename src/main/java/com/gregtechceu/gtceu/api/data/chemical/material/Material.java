@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -49,7 +49,9 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 
 public class Material implements Comparable<Material> {
 
-    public static final Codec<Material> CODEC = ResourceLocation.CODEC.xmap(rl -> GTCEuAPI.materialManager.getRegistry(rl.getNamespace()).get(rl.getPath()), Material::getResourceLocation);
+    public static final Codec<Material> CODEC = ResourceLocation.CODEC.xmap(
+            rl -> GTCEuAPI.materialManager.getRegistry(rl.getNamespace()).get(rl.getPath()),
+            Material::getResourceLocation);
 
     /**
      * Basic Info of this Material.

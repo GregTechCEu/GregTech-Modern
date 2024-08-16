@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.integration.jsonthings.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 
 public class MaterialBuilder extends BaseBuilder<Material, MaterialBuilder> {
+
     @Getter
     private final Material.Builder internal;
 

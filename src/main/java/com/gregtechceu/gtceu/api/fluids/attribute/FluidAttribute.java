@@ -1,29 +1,32 @@
 package com.gregtechceu.gtceu.api.fluids.attribute;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Keyable;
 import lombok.Getter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class FluidAttribute {
 
-    public static final Codec<FluidAttribute> CODEC = ResourceLocation.CODEC.xmap(FluidAttribute.VALUES::get, FluidAttribute::getResourceLocation);
+    private static final Map<ResourceLocation, FluidAttribute> VALUES = new HashMap<>();
+    public static final Codec<FluidAttribute> CODEC = ResourceLocation.CODEC.xmap(FluidAttribute.VALUES::get,
+            FluidAttribute::getResourceLocation);
     public static final Keyable CODEC_KEYS = new Keyable() {
+
         @Override
         public <T> Stream<T> keys(DynamicOps<T> ops) {
             return VALUES.keySet().stream().map(key -> ops.createString(key.toString()));
         }
     };
-    private static final Map<ResourceLocation, FluidAttribute> VALUES = new HashMap<>();
 
     @Getter
     private final ResourceLocation resourceLocation;
@@ -41,7 +44,7 @@ public final class FluidAttribute {
         VALUES.put(resourceLocation, this);
     }
 
-    public void appendFluidTooltips(@NotNull List<@NotNull Component> tooltip) {
+    public void appendFluidTooltips(@NotNull Consumer<@NotNull Component> tooltip) {
         fluidTooltip.accept(tooltip);
     }
 

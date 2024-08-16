@@ -5,15 +5,13 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageImpl;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -21,20 +19,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-@NoArgsConstructor
 public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidStorage {
 
     public static final Codec<FluidProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            FluidStorage.CODEC.fieldOf("storage").forGetter(val -> val.storage),
-            FluidStorageKey.CODEC.optionalFieldOf("primary_key", null).forGetter(val -> val.primaryKey)
-    ).apply(instance, FluidProperty::new));
+            FluidStorageImpl.CODEC.fieldOf("storage").forGetter(val -> val.storage),
+            FluidStorageKey.CODEC.optionalFieldOf("primary_key", null).forGetter(val -> val.primaryKey))
+            .apply(instance, FluidProperty::new));
 
-    private final FluidStorageImpl storage = new FluidStorageImpl();
+    private final FluidStorageImpl storage;
     @Getter
     @Setter
     private FluidStorageKey primaryKey = null;
 
+    @ApiStatus.Internal
+    public FluidProperty(@NotNull FluidStorageImpl storage, @Nullable FluidStorageKey primaryKey) {
+        this.storage = storage;
+        this.primaryKey = primaryKey;
+    }
+
+    public FluidProperty() {
+        this.storage = new FluidStorageImpl();
+    }
+
     public FluidProperty(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+        this();
         enqueueRegistration(key, builder);
     }
 

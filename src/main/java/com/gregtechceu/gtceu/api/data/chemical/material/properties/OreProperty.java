@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,16 +20,18 @@ import java.util.List;
 
 @AllArgsConstructor
 public class OreProperty implements IMaterialProperty<OreProperty> {
+
     public static final Codec<OreProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Material.CODEC.listOf().optionalFieldOf("byproducts", List.of()).forGetter(val -> val.oreByProducts),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("ore_multiplier", 1).forGetter(val -> val.oreMultiplier),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("byproduct_multiplier", 1).forGetter(val -> val.byProductMultiplier),
-        Codec.BOOL.optionalFieldOf("emissive", false).forGetter(val -> val.emissive),
-        Material.CODEC.optionalFieldOf("direct_smelt_result", null).forGetter(val -> val.directSmeltResult),
-        Material.CODEC.optionalFieldOf("washed_in", null).forGetter(val -> val.washedIn),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("washed_amount", 100).forGetter(val -> val.washedAmount),
-        Material.CODEC.listOf().optionalFieldOf("separated_into", List.of()).forGetter(val -> val.separatedInto)
-        ).apply(instance, OreProperty::new));
+            Material.CODEC.listOf().optionalFieldOf("byproducts", List.of()).forGetter(val -> val.oreByProducts),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("ore_multiplier", 1).forGetter(val -> val.oreMultiplier),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("byproduct_multiplier", 1)
+                    .forGetter(val -> val.byProductMultiplier),
+            Codec.BOOL.optionalFieldOf("emissive", false).forGetter(val -> val.emissive),
+            Material.CODEC.optionalFieldOf("direct_smelt_result", null).forGetter(val -> val.directSmeltResult),
+            Material.CODEC.optionalFieldOf("washed_in", null).forGetter(val -> val.washedIn),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("washed_amount", 100).forGetter(val -> val.washedAmount),
+            Material.CODEC.listOf().optionalFieldOf("separated_into", List.of()).forGetter(val -> val.separatedInto))
+            .apply(instance, OreProperty::new));
 
     /**
      * List of Ore byproducts.

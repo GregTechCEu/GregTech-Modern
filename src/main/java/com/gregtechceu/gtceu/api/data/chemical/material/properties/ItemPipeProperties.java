@@ -1,16 +1,18 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import net.minecraft.util.ExtraCodecs;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.ExtraCodecs;
 
 import java.util.Objects;
 
 public class ItemPipeProperties implements IMaterialProperty<ItemPipeProperties> {
+
     public static final Codec<ItemPipeProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.POSITIVE_INT.fieldOf("priority").forGetter(val -> val.priority),
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("transfer_rate").forGetter(val -> val.transferRate)
-    ).apply(instance, ItemPipeProperties::new));
+            ExtraCodecs.POSITIVE_INT.fieldOf("priority").forGetter(val -> val.priority),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("transfer_rate").forGetter(val -> val.transferRate))
+            .apply(instance, ItemPipeProperties::new));
 
     /**
      * Items will try to take the path with the lowest priority

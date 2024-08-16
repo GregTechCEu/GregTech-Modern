@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,19 +22,22 @@ import java.util.List;
 import static com.gregtechceu.gtceu.api.item.tool.GTToolType.*;
 
 public class ToolProperty implements IMaterialProperty<ToolProperty> {
+
     public static final Codec<ToolProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("harvest_speed").forGetter(val -> val.harvestSpeed),
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("attack_damage").forGetter(val -> val.attackDamage),
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("attack_speed").forGetter(val -> val.attackSpeed),
-        ExtraCodecs.POSITIVE_INT.fieldOf("durability").forGetter(val -> val.durability),
-        ExtraCodecs.POSITIVE_INT.fieldOf("harvest_level").forGetter(val -> val.harvestLevel),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("enchantability", 10).forGetter(val -> val.harvestLevel),
-        Codec.BOOL.optionalFieldOf("ignore_crafting_tools", false).forGetter(val -> val.ignoreCraftingTools),
-        Codec.BOOL.optionalFieldOf("unbreakable", false).forGetter(val -> val.isUnbreakable),
-        Codec.BOOL.optionalFieldOf("magnetic", false).forGetter(val -> val.isMagnetic),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("durability_multiplier", 1).forGetter(val -> val.durabilityMultiplier),
-        Codec.STRING.xmap(string -> GTToolType.getTypes().get(string), type -> type.name).listOf().fieldOf("tool_types").forGetter(val -> List.of(val.types))
-    ).apply(instance, ToolProperty::new));
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("harvest_speed").forGetter(val -> val.harvestSpeed),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("attack_damage").forGetter(val -> val.attackDamage),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("attack_speed").forGetter(val -> val.attackSpeed),
+            ExtraCodecs.POSITIVE_INT.fieldOf("durability").forGetter(val -> val.durability),
+            ExtraCodecs.POSITIVE_INT.fieldOf("harvest_level").forGetter(val -> val.harvestLevel),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("enchantability", 10).forGetter(val -> val.harvestLevel),
+            Codec.BOOL.optionalFieldOf("ignore_crafting_tools", false).forGetter(val -> val.ignoreCraftingTools),
+            Codec.BOOL.optionalFieldOf("unbreakable", false).forGetter(val -> val.isUnbreakable),
+            Codec.BOOL.optionalFieldOf("magnetic", false).forGetter(val -> val.isMagnetic),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("durability_multiplier", 1)
+                    .forGetter(val -> val.durabilityMultiplier),
+            Codec.STRING.xmap(string -> GTToolType.getTypes().get(string), type -> type.name).listOf()
+                    .fieldOf("tool_types").forGetter(val -> List.of(val.types)))
+            .apply(instance, ToolProperty::new));
 
     /**
      * Harvest speed of tools made from this Material.
@@ -142,7 +145,9 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         this.types = types;
     }
 
-    public ToolProperty(float harvestSpeed, float attackSpeed, float attackDamage, int durability, int harvestLevel, int enchantability, boolean ignoreCraftingTools, boolean unbreakable, boolean magnetic, int durabilityMultiplier, List<GTToolType> types) {
+    public ToolProperty(float harvestSpeed, float attackSpeed, float attackDamage, int durability, int harvestLevel,
+                        int enchantability, boolean ignoreCraftingTools, boolean unbreakable, boolean magnetic,
+                        int durabilityMultiplier, List<GTToolType> types) {
         this.harvestSpeed = harvestSpeed;
         this.attackSpeed = attackSpeed;
         this.attackDamage = attackDamage;

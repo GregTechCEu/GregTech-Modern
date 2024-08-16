@@ -12,22 +12,20 @@ import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import lombok.AllArgsConstructor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.Fluid;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,29 +40,33 @@ import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
 @AllArgsConstructor
 @Accessors(fluent = true, chain = true)
 public class FluidBuilder {
+
     public static final Codec<FluidBuilder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.STRING.fieldOf("name").forGetter(val -> val.name),
-        Codec.STRING.fieldOf("translation_key").forGetter(val -> val.translation),
-        FluidAttribute.CODEC.listOf().fieldOf("attributes").forGetter(val -> val.attributes),
-        StringRepresentable.fromEnum(FluidState::values).fieldOf("state").forGetter(val -> val.state),
-        Codec.INT.optionalFieldOf("temperature", FluidBuilder.INFER_TEMPERATURE).forGetter(val -> val.temperature),
-        Codec.INT.optionalFieldOf("color", FluidBuilder.INFER_COLOR).forGetter(val -> val.color),
-        Codec.BOOL.optionalFieldOf("is_color_enabled", true).forGetter(val -> val.isColorEnabled),
-        Codec.INT.optionalFieldOf("density", FluidBuilder.INFER_DENSITY).forGetter(val -> val.density),
-        Codec.INT.optionalFieldOf("luminosity", FluidBuilder.INFER_LUMINOSITY).forGetter(val -> val.luminosity),
-        Codec.INT.optionalFieldOf("viscosity", FluidBuilder.INFER_VISCOSITY).forGetter(val -> val.viscosity),
-        Codec.INT.optionalFieldOf("burn_time", -1).forGetter(val -> val.burnTime),
-        ResourceLocation.CODEC.optionalFieldOf("still_texture", null).forGetter(val -> val.still),
-        ResourceLocation.CODEC.optionalFieldOf("flowing_texture", null).forGetter(val -> val.flowing),
-        Codec.BOOL.optionalFieldOf("has_custom_still", false).forGetter(val -> val.hasCustomStill),
-        Codec.BOOL.optionalFieldOf("has_custom_flowing", false).forGetter(val -> val.hasCustomFlowing),
-        instance.group(
-            Codec.BOOL.optionalFieldOf("has_fluid_block", false).forGetter(val -> val.hasFluidBlock),
-            Codec.BOOL.optionalFieldOf("has_bucket", true).forGetter(val -> val.hasBucket)
-        ).apply(instance, Pair::of)
-    ).apply(instance,
-        (name, translation, attributes, state, temp, color, colorEnabled, density, luminosity, viscosity, burnTime, stillTexture, flowingTexture, hasCustomStill, hasCustomFlowing, pair) ->
-            new FluidBuilder(name, translation, attributes, state, temp, color, colorEnabled, density, luminosity, viscosity, burnTime, stillTexture, flowingTexture, hasCustomStill, hasCustomFlowing, pair.getFirst(), pair.getSecond())));
+            Codec.STRING.fieldOf("name").forGetter(val -> val.name),
+            Codec.STRING.fieldOf("translation_key").forGetter(val -> val.translation),
+            FluidAttribute.CODEC.listOf().fieldOf("attributes").forGetter(val -> val.attributes),
+            StringRepresentable.fromEnum(FluidState::values).fieldOf("state").forGetter(val -> val.state),
+            Codec.INT.optionalFieldOf("temperature", FluidBuilder.INFER_TEMPERATURE).forGetter(val -> val.temperature),
+            Codec.INT.optionalFieldOf("color", FluidBuilder.INFER_COLOR).forGetter(val -> val.color),
+            Codec.BOOL.optionalFieldOf("is_color_enabled", true).forGetter(val -> val.isColorEnabled),
+            Codec.INT.optionalFieldOf("density", FluidBuilder.INFER_DENSITY).forGetter(val -> val.density),
+            Codec.INT.optionalFieldOf("luminosity", FluidBuilder.INFER_LUMINOSITY).forGetter(val -> val.luminosity),
+            Codec.INT.optionalFieldOf("viscosity", FluidBuilder.INFER_VISCOSITY).forGetter(val -> val.viscosity),
+            Codec.INT.optionalFieldOf("burn_time", -1).forGetter(val -> val.burnTime),
+            ResourceLocation.CODEC.optionalFieldOf("still_texture", null).forGetter(val -> val.still),
+            ResourceLocation.CODEC.optionalFieldOf("flowing_texture", null).forGetter(val -> val.flowing),
+            Codec.BOOL.optionalFieldOf("has_custom_still", false).forGetter(val -> val.hasCustomStill),
+            Codec.BOOL.optionalFieldOf("has_custom_flowing", false).forGetter(val -> val.hasCustomFlowing),
+            instance.group(
+                    Codec.BOOL.optionalFieldOf("has_fluid_block", false).forGetter(val -> val.hasFluidBlock),
+                    Codec.BOOL.optionalFieldOf("has_bucket", true).forGetter(val -> val.hasBucket))
+                    .apply(instance, Pair::of))
+            .apply(instance,
+                    (name, translation, attributes, state, temp, color, colorEnabled, density, luminosity, viscosity,
+                     burnTime, stillTexture, flowingTexture, hasCustomStill, hasCustomFlowing,
+                     pair) -> new FluidBuilder(name, translation, attributes, state, temp, color, colorEnabled, density,
+                             luminosity, viscosity, burnTime, stillTexture, flowingTexture, hasCustomStill,
+                             hasCustomFlowing, pair.getFirst(), pair.getSecond())));
 
     private static final int INFER_TEMPERATURE = -1;
     private static final int INFER_COLOR = 0xFFFFFFFF;
@@ -91,10 +93,12 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @ApiStatus.Internal
     private ResourceLocation still = null;
-    @Getter @Setter
+    @Getter
+    @Setter
     @ApiStatus.Internal
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;

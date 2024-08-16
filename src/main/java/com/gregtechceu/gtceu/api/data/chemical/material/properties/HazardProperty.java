@@ -9,9 +9,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +39,18 @@ import java.util.*;
  */
 public class HazardProperty implements IMaterialProperty<HazardProperty> {
 
-    public final MedicalCondition condition;
-    public final HazardTrigger hazardTrigger;
-    public final boolean applyToDerivatives;
-    public final float progressionMultiplier;
+    public static final Codec<HazardProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            HazardTrigger.CODEC.fieldOf("trigger").forGetter(val -> val.hazardTrigger),
+            MedicalCondition.CODEC.fieldOf("condition").forGetter(val -> val.condition),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("progression_multiplier")
+                    .forGetter(val -> val.progressionMultiplier),
+            Codec.BOOL.fieldOf("apply_to_derivatives").forGetter(val -> val.applyToDerivatives)
+    ).apply(instance, HazardProperty::new));
+
+    public MedicalCondition condition;
+    public HazardTrigger hazardTrigger;
+    public boolean applyToDerivatives;
+    public float progressionMultiplier;
 
     public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier,
                           boolean applyToDerivatives) {
@@ -48,6 +60,10 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         this.progressionMultiplier = progressionMultiplier;
     }
 
+    public HazardProperty() {
+        this(HazardTrigger.NONE, GTMedicalConditions.NONE, 0.0f, false);
+    }
+
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
@@ -55,6 +71,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
             implements StringRepresentable {
 
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
+        public static final Codec<HazardTrigger> CODEC = Codec.STRING.xmap(ALL_TRIGGERS::get, HazardTrigger::name);
 
         public static final HazardTrigger INHALATION = new HazardTrigger("inhalation", ProtectionType.MASK,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);

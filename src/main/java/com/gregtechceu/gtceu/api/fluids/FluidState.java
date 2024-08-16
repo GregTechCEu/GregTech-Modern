@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.fluids;
 
-import lombok.Getter;
 import net.minecraft.util.StringRepresentable;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;

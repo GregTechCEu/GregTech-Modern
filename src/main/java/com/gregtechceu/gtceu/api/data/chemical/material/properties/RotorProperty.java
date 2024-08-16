@@ -1,18 +1,21 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import lombok.Getter;
+import net.minecraft.util.ExtraCodecs;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
-import net.minecraft.util.ExtraCodecs;
-
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
+
     public static final Codec<RotorProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("speed").forGetter(val -> val.speed),
-        ExtraCodecs.POSITIVE_FLOAT.fieldOf("damage").forGetter(val -> val.damage),
-        ExtraCodecs.POSITIVE_INT.fieldOf("damage").forGetter(val -> val.durability)
+            ExtraCodecs.POSITIVE_INT.fieldOf("power").forGetter(val -> val.power),
+            ExtraCodecs.POSITIVE_INT.fieldOf("durability").forGetter(val -> val.durability),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("damage").forGetter(val -> val.damage),
+            ExtraCodecs.POSITIVE_INT.fieldOf("efficiency").forGetter(val -> val.efficiency)
     ).apply(instance, RotorProperty::new));
 
     /**

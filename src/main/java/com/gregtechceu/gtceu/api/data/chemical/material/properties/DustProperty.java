@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import net.minecraft.util.ExtraCodecs;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import net.minecraft.util.ExtraCodecs;
 
 public class DustProperty implements IMaterialProperty<DustProperty> {
+
     public static final Codec<DustProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("harvest_level", 2).forGetter(val -> val.harvestLevel),
-        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("burn_time", 0).forGetter(val -> val.burnTime)
-    ).apply(instance, DustProperty::new));
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("harvest_level", 2).forGetter(val -> val.harvestLevel),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("burn_time", 0).forGetter(val -> val.burnTime))
+            .apply(instance, DustProperty::new));
 
     /**
      * Tool level needed to harvest block of this Material.

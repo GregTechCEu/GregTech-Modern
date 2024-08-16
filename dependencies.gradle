@@ -39,9 +39,6 @@ dependencies {
     modImplementation(forge.ae2) { transitive = false }
     modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
-    //AlmostUnified
-    modCompileOnly(forge.almostUnified.forge)
-
     // KJS
     modImplementation(forge.kubejs) { transitive = false }
     modImplementation(forge.architectury)
@@ -75,7 +72,5 @@ dependencies {
 
     // Json Things
     modImplementation(forge.jsonThings)
-
-    // Runtime only testing mods
-    //modRuntimeOnly(forge.worldStripper)
 }
+

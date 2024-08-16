@@ -4,19 +4,16 @@ import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -32,16 +29,16 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
      */
     public static final int MAX_PIPE_CHANNELS = 9;
     public static final Codec<FluidPipeProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.INT.fieldOf("max_temperature").forGetter(val -> val.maxFluidTemperature),
-        Codec.LONG.fieldOf("throughput").forGetter(val -> val.throughput),
-        Codec.BOOL.optionalFieldOf("gas_proof", true).forGetter(val -> val.gasProof),
-        Codec.BOOL.optionalFieldOf("cryo_proof", false).forGetter(val -> val.cryoProof),
-        Codec.BOOL.optionalFieldOf("plasma_proof", false).forGetter(val -> val.plasmaProof),
-        Codec.simpleMap(FluidAttribute.CODEC, Codec.BOOL, FluidAttribute.CODEC_KEYS)
-            .codec()
-            .optionalFieldOf("can_contain", Map.of())
-            .forGetter(val -> val.containmentPredicate)
-    ).apply(instance, FluidPipeProperties::new));
+            Codec.INT.fieldOf("max_temperature").forGetter(val -> val.maxFluidTemperature),
+            Codec.LONG.fieldOf("throughput").forGetter(val -> val.throughput),
+            Codec.BOOL.optionalFieldOf("gas_proof", true).forGetter(val -> val.gasProof),
+            Codec.BOOL.optionalFieldOf("cryo_proof", false).forGetter(val -> val.cryoProof),
+            Codec.BOOL.optionalFieldOf("plasma_proof", false).forGetter(val -> val.plasmaProof),
+            Codec.simpleMap(FluidAttribute.CODEC, Codec.BOOL, FluidAttribute.CODEC_KEYS)
+                    .codec()
+                    .optionalFieldOf("can_contain", Map.of())
+                    .forGetter(val -> val.containmentPredicate))
+            .apply(instance, FluidPipeProperties::new));
 
     @Getter
     @Setter
@@ -64,7 +61,8 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
 
     private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
 
-    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean cryoProof, boolean plasmaProof, Map<FluidAttribute, Boolean> canContain) {
+    public FluidPipeProperties(int maxFluidTemperature, long throughput, boolean gasProof, boolean cryoProof,
+                               boolean plasmaProof, Map<FluidAttribute, Boolean> canContain) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;

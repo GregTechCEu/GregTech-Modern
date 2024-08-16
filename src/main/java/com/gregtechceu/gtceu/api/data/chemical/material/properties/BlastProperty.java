@@ -1,24 +1,26 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.StringRepresentable;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 @AllArgsConstructor
 public class BlastProperty implements IMaterialProperty<BlastProperty> {
+
     public static final Codec<BlastProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.POSITIVE_INT.fieldOf("blast_temperature").forGetter(val -> val.blastTemperature),
-        GasTier.CODEC.fieldOf("gas_tier").forGetter(val -> val.gasTier),
-        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("duration_override", -1).forGetter(val -> val.durationOverride),
-        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("eut_override", -1).forGetter(val -> val.EUtOverride)
-    ).apply(instance, BlastProperty::new));
+            ExtraCodecs.POSITIVE_INT.fieldOf("blast_temperature").forGetter(val -> val.blastTemperature),
+            GasTier.CODEC.fieldOf("gas_tier").forGetter(val -> val.gasTier),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("duration_override", -1)
+                    .forGetter(val -> val.durationOverride),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("eut_override", -1).forGetter(val -> val.EUtOverride))
+            .apply(instance, BlastProperty::new));
 
     /**
      * Blast Furnace Temperature of this Material.
@@ -36,7 +38,8 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: null, meaning no Gas EBF recipes.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private GasTier gasTier = null;
 
     /**
@@ -44,7 +47,8 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: -1, meaning the duration will be: material.getAverageMass() * blastTemperature / 50
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private int durationOverride = -1;
 
     /**
@@ -52,7 +56,8 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: -1, meaning the EU/t will be 120.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private int EUtOverride = -1;
 
     public BlastProperty(int blastTemperature) {
@@ -77,6 +82,7 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
     }
 
     public enum GasTier implements StringRepresentable {
+
         // Tiers used by GTCEu
         LOW,
         MID,
