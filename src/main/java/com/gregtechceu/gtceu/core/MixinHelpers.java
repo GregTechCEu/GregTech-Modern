@@ -102,7 +102,7 @@ public class MixinHelpers {
             });
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
-                tagMap.computeIfAbsent(GTToolType.WRENCH.harvestTags.get(0).location(), path -> new ArrayList<>())
+                tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(), path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
                 if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
                     tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(), path -> new ArrayList<>())

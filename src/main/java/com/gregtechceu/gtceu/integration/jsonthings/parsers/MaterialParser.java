@@ -51,7 +51,7 @@ public class MaterialParser extends ThingParser<MaterialBuilder> {
         processAndConsumeErrors(this.getThingType(), this.getBuilders(), (thing) -> {
             ResourceLocation location = thing.getRegistryName();
             LOGGER.info("loading material {}", location);
-            GTCEuAPI.materialManager.getRegistry(location.getNamespace()).register(location.getPath(), thing.get());
+            thing.build();
         }, BaseBuilder::getRegistryName);
         LOGGER.info("Done processing thingpack Materials.");
     }
@@ -72,8 +72,9 @@ public class MaterialParser extends ThingParser<MaterialBuilder> {
                     }).ifKey("icon_set", iconSet -> {
                         builder.getInternal().iconSet(MaterialIconSet.getByName(iconSet.string().getAsString()));
                     }).ifKey("components", components -> {
-                        builder.getInternal().kjs$components((MaterialStackWrapper[]) components.array().map(MaterialStackParser::of)
-                                .flatMap(values -> values.toArray(MaterialStackWrapper[]::new)));
+                        builder.getInternal()
+                                .kjs$components((MaterialStackWrapper[]) components.array().map(MaterialStackParser::of)
+                                        .flatMap(values -> values.toArray(MaterialStackWrapper[]::new)));
                     }).ifKey("element", element -> {
                         builder.getInternal().element(GTElements.get(element.string().getAsString()));
                     });
