@@ -528,13 +528,11 @@ public class SecondDegreeMaterials {
         RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
                 .liquid()
                 .color(0x9f6b26)
-                .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
         DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
                 .liquid()
                 .color(0xab8c6d)
-                .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .buildAndRegister();
 
         BrominatedChlorineVapor = new Material.Builder(GTCEu.id("brominated_chlorine_vapor"))
