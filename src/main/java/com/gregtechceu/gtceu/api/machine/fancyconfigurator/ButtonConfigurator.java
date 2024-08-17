@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-public class MEButtonConfigurator implements IFancyConfiguratorButton {
+public class ButtonConfigurator implements IFancyConfiguratorButton {
 
     @Getter
     protected IGuiTexture icon;
@@ -27,7 +27,7 @@ public class MEButtonConfigurator implements IFancyConfiguratorButton {
     @Setter
     protected List<Component> tooltips = Collections.emptyList();
 
-    public MEButtonConfigurator(IGuiTexture texture, Consumer<ClickData> onClick) {
+    public ButtonConfigurator(IGuiTexture texture, Consumer<ClickData> onClick) {
         this.icon = texture;
         this.onClick = onClick;
     }

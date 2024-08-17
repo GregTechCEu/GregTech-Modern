@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MEButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MEFancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MEFancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
@@ -298,7 +298,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         // .setTooltipsSupplier(pressed -> List.of(Component.translatable(
         // pressed ? "gui.gregiceng.auto_return.desc.enabled" :
         // "gui.gregiceng.auto_return.desc.disabled"))));
-        configuratorPanel.attachConfigurators(new MEButtonConfigurator(
+        configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
