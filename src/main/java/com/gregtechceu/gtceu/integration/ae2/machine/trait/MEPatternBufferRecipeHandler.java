@@ -11,17 +11,17 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -387,8 +387,9 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
         return result;
     }
+
     public static Pair<Object2LongOpenHashMap<Item>, Object2LongOpenHashMap<Fluid>> mergeInternalSlot(
-            MEPatternBufferPartMachine.InternalSlot[] internalSlots) {
+                                                                                                      MEPatternBufferPartMachine.InternalSlot[] internalSlots) {
         Object2LongOpenHashMap<Item> items = new Object2LongOpenHashMap<>();
         Object2LongOpenHashMap<Fluid> fluids = new Object2LongOpenHashMap<>();
         for (MEPatternBufferPartMachine.InternalSlot internalSlot : internalSlots) {
