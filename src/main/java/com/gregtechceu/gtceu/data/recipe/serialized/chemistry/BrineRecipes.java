@@ -61,8 +61,9 @@ public class BrineRecipes {
         // byproduct loop
         CHEMICAL_RECIPES.recipeBuilder("brine_neutralization")
                 .inputFluids(HotAlkalineDebrominatedBrine.getFluid(3000))
-                .outputFluids(Chlorine.getFluid(1000))
+                .inputItems(dust, Potassium, 1)
                 .outputFluids(HotDebrominatedBrine.getFluid(2000))
+                .outputItems(dust, RockSalt, 2)
                 .duration(100).EUt(VA[HV]).save(provider);
         CHEMICAL_RECIPES.recipeBuilder("debrominated_brine_raw_brine_mixing")
                 .inputFluids(RawBrine.getFluid(1000))
@@ -76,6 +77,11 @@ public class BrineRecipes {
                 .outputFluids(HotChlorinatedBrominatedBrine.getFluid(1000))
                 .outputFluids(Steam.getFluid(3000))
                 .duration(100).EUt(VA[HV]).save(provider);
+
+        CENTRIFUGE_RECIPES.recipeBuilder("debrominated_brine_decomposition")
+                .inputFluids(DebrominatedBrine.getFluid(2000))
+                .outputFluids(SaltWater.getFluid(1000))
+                .duration(60).EUt(VA[MV]);
     }
 
     public static void iodineProcess(Consumer<FinishedRecipe> provider) {
