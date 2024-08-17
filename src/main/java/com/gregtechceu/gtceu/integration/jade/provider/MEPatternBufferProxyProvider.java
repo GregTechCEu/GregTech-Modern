@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxy;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -21,8 +22,7 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public enum MEPatternBufferProxyProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
-    INSTANCE;
+public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Override
     public void appendTooltip(
@@ -63,8 +63,8 @@ public enum MEPatternBufferProxyProvider implements IBlockComponentProvider, ISe
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity machineBlockEntity) {
-            if (machineBlockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
-                var merged = MEPatternBufferRecipeHandler.mergeInternalSlot(buffer.getInternalInventory());
+            if (machineBlockEntity.getMetaMachine() instanceof MEPatternBufferProxy proxy && proxy.self() instanceof MEPatternBufferPartMachine pattern) {
+                var merged = MEPatternBufferRecipeHandler.mergeInternalSlot(pattern.getInternalInventory());
                 var items = merged.getLeft();
                 var fluids = merged.getRight();
 
