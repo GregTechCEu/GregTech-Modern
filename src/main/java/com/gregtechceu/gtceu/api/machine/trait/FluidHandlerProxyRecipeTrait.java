@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -18,8 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<SizedIngredient>
-                                         implements ICapabilityTrait {
+public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<FluidIngredient>
+                                          implements ICapabilityTrait {
 
     @Getter
     public final IO handlerIO;
@@ -31,14 +30,15 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     private boolean enabled;
 
     @Getter
-    private final Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers;
+    private final Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers;
 
     @Setter
-    private Supplier<NotifiableRecipeHandlerTrait<SizedIngredient>> handlerSupplier;
+    private Supplier<NotifiableRecipeHandlerTrait<FluidIngredient>> handlerSupplier;
 
-    public ItemHandlerProxyRecipeTrait(MetaMachine machine,
-                                       Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers, IO handlerIO,
-                                       IO capabilityIO) {
+    public FluidHandlerProxyRecipeTrait(MetaMachine machine,
+                                        Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers,
+                                        IO handlerIO,
+                                        IO capabilityIO) {
         super(machine);
         this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
@@ -47,10 +47,10 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
-        for (IRecipeHandler<SizedIngredient> handler : handlers) {
+        for (IRecipeHandler<FluidIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
             if (left.isEmpty()) return null;
         }
@@ -67,7 +67,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     @Override
     public List<Object> getContents() {
         List<Object> contents = new ObjectArrayList<>(2);
-        for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<FluidIngredient> handler : handlers) {
             contents.addAll(handler.getContents());
         }
 
@@ -83,7 +83,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     @Override
     public int getSize() {
         int size = 0;
-        for (NotifiableRecipeHandlerTrait<SizedIngredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
         }
 
@@ -99,7 +99,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (NotifiableRecipeHandlerTrait<SizedIngredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
             amount += handlerTrait.getTotalContentAmount();
         }
         if (handlerSupplier != null) {
@@ -112,13 +112,13 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     }
 
     @Override
-    public RecipeCapability<SizedIngredient> getCapability() {
-        return ItemRecipeCapability.CAP;
+    public RecipeCapability<FluidIngredient> getCapability() {
+        return FluidRecipeCapability.CAP;
     }
 
     @Override
     public boolean isDistinct() {
-        for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<FluidIngredient> handler : handlers) {
             if (handler.isDistinct)
                 return true;
         }

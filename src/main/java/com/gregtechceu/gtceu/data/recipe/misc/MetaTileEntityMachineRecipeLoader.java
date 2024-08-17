@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 
@@ -592,6 +593,35 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(accelerationCard.copyWithCount(4))
                     .outputItems(GTAEMachines.STOCKING_IMPORT_HATCH_ME)
                     .duration(300).EUt(VA[IV]).save(provider);
+
+            ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer")
+                    .inputItems(DUAL_IMPORT_HATCH[LuV], 1)
+                    .inputItems(DUAL_EXPORT_HATCH[LuV], 1)
+                    .inputItems(EMITTER_LuV, 1)
+                    .inputItems(CustomTags.LuV_CIRCUITS, 4)
+                    .inputItems(AEBlocks.PATTERN_PROVIDER.asItem(), 3)
+                    .inputItems(AEBlocks.INTERFACE.asItem(), 3)
+                    .inputItems(AEItems.SPEED_CARD.asItem(), 4)
+                    .inputItems(AEItems.CAPACITY_CARD.asItem(), 2)
+                    .inputItems(wireFine, Europium, 32)
+                    .inputItems(wireFine, Europium, 32)
+                    .inputItems(wireFine, Europium, 32)
+                    .inputFluids(SolderingAlloy.getFluid(L * 4))
+                    .inputFluids(Lubricant.getFluid(500))
+                    .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
+                    .duration(600).EUt(LuV).save(provider);
+            ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer_proxy")
+                    .inputItems(HULL[LuV], 1)
+                    .inputItems(SENSOR_LuV, 2)
+                    .inputItems(CustomTags.LuV_CIRCUITS, 1)
+                    .inputItems(AEBlocks.QUANTUM_LINK.asItem(), 1)
+                    .inputItems(AEBlocks.QUANTUM_RING.asItem(), 2)
+                    .inputItems(wireFine, Europium, 32)
+                    .inputItems(wireFine, Europium, 32)
+                    .inputFluids(SolderingAlloy.getFluid(L * 4))
+                    .inputFluids(Lubricant.getFluid(500))
+                    .outputItems(GTAEMachines.ME_PATTERN_BUFFER_PROXY)
+                    .duration(600).EUt(LuV).save(provider);
         }
     }
 
