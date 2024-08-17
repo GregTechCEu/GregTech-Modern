@@ -730,6 +730,16 @@ public class MachineLang {
         provider.add("block.gtceu.pattern_buffer.desc.2",
                 "§fLink §6Pattern Buffer Assistants §fwith a §bdatastick §fto link machines together!");
 
+        provider.add("gui.gtceu.share_inventory.title", "Shared Item Inventory");
+        provider.add("gui.gtceu.share_inventory.desc.0", "Shares inserted items with all patterns within buffer!");
+        provider.add("gui.gtcey.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
+        provider.add("gui.gtceu.share_tank.title", "Shared Tank Inventory");
+        provider.add("gui.gtceu.share_tank.desc.0",
+                "Shares inserted fluids/gasses/etc. with all patterns within buffer!");
+        provider.add("gui.gtceu.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
+        provider.add("gui.gtceu.rename.desc", "Rename Pattern Buffer");
+        provider.add("gui.gtceu.refund_all.desc", "Return Stored Contents to AE2");
+
         provider.add("gtceu.machine.buffer.import.tooltip", "Item and Fluid Input for Multiblocks");
         provider.add("gtceu.machine.buffer.export.tooltip", "Item and Fluid Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
