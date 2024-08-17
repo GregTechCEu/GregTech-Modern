@@ -38,13 +38,16 @@ jobs:
         id: var
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
           echo "version=$MESSAGE" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
-          github-tag: ${{ steps.var.outputs.version }}-build_${{ vars.GITHUB_RUN_NUMBER }}
+          github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             build/libs/!(*-@(slim|sources|javadoc)).jar
