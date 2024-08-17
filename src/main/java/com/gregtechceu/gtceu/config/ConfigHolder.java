@@ -412,11 +412,11 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({
-                "Let Buffer has more ability.",
-                "When enabled it, Buffer will can used to assemble line and so on.",
+                "Let Dual Hatch has more ability.",
+                "When enabled it, Dual Hatch will can used to assemble line and so on.",
                 "Need restart Minecraft to apply."
         })
-        public boolean enableMoreBufferAbility = false;
+        public boolean enableMoreDualHatchAbility = false;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")

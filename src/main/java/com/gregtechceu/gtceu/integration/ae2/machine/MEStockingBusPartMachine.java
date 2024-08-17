@@ -95,28 +95,31 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     @Override
     public void autoIO() {
-        if (!this.isWorkingEnabled()) return;
-        if (this.updateMEStatus()) {
-            // Update the visual display for the fake items. This also is important for the item handler's
-            // getStackInSlot() method, as it uses the cached items set here.
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
-                var config = slot.getConfig();
-                if (config == null) {
-                    slot.setStock(null);
-                } else {
-                    // Try to fill the slot
-                    var key = config.what();
-                    long result = aeNetwork.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                    slot.setStock(new GenericStack(key, result));
-                    slot.onContentsChanged();
+        super.autoIO();
+        if (autoPull && getOffsetTimer() % 100 == 0) {
+            refreshList();
+            syncME();
+        }
+    }
+
+    @Override
+    protected void syncME() {
+        // Update the visual display for the fake items. This also is important for the item handler's
+        // getStackInSlot() method, as it uses the cached items set here.
+        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
+        for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
+            var config = slot.getConfig();
+            if (config != null) {
+                // Try to fill the slot
+                var key = config.what();
+                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
+                if (extracted > 0) {
+                    slot.setStock(new GenericStack(key, extracted));
+                    continue;
                 }
             }
-
-            this.updateInventorySubscription();
+            slot.setStock(null);
         }
-        if (!autoPull || !(getOffsetTimer() % 100 == 0)) return;
-        refreshList();
     }
 
     @Override
@@ -205,7 +208,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             var slot = this.aeItemHandler.getInventory()[index];
             slot.setConfig(new GenericStack(what, 1));
             slot.setStock(new GenericStack(what, request));
-            slot.onContentsChanged();
             index++;
         }
 
