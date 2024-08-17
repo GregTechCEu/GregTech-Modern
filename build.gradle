@@ -30,8 +30,7 @@ group = maven_group
 
 // Formats the mod version to include the loader, Minecraft version, build number (if present), and '-SNAPSHOT-<timestamp>' if enabled.
 boolean isSnapshot = System.getenv("SNAPSHOT")
-String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
-version = "${mod_version}" + (buildNumber != null ? "-build_${buildNumber}" : "") + (isSnapshot ? "-SNAPSHOT" : "")
+version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
 
 apply from: "$rootDir/gradle/scripts/architectury_loom.gradle"
 apply from: "$rootDir/gradle/scripts/capabilities.gradle"

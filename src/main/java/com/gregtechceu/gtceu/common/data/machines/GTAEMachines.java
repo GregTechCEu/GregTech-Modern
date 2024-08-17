@@ -3,12 +3,7 @@ package com.gregtechceu.gtceu.common.data.machines;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingHatchPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.*;
 
 import net.minecraft.network.chat.Component;
 
@@ -110,6 +105,36 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.me.export.tooltip"),
                     Component.translatable("gtceu.universal.enabled"))
             .compassNode("fluid_hatch")
+            .register();
+    public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
+            .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
+            .tier(LuV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
+                    PartAbility.EXPORT_ITEMS)
+            .rotationState(RotationState.ALL)
+            .overlayTieredHullRenderer("me_pattern_buffer")
+            .langValue("ME Pattern Buffer")
+            .tooltips(
+                    Component.translatable("block.gtceu.pattern_buffer.desc.0"),
+                    Component.translatable("block.gtceu.pattern_buffer.desc.1"),
+                    Component.translatable("block.gtceu.pattern_buffer.desc.2"),
+                    Component.translatable("gtceu.universal.enabled"))
+            .register();
+    public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
+            .machine("me_pattern_buffer_proxy", MEPatternBufferProxy::new)
+            .tier(LuV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
+                    PartAbility.EXPORT_ITEMS)
+            .rotationState(RotationState.ALL)
+            .overlayTieredHullRenderer("me_pattern_buffer_proxy")
+            .langValue("ME Pattern Buffer Proxy")
+            .tooltips(
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.1"),
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.2"),
+                    Component.translatable("gtceu.universal.enabled"))
             .register();
 
     public static void init() {}
