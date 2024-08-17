@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.WrappedRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MEPatternBufferProxyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -30,26 +30,26 @@ public class MEPatternBufferProxy extends TieredIOPartMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferProxy.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-    private final WrappedRecipeHandlerTrait<Ingredient> itemInputHandler;
-    private final WrappedRecipeHandlerTrait<Ingredient> itemOutputHandler;
-    private final WrappedRecipeHandlerTrait<FluidIngredient> fluidInputHandler;
-    private final WrappedRecipeHandlerTrait<FluidIngredient> fluidOutputHandler;
-    private final WrappedRecipeHandlerTrait<Ingredient> shareItemHandler;
-    private final WrappedRecipeHandlerTrait<FluidIngredient> shareFluidHandler;
-    private final WrappedRecipeHandlerTrait<Ingredient> circuitHandler;
+    private final MEPatternBufferProxyRecipeHandler<Ingredient> itemInputHandler;
+    private final MEPatternBufferProxyRecipeHandler<Ingredient> itemOutputHandler;
+    private final MEPatternBufferProxyRecipeHandler<FluidIngredient> fluidInputHandler;
+    private final MEPatternBufferProxyRecipeHandler<FluidIngredient> fluidOutputHandler;
+    private final MEPatternBufferProxyRecipeHandler<Ingredient> shareItemHandler;
+    private final MEPatternBufferProxyRecipeHandler<FluidIngredient> shareFluidHandler;
+    private final MEPatternBufferProxyRecipeHandler<Ingredient> circuitHandler;
 
     @Persisted
     private BlockPos pos;
 
     public MEPatternBufferProxy(IMachineBlockEntity holder) {
         super(holder, GTValues.LuV, IO.BOTH);
-        this.itemInputHandler = new WrappedRecipeHandlerTrait<>(IO.IN, ItemRecipeCapability.CAP);
-        this.itemOutputHandler = new WrappedRecipeHandlerTrait<>(IO.OUT, ItemRecipeCapability.CAP);
-        this.fluidInputHandler = new WrappedRecipeHandlerTrait<>(IO.IN, FluidRecipeCapability.CAP);
-        this.fluidOutputHandler = new WrappedRecipeHandlerTrait<>(IO.OUT, FluidRecipeCapability.CAP);
-        this.shareFluidHandler = new WrappedRecipeHandlerTrait<>(IO.IN, FluidRecipeCapability.CAP);
-        this.shareItemHandler = new WrappedRecipeHandlerTrait<>(IO.IN, ItemRecipeCapability.CAP);
-        this.circuitHandler = new WrappedRecipeHandlerTrait<>(IO.IN, ItemRecipeCapability.CAP);
+        this.itemInputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, ItemRecipeCapability.CAP);
+        this.itemOutputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.OUT, ItemRecipeCapability.CAP);
+        this.fluidInputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, FluidRecipeCapability.CAP);
+        this.fluidOutputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.OUT, FluidRecipeCapability.CAP);
+        this.shareFluidHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, FluidRecipeCapability.CAP);
+        this.shareItemHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, ItemRecipeCapability.CAP);
+        this.circuitHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, ItemRecipeCapability.CAP);
     }
 
     public boolean setIOBuffer(BlockPos pos) {

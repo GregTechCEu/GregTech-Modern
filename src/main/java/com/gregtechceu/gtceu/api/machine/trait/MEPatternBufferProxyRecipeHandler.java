@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class WrappedRecipeHandlerTrait<K> implements IRecipeHandlerTrait<K> {
+public class MEPatternBufferProxyRecipeHandler<K> implements IRecipeHandlerTrait<K> {
 
     private final IO handlerIO;
     private final RecipeCapability<K> capability;
@@ -27,7 +27,7 @@ public class WrappedRecipeHandlerTrait<K> implements IRecipeHandlerTrait<K> {
     @Setter
     private Supplier<IRecipeHandlerTrait<K>> handlerSupplier;
 
-    public WrappedRecipeHandlerTrait(IO handlerIO, RecipeCapability<K> capability) {
+    public MEPatternBufferProxyRecipeHandler(IO handlerIO, RecipeCapability<K> capability) {
         this.handlerIO = handlerIO;
         this.capability = capability;
     }
