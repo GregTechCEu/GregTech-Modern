@@ -32,7 +32,8 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
 
                 CompoundTag serverData = blockAccessor.getServerData();
 
-                iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies")).withStyle(ChatFormatting.LIGHT_PURPLE));
+                iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
+                        .withStyle(ChatFormatting.LIGHT_PURPLE));
 
                 ListTag itemTags = serverData.getList("items", Tag.TAG_COMPOUND);
                 ListTag fluidTags = serverData.getList("fluids", Tag.TAG_COMPOUND);

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
@@ -133,7 +132,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         public MEPatternBufferPartMachine getMachine() {
-            return (MEPatternBufferPartMachine)this.machine;
+            return (MEPatternBufferPartMachine) this.machine;
         }
 
         @Override
@@ -148,12 +147,13 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(
-                                                  IO io,
-                                                  GTRecipe recipe,
-                                                  List<Ingredient> left,
-                                                  @Nullable String slotName,
-                                                  boolean simulate) {
+        public void onChanged() {
+            super.onChanged();
+        }
+
+        @Override
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                  @Nullable String slotName, boolean simulate) {
             if (io != IO.IN) return left;
             var machine = getMachine();
             machine.getCircuitInventorySimulated().handleRecipeInner(io, recipe, left, slotName, simulate);
@@ -207,7 +207,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         public MEPatternBufferPartMachine getMachine() {
-            return (MEPatternBufferPartMachine)this.machine;
+            return (MEPatternBufferPartMachine) this.machine;
         }
 
         @Override

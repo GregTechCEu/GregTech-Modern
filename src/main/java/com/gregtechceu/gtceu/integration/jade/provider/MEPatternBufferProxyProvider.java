@@ -32,9 +32,11 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxy proxy) {
                 CompoundTag serverData = blockAccessor.getServerData();
 
-                if(serverData.contains("posX")) {
-                    int posX = serverData.getInt("posX"), posY = serverData.getInt("posY"), posZ = serverData.getInt("posZ");
-                    iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", posX, posY, posZ).withStyle(ChatFormatting.YELLOW));
+                if (serverData.contains("posX")) {
+                    int posX = serverData.getInt("posX"), posY = serverData.getInt("posY"),
+                            posZ = serverData.getInt("posZ");
+                    iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", posX, posY, posZ)
+                            .withStyle(ChatFormatting.YELLOW));
                 }
 
                 ListTag itemTags = serverData.getList("items", Tag.TAG_COMPOUND);
@@ -76,7 +78,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxy proxy &&
                     proxy.self() instanceof MEPatternBufferPartMachine pattern) {
-                if(proxy.getPos() != null) {
+                if (proxy.getPos() != null) {
                     compoundTag.putInt("posX", proxy.getPos().getX());
                     compoundTag.putInt("posY", proxy.getPos().getY());
                     compoundTag.putInt("posZ", proxy.getPos().getZ());

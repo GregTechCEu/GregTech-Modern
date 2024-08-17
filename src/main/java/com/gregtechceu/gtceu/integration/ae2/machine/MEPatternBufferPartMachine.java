@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
@@ -40,6 +41,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -136,8 +138,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     private boolean needPatternSync;
 
-    @Getter
-    private HashSet<MEPatternBufferProxy> proxies = new HashSet<>();
+    @Persisted
+    private HashSet<BlockPos> proxies = new HashSet<>();
 
     @Getter
     protected Object2LongOpenHashMap<AEKey> returnBuffer = new Object2LongOpenHashMap<>(); // FIXME NPE
@@ -231,11 +233,21 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     public void addProxy(MEPatternBufferProxy proxy) {
-        proxies.add(proxy);
+        proxies.add(proxy.getPos());
     }
 
     public void removeProxy(MEPatternBufferProxy proxy) {
-        proxies.remove(proxy);
+        proxies.remove(proxy.getPos());
+    }
+
+    public Set<MEPatternBufferProxy> getProxies() {
+        Set<MEPatternBufferProxy> proxies1 = new HashSet<>();
+        for (var pos : proxies) {
+            if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxy p) {
+                proxies1.add(p);
+            }
+        }
+        return proxies1;
     }
 
     @SuppressWarnings("rawtypes")
@@ -709,6 +721,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                             tagFluidStack);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onChanged() {
+        super.onChanged();
+        for (var proxy : getProxies()) {
+            proxy.onChanged();
         }
     }
 }

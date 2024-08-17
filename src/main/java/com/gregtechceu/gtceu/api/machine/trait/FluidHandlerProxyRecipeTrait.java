@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<FluidIngredient> implements ICapabilityTrait  {
+public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<FluidIngredient>
+                                          implements ICapabilityTrait {
 
     @Getter
     public final IO handlerIO;
@@ -34,8 +36,9 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     private Supplier<NotifiableRecipeHandlerTrait<FluidIngredient>> handlerSupplier;
 
     public FluidHandlerProxyRecipeTrait(MetaMachine machine,
-                                       Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers, IO handlerIO,
-                                       IO capabilityIO) {
+                                        Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers,
+                                        IO handlerIO,
+                                        IO capabilityIO) {
         super(machine);
         this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
@@ -43,9 +46,9 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
         this.handlers = handlers;
     }
 
-
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
         for (IRecipeHandler<FluidIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
@@ -80,7 +83,7 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     @Override
     public int getSize() {
         int size = 0;
-        for(NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
         }
 

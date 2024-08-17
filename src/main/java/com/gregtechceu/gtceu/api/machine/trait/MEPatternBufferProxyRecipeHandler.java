@@ -72,9 +72,9 @@ public class MEPatternBufferProxyRecipeHandler<K> implements IRecipeHandlerTrait
 
     @Override
     public int getSize() {
-        if(handlerSupplier == null) return -1;
+        if (handlerSupplier == null) return -1;
         var handler = handlerSupplier.get();
-        if(handler != null) {
+        if (handler != null) {
             return handler.getSize();
         }
         return -1;
@@ -119,6 +119,4 @@ public class MEPatternBufferProxyRecipeHandler<K> implements IRecipeHandlerTrait
             handler.postWorking(holder, io, recipe);
         }
     }
-
-
 }

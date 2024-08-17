@@ -82,7 +82,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     @Override
     public int getSize() {
         int size = 0;
-        for(NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
         }
 
