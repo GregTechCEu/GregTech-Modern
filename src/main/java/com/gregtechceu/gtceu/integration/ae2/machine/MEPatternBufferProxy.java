@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MEPatternBufferProxyRecipeHandler;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MEPatternBufferProxy extends TieredIOPartMachine {
+public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferProxy.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -54,7 +55,7 @@ public class MEPatternBufferProxy extends TieredIOPartMachine {
 
     public boolean setIOBuffer(BlockPos pos) {
         if (pos == null) return false;
-        if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferPartMachine) {
+        if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferPartMachine machine) {
             this.pos = pos;
             itemInputHandler.setHandlerSupplier(() -> getIOBuffer().recipeHandler.getItemInputHandler());
             itemOutputHandler.setHandlerSupplier(
@@ -66,6 +67,7 @@ public class MEPatternBufferProxy extends TieredIOPartMachine {
             shareFluidHandler.setHandlerSupplier(() -> getIOBuffer().shareTank);
             shareItemHandler.setHandlerSupplier(() -> getIOBuffer().shareInventory);
             circuitHandler.setHandlerSupplier(() -> getIOBuffer().circuitInventorySimulated);
+            machine.addProxy(this);
             return true;
         } else {
             return false;
@@ -116,5 +118,12 @@ public class MEPatternBufferProxy extends TieredIOPartMachine {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void onMachineRemoved() {
+        if (MetaMachine.getMachine(getLevel(), this.pos) instanceof MEPatternBufferPartMachine machine)  {
+            machine.removeProxy(this);
+        }
     }
 }

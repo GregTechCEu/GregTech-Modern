@@ -33,8 +33,7 @@ public class MEPatternBufferProxyRecipeHandler<K> implements IRecipeHandlerTrait
     }
 
     @Override
-    public List<K> handleRecipeInner(
-                                     IO io, GTRecipe recipe, List<K> left, @Nullable String slotName,
+    public List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, @Nullable String slotName,
                                      boolean simulate) {
         var handler = handlerSupplier.get();
         if (handler != null) {
@@ -69,6 +68,16 @@ public class MEPatternBufferProxyRecipeHandler<K> implements IRecipeHandlerTrait
     @Override
     public IO getHandlerIO() {
         return handlerIO;
+    }
+
+    @Override
+    public int getSize() {
+        if(handlerSupplier == null) return -1;
+        var handler = handlerSupplier.get();
+        if(handler != null) {
+            return handler.getSize();
+        }
+        return -1;
     }
 
     @Override
