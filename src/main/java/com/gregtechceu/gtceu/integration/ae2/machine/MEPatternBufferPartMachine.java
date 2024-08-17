@@ -84,7 +84,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
-    private static final int MAX_PATTERN_COUNT = 27;
+    protected static final int MAX_PATTERN_COUNT = 27;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
         @Override

@@ -9,18 +9,21 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidHandlerProxyRecipeTrait;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MEPatternBufferProxyRecipeHandler;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
+import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
+import com.lowdragmc.lowdraglib.gui.editor.runtime.PersistedParser;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -28,20 +31,34 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine.MAX_PATTERN_COUNT;
+
+@SuppressWarnings("unused")
 public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferProxy.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-    private final ItemHandlerProxyRecipeTrait itemInputHandler;
-    private final MEPatternBufferProxyRecipeHandler<Ingredient> itemOutputHandler;
-    private final FluidHandlerProxyRecipeTrait fluidInputHandler;
-    private final MEPatternBufferProxyRecipeHandler<FluidIngredient> fluidOutputHandler;
-    private final MEPatternBufferProxyRecipeHandler<Ingredient> shareItemHandler;
-    private final MEPatternBufferProxyRecipeHandler<FluidIngredient> shareFluidHandler;
-    private final MEPatternBufferProxyRecipeHandler<Ingredient> circuitHandler;
+
+    @Getter
+    @ReadOnlyManaged(onDirtyMethod = "onDirty", serializeMethod = "onSave", deserializeMethod = "onLoadCircuit")
+    protected NotifiableItemStackHandler circuitInventorySimulated;
+
+    @Getter
+    @ReadOnlyManaged(onDirtyMethod = "onDirty", serializeMethod = "onSave", deserializeMethod = "onLoadShare")
+    protected NotifiableItemStackHandler shareInventory;
+
+    @Getter
+    @ReadOnlyManaged(onDirtyMethod = "onDirtyFluid", serializeMethod = "onSaveFluid", deserializeMethod = "onLoadFluid")
+    protected NotifiableFluidTank shareTank;
+
+    @Getter
+    @Persisted
+    protected final MEPatternBufferPartMachine.InternalSlot[] internalInventory = new MEPatternBufferPartMachine.InternalSlot[MAX_PATTERN_COUNT];
 
     @Persisted
     @Getter
@@ -49,30 +66,20 @@ public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachin
 
     public MEPatternBufferProxy(IMachineBlockEntity holder) {
         super(holder, GTValues.LuV, IO.BOTH);
-        this.itemInputHandler = new ItemHandlerProxyRecipeTrait(this, Collections.emptyList(), IO.IN, IO.IN);
-        this.itemOutputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.OUT, ItemRecipeCapability.CAP);
-        this.fluidInputHandler = new FluidHandlerProxyRecipeTrait(this, Collections.emptyList(), IO.IN, IO.IN);
-        this.fluidOutputHandler = new MEPatternBufferProxyRecipeHandler<>(IO.OUT, FluidRecipeCapability.CAP);
-        this.shareFluidHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, FluidRecipeCapability.CAP);
-        this.shareItemHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, ItemRecipeCapability.CAP);
-        this.circuitHandler = new MEPatternBufferProxyRecipeHandler<>(IO.IN, ItemRecipeCapability.CAP);
+
     }
 
     public boolean setIOBuffer(BlockPos pos) {
         if (pos == null) return false;
         if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferPartMachine machine) {
             this.bufferPos = pos;
-            itemInputHandler.setHandlerSupplier(() -> getIOBuffer().recipeHandler.getItemInputHandler());
-            itemOutputHandler.setHandlerSupplier(
-                    () -> getIOBuffer().recipeHandler.getItemOutputHandler());
-            fluidInputHandler.setHandlerSupplier(
-                    () -> getIOBuffer().recipeHandler.getFluidInputHandler());
-            fluidOutputHandler.setHandlerSupplier(
-                    () -> getIOBuffer().recipeHandler.getFluidOutputHandler());
-            shareFluidHandler.setHandlerSupplier(() -> getIOBuffer().shareTank);
-            shareItemHandler.setHandlerSupplier(() -> getIOBuffer().shareInventory);
-            circuitHandler.setHandlerSupplier(() -> getIOBuffer().circuitInventorySimulated);
+
+            this.circuitInventorySimulated = machine.getCircuitInventorySimulated();
+            this.shareInventory = machine.getShareInventory();
+            this.shareTank = machine.getShareTank();
+
             machine.addProxy(this);
+
             return true;
         } else {
             return false;
@@ -110,14 +117,10 @@ public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachin
 
     @Override
     public List<IRecipeHandlerTrait> getRecipeHandlers() {
-        return List.of(
-                itemInputHandler,
-                itemOutputHandler,
-                fluidInputHandler,
-                fluidOutputHandler,
-                shareItemHandler,
-                shareFluidHandler,
-                circuitHandler);
+        var handlers = new ArrayList<>(super.getRecipeHandlers());
+        if(getIOBuffer() != null)
+            handlers.addAll(getIOBuffer().getRecipeHandlers());
+        return handlers;
     }
 
     @Override
@@ -130,5 +133,49 @@ public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachin
         if (MetaMachine.getMachine(getLevel(), this.bufferPos) instanceof MEPatternBufferPartMachine machine)  {
             machine.removeProxy(this);
         }
+    }
+
+    private boolean onDirty(NotifiableItemStackHandler handler) {
+        return handler != null && (handler.getSyncStorage().hasDirtySyncFields() ||
+                handler.getSyncStorage().hasDirtyPersistedFields());
+    }
+
+    private NotifiableItemStackHandler onLoadShare(CompoundTag tag) {
+        if(shareInventory != null)
+            PersistedParser.deserializeNBT(tag, new HashMap<>(), NotifiableItemStackHandler.class, this.shareInventory);
+        return this.shareInventory;
+    }
+
+    private NotifiableItemStackHandler onLoadCircuit(CompoundTag tag) {
+        if(circuitInventorySimulated != null)
+            PersistedParser.deserializeNBT(tag, new HashMap<>(), NotifiableItemStackHandler.class, this.circuitInventorySimulated);
+        return this.circuitInventorySimulated;
+    }
+
+    private CompoundTag onSave(NotifiableItemStackHandler handler) {
+        CompoundTag tag = new CompoundTag();
+        if(handler != null) {
+            PersistedParser.serializeNBT(tag, NotifiableItemStackHandler.class, handler);
+        }
+        return tag;
+    }
+
+    private boolean onDirtyFluid(NotifiableFluidTank handler) {
+        return handler != null && (handler.getSyncStorage().hasDirtySyncFields() ||
+                handler.getSyncStorage().hasDirtyPersistedFields());
+    }
+
+    private NotifiableFluidTank onLoadFluid(CompoundTag tag) {
+        if(shareTank != null)
+            PersistedParser.deserializeNBT(tag, new HashMap<>(), NotifiableFluidTank.class, this.shareTank);
+        return this.shareTank;
+    }
+
+    private CompoundTag onSaveFluid(NotifiableFluidTank handler) {
+        CompoundTag tag = new CompoundTag();
+        if(handler != null) {
+            PersistedParser.serializeNBT(tag, NotifiableFluidTank.class, handler);
+        }
+        return tag;
     }
 }
