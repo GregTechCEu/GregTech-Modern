@@ -131,9 +131,9 @@ public class GTAEMachines {
             .overlayTieredHullRenderer("me_pattern_buffer_proxy")
             .langValue("ME Pattern Buffer Proxy")
             .tooltips(
-                    Component.translatable("block.gtceu.pattern_buffer.desc.0"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.1"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.2"),
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.1"),
+                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.2"),
                     Component.translatable("gtceu.universal.enabled"))
             .register();
 
