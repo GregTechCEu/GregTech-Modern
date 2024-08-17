@@ -136,6 +136,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     private boolean needPatternSync;
 
+    private HashSet<MEPatternBufferProxy> proxies = new HashSet<>();
+
     @Getter
     protected Object2LongOpenHashMap<AEKey> returnBuffer = new Object2LongOpenHashMap<>(); // FIXME NPE
 
@@ -225,6 +227,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             }
         }
+    }
+
+    public void addProxy(MEPatternBufferProxy proxy) {
+        proxies.add(proxy);
+    }
+
+    public void removeProxy(MEPatternBufferProxy proxy) {
+        proxies.remove(proxy);
     }
 
     @SuppressWarnings("rawtypes")
@@ -564,6 +574,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     }
                 }
                 onContentsChanged.run();
+                if(!proxies.isEmpty()) {
+                    for (var proxy : proxies) {
+                        proxy.onChanged();
+                    }
+                }
             }
         }
 
@@ -578,6 +593,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             });
             onContentsChanged.run();
+            if(!proxies.isEmpty()) {
+                for (var proxy : proxies) {
+                    proxy.onChanged();
+                }
+            }
         }
 
         public @Nullable List<Ingredient> handleItemInternal(List<Ingredient> left, boolean simulate) {
@@ -597,6 +617,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                         itemInventory.remove(stack);
                                     }
                                     onContentsChanged.run();
+                                    if(!proxies.isEmpty()) {
+                                        for (var proxy : proxies) {
+                                            proxy.onChanged();
+                                        }
+                                    }
                                 }
                                 ingredientStack.shrink(extracted);
                                 if (ingredientStack.isEmpty()) {
