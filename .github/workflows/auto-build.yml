@@ -41,7 +41,7 @@ jobs:
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
-          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "version=$MESSAGE-build_${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release
