@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Accessors(chain = true)
-public class MEFancyTankConfigurator implements IFancyConfigurator {
+public class FancyTankConfigurator implements IFancyConfigurator {
 
     private final FluidStorage[] tanks;
 
@@ -30,7 +30,7 @@ public class MEFancyTankConfigurator implements IFancyConfigurator {
     @Setter
     private List<Component> tooltips = Collections.emptyList();
 
-    public MEFancyTankConfigurator(FluidStorage[] tanks, Component title) {
+    public FancyTankConfigurator(FluidStorage[] tanks, Component title) {
         this.tanks = tanks;
         this.title = title;
     }

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Accessors(chain = true)
-public class MEFancyInvConfigurator implements IFancyConfigurator {
+public class FancyInvConfigurator implements IFancyConfigurator {
 
     private final ItemStackTransfer inventory;
 
@@ -31,7 +31,7 @@ public class MEFancyInvConfigurator implements IFancyConfigurator {
     @Setter
     private List<Component> tooltips = Collections.emptyList();
 
-    public MEFancyInvConfigurator(ItemStackTransfer inventory, Component title) {
+    public FancyInvConfigurator(ItemStackTransfer inventory, Component title) {
         this.inventory = inventory;
         this.title = title;
     }

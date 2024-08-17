@@ -10,22 +10,23 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MEFancyInvConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MEFancyTankConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
-import com.gregtechceu.gtceu.utils.GTNBTUtils;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -285,29 +286,18 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    // TODO LORD HELP ME
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        // yeah so like if you turn it off it just breaks the entire part, so going to force override to keep it enabled
-        // always.
-        // configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
-        // GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
-        // GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-        // this::isWorkingEnabled,
-        // (clickData, pressed) -> this.setWorkingEnabled(pressed))
-        // .setTooltipsSupplier(pressed -> List.of(Component.translatable(
-        // pressed ? "gui.gregiceng.auto_return.desc.enabled" :
-        // "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
-        configuratorPanel.attachConfigurators(new MEFancyInvConfigurator(
+        configuratorPanel.attachConfigurators(new FancyInvConfigurator(
                 shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
                         Component.translatable("gui.gtceu.share_inventory.desc.0"),
                         Component.translatable("gui.gtcey.share_inventory.desc.1"))));
-        configuratorPanel.attachConfigurators(new MEFancyTankConfigurator(
+        configuratorPanel.attachConfigurators(new FancyTankConfigurator(
                 shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
                 .setTooltips(List.of(
                         Component.translatable("gui.gtceu.share_tank.desc.0"),
@@ -459,16 +449,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         AEItemKey.of(controllerDefinition.asStack()), groupName, Collections.emptyList());
             }
         } else {
-            // has customName
-            // TODO: Actually give it the right AEItemKey rather than dirt and feeding it its own name lmoa
             if (!customName.isEmpty()) {
                 return new PatternContainerGroup(
-                        AEItemKey.of(Blocks.DIRT),
+                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
                 return new PatternContainerGroup(
-                        AEItemKey.of(Blocks.DIRT),
+                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
                         Component.literal(customName),
                         Collections.emptyList());
             }
@@ -634,8 +622,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return left.isEmpty() ? null : left;
         }
 
-        public @Nullable List<FluidIngredient> handleFluidInternal(
-                                                                   List<FluidIngredient> left, boolean simulate) {
+        public @Nullable List<FluidIngredient> handleFluidInternal(List<FluidIngredient> left, boolean simulate) {
             Iterator<FluidIngredient> iterator = left.iterator();
             while (iterator.hasNext()) {
                 FluidIngredient fluidStack = iterator.next();
@@ -676,7 +663,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
             ListTag itemInventoryTag = new ListTag();
             for (ItemStack itemStack : this.itemInventory) {
-                itemInventoryTag.add(GTNBTUtils.writeItemStack(itemStack, new CompoundTag()));
+                itemInventoryTag.add(GTUtil.saveItemStack(itemStack, new CompoundTag()));
             }
             tag.put("inventory", itemInventoryTag);
 
@@ -694,7 +681,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             ListTag inv = tag.getList("inventory", Tag.TAG_COMPOUND);
             for (int i = 0; i < inv.size(); i++) {
                 CompoundTag tagItemStack = inv.getCompound(i);
-                var item = GTNBTUtils.readItemStack(tagItemStack);
+                var item = GTUtil.loadItemStack(tagItemStack);
                 if (item != null) {
                     if (!item.isEmpty()) {
                         itemInventory.add(item);

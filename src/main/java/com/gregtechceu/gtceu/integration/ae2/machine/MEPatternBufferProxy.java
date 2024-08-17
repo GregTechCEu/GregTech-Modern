@@ -49,10 +49,8 @@ public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachin
     protected NotifiableFluidTank shareTank;
 
     @Getter
-    @ReadOnlyManaged(onDirtyMethod = "onDirtyInternal",
-                     serializeMethod = "onSaveInternal",
-                     deserializeMethod = "onLoadInternal")
-    protected MEPatternBufferPartMachine.InternalSlot[] internalInventory = new MEPatternBufferPartMachine.InternalSlot[MAX_PATTERN_COUNT];
+    @ReadOnlyManaged(onDirtyMethod = "onDirtyInternal", serializeMethod = "onSaveInternal", deserializeMethod = "onLoadInternal")
+    protected MEPatternBufferPartMachine.InternalSlot[] internalInventory;
 
     @Persisted
     @Getter

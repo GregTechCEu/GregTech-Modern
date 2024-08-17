@@ -147,11 +147,6 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public void onChanged() {
-            super.onChanged();
-        }
-
-        @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                                   @Nullable String slotName, boolean simulate) {
             if (io != IO.IN) return left;
@@ -312,7 +307,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
         @Override
         public double getTotalContentAmount() {
-            return 1D;
+            return 0.0D;
         }
 
         @Override
@@ -371,7 +366,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
         @Override
         public double getTotalContentAmount() {
-            return 1D;
+            return 0.0D;
         }
 
         @Override
