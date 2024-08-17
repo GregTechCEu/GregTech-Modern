@@ -277,18 +277,18 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         // "gui.gregiceng.auto_return.desc.disabled"))));
         configuratorPanel.attachConfigurators(new MEButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
-                .setTooltips(List.of(Component.translatable("gui.gregiceng.refund_all.desc"))));
+                .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
         configuratorPanel.attachConfigurators(new MEFancyInvConfigurator(
-                shareInventory.storage, Component.translatable("gui.gregiceng.share_inventory.title"))
+                shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
-                        Component.translatable("gui.gregiceng.share_inventory.desc.0"),
-                        Component.translatable("gui.gregiceng.share_inventory.desc.1"))));
+                        Component.translatable("gui.gtceu.share_inventory.desc.0"),
+                        Component.translatable("gui.gtcey.share_inventory.desc.1"))));
         configuratorPanel.attachConfigurators(new MEFancyTankConfigurator(
-                shareTank.getStorages(), Component.translatable("gui.gregiceng.share_tank.title"))
+                shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
                 .setTooltips(List.of(
-                        Component.translatable("gui.gregiceng.share_tank.desc.0"),
-                        Component.translatable("gui.gregiceng.share_inventory.desc.1"))));
+                        Component.translatable("gui.gtceu.share_tank.desc.0"),
+                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
     }
 
     @Override
@@ -325,7 +325,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
                 .setText(customName)
                 .setOnConfirm(this::setCustomName)
-                .setButtonTooltips(Component.translatable("gui.gregiceng.rename.desc")));
+                .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
 
         return group;
     }
