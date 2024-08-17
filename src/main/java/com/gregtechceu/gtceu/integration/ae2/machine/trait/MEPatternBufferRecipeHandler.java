@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -41,10 +43,10 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     protected List<Runnable> listeners = new ArrayList<>();
 
     @Getter
-    protected final IRecipeHandlerTrait<Ingredient> itemInputHandler;
+    protected final NotifiableRecipeHandlerTrait<Ingredient> itemInputHandler;
 
     @Getter
-    protected final IRecipeHandlerTrait<FluidIngredient> fluidInputHandler;
+    protected final NotifiableRecipeHandlerTrait<FluidIngredient> fluidInputHandler;
 
     @Getter
     protected final IRecipeHandlerTrait<Ingredient> itemOutputHandler;
@@ -54,8 +56,8 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
     public MEPatternBufferRecipeHandler(MEPatternBufferPartMachine ioBuffer) {
         super(ioBuffer);
-        this.itemInputHandler = new ItemInputHandler();
-        this.fluidInputHandler = new FluidInputHandler();
+        this.itemInputHandler = new ItemInputHandler(ioBuffer);
+        this.fluidInputHandler = new FluidInputHandler(ioBuffer);
         this.itemOutputHandler = new ItemOutputHandler();
         this.fluidOutputHandler = new FluidOutputHandler();
     }
@@ -124,7 +126,15 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         return MANAGED_FIELD_HOLDER;
     }
 
-    public class ItemInputHandler implements IRecipeHandlerTrait<Ingredient> {
+    public class ItemInputHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
+
+        public ItemInputHandler(MEPatternBufferPartMachine machine) {
+            super(machine);
+        }
+
+        public MEPatternBufferPartMachine getMachine() {
+            return (MEPatternBufferPartMachine)this.machine;
+        }
 
         @Override
         public IO getHandlerIO() {
@@ -185,12 +195,20 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
         @Override
         public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-            IRecipeHandlerTrait.super.preWorking(holder, io, recipe);
+            super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }
     }
 
-    public class FluidInputHandler implements IRecipeHandlerTrait<FluidIngredient> {
+    public class FluidInputHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        public FluidInputHandler(MEPatternBufferPartMachine machine) {
+            super(machine);
+        }
+
+        public MEPatternBufferPartMachine getMachine() {
+            return (MEPatternBufferPartMachine)this.machine;
+        }
 
         @Override
         public IO getHandlerIO() {
@@ -249,7 +267,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
         @Override
         public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-            IRecipeHandlerTrait.super.preWorking(holder, io, recipe);
+            super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }
     }

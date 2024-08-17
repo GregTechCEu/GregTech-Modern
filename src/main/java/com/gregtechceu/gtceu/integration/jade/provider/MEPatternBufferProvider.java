@@ -26,12 +26,13 @@ import snownee.jade.api.config.IPluginConfig;
 public class MEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Override
-    public void appendTooltip(
-                              ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
 
                 CompoundTag serverData = blockAccessor.getServerData();
+
+                iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies")).withStyle(ChatFormatting.LIGHT_PURPLE));
 
                 ListTag itemTags = serverData.getList("items", Tag.TAG_COMPOUND);
                 ListTag fluidTags = serverData.getList("fluids", Tag.TAG_COMPOUND);
@@ -71,6 +72,8 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
+                compoundTag.putInt("proxies", buffer.getProxies().size());
+
                 var merged = MEPatternBufferRecipeHandler.mergeInternalSlot(buffer.getInternalInventory());
                 var items = merged.getLeft();
                 var fluids = merged.getRight();
