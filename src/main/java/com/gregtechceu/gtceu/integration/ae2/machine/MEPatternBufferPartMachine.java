@@ -25,8 +25,8 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -52,7 +52,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;

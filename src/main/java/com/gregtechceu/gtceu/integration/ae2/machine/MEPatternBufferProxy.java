@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine.MAX_PATTERN_COUNT;
-
 @SuppressWarnings("unused")
 public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachineLife {
 
@@ -49,7 +47,9 @@ public class MEPatternBufferProxy extends TieredIOPartMachine implements IMachin
     protected NotifiableFluidTank shareTank;
 
     @Getter
-    @ReadOnlyManaged(onDirtyMethod = "onDirtyInternal", serializeMethod = "onSaveInternal", deserializeMethod = "onLoadInternal")
+    @ReadOnlyManaged(onDirtyMethod = "onDirtyInternal",
+                     serializeMethod = "onSaveInternal",
+                     deserializeMethod = "onLoadInternal")
     protected MEPatternBufferPartMachine.InternalSlot[] internalInventory;
 
     @Persisted
