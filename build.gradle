@@ -28,9 +28,9 @@ tasks.register('remapSlimJar', RemapJarTask) {
 
 group = maven_group
 
-// Formats the mod version to include the loader, Minecraft version, and build number (if present)
-String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
-version = "${mod_version}" + (buildNumber != null ? "-build_${System.getenv("GITHUB_RUN_NUMBER")}" : "")
+// Formats the mod version to include the loader, Minecraft version, build number (if present), and '-SNAPSHOT-<timestamp>' if enabled.
+boolean isSnapshot = System.getenv("SNAPSHOT")
+version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
 
 apply from: "$rootDir/gradle/scripts/architectury_loom.gradle"
 apply from: "$rootDir/gradle/scripts/capabilities.gradle"

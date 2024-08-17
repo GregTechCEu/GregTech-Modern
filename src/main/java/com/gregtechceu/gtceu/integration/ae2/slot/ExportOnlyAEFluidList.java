@@ -63,12 +63,6 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                   @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
-    }
-
-    @Override
     public FluidStack drainInternal(long maxDrain, boolean simulate) {
         if (maxDrain == 0) {
             return FluidStack.empty();
@@ -92,6 +86,12 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
             if (maxDrain <= 0) break;
         }
         return totalDrained == null ? FluidStack.empty() : totalDrained;
+    }
+
+    @Override
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
+        return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }
 
     @Override

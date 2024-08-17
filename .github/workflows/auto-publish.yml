@@ -3,6 +3,10 @@ name: Auto Publish, Releasing
 on:
   workflow_dispatch:
     inputs:
+      lastReleaseTag:
+        description: 'tag of the last full release.'
+        required: true
+        type: string
       releaseType:
         description: 'release type'
         required: true
@@ -29,6 +33,8 @@ jobs:
     env:
       MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,10 +66,21 @@ jobs:
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
 
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fromTag: ${{ github.ref_name }}
+          toTag: ${{ inputs.lastReleaseTag }}
+
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: mc-publish-forge
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
+          github-tag: ${{ steps.var.outputs.version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
           # Only include this section if you wish to publish
           # your assets on Modrinth.
           modrinth-id: 7tG215v7
