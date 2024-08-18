@@ -36,4 +36,3 @@ Additionally, the [Minecraft Development plugin](https://plugins.jetbrains.com/p
 - Certificate of Not Being a Noob Anymore is from **[Crops++](https://www.curseforge.com/minecraft/mc-mods/berries)**.
 
 See something we forgot to credit? Reach out to us on Discord, or open an issue and ask for appropriate credit, we will happily mark it here
-
