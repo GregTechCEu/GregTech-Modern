@@ -169,8 +169,6 @@ public class HigherDegreeMaterials {
         HotBrine = new Material.Builder(GTCEu.id("hot_brine"))
                 .liquid(320)
                 .color(0xbe6026)
-                .components(RawBrine, 1)
-                .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
         HotChlorinatedBrominatedBrine = new Material.Builder(GTCEu.id("hot_chlorinated_brominated_brine"))
@@ -183,8 +181,6 @@ public class HigherDegreeMaterials {
         HotDebrominatedBrine = new Material.Builder(GTCEu.id("hot_debrominated_brine"))
                 .liquid(320)
                 .color(0xab896d)
-                .components(DebrominatedBrine, 1)
-                .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
         HotAlkalineDebrominatedBrine = new Material.Builder(GTCEu.id("hot_alkaline_debrominated_brine"))
