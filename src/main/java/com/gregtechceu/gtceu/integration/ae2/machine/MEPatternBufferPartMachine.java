@@ -397,7 +397,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             } else {
                 return new PatternContainerGroup(
                         AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
-                        Component.literal(customName),
+                        GTAEMachines.ME_PATTERN_BUFFER.get().getDefinition().getItem().getDescription(),
                         Collections.emptyList());
             }
         }
