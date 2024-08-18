@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -12,15 +13,12 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
@@ -68,8 +66,6 @@ import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -82,7 +78,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEPatternBufferPartMachine extends MEBusPartMachine
-                                        implements IMachineModifyDrops, ICraftingProvider, PatternContainer {
+                                        implements ICraftingProvider, PatternContainer {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -115,10 +111,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Getter
     @Persisted
-    protected final NotifiableItemStackHandler circuitInventorySimulated;
-
-    @Getter
-    @Persisted
     protected final NotifiableItemStackHandler shareInventory;
 
     @Getter
@@ -141,9 +133,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Persisted
     private HashSet<BlockPos> proxies = new HashSet<>();
 
-    @Getter
-    protected Object2LongOpenHashMap<AEKey> returnBuffer = new Object2LongOpenHashMap<>(); // FIXME NPE
-
     protected final MEPatternBufferRecipeHandler recipeHandler = new MEPatternBufferRecipeHandler(this);
 
     @Nullable
@@ -161,14 +150,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void setWorkingEnabled(boolean ignored) {}
 
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.BOTH, args);
+        super(holder, IO.IN, args);
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
         }
         getMainNode().addService(ICraftingProvider.class, this);
-        this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidHelper.getBucket(), IO.IN, IO.NONE);
     }
@@ -187,6 +174,13 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             }));
         }
+        getRecipeHandlers().forEach(handler -> handler.addChangedListener(() -> getProxies().forEach(proxy -> {
+            if (handler.getCapability() == ItemRecipeCapability.CAP) {
+                proxy.itemProxyHandler.notifyListeners();
+            } else {
+                proxy.fluidProxyHandler.notifyListeners();
+            }
+        })));
     }
 
     @Override
@@ -209,53 +203,24 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             ICraftingProvider.requestUpdate(getMainNode());
             this.needPatternSync = false;
         }
-
-        if (!shouldSyncME()) return;
-
-        if (!isWorkingEnabled() && returnBuffer.isEmpty()) return;
-
-        if (getMainNode().isActive() && !this.returnBuffer.isEmpty()) {
-            MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
-            var iterator = returnBuffer.object2LongEntrySet().fastIterator();
-            while (iterator.hasNext()) {
-                var entry = iterator.next();
-                var key = entry.getKey();
-                var amount = entry.getLongValue();
-                long inserted = StorageHelper.poweredInsert(
-                        getMainNode().getGrid().getEnergyService(), aeNetwork, key, amount, actionSource);
-                if (inserted >= amount) {
-                    iterator.remove();
-                } else {
-                    entry.setValue(amount - inserted);
-                }
-            }
-        }
     }
 
-    public void addProxy(MEPatternBufferProxy proxy) {
+    public void addProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getPos());
     }
 
-    public void removeProxy(MEPatternBufferProxy proxy) {
+    public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.remove(proxy.getPos());
     }
 
-    public Set<MEPatternBufferProxy> getProxies() {
-        Set<MEPatternBufferProxy> proxies1 = new HashSet<>();
+    public Set<MEPatternBufferProxyPartMachine> getProxies() {
+        Set<MEPatternBufferProxyPartMachine> proxies1 = new HashSet<>();
         for (var pos : proxies) {
-            if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxy p) {
+            if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxyPartMachine p) {
                 proxies1.add(p);
             }
         }
         return proxies1;
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public List<IRecipeHandlerTrait> getRecipeHandlers() {
-        var handlers = new ArrayList<>(super.getRecipeHandlers());
-        handlers.addAll(recipeHandler.getRecipeHandlers());
-        return handlers;
     }
 
     private void refundAll(ClickData clickData) {
@@ -290,7 +255,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
-        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
+        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         configuratorPanel.attachConfigurators(new FancyInvConfigurator(
                 shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
@@ -379,34 +344,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) {
-            var mapTag = new ListTag();
-            for (Object2LongMap.Entry<AEKey> entry : returnBuffer.object2LongEntrySet()) {
-                var entryTag = new CompoundTag();
-                entryTag.put("key", entry.getKey().toTagGeneric());
-                entryTag.putLong("value", entry.getLongValue());
-                mapTag.add(entryTag);
-            }
-            tag.put("returnBuffer", mapTag);
-        }
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        var mapTag = tag.getList("returnBuffer", Tag.TAG_COMPOUND);
-        for (int i = 0; i < mapTag.size(); ++i) {
-            var entryTag = mapTag.getCompound(i);
-            var key = AEKey.fromTagGeneric(entryTag.getCompound("key"));
-            if (key != null) {
-                returnBuffer.put(key, entryTag.getLong("value"));
-            }
-        }
-    }
-
-    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
@@ -435,7 +372,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
-                ItemStack circuitStack = circuitInventorySimulated.storage.getStackInSlot(0);
+                ItemStack circuitStack = circuitInventory.storage.getStackInSlot(0);
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
 
@@ -464,10 +401,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
+        super.onDrops(drops, entity);
         clearInventory(drops, patternInventory);
-        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(drops, circuitInventorySimulated.storage);
-        }
     }
 
     public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
@@ -509,6 +444,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             }
             itemInventory.addAll(List.of(AEUtil.toItemStacks(key, amount)));
+            recipeHandler.getItemInputHandler().notifyListeners();
         }
 
         private void addFluid(AEFluidKey key, long amount) {
@@ -526,6 +462,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             }
             fluidInventory.add(AEUtil.toFluidStack(key, amount));
+            recipeHandler.getFluidInputHandler().notifyListeners();
         }
 
         public ItemStack[] getItemInputs() {
@@ -707,14 +644,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                             tagFluidStack);
                 }
             }
-        }
-    }
-
-    @Override
-    public void onChanged() {
-        super.onChanged();
-        for (var proxy : getProxies()) {
-            proxy.onChanged();
         }
     }
 }
