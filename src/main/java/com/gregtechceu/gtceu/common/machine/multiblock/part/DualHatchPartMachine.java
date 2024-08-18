@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -30,7 +29,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     public static final long INITIAL_TANK_CAPACITY = 16 * FluidHelper.getBucket();
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+            ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableFluidTank tank;
