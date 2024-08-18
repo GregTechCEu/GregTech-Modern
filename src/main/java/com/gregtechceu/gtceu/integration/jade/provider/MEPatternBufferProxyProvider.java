@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxy;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxy proxy) {
+            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine proxy) {
                 CompoundTag serverData = blockAccessor.getServerData();
 
                 if (serverData.contains("posX")) {
@@ -76,7 +76,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxy proxy &&
+            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine proxy &&
                     proxy.self() instanceof MEPatternBufferPartMachine pattern) {
                 if (proxy.getPos() != null) {
                     compoundTag.putInt("posX", proxy.getPos().getX());
