@@ -54,7 +54,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         return initialCapacity * (1L << (tier - 6));
     }
 
-    protected int getInventorySize() {
+    public int getInventorySize() {
         return (int) Math.pow((getTier() - 4), 2);
     }
 
