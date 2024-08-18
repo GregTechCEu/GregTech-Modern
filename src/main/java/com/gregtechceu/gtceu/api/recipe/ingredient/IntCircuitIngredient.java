@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 

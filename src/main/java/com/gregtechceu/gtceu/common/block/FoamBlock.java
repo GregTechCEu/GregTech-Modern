@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTBlocks;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

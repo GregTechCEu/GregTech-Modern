@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

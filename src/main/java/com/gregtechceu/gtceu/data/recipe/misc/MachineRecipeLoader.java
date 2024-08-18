@@ -13,11 +13,11 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTMaterials;
+import com.gregtechceu.gtceu.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -42,10 +42,10 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.GTItems.*;
+import static com.gregtechceu.gtceu.data.GTMachines.*;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
 
 public class MachineRecipeLoader {
 

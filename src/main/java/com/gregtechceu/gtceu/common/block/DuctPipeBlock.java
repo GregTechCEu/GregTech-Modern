@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.duct.LevelDuctPipeNet;

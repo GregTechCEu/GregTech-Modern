@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade;
 
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
 import net.minecraft.world.item.Item;

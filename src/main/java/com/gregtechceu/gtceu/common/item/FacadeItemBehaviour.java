@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 

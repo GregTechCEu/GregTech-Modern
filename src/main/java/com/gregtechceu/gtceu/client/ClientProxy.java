@@ -10,9 +10,9 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTEntityTypes;
-import com.gregtechceu.gtceu.common.data.GTParticleTypes;
+import com.gregtechceu.gtceu.data.GTBlockEntities;
+import com.gregtechceu.gtceu.data.GTEntityTypes;
+import com.gregtechceu.gtceu.data.GTParticleTypes;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;

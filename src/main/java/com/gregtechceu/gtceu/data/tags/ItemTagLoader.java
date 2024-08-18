@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +20,7 @@ import net.minecraftforge.common.Tags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
 
 public class ItemTagLoader {
 

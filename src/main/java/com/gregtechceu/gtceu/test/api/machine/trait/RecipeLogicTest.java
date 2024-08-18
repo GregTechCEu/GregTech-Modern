@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 

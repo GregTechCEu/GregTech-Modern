@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 

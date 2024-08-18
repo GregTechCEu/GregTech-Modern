@@ -10,8 +10,8 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.MIXER_RECIPES;
 
 public class MixerRecipes {
 

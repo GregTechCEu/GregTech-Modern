@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.data.GTMobEffects;
 
 import net.minecraft.world.entity.player.Player;
 

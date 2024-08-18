@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 

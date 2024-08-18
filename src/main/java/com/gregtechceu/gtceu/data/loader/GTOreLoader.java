@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.data.GTOres;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;

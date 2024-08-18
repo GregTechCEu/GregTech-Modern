@@ -20,8 +20,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
+import static com.gregtechceu.gtceu.data.GTMachines.*;
+import static com.gregtechceu.gtceu.data.GTMaterials.Iron;
 
 public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOreProcessingInfoWrapper> {
 

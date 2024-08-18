@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.emi.orevein;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;

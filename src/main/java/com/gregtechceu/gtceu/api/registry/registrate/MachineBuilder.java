@@ -21,8 +21,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
-import com.gregtechceu.gtceu.common.data.GTCompassSections;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.GTCompassSections;
+import com.gregtechceu.gtceu.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.LDLib;

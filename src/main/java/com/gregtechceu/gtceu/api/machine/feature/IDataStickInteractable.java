@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

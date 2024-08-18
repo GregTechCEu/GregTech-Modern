@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTMaterials;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;

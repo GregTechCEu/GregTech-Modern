@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;

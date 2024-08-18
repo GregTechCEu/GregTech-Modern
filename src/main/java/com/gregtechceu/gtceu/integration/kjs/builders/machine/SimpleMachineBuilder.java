@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
@@ -21,8 +21,8 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
-import static com.gregtechceu.gtceu.common.data.GTMachines.explosion;
+import static com.gregtechceu.gtceu.data.GTMachines.defaultTankSizeFunction;
+import static com.gregtechceu.gtceu.data.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**

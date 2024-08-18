@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
-import com.gregtechceu.gtceu.common.data.GTPlacerTypes;
+import com.gregtechceu.gtceu.data.GTPlacerTypes;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

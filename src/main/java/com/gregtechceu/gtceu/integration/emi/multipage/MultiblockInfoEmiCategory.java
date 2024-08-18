@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.emi.multipage;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTMachines;
 
 import net.minecraft.network.chat.Component;
 

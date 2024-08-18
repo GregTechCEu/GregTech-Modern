@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.data.GTRecipeCapabilities;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 

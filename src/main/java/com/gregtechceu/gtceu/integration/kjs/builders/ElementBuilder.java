@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.common.data.GTElements;
+import com.gregtechceu.gtceu.data.GTElements;
 
 import net.minecraft.resources.ResourceLocation;
 

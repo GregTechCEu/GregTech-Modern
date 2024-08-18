@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import java.util.Map;

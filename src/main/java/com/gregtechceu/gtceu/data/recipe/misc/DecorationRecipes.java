@@ -7,15 +7,15 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.block;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plate;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.LARGE_METAL_SHEETS;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.METAL_SHEETS;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.STUDS;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.CHEMICAL_DYES;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Concrete;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Rubber;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_BATH_RECIPES;
+import static com.gregtechceu.gtceu.data.GTBlocks.LARGE_METAL_SHEETS;
+import static com.gregtechceu.gtceu.data.GTBlocks.METAL_SHEETS;
+import static com.gregtechceu.gtceu.data.GTBlocks.STUDS;
+import static com.gregtechceu.gtceu.data.GTMaterials.CHEMICAL_DYES;
+import static com.gregtechceu.gtceu.data.GTMaterials.Concrete;
+import static com.gregtechceu.gtceu.data.GTMaterials.Iron;
+import static com.gregtechceu.gtceu.data.GTMaterials.Rubber;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.CHEMICAL_BATH_RECIPES;
 
 public class DecorationRecipes {
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTMachines;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.common.data.GTMobEffects;
+import com.gregtechceu.gtceu.data.GTMobEffects;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;

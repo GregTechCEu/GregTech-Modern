@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.common.data.machines.GTCreateMachines;
+import com.gregtechceu.gtceu.data.machines.GTCreateMachines;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 
