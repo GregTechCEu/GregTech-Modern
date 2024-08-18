@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.utils;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -16,6 +17,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+
 /**
  * Used to store {@link appeng.api.stacks.GenericStack } in a way that associates key and amount.
  * Provides methods for serialization and deserialization.
@@ -23,7 +26,9 @@ import org.jetbrains.annotations.Nullable;
  * @author GateGuardian
  * @date : 2024/7/18
  */
-public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAware {
+@MethodsReturnNonnullByDefault
+public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAware,
+                        Iterable<Object2LongMap.Entry<AEKey>> {
 
     public final Object2LongMap<AEKey> storage = new Object2LongOpenHashMap<>(); // TODO trim periodically or not
 
@@ -39,7 +44,7 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
      * @param source    the source of the action
      */
     public void insertInventory(MEStorage inventory, IActionSource source) {
-        var it = storage.object2LongEntrySet().iterator();
+        var it = iterator();
         boolean changed = false;
         while (it.hasNext()) {
             var entry = it.next();
@@ -87,5 +92,14 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
             long value = tag.getLong("value");
             storage.put(key, value);
         }
+    }
+
+    @Override
+    public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
+        return storage.object2LongEntrySet().iterator();
+    }
+
+    public boolean isEmpty() {
+        return storage.isEmpty();
     }
 }

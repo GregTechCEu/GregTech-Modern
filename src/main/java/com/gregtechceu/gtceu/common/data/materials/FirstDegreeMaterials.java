@@ -607,7 +607,8 @@ public class FirstDegreeMaterials {
                 .liquid(new FluidBuilder().temperature(2046))
                 .color(0xa7a7a7).secondaryColor(0x121c37).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_SPRING,
-                        GENERATE_SPRING_SMALL, GENERATE_FRAME, DISABLE_DECOMPOSITION, GENERATE_FINE_WIRE, GENERATE_GEAR)
+                        GENERATE_SPRING_SMALL, GENERATE_FRAME, DISABLE_DECOMPOSITION, GENERATE_FINE_WIRE, GENERATE_GEAR,
+                        GENERATE_DENSE)
                 .components(Iron, 1)
                 .toolStats(ToolProperty.Builder.of(5.0F, 3.0F, 512, 3)
                         .addTypes(GTToolType.MORTAR)

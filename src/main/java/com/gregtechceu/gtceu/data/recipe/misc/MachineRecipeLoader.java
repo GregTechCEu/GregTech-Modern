@@ -1428,15 +1428,15 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : BUFFER_HATCH_TIERS) {
+        for (int tier : DUAL_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
-            var inputBuffer = INPUT_BUFFER[tier];
-            var outputBuffer = OUTPUT_BUFFER[tier];
+            var inputBuffer = DUAL_IMPORT_HATCH[tier];
+            var outputBuffer = DUAL_EXPORT_HATCH[tier];
 
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_output_to_input_" + tierName,
+                    "dual_hatch_output_to_input_" + tierName,
                     inputBuffer.asStack(),
                     "d",
                     "B",
@@ -1444,7 +1444,7 @@ public class MachineRecipeLoader {
                     outputBuffer.asStack());
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_input_to_output_" + tierName,
+                    "dual_hatch_input_to_output_" + tierName,
                     outputBuffer.asStack(),
                     "d",
                     "B",
