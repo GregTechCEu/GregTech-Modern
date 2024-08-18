@@ -83,7 +83,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
         ItemStack stack = context.getItemInHand();
         if (!level.isClientSide) {
             MetaMachine machine = MetaMachine.getMachine(level, pos);
-            if (machine instanceof MEPatternBufferPartMachine) {
+            Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+            if (machine instanceof MEPatternBufferPartMachine && researchData == null) {
                 stack.getOrCreateTag().putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
             } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
                 if (stack.hasTag()) {
