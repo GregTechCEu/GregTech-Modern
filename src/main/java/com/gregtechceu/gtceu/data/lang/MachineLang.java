@@ -728,13 +728,15 @@ public class MachineLang {
         provider.add("block.gtceu.pattern_buffer.desc.1",
                 "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
         provider.add("block.gtceu.pattern_buffer.desc.2",
-                "§fLink §6Pattern Buffer Assistants §fwith a §bdatastick §fto link machines together!");
+                "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.0",
                 "§fAllows linking many machines to a singular §6ME Pattern Buffer§f.");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.1",
                 "§fAll connected proxies will share the patterns held within the §6original buffer§f.");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.2",
                 "§fLet the factory grow!");
+        provider.add("gtceu.tooltip.proxy_bind",
+                "§fBinding to a Pattern Buffer at %s %s %s");
 
         provider.add("gui.gtceu.share_inventory.title", "Shared Item Inventory");
         provider.add("gui.gtceu.share_inventory.desc.0", "Shares inserted items with all patterns within buffer!");
