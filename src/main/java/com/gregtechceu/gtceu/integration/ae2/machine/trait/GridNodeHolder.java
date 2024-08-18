@@ -15,13 +15,11 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IManagedGridNode;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import lombok.Getter;
 
 import java.util.EnumSet;
-import java.util.function.Consumer;
 
 /**
  * A MachineTrait that is only used for hosting grid node and does not provide grid node capability.
@@ -43,15 +41,10 @@ public class GridNodeHolder extends MachineTrait {
 
     public GridNodeHolder(IGridConnectedMachine machine) {
         super(machine.self());
-        this.mainNode = createManagedNode(node -> {});
+        this.mainNode = createManagedNode();
     }
 
-    public GridNodeHolder(IGridConnectedMachine machine, Consumer<IManagedGridNode> customizer) {
-        super(machine.self());
-        this.mainNode = createManagedNode(customizer);
-    }
-
-    protected SerializableManagedGridNode createManagedNode(Consumer<IManagedGridNode> customizer) {
+    protected SerializableManagedGridNode createManagedNode() {
         var node = (SerializableManagedGridNode) new SerializableManagedGridNode((IGridConnectedBlockEntity) machine,
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -62,7 +55,6 @@ public class GridNodeHolder extends MachineTrait {
                         machine.hasFrontFacing() ? EnumSet.of(machine.getFrontFacing()) :
                                 EnumSet.allOf(Direction.class))
                 .setTagName("proxy");
-        customizer.accept(node);
         return node;
     }
 

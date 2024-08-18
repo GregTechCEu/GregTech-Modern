@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -33,7 +34,7 @@ public class AETextInputButtonWidget extends WidgetGroup {
     @Getter
     private boolean isInputting;
 
-    private TextFieldWidget textField;
+    private Widget textField;
 
     public AETextInputButtonWidget() {}
 
@@ -57,6 +58,13 @@ public class AETextInputButtonWidget extends WidgetGroup {
     @Override
     public void initWidget() {
         super.initWidget();
+        this.textField = new TextFieldWidget(
+                0,
+                0,
+                getSizeWidth() - getSizeHeight() - 2,
+                getSizeHeight(),
+                this::getText,
+                this::setText).setActive(false).setVisible(false);
         this.addWidget(new ToggleButtonWidget(
                 getSizeWidth() - getSizeHeight(),
                 0,
@@ -66,22 +74,18 @@ public class AETextInputButtonWidget extends WidgetGroup {
                 pressed -> {
                     isInputting = pressed;
                     if (pressed) {
-                        this.textField = new TextFieldWidget(
-                                0,
-                                0,
-                                getSizeWidth() - getSizeHeight() - 2,
-                                getSizeHeight(),
-                                this::getText,
-                                this::setText);
-                        this.addWidget(textField);
+                        textField.setActive(true);
+                        textField.setVisible(true);
                     } else {
                         onConfirm.accept(text);
-                        this.removeWidget(textField);
+                        textField.setActive(false);
+                        textField.setVisible(false);
                     }
                 })
                 .setTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✎")),
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✎")))
                 .setHoverTooltips(hoverTexts));
+        this.addWidget(textField);
     }
 }

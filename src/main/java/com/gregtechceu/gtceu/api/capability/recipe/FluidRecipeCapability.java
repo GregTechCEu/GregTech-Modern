@@ -341,7 +341,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
-                    if (ingredient.getStacks().length > 0) {
+                    if (!isXEI && ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack.getFluid(),
                                 stack.getAmount(),

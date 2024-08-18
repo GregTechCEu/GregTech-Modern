@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait {
 
@@ -31,9 +30,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
 
     @Getter
     private final Collection<NotifiableRecipeHandlerTrait<Ingredient>> handlers;
-
-    @Setter
-    private Supplier<NotifiableRecipeHandlerTrait<Ingredient>> handlerSupplier;
 
     public ItemHandlerProxyRecipeTrait(MetaMachine machine,
                                        Collection<NotifiableRecipeHandlerTrait<Ingredient>> handlers, IO handlerIO,
@@ -53,13 +49,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
             if (left.isEmpty()) return null;
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.handleRecipeInner(io, recipe, left, slotName, simulate);
-            }
-        }
         return left;
     }
 
@@ -68,13 +57,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
         List<Object> contents = new ObjectArrayList<>(2);
         for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
             contents.addAll(handler.getContents());
-        }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                contents.addAll(handler.getContents());
-            }
         }
         return contents;
     }
@@ -85,13 +67,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
         for (NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                size += handler.getSize();
-            }
-        }
         return size;
     }
 
@@ -100,12 +75,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
         long amount = 0;
         for (NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
             amount += handlerTrait.getTotalContentAmount();
-        }
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                amount += handler.getTotalContentAmount();
-            }
         }
         return amount;
     }
@@ -118,18 +87,10 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     @Override
     public boolean isDistinct() {
         for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
-            if (handler.isDistinct)
-                return true;
+            if (!handler.isDistinct)
+                return false;
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.isDistinct();
-            }
-        }
-
-        return false;
+        return true;
     }
 
     @Override
