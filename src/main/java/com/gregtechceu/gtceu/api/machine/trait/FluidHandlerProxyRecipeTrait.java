@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,8 +44,8 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<S
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
-                                                   @Nullable String slotName, boolean simulate) {
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left,
+                                                        @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
         for (IRecipeHandler<SizedFluidIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);

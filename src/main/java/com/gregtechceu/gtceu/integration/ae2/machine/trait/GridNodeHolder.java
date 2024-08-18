@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -88,12 +89,12 @@ public class GridNodeHolder extends MachineTrait {
 
     @SuppressWarnings("unused")
     public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
-        return node.serializeNBT();
+        return node.serializeNBT(Platform.getFrozenRegistry());
     }
 
     @SuppressWarnings("unused")
     public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
-        this.mainNode.deserializeNBT(tag);
+        this.mainNode.deserializeNBT(Platform.getFrozenRegistry(), tag);
         return this.mainNode;
     }
 }

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -27,7 +28,7 @@ import java.util.Iterator;
  * @date : 2024/7/18
  */
 @MethodsReturnNonnullByDefault
-public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAware,
+public class KeyStorage implements INBTSerializable<ListTag>, IContentChangeAware,
                         Iterable<Object2LongMap.Entry<AEKey>> {
 
     public final Object2LongMap<AEKey> storage = new Object2LongOpenHashMap<>(); // TODO trim periodically or not
@@ -73,11 +74,11 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
     }
 
     @Override
-    public ListTag serializeNBT() {
+    public ListTag serializeNBT(HolderLookup.Provider provider) {
         var list = new ListTag();
         for (var entry : storage.object2LongEntrySet()) {
             var tag = new CompoundTag();
-            tag.put("key", entry.getKey().toTagGeneric());
+            tag.put("key", entry.getKey().toTagGeneric(provider));
             tag.putLong("value", entry.getLongValue());
             list.add(tag);
         }
@@ -85,10 +86,10 @@ public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAwar
     }
 
     @Override
-    public void deserializeNBT(ListTag tags) {
+    public void deserializeNBT(HolderLookup.Provider provider, ListTag tags) {
         for (int i = 0; i < tags.size(); i++) {
             var tag = tags.getCompound(i);
-            var key = AEKey.fromTagGeneric(tag.getCompound("key"));
+            var key = AEKey.fromTagGeneric(provider, tag.getCompound("key"));
             long value = tag.getLong("value");
             storage.put(key, value);
         }

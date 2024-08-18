@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import net.minecraft.core.particles.ParticleOptions;
@@ -170,13 +172,10 @@ public interface IJetpack {
     }
 
     private static void performEHover(ItemStack stack, Player player) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains("enabled"))
-            tag.putBoolean("enabled", true);
-        if (tag.contains("hover"))
-            tag.putBoolean("hover", true);
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), armor -> armor
+                .setEnabled(true)
+                .setHover(true));
         player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
-        stack.setTag(tag);
 
         if (!player.level().isClientSide) {
             player.fallDistance = 0;

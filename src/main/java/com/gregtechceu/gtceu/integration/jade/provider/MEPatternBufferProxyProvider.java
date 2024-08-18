@@ -7,16 +7,18 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMac
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.ForgeRegistries;
 
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -43,9 +45,9 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
                 ListTag fluidTags = serverData.getList("fluids", Tag.TAG_COMPOUND);
                 for (int i = 0; i < itemTags.size(); ++i) {
                     CompoundTag itemTag = itemTags.getCompound(i);
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemTag.getString("item")));
+                    Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemTag.getString("item")));
                     long count = itemTag.getLong("count");
-                    if (item != null) {
+                    if (item != Items.AIR) {
                         iTooltip.add(item.getDescription()
                                 .copy()
                                 .withStyle(ChatFormatting.GOLD)
@@ -56,9 +58,8 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
                 for (int i = 0; i < fluidTags.size(); ++i) {
                     CompoundTag fluidTag = fluidTags.getCompound(i);
                     @Nullable
-                    FluidType fluid = ForgeRegistries.FLUID_TYPES
-                            .get()
-                            .getValue(new ResourceLocation(fluidTag.getString("fluid")));
+                    FluidType fluid = NeoForgeRegistries.FLUID_TYPES
+                            .get(ResourceLocation.parse(fluidTag.getString("fluid")));
                     long count = fluidTag.getLong("count");
                     if (fluid != null) {
                         iTooltip.add(fluid
@@ -90,11 +91,11 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
 
                 ListTag itemTags = new ListTag();
                 for (Item item : items.keySet()) {
-                    ResourceLocation key = ForgeRegistries.ITEMS.getKey(item);
+                    ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
                     if (key != null) {
                         CompoundTag itemTag = new CompoundTag();
                         itemTag.putString("item", key.toString());
-                        itemTag.putLong("count", items.getLong(item));
+                        itemTag.putLong("count", items.getInt(item));
                         itemTags.add(itemTag);
                     }
                 }
@@ -102,11 +103,11 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
 
                 ListTag fluidTags = new ListTag();
                 for (Fluid fluid : fluids.keySet()) {
-                    ResourceLocation key = ForgeRegistries.FLUID_TYPES.get().getKey(fluid.getFluidType());
+                    ResourceLocation key = NeoForgeRegistries.FLUID_TYPES.getKey(fluid.getFluidType());
                     if (key != null) {
                         CompoundTag fluidTag = new CompoundTag();
                         fluidTag.putString("fluid", key.toString());
-                        fluidTag.putLong("count", fluids.getLong(fluid));
+                        fluidTag.putLong("count", fluids.getInt(fluid));
                         fluidTags.add(fluidTag);
                     }
                 }

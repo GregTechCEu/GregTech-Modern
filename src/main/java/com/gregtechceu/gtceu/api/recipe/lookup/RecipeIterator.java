@@ -11,17 +11,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class RecipeIterator implements Iterator<GTRecipe> {
+public class RecipeIterator implements Iterator<RecipeHolder<GTRecipe>> {
 
     int index;
     List<List<AbstractMapIngredient>> ingredients;
     @NotNull
     GTRecipeType recipeMap;
     @NotNull
-    Predicate<GTRecipe> canHandle;
+    Predicate<RecipeHolder<GTRecipe>> canHandle;
 
     RecipeIterator(@NotNull GTRecipeType recipeMap, List<List<AbstractMapIngredient>> ingredients,
-                   @NotNull Predicate<GTRecipe> canHandle) {
+                   @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
         this.ingredients = ingredients;
         this.recipeMap = recipeMap;
         this.canHandle = canHandle;
@@ -34,7 +34,7 @@ public class RecipeIterator implements Iterator<GTRecipe> {
     }
 
     @Override
-    public GTRecipe next() {
+    public RecipeHolder<GTRecipe> next() {
         // couldn't build any inputs to use for search, so no recipe could be found
         if (ingredients == null) return null;
         // Try each ingredient as a starting point, save current index
@@ -46,7 +46,7 @@ public class RecipeIterator implements Iterator<GTRecipe> {
             ++index;
             if (r != null) break;
         }
-        return r == null ? null : r.value();
+        return r;
     }
 
     public void reset() {

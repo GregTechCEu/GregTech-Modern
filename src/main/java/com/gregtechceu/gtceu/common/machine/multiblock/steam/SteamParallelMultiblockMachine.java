@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -74,17 +75,17 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        int duration = recipe.duration;
-        var eut = RecipeHelper.getInputEUt(recipe);
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+        int duration = recipe.value().duration;
+        var eut = RecipeHelper.getInputEUt(recipe.value());
         var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getFirst();
-        recipe = result == recipe ? result.copy() : result;
+        recipe = result == recipe ? new RecipeHolder<>(recipe.id(), recipe.value().copy()) : result;
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
         // also set the duration to just 1.5x the original, instead of fully multiplied
-        recipe.duration = (int) (duration * 1.5);
+        recipe.value().duration = (int) (duration * 1.5);
         eut = (long) Math.min(32, Math.ceil(eut * 1.33));
-        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+        recipe.value().tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
                 ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
         return recipe;
     }

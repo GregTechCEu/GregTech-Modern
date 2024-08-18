@@ -13,15 +13,19 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.food.FoodProperties;
@@ -43,10 +47,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
@@ -57,6 +58,17 @@ import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey
  * @implNote GTUtil
  */
 public class GTUtil {
+
+    public static final Codec<ItemStack> ANY_SIZE_ITEM_STACK_CODEC = Codec.lazyInitialized(() ->
+            ExtraCodecs.<ItemStack>optionalEmptyMap(RecordCodecBuilder.create(instance -> instance.group(
+                            ItemStack.ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("count").orElse(1)
+                                    .forGetter(ItemStack::getCount),
+                            DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
+                                    .forGetter(stack -> stack.getComponentsPatch()))
+                    .apply(instance, ItemStack::new)))
+                    .xmap(optional -> optional.orElse(ItemStack.EMPTY),
+                            stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack)));
 
     public static final Direction[] DIRECTIONS = Direction.values();
 

@@ -2,15 +2,13 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import static com.gregtechceu.gtceu.common.block.LampBlock.isBloomEnabled;
-import static com.gregtechceu.gtceu.common.block.LampBlock.isLightEnabled;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class LampItemOverlayRenderer {
@@ -27,9 +25,9 @@ public class LampItemOverlayRenderer {
 
     public static void renderOverlay(GuiGraphics graphics, ItemStack stack, int xPosition,
                                      int yPosition) {
-        if (stack.hasTag()) {
-            var tag = stack.getTag();
-            var overlayType = getOverlayType(isLightEnabled(tag), isBloomEnabled(tag));
+        if (stack.has(GTDataComponents.LAMP_DATA)) {
+            var lampData = stack.get(GTDataComponents.LAMP_DATA);
+            var overlayType = getOverlayType(lampData.lit(), lampData.bloom());
             if (overlayType == OverlayType.NONE) {
                 return;
             }

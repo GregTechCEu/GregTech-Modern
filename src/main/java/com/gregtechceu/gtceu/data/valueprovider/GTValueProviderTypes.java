@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data.valueprovider;
+package com.gregtechceu.gtceu.data.valueprovider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;

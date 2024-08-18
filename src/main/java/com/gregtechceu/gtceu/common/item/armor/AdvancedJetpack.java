@@ -52,7 +52,7 @@ public class AdvancedJetpack extends Jetpack {
             jetpackEnabled = !jetpackEnabled;
             toggleTimer = 5;
             final boolean finalJetpackEnabled = jetpackEnabled;
-            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data -> data.setEnabled(finalJetpackEnabled));
+            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalJetpackEnabled));
             if (!world.isClientSide) {
                 player.displayClientMessage(
                         Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),

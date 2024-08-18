@@ -53,7 +53,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         if (block.getBlockEntity() instanceof IMachineBlockEntity mbe &&
                 mbe.getMetaMachine() instanceof IRecipeLogicMachine rlm &&
                 rlm.getRecipeLogic().getLastRecipe() != null &&
-                rlm.getRecipeLogic().getLastRecipe().data.getBoolean("duration_is_total_cwu")) {
+                rlm.getRecipeLogic().getLastRecipe().value().data.getBoolean("duration_is_total_cwu")) {
             // show as total computation instead
             int color = rlm.getRecipeLogic().isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
             tooltip.add(IElementHelper.get().progress(

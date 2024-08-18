@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.fluid.store;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.material.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
 import org.jetbrains.annotations.NotNull;

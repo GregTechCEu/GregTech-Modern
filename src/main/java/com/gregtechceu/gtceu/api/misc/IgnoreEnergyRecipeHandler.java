@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
+    public List<Long> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Long> left, @Nullable String slotName,
                                         boolean simulate) {
         return null;
     }

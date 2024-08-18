@@ -51,6 +51,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -392,21 +393,21 @@ public class ToolHelper {
                         List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
-                GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine,
+                Iterator<RecipeHolder<GTRecipe>> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
+                RecipeHolder<GTRecipe> hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
+                if (hammerRecipe != null && GTRecipe.handleRecipeIO(hammerRecipe, IO.IN, be.metaMachine,
                         be.getMetaMachine().recipeLogic.getChanceCaches())) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix == null) {
-                        for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                        for (Content output : hammerRecipe.value().getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 drops.add(ItemRecipeCapability.CAP
                                         .copyInner(ItemRecipeCapability.CAP.of(output.content)).getItems()[0]);
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
-                        for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                        for (Content content : hammerRecipe.value().getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
                                 // Only apply fortune on ore -> crushed forge hammer recipes

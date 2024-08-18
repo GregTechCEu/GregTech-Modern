@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -14,7 +14,9 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.ItemInteractionResult;
+import net.neoforged.neoforge.fluids.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -82,7 +84,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
         return this.aeFluidHandler;
     }
@@ -212,8 +214,8 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ////////////////////////////////
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                       BlockHitResult hitResult) {
         if (!isRemote()) {
             setAutoPull(!autoPull);
             if (autoPull) {
@@ -224,7 +226,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
             }
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return ItemInteractionResult.sidedSuccess(isRemote());
     }
 
     ////////////////////////////////
@@ -232,9 +234,9 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     ////////////////////////////////
 
     @Override
-    protected CompoundTag writeConfigToTag() {
+    protected CompoundTag writeConfigToTag(HolderLookup.Provider provider) {
         if (!autoPull) {
-            CompoundTag tag = super.writeConfigToTag();
+            CompoundTag tag = super.writeConfigToTag(provider);
             tag.putBoolean("AutoPull", false);
             return tag;
         }
@@ -247,7 +249,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    protected void readConfigFromTag(CompoundTag tag) {
+    protected void readConfigFromTag(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.getBoolean("AutoPull")) {
             // if being set to auto-pull, no need to read the configured slots
             this.setAutoPull(true);
@@ -256,7 +258,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
         // set auto pull first to avoid issues with clearing the config after reading from the data stick
         this.setAutoPull(false);
-        super.readConfigFromTag(tag);
+        super.readConfigFromTag(provider, tag);
     }
 
     private class ExportOnlyAEStockingFluidList extends ExportOnlyAEFluidList {
@@ -304,34 +306,34 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
 
         @Override
-        public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(int maxDrain, FluidAction fluidAction) {
             if (this.stock != null && this.config != null) {
                 // Extract the items from the real net to either validate (simulate)
                 // or extract (modulate) when this is called
-                if (!isOnline()) return FluidStack.empty();
+                if (!isOnline()) return FluidStack.EMPTY;
                 MEStorage aeNetwork = getMainNode().getGrid().getStorageService().getInventory();
 
-                Actionable action = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+                Actionable action = fluidAction.simulate() ? Actionable.SIMULATE : Actionable.MODULATE;
                 var key = config.what();
                 long extracted = aeNetwork.extract(key, maxDrain, action, actionSource);
 
                 if (extracted > 0) {
                     FluidStack resultStack = key instanceof AEFluidKey fluidKey ?
-                            AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.empty();
-                    if (!simulate) {
+                            AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.EMPTY;
+                    if (fluidAction.execute()) {
                         // may as well update the display here
                         this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
                         if (this.stock.amount() == 0) {
                             this.stock = null;
                         }
-                        if (notifyChanges && this.onContentsChanged != null) {
+                        if (this.onContentsChanged != null) {
                             this.onContentsChanged.run();
                         }
                     }
                     return resultStack;
                 }
             }
-            return FluidStack.empty();
+            return FluidStack.EMPTY;
         }
     }
 }

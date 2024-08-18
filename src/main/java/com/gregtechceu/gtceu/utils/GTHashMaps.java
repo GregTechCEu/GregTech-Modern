@@ -6,6 +6,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.objects.*;
+import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -123,15 +124,15 @@ public final class GTHashMaps {
      * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
      *         required
      */
-    public static Map<FluidKey, Long> fromFluidCollection(Collection<FluidStack> fluidInputs) {
-        final Object2LongMap<FluidKey> map = new Object2LongLinkedOpenHashMap<>();
+    public static Map<FluidKey, Integer> fromFluidCollection(Collection<FluidStack> fluidInputs) {
+        final Object2IntMap<FluidKey> map = new Object2IntLinkedOpenHashMap<>();
 
         // Create a single stack of the combined count for each item
 
         for (FluidStack fluidStack : fluidInputs) {
             if (fluidStack != null && fluidStack.getAmount() > 0) {
                 FluidKey key = new FluidKey(fluidStack);
-                map.put(key, map.getLong(key) + fluidStack.getAmount());
+                map.put(key, map.getInt(key) + fluidStack.getAmount());
             }
         }
 

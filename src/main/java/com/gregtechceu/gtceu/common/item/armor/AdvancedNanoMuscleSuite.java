@@ -70,7 +70,8 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
             jetpackEnabled = !jetpackEnabled;
             toggleTimer = 5;
-            data.putBoolean("enabled", jetpackEnabled);
+            final boolean finalJetpackEnabled = jetpackEnabled;
+            item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalJetpackEnabled));
             if (!world.isClientSide) {
                 player.displayClientMessage(
                         Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),

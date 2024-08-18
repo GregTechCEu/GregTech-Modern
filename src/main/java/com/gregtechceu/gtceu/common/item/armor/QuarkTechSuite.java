@@ -164,7 +164,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
 
             if (runningTimer > 0) runningTimer--;
-            final int finalRunningTimer = runningTimer;
+            final byte finalRunningTimer = runningTimer;
             itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
                     data1 -> data1.setRunningTimer(finalRunningTimer));
         } else if (type == ArmorItem.Type.BOOTS) {
@@ -239,7 +239,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     public boolean supplyFood(@NotNull IElectricItem item, Player player) {
         if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
             int slotId = -1;
-            IItemHandler playerInv = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+            IItemHandler playerInv = player.getCapability(Capabilities.ItemHandler.ENTITY);
             if (playerInv instanceof IItemHandlerModifiable items) {
                 for (int i = 0; i < items.getSlots(); i++) {
                     ItemStack current = items.getStackInSlot(i);
@@ -268,7 +268,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     public void removeNegativeEffects(@NotNull IElectricItem item, Player player) {
         for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects())) {
-            MobEffect potion = effect.getEffect();
+            Holder<MobEffect> potion = effect.getEffect();
             Integer cost = potionRemovalCost.get(potion);
             if (cost != null) {
                 cost = cost * (effect.getAmplifier() + 1);

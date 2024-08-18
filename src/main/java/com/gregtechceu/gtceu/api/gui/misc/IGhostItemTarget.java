@@ -5,13 +5,15 @@ import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -55,7 +57,9 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
             Item item = itemEmiStack.getKeyOfType(Item.class);
             ingredient = item == null ? null : new ItemStack(item, (int) itemEmiStack.getAmount());
             if (ingredient instanceof ItemStack itemStack) {
-                itemStack.setTag(itemEmiStack.getNbt());
+                for (var entry : itemEmiStack.getComponentChanges().entrySet()) {
+                    itemStack.set((DataComponentType) entry.getKey(), entry.getValue().orElse(null));
+                }
             }
         }
         return ingredient;

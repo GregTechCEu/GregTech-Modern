@@ -24,6 +24,7 @@ import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,9 +93,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof SimpleGeneratorMachine generator) {
-            var EUt = RecipeHelper.getOutputEUt(recipe);
+            var EUt = RecipeHelper.getOutputEUt(recipe.value());
             if (EUt > 0) {
                 var maxParallel = (int) (Math.min(generator.getOverclockVoltage(),
                         GTValues.V[generator.getOverclockTier()]) / EUt);

@@ -30,7 +30,6 @@ import java.util.Map;
 
 public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
 
-    public static FluidVeinLoader INSTANCE;
     public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().setLenient()
             .create();
     private static final String FOLDER = "gtceu/fluid_veins";

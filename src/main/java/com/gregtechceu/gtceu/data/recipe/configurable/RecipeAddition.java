@@ -28,8 +28,7 @@ import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.data.item.GTItems.COMPRESSED_CLAY;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLER_RECIPES;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.LATHE_RECIPES;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class RecipeAddition {
 
@@ -1207,7 +1206,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "turtle_helmet", new ItemStack(Items.TURTLE_HELMET), "SSS",
                     "SrS",
-                    'S', new ItemStack(Items.SCUTE));
+                    'S', new ItemStack(Items.ARMADILLO_SCUTE));
 
             VanillaRecipeHelper.addShapedRecipe(provider, "scaffolding", new ItemStack(Blocks.SCAFFOLDING, 3), "BSB",
                     "BWB", "BrB",

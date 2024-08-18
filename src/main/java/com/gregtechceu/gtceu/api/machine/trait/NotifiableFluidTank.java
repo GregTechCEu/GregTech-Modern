@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -99,13 +100,13 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left,
                                                         @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storages);
     }
 
     @Nullable
-    public static List<SizedFluidIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
+    public static List<SizedFluidIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left,
                                                               boolean simulate, IO handlerIO,
                                                               CustomFluidTank[] storages) {
         if (io != handlerIO) return left;

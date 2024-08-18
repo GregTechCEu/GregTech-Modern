@@ -35,7 +35,14 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId = "ldlib"
     type = "required"
-    versionRange = "[1.0,)"
+    versionRange = "[${ldlib_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "configuration"
+    type = "required"
+    versionRange = "[${configuration_version},)"
     ordering = "AFTER"
     side = "BOTH"
 
@@ -44,6 +51,34 @@ file="META-INF/accesstransformer.cfg"
     type = "optional"
     versionRange = "[${kjs_version},)"
     ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "jei"
+    type = "optional"
+    versionRange = "[${jei_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "emi"
+    type = "optional"
+    versionRange = "[${emi_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "theoneprobe"
+    type = "optional"
+    versionRange = "[${top_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "jade"
+    type = "optional"
+    versionRange = "[${jade_version},)"
+    ordering = "NONE"
     side = "BOTH"
 
 

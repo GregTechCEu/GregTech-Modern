@@ -10,10 +10,13 @@ import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.component.CustomData;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -84,6 +87,12 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleEnergyContent>> ENERGY_CONTENT = DATA_COMPONENTS
             .registerComponentType("energy_content", builder -> builder.persistent(SimpleEnergyContent.CODEC)
                     .networkSynchronized(SimpleEnergyContent.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> DATA_COPY_POS = DATA_COMPONENTS
+            .registerComponentType("data_copy_pos", builder -> builder.persistent(BlockPos.CODEC)
+                    .networkSynchronized(BlockPos.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>> DATA_COPY_TAG = DATA_COMPONENTS
+            .registerComponentType("data_copy_tag", builder -> builder.persistent(CustomData.CODEC)
+                    .networkSynchronized(CustomData.STREAM_CODEC));
 
     // misc
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FacadeWrapper>> FACADE = DATA_COMPONENTS
@@ -92,4 +101,7 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LampBlockItem.LampData>> LAMP_DATA = DATA_COMPONENTS
             .registerComponentType("lamp",
                     builder -> builder.persistent(LampBlockItem.LampData.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LIGHTER_OPEN = DATA_COMPONENTS
+            .registerComponentType("lighter_openn",
+                    builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 }

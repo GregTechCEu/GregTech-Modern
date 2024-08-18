@@ -34,6 +34,7 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
@@ -963,13 +964,16 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipe build() {
-        return new GTRecipe(this.recipeType,
-                this.input, this.output, this.tickInput, this.tickOutput,
-                this.inputChanceLogic, this.outputChanceLogic,
-                this.tickInputChanceLogic, this.tickOutputChanceLogic,
-                this.conditions,
-                List.of(), this.data, this.duration, this.isFuel);
+    public RecipeHolder<GTRecipe> build() {
+        return new RecipeHolder<>(
+                id,
+                new GTRecipe(this.recipeType,
+                        this.input, this.output, this.tickInput, this.tickOutput,
+                        this.inputChanceLogic, this.outputChanceLogic,
+                        this.tickInputChanceLogic, this.tickOutputChanceLogic,
+                        this.conditions,
+                        List.of(), this.data, this.duration, this.isFuel)
+        );
     }
 
     public void save(RecipeOutput consumer) {
@@ -980,13 +984,11 @@ public class GTRecipeBuilder {
                 .map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), build());
+                this.recipeType.addDataStickEntry(entry.getResearchId(), build().value());
             }
         }
-        consumer.accept(
-                ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
-                        recipeType.registryName.getPath() + "/" + id.getPath()),
-                build(), null);
+        RecipeHolder<GTRecipe> built = build();
+        consumer.accept(built.id(), built.value(), null);
     }
 
     //////////////////////////////////////

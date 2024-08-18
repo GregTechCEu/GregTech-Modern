@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferProxyRecipeHandler;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -27,6 +26,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -42,10 +43,10 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
             MEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
-    protected MEPatternBufferProxyRecipeHandler<Ingredient> itemProxyHandler;
+    protected MEPatternBufferProxyRecipeHandler<SizedIngredient> itemProxyHandler;
 
     @Getter
-    protected MEPatternBufferProxyRecipeHandler<FluidIngredient> fluidProxyHandler;
+    protected MEPatternBufferProxyRecipeHandler<SizedFluidIngredient> fluidProxyHandler;
 
     @Persisted
     @Getter
@@ -71,15 +72,15 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
         if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferPartMachine machine) {
             this.bufferPos = pos;
 
-            List<NotifiableRecipeHandlerTrait<Ingredient>> itemHandlers = new ArrayList<>();
-            List<NotifiableRecipeHandlerTrait<FluidIngredient>> fluidHandlers = new ArrayList<>();
+            List<NotifiableRecipeHandlerTrait<SizedIngredient>> itemHandlers = new ArrayList<>();
+            List<NotifiableRecipeHandlerTrait<SizedFluidIngredient>> fluidHandlers = new ArrayList<>();
             for (var handler : machine.getRecipeHandlers()) {
                 if (handler.isProxy()) continue;
 
                 if (handler.getCapability() == ItemRecipeCapability.CAP) {
-                    itemHandlers.add((NotifiableRecipeHandlerTrait<Ingredient>) handler);
+                    itemHandlers.add((NotifiableRecipeHandlerTrait<SizedIngredient>) handler);
                 } else {
-                    fluidHandlers.add((NotifiableRecipeHandlerTrait<FluidIngredient>) handler);
+                    fluidHandlers.add((NotifiableRecipeHandlerTrait<SizedFluidIngredient>) handler);
                 }
             }
             itemProxyHandler.setHandlers(itemHandlers);

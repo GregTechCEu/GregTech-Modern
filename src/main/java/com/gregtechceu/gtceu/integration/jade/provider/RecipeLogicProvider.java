@@ -43,11 +43,11 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
-            var EUt = RecipeHelper.getInputEUt(recipe);
+            var EUt = RecipeHelper.getInputEUt(recipe.value());
             var isInput = true;
             if (EUt == 0) {
                 isInput = false;
-                EUt = RecipeHelper.getOutputEUt(recipe);
+                EUt = RecipeHelper.getOutputEUt(recipe.value());
             }
 
             recipeInfo.putLong("EUt", EUt);

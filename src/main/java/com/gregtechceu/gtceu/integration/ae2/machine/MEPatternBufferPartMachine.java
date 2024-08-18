@@ -16,9 +16,9 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
@@ -30,19 +30,18 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
@@ -62,12 +61,15 @@ import appeng.api.stacks.*;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,7 +109,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Persisted
     @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
                 // version.
-    private final ItemStackTransfer patternInventory = new ItemStackTransfer(MAX_PATTERN_COUNT);
+    private final CustomItemStackHandler patternInventory = new CustomItemStackHandler(MAX_PATTERN_COUNT);
     // DO NOT remove this and use a default circuitInventory. It will cause the circuit inventory to vanish entirely and
     // crash clients as well as cause unintended behaviors.
     @Getter
@@ -153,7 +155,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
-        this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
+        this.patternInventory.setFilter(stack -> stack.getItem() instanceof EncodedPatternItem<?>);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
         }
@@ -409,7 +411,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         clearInventory(drops, patternInventory);
     }
 
-    public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
+    public class InternalSlot implements INBTSerializable<CompoundTag>, IContentChangeAware {
 
         @Getter
         @Setter
@@ -457,9 +459,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 if (AEUtil.matches(key, fluid)) {
                     long free = Long.MAX_VALUE - fluid.getAmount();
                     if (amount <= free) {
-                        fluid.grow(amount);
+                        fluid.grow((int) amount);
                     } else {
-                        fluid.setAmount(Long.MAX_VALUE);
+                        fluid.setAmount(Integer.MAX_VALUE);
                         fluidInventory.add(AEUtil.toFluidStack(key, amount - free));
                     }
                     return;
@@ -501,10 +503,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 for (FluidStack stack : fluidInventory) {
                     if (stack == null || stack.isEmpty()) continue;
 
-                    long inserted = StorageHelper.poweredInsert(
+                    int inserted = (int) StorageHelper.poweredInsert(
                             energy,
                             networkInv,
-                            AEFluidKey.of(stack.getFluid(), stack.getTag()),
+                            AEFluidKey.of(stack),
                             stack.getAmount(),
                             actionSource);
                     if (inserted > 0) {
@@ -531,10 +533,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             onContentsChanged.run();
         }
 
-        public @Nullable List<Ingredient> handleItemInternal(List<Ingredient> left, boolean simulate) {
-            Iterator<Ingredient> iterator = left.iterator();
+        public @Nullable List<SizedIngredient> handleItemInternal(List<SizedIngredient> left, boolean simulate) {
+            Iterator<SizedIngredient> iterator = left.iterator();
             while (iterator.hasNext()) {
-                Ingredient ingredient = iterator.next();
+                SizedIngredient ingredient = iterator.next();
                 SLOT_LOOKUP:
                 for (ItemStack stack : itemInventory) {
                     if (ingredient.test(stack)) {
@@ -562,11 +564,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return left.isEmpty() ? null : left;
         }
 
-        public @Nullable List<FluidIngredient> handleFluidInternal(List<FluidIngredient> left, boolean simulate) {
-            Iterator<FluidIngredient> iterator = left.iterator();
+        public @Nullable List<SizedFluidIngredient> handleFluidInternal(List<SizedFluidIngredient> left, boolean simulate) {
+            ListIterator<SizedFluidIngredient> iterator = left.listIterator();
             while (iterator.hasNext()) {
-                FluidIngredient fluidStack = iterator.next();
-                if (fluidStack.isEmpty()) {
+                SizedFluidIngredient fluidStack = iterator.next();
+                if (fluidStack.ingredient().isEmpty()) {
                     iterator.remove();
                     continue;
                 }
@@ -580,7 +582,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     foundStack = stack;
                 }
                 if (!found) continue;
-                long drained = Math.min(foundStack.getAmount(), fluidStack.getAmount());
+                int drained = Math.min(foundStack.getAmount(), fluidStack.amount());
                 if (!simulate) {
                     foundStack.shrink(drained);
                     if (foundStack.isEmpty()) {
@@ -589,8 +591,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     onContentsChanged.run();
                 }
 
-                fluidStack.setAmount(fluidStack.getAmount() - drained);
-                if (fluidStack.getAmount() <= 0) {
+                fluidStack = new SizedFluidIngredient(fluidStack.ingredient(), fluidStack.amount() - drained);
+                iterator.set(fluidStack);
+                if (fluidStack.amount() <= 0) {
                     iterator.remove();
                 }
             }
@@ -598,18 +601,19 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
 
         @Override
-        public CompoundTag serializeNBT() {
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+            var ops = provider.createSerializationContext(NbtOps.INSTANCE);
             CompoundTag tag = new CompoundTag();
 
             ListTag itemInventoryTag = new ListTag();
             for (ItemStack itemStack : this.itemInventory) {
-                itemInventoryTag.add(GTUtil.saveItemStack(itemStack, new CompoundTag()));
+                itemInventoryTag.add(GTUtil.ANY_SIZE_ITEM_STACK_CODEC.encodeStart(ops, itemStack).getOrThrow());
             }
             tag.put("inventory", itemInventoryTag);
 
             ListTag fluidInventoryTag = new ListTag();
             for (FluidStack fluidStack : fluidInventory) {
-                fluidInventoryTag.add(fluidStack.saveToTag(new CompoundTag()));
+                fluidInventoryTag.add(FluidStack.OPTIONAL_CODEC.encodeStart(ops, fluidStack).getOrThrow());
             }
             tag.put("fluidInventory", fluidInventoryTag);
 
@@ -617,26 +621,26 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
 
         @Override
-        public void deserializeNBT(CompoundTag tag) {
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+            var ops = provider.createSerializationContext(NbtOps.INSTANCE);
+
             ListTag inv = tag.getList("inventory", Tag.TAG_COMPOUND);
             for (int i = 0; i < inv.size(); i++) {
                 CompoundTag tagItemStack = inv.getCompound(i);
-                var item = GTUtil.loadItemStack(tagItemStack);
+                var item = GTUtil.ANY_SIZE_ITEM_STACK_CODEC.parse(ops, tagItemStack).getOrThrow();
                 if (item != null) {
                     if (!item.isEmpty()) {
                         itemInventory.add(item);
                     }
                 } else {
-                    GTCEu.LOGGER
-                            .warn(
-                                    "An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: " +
-                                            tagItemStack);
+                    GTCEu.LOGGER.warn("An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: " +
+                            tagItemStack);
                 }
             }
             ListTag fluidInv = tag.getList("fluidInventory", Tag.TAG_COMPOUND);
             for (int i = 0; i < fluidInv.size(); i++) {
                 CompoundTag tagFluidStack = fluidInv.getCompound(i);
-                var fluid = FluidStack.loadFromTag(tagFluidStack);
+                var fluid = FluidStack.OPTIONAL_CODEC.parse(ops, tagFluidStack).getOrThrow();
                 if (fluid != null) {
                     if (!fluid.isEmpty()) {
                         fluidInventory.add(fluid);

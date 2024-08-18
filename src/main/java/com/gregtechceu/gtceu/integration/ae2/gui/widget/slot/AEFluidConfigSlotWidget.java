@@ -2,14 +2,13 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.IGhostFluidTarget;
+import com.gregtechceu.gtceu.core.mixins.FluidStackAccessor;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.ConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
-import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
@@ -21,19 +20,16 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -43,7 +39,7 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorn
 
 /**
  * @Author GlodBlock
- * @Description A configurable slot for {@link com.lowdragmc.lowdraglib.side.fluid.FluidStack}
+ * @Description A configurable slot for {@link FluidStack}
  * @Date 2023/4/21-0:50
  */
 public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
@@ -127,8 +123,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 ItemStack hold = this.gui.getModularUIContainer().getCarried();
                 FluidStack fluid = FluidTransferHelper.getFluidContained(hold);
 
-                if (fluid != null) {
-                    writeClientAction(UPDATE_ID, fluid::writeToBuf);
+                if (!fluid.isEmpty()) {
+                    writeClientAction(UPDATE_ID, buf -> FluidStack.STREAM_CODEC.encode(buf, fluid));
                 }
 
                 if (!parentWidget.isStocking()) {
@@ -163,13 +159,13 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.readFromBuf(buffer);
+            FluidStack fluid = FluidStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             var stack = AEUtil.fromFluidStack(fluid);
             if (!isStackValidForSlot(stack)) return;
             slot.setConfig(stack);
             this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.empty()) {
-                writeUpdateInfo(UPDATE_ID, fluid::writeToBuf);
+            if (fluid != FluidStack.EMPTY) {
+                writeUpdateInfo(UPDATE_ID, buf -> FluidStack.STREAM_CODEC.encode(buf, fluid));
             }
         }
         if (id == AMOUNT_CHANGE_ID) {
@@ -240,18 +236,19 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
     @OnlyIn(Dist.CLIENT)
     @Override
     public void acceptFluid(FluidStack fluidStack) {
-        if (fluidStack.getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
-            fluidStack.setAmount(1000L);
+        //noinspection UnclearExpression
+        if (((FluidStackAccessor) (Object) fluidStack).getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
+            fluidStack.setAmount(1000);
         }
 
         if (!fluidStack.isEmpty()) {
-            writeClientAction(UPDATE_ID, fluidStack::writeToBuf);
+            writeClientAction(UPDATE_ID, buf -> FluidStack.STREAM_CODEC.encode(buf, fluidStack));
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         // Only allow the amount scrolling if not stocking, as amount is useless for stocking
         if (parentWidget.isStocking()) return false;
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);

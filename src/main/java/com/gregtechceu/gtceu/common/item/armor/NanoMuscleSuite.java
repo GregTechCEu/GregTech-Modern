@@ -57,6 +57,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, new GTArmor());
         byte toggleTimer = data.toggleTimer();
         int nightVisionTimer = data.nightVisionTimer();
+
         if (type == ArmorItem.Type.HELMET) {
             boolean nightVision = data.nightVision();
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {

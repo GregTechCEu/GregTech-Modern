@@ -43,7 +43,7 @@ public class GTTransferUtils {
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
-            FluidStack fluidStack = sourceHandler.drain(currentFluid, true);
+            FluidStack fluidStack = sourceHandler.drain(currentFluid, IFluidHandler.FluidAction.SIMULATE);
             if (fluidStack.isEmpty()) {
                 continue;
             }
@@ -262,8 +262,7 @@ public class GTTransferUtils {
         return handler.insertItem(slot, stack, simulate);
     }
 
-    public static ItemStack extractItemAccountNotifiableList(
-                                                             IItemTransfer handler, int slot, int amount,
+    public static ItemStack extractItemAccountNotifiableList(IItemHandlerModifiable handler, int slot, int amount,
                                                              boolean simulate) {
         if (handler instanceof ItemTransferList transferList) {
             int index = 0;

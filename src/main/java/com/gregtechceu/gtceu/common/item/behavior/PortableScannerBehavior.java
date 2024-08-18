@@ -40,6 +40,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -118,7 +119,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
                                                   InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
-        if (player.isCrouching()) {
+        if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 setNextMode(heldItem);
                 var mode = getMode(heldItem);
@@ -313,18 +314,18 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 RecipeLogic recipeLogic = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC,
                         tileEntity.getBlockPos(), null);
                 if (recipeLogic != null) {
-                    GTRecipe recipe = recipeLogic.getLastRecipe();
+                    RecipeHolder<GTRecipe> recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("gtceu.multiblock.waiting"));
                         list.addAll(recipeLogic.getFancyTooltip());
                     } else if (recipe != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
-                        var EUt = RecipeHelper.getInputEUt(recipe);
+                        var EUt = RecipeHelper.getInputEUt(recipe.value());
                         var isInput = true;
                         if (EUt == 0) {
                             isInput = false;
-                            EUt = RecipeHelper.getOutputEUt(recipe);
+                            EUt = RecipeHelper.getOutputEUt(recipe.value());
                         }
 
                         list.add(Component.translatable(

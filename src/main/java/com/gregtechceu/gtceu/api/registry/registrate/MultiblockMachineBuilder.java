@@ -29,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -315,7 +316,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public MultiblockMachineBuilder beforeWorking(BiPredicate<IRecipeLogicMachine, RecipeHolder<GTRecipe>> beforeWorking) {
         return (MultiblockMachineBuilder) super.beforeWorking(beforeWorking);
     }
 

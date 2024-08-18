@@ -3,15 +3,15 @@ package com.gregtechceu.gtceu.api.gui.misc;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -62,13 +62,15 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
 
     default Object convertIngredient(Object ingredient) {
         if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
+            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(),
+                    (int) fluidStack.getAmount(), fluidStack.getPatch());
         }
 
         if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
             Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
-            ingredient = fluid == null ? FluidStack.empty() :
-                    FluidStack.create(fluid, fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
+            ingredient = fluid == null ? FluidStack.EMPTY :
+                    new FluidStack(fluid.builtInRegistryHolder(),
+                            (int) fluidEmiStack.getAmount(), fluidEmiStack.getComponentChanges());
         }
         return ingredient;
     }

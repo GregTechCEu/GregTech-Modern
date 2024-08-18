@@ -109,7 +109,7 @@ public abstract class GTExplosiveBlock extends Block {
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         if (explodeOnMine) {
             Entity entity = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
-            if (entity != null && !entity.isCrouching() && entity instanceof LivingEntity living) {
+            if (entity != null && !entity.isShiftKeyDown() && entity instanceof LivingEntity living) {
                 this.explode(params.getLevel(), BlockPos.containing(params.getParameter(LootContextParams.ORIGIN)),
                         living);
                 return List.of();

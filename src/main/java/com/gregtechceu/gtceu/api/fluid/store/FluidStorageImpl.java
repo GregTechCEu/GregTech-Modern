@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.fluids.store;
+package com.gregtechceu.gtceu.api.fluid.store;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;

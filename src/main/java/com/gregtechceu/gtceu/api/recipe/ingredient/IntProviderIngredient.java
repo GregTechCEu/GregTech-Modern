@@ -6,9 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -17,10 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
@@ -81,7 +74,7 @@ public class IntProviderIngredient implements ICustomIngredient {
 
     @Override
     public IngredientType<?> getType() {
-        return GTIngredientTypes.INGREDIENT_TYPES;
+        return GTIngredientTypes.INT_PROVIDER_INGREDIENT.get();
     }
 
     public int getSampledCount(@NotNull RandomSource random) {

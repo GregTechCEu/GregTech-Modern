@@ -30,7 +30,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.STEAM_BOILER_RECIP
 public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
@@ -64,13 +64,11 @@ public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
             var burnTime = GTUtil.getItemBurnTime(item.getDefaultInstance());
             if (burnTime > 0) {
                 ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                GTRecipe recipe = STEAM_BOILER_RECIPES.recipeBuilder(id)
+                RecipeHolder<GTRecipe> recipe = STEAM_BOILER_RECIPES.recipeBuilder(id)
                         .inputItems(item)
                         .duration(burnTime * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                         .build();
-                recipes.add(new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
-                        STEAM_BOILER_RECIPES.registryName.getPath() + "/" + id.getPath()),
-                        recipe));
+                recipes.add(recipe);
             }
         }
         return recipes;

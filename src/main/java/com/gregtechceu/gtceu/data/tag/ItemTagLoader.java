@@ -19,7 +19,7 @@ import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.lens;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 
 public class ItemTagLoader {

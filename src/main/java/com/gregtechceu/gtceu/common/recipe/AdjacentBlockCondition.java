@@ -4,8 +4,12 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -13,13 +17,21 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
+@NoArgsConstructor
 public class AdjacentBlockCondition extends RecipeCondition {
 
+    public static final MapCodec<AdjacentBlockCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .apply(instance, AdjacentBlockCondition::new));
     public final static AdjacentBlockCondition INSTANCE = new AdjacentBlockCondition();
+
+    public AdjacentBlockCondition(boolean isReverse) {
+        super(isReverse);
+    }
 
     @Override
     public RecipeConditionType<?> getType() {
-        return "adjacent_block";
+        return GTRecipeConditions.ADJACENT_BLOCK;
     }
 
     @Override

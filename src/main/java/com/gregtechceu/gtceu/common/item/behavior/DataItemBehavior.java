@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.InteractionResult;
@@ -50,14 +50,15 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                                 TooltipFlag isAdvanced) {
         Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) {
-            if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
-                int[] posArray = stack.getOrCreateTag().getIntArray("pos");
+            if (stack.has(GTDataComponents.DATA_COPY_POS)) {
+                BlockPos posArray = stack.get(GTDataComponents.DATA_COPY_POS);
                 tooltipComponents.add(Component.translatable(
                         "gtceu.tooltip.proxy_bind",
-                        Component.literal("" + posArray[0]).withStyle(ChatFormatting.LIGHT_PURPLE),
-                        Component.literal("" + posArray[1]).withStyle(ChatFormatting.LIGHT_PURPLE),
-                        Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
+                        Component.literal("" + posArray.getX()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                        Component.literal("" + posArray.getY()).withStyle(ChatFormatting.LIGHT_PURPLE),
+                        Component.literal("" + posArray.getZ()).withStyle(ChatFormatting.LIGHT_PURPLE)));
             }
+
         } else {
             Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
             if (recipes != null && !recipes.isEmpty()) {
@@ -85,14 +86,11 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             MetaMachine machine = MetaMachine.getMachine(level, pos);
             Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
             if (machine instanceof MEPatternBufferPartMachine && researchData == null) {
-                stack.getOrCreateTag().putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
+                stack.set(GTDataComponents.DATA_COPY_POS, pos);
             } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
-                if (stack.hasTag()) {
-                    if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY)) {
-                        int[] posArray = stack.getOrCreateTag().getIntArray("pos");
-                        BlockPos bufferPos = new BlockPos(posArray[0], posArray[1], posArray[2]);
-                        proxy.setBuffer(bufferPos);
-                    }
+                if (stack.has(GTDataComponents.DATA_COPY_POS)) {
+                    BlockPos bufferPos = stack.get(GTDataComponents.DATA_COPY_POS);
+                    proxy.setBuffer(bufferPos);
                 }
             } else {
                 return InteractionResult.PASS;

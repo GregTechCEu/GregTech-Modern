@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.RelativeSide;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -20,22 +18,22 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Set;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -153,7 +151,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         if (!isRemote()) {
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputHatch", writeConfigToTag(player.registryAccess()));
-            dataStick.setTag(tag);
+            dataStick.set(GTDataComponents.DATA_COPY_TAG, CustomData.of(tag));
             dataStick.set(DataComponents.ITEM_NAME, Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
@@ -161,18 +159,18 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     }
 
     @Override
-    public final InteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
-        CompoundTag tag = dataStick.getTag();
+    public final ItemInteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
+        CustomData tag = dataStick.get(GTDataComponents.DATA_COPY_TAG);
         if (tag == null || !tag.contains("MEInputHatch")) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!isRemote()) {
-            readConfigFromTag(player.registryAccess(), tag.getCompound("MEInputHatch"));
+            readConfigFromTag(player.registryAccess(), tag.copyTag().getCompound("MEInputHatch"));
             this.updateTankSubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return ItemInteractionResult.sidedSuccess(isRemote());
     }
 
     ////////////////////////////////
@@ -213,10 +211,5 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
         if (tag.contains("GhostCircuit")) {
             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
         }
-    }
-
-    @Override
-    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
-        return Set.of(orientation.getSide(RelativeSide.FRONT));
     }
 }

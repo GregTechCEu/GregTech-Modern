@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -47,7 +48,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
         for (IRecipeHandler<SizedIngredient> handler : handlers) {

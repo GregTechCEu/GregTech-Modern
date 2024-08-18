@@ -57,13 +57,14 @@ jobs:
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
 
-      - name: Update CHANGELOG
-        id: changelog
-        uses: requarks/changelog-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fromTag: ${{ github.ref_name }}
-          toTag: ${{ inputs.lastReleaseTag }}
+# DISABLED; COPY FROM 1.20
+      #- name: Update CHANGELOG
+      #  id: changelog
+      #  uses: requarks/changelog-action@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    fromTag: ${{ github.ref_name }}
+      #    toTag: ${{ inputs.lastReleaseTag }}
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: mc-publish-forge

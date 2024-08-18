@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
@@ -303,7 +304,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
+    public List<Long> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Long> left, @Nullable String slotName,
                                         boolean simulate) {
         IEnergyContainer capability = this;
         long sum = left.stream().reduce(0L, Long::sum);

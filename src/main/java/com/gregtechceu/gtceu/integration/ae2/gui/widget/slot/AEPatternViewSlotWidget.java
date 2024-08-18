@@ -3,15 +3,15 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget.slot;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 public class AEPatternViewSlotWidget extends SlotWidget {
@@ -30,8 +30,7 @@ public class AEPatternViewSlotWidget extends SlotWidget {
         super(inventory, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
     }
 
-    public AEPatternViewSlotWidget(
-                                   IItemTransfer itemHandler,
+    public AEPatternViewSlotWidget(IItemHandlerModifiable itemHandler,
                                    int slotIndex,
                                    int xPosition,
                                    int yPosition,
@@ -40,8 +39,7 @@ public class AEPatternViewSlotWidget extends SlotWidget {
         super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
     }
 
-    public AEPatternViewSlotWidget(
-                                   IItemTransfer itemHandler, int slotIndex, int xPosition, int yPosition) {
+    public AEPatternViewSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition) {
         super(itemHandler, slotIndex, xPosition, yPosition);
     }
 

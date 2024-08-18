@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class MEPatternBufferProxyRecipeHandler<T> extends NotifiableRecipeHandle
     }
 
     @Override
-    public List<T> handleRecipeInner(IO io, GTRecipe recipe, List<T> left, @Nullable String slotName,
+    public List<T> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<T> left, @Nullable String slotName,
                                      boolean simulate) {
         for (IRecipeHandler<T> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
@@ -82,12 +83,12 @@ public class MEPatternBufferProxyRecipeHandler<T> extends NotifiableRecipeHandle
     }
 
     @Override
-    public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+    public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
         handlers.forEach(handler -> handler.preWorking(holder, io, recipe));
     }
 
     @Override
-    public void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+    public void postWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
         handlers.forEach(handler -> handler.postWorking(holder, io, recipe));
     }
 

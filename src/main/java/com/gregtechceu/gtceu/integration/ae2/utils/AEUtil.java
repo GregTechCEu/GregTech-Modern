@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEFluidKey;
@@ -17,7 +16,7 @@ public class AEUtil {
 
     public static @Nullable GenericStack fromFluidStack(FluidStack stack) {
         if (stack == null || stack.isEmpty()) return null;
-        var key = AEFluidKey.of(stack.getFluid(), stack.getTag());
+        var key = AEFluidKey.of(stack);
         return new GenericStack(key, stack.getAmount());
     }
 
@@ -26,11 +25,11 @@ public class AEUtil {
         if (key instanceof AEFluidKey fluidKey) {
             return toFluidStack(fluidKey, stack.amount());
         }
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     public static FluidStack toFluidStack(AEFluidKey key, long amount) {
-        return FluidStack.create(key.getFluid(), amount, key.getTag());
+        return key.toStack((int) amount);
     }
 
     public static ItemStack[] toItemStacks(GenericStack stack) {
@@ -52,6 +51,6 @@ public class AEUtil {
 
     public static boolean matches(AEFluidKey key, FluidStack stack) {
         return !stack.isEmpty() && key.getFluid().isSame(stack.getFluid()) &&
-                Objects.equals(key.getTag(), stack.getTag());
+                Objects.equals(key.toStack(1).getComponents(), stack.getComponents());
     }
 }

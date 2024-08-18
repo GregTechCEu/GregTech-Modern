@@ -116,6 +116,7 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.Aluminium;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
@@ -780,7 +781,7 @@ public class GTMachines {
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
     public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
     public static MachineDefinition STEEL_CRATE = registerCrate(GTMaterials.Steel, 72, "Steel Crate");
-    public static MachineDefinition ALUMINIUM_CRATE = registerCrate(GTMaterials.Aluminium, 90, "Aluminium Crate");
+    public static MachineDefinition ALUMINIUM_CRATE = registerCrate(Aluminium, 90, "Aluminium Crate");
     public static MachineDefinition STAINLESS_STEEL_CRATE = registerCrate(GTMaterials.StainlessSteel, 108,
             "Stainless Steel Crate");
     public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, "Titanium Crate");
@@ -793,7 +794,7 @@ public class GTMachines {
             "Bronze Drum");
     public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, (int) (64 * FluidHelper.getBucket()),
             "Steel Drum");
-    public static MachineDefinition ALUMINIUM_DRUM = registerDrum(GTMaterials.Aluminium,
+    public static MachineDefinition ALUMINIUM_DRUM = registerDrum(Aluminium,
             (int) (128 * FluidHelper.getBucket()), "Aluminium Drum");
     public static MachineDefinition STAINLESS_STEEL_DRUM = registerDrum(GTMaterials.StainlessSteel,
             (int) (256 * FluidHelper.getBucket()), "Stainless Steel Drum");

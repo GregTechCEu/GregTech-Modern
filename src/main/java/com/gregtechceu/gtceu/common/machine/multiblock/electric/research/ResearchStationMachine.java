@@ -19,6 +19,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,23 +117,24 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         // Custom recipe matching logic to override output space test
         @Nullable
         @Override
-        protected Iterator<GTRecipe> searchRecipe() {
+        protected Iterator<RecipeHolder<GTRecipe>> searchRecipe() {
             IRecipeCapabilityHolder holder = this.machine;
             if (!holder.hasProxies()) return null;
-            var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
+            var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipeHolder -> {
+                GTRecipe recipe = recipeHolder.value();
                 if (recipe.isFuel) return false;
                 if (!holder.hasProxies()) return false;
-                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs, false);
+                var result = GTRecipe.matchRecipeContents(recipeHolder, IO.IN, holder, recipe.inputs, false);
                 if (!result.isSuccess()) return false;
                 if (recipe.hasTick()) {
-                    result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs, true);
+                    result = GTRecipe.matchRecipeContents(recipeHolder, IO.IN, holder, recipe.tickInputs, true);
                     return result.isSuccess();
                 }
                 return true;
             });
             boolean any = false;
             while (iterator.hasNext()) {
-                GTRecipe recipe = iterator.next();
+                RecipeHolder<GTRecipe> recipe = iterator.next();
                 if (recipe == null) continue;
                 any = true;
                 break;
@@ -143,25 +145,25 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             }
 
             for (GTRecipeType.ICustomRecipeLogic logic : machine.getRecipeType().getCustomRecipeLogicRunners()) {
-                GTRecipe recipe = logic.createCustomRecipe(holder);
+                RecipeHolder<GTRecipe> recipe = logic.createCustomRecipe(holder);
                 if (recipe != null) return Collections.singleton(recipe).iterator();
             }
             return Collections.emptyIterator();
         }
 
         @Override
-        public boolean checkMatchedRecipeAvailable(GTRecipe match) {
+        public boolean checkMatchedRecipeAvailable(RecipeHolder<GTRecipe> match) {
             var modified = machine.fullModifyRecipe(match);
             if (modified != null) {
-                if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
-                        !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
+                if (!modified.value().inputs.containsKey(CWURecipeCapability.CAP) &&
+                        !modified.value().tickInputs.containsKey(CWURecipeCapability.CAP)) {
                     return true;
                 }
                 // skip "can fit" checks, it can always fit
-                if (modified.checkConditions(this).isSuccess() &&
-                        this.matchRecipeNoOutput(modified, machine).isSuccess() &&
-                        this.matchTickRecipeNoOutput(modified, machine).isSuccess()) {
-                    setupRecipe(modified);
+                if (GTRecipe.checkConditions(match, this).isSuccess() &&
+                        this.matchRecipeNoOutput(match, machine).isSuccess() &&
+                        this.matchTickRecipeNoOutput(match, machine).isSuccess()) {
+                    setupRecipe(match);
                 }
                 if (lastRecipe != null && getStatus() == Status.WORKING) {
                     lastOriginRecipe = match;
@@ -172,24 +174,24 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             return false;
         }
 
-        public GTRecipe.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
+        public GTRecipe.ActionResult matchRecipeNoOutput(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
             if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-            var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs, false);
+            var result = GTRecipe.matchRecipeContents(recipe, IO.IN, holder, recipe.value().inputs, false);
             if (!result.isSuccess()) return result;
             return GTRecipe.ActionResult.SUCCESS;
         }
 
-        public GTRecipe.ActionResult matchTickRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
-            if (recipe.hasTick()) {
+        public GTRecipe.ActionResult matchTickRecipeNoOutput(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
+            if (recipe.value().hasTick()) {
                 if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-                var result = recipe.matchRecipeContents(IO.IN, holder, recipe.tickInputs, true);
+                var result = GTRecipe.matchRecipeContents(recipe, IO.IN, holder, recipe.value().tickInputs, true);
                 if (!result.isSuccess()) return result;
             }
             return GTRecipe.ActionResult.SUCCESS;
         }
 
         @Override
-        public void setupRecipe(GTRecipe recipe) {
+        public void setupRecipe(RecipeHolder<GTRecipe> recipe) {
             // lock the object holder on recipe start
             IObjectHolder holder = getMachine().getObjectHolder();
             holder.setLocked(true);
@@ -199,14 +201,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 if (!machine.beforeWorking(recipe)) {
                     return;
                 }
-                recipe.preWorking(this.machine);
+                GTRecipe.preWorking(recipe, this.machine);
 
                 // do not consume inputs here, consume them on completion
                 recipeDirty = false;
                 lastRecipe = recipe;
                 setStatus(Status.WORKING);
                 progress = 0;
-                duration = recipe.duration;
+                duration = recipe.value().duration;
             }
         }
 
@@ -219,16 +221,16 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             holder.setHeldItem(ItemStack.EMPTY);
 
             ItemStack outputItem = ItemStack.EMPTY;
-            if (lastRecipe.getOutputContents(ItemRecipeCapability.CAP).size() >= 1) {
+            if (getLastRecipe().value().getOutputContents(ItemRecipeCapability.CAP).size() >= 1) {
                 outputItem = ItemRecipeCapability.CAP
-                        .of(getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(getLastRecipe().value().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
             }
             holder.setDataItem(outputItem);
             holder.setLocked(false);
         }
 
         @Override
-        protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
+        protected boolean handleRecipeIO(RecipeHolder<GTRecipe> recipe, IO io) {
             if (io != IO.OUT) {
                 return super.handleRecipeIO(recipe, io);
             }
@@ -236,7 +238,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         }
 
         @Override
-        protected boolean handleTickRecipeIO(GTRecipe recipe, IO io) {
+        protected boolean handleTickRecipeIO(RecipeHolder<GTRecipe> recipe, IO io) {
             if (io != IO.OUT) {
                 return super.handleTickRecipeIO(recipe, io);
             }

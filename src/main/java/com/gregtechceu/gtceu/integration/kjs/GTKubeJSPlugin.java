@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.*;
@@ -205,6 +206,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
         event.add("RecipeCapability", RecipeCapability.class);
+        event.add("ChanceLogic", ChanceLogic.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);

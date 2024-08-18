@@ -33,7 +33,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.common.item.TapeBehaviour;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
@@ -705,7 +704,7 @@ public class GTItems {
                     x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
-                    (itemStack) -> itemStack.get(GTDataComponents.LIGHTER_OPEN) ? 1.0f : 0.0f))
+                    (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
             .item("platinum_lighter", ComponentItem::create)
@@ -717,7 +716,7 @@ public class GTItems {
                     x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
-                    (itemStack) -> itemStack.get(GTDataComponents.LIGHTER_OPEN) ? 1.0f : 0.0f))
+                    (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
             .register();;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)

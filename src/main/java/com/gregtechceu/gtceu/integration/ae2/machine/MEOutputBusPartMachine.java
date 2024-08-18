@@ -7,26 +7,23 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemGridWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -120,14 +117,14 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
     private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
-        private ItemStackTransfer itemTransfer;
+        private CustomItemStackHandler itemTransfer;
 
         public InaccessibleInfiniteHandler(MetaMachine holder) {
             super(holder, 0, IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
 
-        public ItemStackTransfer getTransfer() {
+        public CustomItemStackHandler getTransfer() {
             if (this.itemTransfer == null) {
                 this.itemTransfer = new ItemStackTransferDelegate();
             }
@@ -135,8 +132,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         }
 
         @Override
-        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                            @Nullable String slotName, boolean simulate) {
+        public @Nullable List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+                                                                 @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, handlerIO, getTransfer());
         }
 

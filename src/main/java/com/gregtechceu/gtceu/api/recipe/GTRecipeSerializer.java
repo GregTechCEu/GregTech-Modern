@@ -54,12 +54,26 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return new Tuple<>(capability, contents);
     }
 
+    public static Tuple<RecipeCapability<?>, ChanceLogic> changeLogicEntryReader(RegistryFriendlyByteBuf buf) {
+        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readUtf());
+        ChanceLogic logic = GTRegistries.CHANCE_LOGICS.get(buf.readUtf());
+        return new Tuple<>(capability, logic);
+    }
+
     public static void entryWriter(RegistryFriendlyByteBuf buf,
                                    Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
         buf.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
         writeCollection(contents, buf, capability.serializer::toNetworkContent);
+    }
+
+    public static void changeLogicEntryWriter(RegistryFriendlyByteBuf buf,
+                                   Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
+        RecipeCapability<?> capability = entry.getKey();
+        ChanceLogic logic = entry.getValue();
+        buf.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
+        buf.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic));
     }
 
     public static RecipeCondition conditionReader(RegistryFriendlyByteBuf buf) {
@@ -78,6 +92,12 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
+    public static Map<RecipeCapability<?>, ChanceLogic> logicTuplesToMap(List<Tuple<RecipeCapability<?>, ChanceLogic>> entries) {
+        Map<RecipeCapability<?>, ChanceLogic> map = new HashMap<>();
+        entries.forEach(entry -> map.put(entry.getA(), entry.getB()));
+        return map;
+    }
+
     @NotNull
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
@@ -91,20 +111,17 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
 
-        Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-
         List<RecipeCondition> conditions = readCollection(buf, GTRecipeSerializer::conditionReader);
+
+        Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = logicTuplesToMap(
+                readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
+        Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = logicTuplesToMap(
+                readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
+        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = logicTuplesToMap(
+                readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
+        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = logicTuplesToMap(
+                readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
+
         List<?> ingredientActions = new ArrayList<>();
         if (GTCEu.isKubeJSLoaded()) {
             ingredientActions = KJSCallWrapper.getIngredientActions(buf);
@@ -141,18 +158,14 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipeSerializer.writeCollection(recipe.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         GTRecipeSerializer.writeCollection(recipe.conditions, buf, GTRecipeSerializer::conditionWriter);
 
-        buf.writeMap(recipe.inputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.outputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.tickInputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.tickOutputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+        GTRecipeSerializer.writeCollection(recipe.inputChanceLogics.entrySet(), buf,
+                GTRecipeSerializer::changeLogicEntryWriter);
+        GTRecipeSerializer.writeCollection(recipe.outputChanceLogics.entrySet(), buf,
+                GTRecipeSerializer::changeLogicEntryWriter);
+        GTRecipeSerializer.writeCollection(recipe.tickInputChanceLogics.entrySet(), buf,
+                GTRecipeSerializer::changeLogicEntryWriter);
+        GTRecipeSerializer.writeCollection(recipe.tickOutputChanceLogics.entrySet(), buf,
+                GTRecipeSerializer::changeLogicEntryWriter);
 
         if (GTCEu.isKubeJSLoaded()) {
             GTRecipeSerializer.KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);

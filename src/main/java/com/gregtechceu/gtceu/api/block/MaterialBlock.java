@@ -277,4 +277,9 @@ public class MaterialBlock extends AppearanceBlock {
         }
         return false;
     }
+
+    @Override
+    public void entityInside(BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_) {
+        super.entityInside(p_60495_, p_60496_, p_60497_, p_60498_);
+    }
 }

@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.common.block.explosive.GTExplosiveBlock;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,10 +31,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,28 +76,24 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        ItemStack itemStack = player.getItemInHand(usedHand);
-        CompoundTag tag = itemStack.getOrCreateTag();
-        if (canOpen && player.isCrouching()) {
-            tag.putBoolean(LIGHTER_OPEN, !tag.getBoolean(LIGHTER_OPEN));
-            itemStack.setTag(tag);
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+        boolean isOpen = item.getOrDefault(GTDataComponents.LIGHTER_OPEN, false);
+        if (canOpen && player.isShiftKeyDown()) {
+            item.set(GTDataComponents.LIGHTER_OPEN, !isOpen);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        // ItemStack itemStack = player.getItemInHand(usedHand);
-        CompoundTag tag = itemStack.getOrCreateTag();
         Player player = context.getPlayer();
-        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching()) && consumeFuel(player, itemStack)) {
+        if ((!canOpen || (itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false)) && !player.isShiftKeyDown()) && consumeFuel(player, itemStack)) {
             player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                     GTValues.RNG.nextFloat() * 0.4F + 0.8F);
             BlockState state = context.getLevel().getBlockState(context.getClickedPos());
             Block block = state.getBlock();
             if (block instanceof TntBlock tnt) {
-                tnt.onCaughtFire(null, context.getLevel(), context.getClickedPos(), null, player);
+                tnt.onCaughtFire(state, context.getLevel(), context.getClickedPos(), null, player);
                 context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
                 return InteractionResult.SUCCESS;
@@ -134,35 +133,25 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     private int getUsesLeft(ItemStack stack) {
         if (usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
-                    .resolve().orElse(null);
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
             if (fluidHandlerItem == null)
                 return 0;
 
-            net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE,
-                    IFluidHandler.FluidAction.SIMULATE);
+            FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
             return fluid.isEmpty() ? 0 : fluid.getAmount();
         }
         if (hasMultipleUses) {
-            CompoundTag compound = stack.getOrCreateTag();
-            if (compound.contains(USES_LEFT)) {
-                return compound.getInt(USES_LEFT);
-            }
-            compound.putInt(USES_LEFT, maxUses);
-            stack.setTag(compound);
-            return compound.getInt(USES_LEFT);
+            return maxUses - stack.getOrDefault(DataComponents.DAMAGE, 0);
         }
         return stack.getCount();
     }
 
     private void setUsesLeft(Player player, @NotNull ItemStack stack, int usesLeft) {
         if (usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
-                    .resolve().orElse(null);
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
             if (fluidHandlerItem != null) {
 
-                net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE,
-                        IFluidHandler.FluidAction.SIMULATE);
+                FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
                 if (!fluid.isEmpty()) {
                     fluidHandlerItem.drain(fluid.getAmount() - usesLeft, IFluidHandler.FluidAction.EXECUTE);
                 }
@@ -172,7 +161,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 stack.setCount(0);
                 player.addItem(new ItemStack(destroyItem));
             } else {
-                stack.getOrCreateTag().putInt(USES_LEFT, usesLeft);
+                stack.set(DataComponents.DAMAGE, maxUses - usesLeft);
             }
         } else {
             stack.setCount(usesLeft);
@@ -182,12 +171,11 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
         if (usesFluid) {
-            IFluidHandlerItem fluidHandlerItem = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null)
-                    .resolve().orElse(null);
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(Capabilities.FluidHandler.ITEM, null);
             if (fluidHandlerItem == null)
                 return 0.0f;
 
-            net.minecraftforge.fluids.FluidStack fluid = fluidHandlerItem.getFluidInTank(0);
+            FluidStack fluid = fluidHandlerItem.getFluidInTank(0);
             return fluid.isEmpty() ? 0.0f : (float) fluid.getAmount() / (float) fluidHandlerItem.getTankCapacity(0);
         } else if (hasMultipleUses) {
             return (float) getUsesLeft(stack) / (float) maxUses;
@@ -214,7 +202,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level,
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(
                 Component.translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip"));

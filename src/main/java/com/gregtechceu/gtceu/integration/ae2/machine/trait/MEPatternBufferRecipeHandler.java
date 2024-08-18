@@ -5,22 +5,24 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -39,10 +41,10 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     protected List<Runnable> listeners = new ArrayList<>();
 
     @Getter
-    protected final NotifiableRecipeHandlerTrait<Ingredient> itemInputHandler;
+    protected final NotifiableRecipeHandlerTrait<SizedIngredient> itemInputHandler;
 
     @Getter
-    protected final NotifiableRecipeHandlerTrait<FluidIngredient> fluidInputHandler;
+    protected final NotifiableRecipeHandlerTrait<SizedFluidIngredient> fluidInputHandler;
 
     public MEPatternBufferRecipeHandler(MEPatternBufferPartMachine ioBuffer) {
         super(ioBuffer);
@@ -59,15 +61,15 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         return (MEPatternBufferPartMachine) super.getMachine();
     }
 
-    public List<Ingredient> handleItemInner(
-                                            GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+    public List<SizedIngredient> handleItemInner(
+                                            RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left, boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
-        if (recipe.id.equals(lockedRecipeId) && lockedSlot >= 0) {
+        if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleItemInternal(left, simulate);
         }
 
-        this.lockedRecipeId = recipe.id;
-        List<Ingredient> contents = left;
+        this.lockedRecipeId = recipe.id();
+        List<SizedIngredient> contents = left;
         for (int i = 0; i < internalInv.length; i++) {
             if (internalInv[i].isItemEmpty()) continue;
             contents = internalInv[i].handleItemInternal(contents, simulate);
@@ -81,15 +83,15 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         return left;
     }
 
-    public List<FluidIngredient> handleFluidInner(
-                                                  GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
+    public List<SizedFluidIngredient> handleFluidInner(
+            RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left, boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
-        if (recipe.id.equals(lockedRecipeId) && lockedSlot >= 0) {
+        if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleFluidInternal(left, simulate);
         }
 
-        this.lockedRecipeId = recipe.id;
-        List<FluidIngredient> contents = left;
+        this.lockedRecipeId = recipe.id();
+        List<SizedFluidIngredient> contents = left;
         for (int i = 0; i < internalInv.length; i++) {
             if (internalInv[i].isFluidEmpty()) continue;
             contents = internalInv[i].handleFluidInternal(contents, simulate);
@@ -114,7 +116,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         return MANAGED_FIELD_HOLDER;
     }
 
-    public class ItemInputHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
+    public class ItemInputHandler extends NotifiableRecipeHandlerTrait<SizedIngredient> {
 
         public ItemInputHandler(MEPatternBufferPartMachine machine) {
             super(machine);
@@ -136,8 +138,8 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                  @Nullable String slotName, boolean simulate) {
+        public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
             if (io != IO.IN) return left;
             var machine = getMachine();
             machine.getCircuitInventorySimulated().handleRecipeInner(io, recipe, left, slotName, simulate);
@@ -173,18 +175,18 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public RecipeCapability<Ingredient> getCapability() {
+        public RecipeCapability<SizedIngredient> getCapability() {
             return ItemRecipeCapability.CAP;
         }
 
         @Override
-        public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+        public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
             super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }
     }
 
-    public class FluidInputHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+    public class FluidInputHandler extends NotifiableRecipeHandlerTrait<SizedFluidIngredient> {
 
         public FluidInputHandler(MEPatternBufferPartMachine machine) {
             super(machine);
@@ -206,12 +208,11 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(
-                                                       IO io,
-                                                       GTRecipe recipe,
-                                                       List<FluidIngredient> left,
-                                                       @Nullable String slotName,
-                                                       boolean simulate) {
+        public List<SizedFluidIngredient> handleRecipeInner(IO io,
+                                                            RecipeHolder<GTRecipe> recipe,
+                                                            List<SizedFluidIngredient> left,
+                                                            @Nullable String slotName,
+                                                            boolean simulate) {
             if (io != IO.IN) return left;
             getMachine().getShareTank().handleRecipeInner(io, recipe, left, slotName, simulate);
             return handleFluidInner(recipe, left, simulate);
@@ -245,37 +246,36 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public RecipeCapability<FluidIngredient> getCapability() {
+        public RecipeCapability<SizedFluidIngredient> getCapability() {
             return FluidRecipeCapability.CAP;
         }
 
         @Override
-        public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+        public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
             super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }
     }
 
-    private static List<Ingredient> copyIngredients(List<Ingredient> ingredients) {
-        List<Ingredient> result = new ObjectArrayList<>(ingredients.size());
-        for (Ingredient ingredient : ingredients) {
+    private static List<SizedIngredient> copyIngredients(List<SizedIngredient> ingredients) {
+        List<SizedIngredient> result = new ObjectArrayList<>(ingredients.size());
+        for (SizedIngredient ingredient : ingredients) {
             result.add(ItemRecipeCapability.CAP.copyInner(ingredient));
         }
         return result;
     }
 
-    private static List<FluidIngredient> copyFluidIngredients(List<FluidIngredient> ingredients) {
-        List<FluidIngredient> result = new ObjectArrayList<>(ingredients.size());
-        for (FluidIngredient ingredient : ingredients) {
+    private static List<SizedFluidIngredient> copyFluidIngredients(List<SizedFluidIngredient> ingredients) {
+        List<SizedFluidIngredient> result = new ObjectArrayList<>(ingredients.size());
+        for (SizedFluidIngredient ingredient : ingredients) {
             result.add(FluidRecipeCapability.CAP.copyInner(ingredient));
         }
         return result;
     }
 
-    public static Pair<Object2LongOpenHashMap<Item>, Object2LongOpenHashMap<Fluid>> mergeInternalSlot(
-                                                                                                      MEPatternBufferPartMachine.InternalSlot[] internalSlots) {
-        Object2LongOpenHashMap<Item> items = new Object2LongOpenHashMap<>();
-        Object2LongOpenHashMap<Fluid> fluids = new Object2LongOpenHashMap<>();
+    public static Pair<Object2IntOpenHashMap<Item>, Object2IntOpenHashMap<Fluid>> mergeInternalSlot(MEPatternBufferPartMachine.InternalSlot[] internalSlots) {
+        Object2IntOpenHashMap<Item> items = new Object2IntOpenHashMap<>();
+        Object2IntOpenHashMap<Fluid> fluids = new Object2IntOpenHashMap<>();
         for (MEPatternBufferPartMachine.InternalSlot internalSlot : internalSlots) {
             for (ItemStack stack : internalSlot.getItemInputs()) {
                 items.addTo(stack.getItem(), stack.getCount());

@@ -58,7 +58,7 @@ public class RecipeLogicTest {
             return;
         }
 
-        GTRecipe recipe = GTRecipeBuilder.ofRaw()
+        RecipeHolder<GTRecipe> recipe = GTRecipeBuilder.ofRaw()
                 .id(GTCEu.id("test"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -68,7 +68,7 @@ public class RecipeLogicTest {
 
         if (!hasInjectedRecipe) {
             ((RecipeManagerAccessor) helper.getLevel().getRecipeManager()).getRawRecipes()
-                    .get(GTRecipeTypes.CHEMICAL_RECIPES).add(new RecipeHolder<>(GTCEu.id("test"), recipe));
+                    .get(GTRecipeTypes.CHEMICAL_RECIPES).add(recipe);
             hasInjectedRecipe = true;
         }
 
@@ -95,7 +95,7 @@ public class RecipeLogicTest {
         helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s".formatted(stackCount));
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        GTRecipe prev = arl.getLastRecipe();
+        RecipeHolder<GTRecipe> prev = arl.getLastRecipe();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         arl.serverTick();

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.item.*;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -56,12 +57,11 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HangingSignItem;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -78,6 +78,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -1584,7 +1585,7 @@ public class GTBlocks {
 
     public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
             .block("brittle_charcoal", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                             Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
             .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
             .loot((table, block) -> table.add(block,
@@ -1595,8 +1596,8 @@ public class GTBlocks {
             .item((b, p) -> new RendererBlockItem(b, p) {
 
                 @Override
-                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                            TooltipFlag isAdvanced) {
+                public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext level,
+                                            List<Component> tooltipComponents, TooltipFlag isAdvanced) {
                     super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
                     tooltipComponents.add(1, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.0"));
                     tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
@@ -1730,7 +1731,7 @@ public class GTBlocks {
             metalsheetBuilder.put(dyeColor, REGISTRATE.block("%s_metal_sheet".formatted(dyeColor.getName()), Block::new)
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
-                    .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                    .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
                     .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
                             prov.models().cubeAll(ctx.getName(),
                                     GTCEu.id("block/decoration/metalsheet_%s".formatted(dyeColor.getName())))))
@@ -1745,7 +1746,7 @@ public class GTBlocks {
                     REGISTRATE.block("%s_large_metal_sheet".formatted(dyeColor.getName()), Block::new)
                             .initialProperties(() -> Blocks.IRON_BLOCK)
                             .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
-                            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                            .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
                             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeAll(ctx.getName(),
                                     GTCEu.id("block/decoration/large_metalsheet_%s".formatted(dyeColor.getName())))))
                             .simpleItem()

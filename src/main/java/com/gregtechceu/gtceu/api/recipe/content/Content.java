@@ -2,9 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -16,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -102,7 +101,9 @@ public class Content {
 
     @OnlyIn(Dist.CLIENT)
     public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof SizedIngredient sized && sized.getInner() instanceof IntProviderIngredient ingredient) {
+        //@formatter:off
+        if (content instanceof SizedIngredient sized &&
+                sized.ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
@@ -120,6 +121,7 @@ public class Content {
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
+        //@formatter:on
     }
 
     @OnlyIn(Dist.CLIENT)

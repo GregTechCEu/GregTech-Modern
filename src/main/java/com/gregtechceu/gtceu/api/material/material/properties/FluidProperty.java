@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageImpl;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageImpl;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 
 import com.gregtechceu.gtceu.api.material.material.Material;

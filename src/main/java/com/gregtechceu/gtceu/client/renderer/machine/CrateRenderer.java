@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -35,8 +35,8 @@ public class CrateRenderer extends MachineRenderer {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof CrateMachine crate && crate.isTaped()) {
             for (var direction : GTUtil.DIRECTIONS) {
-                quads.add(StaticFaceBakery.bakeFace(
-                        StaticFaceBakery.SLIGHTLY_OVER_BLOCK, direction,
+                quads.add(FaceQuad.bakeFace(
+                        SLIGHTLY_OVER_BLOCK, direction,
                         ModelFactory.getBlockSprite(MAINTENANCE_OVERLAY_TAPED), modelState, -1, 0, true, true));
             }
         }

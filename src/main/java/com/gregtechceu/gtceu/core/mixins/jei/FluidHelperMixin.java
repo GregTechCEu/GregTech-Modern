@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.jei;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FluidHelper.class)
 public class FluidHelperMixin {
 
-    @Inject(method = "getTooltip(Lmezz/jei/api/gui/builder/ITooltipBuilder;Lnet/minecraftforge/fluids/FluidStack;Lnet/minecraft/world/item/TooltipFlag;)V",
+    @Inject(method = "getTooltip(Lmezz/jei/api/gui/builder/ITooltipBuilder;Lnet/neoforged/neoforge/fluids/FluidStack;Lnet/minecraft/world/item/TooltipFlag;)V",
             at = @At("TAIL"),
             remap = false,
             require = 0)

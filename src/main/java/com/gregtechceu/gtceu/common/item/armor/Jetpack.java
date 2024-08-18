@@ -57,7 +57,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hoverMode = !hoverMode;
             toggleTimer = 5;
-            final boolean finalHover = hover;
+            final boolean finalHover = hoverMode;
             stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
             if (!world.isClientSide) {
                 player.displayClientMessage(

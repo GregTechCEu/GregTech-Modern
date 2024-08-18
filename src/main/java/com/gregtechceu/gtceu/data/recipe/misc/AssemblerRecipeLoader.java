@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Items;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;

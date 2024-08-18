@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.data.item.GTItems;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -20,13 +21,14 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -105,7 +107,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     public ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                        BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isCrouching() && !isTaped) {
+        if (player.isShiftKeyDown() && !isTaped) {
             if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
                 if (!player.isCreative()) {
                     stack.shrink(1);
@@ -120,11 +122,11 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     @Override
     public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
         IMachineLife.super.onMachinePlaced(player, stack);
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
+        if (!tag.isEmpty()) {
             this.isTaped = tag.contains("taped") && tag.getBoolean("taped");
             if (isTaped) {
-                this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+                this.inventory.storage.deserializeNBT(player.registryAccess(), tag.getCompound("inventory"));
             }
 
             tag.remove("taped");
@@ -137,7 +139,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
         IDropSaveMachine.super.saveToItem(tag);
         if (isTaped) {
             tag.putBoolean("taped", isTaped);
-            tag.put("inventory", inventory.storage.serializeNBT());
+            tag.put("inventory", inventory.storage.serializeNBT(Platform.getFrozenRegistry()));
         }
     }
 

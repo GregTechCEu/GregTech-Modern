@@ -34,6 +34,9 @@ import net.neoforged.neoforge.client.event.*;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
  * @author KilaBash
@@ -53,6 +56,7 @@ public class ClientProxy {
         modBus.addListener(ClientProxy::onRegisterItemDecorations);
         modBus.addListener(ClientProxy::registerKeyBindings);
         modBus.addListener(ClientProxy::onRegisterGuiOverlays);
+        modBus.addListener(ClientProxy::onRegisterParticleProviders);
     }
 
     public static void init() {
@@ -61,7 +65,6 @@ public class ClientProxy {
         CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
     }
 
-    @SubscribeEvent
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
@@ -71,7 +74,6 @@ public class ClientProxy {
         event.registerBlockEntityRenderer(GTBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);
     }
 
-    @SubscribeEvent
     public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof IGTTool || item instanceof IComponentItem) {
@@ -80,18 +82,15 @@ public class ClientProxy {
         }
     }
 
-    @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         KeyBind.onRegisterKeyBinds(event);
     }
 
-    @SubscribeEvent
     public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
         event.registerAboveAll(GTCEu.id("hud"), new HudGuiOverlay());
     }
 
-    @SubscribeEvent
-    public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
     }
 }

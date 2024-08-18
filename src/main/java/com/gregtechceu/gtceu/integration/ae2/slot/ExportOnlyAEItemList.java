@@ -5,14 +5,15 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     @Getter
     protected ExportOnlyAEItemSlot[] inventory;
 
-    private ItemStackTransfer itemTransfer;
+    private CustomItemStackHandler itemTransfer;
 
     public ExportOnlyAEItemList(MetaMachine holder, int slots) {
         this(holder, slots, ExportOnlyAEItemSlot::new);
@@ -45,7 +46,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
     }
 
-    public ItemStackTransfer getTransfer() {
+    public CustomItemStackHandler getTransfer() {
         if (this.itemTransfer == null) {
             this.itemTransfer = new ItemStackTransferDelegate(inventory);
         }
@@ -92,8 +93,8 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                              @Nullable String slotName, boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
     }
 
@@ -120,7 +121,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class ItemStackTransferDelegate extends ItemStackTransfer {
+    private static class ItemStackTransferDelegate extends CustomItemStackHandler {
 
         private final ExportOnlyAEItemSlot[] inventory;
 
@@ -145,13 +146,12 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
 
         @Override
-        public ItemStack insertItem(
-                                    int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (amount == 0) return ItemStack.EMPTY;
             validateSlotIndex(slot);
             return inventory[slot].extractItem(0, amount, simulate);
@@ -175,13 +175,13 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
 
         @Override
-        public ItemStackTransfer copy() {
+        public CustomItemStackHandler copy() {
             // because recipe testing uses copy transfer instead of simulated operations
             return new ItemStackTransferDelegate(inventory) {
 
                 @Override
-                public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                    return super.extractItem(slot, amount, true, notifyChanges);
+                public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                    return super.extractItem(slot, amount, true);
                 }
             };
         }

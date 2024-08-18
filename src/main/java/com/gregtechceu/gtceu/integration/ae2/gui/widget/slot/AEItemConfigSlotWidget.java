@@ -15,11 +15,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawItemStack;
@@ -125,7 +125,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
                 ItemStack item = this.gui.getModularUIContainer().getCarried();
 
                 if (!item.isEmpty()) {
-                    writeClientAction(UPDATE_ID, buf -> buf.writeItem(item));
+                    writeClientAction(UPDATE_ID, buf -> ItemStack.STREAM_CODEC.encode(buf, item));
                 }
 
                 if (!parentWidget.isStocking()) {
@@ -160,7 +160,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            ItemStack item = buffer.readItem();
+            ItemStack item = ItemStack.STREAM_CODEC.decode(buffer);
             var stack = GenericStack.fromItemStack(item);
             if (!isStackValidForSlot(stack)) return;
             slot.setConfig(stack);
@@ -240,26 +240,26 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
     @OnlyIn(Dist.CLIENT)
     @Override
     public void acceptItem(ItemStack itemStack) {
-        writeClientAction(UPDATE_ID, buf -> buf.writeItem(itemStack));
+        writeClientAction(UPDATE_ID, buf -> ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemStack));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         // Only allow the amount scrolling if not stocking, as amount is useless for stocking
         if (parentWidget.isStocking()) return false;
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         Rect2i rectangle = toRectangleBox();
         rectangle.setHeight(rectangle.getHeight() / 2);
-        if (slot.getConfig() == null || wheelY == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
+        if (slot.getConfig() == null || scrollY == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
             return false;
         }
         GenericStack stack = slot.getConfig();
         long amt;
         if (isCtrlDown()) {
-            amt = wheelY > 0 ? stack.amount() * 2L : stack.amount() / 2L;
+            amt = scrollY > 0 ? stack.amount() * 2L : stack.amount() / 2L;
         } else {
-            amt = wheelY > 0 ? stack.amount() + 1L : stack.amount() - 1L;
+            amt = scrollY > 0 ? stack.amount() + 1L : stack.amount() - 1L;
         }
         if (amt > 0 && amt < Integer.MAX_VALUE + 1L) {
             writeClientAction(AMOUNT_CHANGE_ID, buf -> buf.writeVarLong(amt));

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -11,6 +10,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,18 +32,16 @@ public class FoamBlock extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-                                 BlockHitResult hit) {
-        ItemStack stackInHand = player.getItemInHand(hand);
-        if (!stackInHand.isEmpty() && stackInHand.is(ItemTags.SAND)) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                              Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!stack.isEmpty() && stack.is(ItemTags.SAND)) {
             level.setBlockAndUpdate(pos, getPetrifiedBlock(state));
             level.playSound(player, pos, SoundEvents.SAND_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (!player.isCreative())
-                stackInHand.shrink(1);
-            return InteractionResult.SUCCESS;
+                stack.shrink(1);
+            return ItemInteractionResult.SUCCESS;
         }
-        return super.use(state, level, pos, player, hand, hit);
+        return super.useItemOn(stack, state, level, pos, player, hand, hit);
     }
 
     @Override

@@ -11,14 +11,15 @@ import com.gregtechceu.gtceu.api.capability.compat.GTEnergyWrapper;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.material.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
@@ -67,6 +68,7 @@ import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
+import com.gregtechceu.gtceu.data.valueprovider.GTValueProviderTypes;
 import com.gregtechceu.gtceu.data.worldgen.GTDimensionMarkers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
@@ -132,12 +134,13 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        GTValueProviderTypes.init(eventBus);
-        GTRegistries.init(eventBus);
-        GTFeatures.init(eventBus);
-        GTCommandArguments.init(eventBus);
-        GTMobEffects.init(eventBus);
-        GTParticleTypes.init(eventBus);
+        GTRegistries.init(modBus);
+        GTFeatures.init(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTAttachmentTypes.init(modBus);
+        GTParticleTypes.init(modBus);
+        GTValueProviderTypes.init(modBus);
     }
 
     public static void init() {

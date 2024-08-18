@@ -313,7 +313,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         getBehaviorsComponent(stack).behaviors()
                 .forEach((type, behavior) -> behavior.onBlockStartBreak(stack, pos, player));
 
-        if (!player.isCrouching()) {
+        if (!player.isShiftKeyDown()) {
             ServerPlayer playerMP = (ServerPlayer) player;
             int result = -1;
             if (isTool(stack, GTToolType.SHEARS)) {
@@ -358,7 +358,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
                 // sneaking disables AOE, which means it is okay to play the sound
                 // not checking this means the sound will play for every AOE broken block, which is very loud
-                if (entityLiving.isCrouching()) {
+                if (entityLiving.isShiftKeyDown()) {
                     playSound((Player) entityLiving);
                 }
             }

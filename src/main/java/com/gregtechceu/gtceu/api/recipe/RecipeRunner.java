@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -32,7 +33,7 @@ class RecipeRunner {
 
     // --------------------------------------------------------------------------------------------------------
 
-    private final GTRecipe recipe;
+    private final RecipeHolder<GTRecipe> recipe;
     private final IO io;
     private final boolean isTick;
     private final IRecipeCapabilityHolder holder;
@@ -46,7 +47,7 @@ class RecipeRunner {
     private ContentSlots content;
     private ContentSlots search;
 
-    public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
+    public RecipeRunner(RecipeHolder<GTRecipe> recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                         boolean simulated) {
         this.recipe = recipe;
@@ -83,8 +84,8 @@ class RecipeRunner {
 
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         RecipeCapability<?> cap = entry.getKey();
-        ChanceBoostFunction function = recipe.getType().getChanceFunction();
-        ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
+        ChanceBoostFunction function = recipe.value().getType().getChanceFunction();
+        ChanceLogic logic = recipe.value().getChanceLogicForCapability(cap, this.io, this.isTick);
         List<Content> chancedContents = new ArrayList<>();
         for (Content cont : entry.getValue()) {
             // For simulated handling, search/content are the same instance, so there's no need to switch between them
@@ -107,7 +108,7 @@ class RecipeRunner {
                 chancedContents.add(cont);
             }
         }
-        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe);
+        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe.value());
         chancedContents = logic.roll(chancedContents, function,
                 recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
         if (chancedContents != null) {

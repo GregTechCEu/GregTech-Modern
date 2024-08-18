@@ -50,7 +50,7 @@ public class TooltipsHandler {
                         .withStyle(ChatFormatting.YELLOW));
         }
         if (stack.getItem() instanceof BucketItem bucket) {
-            appendFluidTooltips(bucket.getFluid(), FluidHelper.getBucket(), tooltips::add, flag);
+            appendFluidTooltips(bucket.content, FluidHelper.getBucket(), tooltips::add, flag);
         }
 
         // Block/Item custom tooltips

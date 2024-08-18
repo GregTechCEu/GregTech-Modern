@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
 import lombok.Getter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,12 +87,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine))
             return null;
 
         var rotorHolder = turbineMachine.getRotorHolder();
-        var EUt = RecipeHelper.getOutputEUt(recipe);
+        var EUt = RecipeHelper.getOutputEUt(recipe.value());
 
         if (rotorHolder == null || EUt <= 0)
             return null;
@@ -110,10 +111,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-        recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
+        recipe = parallelResult.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), recipe.value().copy()) : parallelResult.getFirst();
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
-        recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+        recipe.value().tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
                 ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
 
         return recipe;

@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
@@ -186,7 +187,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
     @Override
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
         if (!isFrontFaceFree() || !hasRotor()) {
             return null;
         }

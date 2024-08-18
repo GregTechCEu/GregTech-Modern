@@ -24,6 +24,7 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -206,8 +207,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                 .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
                         .map(FluidStack.class::cast).toList())
                 .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum,
-                        Object2LongLinkedOpenHashMap::new));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
+                        Object2IntLinkedOpenHashMap::new));
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe input fluids to account for duplicated fluids,

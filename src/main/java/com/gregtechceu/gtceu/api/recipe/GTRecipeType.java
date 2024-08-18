@@ -205,19 +205,19 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     @Nullable
-    public Iterator<GTRecipe> searchFuelRecipe(IRecipeCapabilityHolder holder) {
+    public Iterator<RecipeHolder<GTRecipe>> searchFuelRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || !isFuelRecipeType()) return null;
-        return getLookup().getRecipeIterator(holder, recipe -> recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        return getLookup().getRecipeIterator(holder, recipe -> recipe.value().isFuel &&
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() && GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
     }
 
-    public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder) {
+    public Iterator<RecipeHolder<GTRecipe>> searchRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return null;
-        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.value().isFuel &&
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() && GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
         boolean any = false;
         while (iterator.hasNext()) {
-            GTRecipe recipe = iterator.next();
+            RecipeHolder<GTRecipe> recipe = iterator.next();
             if (recipe == null) continue;
             any = true;
             break;
@@ -229,7 +229,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
-            GTRecipe recipe = logic.createCustomRecipe(holder);
+            RecipeHolder<GTRecipe> recipe = logic.createCustomRecipe(holder);
             if (recipe != null) return Collections.singleton(recipe).iterator();
         }
         return Collections.emptyIterator();
@@ -319,7 +319,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (recipe.value() instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }
-        return new RecipeHolder<>(builder.id, builder.build());
+        return builder.build();
     }
 
     public @NotNull List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
@@ -348,7 +348,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          *         recipe is not found to run. Return null if no recipe should be run by your logic.
          */
         @Nullable
-        GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder);
+        RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder);
 
         /**
          * @return A list of Recipes that are never registered, but are added to JEI to demonstrate the custom logic.

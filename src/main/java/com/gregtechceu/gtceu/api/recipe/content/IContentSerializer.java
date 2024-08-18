@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-
 import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.*;
 
 public interface IContentSerializer<T> {
@@ -71,42 +70,16 @@ public interface IContentSerializer<T> {
         return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
     }
 
-    @SuppressWarnings("unchecked")
-    default JsonElement toJsonContent(Content content, HolderLookup.Provider provider) {
-        JsonObject json = new JsonObject();
-        json.add("content", toJson((T) content.getContent(), provider));
-        json.addProperty("chance", content.chance);
-        json.addProperty("maxChance", content.maxChance);
-        json.addProperty("tierChanceBoost", content.tierChanceBoost);
-        if (content.slotName != null)
-            json.addProperty("slotName", content.slotName);
-        if (content.uiName != null)
-            json.addProperty("uiName", content.uiName);
-        return json;
+    default Tag toNbt(T content, HolderLookup.Provider provider) {
+        return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, this.toJson(content, provider));
     }
 
-    default Content fromJsonContent(JsonElement json, HolderLookup.Provider provider) {
-        JsonObject jsonObject = json.getAsJsonObject();
-        T inner = fromJson(jsonObject.get("content"));
-        int chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsInt() : ChanceLogic.getMaxChancedValue();
-        int maxChance = jsonObject.has("maxChance") ? jsonObject.get("maxChance").getAsInt() :
-                ChanceLogic.getMaxChancedValue();
-        int tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsInt() : 0;
-        String slotName = jsonObject.has("slotName") ? jsonObject.get("slotName").getAsString() : null;
-        String uiName = jsonObject.has("uiName") ? jsonObject.get("uiName").getAsString() : null;
-        return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
+    default Tag toNbtGeneric(Object content, HolderLookup.Provider provider) {
+        return toNbt((T) content, provider);
     }
 
-    default Tag toNbt(T content) {
-        return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, this.toJson(content));
-    }
-
-    default Tag toNbtGeneric(Object content) {
-        return toNbt((T) content);
-    }
-
-    default T fromNbt(Tag tag) {
+    default T fromNbt(Tag tag, HolderLookup.Provider provider) {
         var json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tag);
-        return fromJson(json);
+        return fromJson(json, provider);
     }
 }

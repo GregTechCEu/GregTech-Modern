@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
 import lombok.val;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public interface IMaintenanceMachine extends IMultiPart {
     void setTimeActive(int time);
 
     /**
-     * Duration modifier for recipe. {@link IMaintenanceMachine#modifyRecipe(GTRecipe)}
+     * Duration modifier for recipe. {@link IMaintenanceMachine#modifyRecipe(RecipeHolder)}
      * It's configurable in the Configurable Maintenance Part.
      */
     default float getDurationMultiplier() {
@@ -141,15 +142,15 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (hasMaintenanceProblems()) {
                 return null;
             }
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
-                recipe = recipe.copy();
-                recipe.duration = (int) (recipe.duration * durationMultiplier);
+                recipe = new RecipeHolder<>(recipe.id(), recipe.value().copy());
+                recipe.value().duration = (int) (recipe.value().duration * durationMultiplier);
             }
         }
         return recipe;

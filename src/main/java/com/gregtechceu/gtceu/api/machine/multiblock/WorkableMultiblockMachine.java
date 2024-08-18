@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -189,7 +190,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
+    public final RecipeHolder<GTRecipe> doModifyRecipe(RecipeHolder<GTRecipe> recipe) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
@@ -198,7 +199,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Nullable
-    protected GTRecipe getRealRecipe(GTRecipe recipe) {
+    protected RecipeHolder<GTRecipe> getRealRecipe(RecipeHolder<GTRecipe> recipe) {
         return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
@@ -244,7 +245,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+    public boolean beforeWorking(@Nullable RecipeHolder<GTRecipe> recipe) {
         for (IMultiPart part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;

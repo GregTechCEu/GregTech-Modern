@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -64,8 +65,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                var copied = match.copy(new ContentModifier(match.duration, 0));
-                if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+                var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
+                match = new RecipeHolder<>(match.id(), copied);
+                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -73,32 +75,20 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     }
 
     @Nullable
-    private GTRecipe getOreMinerRecipe() {
+    private RecipeHolder<GTRecipe> getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
             Material material = veinMaterials
                     .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material, getOreToProduce());
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup
-                                                                                                             // 1:
-                                                                                                             // crushed;
-                                                                                                             // if raw
-                                                                                                             // ore
-                                                                                                             // doesn't
-                                                                                                             // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2:
-                                                                                                         // gem; if
-                                                                                                         // crushed ore
-                                                                                                         // doesn't
-                                                                                                         // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3:
-                                                                                                         // normal ore;
-                                                                                                         // if gem
-                                                                                                         // doesn't
-                                                                                                         // exist.
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4:
-                                                                                                          // fallback to
-                                                                                                          // dust
+            // backup 1: crushed; if raw ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());
+            // backup 2:  gem; if  crushed ore  doesn't  exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce());
+            // backup 3: normal ore; if gem doesn't exist.
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce());
+            // backup 4: fallback to dust
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce());
             if (stack.isEmpty()) {
                 return null;
             }
@@ -107,7 +97,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
                     .build();
-            if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
+            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() && GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -146,15 +136,16 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
+            GTRecipe.postWorking(lastRecipe, this.machine);
+            GTRecipe.handleRecipeIO(lastRecipe, IO.OUT, this.machine, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            var copied = match.copy(new ContentModifier(match.duration, 0));
-            if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+            var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
+            match = new RecipeHolder<>(match.id(), copied);
+            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                 setupRecipe(match);
                 return;
             }
