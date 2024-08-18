@@ -108,6 +108,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
                 // version.
     private final ItemStackTransfer patternInventory = new ItemStackTransfer(MAX_PATTERN_COUNT);
+    //DO NOT remove this and use a default circuitInventory. It will cause the circuit inventory to vanish entirely and crash clients as well as cause unintended behaviors.
+    @Getter
+    @Persisted
+    protected final NotifiableItemStackHandler circuitInventorySimulated;
+
 
     @Getter
     @Persisted
@@ -138,9 +143,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected TickableSubscription updateSubs;
 
-    // If you allow them to toggle the state of said multi (via the button from the port) it just bricks itself, and
-    // it's too tangled in for me to figure out, CC screret or onion for help
-    // This is a very rudimentary fix for it. But it WORKS.
     @Override
     public boolean isWorkingEnabled() {
         return true;
@@ -156,6 +158,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             this.internalInventory[i] = new InternalSlot();
         }
         getMainNode().addService(ICraftingProvider.class, this);
+        this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidHelper.getBucket(), IO.IN, IO.NONE);
     }
@@ -255,7 +259,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
                 .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
-        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventorySimulated.storage));
         configuratorPanel.attachConfigurators(new FancyInvConfigurator(
                 shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
@@ -372,7 +376,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
-                ItemStack circuitStack = circuitInventory.storage.getStackInSlot(0);
+                ItemStack circuitStack = circuitInventorySimulated.storage.getStackInSlot(0);
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);
 
