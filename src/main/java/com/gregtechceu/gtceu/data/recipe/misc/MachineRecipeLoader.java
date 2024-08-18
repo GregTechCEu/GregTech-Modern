@@ -1312,6 +1312,20 @@ public class MachineRecipeLoader {
     }
 
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
+        for (MachineDefinition chest : GTMachines.SUPER_CHEST) {
+            if (chest != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_chest_nbt_" + chest.getTier(),
+                        chest.asStack(), chest.asStack());
+            }
+        }
+
+        for (MachineDefinition tank : GTMachines.SUPER_TANK) {
+            if (tank != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_tank_nbt_" + tank.getTier(),
+                        tank.asStack(), tank.asStack());
+            }
+        }
+
         for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(),
@@ -1373,6 +1387,15 @@ public class MachineRecipeLoader {
         // Jetpacks
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", ITEM_FILTER.asStack(),
+                ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
+                FLUID_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", ORE_DICTIONARY_FILTER.asStack(),
+                ORE_DICTIONARY_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
+                TAG_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
