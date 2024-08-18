@@ -108,11 +108,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
                 // version.
     private final ItemStackTransfer patternInventory = new ItemStackTransfer(MAX_PATTERN_COUNT);
-    //DO NOT remove this and use a default circuitInventory. It will cause the circuit inventory to vanish entirely and crash clients as well as cause unintended behaviors.
+    // DO NOT remove this and use a default circuitInventory. It will cause the circuit inventory to vanish entirely and
+    // crash clients as well as cause unintended behaviors.
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventorySimulated;
-
 
     @Getter
     @Persisted
