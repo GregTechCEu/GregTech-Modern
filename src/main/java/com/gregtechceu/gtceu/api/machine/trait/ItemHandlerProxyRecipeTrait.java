@@ -54,13 +54,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
             if (left.isEmpty()) return null;
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.handleRecipeInner(io, recipe, left, slotName, simulate);
-            }
-        }
         return left;
     }
 
@@ -69,13 +62,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
         List<Object> contents = new ObjectArrayList<>(2);
         for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
             contents.addAll(handler.getContents());
-        }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                contents.addAll(handler.getContents());
-            }
         }
         return contents;
     }
@@ -86,13 +72,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
         for (NotifiableRecipeHandlerTrait<SizedIngredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                size += handler.getSize();
-            }
-        }
         return size;
     }
 
@@ -101,12 +80,6 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
         long amount = 0;
         for (NotifiableRecipeHandlerTrait<SizedIngredient> handlerTrait : handlers) {
             amount += handlerTrait.getTotalContentAmount();
-        }
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                amount += handler.getTotalContentAmount();
-            }
         }
         return amount;
     }
@@ -119,18 +92,10 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     @Override
     public boolean isDistinct() {
         for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
-            if (handler.isDistinct)
-                return true;
+            if (!handler.isDistinct)
+                return false;
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.isDistinct();
-            }
-        }
-
-        return false;
+        return true;
     }
 
     @Override

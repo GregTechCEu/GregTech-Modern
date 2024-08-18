@@ -122,7 +122,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.universal.enabled"))
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
-            .machine("me_pattern_buffer_proxy", MEPatternBufferProxy::new)
+            .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
             .tier(LuV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,

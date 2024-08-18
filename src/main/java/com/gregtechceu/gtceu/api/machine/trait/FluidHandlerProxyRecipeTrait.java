@@ -6,18 +6,17 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<FluidIngredient>
+public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<SizedFluidIngredient>
                                           implements ICapabilityTrait {
 
     @Getter
@@ -30,13 +29,10 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     private boolean enabled;
 
     @Getter
-    private final Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers;
-
-    @Setter
-    private Supplier<NotifiableRecipeHandlerTrait<FluidIngredient>> handlerSupplier;
+    private final Collection<NotifiableRecipeHandlerTrait<SizedFluidIngredient>> handlers;
 
     public FluidHandlerProxyRecipeTrait(MetaMachine machine,
-                                        Collection<NotifiableRecipeHandlerTrait<FluidIngredient>> handlers,
+                                        Collection<NotifiableRecipeHandlerTrait<SizedFluidIngredient>> handlers,
                                         IO handlerIO,
                                         IO capabilityIO) {
         super(machine);
@@ -47,19 +43,12 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
-        for (IRecipeHandler<FluidIngredient> handler : handlers) {
+        for (IRecipeHandler<SizedFluidIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
             if (left.isEmpty()) return null;
-        }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.handleRecipeInner(io, recipe, left, slotName, simulate);
-            }
         }
         return left;
     }
@@ -67,15 +56,8 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     @Override
     public List<Object> getContents() {
         List<Object> contents = new ObjectArrayList<>(2);
-        for (NotifiableRecipeHandlerTrait<FluidIngredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedFluidIngredient> handler : handlers) {
             contents.addAll(handler.getContents());
-        }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                contents.addAll(handler.getContents());
-            }
         }
         return contents;
     }
@@ -83,15 +65,8 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     @Override
     public int getSize() {
         int size = 0;
-        for (NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedFluidIngredient> handlerTrait : handlers) {
             size += handlerTrait.getSize();
-        }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                size += handler.getSize();
-            }
         }
         return size;
     }
@@ -99,38 +74,24 @@ public class FluidHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<F
     @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (NotifiableRecipeHandlerTrait<FluidIngredient> handlerTrait : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedFluidIngredient> handlerTrait : handlers) {
             amount += handlerTrait.getTotalContentAmount();
-        }
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                amount += handler.getTotalContentAmount();
-            }
         }
         return amount;
     }
 
     @Override
-    public RecipeCapability<FluidIngredient> getCapability() {
+    public RecipeCapability<SizedFluidIngredient> getCapability() {
         return FluidRecipeCapability.CAP;
     }
 
     @Override
     public boolean isDistinct() {
-        for (NotifiableRecipeHandlerTrait<FluidIngredient> handler : handlers) {
-            if (handler.isDistinct)
-                return true;
+        for (NotifiableRecipeHandlerTrait<SizedFluidIngredient> handler : handlers) {
+            if (!handler.isDistinct)
+                return false;
         }
-
-        if (handlerSupplier != null) {
-            var handler = handlerSupplier.get();
-            if (handler != null) {
-                return handler.isDistinct();
-            }
-        }
-
-        return false;
+        return true;
     }
 
     @Override
