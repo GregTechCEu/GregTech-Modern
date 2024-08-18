@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,6 +61,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     private final int inventorySize;
     @Getter
     @RequireRerender
+    @Persisted
     @DescSynced
     private boolean isTaped;
 
@@ -114,22 +114,6 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
             }
         }
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
-    }
-
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        inventory.loadCustomPersistedData(tag.getCompound("inventory"));
-        if (tag.contains("taped")) {
-            this.isTaped = tag.getBoolean("taped");
-        }
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        tag.put("inventory", inventory.storage.serializeNBT());
-        tag.putBoolean("taped", isTaped);
     }
 
     @Override
