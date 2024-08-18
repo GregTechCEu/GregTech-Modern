@@ -78,10 +78,10 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine proxy &&
                     proxy.self() instanceof MEPatternBufferPartMachine pattern) {
-                if (proxy.getPos() != null) {
-                    compoundTag.putInt("posX", proxy.getPos().getX());
-                    compoundTag.putInt("posY", proxy.getPos().getY());
-                    compoundTag.putInt("posZ", proxy.getPos().getZ());
+                if (proxy.getBufferPos() != null) {
+                    compoundTag.putInt("posX", proxy.getBufferPos().getX());
+                    compoundTag.putInt("posY", proxy.getBufferPos().getY());
+                    compoundTag.putInt("posZ", proxy.getBufferPos().getZ());
                 }
 
                 var merged = MEPatternBufferRecipeHandler.mergeInternalSlot(pattern.getInternalInventory());
