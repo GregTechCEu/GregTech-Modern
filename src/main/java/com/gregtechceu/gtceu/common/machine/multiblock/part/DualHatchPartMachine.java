@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class DualHatchPartMachine extends ItemBusPartMachine {
 
-    public static final long INITIAL_TANK_CAPACITY = 4 * FluidHelper.getBucket();
+    public static final long INITIAL_TANK_CAPACITY = 16 * FluidHelper.getBucket();
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
@@ -51,12 +51,11 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     ////////////////////////////////
 
     public static long getTankCapacity(long initialCapacity, int tier) {
-        return initialCapacity * (1L << Math.min(9, tier));
+        return initialCapacity * (1L << (tier - 6));
     }
 
-    protected int getInventorySize() {
-        int sizeRoot = 1 + Math.min(9, getTier());
-        return sizeRoot * sizeRoot;
+    public int getInventorySize() {
+        return (int) Math.pow((getTier() - 4), 2);
     }
 
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
