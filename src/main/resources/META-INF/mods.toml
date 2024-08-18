@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_version},)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/GregTechCEu/GregTech-Modern/issues"
 license = "${mod_license}"
 
 [[mods]]
@@ -29,8 +29,15 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "ldlib"
-mandatory = false
-versionRange = "[1.0,)"
+mandatory = true
+versionRange = "[${ldlib_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "configuration"
+mandatory = true
+versionRange = "[${configuration_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
@@ -39,4 +46,32 @@ modId = "kubejs"
 mandatory = false
 versionRange = "[${kjs_version},)"
 ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jei"
+mandatory = false
+versionRange = "[${jei_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "emi"
+mandatory = false
+versionRange = "[${emi_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "theoneprobe"
+mandatory = false
+versionRange = "[${top_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jade"
+mandatory = false
+versionRange = "[${jade_version},)"
+ordering = "NONE"
 side = "BOTH"

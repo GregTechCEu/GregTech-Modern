@@ -9,8 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      GITHUB_ACTION_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
-      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
+      MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+      MAVEN_USER: ${{ secrets.MAVEN_USER }}
+      SNAPSHOT: true
     permissions:
       contents: write
     steps:
@@ -26,11 +27,19 @@ jobs:
         with:
           arguments: build
 
+      - name: Publish to Maven
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
-          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
+          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
+          echo "version=$MESSAGE-build_${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release

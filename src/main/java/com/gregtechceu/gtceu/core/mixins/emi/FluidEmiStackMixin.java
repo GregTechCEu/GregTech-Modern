@@ -28,10 +28,10 @@ public class FluidEmiStackMixin {
     @Final
     private Fluid fluid;
 
-    @Inject(method = "getTooltip", at = @At("TAIL"), remap = false)
+    @Inject(method = "getTooltip", at = @At("TAIL"), remap = false, require = 0)
     private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir) {
         List<Component> tooltips = Lists.newArrayList(Component.empty(), Component.empty());
-        TooltipsHandler.appendFluidTooltips(this.fluid, ((EmiStack) (Object) this).getAmount(), tooltips,
+        TooltipsHandler.appendFluidTooltips(this.fluid, ((EmiStack) (Object) this).getAmount(), tooltips::add,
                 TooltipFlag.NORMAL);
 
         List<ClientTooltipComponent> list = cir.getReturnValue();

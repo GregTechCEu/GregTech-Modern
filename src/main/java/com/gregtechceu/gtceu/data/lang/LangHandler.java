@@ -62,6 +62,7 @@ public class LangHandler {
         provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
+        provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
 
         provider.add("gtceu.io.import", "Import");
@@ -471,6 +472,7 @@ public class LangHandler {
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
         replace(provider, GTMaterials.RTMAlloy.getUnlocalizedName(), "RTM Alloy");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA Steel");
 
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
@@ -1213,6 +1215,9 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
+        provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
+        provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
+
         // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
@@ -1264,10 +1269,14 @@ public class LangHandler {
 
         provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
         provider.add("gtceu.gui.me_network.offline", "Network Status: §4Offline§r");
+        provider.add("gtceu.gui.waiting_list", "Sending Queue:");
         provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
         provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
         provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
+        provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
 
         // Decor Stuff
         replace(provider, "block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");

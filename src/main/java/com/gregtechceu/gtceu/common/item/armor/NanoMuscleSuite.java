@@ -168,7 +168,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("Nightvision");
+            boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

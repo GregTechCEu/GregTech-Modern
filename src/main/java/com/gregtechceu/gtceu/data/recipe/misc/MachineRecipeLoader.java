@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -1310,6 +1312,20 @@ public class MachineRecipeLoader {
     }
 
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
+        for (MachineDefinition chest : GTMachines.SUPER_CHEST) {
+            if (chest != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_chest_nbt_" + chest.getTier(),
+                        chest.asStack(), chest.asStack());
+            }
+        }
+
+        for (MachineDefinition tank : GTMachines.SUPER_TANK) {
+            if (tank != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_tank_nbt_" + tank.getTier(),
+                        tank.asStack(), tank.asStack());
+            }
+        }
+
         for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(),
@@ -1371,6 +1387,15 @@ public class MachineRecipeLoader {
         // Jetpacks
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
+                ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
+                FLUID_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", ORE_DICTIONARY_FILTER.asStack(),
+                ORE_DICTIONARY_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
+                TAG_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
@@ -1426,15 +1451,15 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : BUFFER_HATCH_TIERS) {
+        for (int tier : DUAL_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
-            var inputBuffer = INPUT_BUFFER[tier];
-            var outputBuffer = OUTPUT_BUFFER[tier];
+            var inputBuffer = DUAL_IMPORT_HATCH[tier];
+            var outputBuffer = DUAL_EXPORT_HATCH[tier];
 
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_output_to_input_" + tierName,
+                    "dual_hatch_output_to_input_" + tierName,
                     inputBuffer.asStack(),
                     "d",
                     "B",
@@ -1442,7 +1467,7 @@ public class MachineRecipeLoader {
                     outputBuffer.asStack());
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_input_to_output_" + tierName,
+                    "dual_hatch_input_to_output_" + tierName,
                     outputBuffer.asStack(),
                     "d",
                     "B",
@@ -1456,16 +1481,19 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_input_to_output", STEAM_IMPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_EXPORT_BUS.asStack());
 
-        // TODO fix the ME buses/hatches
-        // if (GTCEu.isAE2Loaded()) {
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
-        // GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_EXPORT_HATCH.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output",
-        // GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_IMPORT_HATCH.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input",
-        // GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output",
-        // GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
-        // }
+        if (GTCEu.isAE2Loaded()) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output",
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input",
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output",
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack());
+        }
     }
 }
