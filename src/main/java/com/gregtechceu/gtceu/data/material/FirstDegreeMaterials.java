@@ -1611,22 +1611,8 @@ public class FirstDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
-        Iodide = new Material.Builder(GTCEu.id("iodide"))
-                .liquid()
-                .color(0x5f6173)
-                .components(Iodine, 2)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        IodineSolution = new Material.Builder(GTCEu.id("iodine_solution"))
-                .liquid()
-                .color(0x9194a3)
-                .components(Hydrogen, 1, Iodine, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        DiluteIodineSolution = new Material.Builder(GTCEu.id("dilute_iodine_solution"))
-                .liquid()
+        HydrogenIodide = new Material.Builder(GTCEu.id("hydrogen_iodide"))
+                .gas()
                 .color(0x8187a6)
                 .components(Hydrogen, 1, Iodine, 1)
                 .flags(DISABLE_DECOMPOSITION)

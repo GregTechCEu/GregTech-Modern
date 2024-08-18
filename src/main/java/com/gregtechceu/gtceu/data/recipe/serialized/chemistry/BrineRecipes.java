@@ -58,8 +58,9 @@ public class BrineRecipes {
         // byproduct loop
         CHEMICAL_RECIPES.recipeBuilder("brine_neutralization")
                 .inputFluids(HotAlkalineDebrominatedBrine.getFluid(3000))
-                .outputFluids(Chlorine.getFluid(1000))
+                .inputItems(dust, Potassium, 1)
                 .outputFluids(HotDebrominatedBrine.getFluid(2000))
+                .outputItems(dust, RockSalt, 2)
                 .duration(100).EUt(VA[HV]).save(provider);
         CHEMICAL_RECIPES.recipeBuilder("debrominated_brine_raw_brine_mixing")
                 .inputFluids(RawBrine.getFluid(1000))
@@ -73,33 +74,25 @@ public class BrineRecipes {
                 .outputFluids(HotChlorinatedBrominatedBrine.getFluid(1000))
                 .outputFluids(Steam.getFluid(3000))
                 .duration(100).EUt(VA[HV]).save(provider);
+
+        CENTRIFUGE_RECIPES.recipeBuilder("debrominated_brine_decomposition")
+                .inputFluids(DebrominatedBrine.getFluid(2000))
+                .outputFluids(SaltWater.getFluid(1000))
+                .duration(60).EUt(VA[MV]);
     }
 
     public static void iodineProcess(RecipeOutput provider) {
         CHEMICAL_RECIPES.recipeBuilder("brine_acidification")
-                .inputFluids(HotBrine.getFluid(1000))
+                .inputFluids(HotBrine.getFluid(2000))
                 .inputFluids(HydrochloricAcid.getFluid(1000))
-                .outputFluids(HotDebrominatedBrine.getFluid(1000))
-                .outputFluids(DiluteIodineSolution.getFluid(1000))
+                .outputFluids(HotAlkalineDebrominatedBrine.getFluid(2000))
+                .outputFluids(HydrogenIodide.getFluid(1000))
                 .duration(100).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution")
-                .inputFluids(DiluteIodineSolution.getFluid(1000))
-                .inputFluids(Chlorine.getFluid(2000))
-                .outputFluids(Iodide.getFluid(1000))
-                .outputFluids(HydrochloricAcid.getFluid(2000))
-                .duration(1000).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution_reduction")
-                .inputFluids(Iodide.getFluid(1000))
-                .inputFluids(Water.getFluid(2000))
-                .inputFluids(SulfurDioxide.getFluid(1000))
-                .outputFluids(IodineSolution.getFluid(2000))
-                .outputFluids(SulfuricAcid.getFluid(1000))
-                .duration(1000).EUt(VHA[HV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("iodine_solution_reduction")
-                .inputFluids(IodineSolution.getFluid(2000))
-                .inputFluids(Chlorine.getFluid(1000))
+        CHEMICAL_RECIPES.recipeBuilder("iodine")
+                .inputFluids(HydrogenIodide.getFluid(2000))
+                .inputFluids(Oxygen.getFluid(1000))
                 .outputItems(dust, Iodine, 1)
-                .outputFluids(HydrochloricAcid.getFluid(2000))
+                .outputFluids(Water.getFluid(1000))
                 .duration(1000).EUt(VHA[HV]).save(provider);
     }
 }

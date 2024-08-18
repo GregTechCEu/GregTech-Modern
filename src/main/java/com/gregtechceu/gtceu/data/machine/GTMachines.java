@@ -1645,9 +1645,10 @@ public class GTMachines {
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STAINLESS_EVAPORATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("YSYY", "YYYY", "YYYY", "YYYY")
-                    .aisle("XXXX", "X##X", "X##X", "XXXX").setRepeatable(3, 5)
-                    .aisle(" XX ", "X##X", "X##X", " XX ")
+                    .aisle("FYF", "YYY", "FYF")
+                    .aisle("YSY", "Y#Y", "YYY")
+                    .aisle("XXX", "X#X", "XXX").setRepeatable(2, 5)
+                    .aisle(" Z ", "ZZZ", " Z ")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('Y', blocks(CASING_STAINLESS_EVAPORATION.get())
                             .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
@@ -1655,14 +1656,17 @@ public class GTMachines {
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
                             .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
                     .where('X', blocks(CASING_STAINLESS_EVAPORATION.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMaxLayerLimited(1)))
+                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMinLayerLimited(1)
+                                    .setMaxLayerLimited(1)))
+                    .where('Z', blocks(CASING_STAINLESS_EVAPORATION.get()))
+                    .where('F', Predicates.frames(Aluminium))
                     .where('#', Predicates.air())
                     .where(' ', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_stainless_evaporation"),
-                    GTCEu.id("block/multiblock/distillation_tower"))
+                    GTCEu.id("block/multiblock/evaporation_plant"))
             .register();
 
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE

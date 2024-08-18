@@ -661,9 +661,7 @@ public class GTMaterials {
 
     public static Material AcidicBromineSolution;
     public static Material ConcentratedBromineSolution;
-    public static Material Iodide;
-    public static Material IodineSolution;
-    public static Material DiluteIodineSolution;
+    public static Material HydrogenIodide;
 
     /**
      * Organic chemistry
