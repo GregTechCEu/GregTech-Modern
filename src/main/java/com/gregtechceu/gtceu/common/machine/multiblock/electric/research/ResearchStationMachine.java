@@ -17,9 +17,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -174,14 +174,16 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             return false;
         }
 
-        public GTRecipe.ActionResult matchRecipeNoOutput(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
+        public GTRecipe.ActionResult matchRecipeNoOutput(RecipeHolder<GTRecipe> recipe,
+                                                         IRecipeCapabilityHolder holder) {
             if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
             var result = GTRecipe.matchRecipeContents(recipe, IO.IN, holder, recipe.value().inputs, false);
             if (!result.isSuccess()) return result;
             return GTRecipe.ActionResult.SUCCESS;
         }
 
-        public GTRecipe.ActionResult matchTickRecipeNoOutput(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
+        public GTRecipe.ActionResult matchTickRecipeNoOutput(RecipeHolder<GTRecipe> recipe,
+                                                             IRecipeCapabilityHolder holder) {
             if (recipe.value().hasTick()) {
                 if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
                 var result = GTRecipe.matchRecipeContents(recipe, IO.IN, holder, recipe.value().tickInputs, true);
@@ -223,7 +225,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             ItemStack outputItem = ItemStack.EMPTY;
             if (getLastRecipe().value().getOutputContents(ItemRecipeCapability.CAP).size() >= 1) {
                 outputItem = ItemRecipeCapability.CAP
-                        .of(getLastRecipe().value().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(getLastRecipe().value().getOutputContents(ItemRecipeCapability.CAP).get(0).content)
+                        .getItems()[0];
             }
             holder.setDataItem(outputItem);
             holder.setLocked(false);

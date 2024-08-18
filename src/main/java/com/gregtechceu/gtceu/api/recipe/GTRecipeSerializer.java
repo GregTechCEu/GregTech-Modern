@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
@@ -69,7 +69,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void changeLogicEntryWriter(RegistryFriendlyByteBuf buf,
-                                   Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
+                                              Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
         RecipeCapability<?> capability = entry.getKey();
         ChanceLogic logic = entry.getValue();
         buf.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));

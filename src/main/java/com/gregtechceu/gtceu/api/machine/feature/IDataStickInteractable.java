@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.data.item.GTItems;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +15,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface IDataStickInteractable extends IInteractedMachine {
 
     @Override
-    default ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+    default ItemInteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player,
+                                        InteractionHand hand,
                                         BlockHitResult hit) {
         var item = player.getItemInHand(hand);
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {

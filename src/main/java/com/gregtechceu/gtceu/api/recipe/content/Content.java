@@ -20,7 +20,6 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,13 +48,13 @@ public class Content {
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
         return RecordCodecBuilder.create(instance -> instance.group(
-                        capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
-                        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", 0).forGetter(val -> val.chance),
-                        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("max_chance", 0).forGetter(val -> val.maxChance),
-                        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("tierChanceBoost", 0)
-                                .forGetter(val -> val.tierChanceBoost),
-                        Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
-                        Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
+                capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", 0).forGetter(val -> val.chance),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("max_chance", 0).forGetter(val -> val.maxChance),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("tierChanceBoost", 0)
+                        .forGetter(val -> val.tierChanceBoost),
+                Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
+                Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
                 .apply(instance, Content::new));
     }
 

@@ -26,10 +26,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -236,7 +236,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
     @OnlyIn(Dist.CLIENT)
     @Override
     public void acceptFluid(FluidStack fluidStack) {
-        //noinspection UnclearExpression
+        // noinspection UnclearExpression
         if (((FluidStackAccessor) (Object) fluidStack).getRawFluid() != Fluids.EMPTY && fluidStack.getAmount() <= 0L) {
             fluidStack.setAmount(1000);
         }

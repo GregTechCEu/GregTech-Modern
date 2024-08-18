@@ -21,9 +21,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,7 +111,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-        recipe = parallelResult.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), recipe.value().copy()) : parallelResult.getFirst();
+        recipe = parallelResult.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), recipe.value().copy()) :
+                parallelResult.getFirst();
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
         recipe.value().tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,

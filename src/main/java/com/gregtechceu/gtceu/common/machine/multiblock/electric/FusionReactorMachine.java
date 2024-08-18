@@ -149,7 +149,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe.value()) > fusionReactorMachine.getTier() ||
                     !recipe.value().data.contains("eu_to_start") ||
-                    recipe.value().data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
+                    recipe.value().data.getLong("eu_to_start") >
+                            fusionReactorMachine.energyContainer.getEnergyCapacity()) {
                 return null;
             }
 

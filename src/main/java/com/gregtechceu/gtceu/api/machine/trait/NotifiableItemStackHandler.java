@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -92,7 +92,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     }
 
     @Nullable
-    public static List<SizedIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+    public static List<SizedIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe,
+                                                         List<SizedIngredient> left,
                                                          boolean simulate, IO handlerIO,
                                                          CustomItemStackHandler storage) {
         if (io != handlerIO) return left;

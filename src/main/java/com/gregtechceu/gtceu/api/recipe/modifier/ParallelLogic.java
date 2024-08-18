@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.AllArgsConstructor;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -26,8 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ParallelLogic {
 
     @NotNull
-    public static Pair<RecipeHolder<GTRecipe>, Integer> applyParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe,
-                                                        int parallelLimit, boolean modifyDuration) {
+    public static Pair<RecipeHolder<GTRecipe>, Integer> applyParallel(MetaMachine machine,
+                                                                      @NotNull RecipeHolder<GTRecipe> recipe,
+                                                                      int parallelLimit, boolean modifyDuration) {
         if (machine instanceof IRecipeLogicMachine rlm) {
             return doParallelRecipes(recipe, rlm, parallelLimit, modifyDuration);
         }
@@ -40,7 +41,8 @@ public class ParallelLogic {
      * @param parallelAmount hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int getMaxRecipeMultiplier(@NotNull RecipeHolder<GTRecipe> recipe, @NotNull IRecipeCapabilityHolder holder,
+    public static int getMaxRecipeMultiplier(@NotNull RecipeHolder<GTRecipe> recipe,
+                                             @NotNull IRecipeCapabilityHolder holder,
                                              int parallelAmount) {
         IntSet multipliers = new IntOpenHashSet();
 
@@ -184,8 +186,8 @@ public class ParallelLogic {
     // take care of voiding
     @NotNull
     public static Pair<RecipeHolder<GTRecipe>, Integer> doParallelRecipes(@NotNull RecipeHolder<GTRecipe> currentRecipe,
-                                                            @NotNull IRecipeLogicMachine machine,
-                                                            int parallelAmount, boolean modifyDuration) {
+                                                                          @NotNull IRecipeLogicMachine machine,
+                                                                          int parallelAmount, boolean modifyDuration) {
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
         int multiplierByInputs = getMaxRecipeMultiplier(currentRecipe, machine, parallelAmount);
         if (multiplierByInputs == 0) {

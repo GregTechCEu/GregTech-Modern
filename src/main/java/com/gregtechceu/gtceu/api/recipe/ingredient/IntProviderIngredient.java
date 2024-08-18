@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -13,11 +11,13 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-
-import lombok.Getter;
-import lombok.Setter;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
+
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,8 +29,8 @@ public class IntProviderIngredient implements ICustomIngredient {
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
     public static final MapCodec<IntProviderIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.fieldOf("inner").forGetter(IntProviderIngredient::getInner),
-            IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderIngredient::getCountProvider)
-    ).apply(instance, IntProviderIngredient::new));
+            IntProvider.CODEC.fieldOf("count_provider").forGetter(IntProviderIngredient::getCountProvider))
+            .apply(instance, IntProviderIngredient::new));
 
     @Getter
     protected final IntProvider countProvider;

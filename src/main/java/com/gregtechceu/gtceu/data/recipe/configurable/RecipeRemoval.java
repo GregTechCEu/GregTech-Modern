@@ -293,9 +293,12 @@ public class RecipeRemoval {
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
             registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
+                    ResourceLocation
+                            .withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {
                 registry.accept(
@@ -373,7 +376,8 @@ public class RecipeRemoval {
         // registry.accept(ResourceLocation.withDefaultNamespace("waxed_weathered_cut_copper"));
         // registry.accept(ResourceLocation.withDefaultNamespace("waxed_oxidized_cut_copper"));
         // registry.accept(ResourceLocation.withDefaultNamespace("end_crystal"));
-        // registry.accept(ResourceLocation.withDefaultNamespace("end_rod")); // wait for approval before uncommenting this one
+        // registry.accept(ResourceLocation.withDefaultNamespace("end_rod")); // wait for approval before uncommenting
+        // this one
         // registry.accept(ResourceLocation.withDefaultNamespace("mud_bricks")); //no other way to obtain these rn
 
         // Carpet replacement

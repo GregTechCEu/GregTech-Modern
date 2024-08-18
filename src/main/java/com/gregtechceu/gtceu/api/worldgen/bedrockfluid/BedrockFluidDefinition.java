@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.data.worldgen.GTBedrockFluids;
 import com.gregtechceu.gtceu.utils.RegistryUtil;
 
 import net.minecraft.core.Holder;

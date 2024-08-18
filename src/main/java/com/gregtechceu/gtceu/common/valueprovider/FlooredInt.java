@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.common.valueprovider;
+
 import com.gregtechceu.gtceu.data.valueprovider.GTValueProviderTypes;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 

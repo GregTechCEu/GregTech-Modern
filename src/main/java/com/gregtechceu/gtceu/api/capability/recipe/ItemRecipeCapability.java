@@ -98,7 +98,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                                     new MultipliedFloat(
                                             new CastedFloat(intProviderIngredient.getCountProvider()),
                                             ConstantFloat.of((float) modifier.getMultiplier())),
-                                    ConstantFloat.of((float) modifier.getAddition())))).toVanilla(),
+                                    ConstantFloat.of((float) modifier.getAddition()))))
+                    .toVanilla(),
                     1);
         }
         return new SizedIngredient(content.ingredient(), modifier.apply(1).intValue());
@@ -217,10 +218,10 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                     list.addFirst(ingredient);
                 } else if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider &&
                         intProvider.getInner().getCustomIngredient() instanceof IntCircuitIngredient) {
-                    list.addFirst(ingredient);
-                } else {
-                    list.add(ingredient);
-                }
+                            list.addFirst(ingredient);
+                        } else {
+                            list.add(ingredient);
+                        }
             } else if (item instanceof ItemStack stack) {
                 boolean isEqual = false;
                 for (Object obj : list) {
@@ -310,7 +311,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
             SizedIngredient recipeIngredient = ItemRecipeCapability.CAP.of(content.content);
             int ingredientCount;
-            if (recipeIngredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProviderIngredient) {
+            if (recipeIngredient.ingredient()
+                    .getCustomIngredient() instanceof IntProviderIngredient intProviderIngredient) {
                 ingredientCount = intProviderIngredient.getSampledCount(GTValues.RNG);
             } else {
                 ingredientCount = recipeIngredient.count();
@@ -652,14 +654,14 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             } else if (intProvider.getInner().getCustomIngredient() == null &&
                     intProvider.getInner().getValues().length > 0 &&
                     intProvider.getInner().getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
-            }
+                        return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+                    }
 
         } else if (ingredient.ingredient().getCustomIngredient() == null &&
                 ingredient.ingredient().getValues().length > 0 &&
                 ingredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
-            return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
-        }
+                    return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+                }
         return Either.right(Arrays.stream(ingredient.getItems()).map(stack -> {
             if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient) {
                 stack.setCount(1);

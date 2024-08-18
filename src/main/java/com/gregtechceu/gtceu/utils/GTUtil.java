@@ -13,8 +13,6 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,6 +39,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -59,16 +59,16 @@ import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey
  */
 public class GTUtil {
 
-    public static final Codec<ItemStack> ANY_SIZE_ITEM_STACK_CODEC = Codec.lazyInitialized(() ->
-            ExtraCodecs.<ItemStack>optionalEmptyMap(RecordCodecBuilder.create(instance -> instance.group(
-                            ItemStack.ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
-                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("count").orElse(1)
-                                    .forGetter(ItemStack::getCount),
-                            DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
-                                    .forGetter(stack -> stack.getComponentsPatch()))
+    public static final Codec<ItemStack> ANY_SIZE_ITEM_STACK_CODEC = Codec.lazyInitialized(() -> ExtraCodecs
+            .<ItemStack>optionalEmptyMap(RecordCodecBuilder.create(instance -> instance.group(
+                    ItemStack.ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("count").orElse(1)
+                            .forGetter(ItemStack::getCount),
+                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
+                            .forGetter(stack -> stack.getComponentsPatch()))
                     .apply(instance, ItemStack::new)))
-                    .xmap(optional -> optional.orElse(ItemStack.EMPTY),
-                            stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack)));
+            .xmap(optional -> optional.orElse(ItemStack.EMPTY),
+                    stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack)));
 
     public static final Direction[] DIRECTIONS = Direction.values();
 

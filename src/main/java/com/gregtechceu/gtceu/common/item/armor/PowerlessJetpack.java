@@ -38,10 +38,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -221,7 +221,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (internalTank != null) {
             FluidStack fluidStack = internalTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
             if (previousRecipe != null && !fluidStack.isEmpty() &&
-                    FluidRecipeCapability.CAP.of(previousRecipe.value().getInputContents(FluidRecipeCapability.CAP).get(0))
+                    FluidRecipeCapability.CAP
+                            .of(previousRecipe.value().getInputContents(FluidRecipeCapability.CAP).get(0))
                             .test(fluidStack) &&
                     fluidStack.getAmount() > 0) {
                 currentRecipe = previousRecipe;
@@ -240,7 +241,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                         return table;
                     }
                 };
-                Iterator<RecipeHolder<GTRecipe>> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
+                Iterator<RecipeHolder<GTRecipe>> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS
+                        .searchRecipe(holder);
                 if (iterator.hasNext()) {
                     RecipeHolder<GTRecipe> nextRecipe = iterator.next();
                     if (nextRecipe == null) {

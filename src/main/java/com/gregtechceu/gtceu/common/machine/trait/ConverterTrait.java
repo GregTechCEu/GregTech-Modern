@@ -62,6 +62,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         this.feToEu = feToEu;
         machine.notifyBlockUpdate();
     }
+
     //////////////////////////////
     // ********* logic *********//
     //////////////////////////////

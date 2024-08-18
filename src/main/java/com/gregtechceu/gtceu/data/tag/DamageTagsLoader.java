@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.data.tag;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.damagesource.DamageType;
-
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;

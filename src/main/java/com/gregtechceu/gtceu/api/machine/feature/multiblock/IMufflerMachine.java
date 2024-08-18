@@ -15,9 +15,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.val;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 

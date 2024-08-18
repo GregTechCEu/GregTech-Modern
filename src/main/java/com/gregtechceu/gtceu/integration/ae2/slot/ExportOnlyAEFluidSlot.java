@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
-import com.google.common.primitives.Ints;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import net.neoforged.neoforge.fluids.FluidStack;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -98,9 +99,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidHan
     }
 
     @Override
-    public void setFluidInTank(int tank, FluidStack stack) {
-        
-    }
+    public void setFluidInTank(int tank, FluidStack stack) {}
 
     @Override
     public boolean supportsFill(int tank) {

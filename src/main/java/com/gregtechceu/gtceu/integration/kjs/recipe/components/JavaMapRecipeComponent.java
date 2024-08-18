@@ -14,7 +14,8 @@ public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeCompone
         implements RecipeComponent<Map<K, V>> {
 
     @Override
-    public Map<K, V> replace(Context cx, KubeRecipe recipe, Map<K, V> original, ReplacementMatchInfo match, Object with) {
+    public Map<K, V> replace(Context cx, KubeRecipe recipe, Map<K, V> original, ReplacementMatchInfo match,
+                             Object with) {
         var map = original;
 
         for (Map.Entry<K, V> entry : original.entrySet()) {

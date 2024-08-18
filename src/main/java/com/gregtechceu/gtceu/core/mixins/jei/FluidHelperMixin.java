@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.core.mixins.jei;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.neoforge.platform.FluidHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

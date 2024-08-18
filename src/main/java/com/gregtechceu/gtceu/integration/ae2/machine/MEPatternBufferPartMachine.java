@@ -48,7 +48,10 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -66,10 +69,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -564,7 +563,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return left.isEmpty() ? null : left;
         }
 
-        public @Nullable List<SizedFluidIngredient> handleFluidInternal(List<SizedFluidIngredient> left, boolean simulate) {
+        public @Nullable List<SizedFluidIngredient> handleFluidInternal(List<SizedFluidIngredient> left,
+                                                                        boolean simulate) {
             ListIterator<SizedFluidIngredient> iterator = left.listIterator();
             while (iterator.hasNext()) {
                 SizedFluidIngredient fluidStack = iterator.next();
@@ -633,8 +633,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         itemInventory.add(item);
                     }
                 } else {
-                    GTCEu.LOGGER.warn("An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: " +
-                            tagItemStack);
+                    GTCEu.LOGGER.warn(
+                            "An error occurred while loading contents of ME Crafting Input Bus. This item has been voided: " +
+                                    tagItemStack);
                 }
             }
             ListTag fluidInv = tag.getList("fluidInventory", Tag.TAG_COMPOUND);

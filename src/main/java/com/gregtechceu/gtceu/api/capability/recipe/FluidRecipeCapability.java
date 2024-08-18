@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -36,6 +35,7 @@ import net.neoforged.neoforge.fluids.crafting.*;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -238,7 +238,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                 // Strip the Non-consumable tags here, as FluidKey compares the tags, which causes finding matching
                 // fluids
                 // in the input tanks to fail, because there is nothing in those hatches with a non-consumable tag
-                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().component);
+                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
+                        inputFluid.getKey().component);
                 if (notConsumableFluid.getKey().equals(stack)) {
                     available = inputFluid.getValue();
                     if (available > needed) {
@@ -276,7 +277,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             long available = 0;
             // For every fluid gathered from the fluid inputs.
             for (Map.Entry<FluidKey, Integer> inputFluid : fluidStacks.entrySet()) {
-                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(), inputFluid.getKey().component);
+                FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
+                        inputFluid.getKey().component);
                 if (fs.getKey().test(stack)) {
                     available += inputFluid.getValue();
                 }

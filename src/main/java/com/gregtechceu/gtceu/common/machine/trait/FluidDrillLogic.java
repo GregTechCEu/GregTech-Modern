@@ -62,7 +62,8 @@ public class FluidDrillLogic extends RecipeLogic {
             if (match != null) {
                 var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
                 match = new RecipeHolder<>(match.id(), copied);
-                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
+                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                        GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -79,7 +80,8 @@ public class FluidDrillLogic extends RecipeLogic {
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .build();
-            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() && GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
+            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() &&
+                    GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -127,7 +129,8 @@ public class FluidDrillLogic extends RecipeLogic {
         if (match != null) {
             var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
             match = new RecipeHolder<>(match.id(), copied);
-            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
+            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                    GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

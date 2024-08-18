@@ -10,19 +10,18 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
-
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +61,8 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     }
 
     public List<SizedIngredient> handleItemInner(
-                                            RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left, boolean simulate) {
+                                                 RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+                                                 boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
         if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleItemInternal(left, simulate);
@@ -84,7 +84,8 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     }
 
     public List<SizedFluidIngredient> handleFluidInner(
-            RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left, boolean simulate) {
+                                                       RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left,
+                                                       boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
         if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleFluidInternal(left, simulate);

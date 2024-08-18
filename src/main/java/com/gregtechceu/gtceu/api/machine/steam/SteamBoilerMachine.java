@@ -261,7 +261,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = new RecipeHolder<>(recipe.id(), recipe.value().copy());
             // recipe.duration *= 12; // maybe?
-            recipe.value().duration = boilerMachine.isHighPressure ? recipe.value().duration / 2 : recipe.value().duration;
+            recipe.value().duration = boilerMachine.isHighPressure ? recipe.value().duration / 2 :
+                    recipe.value().duration;
             return recipe;
         }
         return null;

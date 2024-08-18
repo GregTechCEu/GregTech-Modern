@@ -8,9 +8,10 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
 import com.gregtechceu.gtceu.utils.StreamCodecUtils;
+
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -9,18 +10,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 
 public record GTArmor(
-        boolean enabled,
-        boolean hover,
-        boolean canShare,
-        boolean nightVision,
-        boolean boostedJump,
-        boolean onGround,
-        byte toggleTimer,
-        short burnTimer,
-        int nightVisionTimer,
-        byte runningTimer,
-        byte boostedJumpTimer,
-        byte consumerTicks) {
+                      boolean enabled,
+                      boolean hover,
+                      boolean canShare,
+                      boolean nightVision,
+                      boolean boostedJump,
+                      boolean onGround,
+                      byte toggleTimer,
+                      short burnTimer,
+                      int nightVisionTimer,
+                      byte runningTimer,
+                      byte boostedJumpTimer,
+                      byte consumerTicks) {
 
     public static final Codec<GTArmor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("enabled").forGetter(GTArmor::enabled),
@@ -55,50 +56,62 @@ public record GTArmor(
     }
 
     public GTArmor setEnabled(boolean enabled) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setHover(boolean hover) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setCanShare(boolean canShare) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setNightVision(boolean nightVision) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setBoostedJump(boolean boostedJump) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setOnGround(boolean onGround) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setToggleTimer(byte toggleTimer) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setBurnTimer(short burnTimer) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setNightVisionTimer(int nightVisionTimer) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setRunningTimer(byte runningTimer) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setBoostedJumpTimer(byte boostedJumpTimer) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 
     public GTArmor setConsumerTicks(byte consumerTicks) {
-        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer, nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
+        return new GTArmor(enabled, hover, canShare, nightVision, boostedJump, onGround, toggleTimer, burnTimer,
+                nightVisionTimer, runningTimer, boostedJumpTimer, consumerTicks);
     }
 }

@@ -13,10 +13,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;

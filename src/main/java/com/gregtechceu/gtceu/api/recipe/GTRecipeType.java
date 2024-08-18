@@ -208,13 +208,15 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public Iterator<RecipeHolder<GTRecipe>> searchFuelRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || !isFuelRecipeType()) return null;
         return getLookup().getRecipeIterator(holder, recipe -> recipe.value().isFuel &&
-                GTRecipe.matchRecipe(recipe, holder).isSuccess() && GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() &&
+                GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
     }
 
     public Iterator<RecipeHolder<GTRecipe>> searchRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return null;
         var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.value().isFuel &&
-                GTRecipe.matchRecipe(recipe, holder).isSuccess() && GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() &&
+                GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
         boolean any = false;
         while (iterator.hasNext()) {
             RecipeHolder<GTRecipe> recipe = iterator.next();

@@ -406,8 +406,8 @@ public class GTToolType {
             .idFormat("lv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
-                            List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                            -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -419,8 +419,8 @@ public class GTToolType {
             .idFormat("hv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
-                            List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                            -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -432,8 +432,8 @@ public class GTToolType {
             .idFormat("iv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
-                            List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                            -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)

@@ -6,12 +6,12 @@ import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.level.material.Fluid;
-
-import com.google.common.collect.Lists;
-import dev.emi.emi.api.stack.EmiStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import com.google.common.collect.Lists;
+import dev.emi.emi.api.stack.EmiStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 
-import org.jetbrains.annotations.NotNull;
 import com.google.common.primitives.Ints;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;

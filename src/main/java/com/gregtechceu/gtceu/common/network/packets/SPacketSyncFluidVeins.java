@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-
 import com.gregtechceu.gtceu.client.ClientProxy;
+
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.nbt.CompoundTag;

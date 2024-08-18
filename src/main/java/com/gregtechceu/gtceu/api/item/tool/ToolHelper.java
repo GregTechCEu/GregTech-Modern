@@ -393,8 +393,10 @@ public class ToolHelper {
                         List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                Iterator<RecipeHolder<GTRecipe>> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
-                RecipeHolder<GTRecipe> hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
+                Iterator<RecipeHolder<GTRecipe>> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES
+                        .searchRecipe(be.metaMachine);
+                RecipeHolder<GTRecipe> hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null :
+                        hammerRecipes.next();
                 if (hammerRecipe != null && GTRecipe.handleRecipeIO(hammerRecipe, IO.IN, be.metaMachine,
                         be.getMetaMachine().recipeLogic.getChanceCaches())) {
                     drops.clear();

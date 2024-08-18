@@ -129,8 +129,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             final int finalNightVisionTimer = nightVisionTimer;
             final byte finalToggleTimer = toggleTimer;
             itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                data1 -> data1.setNightVisionTimer(finalNightVisionTimer)
-                        .setToggleTimer(finalToggleTimer));
+                    data1 -> data1.setNightVisionTimer(finalNightVisionTimer)
+                            .setToggleTimer(finalToggleTimer));
         } else if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
             ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
             if (player.isOnFire()) player.extinguishFire();

@@ -97,7 +97,8 @@ public class GTRecipeLookup {
      * @return the recipe found
      */
     @Nullable
-    public GTRecipe find(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
+    public GTRecipe find(@NotNull IRecipeCapabilityHolder holder,
+                         @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
         List<List<AbstractMapIngredient>> list = prepareRecipeFind(holder);
         // couldn't build any inputs to use for search, so no recipe could be found
         if (list == null) return null;

@@ -232,7 +232,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             status = data.hover() ?
                     Component.translatable("metaarmor.hud.status.enabled") :
                     Component.translatable("metaarmor.hud.status.disabled");
-            this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode",  status));
+            this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", status));
         }
         this.HUD.draw(guiGraphics);
         this.HUD.reset();

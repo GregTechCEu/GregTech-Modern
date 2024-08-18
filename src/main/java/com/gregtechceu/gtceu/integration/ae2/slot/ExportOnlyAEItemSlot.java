@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
-import com.google.common.primitives.Ints;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -57,11 +56,11 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemHandl
         // NO-OP
     }
 
-
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot == 0 && this.stock != null) {
-            return this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack(Ints.saturatedCast(this.stock.amount())) :
+            return this.stock.what() instanceof AEItemKey itemKey ?
+                    itemKey.toStack(Ints.saturatedCast(this.stock.amount())) :
                     ItemStack.EMPTY;
         }
         return ItemStack.EMPTY;

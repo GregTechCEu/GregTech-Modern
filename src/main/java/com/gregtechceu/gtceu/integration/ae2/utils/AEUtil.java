@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;

@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -67,7 +67,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (match != null) {
                 var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
                 match = new RecipeHolder<>(match.id(), copied);
-                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
+                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                        GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -83,7 +84,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());
-            // backup 2:  gem; if  crushed ore  doesn't  exist
+            // backup 2: gem; if crushed ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce());
             // backup 3: normal ore; if gem doesn't exist.
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce());
@@ -97,7 +98,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
                     .build();
-            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() && GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
+            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() &&
+                    GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -145,7 +147,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
         if (match != null) {
             var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
             match = new RecipeHolder<>(match.id(), copied);
-            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() && GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
+            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                    GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

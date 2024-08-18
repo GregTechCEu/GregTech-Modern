@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -392,7 +392,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return outputItems(new SizedIngredient(new IntProviderIngredient(Ingredient.of(output), intProvider).toVanilla(), 1));
+        return outputItems(
+                new SizedIngredient(new IntProviderIngredient(Ingredient.of(output), intProvider).toVanilla(), 1));
     }
 
     public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {
@@ -972,8 +973,7 @@ public class GTRecipeBuilder {
                         this.inputChanceLogic, this.outputChanceLogic,
                         this.tickInputChanceLogic, this.tickOutputChanceLogic,
                         this.conditions,
-                        List.of(), this.data, this.duration, this.isFuel)
-        );
+                        List.of(), this.data, this.duration, this.isFuel));
     }
 
     public void save(RecipeOutput consumer) {

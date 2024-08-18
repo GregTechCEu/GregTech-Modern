@@ -63,7 +63,8 @@ public class RecipeHelper {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    public static RecipeHolder<GTRecipe> applyOverclock(OverclockingLogic logic, @NotNull RecipeHolder<GTRecipe> recipe, long maxOverclockVoltage) {
+    public static RecipeHolder<GTRecipe> applyOverclock(OverclockingLogic logic, @NotNull RecipeHolder<GTRecipe> recipe,
+                                                        long maxOverclockVoltage) {
         GTRecipe value = recipe.value();
         long EUt = getInputEUt(value);
         if (EUt > 0) {

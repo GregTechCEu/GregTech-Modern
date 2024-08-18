@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.item.*;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -64,7 +63,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -1585,8 +1583,10 @@ public class GTBlocks {
 
     public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
             .block("brittle_charcoal", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
-                            Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
+                    Platform.isClient() ?
+                            new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                    Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) :
+                            null))
             .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))

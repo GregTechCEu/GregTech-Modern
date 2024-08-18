@@ -22,16 +22,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import net.minecraft.world.item.component.CustomData;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -152,7 +151,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputHatch", writeConfigToTag(player.registryAccess()));
             dataStick.set(GTDataComponents.DATA_COPY_TAG, CustomData.of(tag));
-            dataStick.set(DataComponents.ITEM_NAME, Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
+            dataStick.set(DataComponents.ITEM_NAME,
+                    Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
         return true;

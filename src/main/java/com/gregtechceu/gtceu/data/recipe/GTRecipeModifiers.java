@@ -102,7 +102,8 @@ public class GTRecipeModifiers {
         @Override
         public RecipeHolder<GTRecipe> apply(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (RecipeHelper.getRecipeEUtTier(recipe.value()) / recipe.value().parallels > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe.value()) / recipe.value().parallels >
+                        overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
@@ -124,13 +125,16 @@ public class GTRecipeModifiers {
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Pair<RecipeHolder<GTRecipe>, Integer> fastParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe, int maxParallel,
-                                                       boolean modifyDuration) {
+    public static Pair<RecipeHolder<GTRecipe>, Integer> fastParallel(MetaMachine machine,
+                                                                     @NotNull RecipeHolder<GTRecipe> recipe,
+                                                                     int maxParallel,
+                                                                     boolean modifyDuration) {
         if (machine instanceof IRecipeCapabilityHolder holder) {
             while (maxParallel > 0) {
                 var copied = recipe.value().copy(ContentModifier.multiplier(maxParallel), modifyDuration);
                 recipe = new RecipeHolder<>(recipe.id(), copied);
-                if (GTRecipe.matchRecipe(recipe, holder).isSuccess() && GTRecipe.matchTickRecipe(recipe, holder).isSuccess()) {
+                if (GTRecipe.matchRecipe(recipe, holder).isSuccess() &&
+                        GTRecipe.matchTickRecipe(recipe, holder).isSuccess()) {
                     return Pair.of(recipe, maxParallel);
                 }
                 maxParallel /= 2;
@@ -148,16 +152,18 @@ public class GTRecipeModifiers {
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Pair<RecipeHolder<GTRecipe>, Integer> accurateParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe,
-                                                           int maxParallel, boolean modifyDuration) {
+    public static Pair<RecipeHolder<GTRecipe>, Integer> accurateParallel(MetaMachine machine,
+                                                                         @NotNull RecipeHolder<GTRecipe> recipe,
+                                                                         int maxParallel, boolean modifyDuration) {
         if (maxParallel == 1) {
             return Pair.of(recipe, 1);
         }
         return ParallelLogic.applyParallel(machine, recipe, maxParallel, modifyDuration);
     }
 
-    public static Pair<RecipeHolder<GTRecipe>, Integer> hatchParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe,
-                                                        boolean modifyDuration) {
+    public static Pair<RecipeHolder<GTRecipe>, Integer> hatchParallel(MetaMachine machine,
+                                                                      @NotNull RecipeHolder<GTRecipe> recipe,
+                                                                      boolean modifyDuration) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance)
                     .map(IParallelHatch.class::cast).findAny();
@@ -176,7 +182,8 @@ public class GTRecipeModifiers {
             }
             return RecipeHelper
                     .applyOverclock(new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> {
-                        var pair = OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic().runOverclockingLogic(recipe.value(),
+                        var pair = OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic().runOverclockingLogic(
+                                recipe.value(),
                                 recipeEUt, maxVoltage, duration, amountOC);
                         if (coilMachine.getCoilTier() > 0) {
                             var eu = pair.firstLong() * (1 - coilMachine.getCoilTier() * 0.1);
@@ -192,7 +199,8 @@ public class GTRecipeModifiers {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
                     100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
-            if (!recipe.value().data.contains("ebf_temp") || recipe.value().data.getInt("ebf_temp") > blastFurnaceTemperature) {
+            if (!recipe.value().data.contains("ebf_temp") ||
+                    recipe.value().data.getInt("ebf_temp") > blastFurnaceTemperature) {
                 return null;
             }
             if (RecipeHelper.getRecipeEUtTier(recipe.value()) > coilMachine.getTier()) {
@@ -206,13 +214,15 @@ public class GTRecipeModifiers {
                                     duration,
                                     amountOC,
                                     blastFurnaceTemperature,
-                                    recipe.value().data.contains("ebf_temp") ? recipe.value().data.getInt("ebf_temp") : 0)),
+                                    recipe.value().data.contains("ebf_temp") ? recipe.value().data.getInt("ebf_temp") :
+                                            0)),
                     recipe, coilMachine.getOverclockVoltage());
         }
         return null;
     }
 
-    public static RecipeHolder<GTRecipe> pyrolyseOvenOverclock(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static RecipeHolder<GTRecipe> pyrolyseOvenOverclock(MetaMachine machine,
+                                                               @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe.value()) > coilMachine.getTier()) {
                 return null;
@@ -233,13 +243,15 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static RecipeHolder<GTRecipe> multiSmelterParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static RecipeHolder<GTRecipe> multiSmelterParallel(MetaMachine machine,
+                                                              @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
 
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
 
             var result = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
-            recipe = result.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), result.getFirst().value().copy()) : result.getFirst();
+            recipe = result.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), result.getFirst().value().copy()) :
+                    result.getFirst();
 
             int parallelValue = result.getSecond();
             recipe.value().duration = Math.max(1, 256 * parallelValue / maxParallel);
@@ -251,7 +263,8 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static RecipeHolder<GTRecipe> subtickParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe, boolean modifyDuration) {
+    public static RecipeHolder<GTRecipe> subtickParallel(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe,
+                                                         boolean modifyDuration) {
         if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
             final Pair<RecipeHolder<GTRecipe>, Integer>[] result = new Pair[] { null };
             RecipeHelper.applyOverclock(

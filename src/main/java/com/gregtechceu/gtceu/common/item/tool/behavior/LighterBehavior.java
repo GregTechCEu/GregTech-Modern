@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,11 +30,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         boolean isOpen = item.getOrDefault(GTDataComponents.LIGHTER_OPEN, false);
         if (canOpen && player.isShiftKeyDown()) {
             item.set(GTDataComponents.LIGHTER_OPEN, !isOpen);
@@ -87,7 +87,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         Player player = context.getPlayer();
-        if ((!canOpen || (itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false)) && !player.isShiftKeyDown()) && consumeFuel(player, itemStack)) {
+        if ((!canOpen || (itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false)) && !player.isShiftKeyDown()) &&
+                consumeFuel(player, itemStack)) {
             player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                     GTValues.RNG.nextFloat() * 0.4F + 0.8F);
             BlockState state = context.getLevel().getBlockState(context.getClickedPos());

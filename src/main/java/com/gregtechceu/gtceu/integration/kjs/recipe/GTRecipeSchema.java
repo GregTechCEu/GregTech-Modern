@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -26,9 +26,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -54,7 +52,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public interface GTRecipeSchema {
@@ -196,11 +193,13 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe itemOutputsRanged(SizedIngredient ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP, new SizedIngredient(new IntProviderIngredient(ingredient.ingredient(), UniformInt.of(min, max)).toVanilla(), 1));
+            return output(ItemRecipeCapability.CAP, new SizedIngredient(
+                    new IntProviderIngredient(ingredient.ingredient(), UniformInt.of(min, max)).toVanilla(), 1));
         }
 
         public GTKubeRecipe outputItemsRanged(Ingredient ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP, new SizedIngredient(new IntProviderIngredient(ingredient, UniformInt.of(min, max)).toVanilla(), 1));
+            return output(ItemRecipeCapability.CAP,
+                    new SizedIngredient(new IntProviderIngredient(ingredient, UniformInt.of(min, max)).toVanilla(), 1));
         }
 
         public GTKubeRecipe outputItemsRanged(ItemStack stack, int min, int max) {
@@ -267,7 +266,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe chancedFluidInput(SizedFluidIngredient stack, int chance,
-                                            int tierChanceBoost) {
+                                              int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                         ChanceLogic.getMaxChancedValue(), chance, new Throwable());
@@ -284,11 +283,13 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), 1), chance, tierChanceBoost);
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), 1), chance,
+                    tierChanceBoost);
         }
 
         public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), count), chance, tierChanceBoost);
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), count), chance,
+                    tierChanceBoost);
         }
 
         public GTKubeRecipe chancedOutput(SizedIngredient stack, String fraction, int tierChanceBoost) {
@@ -358,7 +359,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
-                                        int tierChanceBoost) {
+                                          int tierChanceBoost) {
             return chancedOutput(SizedIngredient.of(ChemicalHelper.get(prefix, material).getItem(), count), fraction,
                     tierChanceBoost);
         }

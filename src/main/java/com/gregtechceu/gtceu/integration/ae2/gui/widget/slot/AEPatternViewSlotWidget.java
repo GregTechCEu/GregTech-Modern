@@ -8,10 +8,10 @@ import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
-
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.NotNull;
 
 public class AEPatternViewSlotWidget extends SlotWidget {

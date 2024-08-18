@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.feature;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.orientation.RelativeSide;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import net.minecraft.core.Direction;
+
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 
 import java.util.EnumSet;
 import java.util.Set;

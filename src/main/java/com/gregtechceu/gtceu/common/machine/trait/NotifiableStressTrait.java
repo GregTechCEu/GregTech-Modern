@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -63,7 +63,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public List<Float> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Float> left, @Nullable String slotName,
+    public List<Float> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Float> left,
+                                         @Nullable String slotName,
                                          boolean simulate) {
         if (machine instanceof IKineticMachine kineticMachine) {
             float sum = left.stream().reduce(0f, Float::sum);
