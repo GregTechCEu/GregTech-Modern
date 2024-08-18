@@ -1315,7 +1315,6 @@ public class MachineRecipeLoader {
         }
     }
 
-    // TODO NBT removal recipes
     private static void registerNBTRemoval(RecipeOutput provider) {
         for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
@@ -1378,6 +1377,15 @@ public class MachineRecipeLoader {
         // Jetpacks
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", ITEM_FILTER.asStack(),
+                ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
+                FLUID_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", ORE_DICTIONARY_FILTER.asStack(),
+                ORE_DICTIONARY_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
+                TAG_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(RecipeOutput provider) {
