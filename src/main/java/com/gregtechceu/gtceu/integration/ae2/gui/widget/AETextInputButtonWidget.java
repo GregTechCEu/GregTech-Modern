@@ -84,7 +84,7 @@ public class AETextInputButtonWidget extends WidgetGroup {
                 })
                 .setTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✎")),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✎")))
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✔")))
                 .setHoverTooltips(hoverTexts));
         this.addWidget(textField);
     }
