@@ -748,8 +748,8 @@ public class MachineLang {
         provider.add("gui.gtceu.rename.desc", "Rename Pattern Buffer");
         provider.add("gui.gtceu.refund_all.desc", "Return Stored Contents to AE2");
 
-        provider.add("gtceu.machine.buffer.import.tooltip", "Item and Fluid Input for Multiblocks");
-        provider.add("gtceu.machine.buffer.export.tooltip", "Item and Fluid Output for Multiblocks");
+        provider.add("gtceu.machine.dual_hatch.import.tooltip", "Item and Fluid Input for Multiblocks");
+        provider.add("gtceu.machine.dual_hatch.export.tooltip", "Item and Fluid Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip",
                 "Multiple Ampere Energy Input for Multiblocks");

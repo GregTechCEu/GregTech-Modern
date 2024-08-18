@@ -1115,7 +1115,7 @@ public class GTMachines {
                                     new PartAbility[] { PartAbility.IMPORT_ITEMS })
                     .overlayTieredHullRenderer("dual_hatch.import")
                     .tooltips(
-                            Component.translatable("gtceu.machine.buffer.import.tooltip"),
+                            Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable(
                                     "gtceu.universal.tooltip.item_storage_capacity",
                                     (int) Math.pow((tier - 4), 2)),
@@ -1140,7 +1140,7 @@ public class GTMachines {
                                     new PartAbility[] { PartAbility.EXPORT_ITEMS })
                     .overlayTieredHullRenderer("dual_hatch.export")
                     .tooltips(
-                            Component.translatable("gtceu.machine.buffer.export.tooltip"),
+                            Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
                             Component.translatable(
                                     "gtceu.universal.tooltip.item_storage_capacity",
                                     (int) Math.pow((tier - 4), 2)),
