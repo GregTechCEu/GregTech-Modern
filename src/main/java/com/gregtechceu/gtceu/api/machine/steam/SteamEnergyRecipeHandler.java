@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -33,7 +34,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
+    public List<Long> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Long> left,
+                                        @Nullable String slotName,
                                         boolean simulate) {
         long sum = left.stream().reduce(0L, Long::sum);
         int realSum = (int) Math.ceil(sum * conversionRate);

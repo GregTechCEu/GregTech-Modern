@@ -27,7 +27,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     public Content replace(Context cx, KubeRecipe recipe, Content original, ReplacementMatchInfo match, Object with) {
         return new Content(
                 baseComponent.replace(cx, recipe, baseComponent.wrap(cx, recipe, original.content), match, with),
-                original.chance, original.tierChanceBoost, original.slotName, original.uiName);
+                original.chance, original.maxChance, original.tierChanceBoost, original.slotName, original.uiName);
     }
 
     @Override

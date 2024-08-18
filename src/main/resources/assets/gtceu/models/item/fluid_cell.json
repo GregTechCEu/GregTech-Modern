@@ -3,8 +3,7 @@
   "parent": "neoforge:item/default",
   "textures": {
     "base": "gtceu:item/fluid_cell/base",
-    "fluid": "gtceu:item/fluid_cell/overlay",
-    "cover": "gtceu:item/fluid_cell/base"
+    "fluid": "gtceu:item/fluid_cell/overlay"
   },
   "fluid": "minecraft:empty"
 }

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +23,8 @@ public class RecipeModifierList implements RecipeModifier {
 
     @Nullable
     @Override
-    public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
-        GTRecipe modifiedRecipe = recipe;
+    public RecipeHolder<GTRecipe> apply(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+        RecipeHolder<GTRecipe> modifiedRecipe = recipe;
 
         for (RecipeModifier modifier : modifiers) {
             if (modifiedRecipe != null) {

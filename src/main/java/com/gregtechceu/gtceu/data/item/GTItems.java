@@ -33,9 +33,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
+import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
@@ -302,9 +302,11 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
             .register();
-    public static ItemEntry<Item> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", Item::new)
+    public static ItemEntry<ComponentItem> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", ComponentItem::create)
             .lang("Chocolate Coin")
-            .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(attach(new FoodStats(GTFoods.CHOCOLATE, false,
+                    () -> ChemicalHelper.get(TagPrefix.foil, GTMaterials.Gold))))
             .onRegister(compassNode(GTCompassSections.MISC))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
             .register();
@@ -682,10 +684,40 @@ public class GTItems {
             .register();
 
     // TODO Lighter
-    public static ItemEntry<Item> TOOL_MATCHES;
-    public static ItemEntry<Item> TOOL_MATCHBOX;
-    public static ItemEntry<Item> TOOL_LIGHTER_INVAR;
-    public static ItemEntry<Item> TOOL_LIGHTER_PLATINUM;
+    public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
+            .lang("Matches")
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(false, false, false)))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::create)
+            .lang("Matchbox")
+            .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(false, true, false, Items.PAPER, 16)))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::create)
+            .lang("Invar Lighter")
+            .properties(p -> p.stacksTo(1))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(FilteredFluidContainer.create(100, true,
+                    x -> x.is(CustomTags.LIGHTER_FLUIDS)),
+                    new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
+            .item("platinum_lighter", ComponentItem::create)
+            .lang("Platinum Lighter")
+            .properties(p -> p.stacksTo(1).rarity(Rarity.UNCOMMON))
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegister(attach(new LighterBehavior(true, true, true)))
+            .onRegister(attach(FilteredFluidContainer.create(1000, true,
+                    x -> x.is(CustomTags.LIGHTER_FLUIDS)),
+                    new ItemFluidContainer()))
+            .onRegister(modelPredicate(GTCEu.id("lighter_open"),
+                    (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
+            .register();;
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "raw_carbon_fibers")).lang("Raw Carbon Fibers")
@@ -696,9 +728,17 @@ public class GTItems {
     public static ItemEntry<Item> CARBON_FIBER_PLATE = REGISTRATE.item("carbon_fiber_plate", Item::new)
             .onRegister(compassNodeExist(GTCompassSections.MISC, "carbon_fiber_plate")).lang("Carbon Fiber Plate")
             .register();
-    public static ItemEntry<Item> DUCT_TAPE = REGISTRATE.item("duct_tape", Item::new)
-            .onRegister(compassNode(GTCompassSections.MISC))
+    public static ItemEntry<ComponentItem> DUCT_TAPE = REGISTRATE
+            .item("duct_tape", ComponentItem::create)
             .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach(new TapeBehaviour()))
+            .onRegister(compassNode(GTCompassSections.ITEMS)).register();
+    public static ItemEntry<ComponentItem> BASIC_TAPE = REGISTRATE
+            .item("basic_tape", ComponentItem::create)
+            .lang("Tape")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach(new TapeBehaviour()))
             .onRegister(compassNode(GTCompassSections.ITEMS)).register();
 
     public static ItemEntry<Item> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", Item::new)
@@ -970,7 +1010,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -980,7 +1021,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -989,7 +1031,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 16 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -998,7 +1041,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1007,7 +1051,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1016,7 +1061,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 16 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1025,7 +1071,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                        FormattingUtil.formatNumbers(1280 * 64 * 64 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1035,7 +1082,8 @@ public class GTItems {
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                 lines.add(
-                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                FormattingUtil.formatNumbers(1280 * 64 * 64 * 4 / 20)));
             })))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
             .register();
@@ -1834,6 +1882,7 @@ public class GTItems {
     public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube")
             .tag(CustomTags.ULV_CIRCUITS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube")
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M))))
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
     public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new).lang("Transistor")
             .tag(CustomTags.TRANSISTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components"))
@@ -2243,9 +2292,9 @@ public class GTItems {
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", Item::new)
+    public static ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
             .lang("Purple Drink")
-            .properties(p -> p.food(GTFoods.DRINK))
+            .onRegister(attach(new FoodStats(GTFoods.DRINK, true, Items.GLASS_BOTTLE::getDefaultInstance)))
             .onRegister(compassNode(GTCompassSections.MISC))
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::new)
@@ -2602,7 +2651,7 @@ public class GTItems {
                                     100_000_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                                     ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Leggings")
+            .lang("QuarkTech™ Suite Boots")
             .properties(p -> p.rarity(Rarity.RARE))
             .tag(CustomTags.PPE_ARMOR)
             .register();

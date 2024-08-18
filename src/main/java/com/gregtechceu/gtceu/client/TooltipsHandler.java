@@ -1,23 +1,33 @@
 package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.fluid.FluidConstants;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author KilaBash
@@ -38,6 +48,9 @@ public class TooltipsHandler {
                     !unificationEntry.material.getChemicalFormula().isEmpty())
                 tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
                         .withStyle(ChatFormatting.YELLOW));
+        }
+        if (stack.getItem() instanceof BucketItem bucket) {
+            appendFluidTooltips(bucket.content, FluidHelper.getBucket(), tooltips::add, flag);
         }
 
         // Block/Item custom tooltips
@@ -61,11 +74,40 @@ public class TooltipsHandler {
         GTUtil.appendHazardTooltips(material, tooltips);
     }
 
-    public static void appendFluidTooltips(Fluid fluid, List<Component> tooltips, TooltipFlag flag) {
+    public static void appendFluidTooltips(Fluid fluid, long amount, Consumer<Component> tooltips, TooltipFlag flag) {
+        FluidType fluidType = fluid.getFluidType();
         var material = ChemicalHelper.getMaterial(fluid);
         if (material != null) {
             if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+                tooltips.accept(Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+
+            if (material.hasProperty(PropertyKey.INGOT)) {
+                if (GTUtil.isShiftDown() && amount >= GTValues.L) {
+                    long ingots = amount / GTValues.L;
+                    long remainder = amount % GTValues.L;
+                    String fluidAmount = String.format(" %,d mB = %,d * %d mB", amount, ingots, GTValues.L);
+                    if (remainder != 0) {
+                        fluidAmount += String.format(" + %d mB", remainder);
+                    }
+                    tooltips.accept(Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
+                            .append(Component.literal(fluidAmount)));
+                }
+            }
+
+            if (fluid instanceof GTFluid attributedFluid) {
+                FluidState state = attributedFluid.getState();
+                switch (state) {
+                    case LIQUID -> tooltips.accept(Component.translatable("gtceu.fluid.state_liquid"));
+                    case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
+                    case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
+                }
+
+                attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
+            }
+            tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
+            if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
+                tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
+            }
         }
     }
 }

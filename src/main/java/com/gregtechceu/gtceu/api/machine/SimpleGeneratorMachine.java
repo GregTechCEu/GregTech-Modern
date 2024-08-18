@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
@@ -92,9 +93,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof SimpleGeneratorMachine generator) {
-            var EUt = RecipeHelper.getOutputEUt(recipe);
+            var EUt = RecipeHelper.getOutputEUt(recipe.value());
             if (EUt > 0) {
                 var maxParallel = (int) (Math.min(generator.getOverclockVoltage(),
                         GTValues.V[generator.getOverclockTier()]) / EUt);

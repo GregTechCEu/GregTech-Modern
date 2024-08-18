@@ -308,7 +308,7 @@ public class GCyMRecipes {
                 .inputItems(dust, Tantalum)
                 .inputItems(dust, Carbon)
                 .outputItems(dust, TantalumCarbide, 2)
-                .duration(150).EUt(VA[IV])
+                .duration(150).EUt(VA[EV])
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("hsla_steel")

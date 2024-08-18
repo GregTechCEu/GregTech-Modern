@@ -12,10 +12,8 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new WorkableInfoProvider());
         oneProbe.registerProvider(new ControllableInfoProvider());
         // oneProbe.registerProvider(new DebugPipeNetInfoProvider());
-        // oneProbe.registerProvider(new TransformerInfoProvider());
         // oneProbe.registerProvider(new DiodeInfoProvider());
         // oneProbe.registerProvider(new MultiblockInfoProvider());
-        // oneProbe.registerProvider(new MaintenanceInfoProvider());
         // oneProbe.registerProvider(new MultiRecipeMapInfoProvider());
         // oneProbe.registerProvider(new ConverterInfoProvider());
         oneProbe.registerProvider(new RecipeLogicInfoProvider());
@@ -28,8 +26,9 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new CableInfoProvider());
         oneProbe.registerProvider(new MachineModeProvider());
         oneProbe.registerProvider(new StainedColorProvider());
-        // oneProbe.registerProvider(new PrimitivePumpInfoProvider());
+        oneProbe.registerProvider(new PrimitivePumpProvider());
         oneProbe.registerProvider(new CoverProvider());
         oneProbe.registerProvider(new HazardCleanerInfoProvider());
+        oneProbe.registerProvider(new TransformerInfoProvider());
     }
 }

@@ -14,6 +14,9 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class LaserPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {
 
     public LaserPipeBlockItem(PipeBlock block, Properties properties) {

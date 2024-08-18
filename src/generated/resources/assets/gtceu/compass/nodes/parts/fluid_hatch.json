@@ -77,11 +77,14 @@
     "gtceu:uiv_output_hatch_9x",
     "gtceu:uxv_output_hatch_9x",
     "gtceu:opv_output_hatch_9x",
-    "gtceu:max_output_hatch_9x"
+    "gtceu:max_output_hatch_9x",
+    "gtceu:me_input_hatch",
+    "gtceu:me_stocking_input_hatch",
+    "gtceu:me_output_hatch"
   ],
   "page": "gtceu:parts/fluid_hatch",
   "position": [
-    -100,
+    -150,
     0
   ],
   "section": "gtceu:parts"

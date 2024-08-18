@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
@@ -146,7 +148,9 @@ public class FisherMachine extends TieredEnergyMachine
 
     protected CustomItemStackHandler createChargerItemHandler() {
         var transfer = new CustomItemStackHandler();
-        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
+        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return transfer;
     }
 
@@ -275,7 +279,7 @@ public class FisherMachine extends TieredEnergyMachine
                 useBait |= tryFillCache(itemStack);
 
             if (useBait)
-                this.baitHandler.extractItem(0, 1, false);
+                this.baitHandler.storage.extractItem(0, 1, false);
             updateFishingUpdateSubscription();
             progress = -1;
         }

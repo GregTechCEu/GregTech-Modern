@@ -35,6 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -127,7 +128,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    private BiPredicate<IRecipeLogicMachine, RecipeHolder<GTRecipe>> beforeWorking = (machine, recipe) -> true;
     @NotNull
     @Getter
     @Setter
@@ -202,6 +203,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> defaultModelRenderer() {
         return modelRenderer(() -> ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/" + name));
+    }
+
+    public MachineBuilder<DEFINITION> tieredHullRenderer(ResourceLocation model) {
+        return renderer(() -> new TieredHullMachineRenderer(tier, model));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
@@ -334,7 +339,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         })
                 .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
-                .properties(properties -> properties.noLootTable())
+                .properties(BlockBehaviour.Properties::noLootTable)
                 .addLayer(() -> RenderType::cutoutMipped)
                 // .tag(GTToolType.WRENCH.harvestTag)
                 .blockstate(NonNullBiConsumer.noop())

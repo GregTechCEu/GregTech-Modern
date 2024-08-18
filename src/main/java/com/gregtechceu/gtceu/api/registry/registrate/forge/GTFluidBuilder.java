@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.forge;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.fluid.forge.GTFluidImpl;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
+import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 
@@ -25,7 +25,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -87,7 +87,8 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     @FunctionalInterface
     public interface FluidTypeFactory {
 
-        FluidType create(String langKey, Material material, FluidType.Properties properties,
+        FluidType create(AbstractRegistrate<?> owner, String langKey,
+                         Material material, FluidType.Properties properties,
                          ResourceLocation stillTexture, ResourceLocation flowingTexture, int color);
     }
 
@@ -127,7 +128,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         this.langKey = langKey;
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
-        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(langKey, material, makeTypeProperties(),
+        this.fluidType = NonNullSupplier.lazy(() -> typeFactory.create(owner, langKey, material, makeTypeProperties(),
                 this.stillTexture, this.flowingTexture, this.color));
         this.registerType = true;
         defaultBucket();
@@ -361,15 +362,11 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         return this.source;
     }
 
-    public static FluidType defaultFluidType(String langKey, Material material, FluidType.Properties properties,
+    public static FluidType defaultFluidType(AbstractRegistrate<?> owner, String langKey,
+                                             Material material, FluidType.Properties properties,
                                              ResourceLocation stillTexture, ResourceLocation flowingTexture,
                                              int color) {
-        return new FluidType(properties) {
-
-            @Override
-            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(new GTClientFluidTypeExtensions(stillTexture, flowingTexture, color));
-            }
+        FluidType type = new FluidType(properties) {
 
             @Override
             public String getDescriptionId() {
@@ -386,5 +383,9 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
                 return this.getDescription();
             }
         };
+        OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
+            event.registerFluidType(new GTClientFluidTypeExtensions(stillTexture, flowingTexture, color), type);
+        });
+        return type;
     }
 }

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
@@ -25,6 +26,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
@@ -98,27 +100,29 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             return GTValues.V[tier];
     }
 
-    protected GTRecipe getLubricantRecipe() {
+    protected RecipeHolder<GTRecipe> getLubricantRecipe() {
         return GTRecipeBuilder.ofRaw().inputFluids(LUBRICANT_STACK).build();
     }
 
-    protected GTRecipe getBoostRecipe() {
+    protected RecipeHolder<GTRecipe> getBoostRecipe() {
         return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).build();
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof LargeCombustionEngineMachine engineMachine) {
-            var EUt = RecipeHelper.getOutputEUt(recipe);
+            var EUt = RecipeHelper.getOutputEUt(recipe.value());
             // has lubricant
-            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() &&
+            if (EUt > 0 && GTRecipe.matchRecipe(engineMachine.getLubricantRecipe(), engineMachine).isSuccess() &&
                     !engineMachine.isIntakesObstructed()) {
                 var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
                 var parallelResult = GTRecipeModifiers.fastParallel(engineMachine, recipe, maxParallel, false);
                 if (engineMachine.isOxygenBoosted) { // boost production
-                    recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
+                    recipe = parallelResult.getFirst() == recipe ?
+                            new RecipeHolder<>(recipe.id(), recipe.value().copy()) : parallelResult.getFirst();
                     long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
-                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+                    recipe.value().tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
                 } else {
                     recipe = parallelResult.getFirst();
                 }
@@ -135,7 +139,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         val totalContinuousRunningTime = recipeLogic.getTotalContinuousRunningTime();
         if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0)) {
             // insufficient lubricant
-            if (!getLubricantRecipe().handleRecipeIO(IO.IN, this)) {
+            if (!GTRecipe.handleRecipeIO(getLubricantRecipe(), IO.IN, this, this.recipeLogic.getChanceCaches())) {
                 recipeLogic.interruptRecipe();
                 return false;
             }
@@ -143,8 +147,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // check boost fluid
         if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 20 == 0) && isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
-            this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() &&
-                    boosterRecipe.handleRecipeIO(IO.IN, this);
+            this.isOxygenBoosted = GTRecipe.matchRecipe(boosterRecipe, this).isSuccess() &&
+                    GTRecipe.handleRecipeIO(boosterRecipe, IO.IN, this, this.recipeLogic.getChanceCaches());
         }
         return value;
     }

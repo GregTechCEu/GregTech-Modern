@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
-import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 
@@ -33,14 +32,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
-    public static BedrockOreLoader INSTANCE;
     public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setLenient().create();
     private static final String FOLDER = "gtceu/bedrock_ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public BedrockOreLoader() {
         super(GSON_INSTANCE, FOLDER);
-        INSTANCE = this;
     }
 
     @Override
@@ -50,12 +47,12 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
         }
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
-        GTOres.toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
 
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.BEDROCK_ORE_DEFINITIONS));
         if (GTCEu.isKubeJSLoaded()) {
-            RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
+            KJSCallWrapper.fireKJSEvent();
         }
+
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
             ResourceLocation location = entry.getKey();
@@ -86,10 +83,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow();
     }
 
-    /**
-     * Holy shit this is dumb, thanks forge for trying to classload things that are never called!
-     */
-    public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
+    public static final class KJSCallWrapper {
 
         public static void fireKJSEvent() {
             GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTBedrockOreVeinEventJS());

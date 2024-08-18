@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class ContentModifier {
 
+    @Getter
     private final double multiplier;
+    @Getter
     private final double addition;
 
     public static ContentModifier of(double multiplier, double addition) {

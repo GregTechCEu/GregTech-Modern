@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -10,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -18,6 +21,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
@@ -194,6 +199,14 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
                 }
                 return true;
             }
+        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+            IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(stackInSlot);
+            if (energyStorage != null && handleForgeEnergyItem(energyStorage, simulate)) {
+                if (!simulate) {
+                    itemHandler.setStackInSlot(slotIndex, stackInSlot);
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -220,6 +233,20 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         // Else, check if we have above 65% power
         if (chargePercent > 0.65) {
             long chargedBy = electricItem.charge(getEnergyStored(), chargeTier, false, simulate);
+            if (!simulate) {
+                removeEnergy(chargedBy);
+            }
+            return chargedBy > 0;
+        }
+        return false;
+    }
+
+    private boolean handleForgeEnergyItem(IEnergyStorage energyStorage, boolean simulate) {
+        int machineTier = GTUtil.getTierByVoltage(Math.max(getInputVoltage(), getOutputVoltage()));
+        double chargePercent = getEnergyStored() / (getEnergyCapacity() * 1.0);
+
+        if (chargePercent > 0.65) { // 2/3rds full
+            long chargedBy = FeCompat.insertEu(energyStorage, GTValues.V[machineTier], simulate);
             if (!simulate) {
                 removeEnergy(chargedBy);
             }
@@ -277,7 +304,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
+    public List<Long> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Long> left,
+                                        @Nullable String slotName,
                                         boolean simulate) {
         IEnergyContainer capability = this;
         long sum = left.stream().reduce(0L, Long::sum);

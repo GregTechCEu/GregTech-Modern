@@ -22,7 +22,7 @@ public class FusionCasingBlock extends ActiveBlock {
                         new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
                                 Map.of("all", casingType.getTexture())) :
                         null,
-                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
+                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer/all"),
                         Map.of("bot_all", casingType.getTexture(),
                                 "top_all", ResourceLocation.parse(casingType.getTexture() + "_bloom"))) :
                         null);

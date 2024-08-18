@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
@@ -64,6 +65,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private GTRecipeBuilder recipeBuilder;
     @Getter
     @Setter
+    private ChanceBoostFunction chanceFunction = ChanceBoostFunction.OVERCLOCK;
+    @Getter
+    @Setter
     private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);
     @Getter
     private final Byte2ObjectMap<IGuiTexture> slotOverlays = new Byte2ObjectArrayMap<>();
@@ -80,9 +84,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected SoundEntry sound;
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
-    @Setter
-    @Getter
-    protected int maxTooltips = 3;
     @Setter
     @Getter
     protected boolean isFuelRecipeType;
@@ -173,6 +174,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
+    public GTRecipeType setMaxTooltips(int maxTooltips) {
+        this.recipeUI.setMaxTooltips(maxTooltips);
+        return this;
+    }
+
+    public GTRecipeType setXEIVisible(boolean XEIVisible) {
+        this.recipeUI.setXEIVisible(XEIVisible);
+        return this;
+    }
+
     public GTRecipeType addDataInfo(Function<CompoundTag, String> dataInfo) {
         this.dataInfos.add(dataInfo);
         return this;
@@ -194,19 +205,21 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     @Nullable
-    public Iterator<GTRecipe> searchFuelRecipe(IRecipeCapabilityHolder holder) {
+    public Iterator<RecipeHolder<GTRecipe>> searchFuelRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || !isFuelRecipeType()) return null;
-        return getLookup().getRecipeIterator(holder, recipe -> recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        return getLookup().getRecipeIterator(holder, recipe -> recipe.value().isFuel &&
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() &&
+                GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
     }
 
-    public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder) {
+    public Iterator<RecipeHolder<GTRecipe>> searchRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return null;
-        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.value().isFuel &&
+                GTRecipe.matchRecipe(recipe, holder).isSuccess() &&
+                GTRecipe.matchTickRecipe(recipe, holder).isSuccess());
         boolean any = false;
         while (iterator.hasNext()) {
-            GTRecipe recipe = iterator.next();
+            RecipeHolder<GTRecipe> recipe = iterator.next();
             if (recipe == null) continue;
             any = true;
             break;
@@ -218,7 +231,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
-            GTRecipe recipe = logic.createCustomRecipe(holder);
+            RecipeHolder<GTRecipe> recipe = logic.createCustomRecipe(holder);
             if (recipe != null) return Collections.singleton(recipe).iterator();
         }
         return Collections.emptyIterator();
@@ -308,7 +321,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (recipe.value() instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }
-        return new RecipeHolder<>(builder.id, builder.build());
+        return builder.build();
     }
 
     public @NotNull List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
@@ -337,7 +350,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          *         recipe is not found to run. Return null if no recipe should be run by your logic.
          */
         @Nullable
-        GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder);
+        RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder);
 
         /**
          * @return A list of Recipes that are never registered, but are added to JEI to demonstrate the custom logic.

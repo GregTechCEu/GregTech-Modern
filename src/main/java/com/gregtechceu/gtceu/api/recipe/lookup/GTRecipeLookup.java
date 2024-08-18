@@ -47,7 +47,7 @@ public class GTRecipeLookup {
      */
     @Nullable
     public GTRecipe findRecipe(final IRecipeCapabilityHolder holder) {
-        return find(holder, recipe -> recipe.matchRecipe(holder).isSuccess());
+        return find(holder, recipe -> GTRecipe.matchRecipe(recipe, holder).isSuccess());
     }
 
     /**
@@ -97,7 +97,8 @@ public class GTRecipeLookup {
      * @return the recipe found
      */
     @Nullable
-    public GTRecipe find(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> canHandle) {
+    public GTRecipe find(@NotNull IRecipeCapabilityHolder holder,
+                         @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
         List<List<AbstractMapIngredient>> list = prepareRecipeFind(holder);
         // couldn't build any inputs to use for search, so no recipe could be found
         if (list == null) return null;
@@ -113,7 +114,7 @@ public class GTRecipeLookup {
      */
     @NotNull
     public RecipeIterator getRecipeIterator(@NotNull IRecipeCapabilityHolder holder,
-                                            @NotNull Predicate<GTRecipe> canHandle) {
+                                            @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
         List<List<AbstractMapIngredient>> list = prepareRecipeFind(holder);
         return new RecipeIterator(this.recipeType, list, canHandle);
     }
@@ -166,7 +167,7 @@ public class GTRecipeLookup {
     @Nullable
     private GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
                                                      @NotNull Branch branchRoot,
-                                                     @NotNull Predicate<GTRecipe> canHandle) {
+                                                     @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
         // Try each ingredient as a starting point, adding it to the skip-list.
         // The skip-list is a packed long, where each 1 bit represents an index to skip
         for (int i = 0; i < ingredients.size(); i++) {
@@ -193,7 +194,7 @@ public class GTRecipeLookup {
     @Nullable
     public RecipeHolder<GTRecipe> recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
                                                                   @NotNull Branch branchMap,
-                                                                  @NotNull Predicate<GTRecipe> canHandle,
+                                                                  @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle,
                                                                   int index, int count, long skip) {
         // exhausted all the ingredients, and didn't find anything
         if (count == ingredients.size()) return null;
@@ -209,7 +210,7 @@ public class GTRecipeLookup {
                 // if there is a recipe (left mapping), return it immediately as found, if it can be handled
                 // Otherwise, recurse and go to the next branch.
                 RecipeHolder<GTRecipe> r = result
-                        .map(potentialRecipe -> canHandle.test(potentialRecipe.value()) ? potentialRecipe : null,
+                        .map(potentialRecipe -> canHandle.test(potentialRecipe) ? potentialRecipe : null,
                                 potentialBranch -> diveIngredientTreeFindRecipe(ingredients, potentialBranch, canHandle,
                                         index,
                                         count, skip));
@@ -235,7 +236,7 @@ public class GTRecipeLookup {
     @Nullable
     private RecipeHolder<GTRecipe> diveIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
                                                                 @NotNull Branch map,
-                                                                @NotNull Predicate<GTRecipe> canHandle,
+                                                                @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle,
                                                                 int currentIndex, int count,
                                                                 long skip) {
         // We loop around ingredients.size() if we reach the end.

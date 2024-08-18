@@ -21,4 +21,7 @@ public interface GuiGraphicsAccessor {
                               MultiBufferSource.BufferSource vertexConsumerProvider) {
         return null;
     }
+
+    @Invoker
+    void callFlushIfUnmanaged();
 }

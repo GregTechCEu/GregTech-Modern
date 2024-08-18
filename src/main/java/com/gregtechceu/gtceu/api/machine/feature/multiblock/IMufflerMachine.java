@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.val;
 
@@ -69,7 +70,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
         if (!isFrontFaceFree()) {
             return null;
         }

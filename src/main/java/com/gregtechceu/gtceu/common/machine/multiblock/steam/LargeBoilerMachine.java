@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -30,6 +31,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -54,7 +56,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-    private static final int STEAM_PER_WATER = 160;
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
     @Getter
@@ -116,7 +117,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
             int maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
-                    (STEAM_PER_WATER * 100000);
+                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000);
             List<SizedFluidIngredient> drainWater = List.of(SizedFluidIngredient.of(Fluids.WATER, maxDrain));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
@@ -134,7 +135,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     maxDrain - drainWater.get(0).amount();
 
             boolean hasDrainedWater = drained > 0;
-            steamGenerated = drained * STEAM_PER_WATER;
+            steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
             if (hasDrainedWater) {
                 // fill steam
@@ -195,11 +196,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
             if (largeBoilerMachine.throttle < 100) {
-                var copied = recipe.copy();
-                copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
+                var copied = new RecipeHolder<>(recipe.id(), recipe.value().copy());
+                copied.value().duration = recipe.value().duration * 100 / largeBoilerMachine.throttle;
                 return copied;
             }
             return recipe;

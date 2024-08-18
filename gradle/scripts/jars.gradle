@@ -1,13 +1,15 @@
-java {
-    withSourcesJar()
-}
-
 tasks.jar {
     archiveClassifier = "slim"
 }
 
 tasks.jarJar {
     archiveClassifier.convention(null)
+}
+
+tasks.register('sourcesJar', Jar) {
+    from delombok.outputs.files
+    dependsOn delombok
+    archiveClassifier = "sources"
 }
 
 archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"

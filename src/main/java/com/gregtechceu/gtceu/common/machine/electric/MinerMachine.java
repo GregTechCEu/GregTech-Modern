@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
@@ -91,9 +93,16 @@ public class MinerMachine extends WorkableTieredMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
         var transfer = new CustomItemStackHandler();
-        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
+        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return transfer;
     }
 
@@ -210,10 +219,9 @@ public class MinerMachine extends WorkableTieredMachine
             .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
                 WidgetGroup template = createTemplate(inventorySize).createDefault();
                 SlotWidget batterySlot = createBatterySlot().createDefault();
-                batterySlot.setSelfPosition(new Position(79, 62));
+                batterySlot.setSelfPosition(new Position(100, 10));
                 WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172),
                         template.getSize().height + 8);
-                group.addWidget(batterySlot);
                 Size size = group.getSize();
 
                 template.setSelfPosition(new Position(
@@ -221,6 +229,7 @@ public class MinerMachine extends WorkableTieredMachine
                         (size.height - template.getSize().height) / 2));
 
                 group.addWidget(template);
+                group.addWidget(batterySlot);
                 return group;
             }, (template, machine) -> {
                 if (machine instanceof MinerMachine minerMachine) {

@@ -14,6 +14,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -59,8 +60,10 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                var copied = match.copy(new ContentModifier(match.duration, 0));
-                if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+                var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
+                match = new RecipeHolder<>(match.id(), copied);
+                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                        GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -68,7 +71,7 @@ public class FluidDrillLogic extends RecipeLogic {
     }
 
     @Nullable
-    private GTRecipe getFluidDrillRecipe() {
+    private RecipeHolder<GTRecipe> getFluidDrillRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             var recipe = GTRecipeBuilder.ofRaw()
@@ -77,7 +80,8 @@ public class FluidDrillLogic extends RecipeLogic {
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .build();
-            if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
+            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() &&
+                    GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -116,15 +120,17 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+            GTRecipe.postWorking(lastRecipe, this.machine);
+            GTRecipe.handleRecipeIO(lastRecipe, IO.OUT, this.machine, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            var copied = match.copy(new ContentModifier(match.duration, 0));
-            if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+            var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
+            match = new RecipeHolder<>(match.id(), copied);
+            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
+                    GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

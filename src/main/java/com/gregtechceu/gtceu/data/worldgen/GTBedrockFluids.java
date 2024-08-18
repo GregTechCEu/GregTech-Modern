@@ -15,12 +15,14 @@ import net.neoforged.neoforge.common.Tags;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author KilaBash
  * @date 2023/7/11
  * @implNote GTBedrockFluids
  */
+@SuppressWarnings("unused")
 public class GTBedrockFluids {
 
     public static final Map<ResourceLocation, BedrockFluidDefinition> toReRegister = new HashMap<>();
@@ -28,7 +30,7 @@ public class GTBedrockFluids {
     //////////////////////////////////////
     // ******** OVERWORLD ********//
     //////////////////////////////////////
-    public static BedrockFluidDefinition HEAVY_OIL = BedrockFluidDefinition.builder(GTCEu.id("heavy_oil_deposit"))
+    public static BedrockFluidDefinition HEAVY_OIL = create(GTCEu.id("heavy_oil_deposit"), builder -> builder
             .fluid(GTMaterials.OilHeavy::getFluid)
             .weight(15)
             .yield(100, 200)
@@ -37,30 +39,27 @@ public class GTBedrockFluids {
             .depletedYield(20)
             .biomes(5, BiomeTags.IS_OCEAN)
             .biomes(10, Tags.Biomes.IS_SANDY)
-            .dimensions(overworld())
-            .register();
+            .dimensions(overworld()));
 
-    public static BedrockFluidDefinition LIGHT_OIL = BedrockFluidDefinition.builder(GTCEu.id("light_oil_deposit"))
+    public static BedrockFluidDefinition LIGHT_OIL = create(GTCEu.id("light_oil_deposit"), builder -> builder
             .fluid(GTMaterials.OilLight::getFluid)
             .weight(25)
             .yield(175, 300)
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(25)
-            .dimensions(overworld())
-            .register();
+            .dimensions(overworld()));
 
-    public static BedrockFluidDefinition NATURAL_GAS = BedrockFluidDefinition.builder(GTCEu.id("natural_gas_deposit"))
+    public static BedrockFluidDefinition NATURAL_GAS = create(GTCEu.id("natural_gas_deposit"), builder -> builder
             .fluid(GTMaterials.NaturalGas::getFluid)
             .weight(15)
             .yield(100, 175)
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(20)
-            .dimensions(overworld())
-            .register();
+            .dimensions(overworld()));
 
-    public static BedrockFluidDefinition OIL = BedrockFluidDefinition.builder(GTCEu.id("oil_deposit"))
+    public static BedrockFluidDefinition OIL = create(GTCEu.id("oil_deposit"), builder -> builder
             .fluid(GTMaterials.Oil::getFluid)
             .weight(20)
             .yield(175, 300)
@@ -69,20 +68,18 @@ public class GTBedrockFluids {
             .depletedYield(25)
             .biomes(5, BiomeTags.IS_OCEAN)
             .biomes(5, Tags.Biomes.IS_SANDY)
-            .dimensions(overworld())
-            .register();
+            .dimensions(overworld()));
 
-    public static BedrockFluidDefinition RAW_OIL = BedrockFluidDefinition.builder(GTCEu.id("raw_oil_deposit"))
+    public static BedrockFluidDefinition RAW_OIL = create(GTCEu.id("raw_oil_deposit"), builder -> builder
             .fluid(GTMaterials.RawOil::getFluid)
             .weight(20)
             .yield(200, 300)
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(25)
-            .dimensions(overworld())
-            .register();
+            .dimensions(overworld()));
 
-    public static BedrockFluidDefinition SALT_WATER = BedrockFluidDefinition.builder(GTCEu.id("salt_water_deposit"))
+    public static BedrockFluidDefinition SALT_WATER = create(GTCEu.id("salt_water_deposit"), builder -> builder
             .fluid(GTMaterials.SaltWater::getFluid)
             .weight(0)
             .yield(50, 100)
@@ -91,35 +88,41 @@ public class GTBedrockFluids {
             .depletedYield(15)
             .dimensions(overworld())
             .biomes(200, Biomes.DEEP_OCEAN, Biomes.DEEP_COLD_OCEAN, Biomes.DEEP_FROZEN_OCEAN)
-            .biomes(150, BiomeTags.IS_OCEAN)
-            .register();
+            .biomes(150, BiomeTags.IS_OCEAN));
 
     //////////////////////////////////////
     // ******** NETHER ********//
     //////////////////////////////////////
-    public static BedrockFluidDefinition LAVA = BedrockFluidDefinition.builder(GTCEu.id("lava_deposit"))
+    public static BedrockFluidDefinition LAVA = create(GTCEu.id("lava_deposit"), builder -> builder
             .fluid(GTMaterials.Lava::getFluid)
             .weight(65)
             .yield(125, 250)
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(30)
-            .dimensions(nether())
-            .register();
+            .dimensions(nether()));
 
-    public static BedrockFluidDefinition NETHER_NATURAL_GAS = BedrockFluidDefinition
-            .builder(GTCEu.id("nether_natural_gas_deposit"))
-            .fluid(GTMaterials.NaturalGas::getFluid)
-            .weight(35)
-            .yield(150, 300)
-            .depletionAmount(1)
-            .depletionChance(100)
-            .depletedYield(40)
-            .dimensions(nether())
-            .register();
+    public static BedrockFluidDefinition NETHER_NATURAL_GAS = create(GTCEu.id("nether_natural_gas_deposit"),
+            builder -> builder.fluid(GTMaterials.NaturalGas::getFluid)
+                    .weight(35)
+                    .yield(150, 300)
+                    .depletionAmount(1)
+                    .depletionChance(100)
+                    .depletedYield(40)
+                    .dimensions(nether()));
 
     public static void init() {
         toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
+    }
+
+    public static BedrockFluidDefinition create(ResourceLocation id,
+                                                Consumer<BedrockFluidDefinition.Builder> consumer) {
+        BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
+        consumer.accept(builder);
+
+        BedrockFluidDefinition definition = builder.build();
+        toReRegister.put(id, definition);
+        return definition;
     }
 
     public static Set<ResourceKey<Level>> nether() {

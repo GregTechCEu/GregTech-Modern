@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -30,9 +34,11 @@ class RecipeRunner {
 
     // --------------------------------------------------------------------------------------------------------
 
-    private final GTRecipe recipe;
+    private final RecipeHolder<GTRecipe> recipe;
     private final IO io;
+    private final boolean isTick;
     private final IRecipeCapabilityHolder holder;
+    private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
     private final boolean simulated;
 
@@ -42,10 +48,14 @@ class RecipeRunner {
     private ContentSlots content;
     private ContentSlots search;
 
-    public RecipeRunner(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
+    public RecipeRunner(RecipeHolder<GTRecipe> recipe, IO io, boolean isTick,
+                        IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                        boolean simulated) {
         this.recipe = recipe;
         this.io = io;
+        this.isTick = isTick;
         this.holder = holder;
+        this.chanceCaches = chanceCaches;
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.simulated = simulated;
     }
@@ -74,6 +84,10 @@ class RecipeRunner {
     }
 
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
+        RecipeCapability<?> cap = entry.getKey();
+        ChanceBoostFunction function = recipe.value().getType().getChanceFunction();
+        ChanceLogic logic = recipe.value().getChanceLogicForCapability(cap, this.io, this.isTick);
+        List<Content> chancedContents = new ArrayList<>();
         for (Content cont : entry.getValue()) {
             // For simulated handling, search/content are the same instance, so there's no need to switch between them
             if (cont.slotName == null) {
@@ -85,9 +99,21 @@ class RecipeRunner {
             // When simulating the recipe handling (used for recipe matching), chanced contents are ignored.
             if (simulated) continue;
 
-            if (cont.chance >= 1 ||
-                    GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance
-                                                                                                                // input
+            if (cont.chance >= cont.maxChance) {
+                if (cont.slotName == null) {
+                    this.content.content.add(cont.content);
+                } else {
+                    this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                }
+            } else {
+                chancedContents.add(cont);
+            }
+        }
+        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe.value());
+        chancedContents = logic.roll(chancedContents, function,
+                recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
+        if (chancedContents != null) {
+            for (Content cont : chancedContents) {
                 if (cont.slotName == null) {
                     this.content.content.add(cont.content);
                 } else {

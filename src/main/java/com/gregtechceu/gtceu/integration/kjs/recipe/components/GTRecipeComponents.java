@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
 
 import net.minecraft.nbt.CompoundTag;
@@ -53,6 +55,40 @@ public class GTRecipeComponents {
             return "resource_location";
         }
     };
+    public static final RecipeComponent<RecipeCapability<?>> RECIPE_CAPABILITY = new RecipeComponent<>() {
+
+        @Override
+        public Codec<RecipeCapability<?>> codec() {
+            return RecipeCapability.DIRECT_CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(RecipeCapability.class);
+        }
+
+        @Override
+        public String toString() {
+            return "recipe_capability";
+        }
+    };
+    public static final RecipeComponent<ChanceLogic> CHANCE_LOGIC = new RecipeComponent<>() {
+
+        @Override
+        public Codec<ChanceLogic> codec() {
+            return GTRegistries.CHANCE_LOGICS.codec();
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return TypeInfo.of(ChanceLogic.class);
+        }
+
+        @Override
+        public String toString() {
+            return "chance_logic";
+        }
+    };
 
     public static final RecipeComponent<RecipeCondition> RECIPE_CONDITION = new RecipeComponent<>() {
 
@@ -84,6 +120,9 @@ public class GTRecipeComponents {
     public static final CapabilityMapComponent TICK_IN = new CapabilityMapComponent(true);
     public static final CapabilityMapComponent OUT = new CapabilityMapComponent(false);
     public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(true);
+
+    public static final RecipeComponent<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP = new JavaMapRecipeComponent<>(
+            RECIPE_CAPABILITY, CHANCE_LOGIC);
 
     /**
      * First in pair is in, second is out

@@ -25,9 +25,9 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZo
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
-import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
-import com.gregtechceu.gtceu.data.loader.OreDataLoader;
+import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
@@ -73,18 +73,21 @@ public class ForgeCommonEventListener {
         if (event.getEntity().level().isClientSide) {
             return;
         }
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
 
         Player player = event.getEntity();
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
-        if (inventory == null) {
+        if (tracker == null) {
             return;
         }
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(medicalCondition);
             }
+            return;
+        }
+
+        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (inventory == null) {
             return;
         }
         tracker.tick();
@@ -143,8 +146,8 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new OreDataLoader());
-        event.addListener(new FluidVeinLoader());
+        event.addListener(new GTOreLoader());
+        event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
     }
 

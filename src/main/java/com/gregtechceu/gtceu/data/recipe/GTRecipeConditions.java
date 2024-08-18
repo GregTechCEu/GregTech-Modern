@@ -31,6 +31,9 @@ public final class GTRecipeConditions {
             new RecipeConditionType<>(RainingCondition::new, RainingCondition.CODEC));
     public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = GTRegistries.RECIPE_CONDITIONS
             .register("rock_breaker", new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
+    public static final RecipeConditionType<AdjacentBlockCondition> ADJACENT_BLOCK = GTRegistries.RECIPE_CONDITIONS
+            .register("adjacent_block",
+                    new RecipeConditionType<>(AdjacentBlockCondition::new, AdjacentBlockCondition.CODEC));
     public static final RecipeConditionType<ThunderCondition> THUNDER = GTRegistries.RECIPE_CONDITIONS
             .register("thunder", new RecipeConditionType<>(ThunderCondition::new, ThunderCondition.CODEC));
     public static final RecipeConditionType<VentCondition> VENT = GTRegistries.RECIPE_CONDITIONS.register("steam_vent",

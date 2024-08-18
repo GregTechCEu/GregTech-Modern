@@ -4,13 +4,23 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
@@ -56,6 +66,22 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.dimension.tooltip", dimension.toString());
+    }
+
+    public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
+        DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
+                new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
+        ItemStack icon = dimMarker.getIcon();
+        CustomItemStackHandler transfer = new CustomItemStackHandler(1);
+        SlotWidget dimSlot = new SlotWidget(transfer, 0, xOffset, yOffset, false, false)
+                .setIngredientIO(IngredientIO.INPUT);
+        transfer.setStackInSlot(0, icon);
+        if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
+            dimSlot.setOverlay(
+                    new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
+                            .scale(0.75f).transform(-3.0f, 5.0f));
+        }
+        return dimSlot;
     }
 
     public ResourceLocation getDimension() {

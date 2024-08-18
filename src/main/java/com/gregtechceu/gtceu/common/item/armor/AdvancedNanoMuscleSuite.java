@@ -54,6 +54,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         boolean hoverMode = data.hover();
         byte toggleTimer = data.toggleTimer();
         boolean canShare = data.canShare();
+        boolean jetpackEnabled = data.enabled();
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hoverMode = !hoverMode;
@@ -61,10 +62,20 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             final boolean finalHoverMode = hoverMode;
             item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHoverMode));
             if (!world.isClientSide) {
-                if (hoverMode)
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
-                else
-                    player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.disable"), true);
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
+            }
+        }
+
+        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+            jetpackEnabled = !jetpackEnabled;
+            toggleTimer = 5;
+            final boolean finalJetpackEnabled = jetpackEnabled;
+            item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalJetpackEnabled));
+            if (!world.isClientSide) {
+                player.displayClientMessage(
+                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
+                        true);
             }
         }
 
@@ -86,7 +97,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setCanShare(finalCanShare));
         }
 
-        performFlying(player, hoverMode, item);
+        performFlying(player, jetpackEnabled, hoverMode, item);
 
         // Charging mechanics
         if (canShare && !world.isClientSide) {
@@ -135,8 +146,12 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         final boolean finalCanShare = canShare;
         final boolean finalHoverMode = hoverMode;
         final byte finalToggleTimer = toggleTimer;
+        final boolean finalJetpackEnabled = jetpackEnabled;
         item.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                data1 -> data1.setCanShare(finalCanShare).setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
+                data1 -> data1.setCanShare(finalCanShare)
+                        .setHover(finalHoverMode)
+                        .setToggleTimer(finalToggleTimer)
+                        .setEnabled(finalJetpackEnabled));
 
         timer++;
         if (timer == Long.MAX_VALUE)
@@ -146,14 +161,19 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, new GTArmor());
-        Component state = data.canShare() ? Component.translatable("metaarmor.hud.status.enabled") :
+
+        Component state = data.enabled() ? Component.translatable("metaarmor.hud.status.enabled") :
+                Component.translatable("metaarmor.hud.status.disabled");
+        lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
+
+        state = data.canShare() ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.energy_share.tooltip", state));
         lines.add(Component.translatable("metaarmor.energy_share.tooltip.guide"));
 
-        Component status = data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
+        state = data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
-        lines.add(Component.translatable("metaarmor.hud.hover_mode", status));
+        lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
         super.addInfo(itemStack, lines);
     }
 
@@ -198,13 +218,21 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         if (!cont.canUse(energyPerUse)) return;
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            String status = data.canShare() ? "metaarmor.hud.status.enabled" :
-                    "metaarmor.hud.status.disabled";
-            this.HUD.newString(Component.translatable("mataarmor.hud.supply_mode", Component.translatable(status)));
+            Component status = data.enabled() ?
+                    Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
+            this.HUD.newString(result);
 
-            status = data.hover() ? "metaarmor.hud.status.enabled" :
-                    "metaarmor.hud.status.disabled";
-            this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", Component.translatable(status)));
+            status = data.canShare() ?
+                    Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            this.HUD.newString(Component.translatable("mataarmor.hud.supply_mode", status));
+
+            status = data.hover() ?
+                    Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled");
+            this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", status));
         }
         this.HUD.draw(guiGraphics);
         this.HUD.reset();

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -27,8 +29,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -92,7 +94,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 return 1;
             }
         };
-        itemTransfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
+        itemTransfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return itemTransfer;
     }
 
@@ -148,41 +152,53 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     // ****** Battery Logic ******//
     //////////////////////////////////////
 
-    private List<Pair<IElectricItem, ItemStack>> getNonFullBatteries() {
-        List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
+    private List<Object> getNonFullBatteries() {
+        List<Object> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
             var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
-                    batteries.add(Pair.of(electricItem, batteryStack));
+                    batteries.add(electricItem);
+                }
+            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+                IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
+                if (energyStorage != null) {
+                    if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+                        batteries.add(energyStorage);
+                    }
                 }
             }
         }
         return batteries;
     }
 
-    private List<Pair<IElectricItem, ItemStack>> getNonEmptyBatteries() {
-        List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
-        for (int i = 0; i < batteryInventory.getSlots(); i++) {
-            var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
-            if (electricItem != null) {
-                if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
-                    batteries.add(Pair.of(electricItem, batteryStack));
-                }
-            }
-        }
-        return batteries;
-    }
-
-    private List<IElectricItem> getAllBatteries() {
+    private List<IElectricItem> getNonEmptyBatteries() {
         List<IElectricItem> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
             var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
+                if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
+                    batteries.add(electricItem);
+                }
+            }
+        }
+        return batteries;
+    }
+
+    private List<Object> getAllBatteries() {
+        List<Object> batteries = new ArrayList<>();
+        for (int i = 0; i < batteryInventory.getSlots(); i++) {
+            var batteryStack = batteryInventory.getStackInSlot(i);
+            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            if (electricItem != null) {
                 batteries.add(electricItem);
+            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+                IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
+                if (energyStorage != null) {
+                    batteries.add(energyStorage);
+                }
             }
         }
         return batteries;
@@ -229,8 +245,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 long distributed = energy / batteries.size();
 
                 boolean changed = false;
-                for (var pair : batteries) {
-                    IElectricItem electricItem = pair.getFirst();
+                for (IElectricItem electricItem : batteries) {
                     var charged = electricItem.discharge(distributed, getTier(), false, true, false);
                     if (charged > 0) {
                         changed = true;
@@ -280,11 +295,16 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 long distributed = energy / batteries.size();
 
                 boolean changed = false;
-                for (var pair : batteries) {
-                    IElectricItem battery = pair.getFirst();
-                    var charged = battery.charge(
-                            Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true,
-                            false);
+                for (Object item : batteries) {
+                    long charged = 0;
+                    if (item instanceof IElectricItem electricItem) {
+                        charged = electricItem.charge(
+                                Math.min(distributed, GTValues.V[electricItem.getTier()] * AMPS_PER_BATTERY), getTier(),
+                                true, false);
+                    } else if (item instanceof IEnergyStorage energyStorage) {
+                        charged = FeCompat.insertEu(energyStorage,
+                                Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_BATTERY), false);
+                    }
                     if (charged > 0) {
                         changed = true;
                     }
@@ -306,8 +326,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         @Override
         public long getEnergyCapacity() {
             long energyCapacity = 0L;
-            for (IElectricItem battery : getAllBatteries()) {
-                energyCapacity += battery.getMaxCharge();
+            for (Object battery : getAllBatteries()) {
+                if (battery instanceof IElectricItem electricItem) {
+                    energyCapacity += electricItem.getMaxCharge();
+                } else if (battery instanceof IEnergyStorage energyStorage) {
+                    energyCapacity += FeCompat.toEu(energyStorage.getMaxEnergyStored(), FeCompat.ratio(false));
+                }
             }
             return energyCapacity;
         }
@@ -315,8 +339,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         @Override
         public long getEnergyStored() {
             long energyStored = 0L;
-            for (IElectricItem battery : getAllBatteries()) {
-                energyStored += battery.getCharge();
+            for (Object battery : getAllBatteries()) {
+                if (battery instanceof IElectricItem electricItem) {
+                    energyStored += electricItem.getCharge();
+                } else if (battery instanceof IEnergyStorage energyStorage) {
+                    energyStored += FeCompat.toEu(energyStorage.getEnergyStored(), FeCompat.ratio(false));
+                }
             }
             return energyStored;
         }

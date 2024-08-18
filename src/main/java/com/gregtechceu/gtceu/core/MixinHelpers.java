@@ -44,6 +44,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -216,8 +217,8 @@ public class MixinHelpers {
                     LootTable.Builder builder = blockLoot.createSilkTouchDispatchTable(block,
                             blockLoot.applyExplosionDecay(block,
                                     LootItem.lootTableItem(dropItem.getItem())
-                                            .apply(SetItemCountFunction.setCount(
-                                                    UniformGenerator.between(1, Math.max(1, oreMultiplier))))));
+                                            .apply(SetItemCountFunction
+                                                    .setCount(ConstantValue.exactly(oreMultiplier)))));
                     // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for
                     // balance reasons. (for now, until we can think of a better solution.)
 

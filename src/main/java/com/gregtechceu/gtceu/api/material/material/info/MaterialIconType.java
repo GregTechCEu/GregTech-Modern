@@ -86,6 +86,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType toolHeadScythe = new MaterialIconType("toolHeadScythe");
     public static final MaterialIconType toolHeadScrewdriver = new MaterialIconType("toolHeadScrewdriver");
     public static final MaterialIconType toolHeadWrench = new MaterialIconType("toolHeadWrench");
+    public static final MaterialIconType toolHeadWireCutter = new MaterialIconType("toolHeadWireCutter");
 
     public static final MaterialIconType turbineBlade = new MaterialIconType("turbineBlade");
 

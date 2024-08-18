@@ -48,12 +48,12 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 IProbeInfo verticalPane = iProbeInfo.vertical(iProbeInfo.defaultLayoutStyle().spacing(0));
                 verticalPane.text(
                         CompoundText.create().info(Component.translatable("gtceu.top.recipe_output").append(" ")));
-                List<ItemStack> outputItems = RecipeHelper.getOutputItems(recipe);
+                List<ItemStack> outputItems = RecipeHelper.getOutputItems(recipe.value());
                 if (!outputItems.isEmpty()) {
                     addItemInfo(verticalPane, outputItems);
                 }
 
-                List<FluidStack> outputFluids = RecipeHelper.getOutputFluids(recipe);
+                List<FluidStack> outputFluids = RecipeHelper.getOutputFluids(recipe.value());
                 if (!outputFluids.isEmpty()) {
                     addFluidInfo(verticalPane, outputFluids);
                 }

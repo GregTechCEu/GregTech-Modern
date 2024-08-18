@@ -329,10 +329,10 @@ public class MaterialRecipeHandler {
 
         if (!ChemicalHelper.get(block, material).isEmpty()) {
             ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_to_ingot")
-                    .EUt(VA[ULV]).duration((int) material.getMass() * 9)
+                    .EUt(VA[ULV]).duration((int) material.getMass() * (int) (block.getMaterialAmount(material) / M))
                     .inputItems(block, material)
                     .notConsumable(GTItems.SHAPE_MOLD_INGOT)
-                    .outputItems(ingot, material, 9)
+                    .outputItems(ingot, material, (int) (block.getMaterialAmount(material) / M))
                     .save(provider);
 
             COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_block")

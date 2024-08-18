@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -62,7 +63,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public List<Float> handleRecipeInner(IO io, GTRecipe recipe, List<Float> left, @Nullable String slotName,
+    public List<Float> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Float> left,
+                                         @Nullable String slotName,
                                          boolean simulate) {
         if (machine instanceof IKineticMachine kineticMachine) {
             float sum = left.stream().reduce(0f, Float::sum);
@@ -94,7 +96,7 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+    public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();
             if (available > 0 && kineticDefinition.isSource() && io == IO.OUT) {
@@ -104,7 +106,7 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
+    public void postWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();
             if (kineticDefinition.isSource() && io == IO.OUT) {

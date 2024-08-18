@@ -70,5 +70,11 @@ public class GTCEuAPI {
             // noinspection unchecked
             ((GTRegistry<K, V>) registry).register(key, value);
         }
+
+        public <K, V> void register(GTRegistry<K, V> registry, Runnable runnable) {
+            if (registry == this.registry) {
+                runnable.run();
+            }
+        }
     }
 }

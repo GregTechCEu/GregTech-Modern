@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -17,6 +19,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
@@ -83,13 +86,14 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Nullable
-    public static List<SizedIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedIngredient> left,
+    public static List<SizedIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe,
+                                                         List<SizedIngredient> left,
                                                          boolean simulate, IO handlerIO,
                                                          CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
@@ -112,7 +116,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                 if (GTCEu.isKubeJSLoaded()) {
                                     // noinspection unchecked must be List<?> to be able to load without KJS.
                                     ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                            (List<IngredientActionHolder>) recipe.ingredientActions);
+                                            (List<IngredientActionHolder>) recipe.value().ingredientActions);
                                     if (!actioned.isEmpty()) {
                                         extracted = actioned;
                                         didRunIngredientAction = true;
@@ -134,12 +138,21 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         } else if (io == IO.OUT) {
             while (iterator.hasNext()) {
                 SizedIngredient ingredient = iterator.next();
+                int newCount = Integer.MIN_VALUE;
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider) {
+                    intProvider.setItemStacks(null);
+                    intProvider.setSampledCount(null);
+                    newCount = intProvider.getSampledCount(GTValues.RNG);
+                }
                 var items = ingredient.getItems();
                 if (items.length == 0) {
                     iterator.remove();
                     continue;
                 }
                 ItemStack output = items[0];
+                if (newCount != Integer.MIN_VALUE) {
+                    output.setCount(newCount);
+                }
                 if (!output.isEmpty()) {
                     for (int i = 0; i < capability.getSlots(); i++) {
                         ItemStack leftStack = ItemStack.EMPTY;
@@ -147,7 +160,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                         if (GTCEu.isKubeJSLoaded()) {
                             // noinspection unchecked must be List<?> to be able to load without KJS.
                             ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                    (List<IngredientActionHolder>) recipe.ingredientActions);
+                                    (List<IngredientActionHolder>) recipe.value().ingredientActions);
                             if (!actioned.isEmpty()) {
                                 leftStack = actioned;
                                 didRunIngredientAction = true;

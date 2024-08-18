@@ -51,6 +51,7 @@ public class GTToolType {
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(ItemTags.PICKAXES)
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b
                     .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), -2.8F, 1))
                     .blockBreaking().attackDamage(1.0F)/* .behaviors(TorchPlaceBehavior.INSTANCE) */)
@@ -241,6 +242,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -259,6 +261,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -277,6 +280,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -295,6 +299,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -313,6 +318,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/drills", false))
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
+            .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b.tool(new Tool(
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
@@ -395,6 +401,44 @@ public class GTToolType {
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .electric(GTValues.IV)
             .toolClasses(GTToolType.WRENCH)
+            .build();
+    public static final GTToolType WIRE_CUTTER_LV = GTToolType.builder("lv_wirecutter")
+            .idFormat("lv_%s_wirecutter")
+            .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
+            .toolStats(b -> b.tool(new Tool(
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    .damagePerCraftingAction(4).attackDamage(-1.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
+            .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
+            .electric(GTValues.LV)
+            .toolClasses(GTToolType.WIRE_CUTTER)
+            .build();
+
+    public static final GTToolType WIRE_CUTTER_HV = GTToolType.builder("hv_wirecutter")
+            .idFormat("hv_%s_wirecutter")
+            .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
+            .toolStats(b -> b.tool(new Tool(
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    .damagePerCraftingAction(4).attackDamage(-1.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
+            .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
+            .electric(GTValues.HV)
+            .toolClasses(GTToolType.WIRE_CUTTER)
+            .build();
+
+    public static final GTToolType WIRE_CUTTER_IV = GTToolType.builder("iv_wirecutter")
+            .idFormat("iv_%s_wirecutter")
+            .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
+            .toolStats(b -> b.tool(new Tool(
+                    List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
+                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    .damagePerCraftingAction(4).attackDamage(-1.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
+            .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.WIRE_CUTTER)
             .build();
     public static final GTToolType BUZZSAW_LV = GTToolType.builder("lv_buzzsaw")
             .idFormat("lv_%s_buzzsaw")

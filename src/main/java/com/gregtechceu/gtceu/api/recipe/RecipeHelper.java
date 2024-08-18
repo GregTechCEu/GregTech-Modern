@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.longs.LongIntPair;
@@ -62,30 +63,32 @@ public class RecipeHelper {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
-        long EUt = getInputEUt(recipe);
+    public static RecipeHolder<GTRecipe> applyOverclock(OverclockingLogic logic, @NotNull RecipeHolder<GTRecipe> recipe,
+                                                        long maxOverclockVoltage) {
+        GTRecipe value = recipe.value();
+        long EUt = getInputEUt(value);
         if (EUt > 0) {
-            var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (overclockResult.leftLong() != EUt || recipe.duration != overclockResult.rightInt()) {
-                recipe = recipe.copy();
-                recipe.duration = overclockResult.rightInt();
-                for (Content content : recipe.getTickInputContents(EURecipeCapability.CAP)) {
+            var overclockResult = performOverclocking(logic, value, EUt, maxOverclockVoltage);
+            if (overclockResult.leftLong() != EUt || value.duration != overclockResult.rightInt()) {
+                value = value.copy();
+                value.duration = overclockResult.rightInt();
+                for (Content content : value.getTickInputContents(EURecipeCapability.CAP)) {
                     content.content = overclockResult.leftLong();
                 }
             }
         }
-        EUt = getOutputEUt(recipe);
+        EUt = getOutputEUt(value);
         if (EUt > 0) {
-            var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (overclockResult.leftLong() != EUt || recipe.duration != overclockResult.rightInt()) {
-                recipe = recipe.copy();
-                recipe.duration = overclockResult.rightInt();
-                for (Content content : recipe.getTickOutputContents(EURecipeCapability.CAP)) {
+            var overclockResult = performOverclocking(logic, value, EUt, maxOverclockVoltage);
+            if (overclockResult.leftLong() != EUt || value.duration != overclockResult.rightInt()) {
+                value = value.copy();
+                value.duration = overclockResult.rightInt();
+                for (Content content : value.getTickOutputContents(EURecipeCapability.CAP)) {
                     content.content = overclockResult.leftLong();
                 }
             }
         }
-        return recipe;
+        return new RecipeHolder<>(recipe.id(), value);
     }
 
     /**

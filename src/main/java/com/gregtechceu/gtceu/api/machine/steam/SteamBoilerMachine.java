@@ -44,6 +44,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -256,11 +257,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected abstract long getBaseSteamOutput();
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
-            recipe = recipe.copy();
+            recipe = new RecipeHolder<>(recipe.id(), recipe.value().copy());
             // recipe.duration *= 12; // maybe?
-            recipe.duration = boilerMachine.isHighPressure ? recipe.duration / 2 : recipe.duration;
+            recipe.value().duration = boilerMachine.isHighPressure ? recipe.value().duration / 2 :
+                    recipe.value().duration;
             return recipe;
         }
         return null;

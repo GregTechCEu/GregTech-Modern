@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:creative_computation_provider"
+  },
+  "items": [
+    "gtceu:creative_computation_provider"
+  ],
+  "page": "gtceu:machines/creative_computation_provider",
+  "position": [
+    -400,
+    350
+  ],
+  "section": "gtceu:machines"
+}

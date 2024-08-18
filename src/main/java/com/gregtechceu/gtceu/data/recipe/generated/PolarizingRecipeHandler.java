@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.IngotProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.RecipeOutput;
@@ -36,7 +37,7 @@ public class PolarizingRecipeHandler {
                     .inputItems(polarizingPrefix, material)
                     .outputItems(magneticStack)
                     .duration((int) ((int) material.getMass() * polarizingPrefix.getMaterialAmount(material) / M))
-                    .EUt(8L * getVoltageMultiplier(material))
+                    .EUt(getVoltageMultiplier(material))
                     .save(provider);
 
             VanillaRecipeHelper.addSmeltingRecipe(provider,
@@ -47,6 +48,9 @@ public class PolarizingRecipeHandler {
     }
 
     private static int getVoltageMultiplier(Material material) {
+        if (material == GTMaterials.Steel || material == GTMaterials.Iron) return VH[LV];
+        if (material == GTMaterials.Neodymium) return VH[HV];
+        if (material == GTMaterials.Samarium) return VH[IV];
         return material.getBlastTemperature() >= 1200 ? VA[LV] : 2;
     }
 }

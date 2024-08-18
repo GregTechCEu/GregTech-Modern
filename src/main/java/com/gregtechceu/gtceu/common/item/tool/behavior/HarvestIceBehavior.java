@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * @see ToolE#onHarvestDrops(BlockEvent.HarvestDropsEvent)
+ * @see com.gregtechceu.gtceu.common.item.tool.ToolEventHandlers#onHarvestDrops
  */
 public class HarvestIceBehavior implements IToolBehavior<HarvestIceBehavior> {
 

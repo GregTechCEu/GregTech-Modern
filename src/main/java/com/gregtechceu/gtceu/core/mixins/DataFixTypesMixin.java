@@ -19,7 +19,7 @@ public class DataFixTypesMixin {
     @Final
     private DSL.TypeReference type;
 
-    // ModifyArg to inject our fixes *after* vanilla ones
+    // ModifyReturnValue to inject our fixes *after* vanilla ones
     @ModifyReturnValue(method = "update(Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;",
                        at = @At(value = "RETURN"))
     private Dynamic<?> gtceu$injectDataFixers(Dynamic<?> value) {

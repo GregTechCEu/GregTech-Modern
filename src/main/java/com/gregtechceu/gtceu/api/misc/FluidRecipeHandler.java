@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -37,7 +38,8 @@ public class FluidRecipeHandler implements IRecipeHandler<SizedFluidIngredient> 
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe,
+                                                        List<SizedFluidIngredient> left,
                                                         @Nullable String slotName, boolean simulate) {
         return NotifiableFluidTank.handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }

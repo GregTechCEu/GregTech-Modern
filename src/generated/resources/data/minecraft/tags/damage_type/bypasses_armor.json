@@ -1,0 +1,21 @@
+{
+  "values": [
+    "gtceu:medical_condition/none",
+    "gtceu:medical_condition/chemical_burns",
+    "gtceu:medical_condition/poison",
+    "gtceu:medical_condition/weak_poison",
+    "gtceu:medical_condition/irritant",
+    "gtceu:medical_condition/nausea",
+    "gtceu:medical_condition/carcinogen",
+    "gtceu:medical_condition/asbestosis",
+    "gtceu:medical_condition/arsenicosis",
+    "gtceu:medical_condition/silicosis",
+    "gtceu:medical_condition/berylliosis",
+    "gtceu:medical_condition/methanol_poisoning",
+    "gtceu:medical_condition/carbon_monoxide_poisoning",
+    "gtceu:heat",
+    "gtceu:chemical",
+    "gtceu:radiation",
+    "gtceu:turbine"
+  ]
+}

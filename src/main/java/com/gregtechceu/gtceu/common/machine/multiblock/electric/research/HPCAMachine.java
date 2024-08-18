@@ -208,14 +208,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     private void consumeEnergy() {
-        int energyToConsume = hpcaHandler.getCurrentEUt();
+        long energyToConsume = hpcaHandler.getCurrentEUt();
         boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
         if (hasMaintenance) {
             // 10% more energy per maintenance problem
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getEnergyStored() > 19L * energyToConsume) {
+        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
             this.hasNotEnoughEnergy = false;
         }
 
@@ -386,7 +386,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // cached gui info
         // holding these values past the computation clear because GUI is too "late" to read the state in time
         @DescSynced
-        private int cachedEUt;
+        private long cachedEUt;
         @DescSynced
         private int cachedCWUt;
 
@@ -561,10 +561,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         /** The current EU/t this HPCA should use, considering passive drain, current computation, etc.. */
-        public int getCurrentEUt() {
-            int maximumCWUt = Math.max(1, getMaxCWUt()); // behavior is no different setting this to 1 if it is 0
-            int maximumEUt = getMaxEUt();
-            int upkeepEUt = getUpkeepEUt();
+        public long getCurrentEUt() {
+            long maximumCWUt = Math.max(1, getMaxCWUt()); // behavior is no different setting this to 1 if it is 0
+            long maximumEUt = getMaxEUt();
+            long upkeepEUt = getUpkeepEUt();
 
             if (maximumEUt == upkeepEUt) {
                 return maximumEUt;
@@ -576,8 +576,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         /** The amount of EU/t this HPCA uses just to stay on with 0 output computation. */
-        public int getUpkeepEUt() {
-            int upkeepEUt = 0;
+        public long getUpkeepEUt() {
+            long upkeepEUt = 0;
             for (var component : components) {
                 upkeepEUt += component.getUpkeepEUt();
             }
@@ -585,8 +585,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         /** The maximum EU/t that this HPCA could ever use with the given configuration. */
-        public int getMaxEUt() {
-            int maximumEUt = 0;
+        public long getMaxEUt() {
+            long maximumEUt = 0;
             for (var component : components) {
                 maximumEUt += component.getMaxEUt();
             }

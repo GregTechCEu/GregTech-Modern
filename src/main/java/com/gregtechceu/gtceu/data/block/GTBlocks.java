@@ -48,7 +48,6 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -57,12 +56,11 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HangingSignItem;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
@@ -78,6 +76,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -94,8 +93,10 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -449,6 +450,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
+                .lang("Optical Fiber Cable")
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .blockstate(NonNullBiConsumer.noop())
@@ -760,7 +762,7 @@ public class GTBlocks {
     // HPCA, AT
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE
             .block("computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
@@ -771,7 +773,7 @@ public class GTBlocks {
             .register();
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE
             .block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
+                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
@@ -880,7 +882,7 @@ public class GTBlocks {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         BlockEntry<Block> entry = REGISTRATE
                 .block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_bottom_top_tintindex"),
+                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube/tinted/bottom_top"),
                                 Map.of("bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
                                         "top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
                                         "side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))) :
@@ -1175,6 +1177,7 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
             .lang("Stripped Rubber Log")
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
     public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
@@ -1183,6 +1186,7 @@ public class GTBlocks {
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1191,6 +1195,7 @@ public class GTBlocks {
             .lang("Stripped Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()),
                     provider.blockTexture(ctx.get())))
+            .tag(BlockTags.MINEABLE_WITH_AXE)
             .simpleItem()
             .register();
 
@@ -1309,7 +1314,7 @@ public class GTBlocks {
             .block("rubber_stairs", (p) -> new StairBlock(RUBBER_PLANK.getDefaultState(), p))
             .initialProperties(() -> Blocks.SPRUCE_STAIRS)
             .lang("Rubber Stairs")
-            .tag(BlockTags.STAIRS)
+            .tag(BlockTags.STAIRS, BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.stairsBlock(ctx.getEntry(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get())))
             .item()
             .tag(ItemTags.STAIRS)
@@ -1472,7 +1477,7 @@ public class GTBlocks {
             .block("treated_wood_stairs", (p) -> new StairBlock(TREATED_WOOD_PLANK.getDefaultState(), p))
             .initialProperties(() -> Blocks.SPRUCE_STAIRS)
             .lang("Treated Wood Stairs")
-            .tag(BlockTags.STAIRS)
+            .tag(BlockTags.STAIRS, BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.stairsBlock(ctx.getEntry(),
                     prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
             .item()
@@ -1576,6 +1581,32 @@ public class GTBlocks {
     public static BlockEntry<Block> LIGHT_CONCRETE;
     public static BlockEntry<Block> DARK_CONCRETE;
 
+    public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
+            .block("brittle_charcoal", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ?
+                            new TextureOverrideRenderer(ResourceLocation.withDefaultNamespace("block/cube_all"),
+                                    Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) :
+                            null))
+            .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
+            .loot((table, block) -> table.add(block,
+                    table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
+            .lang("Brittle Charcoal")
+            .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+            .blockstate(NonNullBiConsumer.noop())
+            .item((b, p) -> new RendererBlockItem(b, p) {
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext level,
+                                            List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+                    super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                    tooltipComponents.add(1, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.0"));
+                    tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
+                }
+            })
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+
     public static void generateStoneBlocks() {
         // Stone type blocks
         ImmutableTable.Builder<StoneBlockType, StoneTypes, BlockEntry<Block>> builder = ImmutableTable.builder();
@@ -1624,26 +1655,35 @@ public class GTBlocks {
         DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
     }
 
-    public static final BlockEntry<Block> FOAM = REGISTRATE
-            .block("foam", Block::new)
-            .initialProperties(() -> Blocks.SLIME_BLOCK)
-            .lang("Foam")
-            .item()
-            .build()
+    public static final BlockEntry<FoamBlock> FOAM = REGISTRATE
+            .block("foam", p -> new FoamBlock(p, false))
+            .properties(p -> p.strength(0.5F, 0.3F)
+                    .randomTicks()
+                    .sound(SoundType.SNOW)
+                    .pushReaction(PushReaction.DESTROY)
+                    .noOcclusion().noCollission().noLootTable())
+            .simpleItem()
             .register();
+
+    public static final BlockEntry<FoamBlock> REINFORCED_FOAM = REGISTRATE
+            .block("reinforced_foam", p -> new FoamBlock(p, true))
+            .initialProperties(FOAM)
+            .simpleItem()
+            .register();
+
     public static final BlockEntry<Block> PETRIFIED_FOAM = REGISTRATE
             .block("petrified_foam", Block::new)
             .initialProperties(() -> Blocks.STONE)
-            .lang("Petrified Foam")
-            .item()
-            .build()
+            .properties(p -> p.strength(1.0F, 4.0F).sound(SoundType.SNOW))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
+            .simpleItem()
             .register();
     public static final BlockEntry<Block> REINFORCED_STONE = REGISTRATE
             .block("reinforced_stone", Block::new)
             .initialProperties(() -> Blocks.STONE)
-            .lang("Reinforced Stone")
-            .item()
-            .build()
+            .properties(p -> p.strength(4.0F, 16.0F))
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+            .simpleItem()
             .register();
 
     // Lamps
@@ -1677,6 +1717,56 @@ public class GTBlocks {
                     .register());
         }
         BORDERLESS_LAMPS = borderlessLampBuilder.build();
+    }
+
+    // Decorations
+    public static final Map<DyeColor, BlockEntry<Block>> METAL_SHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> LARGE_METAL_SHEETS;
+    public static final Map<DyeColor, BlockEntry<Block>> STUDS;
+
+    static {
+        DyeColor[] colors = DyeColor.values();
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> metalsheetBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            metalsheetBuilder.put(dyeColor, REGISTRATE.block("%s_metal_sheet".formatted(dyeColor.getName()), Block::new)
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
+                    .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/metalsheet_%s".formatted(dyeColor.getName())))))
+                    .simpleItem()
+                    .register());
+        }
+        METAL_SHEETS = metalsheetBuilder.build();
+
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> largeMetalsheetBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            largeMetalsheetBuilder.put(dyeColor,
+                    REGISTRATE.block("%s_large_metal_sheet".formatted(dyeColor.getName()), Block::new)
+                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .properties(p -> p.strength(2.0F, 5.0F).mapColor(dyeColor))
+                            .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
+                            .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/large_metalsheet_%s".formatted(dyeColor.getName())))))
+                            .simpleItem()
+                            .register());
+        }
+        LARGE_METAL_SHEETS = largeMetalsheetBuilder.build();
+
+        ImmutableMap.Builder<DyeColor, BlockEntry<Block>> studsBuilder = new ImmutableMap.Builder<>();
+        for (DyeColor dyeColor : colors) {
+            studsBuilder.put(dyeColor, REGISTRATE.block("%s_studs".formatted(dyeColor.getName()), Block::new)
+                    .initialProperties(() -> Blocks.WHITE_WOOL)
+                    .properties(p -> p.strength(1.5F, 2.5F).mapColor(dyeColor))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.NEEDS_WOOD_TOOL)
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(),
+                                    GTCEu.id("block/decoration/studs_%s".formatted(dyeColor.getName())))))
+                    .simpleItem()
+                    .register());
+        }
+        STUDS = studsBuilder.build();
     }
 
     public static <P, T extends Block,

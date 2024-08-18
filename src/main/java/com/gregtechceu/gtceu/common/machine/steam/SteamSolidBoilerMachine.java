@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -90,17 +91,18 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
 
     @Override
     protected long getBaseSteamOutput() {
-        return (isHighPressure ? 300 : 120);
+        return isHighPressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
+                ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput;
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
         if (recipeLogic.getLastRecipe() != null) {
-            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
+            var inputs = recipeLogic.getLastRecipe().value().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
-                var input = ItemRecipeCapability.CAP.of(inputs.get(0).content).getItems();
+                var input = ItemRecipeCapability.CAP.of(inputs.getFirst().content).getItems();
                 if (input.length > 0) {
                     var remaining = getBurningFuelRemainder(input[0]);
                     if (!remaining.isEmpty()) {

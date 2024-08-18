@@ -23,11 +23,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -36,11 +35,10 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.List;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
@@ -104,46 +102,48 @@ public class ToolEventHandlers {
      * Handles mined blocks teleporting straight into inventory
      * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
      */
-    public static ObjectArrayList<ItemStack> onHarvestDrops(@Nullable Player player, ItemStack tool, Level world,
-                                                            BlockPos pos, BlockState state, boolean isSilkTouch,
-                                                            int fortuneLevel, ObjectArrayList<ItemStack> drops,
-                                                            float dropChance) {
-        if (player != null && world instanceof ServerLevel serverLevel) {
-            if (tool.isEmpty() || !(tool.getItem() instanceof IGTTool)) {
-                return drops;
-            }
-            if (!isSilkTouch) {
-                ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance,
-                        player.getRandom());
-            }
-            if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
+    public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
+                                                 BlockPos pos, BlockState state, boolean isSilkTouch,
+                                                 int fortuneLevel, List<ItemStack> drops,
+                                                 float dropChance) {
+        if (!(tool.getItem() instanceof IGTTool)) {
+            return drops;
+        }
+        if (!isSilkTouch) {
+            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
+                    player.getRandom());
+        }
+        if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
 
-            ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
-            Block block = state.getBlock();
-            if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
-                Item iceBlock = block.asItem();
-                if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
-                    drops.add(new ItemStack(iceBlock));
-                    world.getServer().tell(new TickTask(0, () -> {
-                        FluidState flowingState = world.getFluidState(pos);
-                        if (flowingState == Fluids.FLOWING_WATER.defaultFluidState()) {
-                            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                        }
-                    }));
-                    ((IGTTool) tool.getItem()).playSound(player);
-                }
-            }
-            if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
-                Iterator<ItemStack> dropItr = drops.iterator();
-                while (dropItr.hasNext()) {
-                    ItemStack dropStack = dropItr.next();
-                    ItemEntity drop = new ItemEntity(EntityType.ITEM, world);
-                    drop.setItem(dropStack);
-
-                    if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
-                        EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
-                        dropItr.remove();
+        ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
+        Block block = state.getBlock();
+        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
+            Item iceBlock = block.asItem();
+            if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
+                drops.add(new ItemStack(iceBlock));
+                level.getServer().tell(new TickTask(0, () -> {
+                    BlockState oldState = level.getBlockState(pos);
+                    if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
+                        // I think it may be a waterlogged block, although the probability is very small
+                        BlockState newState = oldState.hasProperty(BlockStateProperties.WATERLOGGED) ?
+                                oldState.setValue(BlockStateProperties.WATERLOGGED, false) :
+                                Blocks.AIR.defaultBlockState();
+                        level.setBlockAndUpdate(pos, newState);
                     }
+                }));
+                ((IGTTool) tool.getItem()).playSound(player);
+            }
+        }
+        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+            Iterator<ItemStack> dropItr = drops.iterator();
+            while (dropItr.hasNext()) {
+                ItemStack dropStack = dropItr.next();
+                ItemEntity drop = new ItemEntity(EntityType.ITEM, level);
+                drop.setItem(dropStack);
+
+                if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
+                    EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
+                    dropItr.remove();
                 }
             }
         }

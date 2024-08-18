@@ -78,9 +78,6 @@ public class GTDynamicDataPack implements PackResources {
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipe", parent, recipeBytes);
         }
-        if (DATA.containsKey(recipeId)) {
-            GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
-        }
         DATA.put(getRecipeLocation(recipeId), recipeBytes);
         if (advancement != null) {
             JsonElement advancementJson = Advancement.CODEC

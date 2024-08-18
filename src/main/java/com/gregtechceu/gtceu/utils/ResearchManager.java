@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -164,14 +163,14 @@ public final class ResearchManager {
         private static final int DURATION = 100;
 
         @Override
-        public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+        public RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
             var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream()
                     .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
                     .toArray(IItemHandlerModifiable[]::new);
             var inputs = new ItemTransferList(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
-                GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
+                RecipeHolder<GTRecipe> recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
                 if (recipe != null) return recipe;
 
                 return createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
@@ -179,7 +178,7 @@ public final class ResearchManager {
             return null;
         }
 
-        private GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
+        private RecipeHolder<GTRecipe> createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
             DataComponentPatch components = second.getComponentsPatch();
 
             // Both must be data items
@@ -205,14 +204,13 @@ public final class ResearchManager {
             ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
             resultStick.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.scanner.copy_stick_to"));
             return Collections.singletonList(
-                    new RecipeHolder<>(GTCEu.id("copy_" + GTStringUtils.itemStackToString(copiedStick)),
-                            GTRecipeTypes.SCANNER_RECIPES
-                                    .recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
-                                    .inputItems(emptyStick)
-                                    .notConsumable(copiedStick)
-                                    .outputItems(resultStick)
-                                    .duration(DURATION).EUt(EUT)
-                                    .build()));
+                    GTRecipeTypes.SCANNER_RECIPES
+                            .recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
+                            .inputItems(emptyStick)
+                            .notConsumable(copiedStick)
+                            .outputItems(resultStick)
+                            .duration(DURATION).EUt(EUT)
+                            .build());
         }
     }
 }

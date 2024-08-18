@@ -104,6 +104,13 @@ public class MixerRecipes {
                 .outputFluids(DrillingFluid.getFluid(5000))
                 .duration(64).EUt(16).save(provider);
 
+        MIXER_RECIPES.recipeBuilder("drilling_fluid_distilled")
+                .inputItems(dust, Stone)
+                .inputFluids(Lubricant.getFluid(20))
+                .inputFluids(DistilledWater.getFluid(4980))
+                .outputFluids(DrillingFluid.getFluid(5000))
+                .duration(48).EUt(16).save(provider);
+
         MIXER_RECIPES.recipeBuilder("ender_pearl_dust").duration(160).EUt(VA[HV])
                 .inputItems(dust, Beryllium)
                 .inputItems(dust, Potassium, 4)

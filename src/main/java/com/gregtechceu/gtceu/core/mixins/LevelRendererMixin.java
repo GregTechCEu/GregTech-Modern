@@ -69,7 +69,7 @@ public abstract class LevelRendererMixin {
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
         if (!ToolHelper.hasBehaviorsComponent(mainHandItem) ||
                 ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() ||
-                !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching())
+                !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isShiftKeyDown())
             return;
 
         BlockPos hitResultPos = result.getBlockPos();

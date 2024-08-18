@@ -206,6 +206,7 @@ public class TagPrefix {
     public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
             .idPattern("raw_%s_block")
             .defaultTagPath("storage_blocks/raw_%s")
+            .unformattedTagPath("storage_blocks")
             .langValue("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -227,6 +228,7 @@ public class TagPrefix {
             .idPattern("purified_%s_ore")
             .defaultTagPath("purified_ores/%s")
             .defaultTagPath("purified_ores")
+            .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
@@ -652,6 +654,17 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)));
 
+    public static final TagPrefix toolHeadWireCutter = new TagPrefix("wireCutterHead")
+            .itemTable(() -> GTItems.MATERIAL_ITEMS)
+            .langValue("%s Wire Cutter Head")
+            .materialAmount(GTValues.M * 4)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadWireCutter)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
+
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix("turbineBlade")
             .itemTable(() -> GTItems.MATERIAL_ITEMS)
@@ -704,6 +717,8 @@ public class TagPrefix {
 
     public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
+            .unformattedTagPath("frames")
+            .unformattedTagPath("climbable", true)
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
@@ -967,6 +982,11 @@ public class TagPrefix {
         return this;
     }
 
+    public TagPrefix customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+        this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
+        return this;
+    }
+
     public TagPrefix miningToolTag(TagKey<Block> tag) {
         this.miningToolTag.add(tag);
         return this;
@@ -1000,12 +1020,13 @@ public class TagPrefix {
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemTags(@NotNull Material mat) {
         return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat))
+                .filter(Objects::nonNull)
                 .toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getAllItemTags(@NotNull Material mat) {
-        return tags.stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
+        return tags.stream().map(type -> type.getTag(this, mat)).filter(Objects::nonNull).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.data.datamap.GTDataMaps;
 import com.gregtechceu.gtceu.data.jukebox.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.tag.DamageTagsLoader;
 import com.gregtechceu.gtceu.data.worldgen.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.data.worldgen.GTDensityFunctions;
@@ -44,7 +45,7 @@ public class GTVanillaDatagen {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             generator.addProvider(true, new GTDataMaps(packOutput, registries));
-            generator.addProvider(true, new DatapackBuiltinEntriesProvider(
+            DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
@@ -54,6 +55,8 @@ public class GTVanillaDatagen {
                             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap),
                     set));
+            generator.addProvider(true,
+                    new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
         }
     }
 }

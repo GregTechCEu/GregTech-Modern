@@ -70,6 +70,10 @@ public class RecipeRemoval {
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_SWORD, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HOE, 1, W));
          */
+
+        // removed these for parity with the other torch recipes
+        registry.accept(ResourceLocation.withDefaultNamespace("soul_torch"));
+        registry.accept(ResourceLocation.withDefaultNamespace("soul_lantern"));
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
@@ -95,21 +99,28 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("clay"));
         registry.accept(ResourceLocation.withDefaultNamespace("nether_brick"));
         registry.accept(ResourceLocation.withDefaultNamespace("glowstone"));
-        // TODO netherite material
-        // registry.accept(ResourceLocation.withDefaultNamespace("netherite_block"));
-        // registry.accept(ResourceLocation.withDefaultNamespace("netherite_ingot_from_netherite_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("amethyst_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("copper_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("copper"));
+        registry.accept(ResourceLocation.withDefaultNamespace("honeycomb_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("snow_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("netherite_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(ResourceLocation.withDefaultNamespace("brick"));
         registry.accept(ResourceLocation.withDefaultNamespace("bricks"));
         registry.accept(ResourceLocation.withDefaultNamespace("nether_brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("nether_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_nether_bricks"));
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(ResourceLocation.withDefaultNamespace("ladder"));
-        registry.accept(ResourceLocation.withDefaultNamespace("bowl"));
-        registry.accept(ResourceLocation.withDefaultNamespace("chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:ladder"));
+        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:bowl"));
+        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:barrel"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
@@ -117,6 +128,7 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("hopper"));
         registry.accept(ResourceLocation.withDefaultNamespace("iron_bars"));
         registry.accept(ResourceLocation.withDefaultNamespace("bucket"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chain"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
@@ -227,6 +239,31 @@ public class RecipeRemoval {
         }
         registry.accept(ResourceLocation.withDefaultNamespace("fermented_spider_eye"));
         registry.accept(ResourceLocation.withDefaultNamespace("fire_charge"));
+        // All items from here downward need to be checked for if they belong to miscRecipes or
+        // removeVanillaBlockRecipes
+        registry.accept(ResourceLocation.withDefaultNamespace("lantern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("tinted_glass"));
+        registry.accept(ResourceLocation.withDefaultNamespace("stonecutter"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cartography_table"));
+        registry.accept(ResourceLocation.withDefaultNamespace("fletching_table"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smithing_table"));
+        registry.accept(ResourceLocation.withDefaultNamespace("grindstone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("smoker"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blast_furnace"));
+        registry.accept(ResourceLocation.withDefaultNamespace("loom"));
+        registry.accept(ResourceLocation.withDefaultNamespace("composter"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bell"));
+        registry.accept(ResourceLocation.withDefaultNamespace("conduit"));
+        registry.accept(ResourceLocation.withDefaultNamespace("candle"));
+        registry.accept(ResourceLocation.withDefaultNamespace("scaffolding"));
+        registry.accept(ResourceLocation.withDefaultNamespace("beehive"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lightning_rod"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lectern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("music_disc_5"));
+        registry.accept(ResourceLocation.withDefaultNamespace("turtle_helmet"));
+        registry.accept(ResourceLocation.withDefaultNamespace("brush"));
+        registry.accept(ResourceLocation.withDefaultNamespace("recovery_compass"));
+        registry.accept(ResourceLocation.withDefaultNamespace("spyglass"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -262,6 +299,7 @@ public class RecipeRemoval {
                     ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
             registry.accept(
                     ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {
                 registry.accept(
                         ResourceLocation.withDefaultNamespace(String.format("%s_wool", colorMaterial.getName())));
@@ -275,19 +313,20 @@ public class RecipeRemoval {
     }
 
     private static void removeVanillaBlockRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(ResourceLocation.withDefaultNamespace("slime"));
+        registry.accept(ResourceLocation.withDefaultNamespace("slime_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("slime_ball"));
-        registry.accept(ResourceLocation.withDefaultNamespace("melon_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("melon"));
         registry.accept(ResourceLocation.withDefaultNamespace("hay_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("wheat"));
-        registry.accept(ResourceLocation.withDefaultNamespace("magma"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magma_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("nether_wart_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("bone_block"));
-        registry.accept(ResourceLocation.withDefaultNamespace("bone_meal_from_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bone_meal_from_bone_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("honey_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("purpur_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("prismarine_bricks"));
         registry.accept(ResourceLocation.withDefaultNamespace("prismarine"));
-        registry.accept(ResourceLocation.withDefaultNamespace("snow"));
+        registry.accept(ResourceLocation.withDefaultNamespace("snow_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("polished_andesite"));
         registry.accept(ResourceLocation.withDefaultNamespace("polished_diorite"));
@@ -297,17 +336,55 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_quartz_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("stone_bricks"));
-        registry.accept(ResourceLocation.withDefaultNamespace("stone_bricks_from_stonecutting"));
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_stone_bricks"));
         registry.accept(ResourceLocation.withDefaultNamespace("purpur_pillar"));
-        registry.accept(ResourceLocation.withDefaultNamespace("end_bricks"));
-        registry.accept(ResourceLocation.withDefaultNamespace("red_nether_brick"));
+        registry.accept(ResourceLocation.withDefaultNamespace("end_stone_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_nether_bricks"));
         registry.accept(ResourceLocation.withDefaultNamespace("red_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_red_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("smooth_red_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("bookshelf"));
-        registry.accept(ResourceLocation.withDefaultNamespace("pillar_quartz_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_bookshelf"));
+        registry.accept(ResourceLocation.withDefaultNamespace("quartz_pillar"));
         registry.accept(ResourceLocation.withDefaultNamespace("sea_lantern"));
+        // TODO Add extruder/laser engraver recipes for all vanilla stones to keep parity with GT stones
+        registry.accept(ResourceLocation.withDefaultNamespace("cracked_stone_bricks"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mossy_cobblestone_from_moss_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mossy_cobblestone_from_vine"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("deepslate_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cracked_nether_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("chiseled_nether_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("polished_blackstone_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cracked_polished_blackstone_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("quartz_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("polished_deepslate"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("polished_basalt"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("chiseled_polished_blackstone"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("deepslate_tiles"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cracked_deepslate_tiles"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("chiseled_deepslate"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cracked_deepslate_bricks"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cut_red_sandstone"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("polished_basalt"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("polished_blackstone"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("exposed_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("weathered_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("oxidized_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("waxed_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("waxed_exposed_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("waxed_weathered_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("waxed_oxidized_cut_copper"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("end_crystal"));
+        // registry.accept(ResourceLocation.withDefaultNamespace("end_rod")); // wait for approval before uncommenting
+        // this one
+        // registry.accept(ResourceLocation.withDefaultNamespace("mud_bricks")); //no other way to obtain these rn
+
+        // Carpet replacement
+        for (DyeColor color : DyeColor.values()) {
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_carpet",
+                    color.name().toLowerCase(Locale.ROOT))));
+        }
 
         // Slab replacement
         registry.accept(ResourceLocation.withDefaultNamespace("stone_slab"));
@@ -347,5 +424,14 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("prismarine_slab"));
         registry.accept(ResourceLocation.withDefaultNamespace("prismarine_brick_slab"));
         registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mossy_cobblestone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("mossy_stone_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cut_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cut_red_sandstone_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bamboo_mosaic_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cobbled_deepslate_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("polished_deepslate_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("deepslate_brick_slab"));
+        registry.accept(ResourceLocation.withDefaultNamespace("deepslate_tile_slab"));
     }
 }

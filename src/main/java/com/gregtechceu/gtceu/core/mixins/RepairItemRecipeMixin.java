@@ -57,7 +57,7 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     /*
-     * ´FIXME enchantment copying
+     * FIXME enchantment copying
      * 
      * @Inject(
      * method =

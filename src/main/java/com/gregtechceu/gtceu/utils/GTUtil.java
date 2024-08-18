@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -16,11 +17,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -33,16 +39,15 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
@@ -53,6 +58,17 @@ import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey
  * @implNote GTUtil
  */
 public class GTUtil {
+
+    public static final Codec<ItemStack> ANY_SIZE_ITEM_STACK_CODEC = Codec.lazyInitialized(() -> ExtraCodecs
+            .<ItemStack>optionalEmptyMap(RecordCodecBuilder.create(instance -> instance.group(
+                    ItemStack.ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::getItemHolder),
+                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("count").orElse(1)
+                            .forGetter(ItemStack::getCount),
+                    DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
+                            .forGetter(stack -> stack.getComponentsPatch()))
+                    .apply(instance, ItemStack::new)))
+            .xmap(optional -> optional.orElse(ItemStack.EMPTY),
+                    stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack)));
 
     public static final Direction[] DIRECTIONS = Direction.values();
 
@@ -431,7 +447,11 @@ public class GTUtil {
             return false;
         }
 
-        return world.isDay();
+        ResourceLocation javdVoidBiome = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_JAVD, "void");
+        if (GTCEu.isJAVDLoaded() &&
+                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+            return !world.isDay();
+        } else return world.isDay();
     }
 
     public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
@@ -464,5 +484,18 @@ public class GTUtil {
             default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
+    }
+
+    public static void addPotionTooltip(List<FoodProperties.PossibleEffect> effects, List<Component> list) {
+        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        effects.forEach(pair -> {
+            var effect = pair.effect();
+            float probability = pair.effect().getDuration();
+            list.add(Component.translatable("gtceu.tooltip.potion.each",
+                    Component.translatable(effect.getDescriptionId()),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
+                    effect.getDuration(),
+                    100 * probability));
+        });
     }
 }

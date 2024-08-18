@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
@@ -33,7 +33,7 @@ public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<GTBedroc
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, GTRegistries.BEDROCK_FLUID_DEFINITIONS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_FLUID_VEINS.values().stream()
                 .map(GTBedrockFluidInfoWrapper::new)
                 .toList());
     }

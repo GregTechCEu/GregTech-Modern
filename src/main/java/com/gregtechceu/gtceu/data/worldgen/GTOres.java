@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.*;
-import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
@@ -55,7 +54,6 @@ public class GTOres {
     private static int largestIndicatorOffset = 0;
 
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
-    public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
 
     //////////////////////////////////////
     // ******** End Vein *********//
@@ -133,7 +131,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SCHEELITE_VEIN = create("scheelite_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.7f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.7f).weight(20)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 60)
             .biomes(BiomeTags.IS_END)
@@ -188,7 +186,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition BERYLLIUM_VEIN = create("beryllium_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(30)
+            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -216,7 +214,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -470,7 +468,7 @@ public class GTOres {
                     .surfaceRock(GarnetSand)));
 
     public static final GTOreDefinition GARNET_VEIN = create("garnet_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(40)
+            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -661,10 +659,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Grossular, 3, -50, -5))
                     .withBlock(new DikeBlockDefinition(Spessartine, 2, -40, -15))
                     .withBlock(new DikeBlockDefinition(Pyrolusite, 2, -40, -15))
-                    .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5))
-                    .minYLevel(-50).maxYLevel(-5))
+                    .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
+                    .density(0.15f)
                     .radius(3)));
 
     public static final GTOreDefinition MICA_VEIN = create("mica_vein", vein -> vein

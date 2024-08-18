@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -20,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -85,12 +87,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine))
             return null;
 
         var rotorHolder = turbineMachine.getRotorHolder();
-        var EUt = RecipeHelper.getOutputEUt(recipe);
+        var EUt = RecipeHelper.getOutputEUt(recipe.value());
 
         if (rotorHolder == null || EUt <= 0)
             return null;
@@ -109,10 +111,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-        recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
+        recipe = parallelResult.getFirst() == recipe ? new RecipeHolder<>(recipe.id(), recipe.value().copy()) :
+                parallelResult.getFirst();
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
-        recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+        recipe.value().tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
 
         return recipe;
     }

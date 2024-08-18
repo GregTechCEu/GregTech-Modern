@@ -29,6 +29,8 @@ jobs:
     env:
       MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +57,9 @@ jobs:
         name: mc-publish-forge
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
+          github-tag: ${{ steps.var.outputs.version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
           # Only include this section if you wish to publish
           # your assets on Modrinth.
           modrinth-id: 7tG215v7

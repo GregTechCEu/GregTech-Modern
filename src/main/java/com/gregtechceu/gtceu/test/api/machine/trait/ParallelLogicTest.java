@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -38,7 +39,7 @@ public class ParallelLogicTest {
         int parallelLimit = 4;
 
         // Create a simple recipe to be used for testing
-        GTRecipe recipe = GTRecipeBuilder.ofRaw()
+        RecipeHolder<GTRecipe> recipe = GTRecipeBuilder.ofRaw()
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputFluids(GTMaterials.Acetone.getFluid(4000))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -75,7 +76,7 @@ public class ParallelLogicTest {
         int parallelLimit = 4;
 
         // Create a simple recipe to be used for testing
-        GTRecipe recipe = GTRecipeBuilder.ofRaw()
+        RecipeHolder<GTRecipe> recipe = GTRecipeBuilder.ofRaw()
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputFluids(GTMaterials.Acetone.getFluid(1000))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -112,7 +113,7 @@ public class ParallelLogicTest {
         int parallelLimit = 4;
 
         // Create a simple recipe to be used for testing
-        GTRecipe recipe = GTRecipeBuilder.ofRaw()
+        RecipeHolder<GTRecipe> recipe = GTRecipeBuilder.ofRaw()
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputFluids(GTMaterials.Acetone.getFluid(100))
                 .outputItems(new ItemStack(Blocks.STONE))

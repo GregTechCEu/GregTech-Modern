@@ -104,6 +104,9 @@ public class ToolRecipeHandler {
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_IV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, GTToolType.BUZZSAW_LV);
         ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_HV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWireCutter, GTToolType.WIRE_CUTTER_IV);
     }
 
     public static void registerPowerUnitRecipes(RecipeOutput provider) {
@@ -288,6 +291,22 @@ public class ToolRecipeHandler {
                         'X', plate,
                         'R', steelRing,
                         'W', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel));
+            }
+
+            // electric wire cutters
+            if (property.hasType(GTToolType.WIRE_CUTTER_LV)) {
+                toolPrefix = toolHeadWireCutter;
+                addElectricToolRecipe(toolPrefix, material,
+                        new GTToolType[] { GTToolType.WIRE_CUTTER_LV, GTToolType.WIRE_CUTTER_HV,
+                                GTToolType.WIRE_CUTTER_IV },
+                        provider);
+
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("wirecutter_head_%s", material.getName()),
+                        ChemicalHelper.get(toolPrefix, material),
+                        "XfX", "X X", "SRS",
+                        'X', plate,
+                        'R', steelRing,
+                        'S', new UnificationEntry(screw, GTMaterials.Steel));
             }
 
             // buzzsaw

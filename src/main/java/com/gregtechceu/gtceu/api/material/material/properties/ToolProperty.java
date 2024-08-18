@@ -206,6 +206,9 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     WRENCH_IV,
                     BUZZSAW_LV,
                     SCREWDRIVER_LV,
+                    WIRE_CUTTER_LV,
+                    WIRE_CUTTER_HV,
+                    WIRE_CUTTER_IV,
             });
         }
 

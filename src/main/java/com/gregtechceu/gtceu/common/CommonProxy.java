@@ -6,19 +6,20 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.compat.GTEnergyWrapper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.compat.GTEnergyWrapper;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.material.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
@@ -27,7 +28,6 @@ import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
-import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -68,9 +68,9 @@ import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
+import com.gregtechceu.gtceu.data.valueprovider.GTValueProviderTypes;
 import com.gregtechceu.gtceu.data.worldgen.GTDimensionMarkers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
-import com.gregtechceu.gtceu.data.worldgen.GTIntProviderTypes;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -131,6 +131,7 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+            ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
         GTRegistries.init(modBus);
@@ -139,9 +140,7 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTAttachmentTypes.init(modBus);
         GTParticleTypes.init(modBus);
-        GTIntProviderTypes.init(modBus);
-        // init common features
-        GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
+        GTValueProviderTypes.init(modBus);
     }
 
     public static void init() {
@@ -178,6 +177,7 @@ public class CommonProxy {
         GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
         GTDimensionMarkers.init();
+        ChanceLogic.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
 
@@ -329,7 +329,7 @@ public class CommonProxy {
                     event.getPackType(),
                     Pack.Position.BOTTOM,
                     GTDynamicResourcePack::new));
-        } else {
+        } else if (event.getPackType() == PackType.SERVER_DATA) {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
