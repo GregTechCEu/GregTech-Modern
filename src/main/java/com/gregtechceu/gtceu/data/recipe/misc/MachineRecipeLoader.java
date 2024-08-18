@@ -1388,7 +1388,7 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", ITEM_FILTER.asStack(),
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
                 ITEM_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
                 FLUID_FILTER.asStack());
