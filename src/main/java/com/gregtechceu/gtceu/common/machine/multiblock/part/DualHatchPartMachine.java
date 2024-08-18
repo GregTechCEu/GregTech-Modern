@@ -30,7 +30,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     public static final long INITIAL_TANK_CAPACITY = 16 * FluidHelper.getBucket();
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+            ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableFluidTank tank;
