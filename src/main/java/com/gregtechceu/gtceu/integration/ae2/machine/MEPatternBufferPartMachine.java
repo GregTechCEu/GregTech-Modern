@@ -407,6 +407,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onDrops(List<ItemStack> drops, Player entity) {
         super.onDrops(drops, entity);
         clearInventory(drops, patternInventory);
+        clearInventory(drops, shareInventory);
     }
 
     public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
