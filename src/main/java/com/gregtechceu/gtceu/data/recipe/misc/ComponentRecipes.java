@@ -107,6 +107,10 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L))
                 .inputFluids(Lubricant.getFluid(250))
                 .outputItems(ELECTRIC_MOTOR_LuV)
+                .scannerResearch(b -> b
+                        .researchStack(ELECTRIC_MOTOR_IV.asStack())
+                        .duration(900)
+                        .EUt(VA[EV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_motor_zpm")
@@ -311,6 +315,10 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant.getFluid(250))
                 .inputFluids(StyreneButadieneRubber.getFluid(L * 8))
                 .outputItems(CONVEYOR_MODULE_LuV)
+                .scannerResearch(b -> b
+                        .researchStack(CONVEYOR_MODULE_IV.asStack())
+                        .duration(900)
+                        .EUt(VA[EV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("conveyor_module_zpm")
@@ -359,6 +367,10 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L))
                 .inputFluids(Lubricant.getFluid(250))
                 .outputItems(ELECTRIC_PUMP_LuV)
+                .scannerResearch(b -> b
+                        .researchStack(ELECTRIC_PUMP_IV.asStack())
+                        .duration(900)
+                        .EUt(VA[EV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_zpm")
@@ -589,6 +601,10 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L))
                 .inputFluids(Lubricant.getFluid(250))
                 .outputItems(ELECTRIC_PISTON_LUV)
+                .scannerResearch(b -> b
+                        .researchStack(ELECTRIC_PISTON_IV.asStack())
+                        .duration(900)
+                        .EUt(VA[EV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_piston_zpm")
@@ -704,6 +720,10 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 4))
                 .inputFluids(Lubricant.getFluid(250))
                 .outputItems(ROBOT_ARM_LuV)
+                .scannerResearch(b -> b
+                        .researchStack(ROBOT_ARM_IV.asStack())
+                        .duration(900)
+                        .EUt(VA[EV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("robot_arm_zpm")
@@ -820,7 +840,8 @@ public class ComponentRecipes {
                 .outputItems(FIELD_GENERATOR_LuV)
                 .scannerResearch(b -> b
                         .researchStack(FIELD_GENERATOR_IV.asStack())
-                        .duration(2400))
+                        .duration(2400)
+                        .EUt(VA[IV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("field_generator_zpm")
@@ -928,7 +949,8 @@ public class ComponentRecipes {
                 .outputItems(SENSOR_LuV)
                 .scannerResearch(b -> b
                         .researchStack(SENSOR_IV.asStack())
-                        .duration(2400))
+                        .duration(2400)
+                        .EUt(VA[IV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("sensor_zpm")
@@ -1041,7 +1063,8 @@ public class ComponentRecipes {
                 .outputItems(EMITTER_LuV)
                 .scannerResearch(b -> b
                         .researchStack(EMITTER_IV.asStack())
-                        .duration(2400))
+                        .duration(2400)
+                        .EUt(VA[IV]))
                 .duration(600).EUt(6000).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("emitter_zpm")
