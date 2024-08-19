@@ -41,6 +41,7 @@ dependencies {
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
+
     modImplementation forge.emi
 
     // TOP
@@ -48,6 +49,9 @@ dependencies {
 
     // Jade
     modImplementation(forge.jade)
+
+    modCompileOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}:api")
+    modRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
 
     // AE2
     modImplementation(forge.ae2) { transitive = false }
