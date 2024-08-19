@@ -2502,7 +2502,7 @@ public class GTItems {
                             ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
             .lang("NanoMuscle™ Suite Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(Tags.Items.ARMORS_LEGGINGS)
+            .tag(Tags.Items.ARMORS_BOOTS)
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE
             .item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
