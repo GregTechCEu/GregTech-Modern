@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/cube_2_layer/all",
+  "textures": {
+    "bot_all": "gtceu:block/casings/fusion/fusion_casing",
+    "top_all": "gtceu:block/casings/fusion/fusion_casing_bloom"
+  }
+}
