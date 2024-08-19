@@ -335,7 +335,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 tank.setFluidTank(new OverlayingFluidStorage(fluidTransfer, index));
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-            tank.setAllowClickFilled(!isXEI);
+            tank.setAllowClickFilled(!isXEI && io.support(IO.IN));
             tank.setAllowClickDrained(!isXEI);
             if (content != null) {
                 tank.setXEIChance((float) content.chance / content.maxChance);
