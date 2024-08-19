@@ -77,8 +77,13 @@ dependencies {
     modCompileOnly("maven.modrinth:embeddium:0.3.19+mc1.20.1")
     modCompileOnly("maven.modrinth:oculus:1.20.1-1.7.0")
 
-    modImplementation(forge.ftbteams)
-    modImplementation(forge.ftblibrary)
+    modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftblibrary)
+
+    runtimeOnly("com.teamresourceful:bytecodecs:1.0.2")
+    runtimeOnly("com.teamresourceful:yabn:1.0.3")
+    modImplementation("com.teamresourceful.resourcefullib:resourcefullib-forge-1.20.1:2.1.18")
+    modImplementation("earth.terrarium.argonauts:argonauts-forge-1.20.1:1.0.10")
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)

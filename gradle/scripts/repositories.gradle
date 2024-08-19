@@ -44,4 +44,6 @@ repositories {
     }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+    maven { url = "https://maven.resourcefulbees.com/repository/maven-public/" } // resourceful lib
+    maven { url = "https://maven.teamresourceful.com/repository/maven-public/" } // resourceful lib
 }

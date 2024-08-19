@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -21,6 +22,11 @@ import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import dev.ftb.mods.ftbteams.api.Team;
 import dev.ftb.mods.ftbteams.api.TeamManager;
+import earth.terrarium.argonauts.Argonauts;
+import earth.terrarium.argonauts.api.guild.Guild;
+import earth.terrarium.argonauts.api.guild.GuildApi;
+import earth.terrarium.argonauts.client.handlers.guild.GuildClientApiImpl;
+import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,6 +60,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import lombok.Getter;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -161,7 +168,19 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 String name = team.get().getShortName();
                 machine.holder.setOwner(teamUUID, Team.class, name);
             }
-        } else {
+        }
+        else if(GTCEu.isArgonautsLoaded()) {
+            var server = Platform.getMinecraftServer();
+            if(server != null) {
+                Guild guild = GuildHandler.read(server).getPlayerGuild(server, player.getUUID());
+                if (guild != null) {
+                    UUID guildUUID = guild.id();
+                    String name = guild.displayName().getString();
+                    machine.holder.setOwner(guildUUID, Guild.class, name);
+                }
+            }
+        }
+        else {
             machine.holder.setOwner(player.getUUID(), ServerPlayer.class, player.getName().getString());
         }
     }

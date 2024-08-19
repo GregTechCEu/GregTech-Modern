@@ -65,10 +65,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Getter
     public final MetaMachine metaMachine;
     @DescSynced
+    @Getter
     private UUID owner;
     @Getter
     @DescSynced
     private String ownerName;
+    @Getter
     private Class<?> ownerType;
     private final long offset = GTValues.RNG.nextInt(20);
 
@@ -90,11 +92,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public UUID getOwnerUUID() {
-        return this.owner;
-    }
-
-    @Override
     public void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {
         this.owner = uuid;
         this.ownerType = ownerType;
@@ -104,11 +101,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public boolean ownerOnline() {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
-    }
-
-    @Override
-    public Class<?> getOwnerType() {
-        return ownerType;
     }
 
     @Override
