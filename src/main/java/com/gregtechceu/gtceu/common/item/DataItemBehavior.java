@@ -63,9 +63,13 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
                 Collection<ItemStack> added = new ObjectOpenHashSet<>();
+                outer:
                 for (GTRecipe recipe : recipes) {
                     ItemStack output = ItemRecipeCapability.CAP
                             .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                    for (var item : added) {
+                        if (output.is(item.getItem())) continue outer;
+                    }
                     if (added.add(output)) {
                         tooltipComponents.add(
                                 Component.translatable("behavior.data_item.assemblyline.data",
