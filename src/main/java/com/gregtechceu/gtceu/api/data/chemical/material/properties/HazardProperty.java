@@ -149,7 +149,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                             armorItem.getArmorLogic().isPPE()) ||
                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
-                        armor.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(type.getSlot()));
+                        armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
                 }
                 if (GTCEu.isCuriosLoaded()) {
@@ -165,7 +165,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
                                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                                             armorItem.getArmorLogic().isPPE()) ||
                                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
-                                        armor.hurtAndBreak(1, player, p -> {});
+                                        armor.hurtAndBreak(amount, player, p -> {});
                                     }
                                 }
                             });
