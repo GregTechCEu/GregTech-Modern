@@ -264,7 +264,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
                 .setTooltips(List.of(
                         Component.translatable("gui.gtceu.share_inventory.desc.0"),
-                        Component.translatable("gui.gtcey.share_inventory.desc.1"))));
+                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
         configuratorPanel.attachConfigurators(new FancyTankConfigurator(
                 shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
                 .setTooltips(List.of(

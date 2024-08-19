@@ -4035,7 +4035,6 @@
   "gui.gtceu.share_inventory.title": "Shared Item Inventory",
   "gui.gtceu.share_tank.desc.0": "Shares inserted fluids/gasses/etc. with all patterns within buffer!",
   "gui.gtceu.share_tank.title": "Shared Tank Inventory",
-  "gui.gtcey.share_inventory.desc.1": "Allows powerful automation by storing catalysts",
   "gui.widget.incrementButton.default_tooltip": "Hold Shift, Ctrl or both to change the amount",
   "gui.widget.recipeProgressWidget.default_tooltip": "Show Recipes",
   "item.glass_lens": "Glass Lens (White)",
