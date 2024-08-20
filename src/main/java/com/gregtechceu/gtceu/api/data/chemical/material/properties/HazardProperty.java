@@ -98,7 +98,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         /**
          * Equipment validity is treated in an OR fashion.
          * that is, EITHER all curio slots are valid, OR all equipment slots are valid.
-         * @param curioSlots curio slot names to test for
+         * 
+         * @param curioSlots     curio slot names to test for
          * @param equipmentTypes armor slots to test for
          */
         ProtectionType(Set<String> curioSlots, ArmorItem.Type... equipmentTypes) {
