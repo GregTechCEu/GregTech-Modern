@@ -1,6 +1,6 @@
 name: Feature Request
 description: Request a new feature.
-labels: [ "enhancement" ]
+labels: [ "type: feature" ]
 body:
   - type: input
     id: cross-mod

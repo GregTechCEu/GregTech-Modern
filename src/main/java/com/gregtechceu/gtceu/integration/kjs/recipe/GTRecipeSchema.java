@@ -496,10 +496,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, double chance, double tierChanceBoost) {
-            return chancedFluidOutput(stack, (int) chance, (int) tierChanceBoost);
-        }
-
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
             if (stack.getAmount() == 0) {
                 return this;
@@ -637,6 +633,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS addData(String key, int data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putInt(key, data);
@@ -644,6 +641,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS addData(String key, long data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putLong(key, data);
@@ -651,21 +649,29 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS addData(String key, String data) {
+        public GTRecipeJS addDataString(String key, String data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putString(key, data);
             save();
             return this;
         }
 
-        public GTRecipeJS addData(String key, Float data) {
+        @HideFromJS
+        public GTRecipeJS addData(String key, float data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putFloat(key, data);
             save();
             return this;
         }
 
-        public GTRecipeJS addData(String key, boolean data) {
+        public GTRecipeJS addDataNumber(String key, double data) {
+            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
+            getValue(DATA).putDouble(key, data);
+            save();
+            return this;
+        }
+
+        public GTRecipeJS addDataBool(String key, boolean data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putBoolean(key, data);
             save();
@@ -689,7 +695,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS disableDistilleryRecipes(boolean flag) {
-            return addData("disable_distillery", flag);
+            return addDataBool("disable_distillery", flag);
         }
 
         public GTRecipeJS fusionStartEU(long eu) {
@@ -697,15 +703,15 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS researchScan(boolean isScan) {
-            return addData("scan_for_research", isScan);
+            return addDataBool("scan_for_research", isScan);
         }
 
         public GTRecipeJS durationIsTotalCWU(boolean durationIsTotalCWU) {
-            return addData("duration_is_total_cwu", durationIsTotalCWU);
+            return addDataBool("duration_is_total_cwu", durationIsTotalCWU);
         }
 
         public GTRecipeJS hideDuration(boolean hideDuration) {
-            return addData("hide_duration", hideDuration);
+            return addDataBool("hide_duration", hideDuration);
         }
 
         //////////////////////////////////////

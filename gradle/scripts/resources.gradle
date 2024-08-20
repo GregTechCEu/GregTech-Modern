@@ -14,9 +14,15 @@ processResources {
     var properties = [
             "version": version,
             "mod_id": mod_id,
-            "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
-            "kjs_version": forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             "minecraft_version": libs.versions.minecraft.get(),
+            "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            "configuration_version": forge.versions.configuration.get(),
+            "kjs_version": forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
+            "ldlib_version": forge.versions.ldlib.get(),
+            "jei_version": forge.versions.jei.get(),
+            "emi_version": forge.versions.emi.get(),
+            "top_version": forge.versions.theoneprobe.get(),
+            "jade_version": forge.versions.jade.get(),
             "mod_license": mod_license,
             "mod_name": mod_name,
             "mod_description": mod_description,

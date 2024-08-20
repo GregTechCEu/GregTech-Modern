@@ -207,11 +207,8 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void addButtons() {
         // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
-        int x = getSize().width + 3 - this.xOffset, y = 3;
-        if (LDLib.isEmiLoaded()) {
-            x = getSize().width - xOffset - 18;
-            y = getSize().height - 30;
-        }
+        int x = getSize().width - xOffset - 18;
+        int y = getSize().height - 30;
         addWidget(
                 new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
                         cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
