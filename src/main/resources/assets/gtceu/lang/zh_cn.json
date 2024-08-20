@@ -4035,7 +4035,6 @@
     "gui.gtceu.share_inventory.title":"共享物品库存",
     "gui.gtceu.share_tank.desc.0":"与总成内的所有样板共享流体！",
     "gui.gtceu.share_tank.title":"共享流体库存",
-    "gui.gtcey.share_inventory.desc.1":"保存不消耗的催化剂，实现更高效的自动化",
     "gui.widget.incrementButton.default_tooltip":"按住Shift，Ctrl键或同时按住这两个键来改变数量",
     "gui.widget.recipeProgressWidget.default_tooltip":"查看配方",
     "item.glass_lens":"玻璃透镜（白色）",
