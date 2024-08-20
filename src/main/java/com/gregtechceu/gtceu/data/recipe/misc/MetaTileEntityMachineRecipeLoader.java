@@ -600,7 +600,6 @@ public class MetaTileEntityMachineRecipeLoader {
 
             ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer")
                     .inputItems(DUAL_IMPORT_HATCH[LuV], 1)
-                    .inputItems(DUAL_EXPORT_HATCH[LuV], 1)
                     .inputItems(EMITTER_LuV, 1)
                     .inputItems(CustomTags.LuV_CIRCUITS, 4)
                     .inputItems(AEBlocks.PATTERN_PROVIDER.asItem(), 3)
