@@ -1128,7 +1128,7 @@ public class GTBlocks {
                                                     .hasProperty(RubberLogBlock.NATURAL, true)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
-            .tag(BlockTags.LOGS_THAT_BURN)
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
             .tag(ItemTags.LOGS_THAT_BURN)

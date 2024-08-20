@@ -14,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Items;
@@ -239,6 +240,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
         return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material, this.langKey))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
+                .tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("ae2", "p2p_attunements/fluid_p2p_tunnel")))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())
