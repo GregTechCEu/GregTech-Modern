@@ -129,13 +129,19 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.ingredient().hasNoFluids() ? 0 : ingredient.amount();
+            double amount = ingredient.ingredient().hasNoFluids() ? 0 : ingredient.amount();
             String s;
-            if (amount >= 1000) {
+            if (amount >= 1_000_000_000) {
+                amount /= 1_000_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
+            } else if (amount >= 1_000_000) {
+                amount /= 1_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
+            } else if (amount >= 1000) {
                 amount /= 1000;
-                s = amount + "B";
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
             } else {
-                s = amount + "mB";
+                s = (int) amount + "mB";
             }
             Font fontRenderer = Minecraft.getInstance().font;
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
