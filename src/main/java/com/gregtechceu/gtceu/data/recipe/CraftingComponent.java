@@ -71,6 +71,9 @@ public class CraftingComponent {
     public static Component POWER_COMPONENT;
     public static Component VOLTAGE_COIL;
     public static Component SPRING;
+    public static Component CRATE;
+    public static Component DRUM;
+    public static Component FRAME;
 
     public static final Map<BlastProperty.GasTier, SizedFluidIngredient> EBF_GASES = new EnumMap<>(
             BlastProperty.GasTier.class);
@@ -876,6 +879,45 @@ public class CraftingComponent {
                 { 8, new UnificationEntry(TagPrefix.spring, GTMaterials.YttriumBariumCuprate) },
                 { 9, new UnificationEntry(TagPrefix.spring, GTMaterials.Europium) },
 
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CRATE = new Component(Stream.of(new Object[][] {
+                { 0, new ItemStack(Blocks.CHEST) },
+                { 1, GTMachines.WOODEN_CRATE.asStack() },
+                { 2, GTMachines.BRONZE_CRATE.asStack() },
+                { 3, GTMachines.STEEL_CRATE.asStack() },
+                { 4, GTMachines.ALUMINIUM_CRATE.asStack() },
+                { 5, GTMachines.STAINLESS_STEEL_CRATE.asStack() },
+                { 6, GTMachines.TITANIUM_CRATE.asStack() },
+                { 7, GTMachines.TUNGSTENSTEEL_CRATE.asStack() },
+                { 8, GTMachines.SUPER_CHEST[1].asStack() },
+                { FALLBACK, GTMachines.SUPER_CHEST[1].asStack() },
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        DRUM = new Component(Stream.of(new Object[][] {
+                { 0, new ItemStack(Blocks.GLASS) },
+                { 1, GTMachines.WOODEN_DRUM.asStack() },
+                { 2, GTMachines.BRONZE_DRUM.asStack() },
+                { 3, GTMachines.STEEL_DRUM.asStack() },
+                { 4, GTMachines.ALUMINIUM_DRUM.asStack() },
+                { 5, GTMachines.STAINLESS_STEEL_DRUM.asStack() },
+                { 6, GTMachines.TITANIUM_DRUM.asStack() },
+                { 7, GTMachines.TUNGSTENSTEEL_DRUM.asStack() },
+                { 8, GTMachines.SUPER_TANK[1].asStack() },
+                { FALLBACK, GTMachines.SUPER_TANK[1].asStack() },
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        FRAME = new Component(Stream.of(new Object[][] {
+                { 0, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Wood) },
+                { 1, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Steel) },
+                { 2, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Aluminium) },
+                { 3, new UnificationEntry(TagPrefix.frameGt, GTMaterials.StainlessSteel) },
+                { 4, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Titanium) },
+                { 5, new UnificationEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Ruridit) },
+                { 7, new UnificationEntry(TagPrefix.frameGt, GTMaterials.Iridium) },
+                { 8, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
+                { FALLBACK, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
     }
 
