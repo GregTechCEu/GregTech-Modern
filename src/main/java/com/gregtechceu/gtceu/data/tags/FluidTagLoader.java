@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -20,10 +18,7 @@ public class FluidTagLoader {
         create(provider, CustomTags.LIGHTER_FLUIDS, GTMaterials.Butane.getFluid(), GTMaterials.Propane.getFluid());
 
         for (final Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (material.hasProperty(PropertyKey.ALLOY_BLAST)) {
-                Fluid fluid = material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
-                create(provider, CustomTags.MOLTEN_FLUIDS, fluid);
-            }
+
         }
     }
 
