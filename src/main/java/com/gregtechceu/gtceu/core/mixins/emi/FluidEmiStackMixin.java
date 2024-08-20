@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Map;
 
 @Mixin(value = FluidEmiStack.class, remap = false)
 public class FluidEmiStackMixin {
@@ -37,8 +36,7 @@ public class FluidEmiStackMixin {
         List<ClientTooltipComponent> list = cir.getReturnValue();
         tooltips.stream()
                 .filter(component -> component.getContents() != ComponentContents.EMPTY)
-                .map(component -> Map.entry(tooltips.indexOf(component),
-                        ClientTooltipComponent.create(component.getVisualOrderText())))
-                .forEach(component -> list.add(component.getKey(), component.getValue()));
+                .map(component -> ClientTooltipComponent.create(component.getVisualOrderText()))
+                .forEach(list::add);
     }
 }
