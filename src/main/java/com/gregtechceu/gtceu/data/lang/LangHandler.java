@@ -1049,7 +1049,7 @@ public class LangHandler {
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
-        provider.add("gtceu.multiblock.idling", "Idling.");
+        provider.add("gtceu.multiblock.idling", "§6Idling.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
