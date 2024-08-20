@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.core.mixins.emi;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.FluidEmiStack;
