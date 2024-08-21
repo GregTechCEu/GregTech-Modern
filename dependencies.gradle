@@ -1,6 +1,10 @@
 dependencies {
     compileOnly 'org.jetbrains:annotations:24.1.0'
 
+    // Shadowed Dependencies
+    // Packages that aren't mods, and thus need to be included in the release files.
+    shadow(implementation('org.jgrapht:jgrapht-core:1.5.2'))  // JGraphT 1.4.0
+
     // LDLib
     modApi(forge.ldlib.forge) { transitive = false }
     jarJar(forge.ldlib.forge)
