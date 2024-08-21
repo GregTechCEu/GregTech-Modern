@@ -612,7 +612,7 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputFluids(SolderingAlloy.getFluid(L * 4))
                     .inputFluids(Lubricant.getFluid(500))
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
-                    .scannerResearch(b -> b.researchStack(DUAL_IMPORT_HATCH[0].asStack())
+                    .scannerResearch(b -> b.researchStack(DUAL_IMPORT_HATCH[LuV].asStack())
                             .duration(1200)
                             .EUt(VA[LuV]))
                     .duration(600).EUt(LuV).save(provider);
