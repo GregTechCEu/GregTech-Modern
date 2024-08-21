@@ -653,12 +653,26 @@ public class VanillaStandardRecipes {
                                     .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane"))))
                     .save(provider);
 
+            CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
+                    .inputItems(new ItemStack(Items.CANDLE))
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .outputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_candle"))))
+                    .save(provider);
+
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_wool_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(new ItemStack(Blocks.WHITE_WOOL))
                         .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
                         .outputItems(new ItemStack(
                                 BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool"))))
+                        .save(provider);
+
+                CHEMICAL_BATH_RECIPES.recipeBuilder("dye_bed_to_" + dyeName).duration(20).EUt(VA[ULV])
+                        .inputItems(new ItemStack(Blocks.WHITE_BED))
+                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                        .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(
+                                ResourceLocation.withDefaultNamespace(dyeName + "_bed"))))
                         .save(provider);
             }
 
@@ -725,6 +739,18 @@ public class VanillaStandardRecipes {
                 .inputFluids(Chlorine.getFluid(10))
                 .outputItems(new ItemStack(Blocks.PISTON))
                 .duration(30).EUt(VA[LV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_candle")
+                .inputItems(ItemTags.CANDLES)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.CANDLE)
+                .duration(400).EUt(2).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_bed")
+                .inputItems(ItemTags.BEDS)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.WHITE_BED)
+                .duration(400).EUt(2).save(provider);
     }
 
     /**
