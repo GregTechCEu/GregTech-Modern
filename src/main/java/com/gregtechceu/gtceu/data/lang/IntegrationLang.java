@@ -86,7 +86,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
-        provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
+        provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
