@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -38,6 +38,10 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         data.putBoolean("Active", capability.isActive());
         data.putInt("Progress", capability.getProgress());
         data.putInt("MaxProgress", capability.getMaxProgress());
+        // Check if IWorkable is a research station and add flag to data
+        if (capability instanceof ResearchStationMachine rsm) {
+            data.putBoolean("Research", true);
+        }
     }
 
     @Override
@@ -49,18 +53,34 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         int maxProgress = capData.getInt("MaxProgress");
         Component text;
 
-        if (block.getBlockEntity() instanceof IMachineBlockEntity mbe &&
-                mbe.getMetaMachine() instanceof IRecipeLogicMachine rlm &&
-                rlm.getRecipeLogic().getLastRecipe() != null &&
-                rlm.getRecipeLogic().getLastRecipe().data.getBoolean("duration_is_total_cwu")) {
-            // show as total computation instead
-            int color = rlm.getRecipeLogic().isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
-            tooltip.add(tooltip.getElementHelper().progress(
-                    currentProgress,
-                    Component.translatable("gtceu.jade.progress_computation", currentProgress, maxProgress),
-                    tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
-                    Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
-                    true));
+        // show as total computation instead
+        if (capData.getBoolean("Research")) {
+            String current, max;
+            if (currentProgress >= 1e6) {
+                current = FormattingUtil.DECIMAL_FORMAT_1F.format(currentProgress / 1e6) + "M";
+            } else if (currentProgress >= 1e3) {
+                current = FormattingUtil.DECIMAL_FORMAT_1F.format(currentProgress / 1e3) + "K";
+            } else {
+                current = String.valueOf(currentProgress);
+            }
+
+            if (maxProgress >= 1e6) {
+                max = FormattingUtil.DECIMAL_FORMAT_1F.format(maxProgress / 1e6) + "M";
+            } else if (maxProgress >= 1e3) {
+                max = FormattingUtil.DECIMAL_FORMAT_1F.format(maxProgress / 1e3) + "K";
+            } else {
+                max = String.valueOf(maxProgress);
+            }
+
+            text = Component.translatable("gtceu.jade.progress_computation", current, max);
+
+            tooltip.add(
+                    tooltip.getElementHelper().progress(
+                            getProgress(currentProgress, maxProgress),
+                            text,
+                            tooltip.getElementHelper().progressStyle().color(0xFF006D6A).textColor(-1),
+                            Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
+                            true));
             return;
         }
 
