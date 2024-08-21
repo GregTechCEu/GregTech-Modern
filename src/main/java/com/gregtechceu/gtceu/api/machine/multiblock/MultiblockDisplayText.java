@@ -362,7 +362,7 @@ public class MultiblockDisplayText {
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
                         } else {
                             textList.add(Component.translatable("gtceu.multiblock.output_line.0",
-                                    stack.getDisplayName(), stack.getAmount(), maxDurationSec));
+                                    stack.getDisplayName(), stack.getAmount(), FormattingUtil.formatNumber2Places(maxDurationSec)));
                         }
                     } else {
                         double countPerSec = (double) stack.getAmount() / maxDurationSec;
@@ -373,7 +373,8 @@ public class MultiblockDisplayText {
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
                         } else {
                             textList.add(Component.translatable("gtceu.multiblock.output_line.1",
-                                    stack.getDisplayName(), stack.getAmount(), countPerSec));
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(countPerSec)));
                         }
                     }
                 }
