@@ -3,10 +3,13 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +51,7 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     @Override
     public final void addCover(@NotNull Direction side, @NotNull CoverBehavior cover) {
         addCoverSilent(side, cover);
-        if (!getLevel().isRemote) {
+        if (!getLevel().isClientSide) {
             // do not sync or handle logic on client side
             CoverSaveHandler.writeCoverPlacement(this, COVER_ATTACHED_PIPE, side, cover);
             if (holder.isConnected(side) && !cover.canPipePassThrough()) {
@@ -120,6 +124,16 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     }
 
     @Override
+    public void scheduleNeighborShapeUpdate() {
+
+    }
+
+    @Override
+    public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
+        return false;
+    }
+
+    @Override
     public double getCoverPlateThickness() {
         float thickness = holder.getBlockType().getStructure().getRenderThickness();
         // no cover plate for pipes >= 1 block thick
@@ -129,6 +143,31 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
 
         // need to divide by 2 because thickness is centered on the block, so the space is half on each side of the pipe
         return Math.min(1.0 / 16.0, (1.0 - thickness) / 2);
+    }
+
+    @Override
+    public Direction getFrontFacing() {
+        return null;
+    }
+
+    @Override
+    public boolean shouldRenderBackSide() {
+        return false;
+    }
+
+    @Override
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        return null;
+    }
+
+    @Override
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        return null;
+    }
+
+    @Override
+    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+
     }
 
     @Override
@@ -158,7 +197,7 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
             return canConnectRedstone(Direction.UP) ||
                     canConnectRedstone(Direction.DOWN);
         }
-        Cover cover = getCoverAtSide(side);
+        CoverBehavior cover = getCoverAtSide(side);
         return cover != null && cover.canConnectRedstone();
     }
 
@@ -166,14 +205,14 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
         if (side == null) {
             return getHighestOutputRedstoneSignal();
         }
-        Cover cover = getCoverAtSide(side);
+        CoverBehavior cover = getCoverAtSide(side);
         return cover == null ? 0 : cover.getRedstoneSignalOutput();
     }
 
     public int getHighestOutputRedstoneSignal() {
         int highestSignal = 0;
         for (Direction side : GTUtil.DIRECTIONS) {
-            Cover cover = getCoverAtSide(side);
+            CoverBehavior cover = getCoverAtSide(side);
             if (cover == null) continue;
             highestSignal = Math.max(highestSignal, cover.getRedstoneSignalOutput());
         }
@@ -182,7 +221,7 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
 
     @Override
     public void update() {
-        if (!getLevel().isRemote) {
+        if (!getLevel().isClientSide) {
             updateCovers();
         }
     }
@@ -279,12 +318,12 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     }
 
     @Override
-    public boolean isValid() {
-        return !holder.isInvalid();
+    public boolean isInValid() {
+        return holder.isRemoved();
     }
 
     @Override
-    public <T> T getCapability(@NotNull Capability<T> capability, Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side) {
         return holder.getCapabilityCoverQuery(capability, side);
     }
 
@@ -296,5 +335,15 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
             rendererPackage.addRenderer(cover.getValue().getRenderer(), cover.getKey());
         }
         return rendererPackage;
+    }
+
+    @Override
+    public @Nullable TickableSubscription subscribeServerTick(Runnable runnable) {
+        return holder.subscribeServerTick(runnable);
+    }
+
+    @Override
+    public void unsubscribe(@Nullable TickableSubscription current) {
+        holder.unsubscribe(current);
     }
 }

@@ -136,7 +136,7 @@ public class BlockPattern {
                             }
                         }
                         boolean canPartShared = true;
-                        if (worldState.getTileEntity() instanceof IMachineBlockEntity machineBlockEntity &&
+                        if (worldState.getBlockEntity() instanceof IMachineBlockEntity machineBlockEntity &&
                                 machineBlockEntity.getMetaMachine() instanceof IMultiPart part) { // add detected parts
                             if (!predicate.isAny()) {
                                 if (part.isFormed() && !part.canShared() &&

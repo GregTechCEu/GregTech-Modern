@@ -75,7 +75,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 long absEUt = Math.abs(EUt);
 
                 // Default behavior, if this TE is not a steam machine (or somehow not instanceof
-                // IGregTechTileEntity...)
+                // IGregTechBlockEntity...)
                 var tier = GTUtil.getTierByVoltage(absEUt);
                 Component text = Component.literal(FormattingUtil.formatNumbers(absEUt)).withStyle(ChatFormatting.RED)
                         .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)

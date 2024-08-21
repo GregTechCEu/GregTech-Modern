@@ -119,7 +119,7 @@ public class MultiblockState {
     }
 
     @Nullable
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         if (!getBlockState().hasBlockEntity()) {
             return null;
         }

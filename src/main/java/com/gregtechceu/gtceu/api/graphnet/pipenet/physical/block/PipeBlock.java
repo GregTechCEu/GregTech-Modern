@@ -1,86 +1,79 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block;
 
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
-import gregtech.api.block.BuiltInRenderBlock;
-import gregtech.api.cover.Cover;
-import gregtech.api.cover.CoverRayTracer;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeChanneledStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCoverHolder;
-import gregtech.api.items.toolitem.ToolClasses;
-import gregtech.api.items.toolitem.ToolHelper;
-import gregtech.api.unification.material.Material;
-import gregtech.api.util.EntityDamageUtil;
-import gregtech.api.util.GTUtility;
-import gregtech.client.renderer.pipe.AbstractPipeModel;
-import gregtech.client.renderer.pipe.cover.CoverRendererPackage;
-import gregtech.client.utils.BloomEffectUtil;
-import gregtech.client.utils.TooltipHelper;
-import gregtech.common.ConfigHolder;
-import gregtech.common.blocks.BlockFrame;
-import gregtech.common.blocks.MetaBlocks;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.Player;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import codechicken.lib.raytracer.RayTracer;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.EntityDamageUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.Getter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class PipeBlock extends BuiltInRenderBlock {
+public abstract class PipeBlock extends Block implements EntityBlock, IBlockRendererProvider {
 
-    public static final PropertyBool NORTH = PropertyBool.create("north");
-    public static final PropertyBool EAST = PropertyBool.create("east");
-    public static final PropertyBool SOUTH = PropertyBool.create("south");
-    public static final PropertyBool WEST = PropertyBool.create("west");
-    public static final PropertyBool UP = PropertyBool.create("up");
-    public static final PropertyBool DOWN = PropertyBool.create("down");
+    public static final BooleanProperty NORTH = BooleanProperty.create("north");
+    public static final BooleanProperty EAST = BooleanProperty.create("east");
+    public static final BooleanProperty SOUTH = BooleanProperty.create("south");
+    public static final BooleanProperty WEST = BooleanProperty.create("west");
+    public static final BooleanProperty UP = BooleanProperty.create("up");
+    public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
-    public static final EnumMap<Direction, PropertyBool> FACINGS = buildFacings();
+    public static final EnumMap<Direction, BooleanProperty> FACINGS = buildFacings();
 
-    private static @NotNull EnumMap<Direction, PropertyBool> buildFacings() {
-        EnumMap<Direction, PropertyBool> map = new EnumMap<>(Direction.class);
+    private static @NotNull EnumMap<Direction, BooleanProperty> buildFacings() {
+        EnumMap<Direction, BooleanProperty> map = new EnumMap<>(Direction.class);
         map.put(Direction.NORTH, NORTH);
         map.put(Direction.EAST, EAST);
         map.put(Direction.SOUTH, SOUTH);
@@ -90,18 +83,20 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         return map;
     }
 
-    public static final PropertyBool FRAMED = PropertyBool.create("framed");
+    public static final BooleanProperty FRAMED = BooleanProperty.create("framed");
 
     // do not touch these two unless you know what you are doing
     protected final ThreadLocal<BlockPos> lastTilePos = ThreadLocal.withInitial(() -> new BlockPos(0, 0, 0));
     protected final ThreadLocal<WeakReference<PipeBlockEntity>> lastTile = ThreadLocal
             .withInitial(() -> new WeakReference<>(null));
 
+    @Getter
     private final IPipeStructure structure;
 
-    public PipeBlock(IPipeStructure structure) {
-        super(net.minecraft.block.material.Material.IRON);
+    public PipeBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
+        super(properties);
         this.structure = structure;
+        /*
         setTranslationKey(structure.getName());
         setSoundType(SoundType.METAL);
         setHardness(2.0f);
@@ -109,24 +104,21 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         setResistance(3.0f);
         setLightOpacity(1);
         disableStats();
-    }
-
-    public IPipeStructure getStructure() {
-        return structure;
+         */
     }
 
     // net logic //
 
     public void doPlacementLogic(PipeBlockEntity tile, Direction placedBlockSearchSide) {
         for (Direction facing : GTUtil.DIRECTIONS) {
-            TileEntity neighbor = tile.getNeighbor(facing);
+            BlockEntity neighbor = tile.getNeighbor(facing);
             if (neighbor instanceof PipeBlockEntity other) {
                 // first check -- does the other tile have a cover that would prevent connection
-                Cover cover = other.getCoverHolder().getCoverAtSide(facing.getOpposite());
+                CoverBehavior cover = other.getCoverHolder().getCoverAtSide(facing.getOpposite());
                 if (cover != null && !cover.canPipePassThrough()) continue;
                 // second check -- connect to matching mark pipes if side matches or config allows.
                 if (tile.getPaintingColor() == other.getPaintingColor() && (facing == placedBlockSearchSide ||
-                        !ConfigHolder.machines.gt6StylePipesCables)) {
+                        !ConfigHolder.INSTANCE.machines.gt6StylePipesCables)) {
                     if (coverCheck(tile, other, facing)) connectTile(tile, other, facing);
                     continue;
                 }
@@ -142,113 +134,106 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
     }
 
     @Override
-    public boolean onBlockActivated(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state,
-                                    @NotNull Player playerIn, @NotNull EnumHand hand, @NotNull Direction facing,
-                                    float hitX, float hitY, float hitZ) {
-        ItemStack item = playerIn.getHeldItem(hand);
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack item = player.getItemInHand(hand);
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) {
             if (tile.getFrameMaterial() == null) {
-                BlockFrame frame = BlockFrame.getFrameBlockFromItem(item);
+                MaterialBlock frame = (MaterialBlock) ((BlockItem) item.getItem()).getBlock();
                 if (frame != null) {
-                    tile.setFrameMaterial(frame.getGtMaterial(item));
-                    SoundType type = frame.getSoundType(item);
-                    worldIn.playSound(playerIn, pos, type.getPlaceSound(), SoundCategory.BLOCKS,
+                    tile.setFrameMaterial(frame.material);
+                    SoundType type = frame.getSoundType(frame.defaultBlockState());
+                    level.playSound(player, pos, type.getPlaceSound(), SoundSource.BLOCKS,
                             (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-                    if (!playerIn.capabilities.isCreativeMode) {
+                    if (!player.isCreative()) {
                         item.shrink(1);
                     }
-                    return true;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
-            RayTraceAABB trace = collisionRayTrace(playerIn, worldIn, pos);
-            if (trace == null)
-                return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
-
-            Direction actualSide = CoverRayTracer.determineGridSideHit(trace);
+            Direction facing = hit.getDirection();
+            Direction actualSide = ICoverable.determineGridSideHit(hit);
             if (actualSide != null) facing = actualSide;
-
+            
             // cover comes first
-            PipeCoverHolder coverable = tile.getCoverHolder();
-            Cover cover = coverable.getCoverAtSide(facing);
+            ICoverable coverable = tile.getCoverHolder();
+            CoverBehavior cover = coverable.getCoverAtSide(facing);
             if (cover != null) {
-                if (ToolHelper.isTool(item, ToolClasses.SCREWDRIVER)) {
-                    EnumActionResult result = cover.onScrewdriverClick(playerIn, hand, trace);
-                    if (result != EnumActionResult.PASS) {
-                        if (result == EnumActionResult.SUCCESS) {
-                            ToolHelper.damageItem(item, playerIn);
-                            ToolHelper.playToolSound(item, playerIn);
-                            return true;
+                if (ToolHelper.isTool(item, GTToolType.SCREWDRIVER)) {
+                    InteractionResult result = cover.onScrewdriverClick(player, hand, hit);
+                    if (result != InteractionResult.PASS) {
+                        if (result == InteractionResult.SUCCESS) {
+                            ToolHelper.damageItem(item, player);
+                            ToolHelper.playToolSound(GTToolType.SCREWDRIVER, (ServerPlayer) player);
+                            return InteractionResult.SUCCESS;
                         }
-                        return false;
+                        return InteractionResult.PASS;
                     }
                 }
-                if (ToolHelper.isTool(item, ToolClasses.SOFT_MALLET)) {
-                    EnumActionResult result = cover.onSoftMalletClick(playerIn, hand, trace);
-                    if (result != EnumActionResult.PASS) {
-                        if (result == EnumActionResult.SUCCESS) {
-                            ToolHelper.damageItem(item, playerIn);
-                            ToolHelper.playToolSound(item, playerIn);
-                            return true;
+                if (ToolHelper.isTool(item, GTToolType.SOFT_MALLET)) {
+                    InteractionResult result = cover.onSoftMalletClick(player, hand, hit);
+                    if (result != InteractionResult.PASS) {
+                        if (result == InteractionResult.SUCCESS) {
+                            ToolHelper.damageItem(item, player);
+                            ToolHelper.playToolSound(GTToolType.SOFT_MALLET, (ServerPlayer) player);
+                            return InteractionResult.SUCCESS;
                         }
-                        return false;
+                        return InteractionResult.PASS;
                     }
                 }
-                EnumActionResult result = cover.onRightClick(playerIn, hand, trace);
-                if (result == EnumActionResult.SUCCESS) return true;
+                //InteractionResult result = cover.onRightClick(player, hand, trace);
+                //if (result == EnumActionResult.SUCCESS) return true;
 
                 // allow crowbar to run even if the right click returns a failure
-                if (ToolHelper.isTool(item, ToolClasses.CROWBAR)) {
-                    coverable.removeCover(facing);
-                    ToolHelper.damageItem(item, playerIn);
-                    ToolHelper.playToolSound(item, playerIn);
-                    return true;
+                if (ToolHelper.isTool(item, GTToolType.CROWBAR)) {
+                    coverable.removeCover(facing, player);
+                    ToolHelper.damageItem(item, player);
+                    ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);
+                    return InteractionResult.SUCCESS;
                 }
-
-                if (result == EnumActionResult.FAIL) return false;
             }
             // frame removal
             Material frame = tile.getFrameMaterial();
-            if (frame != null && ToolHelper.isTool(item, ToolClasses.CROWBAR)) {
+            if (frame != null && ToolHelper.isTool(item, GTToolType.CROWBAR)) {
                 tile.setFrameMaterial(null);
-                spawnAsEntity(worldIn, pos, MetaBlocks.FRAMES.get(frame).getItem(frame));
-                ToolHelper.damageItem(item, playerIn);
-                ToolHelper.playToolSound(item, playerIn);
-                return true;
+                popResource(level, pos, GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frame).asStack());
+                ToolHelper.damageItem(item, player);
+                ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);
+                return InteractionResult.SUCCESS;
             }
             // pipe modification
             if (isPipeTool(item)) {
                 PipeBlockEntity other = tile.getPipeNeighbor(facing, true);
 
-                if (playerIn.isSneaking() && allowsBlocking()) {
-                    ToolHelper.damageItem(item, playerIn);
-                    ToolHelper.playToolSound(item, playerIn);
+                if (player.isShiftKeyDown() && allowsBlocking()) {
+                    ToolHelper.damageItem(item, player);
+                    ToolHelper.playToolSound(GTToolType.WRENCH, (ServerPlayer) player);
                     if (tile.isBlocked(facing)) unblockTile(tile, other, facing);
                     else blockTile(tile, other, facing);
                 } else {
                     if (tile.isConnected(facing)) {
-                        ToolHelper.damageItem(item, playerIn);
-                        ToolHelper.playToolSound(item, playerIn);
+                        ToolHelper.damageItem(item, player);
+                        ToolHelper.playToolSound(item, player);
                         disconnectTile(tile, other, facing);
                     } else if (coverCheck(tile, other, facing)) {
-                        ToolHelper.damageItem(item, playerIn);
-                        ToolHelper.playToolSound(item, playerIn);
+                        ToolHelper.damageItem(item, player);
+                        ToolHelper.playToolSound(item, player);
                         connectTile(tile, other, facing);
                     } else {
                         // if the covers disallow the connection, simply try to render a connection.
                         connectTile(tile, null, facing);
                     }
                 }
-                return true;
+                return InteractionResult.SUCCESS;
             }
         }
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        return super.use(state, level, pos, player, hand, hit);
     }
-
+/*
     @Override
-    public void onBlockClicked(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull Player playerIn) {
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
+    public void onBlockClicked(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player playerIn) {
+        PipeBlockEntity tile = getBlockEntity(worldIn, pos);
         if (tile != null) {
             RayTraceAABB trace = collisionRayTrace(playerIn, worldIn, pos);
             if (trace == null) {
@@ -265,7 +250,7 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         }
         super.onBlockClicked(worldIn, pos, playerIn);
     }
-
+*/
     /**
      * Should be called to verify if a connection can be formed before
      * {@link #connectTile(PipeBlockEntity, PipeBlockEntity, Direction)} is called.
@@ -274,8 +259,8 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
      */
     public static boolean coverCheck(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross,
                                      Direction facing) {
-        Cover tileCover = tile.getCoverHolder().getCoverAtSide(facing);
-        Cover acrossCover = tileAcross != null ? tileAcross.getCoverHolder().getCoverAtSide(facing.getOpposite()) :
+        CoverBehavior tileCover = tile.getCoverHolder().getCoverAtSide(facing);
+        CoverBehavior acrossCover = tileAcross != null ? tileAcross.getCoverHolder().getCoverAtSide(facing.getOpposite()) :
                 null;
         return (tileCover == null || tileCover.canPipePassThrough()) &&
                 (acrossCover == null || acrossCover.canPipePassThrough());
@@ -292,7 +277,7 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         if (tileAcross == null) return;
         tileAcross.setConnected(facing.getOpposite(),
                 tileAcross.getStructure().getRenderThickness() > tile.getStructure().getRenderThickness());
-        if (tile.getWorld().isRemote) return;
+        if (tile.getLevel().isClientSide) return;
 
         boolean blocked1 = tile.isBlocked(facing);
         boolean blocked2 = tileAcross.isBlocked(facing.getOpposite());
@@ -320,7 +305,7 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         tile.setDisconnected(facing);
         if (tileAcross == null) return;
         tileAcross.setDisconnected(facing.getOpposite());
-        if (tile.getWorld().isRemote) return;
+        if (tile.getLevel().isClientSide) return;
 
         Map<WorldPipeNet, WorldPipeNetNode> tile2Nodes = new Object2ObjectOpenHashMap<>();
         for (WorldPipeNetNode node : getNodesForTile(tileAcross)) {
@@ -337,7 +322,7 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
 
     public static void blockTile(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross, Direction facing) {
         tile.setBlocked(facing);
-        if (tileAcross == null || tile.getWorld().isRemote) return;
+        if (tileAcross == null || tile.getLevel().isClientSide) return;
 
         Map<WorldPipeNet, WorldPipeNetNode> tile2Nodes = new Object2ObjectOpenHashMap<>();
         for (WorldPipeNetNode node : getNodesForTile(tileAcross)) {
@@ -355,7 +340,7 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
     public static void unblockTile(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross,
                                    Direction facing) {
         tile.setUnblocked(facing);
-        if (tileAcross == null || tile.getWorld().isRemote) return;
+        if (tileAcross == null || tile.getLevel().isClientSide) return;
 
         Map<WorldPipeNet, WorldPipeNetNode> tile2Nodes = new Object2ObjectOpenHashMap<>();
         for (WorldPipeNetNode node : getNodesForTile(tileAcross)) {
@@ -375,41 +360,41 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
     }
 
     public static Collection<WorldPipeNetNode> getNodesForTile(PipeBlockEntity tile) {
-        assert !tile.getWorld().isRemote;
-        return tile.getBlockType().getHandler(tile.getWorld(), tile.getPos())
-                .getOrCreateFromNets(tile.getWorld(), tile.getPos(), tile.getStructure());
+        assert !tile.getLevel().isClientSide;
+        return tile.getBlockType().getHandler(tile.getLevel(), tile.getBlockPos())
+                .getOrCreateFromNets(tile.getLevel(), tile.getBlockPos(), tile.getStructure());
     }
 
     @Override
-    public void breakBlock(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state) {
-        super.breakBlock(worldIn, pos, state);
-        if (!worldIn.isRemote) {
-            getHandler(worldIn, pos).removeFromNets(worldIn, pos, getStructure());
+    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+        super.destroy(level, pos, state);
+        if (!level.isClientSide()) {
+            getHandler(level, pos).removeFromNets(level, pos, getStructure());
         }
     }
 
     @NotNull
-    protected abstract IPipeNetNodeHandler getHandler(IBlockAccess world, BlockPos pos);
+    protected abstract IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos);
 
     @NotNull
     protected abstract IPipeNetNodeHandler getHandler(@NotNull ItemStack stack);
 
     // misc stuff //
 
+
     @Override
-    public void addInformation(@NotNull ItemStack stack, World worldIn, @NotNull List<String> tooltip,
-                               @NotNull ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
         if (getStructure() instanceof IPipeChanneledStructure channeledStructure) {
             if (channeledStructure.getChannelCount() > 1)
-                tooltip.add(I18n.format("gregtech.pipe.channels", channeledStructure.getChannelCount()));
+                tooltip.add(Component.translatable("gtceu.pipe.channels", channeledStructure.getChannelCount()));
         }
-        getHandler(stack).addInformation(stack, worldIn, tooltip, flagIn, getStructure());
-        if (TooltipHelper.isShiftDown()) {
-            tooltip.add(I18n.format(getConnectLangKey()));
-            tooltip.add(I18n.format("gregtech.tool_action.screwdriver.access_covers"));
-            tooltip.add(I18n.format("gregtech.tool_action.crowbar"));
+        getHandler(stack).addInformation(stack, level, tooltip, flag, getStructure());
+        if (GTUtil.isShiftDown()) {
+            tooltip.add(Component.translatable(getConnectLangKey()));
+            tooltip.add(Component.translatable("gtceu.tool_action.screwdriver.access_covers"));
+            tooltip.add(Component.translatable("gtceu.tool_action.crowbar"));
         } else {
-            tooltip.add(I18n.format("gregtech.tool_action.show_tooltips"));
+            tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
         }
     }
 
@@ -418,37 +403,40 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
     }
 
     @Override
-    public void getDrops(@NotNull NonNullList<ItemStack> drops, @NotNull IBlockAccess world, @NotNull BlockPos pos,
-                         @NotNull IBlockState state, int fortune) {
-        PipeBlockEntity tile = getTileEntity(world, pos);
-        if (tile != null) tile.getDrops(drops, state);
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
+        if (tileEntity instanceof PipeBlockEntity pipeTile) {
+            pipeTile.getDrops(drops, state);
+        }
+        return drops;
     }
 
     @Override
-    public boolean canCreatureSpawn(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos,
-                                    @NotNull EntityLiving.SpawnPlacementType type) {
+    public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
         return false;
     }
 
     @Override
-    public void onEntityCollision(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull IBlockState state,
-                                  @NotNull Entity entityIn) {
-        if (worldIn.isRemote || !(entityIn instanceof EntityLivingBase living)) return;
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (level.isClientSide || !(entity instanceof LivingEntity living)) return;
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null && tile.getFrameMaterial() == null && tile.getOffsetTimer() % 10 == 0) {
             TemperatureLogic logic = tile.getTemperatureLogic();
             if (logic != null) {
-                long tick = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+                long tick = Platform.getMinecraftServer().getTickCount();
                 EntityDamageUtil.applyTemperatureDamage(living, logic.getTemperature(tick), 1f, 5);
             }
         }
     }
 
+    /* TODO fix
     @Override
-    public boolean recolorBlock(@NotNull World world, @NotNull BlockPos pos, @NotNull Direction side,
+    public boolean recolorBlock(@NotNull Level world, @NotNull BlockPos pos, @NotNull Direction side,
                                 @NotNull EnumDyeColor color) {
         if (getStructure().isPaintable()) {
-            PipeBlockEntity tile = getTileEntity(world, pos);
+            PipeBlockEntity tile = getBlockEntity(world, pos);
             if (tile != null && tile.getPaintingColor() != color.colorValue) {
                 tile.setPaintingColor(color.colorValue, false);
                 return true;
@@ -456,266 +444,148 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
         }
         return false;
     }
-
-    @Override
-    public boolean canRenderInLayer(@NotNull IBlockState state, @NotNull BlockRenderLayer layer) {
-        // guaranteed cutout & bloom for covers
-        return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BloomEffectUtil.getEffectiveBloomLayer() ||
-                getStructure().getModel().canRenderInLayer(layer);
-    }
-
-    @Override
-    protected Pair<TextureAtlasSprite, Integer> getParticleTexture(World world, BlockPos blockPos) {
-        PipeBlockEntity tile = getTileEntity(world, blockPos);
-        if (tile != null) {
-            return getStructure().getModel().getParticleTexture(tile.getPaintingColor(), null);
-        }
-        return null;
-    }
+     */
 
     // collision boxes //
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public @NotNull AxisAlignedBB getSelectedBoundingBox(@NotNull IBlockState state, @NotNull World worldIn,
-                                                         @NotNull BlockPos pos) {
-        RayTraceAABB trace = this.collisionRayTrace(GTUtility.getSP(), worldIn, pos);
-        return (trace == null || trace.getBB() == null ? FULL_BLOCK_AABB : trace.getBB()).offset(pos);
-    }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void addCollisionBoxToList(@NotNull IBlockState state, @NotNull World worldIn, @NotNull BlockPos pos,
-                                      @NotNull AxisAlignedBB entityBox, @NotNull List<AxisAlignedBB> collidingBoxes,
-                                      @Nullable Entity entityIn, boolean isActualState) {
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        MutableObject<VoxelShape> shape = new MutableObject<>(Shapes.empty());
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) {
-            tile.getCoverBoxes(bb -> addCollisionBoxToList(pos, entityBox, collidingBoxes, bb));
+            tile.getCoverBoxes(bb -> shape.setValue(Shapes.or(shape.getValue(), bb)));
             if (tile.getFrameMaterial() != null) {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFrame.COLLISION_BOX);
+                shape.setValue(Shapes.or(shape.getValue(), Shapes.block()));
             }
-            for (AxisAlignedBB axisAlignedBB : getStructure().getPipeBoxes(tile)) {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, axisAlignedBB);
-            }
+            shape.setValue(Shapes.or(shape.getValue(), getStructure().getPipeBoxes(tile)));
         } else {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, FULL_BLOCK_AABB);
+            shape.setValue(Shapes.block());
         }
+        return shape.getValue();
     }
 
-    @SuppressWarnings("deprecation")
-    @Nullable
-    @Override
-    public RayTraceResult collisionRayTrace(@NotNull IBlockState blockState, @NotNull World worldIn,
-                                            @NotNull BlockPos pos,
-                                            @NotNull Vec3d start, @NotNull Vec3d end) {
-        return collisionRayTrace(worldIn.isRemote ? GTUtility.getSP() : null, worldIn, pos, start, end);
-    }
-
-    public @Nullable RayTraceAABB collisionRayTrace(@NotNull Player player,
-                                                    @NotNull World world, @NotNull BlockPos pos) {
-        return collisionRayTrace(player, world, pos, RayTracer.getStartVec(player), RayTracer.getEndVec(player));
-    }
-
-    public @Nullable RayTraceAABB collisionRayTrace(@Nullable Player player,
-                                                    @NotNull World worldIn, @NotNull BlockPos pos,
-                                                    @NotNull Vec3d start, @NotNull Vec3d end) {
-        if (hasPipeCollisionChangingItem(worldIn, pos, player)) {
-            return RayTraceAABB.of(rayTrace(pos, start, end, FULL_BLOCK_AABB), FULL_BLOCK_AABB);
-        }
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
-        if (tile == null) {
-            return RayTraceAABB.of(rayTrace(pos, start, end, FULL_BLOCK_AABB), FULL_BLOCK_AABB);
-        }
-        RayTraceResult min = null;
-        AxisAlignedBB minbb = null;
-        double minDistSqrd = Double.MAX_VALUE;
-        List<AxisAlignedBB> bbs = getStructure().getPipeBoxes(tile);
-        tile.getCoverBoxes(bbs::add);
-        if (tile.getFrameMaterial() != null) {
-            bbs.add(FULL_BLOCK_AABB);
-        }
-        for (AxisAlignedBB aabb : bbs) {
-            RayTraceResult result = rayTrace(pos, start, end, aabb);
-            if (result == null) continue;
-            double distSqrd = start.squareDistanceTo(result.hitVec);
-            if (distSqrd < minDistSqrd) {
-                min = result;
-                minbb = aabb;
-                minDistSqrd = distSqrd;
-            }
-        }
-        return RayTraceAABB.of(min, minbb);
-    }
-
-    public boolean hasPipeCollisionChangingItem(IBlockAccess world, BlockPos pos, Entity entity) {
+    public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, Entity entity) {
         if (entity instanceof Player player) {
-            return hasPipeCollisionChangingItem(world, pos, player.getHeldItemMainhand()) ||
-                    hasPipeCollisionChangingItem(world, pos, player.getHeldItemOffhand()) ||
-                    entity.isSneaking() && isHoldingPipe(player);
+            return hasPipeCollisionChangingItem(world, pos, player.getMainHandItem()) ||
+                    hasPipeCollisionChangingItem(world, pos, player.getOffhandItem()) ||
+                    entity.isShiftKeyDown() && isHoldingPipe(player);
         }
         return false;
     }
 
     public boolean isHoldingPipe(Player player) {
-        return isPipeItem(player.getHeldItemMainhand()) || isPipeItem(player.getHeldItemOffhand());
+        return isPipeItem(player.getMainHandItem()) || isPipeItem(player.getOffhandItem());
     }
 
     public boolean isPipeItem(ItemStack stack) {
-        return stack.getItem() instanceof ItemPipeBlock block && this.getClass().isInstance(block.getBlock());
+        return stack.getItem() instanceof PipeBlockItem block && this.getClass().isInstance(block.getBlock());
     }
 
     @Nullable
     public static PipeBlock getBlockFromItem(@NotNull ItemStack stack) {
-        if (stack.getItem() instanceof ItemPipeBlock block) return block.getBlock();
+        if (stack.getItem() instanceof PipeBlockItem block) return block.getBlock();
         else return null;
     }
 
-    public boolean hasPipeCollisionChangingItem(IBlockAccess world, BlockPos pos, ItemStack stack) {
+    public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, ItemStack stack) {
         if (isPipeTool(stack)) return true;
 
-        PipeBlockEntity tile = getTileEntity(world, pos);
+        PipeBlockEntity tile = getBlockEntity(world, pos);
         if (tile == null) return false;
 
         PipeCoverHolder coverable = tile.getCoverHolder();
         final boolean hasAnyCover = coverable.hasAnyCover();
 
-        if (hasAnyCover && ToolHelper.isTool(stack, ToolClasses.SCREWDRIVER)) return true;
+        if (hasAnyCover && ToolHelper.isTool(stack, GTToolType.SCREWDRIVER)) return true;
         final boolean acceptsCovers = coverable.acceptsCovers();
 
-        return GTUtility.isCoverBehaviorItem(stack, () -> hasAnyCover, coverDef -> acceptsCovers);
+        return GTUtil.isCoverBehaviorItem(stack, () -> hasAnyCover, coverDef -> acceptsCovers);
     }
 
     public boolean isPipeTool(@NotNull ItemStack stack) {
         return ToolHelper.isTool(stack, getToolClass());
     }
 
-    public String getToolClass() {
-        return ToolClasses.WRENCH;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public @NotNull BlockFaceShape getBlockFaceShape(@NotNull IBlockAccess worldIn, @NotNull IBlockState state,
-                                                     @NotNull BlockPos pos, @NotNull Direction face) {
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
-        if (tile != null) {
-            return tile.getCoverHolder().hasCover(face) ? BlockFaceShape.SOLID :
-                    tile.isConnected(face) ? BlockFaceShape.CENTER : BlockFaceShape.UNDEFINED;
-        }
-        return super.getBlockFaceShape(worldIn, state, pos, face);
+    public GTToolType getToolClass() {
+        return GTToolType.WRENCH;
     }
 
     // blockstate //
 
-    @Override
-    public int getMetaFromState(@NotNull IBlockState state) {
-        return 0;
-    }
 
     @Override
-    protected @NotNull BlockStateContainer createBlockState() {
-        return constructState(new BlockStateContainer.Builder(this))
-                .add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED)
-                .build();
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        constructState(builder).add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED);
     }
 
-    protected @NotNull BlockStateContainer.Builder constructState(BlockStateContainer.@NotNull Builder builder) {
+    protected @NotNull StateDefinition.Builder<Block, BlockState> constructState(StateDefinition.Builder<Block, BlockState> builder) {
         return builder.add(AbstractPipeModel.THICKNESS_PROPERTY).add(AbstractPipeModel.CLOSED_MASK_PROPERTY)
                 .add(AbstractPipeModel.BLOCKED_MASK_PROPERTY).add(AbstractPipeModel.COLOR_PROPERTY)
                 .add(AbstractPipeModel.FRAME_MATERIAL_PROPERTY).add(AbstractPipeModel.FRAME_MASK_PROPERTY)
                 .add(CoverRendererPackage.PROPERTY);
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public @NotNull IBlockState getActualState(@NotNull IBlockState state, @NotNull IBlockAccess worldIn,
-                                               @NotNull BlockPos pos) {
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
-        if (tile == null) return state;
-        state = writeConnectionMask(state, tile.getConnectionMask());
-        return state.withProperty(FRAMED, tile.getFrameMaterial() != null);
-    }
-
-    public static IBlockState writeConnectionMask(@NotNull IBlockState state, byte connectionMask) {
+    public static BlockState writeConnectionMask(@NotNull BlockState state, byte connectionMask) {
         for (Direction facing : GTUtil.DIRECTIONS) {
-            state = state.withProperty(FACINGS.get(facing), GTUtility.evalMask(facing, connectionMask));
+            state = state.setValue(FACINGS.get(facing), GTUtil.evalMask(facing, connectionMask));
         }
         return state;
     }
 
-    public static byte readConnectionMask(@NotNull IBlockState state) {
+    public static byte readConnectionMask(@NotNull BlockState state) {
         byte mask = 0;
         for (Direction facing : GTUtil.DIRECTIONS) {
             if (state.getValue(FACINGS.get(facing))) {
-                mask |= 1 << facing.ordinal();
+                mask |= (byte) (1 << facing.ordinal());
             }
         }
         return mask;
     }
 
-    @Override
-    public @NotNull IBlockState getExtendedState(@NotNull IBlockState state, @NotNull IBlockAccess world,
-                                                 @NotNull BlockPos pos) {
-        PipeBlockEntity tile = getTileEntity(world, pos);
-        if (tile == null) return state;
-        else return tile.getRenderInformation((IExtendedBlockState) state.getActualState(world, pos));
-    }
-
     // tile entity //
 
     @Override
-    public final boolean hasTileEntity(@NotNull IBlockState state) {
+    public final boolean hasBlockEntity(@NotNull BlockState state) {
         return true;
     }
 
     @Nullable
-    public PipeBlockEntity getTileEntity(@NotNull IBlockAccess world, @NotNull BlockPos pos) {
-        if (GTUtility.arePosEqual(lastTilePos.get(), pos)) {
+    public PipeBlockEntity getBlockEntity(@NotNull BlockGetter world, @NotNull BlockPos pos) {
+        if (lastTilePos.get().equals(pos)) {
             PipeBlockEntity tile = lastTile.get().get();
-            if (tile != null && !tile.isInvalid()) return tile;
+            if (tile != null && !tile.isRemoved()) return tile;
         }
-        TileEntity tile = world.getTileEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof PipeBlockEntity pipe) {
-            lastTilePos.set(pos.toImmutable());
+            lastTilePos.set(pos.immutable());
             lastTile.set(new WeakReference<>(pipe));
             return pipe;
         } else return null;
     }
 
+    @Nullable
     @Override
-    public final PipeBlockEntity createTileEntity(@NotNull World world, @NotNull IBlockState state) {
-        try {
-            // noinspection deprecation
-            return getTileClass(world, state).newInstance();
-        } catch (Throwable ignored) {
-            return null;
-        }
-    }
-
-    /**
-     * This may seem unnecessary, but it enforces empty constructors which are required due to
-     * {@link TileEntity#create(World, CompoundTag)}
-     */
-    public Class<? extends PipeBlockEntity> getTileClass(@NotNull World world, @NotNull IBlockState state) {
-        return PipeBlockEntity.class;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PipeBlockEntity(/*TODO block entity type*/, pos, state);
     }
 
     @Override
-    public void onNeighborChange(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull BlockPos neighbor) {
-        super.onNeighborChange(world, pos, neighbor);
-        Direction facing = GTUtility.getFacingToNeighbor(pos, neighbor);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
         if (facing == null) return;
-        PipeBlockEntity tile = getTileEntity(world, pos);
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) tile.onNeighborChanged(facing);
     }
 
     @Override
-    public int getLightValue(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos) {
-        PipeBlockEntity tile = getTileEntity(world, pos);
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) {
             TemperatureLogic temperatureLogic = tile.getTemperatureLogic();
             int temp = temperatureLogic == null ? 0 : temperatureLogic
-                    .getTemperature(FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter());
+                    .getTemperature(Platform.getMinecraftServer().getTickCount());
             // max light at 5000 K
             // min light at 500 K
             if (temp >= 5000) {
@@ -730,38 +600,36 @@ public abstract class PipeBlock extends BuiltInRenderBlock {
 
     // cover compatibility //
 
-    @SuppressWarnings("deprecation")
+
     @Override
-    public void neighborChanged(@NotNull IBlockState state, @NotNull World worldIn, @NotNull BlockPos pos,
-                                @NotNull Block blockIn, @NotNull BlockPos fromPos) {
-        PipeBlockEntity tile = getTileEntity(worldIn, pos);
+    public void neighborChanged(BlockState state, Level level, BlockPos pos,
+                                Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) {
-            Direction facing = GTUtility.getFacingToNeighbor(pos, fromPos);
+            Direction facing = GTUtil.getFacingToNeighbor(pos, neighborPos);
             if (facing != null) tile.onNeighborChanged(facing);
-            tile.getCoverHolder().updateInputRedstoneSignals();
+            // TODO redstone
+            // tile.getCoverHolder().notifyBlockUpdate();
         }
     }
 
     @Override
-    public boolean shouldCheckWeakPower(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos,
-                                        @NotNull Direction side) {
+    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
         // The check in World::getRedstonePower in the vanilla code base is reversed. Setting this to false will
         // actually cause getWeakPower to be called, rather than prevent it.
-        return false;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public int getWeakPower(@NotNull IBlockState blockState, @NotNull IBlockAccess blockAccess, @NotNull BlockPos pos,
-                            @NotNull Direction side) {
-        PipeBlockEntity tile = getTileEntity(blockAccess, pos);
-        return tile != null ? tile.getCoverHolder().getOutputRedstoneSignal(side) : 0;
+        return true;
     }
 
     @Override
-    public boolean canConnectRedstone(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos,
-                                      Direction side) {
-        PipeBlockEntity tile = getTileEntity(world, pos);
-        return tile != null && tile.getCoverHolder().canConnectRedstone(side);
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        PipeBlockEntity tile = getBlockEntity(level, pos);
+        return tile != null ? tile.getCoverHolder().getOutputRedstoneSignal(direction) : 0;
+    }
+
+    @Override
+    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos,
+                                      @Nullable Direction direction) {
+        PipeBlockEntity tile = getBlockEntity(level, pos);
+        return tile != null && tile.getCoverHolder().canConnectRedstone(direction);
     }
 }

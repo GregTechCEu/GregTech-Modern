@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCapabilityWrapper;
 import com.gregtechceu.gtceu.api.graphnet.traverse.IRoundRobinData;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -63,11 +63,11 @@ public abstract class AbstractTileRoundRobinData implements IRoundRobinData<Worl
     public <E> E getCapabilityAtPointer(@NotNull Capability<E> capability, WorldPipeNetNode node,
                                         @Nullable SimulatorKey simulator) {
         if (pointerFinished(simulator)) return null;
-        PipeCapabilityWrapper wrapper = node.getTileEntity().getWrapperForNode(node);
+        PipeCapabilityWrapper wrapper = node.getBlockEntity().getWrapperForNode(node);
         Direction pointer = getPointerFacing(simulator);
 
         if (!wrapper.isActive(pointer) || !wrapper.supports(capability)) return null;
-        TileEntity target = node.getTileEntity().getTargetWithCapabilities(node, pointer);
+        BlockEntity target = node.getBlockEntity().getTargetWithCapabilities(node, pointer);
         return target == null ? null : target.getCapability(capability, pointer.getOpposite());
     }
 }

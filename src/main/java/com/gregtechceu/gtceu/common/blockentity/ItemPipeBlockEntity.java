@@ -154,7 +154,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
      *       }
      *       }
      *       <p/>
-     *       if it was in a ticking TileEntity
+     *       if it was in a ticking BlockEntity
      */
     private void updateTransferredState() {
         long currentTime = getLevelTime();

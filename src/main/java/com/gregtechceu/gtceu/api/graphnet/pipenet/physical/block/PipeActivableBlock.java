@@ -7,8 +7,8 @@ import gregtech.api.util.GTUtility;
 import gregtech.client.renderer.pipe.ActivablePipeModel;
 
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -30,17 +30,17 @@ public abstract class PipeActivableBlock extends PipeBlock {
     }
 
     @Override
-    public Class<? extends PipeActivableBlockEntity> getTileClass(@NotNull World world, @NotNull IBlockState state) {
+    public Class<? extends PipeActivableBlockEntity> getTileClass(@NotNull Level world, @NotNull BlockState state) {
         return PipeActivableBlockEntity.class;
     }
 
     @Override
-    public @Nullable PipeActivableBlockEntity getTileEntity(@NotNull IBlockAccess world, @NotNull BlockPos pos) {
+    public @Nullable PipeActivableBlockEntity getBlockEntity(@NotNull IBlockAccess world, @NotNull BlockPos pos) {
         if (GTUtility.arePosEqual(lastTilePos.get(), pos)) {
             PipeBlockEntity tile = lastTile.get().get();
             if (tile != null && !tile.isInvalid()) return (PipeActivableBlockEntity) tile;
         }
-        TileEntity tile = world.getTileEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof PipeActivableBlockEntity pipe) {
             lastTilePos.set(pos.toImmutable());
             lastTile.set(new WeakReference<>(pipe));

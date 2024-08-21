@@ -258,7 +258,7 @@ public class Predicates {
                 .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                 .toArray(Block[]::new))
                 .or(new TraceabilityPredicate(blockWorldState -> {
-                    BlockEntity tileEntity = blockWorldState.getTileEntity();
+                    BlockEntity tileEntity = blockWorldState.getBlockEntity();
                     if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
                         return false;
                     }

@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
-    public LDItemEndpointMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId, LDItemPipeType.INSTANCE);
+    public LDItemEndpointMachine(IMachineBlockEntity metaBlockEntityId) {
+        super(metaBlockEntityId, LDItemPipeType.INSTANCE);
     }
 
     @SuppressWarnings("UnstableApiUsage")

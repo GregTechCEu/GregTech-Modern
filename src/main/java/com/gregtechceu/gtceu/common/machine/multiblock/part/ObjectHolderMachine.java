@@ -122,8 +122,8 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
     private class ObjectHolderHandler extends NotifiableItemStackHandler {
 
-        public ObjectHolderHandler(MetaMachine metaTileEntity) {
-            super(metaTileEntity, 2, IO.IN, IO.BOTH, size -> new ItemStackTransfer(size) {
+        public ObjectHolderHandler(MetaMachine metaBlockEntity) {
+            super(metaBlockEntity, 2, IO.IN, IO.BOTH, size -> new ItemStackTransfer(size) {
 
                 @Override
                 public int getSlotLimit(int slot) {

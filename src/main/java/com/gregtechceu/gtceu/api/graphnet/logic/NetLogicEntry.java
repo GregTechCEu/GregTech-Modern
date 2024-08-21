@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.graphnet.MultiNodeHelper;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 
+import com.lowdragmc.lowdraglib.networking.IPacket;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringRepresentable;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  * {@link #union(NetLogicEntry)} behavior.
  */
 public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag>
-                                   implements INBTSerializable<N>, StringRepresentable {
+                                   implements INBTSerializable<N>, StringRepresentable, IPacket {
 
     private final @NotNull String name;
 
@@ -105,6 +106,7 @@ public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag
         return true;
     }
 
+    @Override
     public final void encode(FriendlyByteBuf buf) {
         encode(buf, true);
     }
@@ -115,6 +117,7 @@ public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag
      */
     public abstract void encode(FriendlyByteBuf buf, boolean fullChange);
 
+    @Override
     public final void decode(FriendlyByteBuf buf) {
         decode(buf, true);
     }

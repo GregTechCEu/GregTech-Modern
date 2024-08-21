@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical;
 
-import gregtech.api.unification.ore.OrePrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 public interface IPipeMaterialStructure extends IPipeStructure {
 
-    OrePrefix getOrePrefix();
+    TagPrefix getTagPrefix();
 }

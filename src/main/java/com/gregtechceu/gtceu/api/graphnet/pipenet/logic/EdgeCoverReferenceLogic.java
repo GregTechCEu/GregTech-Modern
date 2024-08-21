@@ -7,7 +7,7 @@ import gregtech.api.util.DimensionFacingPos;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -52,10 +52,10 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
         if (coverSource == null) return null;
         Cover ref = coverSource.get();
         if (ref == null) {
-            World world = DimensionManager.getWorld(coverSourcePos.getDimension());
+            Level world = DimensionManager.getWorld(coverSourcePos.getDimension());
             if (world == null || !world.isBlockLoaded(coverSourcePos.getPos())) return null;
 
-            TileEntity tile = world.getTileEntity(coverSourcePos.getPos());
+            BlockEntity tile = world.getBlockEntity(coverSourcePos.getPos());
             if (tile instanceof PipeBlockEntity pipe) {
                 Cover cover = pipe.getCoverHolder().getCoverAtSide(coverSourcePos.getFacing());
                 if (cover != null) {
@@ -81,10 +81,10 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
         if (coverTarget == null) return null;
         Cover ref = coverTarget.get();
         if (ref == null) {
-            World world = DimensionManager.getWorld(coverTargetPos.getDimension());
+            Level world = DimensionManager.getWorld(coverTargetPos.getDimension());
             if (world == null || !world.isBlockLoaded(coverTargetPos.getPos())) return null;
 
-            TileEntity tile = world.getTileEntity(coverTargetPos.getPos());
+            BlockEntity tile = world.getBlockEntity(coverTargetPos.getPos());
             if (tile instanceof PipeBlockEntity pipe) {
                 Cover cover = pipe.getCoverHolder().getCoverAtSide(coverTargetPos.getFacing());
                 if (cover != null) {

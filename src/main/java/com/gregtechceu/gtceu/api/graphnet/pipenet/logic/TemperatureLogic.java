@@ -10,15 +10,12 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IFreezable;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.CompleteLossOperator;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
-import gregtech.client.particle.GTOverheatParticle;
-
-import net.minecraft.block.state.IBlockState;
+import com.lowdragmc.lowdraglib.Platform;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,31 +115,31 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
         int temp = getTemperature(tick);
         if (isUnderMinimum(temp)) {
             return new NodeLossResult(n -> {
-                World world = n.getNet().getLevel();
+                Level world = n.getNet().getLevel();
                 BlockPos pos = n.getEquivalencyData();
-                IBlockState state = world.getBlockState(pos);
+                BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof IFreezable freezable) {
                     freezable.fullyFreeze(state, world, pos);
                 } else {
-                    world.setBlockToAir(pos);
+                    world.removeBlock(pos, false);
                 }
             }, CompleteLossOperator.INSTANCE);
         } else if (isOverMaximum(temp)) {
             return new NodeLossResult(n -> {
-                World world = n.getNet().getLevel();
+                Level world = n.getNet().getLevel();
                 BlockPos pos = n.getEquivalencyData();
-                IBlockState state = world.getBlockState(pos);
+                BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof IBurnable burnable) {
                     burnable.fullyBurn(state, world, pos);
                 } else {
-                    world.setBlockToAir(pos);
+                    world.removeBlock(pos, false);
                 }
             }, CompleteLossOperator.INSTANCE);
         } else if (isOverPartialBurnThreshold(temp)) {
             return new NodeLossResult(n -> {
-                World world = n.getNet().getLevel();
+                Level world = n.getNet().getLevel();
                 BlockPos pos = n.getEquivalencyData();
-                IBlockState state = world.getBlockState(pos);
+                BlockState state = world.getBlockState(pos);
                 if (state.getBlock() instanceof IBurnable burnable) {
                     burnable.partialBurn(state, world, pos);
                 }
@@ -271,31 +268,31 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.setFloat("ThermalEnergy", this.energy);
-        tag.setInteger("TemperatureMax", this.temperatureMaximum);
-        tag.setInteger("TemperatureMin", this.temperatureMinimum);
-        tag.setInteger("ThermalMass", this.thermalMass);
-        tag.setTag("RestorationFunction", this.temperatureLossFunction.serializeNBT());
-        tag.setInteger("FunctionPrio", this.functionPriority);
-        if (partialBurnTemperature != null) tag.setInteger("PartialBurn", partialBurnTemperature);
+        tag.putFloat("ThermalEnergy", this.energy);
+        tag.putInt("TemperatureMax", this.temperatureMaximum);
+        tag.putInt("TemperatureMin", this.temperatureMinimum);
+        tag.putInt("ThermalMass", this.thermalMass);
+        tag.put("RestorationFunction", this.temperatureLossFunction.serializeNBT());
+        tag.putInt("FunctionPrio", this.functionPriority);
+        if (partialBurnTemperature != null) tag.putInt("PartialBurn", partialBurnTemperature);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.energy = nbt.getFloat("ThermalEnergy");
-        this.temperatureMaximum = nbt.getInteger("TemperatureMax");
-        this.temperatureMinimum = nbt.getInteger("TemperatureMin");
-        this.thermalMass = nbt.getInteger("ThermalMass");
-        this.temperatureLossFunction = new TemperatureLossFunction(nbt.getCompoundTag("RestorationFunction"));
-        this.functionPriority = nbt.getInteger("FunctionPrio");
-        if (nbt.hasKey("PartialBurn")) {
-            this.partialBurnTemperature = nbt.getInteger("PartialBurn");
+        this.temperatureMaximum = nbt.getInt("TemperatureMax");
+        this.temperatureMinimum = nbt.getInt("TemperatureMin");
+        this.thermalMass = nbt.getInt("ThermalMass");
+        this.temperatureLossFunction = new TemperatureLossFunction(nbt.getCompound("RestorationFunction"));
+        this.functionPriority = nbt.getInt("FunctionPrio");
+        if (nbt.contains("PartialBurn")) {
+            this.partialBurnTemperature = nbt.getInt("PartialBurn");
         } else this.partialBurnTemperature = null;
     }
 
     @Override
-    public void encode(PacketBuffer buf, boolean fullChange) {
+    public void encode(FriendlyByteBuf buf, boolean fullChange) {
         buf.writeFloat(this.energy);
         if (fullChange) {
             buf.writeVarInt(this.temperatureMaximum);
@@ -311,8 +308,8 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
     }
 
     @Override
-    public void decode(PacketBuffer buf, boolean fullChange) {
-        this.lastRestorationTick = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+    public void decode(FriendlyByteBuf buf, boolean fullChange) {
+        this.lastRestorationTick = Platform.getMinecraftServer().getTickCount();
         this.energy = buf.readFloat();
         if (fullChange) {
             this.temperatureMaximum = buf.readVarInt();

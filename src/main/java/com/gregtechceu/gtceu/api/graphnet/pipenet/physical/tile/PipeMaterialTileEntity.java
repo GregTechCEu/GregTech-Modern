@@ -17,13 +17,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
-public class PipeMaterialTileEntity extends PipeBlockEntity {
+public class PipeMaterialBlockEntity extends PipeBlockEntity {
 
     @Persisted
     @DescSynced
     private Material material;
 
-    public PipeMaterialTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public PipeMaterialBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 

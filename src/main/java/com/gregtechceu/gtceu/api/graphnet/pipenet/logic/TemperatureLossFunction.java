@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 
-import gregtech.api.network.IPacket;
-
+import com.lowdragmc.lowdraglib.networking.IPacket;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
@@ -60,28 +59,28 @@ public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, I
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.setInteger("Ordinal", function.ordinal());
-        tag.setFloat("X", factorX);
-        if (factorY != 0) tag.setFloat("Y", factorY);
+        tag.putInt("Ordinal", function.ordinal());
+        tag.putFloat("X", factorX);
+        if (factorY != 0) tag.putFloat("Y", factorY);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        function = EnumLossFunction.values()[nbt.getInteger("Ordinal")];
+        function = EnumLossFunction.values()[nbt.getInt("Ordinal")];
         factorX = nbt.getFloat("X");
         factorY = nbt.getFloat("Y");
     }
 
     @Override
-    public void encode(PacketBuffer buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(function.ordinal());
         buf.writeFloat(factorX);
         buf.writeFloat(factorY);
     }
 
     @Override
-    public void decode(PacketBuffer buf) {
+    public void decode(FriendlyByteBuf buf) {
         function = EnumLossFunction.values()[buf.readVarInt()];
         factorX = buf.readFloat();
         factorY = buf.readFloat();

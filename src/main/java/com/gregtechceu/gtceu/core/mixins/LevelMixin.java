@@ -38,7 +38,7 @@ public abstract class LevelMixin implements LevelAccessor {
     }
 
     @Inject(method = "getBlockEntity", at = @At(value = "HEAD"), cancellable = true)
-    private void getTileEntity(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
+    private void getBlockEntity(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
         if (!this.isClientSide && Thread.currentThread() != this.thread &&
                 (MultiblockWorldSavedData.isThreadService() || AsyncThreadData.isThreadService()) && isLoaded(pos)) {
             ChunkAccess chunk = this.getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);

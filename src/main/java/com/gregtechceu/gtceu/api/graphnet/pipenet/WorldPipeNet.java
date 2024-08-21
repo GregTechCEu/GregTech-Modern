@@ -172,7 +172,7 @@ public abstract class WorldPipeNet extends WorldNet {
                 });
     }
 
-    public static String getDataID(final String baseID, final World world) {
+    public static String getDataID(final String baseID, final Level world) {
         if (world == null || world.isRemote)
             throw new RuntimeException("WorldPipeNets should only be created on the server!");
         int dimension = world.provider.getDimension();

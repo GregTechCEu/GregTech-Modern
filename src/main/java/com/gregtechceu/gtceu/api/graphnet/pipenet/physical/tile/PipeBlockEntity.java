@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.NeighborCacheBlockEntity;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -19,6 +21,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
@@ -26,10 +29,13 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -37,12 +43,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -55,9 +66,11 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldPipeNetTile, ITickSubscription, IEnhancedManaged,
         IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
@@ -87,13 +100,14 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     @Setter
     @DescSynced
     private @Nullable Material frameMaterial;
-
-    private final Set<TickableSubscription> tickers = new ObjectOpenHashSet<>();
+    
+    private final List<TickableSubscription> serverTicks = new ArrayList<>();
+    private final List<TickableSubscription> waitingToAdd = new ArrayList<>();
 
     @Persisted
     @DescSynced
     @Getter
-    protected final PipeCoverContainer covers = new PipeCoverContainer(this);
+    protected final PipeCoverHolder covers = new PipeCoverHolder(this);
     private final Object2ObjectOpenHashMap<Capability<?>, IPipeCapabilityObject> capabilities = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectOpenCustomHashMap<WorldPipeNetNode, PipeCapabilityWrapper> netCapabilities = WorldPipeNet
             .getSensitiveHashMap();
@@ -110,8 +124,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     private long nextSoundTime = 0;
 
     public PipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
-
+        super(type, pos, blockState, true);
     }
 
     @Nullable
@@ -121,7 +134,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         else return null;
     }
 
-    public void getDrops(@NotNull NonNullList<ItemStack> drops, @NotNull BlockState state) {
+    public void getDrops(@NotNull List<ItemStack> drops, @NotNull BlockState state) {
         drops.add(getMainDrop(state));
         if (getFrameMaterial() != null)
             drops.add(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, getFrameMaterial()).asStack());
@@ -145,7 +158,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     }
 
     public ItemStack getDrop() {
-        return new ItemStack(getBlockType(), 1, getBlockType().damageDropped(getBlockState()));
+        return new ItemStack(getBlockType(), 1);
     }
 
     public long getOffsetTimer() {
@@ -251,10 +264,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         initialize();
     }
 
-    public void removeTicker(TickableSubscription ticker) {
-        this.tickers.remove(ticker);
-    }
-
     public boolean isTicking() {
         return !tickers.isEmpty();
     }
@@ -289,7 +298,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     }
 
     @Override
-    public @Nullable TileEntity getTargetWithCapabilities(WorldPipeNetNode node, Direction facing) {
+    public @Nullable BlockEntity getTargetWithCapabilities(WorldPipeNetNode node, Direction facing) {
         PipeCapabilityWrapper wrapper = netCapabilities.get(node);
         if (wrapper == null || !wrapper.isActive(facing)) return null;
         else return getNeighbor(facing);
@@ -298,6 +307,16 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     @Override
     public PipeCapabilityWrapper getWrapperForNode(WorldPipeNetNode node) {
         return netCapabilities.get(node);
+    }
+
+    @Override
+    public @NotNull PipeCoverHolder getCoverHolder() {
+        return covers;
+    }
+
+    @Override
+    public void dealAreaDamage(int size, Consumer<EntityLivingBase> damageFunction) {
+
     }
 
     /**
@@ -355,15 +374,10 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         }
     }
 
-    public <T> T getCapabilityCoverQuery(@NotNull Capability<T> capability, @Nullable Direction facing) {
+    public <T> LazyOptional<T> getCapabilityCoverQuery(@NotNull Capability<T> capability, @Nullable Direction facing) {
         // covers have access to the capability objects no matter the connection status
         IPipeCapabilityObject object = capabilities.get(capability);
         return object == null ? null : object.getCapabilityForSide(capability, facing);
-    }
-
-    @Override
-    public boolean hasCapability(@NotNull Capability<?> capability, Direction facing) {
-        return getCapability(capability, facing) != null;
     }
 
     @Override
@@ -400,13 +414,12 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         return netLogicDatas.get(networkID);
     }
 
-    @Override
     public @NotNull PipeBlock getBlockType() {
-        return (PipeBlock) super.getBlockType();
+        return (PipeBlock) this.getBlockState().getBlock();
     }
 
     @Override
-    public void setWorld(@NotNull World worldIn) {
+    public void setWorld(@NotNull Level worldIn) {
         if (worldIn == this.getWorld()) return;
         super.setWorld(worldIn);
     }
@@ -584,7 +597,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     // misc overrides //
 
     @Override
-    public World world() {
+    public Level world() {
         return getWorld();
     }
 
@@ -616,10 +629,10 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
     }
 
     public static @Nullable PipeBlockEntity getTileNoLoading(BlockPos pos, int dimension) {
-        World world = DimensionManager.getWorld(dimension);
+        Level world = DimensionManager.getWorld(dimension);
         if (world == null || !world.isBlockLoaded(pos)) return null;
 
-        TileEntity tile = world.getTileEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof PipeBlockEntity pipe) return pipe;
         else return null;
     }
@@ -636,8 +649,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         for (Direction facing : GTUtil.DIRECTIONS) {
             Cover cover = getCoverHolder().getCoverAtSide(facing);
             if (cover != null) {
-                frameMask |= 1 << facing.ordinal();
-                if (cover.forcePipeRenderConnection()) connectionMask |= 1 << facing.ordinal();
+                frameMask |= (byte) (1 << facing.ordinal());
+                if (cover.forcePipeRenderConnection()) connectionMask |= (byte) (1 << facing.ordinal());
             }
         }
         frameMask = (byte) ~frameMask;
@@ -650,7 +663,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
                 .withProperty(CoverRendererPackage.PROPERTY, getCoverHolder().createPackage());
     }
 
-    public void getCoverBoxes(Consumer<AxisAlignedBB> consumer) {
+    public void getCoverBoxes(Consumer<VoxelShape> consumer) {
         for (Direction facing : GTUtil.DIRECTIONS) {
             if (getCoverHolder().hasCover(facing)) {
                 consumer.accept(CoverRendererBuilder.PLATE_AABBS.get(facing));
@@ -686,11 +699,62 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity implements IWorldP
         for (Direction side : GTUtil.DIRECTIONS) {
             if (!GTValues.RNG.nextBoolean()) continue;
             BlockPos blockPos = getPos().offset(side);
-            IBlockState blockState = getWorld().getBlockState(blockPos);
+            BlockState blockState = getWorld().getBlockState(blockPos);
             if (blockState.getBlock().isAir(blockState, getWorld(), blockPos) ||
                     blockState.getBlock().isFlammable(getWorld(), blockPos, side.getOpposite())) {
                 getWorld().setBlockState(blockPos, Blocks.FIRE.getDefaultState());
             }
         }
+    }
+
+    @Override
+    public @Nullable TickableSubscription subscribeServerTick(Runnable runnable) {
+        if (!isRemote()) {
+            var subscription = new TickableSubscription(runnable);
+            waitingToAdd.add(subscription);
+            var blockState = getBlockState();
+            if (!blockState.getValue(BlockProperties.SERVER_TICK)) {
+                if (getLevel() instanceof ServerLevel serverLevel) {
+                    blockState = blockState.setValue(BlockProperties.SERVER_TICK, true);
+                    setBlockState(blockState);
+                    serverLevel.getServer().tell(new TickTask(0, () -> serverLevel.setBlockAndUpdate(getBlockPos(),
+                            getBlockState().setValue(BlockProperties.SERVER_TICK, true))));
+                }
+            }
+            return subscription;
+        }
+        return null;
+    }
+
+    @Override
+    public void unsubscribe(@Nullable TickableSubscription current) {
+        if (current != null) {
+            current.unsubscribe();
+        }
+    }
+
+    @Override
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(@NotNull Set<GTToolType> toolTypes, ItemStack itemStack, UseOnContext context) {
+        return null;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return null;
+    }
+
+    @Override
+    public IManagedStorage getSyncStorage() {
+        return null;
+    }
+
+    @Override
+    public void onChanged() {
+
+    }
+
+    @Override
+    public IManagedStorage getRootStorage() {
+        return null;
     }
 }

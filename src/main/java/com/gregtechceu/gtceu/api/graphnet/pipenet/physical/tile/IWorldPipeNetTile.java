@@ -5,7 +5,7 @@ import gregtech.api.cover.CoverableView;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
 
@@ -20,10 +20,10 @@ public interface IWorldPipeNetTile {
     // universal (mostly for active nodes)
 
     @NotNull
-    EnumMap<Direction, TileEntity> getTargetsWithCapabilities(WorldPipeNetNode destination);
+    EnumMap<Direction, BlockEntity> getTargetsWithCapabilities(WorldPipeNetNode destination);
 
     @Nullable
-    TileEntity getTargetWithCapabilities(WorldPipeNetNode destination, Direction facing);
+    BlockEntity getTargetWithCapabilities(WorldPipeNetNode destination, Direction facing);
 
     PipeCapabilityWrapper getWrapperForNode(WorldPipeNetNode node);
 

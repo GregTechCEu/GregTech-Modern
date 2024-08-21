@@ -32,7 +32,7 @@ public final class CoverDefinition {
         this.coverRenderer = coverRenderer;
     }
 
-    public CoverBehavior createCoverBehavior(ICoverable metaTileEntity, Direction side) {
-        return behaviorCreator.create(this, metaTileEntity, side);
+    public CoverBehavior createCoverBehavior(ICoverable metaBlockEntity, Direction side) {
+        return behaviorCreator.create(this, metaBlockEntity, side);
     }
 }

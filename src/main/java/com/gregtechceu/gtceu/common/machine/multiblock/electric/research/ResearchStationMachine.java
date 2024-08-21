@@ -103,8 +103,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
     private static class ResearchStationRecipeLogic extends RecipeLogic {
 
-        public ResearchStationRecipeLogic(ResearchStationMachine metaTileEntity) {
-            super(metaTileEntity);
+        public ResearchStationRecipeLogic(ResearchStationMachine metaBlockEntity) {
+            super(metaBlockEntity);
         }
 
         @NotNull

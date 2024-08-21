@@ -26,8 +26,8 @@ public final class WorldPipeNetNode extends WorldNetNode {
         super(net);
     }
 
-    public @NotNull IWorldPipeNetTile getTileEntity() {
-        IWorldPipeNetTile tile = getTileEntity(true);
+    public @NotNull IWorldPipeNetTile getBlockEntity() {
+        IWorldPipeNetTile tile = getBlockEntity(true);
         if (tile == null) {
             // something went very wrong, return the fallback to prevent NPEs and remove us from the net.
             getNet().removeNode(this);
@@ -37,11 +37,11 @@ public final class WorldPipeNetNode extends WorldNetNode {
     }
 
     @Nullable
-    public IWorldPipeNetTile getTileEntityNoLoading() {
-        return getTileEntity(false);
+    public IWorldPipeNetTile getBlockEntityNoLoading() {
+        return getBlockEntity(false);
     }
 
-    private IWorldPipeNetTile getTileEntity(boolean allowLoading) {
+    private IWorldPipeNetTile getBlockEntity(boolean allowLoading) {
         if (tileReference != null) {
             IWorldPipeNetTile tile = tileReference.get();
             if (tile != null) return tile;

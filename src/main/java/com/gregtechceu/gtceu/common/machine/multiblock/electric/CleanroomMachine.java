@@ -97,8 +97,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @Nullable
     private Collection<ICleanroomReceiver> cleanroomReceivers;
 
-    public CleanroomMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId);
+    public CleanroomMachine(IMachineBlockEntity metaBlockEntityId) {
+        super(metaBlockEntityId);
     }
 
     //////////////////////////////////////
@@ -419,7 +419,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getTileEntity();
+            BlockEntity blockEntity = blockWorldState.getBlockEntity();
             if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                 var machine = machineBlockEntity.getMetaMachine();
                 if (isMachineBanned(machine)) {
@@ -448,19 +448,19 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         };
     }
 
-    protected boolean isMachineBanned(MetaMachine metaTileEntity) {
+    protected boolean isMachineBanned(MetaMachine metaBlockEntity) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (metaTileEntity instanceof ICleanroomProvider) return true;
-        if (metaTileEntity instanceof IMufflerMachine) return true;
-        if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
+        if (metaBlockEntity instanceof ICleanroomProvider) return true;
+        if (metaBlockEntity instanceof IMufflerMachine) return true;
+        if (metaBlockEntity instanceof SimpleGeneratorMachine) return true;
         // todo: enable checks when these are added?
-        // if (metaTileEntity instanceof FuelMultiblockController) return true;
-        if (metaTileEntity instanceof LargeMinerMachine) return true;
-        if (metaTileEntity instanceof FluidDrillMachine) return true;
-        // if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
-        if (metaTileEntity instanceof CokeOvenMachine) return true;
-        if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;
-        return metaTileEntity instanceof PrimitivePumpMachine;
+        // if (metaBlockEntity instanceof FuelMultiblockController) return true;
+        if (metaBlockEntity instanceof LargeMinerMachine) return true;
+        if (metaBlockEntity instanceof FluidDrillMachine) return true;
+        // if (metaBlockEntity instanceof MetaBlockEntityCentralMonitor) return true;
+        if (metaBlockEntity instanceof CokeOvenMachine) return true;
+        if (metaBlockEntity instanceof PrimitiveBlastFurnaceMachine) return true;
+        return metaBlockEntity instanceof PrimitivePumpMachine;
     }
 
     @Override
