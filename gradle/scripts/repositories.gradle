@@ -33,7 +33,7 @@ repositories {
             includeGroup("com.simibubi.create")
         }
     }
-    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { url = "https://maven.octo-studios.com/releases/" } // Curios
     maven { // TOP
         url "https://maven.k-4u.nl"
     }

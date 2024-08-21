@@ -38,7 +38,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.EventPriority;
@@ -101,11 +100,7 @@ public class ForgeCommonEventListener {
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
-                if (player.level().getGameTime() % 100 == 0) {
-                    for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
-                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, type.getSlot());
-                    }
-                }
+                property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
