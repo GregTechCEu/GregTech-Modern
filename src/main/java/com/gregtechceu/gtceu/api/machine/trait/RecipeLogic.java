@@ -77,7 +77,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     protected GTRecipe lastRecipe;
     /**
-     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}' which can be found
+     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe, OCParams, OCResult)}' which can be found
      * from {@link RecipeManager}.
      */
     @Nullable
