@@ -74,8 +74,8 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_APPENG);
     }
 
-    public static boolean isAlmostUnifiedLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
+    public static boolean isCuriosLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_CURIOS);
     }
 
     public static boolean isShimmerLoaded() {

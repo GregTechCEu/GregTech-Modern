@@ -740,11 +740,10 @@ public class MachineLang {
 
         provider.add("gui.gtceu.share_inventory.title", "Shared Item Inventory");
         provider.add("gui.gtceu.share_inventory.desc.0", "Shares inserted items with all patterns within buffer!");
-        provider.add("gui.gtcey.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
+        provider.add("gui.gtceu.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
         provider.add("gui.gtceu.share_tank.title", "Shared Tank Inventory");
         provider.add("gui.gtceu.share_tank.desc.0",
                 "Shares inserted fluids/gasses/etc. with all patterns within buffer!");
-        provider.add("gui.gtceu.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
         provider.add("gui.gtceu.rename.desc", "Rename Pattern Buffer");
         provider.add("gui.gtceu.refund_all.desc", "Return Stored Contents to AE2");
 
@@ -922,6 +921,11 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
         provider.add("gtceu.multiblock.power_substation.under_one_hour_left",
                 "Less than 1 hour until fully drained!");
+        provider.add("gtceu.multiblock.active_transformer.average_in", "§bAvg. Input: §f%s EU/t");
+        provider.add("gtceu.multiblock.active_transformer.average_out", "§bAvg. Output: §f%s EU/t");
+        provider.add("gtceu.multiblock.active_transformer.max_input", "§aMax Input: §f%s EU/t");
+        provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
+        provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
