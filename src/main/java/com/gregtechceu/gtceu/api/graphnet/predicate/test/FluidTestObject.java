@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate.test;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Contract;
@@ -20,7 +20,7 @@ public final class FluidTestObject implements IPredicateTestObject, Predicate<Fl
 
     public FluidTestObject(@NotNull FluidStack stack) {
         this.fluid = stack.getFluid();
-        this.tag = stack.tag;
+        this.tag = stack.getTag();
         this.hash = Objects.hash(fluid, tag);
     }
 
@@ -37,7 +37,7 @@ public final class FluidTestObject implements IPredicateTestObject, Predicate<Fl
 
     @Override
     public boolean test(@Nullable FluidStack stack) {
-        return stack != null && stack.getFluid() == fluid && Objects.equals(tag, stack.tag);
+        return stack != null && stack.getFluid() == fluid && Objects.equals(tag, stack.getTag());
     }
 
     @Override

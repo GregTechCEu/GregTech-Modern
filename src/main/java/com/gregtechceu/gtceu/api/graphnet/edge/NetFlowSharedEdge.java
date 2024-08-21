@@ -3,10 +3,9 @@ package com.gregtechceu.gtceu.api.graphnet.edge;
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
-import net.minecraft.util.math.MathHelper;
-
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -142,7 +141,7 @@ public class NetFlowSharedEdge extends AbstractNetFlowEdge {
                 this.map.clear();
             } else {
                 List<Object> toRemove = new ObjectArrayList<>();
-                long regenerationPer = MathHelper.ceil((double) regenerationUnits * getThroughput() / map.size());
+                long regenerationPer = Mth.ceil((double) regenerationUnits * getThroughput() / map.size());
                 map.replaceAll((k, v) -> {
                     v -= regenerationPer;
                     if (v <= 0) toRemove.add(k);

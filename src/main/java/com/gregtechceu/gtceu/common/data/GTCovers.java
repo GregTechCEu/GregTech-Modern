@@ -140,7 +140,9 @@ public class GTCovers {
 
     public static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            ICoverRenderer coverRenderer) {
-        var definition = new CoverDefinition(GTCEu.id(id), behaviorCreator, coverRenderer);
+        var definition = new CoverDefinition(GTCEu.id(id), behaviorCreator,
+                (quads, side, rand, renderPlate, renderBackside, colorData) -> coverRenderer.renderCover(quads, side,
+                        rand, null, null, null, null, null));
         GTRegistries.COVERS.register(GTCEu.id(id), definition);
         return definition;
     }

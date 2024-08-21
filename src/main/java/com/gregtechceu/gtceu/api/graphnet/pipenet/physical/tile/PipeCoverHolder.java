@@ -1,38 +1,45 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
-import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
-
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-
 import net.minecraftforge.common.util.LazyOptional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 
-public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag> {
+public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
 
     private final PipeBlockEntity holder;
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private final EnumMap<Direction, CoverBehavior> covers = new EnumMap<>(Direction.class);
-    private final EnumSet<Direction> tickingCovers = EnumSet.noneOf(Direction.class);
     private final int[] sidedRedstoneInput = new int[6];
 
     public PipeCoverHolder(PipeBlockEntity holder) {
@@ -42,49 +49,43 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     protected final void addCoverSilent(@NotNull Direction side, @NotNull CoverBehavior cover) {
         // we checked before if the side already has a cover
         this.covers.put(side, cover);
-        if (cover instanceof ITickSubscription) {
-            tickingCovers.add(side);
-            holder.addTicker(new TickableSubscription(this::update));
-        }
     }
 
     @Override
-    public final void addCover(@NotNull Direction side, @NotNull CoverBehavior cover) {
-        addCoverSilent(side, cover);
-        if (!getLevel().isClientSide) {
-            // do not sync or handle logic on client side
-            CoverSaveHandler.writeCoverPlacement(this, COVER_ATTACHED_PIPE, side, cover);
-            if (holder.isConnected(side) && !cover.canPipePassThrough()) {
-                PipeBlock.disconnectTile(holder, holder.getPipeNeighbor(side, true), side);
+    public final boolean acceptsCovers() {
+        return covers.size() < GTUtil.DIRECTIONS.length;
+    }
+
+    @Override
+    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+        if (coverBehavior != null) {
+            addCoverSilent(side, coverBehavior);
+            if (!getLevel().isClientSide) {
+                // do not sync or handle logic on client side
+                coverBehavior.getSyncStorage().markAllDirty();
+                if (holder.isConnected(side) && !coverBehavior.canPipePassThrough()) {
+                    PipeBlock.disconnectTile(holder, holder.getPipeNeighbor(side, true), side);
+                }
             }
+
+            holder.notifyBlockUpdate();
+            holder.markAsDirty();
         }
-
-        holder.notifyBlockUpdate();
-        holder.markAsDirty();
     }
 
     @Override
-    public final void removeCover(@NotNull Direction side) {
-        Cover cover = getCoverAtSide(side);
-        if (cover == null) return;
+    public boolean removeCover(boolean dropItself, Direction side, @Nullable Player player) {
+        CoverBehavior cover = getCoverAtSide(side);
+        if (cover == null) return ICoverable.super.removeCover(dropItself, side, player);
 
-        dropCover(side);
-        covers.remove(side);
-        tickingCovers.remove(side);
-        if (tickingCovers.isEmpty()) holder.removeTicker(this);
-        writeCustomData(COVER_REMOVED_PIPE, buffer -> buffer.writeByte(side.getIndex()));
         holder.notifyBlockUpdate();
         holder.markAsDirty();
-    }
-
-    @Override
-    public @NotNull ItemStack getStackForm() {
-        return holder.getDrop();
+        return ICoverable.super.removeCover(side, player);
     }
 
     public void onLoad() {
         for (Direction side : GTUtil.DIRECTIONS) {
-            this.sidedRedstoneInput[side.getIndex()] = GTUtility.getRedstonePower(getLevel(), getPos(), side);
+            this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(), side);
         }
     }
 
@@ -93,16 +94,16 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
         if (!ignoreCover && getCoverAtSide(side) != null) {
             return 0; // covers block input redstone signal for machine
         }
-        return sidedRedstoneInput[side.getIndex()];
+        return sidedRedstoneInput[side.get3DDataValue()];
     }
 
     public void updateInputRedstoneSignals() {
         for (Direction side : GTUtil.DIRECTIONS) {
-            int redstoneValue = GTUtility.getRedstonePower(getLevel(), getPos(), side);
-            int currentValue = sidedRedstoneInput[side.getIndex()];
+            int redstoneValue = GTUtil.getRedstonePower(getLevel(), getPos(), side);
+            int currentValue = sidedRedstoneInput[side.get3DDataValue()];
             if (redstoneValue != currentValue) {
-                this.sidedRedstoneInput[side.getIndex()] = redstoneValue;
-                Cover cover = getCoverAtSide(side);
+                this.sidedRedstoneInput[side.get3DDataValue()] = redstoneValue;
+                CoverBehavior cover = getCoverAtSide(side);
                 if (cover != null) {
                     cover.onRedstoneInputSignalChange(redstoneValue);
                 }
@@ -117,20 +118,17 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
 
     @Override
     public void scheduleRenderUpdate() {
-        BlockPos pos = getPos();
-        getLevel().markBlockRangeForRenderUpdate(
-                pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
-                pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+        holder.scheduleRenderUpdate();
     }
 
     @Override
     public void scheduleNeighborShapeUpdate() {
-
+        holder.scheduleNeighborShapeUpdate();
     }
 
     @Override
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
-        return false;
+        return holder.canConnectTo(side);
     }
 
     @Override
@@ -165,29 +163,12 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
         return null;
     }
 
-    @Override
-    public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
-
-    }
-
-    @Override
     public boolean shouldRenderCoverBackSides() {
         return false;
     }
 
-    @Override
     public int getPaintingColorForRendering() {
-        return ConfigHolder.client.defaultPaintingColor;
-    }
-
-    @Override
-    public boolean canPlaceCoverOnSide(@NotNull Direction side) {
-        return holder.canConnectTo(side);
-    }
-
-    @Override
-    public final boolean acceptsCovers() {
-        return covers.size() < GTUtil.DIRECTIONS.length;
+        return Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue();
     }
 
     public boolean canConnectRedstone(@Nullable Direction side) {
@@ -220,68 +201,6 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     }
 
     @Override
-    public void update() {
-        if (!getLevel().isClientSide) {
-            updateCovers();
-        }
-    }
-
-    @Override
-    public void writeCoverData(@NotNull Cover cover, int discriminator, @NotNull Consumer<@NotNull PacketBuffer> buf) {
-        writeCustomData(UPDATE_COVER_DATA_PIPE, buffer -> {
-            buffer.writeByte(cover.getAttachedSide().getIndex());
-            buffer.writeVarInt(discriminator);
-            buf.accept(buffer);
-        });
-    }
-
-    public void writeInitialSyncData(PacketBuffer buf) {
-        CoverSaveHandler.writeInitialSyncData(buf, this);
-    }
-
-    public void readInitialSyncData(PacketBuffer buf) {
-        CoverSaveHandler.receiveInitialSyncData(buf, this);
-    }
-
-    @Override
-    public void writeCustomData(int dataId, @NotNull Consumer<PacketBuffer> writer) {
-        holder.writeCustomData(dataId, writer);
-    }
-
-    public void readCustomData(int dataId, PacketBuffer buf) {
-        if (dataId == COVER_ATTACHED_PIPE) {
-            CoverSaveHandler.readCoverPlacement(buf, this);
-        } else if (dataId == COVER_REMOVED_PIPE) {
-            // cover removed event
-            Direction placementSide = GTUtil.DIRECTIONS[buf.readByte()];
-            this.covers.remove(placementSide);
-            this.tickingCovers.remove(placementSide);
-            if (this.tickingCovers.isEmpty()) holder.removeTicker(this);
-            holder.scheduleRenderUpdate();
-        } else if (dataId == UPDATE_COVER_DATA_PIPE) {
-            // cover custom data received
-            Direction coverSide = GTUtil.DIRECTIONS[buf.readByte()];
-            Cover cover = getCoverAtSide(coverSide);
-            int internalId = buf.readVarInt();
-            if (cover != null) {
-                cover.readCustomData(internalId, buf);
-            }
-        }
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        CoverSaveHandler.writeCoverNBT(tag, this);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        CoverSaveHandler.readCoverNBT(nbt, this, this::addCoverSilent);
-    }
-
-    @Override
     public Level getLevel() {
         return holder.getLevel();
     }
@@ -292,8 +211,8 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     }
 
     @Override
-    public @Nullable BlockEntity getNeighbor(@NotNull Direction facing) {
-        return holder.getNeighbor(facing);
+    public @Nullable BlockEntity getNeighbor(@NotNull Direction side) {
+        return holder.getNeighbor(side);
     }
 
     @Override
@@ -332,7 +251,7 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
         if (covers.isEmpty()) return CoverRendererPackage.EMPTY;
         CoverRendererPackage rendererPackage = new CoverRendererPackage(shouldRenderCoverBackSides());
         for (var cover : covers.entrySet()) {
-            rendererPackage.addRenderer(cover.getValue().getRenderer(), cover.getKey());
+            rendererPackage.addRenderer(cover.getValue().getCoverRenderer(), cover.getKey());
         }
         return rendererPackage;
     }
@@ -346,4 +265,17 @@ public class PipeCoverHolder implements ICoverable, INBTSerializable<CompoundTag
     public void unsubscribe(@Nullable TickableSubscription current) {
         holder.unsubscribe(current);
     }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return null;
+    }
+
+    @Override
+    public IManagedStorage getSyncStorage() {
+        return null;
+    }
+
+    @Override
+    public void onChanged() {}
 }

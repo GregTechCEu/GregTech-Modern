@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
-import gregtech.common.covers.filter.BaseFilterContainer;
 
-import net.minecraft.item.ItemStack;
+import com.gregtechceu.gtceu.common.cover.filter.BaseFilterContainer;
 import net.minecraft.nbt.CompoundTag;
 
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,20 +34,20 @@ public final class FilterPredicate extends EdgePredicate<FilterPredicate, Compou
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        if (sourceFilter != null) tag.setTag("Source", sourceFilter.serializeNBT());
-        if (targetFilter != null) tag.setTag("Target", targetFilter.serializeNBT());
+        if (sourceFilter != null) tag.put("Source", sourceFilter.serializeNBT());
+        if (targetFilter != null) tag.put("Target", targetFilter.serializeNBT());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.hasKey("Source")) {
+        if (nbt.contains("Source")) {
             sourceFilter = new GenericFilterContainer();
-            sourceFilter.deserializeNBT(nbt.getCompoundTag("Source"));
+            sourceFilter.deserializeNBT(nbt.getCompound("Source"));
         } else sourceFilter = null;
-        if (nbt.hasKey("Target")) {
+        if (nbt.contains("Target")) {
             targetFilter = new GenericFilterContainer();
-            targetFilter.deserializeNBT(nbt.getCompoundTag("Target"));
+            targetFilter.deserializeNBT(nbt.getCompound("Target"));
         } else targetFilter = null;
     }
 

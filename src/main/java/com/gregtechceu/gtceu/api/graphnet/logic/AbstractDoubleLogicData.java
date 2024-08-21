@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractDoubleLogicData<T extends AbstractDoubleLogicData<T>>
-                                             extends NetLogicEntry<T, NBTTagDouble> {
+                                             extends NetLogicEntry<T, DoubleTag> {
 
     private double value;
 
@@ -28,22 +28,22 @@ public abstract class AbstractDoubleLogicData<T extends AbstractDoubleLogicData<
     }
 
     @Override
-    public NBTTagDouble serializeNBT() {
-        return new NBTTagDouble(this.value);
+    public DoubleTag serializeNBT() {
+        return DoubleTag.valueOf(this.value);
     }
 
     @Override
-    public void deserializeNBT(NBTTagDouble nbt) {
-        this.value = nbt.getDouble();
+    public void deserializeNBT(DoubleTag nbt) {
+        this.value = nbt.getAsDouble();
     }
 
     @Override
-    public void encode(PacketBuffer buf, boolean fullChange) {
+    public void encode(FriendlyByteBuf buf, boolean fullChange) {
         buf.writeDouble(value);
     }
 
     @Override
-    public void decode(PacketBuffer buf, boolean fullChange) {
+    public void decode(FriendlyByteBuf buf, boolean fullChange) {
         this.value = buf.readDouble();
     }
 }

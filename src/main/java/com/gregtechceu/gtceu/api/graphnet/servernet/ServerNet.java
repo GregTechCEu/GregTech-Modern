@@ -26,16 +26,18 @@ public abstract class ServerNet extends SavedData implements IGraphNet {
     protected final GraphNetBacker backer;
 
     /*
-    public static ServerNet get(String name, ServerLevel level, Function<IGraphNet, INetGraph> graphBuilder,
-                                AlgorithmBuilder... algorithmBuilder) {
-        return level.getDataStorage().computeIfAbsent(tag -> new ServerNet(tag, graphBuilder, algorithmBuilder), () -> new ServerNet(graphBuilder, algorithmBuilder), name);
-    }
-
-    public static ServerNet get(String name, ServerLevel level, boolean directed, AlgorithmBuilder... algorithmBuilders) {
-        return get(name, level, directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
-                algorithmBuilders);
-    }
-    */
+     * public static ServerNet get(String name, ServerLevel level, Function<IGraphNet, INetGraph> graphBuilder,
+     * AlgorithmBuilder... algorithmBuilder) {
+     * return level.getDataStorage().computeIfAbsent(tag -> new ServerNet(tag, graphBuilder, algorithmBuilder), () ->
+     * new ServerNet(graphBuilder, algorithmBuilder), name);
+     * }
+     * 
+     * public static ServerNet get(String name, ServerLevel level, boolean directed, AlgorithmBuilder...
+     * algorithmBuilders) {
+     * return get(name, level, directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
+     * algorithmBuilders);
+     * }
+     */
 
     public ServerNet(Function<IGraphNet, INetGraph> graphBuilder,
                      AlgorithmBuilder... algorithmBuilders) {

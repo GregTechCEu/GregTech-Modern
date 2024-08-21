@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
@@ -87,5 +89,111 @@ public class RenderBufferHelper {
             sinTheta = sinTheta1;
 
         }
+    }
+
+    public static void renderCubeFrame(BufferBuilder buffer, double minX, double minY, double minZ, double maxX,
+                                       double maxY, double maxZ, float r, float g, float b, float a) {
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+    }
+
+    public static void renderCubeFace(VertexConsumer buffer, AABB cuboid, float r, float g, float b, float a,
+                                      boolean shade) {
+        renderCubeFace(buffer, cuboid.minX, cuboid.minY, cuboid.minZ, cuboid.maxX, cuboid.maxY, cuboid.maxZ, r, g,
+                b, a, shade);
+    }
+
+    public static void renderCubeFace(VertexConsumer buffer, double minX, double minY, double minZ, double maxX,
+                                      double maxY, double maxZ, float red, float green, float blue, float alpha) {
+        renderCubeFace(buffer, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha, false);
+    }
+
+    public static void renderCubeFace(VertexConsumer buffer, double minX, double minY, double minZ, double maxX,
+                                      double maxY, double maxZ, float red, float green, float blue, float a,
+                                      boolean shade) {
+        float r = red, g = green, b = blue;
+
+        if (shade) {
+            r *= 0.6;
+            g *= 0.6;
+            b *= 0.6;
+        }
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        if (shade) {
+            r = red * 0.5f;
+            g = green * 0.5f;
+            b = blue * 0.5f;
+        }
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+
+        if (shade) {
+            r = red;
+            g = green;
+            b = blue;
+        }
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+
+        if (shade) {
+            r = red * 0.8f;
+            g = green * 0.8f;
+            b = blue * 0.8f;
+        }
+        buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(r, g, b, a).endVertex();
+
+        buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
     }
 }

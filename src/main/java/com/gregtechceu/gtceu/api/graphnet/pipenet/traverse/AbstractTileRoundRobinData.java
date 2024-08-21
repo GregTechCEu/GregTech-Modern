@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCapabilityWrapper;
 import com.gregtechceu.gtceu.api.graphnet.traverse.IRoundRobinData;
 
-import net.minecraft.tileentity.BlockEntity;
-import net.minecraft.util.Direction;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.mutable.MutableByte;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
@@ -32,12 +34,7 @@ public abstract class AbstractTileRoundRobinData implements IRoundRobinData<Worl
 
     public @NotNull MutableByte getPointer(@Nullable SimulatorKey simulator) {
         if (simulator == null) return pointer;
-        MutableByte value = simulatorMap.get(simulator);
-        if (value == null) {
-            value = new MutableByte();
-            simulatorMap.put(simulator, value);
-        }
-        return value;
+        return simulatorMap.computeIfAbsent(simulator, k -> new MutableByte());
     }
 
     public final boolean pointerFinished(@Nullable SimulatorKey simulator) {
@@ -60,8 +57,8 @@ public abstract class AbstractTileRoundRobinData implements IRoundRobinData<Worl
     }
 
     @Nullable
-    public <E> E getCapabilityAtPointer(@NotNull Capability<E> capability, WorldPipeNetNode node,
-                                        @Nullable SimulatorKey simulator) {
+    public <E> LazyOptional<E> getCapabilityAtPointer(@NotNull Capability<E> capability, WorldPipeNetNode node,
+                                                   @Nullable SimulatorKey simulator) {
         if (pointerFinished(simulator)) return null;
         PipeCapabilityWrapper wrapper = node.getBlockEntity().getWrapperForNode(node);
         Direction pointer = getPointerFacing(simulator);

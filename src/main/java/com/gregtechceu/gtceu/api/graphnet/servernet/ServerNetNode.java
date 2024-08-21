@@ -2,14 +2,17 @@ package com.gregtechceu.gtceu.api.graphnet.servernet;
 
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
-import gregtech.api.util.DimensionPos;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 public class ServerNetNode extends NetNode {
 
-    private DimensionPos pos;
+    private GlobalPos pos;
 
     public ServerNetNode(IGraphNet net) {
         super(net);
@@ -18,20 +21,20 @@ public class ServerNetNode extends NetNode {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
-        tag.setLong("Pos", pos.getPos().toLong());
-        tag.setInteger("Dim", pos.getDimension());
+        tag.putLong("Pos", pos.pos().asLong());
+        tag.putString("Dim", pos.dimension().location().toString());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        BlockPos pos = BlockPos.fromLong(nbt.getLong("Pos"));
-        this.pos = new DimensionPos(pos, nbt.getInteger("Dim"));
+        BlockPos pos = BlockPos.of(nbt.getLong("Pos"));
+        this.pos = GlobalPos.of(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("Dim"))), pos);
     }
 
     @Override
-    public DimensionPos getEquivalencyData() {
+    public GlobalPos getEquivalencyData() {
         return pos;
     }
 }

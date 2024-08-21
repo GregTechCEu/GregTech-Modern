@@ -68,6 +68,11 @@ public class FacadeCover extends CoverBehavior {
         return false;
     }
 
+    @Override
+    public boolean forcePipeRenderConnection() {
+        return false;
+    }
+
     @Nullable
     public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return facadeState;

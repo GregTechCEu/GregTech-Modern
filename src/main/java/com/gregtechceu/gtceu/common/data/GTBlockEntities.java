@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.*;
 
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -14,23 +19,32 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
  * @date 2023/2/13
  * @implNote GTBlockEntities
  */
+@SuppressWarnings("unchecked")
 public class GTBlockEntities {
 
-    @SuppressWarnings("unchecked")
+    public static final BlockEntityEntry<PipeBlockEntity> NEW_PIPE = REGISTRATE
+            .blockEntity("pipe", PipeBlockEntity::new)
+            .validBlocks(Stream.concat(Arrays.stream(GTBlocks.DUCT_PIPES),
+                    Stream.concat(Arrays.stream(GTBlocks.OPTICAL_PIPES),
+                            Stream.concat(Arrays.stream(GTBlocks.LASER_PIPES),
+                                    Stream.concat(GTBlocks.ITEM_PIPE_BLOCKS.values().stream(),
+                                            Stream.concat(GTBlocks.CABLE_BLOCKS.values().stream(),
+                                                    GTBlocks.FLUID_PIPE_BLOCKS.values().stream())))))
+                    .toArray(NonNullSupplier[]::new))
+            .register();
+
     public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
             .blockEntity("cable", CableBlockEntity::create)
             .onRegister(CableBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.CABLE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
-    @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
             .blockEntity("fluid_pipe", FluidPipeBlockEntity::new)
             .onRegister(FluidPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.FLUID_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
-    @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<ItemPipeBlockEntity> ITEM_PIPE = REGISTRATE
             .blockEntity("item_pipe", ItemPipeBlockEntity::create)
             .onRegister(ItemPipeBlockEntity::onBlockEntityRegister)

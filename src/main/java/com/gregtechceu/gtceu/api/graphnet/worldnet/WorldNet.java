@@ -13,25 +13,23 @@ import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
 import com.gregtechceu.gtceu.api.graphnet.path.GenericGraphNetPath;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.storage.WorldSavedData;
 
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.Function;
 
-public abstract class WorldNet extends WorldSavedData implements IGraphNet, GenericGraphNetPath.Provider {
+public abstract class WorldNet extends SavedData implements IGraphNet, GenericGraphNetPath.Provider {
 
     protected final GraphNetBacker backer;
     @Getter
@@ -41,7 +39,6 @@ public abstract class WorldNet extends WorldSavedData implements IGraphNet, Gene
 
     public WorldNet(String name, @NotNull Function<IGraphNet, INetGraph> graphBuilder,
                     AlgorithmBuilder... algorithmBuilders) {
-        super(name);
         this.backer = new GraphNetBacker(this, graphBuilder.apply(this), algorithmBuilders);
     }
 

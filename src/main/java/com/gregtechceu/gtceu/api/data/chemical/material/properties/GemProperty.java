@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-public class GemProperty implements IMaterialProperty<GemProperty> {
+public class GemProperty implements IMaterialProperty {
 
     @Override
     public void verifyProperty(MaterialProperties properties) {

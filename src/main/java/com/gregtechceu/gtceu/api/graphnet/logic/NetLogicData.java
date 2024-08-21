@@ -1,15 +1,19 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import net.minecraft.nbt.ListTag;
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringRepresentable;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,10 +21,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 /**
- * Note - since the internal map representation encodes keys using {@link StringRepresentable#getSerializedName()} on logics,
+ * Note - since the internal map representation encodes keys using {@link StringRepresentable#getSerializedName()} on
+ * logics,
  * making a logics class return two different names is a valid way to register multiple instances.
  */
-public final class NetLogicData implements INBTSerializable<ListTag>, INetLogicEntryListener {
+public final class NetLogicData implements ITagSerializable<ListTag>, IContentChangeAware, INetLogicEntryListener {
+
+    @Nullable
+    @Getter
+    @Setter
+    private Runnable onContentsChanged = () -> {};
 
     // TODO caching logic on simple logics to reduce amount of reduntant creation?
     private final Object2ObjectOpenHashMap<String, NetLogicEntry<?, ?>> logicEntrySet;
@@ -67,6 +77,9 @@ public final class NetLogicData implements INBTSerializable<ListTag>, INetLogicE
     public void clearData() {
         logicEntrySet.clear();
         logicEntrySet.trim(4);
+        if (onContentsChanged != null) {
+            onContentsChanged.run();
+        }
     }
 
     public NetLogicData removeLogicEntry(@NotNull NetLogicEntry<?, ?> key) {
@@ -80,12 +93,18 @@ public final class NetLogicData implements INBTSerializable<ListTag>, INetLogicE
             this.listeners.forEach(l -> l.markChanged(entry, true, true));
             logicEntrySet.trim();
         }
+        if (onContentsChanged != null) {
+            onContentsChanged.run();
+        }
         return this;
     }
 
     @Override
     public void markLogicEntryAsUpdated(NetLogicEntry<?, ?> entry, boolean fullChange) {
         this.listeners.forEach(l -> l.markChanged(entry, false, fullChange));
+        if (onContentsChanged != null) {
+            onContentsChanged.run();
+        }
     }
 
     public boolean hasLogicEntry(@NotNull String key) {
@@ -182,7 +201,7 @@ public final class NetLogicData implements INBTSerializable<ListTag>, INetLogicE
         }
     }
 
-    //@Override
+    // @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(getEntries().size());
         for (NetLogicEntry<?, ?> entry : getEntries()) {
@@ -195,7 +214,7 @@ public final class NetLogicData implements INBTSerializable<ListTag>, INetLogicE
         }
     }
 
-    //@Override
+    // @Override
     public void decode(FriendlyByteBuf buf) {
         this.logicEntrySet.clear();
         int entryCount = buf.readVarInt();

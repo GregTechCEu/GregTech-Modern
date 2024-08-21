@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.graphnet.alg;
 import com.gregtechceu.gtceu.api.graphnet.graph.GraphEdge;
 import com.gregtechceu.gtceu.api.graphnet.graph.GraphVertex;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
-import gregtech.api.util.function.TriFunction;
 
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jgrapht.GraphPath;
 

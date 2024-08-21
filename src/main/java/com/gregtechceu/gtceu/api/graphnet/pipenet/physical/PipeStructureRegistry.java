@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical;
 
-import gregtech.api.util.GTUtility;
-
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +26,7 @@ public final class PipeStructureRegistry {
      * Do not modify the returned set.
      */
     public static <T extends IPipeStructure> @NotNull Set<T> getStructures(Class<T> structureClass) {
-        GTUtility.forceInitialization(structureClass);
+        GTUtil.forceInitialization(structureClass);
         Set<T> structures = (Set<T>) REGISTRY.get(structureClass);
         if (structures == null) return Collections.emptySet();
         return structures;

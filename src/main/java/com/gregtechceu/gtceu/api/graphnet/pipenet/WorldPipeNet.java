@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet;
 
 import com.gregtechceu.gtceu.api.blockentity.IDirtyNotifiable;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
 import com.gregtechceu.gtceu.api.graphnet.MultiNodeHelper;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
@@ -11,10 +12,11 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldNet;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -36,7 +38,7 @@ public abstract class WorldPipeNet extends WorldNet {
 
     public static final int MULTI_NET_TIMEOUT = 10;
 
-    private static final Object2ObjectOpenHashMap<Integer, Set<WorldPipeNet>> dimensionNets = new Object2ObjectOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<ResourceKey<Level>, Set<WorldPipeNet>> dimensionNets = new Object2ObjectOpenHashMap<>();
 
     public WorldPipeNet(String name, Function<IGraphNet, INetGraph> graphBuilder,
                         AlgorithmBuilder... algorithmBuilders) {
@@ -48,11 +50,11 @@ public abstract class WorldPipeNet extends WorldNet {
     }
 
     @Override
-    public void setWorld(Level world) {
-        if (getLevel() == world) return;
-        super.setLevel(world);
+    public void setLevel(Level level) {
+        if (getLevel() == level) return;
+        super.setLevel(level);
         dimensionNets.compute(getDimension(), (k, v) -> {
-            if (v == null) v = GTUtility.createWeakHashSet();
+            if (v == null) v = GTUtil.createWeakHashSet();
             v.add(this);
             return v;
         });
@@ -95,8 +97,8 @@ public abstract class WorldPipeNet extends WorldNet {
      * @return whether the predication state has changed and this net needs to be marked dirty.
      */
     protected boolean predicateEdge(@NotNull NetEdge edge, @NotNull WorldPipeNetNode source,
-                                    @Nullable Cover coverSource,
-                                    @NotNull WorldPipeNetNode target, @Nullable Cover coverTarget) {
+                                    @Nullable CoverBehavior coverSource,
+                                    @NotNull WorldPipeNetNode target, @Nullable CoverBehavior coverTarget) {
         Map<String, EdgePredicate<?, ?>> prevValue = new Object2ObjectOpenHashMap<>(
                 edge.getPredicateHandler().getPredicateSet());
         edge.getPredicateHandler().clearPredicates();
@@ -127,7 +129,7 @@ public abstract class WorldPipeNet extends WorldNet {
      * @param a    the cover on the source of the edge
      * @param b    the cover on the sink of the edge
      */
-    protected void coverPredication(@NotNull NetEdge edge, @Nullable Cover a, @Nullable Cover b) {}
+    protected void coverPredication(@NotNull NetEdge edge, @Nullable CoverBehavior a, @Nullable CoverBehavior b) {}
 
     public abstract Capability<?>[] getTargetCapabilities();
 
@@ -173,10 +175,10 @@ public abstract class WorldPipeNet extends WorldNet {
     }
 
     public static String getDataID(final String baseID, final Level world) {
-        if (world == null || world.isRemote)
+        if (world == null || world.isClientSide)
             throw new RuntimeException("WorldPipeNets should only be created on the server!");
-        int dimension = world.provider.getDimension();
-        return baseID + '.' + dimension;
+        ResourceKey<Level> dimension = world.dimension();
+        return baseID + '/' + dimension.location();
     }
 
     /**

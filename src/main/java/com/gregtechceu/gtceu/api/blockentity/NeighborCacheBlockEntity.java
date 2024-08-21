@@ -3,28 +3,32 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public abstract class NeighborCacheBlockEntity extends BlockEntity implements INeighborCache,
-        IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
+public abstract class NeighborCacheBlockEntity extends SyncedBlockEntity implements INeighborCache,
+                                               IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
 
     private final BlockEntity[] neighbors = new BlockEntity[6];
     private boolean neighborsInvalidated = false;
+
     /**
      * @param doInvalidationHere set to false if you override {@link NeighborCacheBlockEntity#invalidateNeighbors()}
      *                           with a method that references something you do not yet have set.
      */
-    public NeighborCacheBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, boolean doInvalidationHere) {
+    public NeighborCacheBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState,
+                                    boolean doInvalidationHere) {
         super(type, pos, blockState);
         if (doInvalidationHere) invalidateNeighbors();
     }

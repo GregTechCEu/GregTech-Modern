@@ -13,11 +13,12 @@ import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListTag;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -204,15 +205,15 @@ public final class GraphNetBacker {
         // construct map of node ids -> nodes, while building nodes to groups
         // construct edges using map
         Int2ObjectOpenHashMap<NetGroup> groupMap = new Int2ObjectOpenHashMap<>();
-        NBTTagList vertices = nbt.getTagList("Vertices", 10);
-        int vertexCount = vertices.tagCount();
+        ListTag vertices = nbt.getList("Vertices", Tag.TAG_COMPOUND);
+        int vertexCount = vertices.size();
         Int2ObjectOpenHashMap<GraphVertex> vertexMap = new Int2ObjectOpenHashMap<>(vertexCount);
         for (int i = 0; i < vertexCount; i++) {
-            CompoundTag tag = vertices.getCompoundTagAt(i);
+            CompoundTag tag = vertices.getCompound(i);
             NetNode node = this.backedNet.getNewNode();
             node.deserializeNBT(tag);
-            if (tag.hasKey("GroupID")) {
-                int id = tag.getInteger("GroupID");
+            if (tag.contains("GroupID")) {
+                int id = tag.getInt("GroupID");
                 NetGroup group = groupMap.get(id);
                 if (group == null) {
                     group = new NetGroup(this.backedNet);
@@ -226,12 +227,12 @@ public final class GraphNetBacker {
             this.vertexMap.put(node.getEquivalencyData(), vertex);
         }
 
-        NBTTagList edges = nbt.getTagList("Edges", 10);
-        int edgeCount = edges.tagCount();
+        ListTag edges = nbt.getList("Edges", Tag.TAG_COMPOUND);
+        int edgeCount = edges.size();
         for (int i = 0; i < edgeCount; i++) {
-            CompoundTag tag = edges.getCompoundTagAt(i);
-            GraphEdge graphEdge = this.getGraph().addEdge(vertexMap.get(tag.getInteger("SourceID")),
-                    vertexMap.get(tag.getInteger("TargetID")));
+            CompoundTag tag = edges.getCompound(i);
+            GraphEdge graphEdge = this.getGraph().addEdge(vertexMap.get(tag.getInt("SourceID")),
+                    vertexMap.get(tag.getInt("TargetID")));
             this.getGraph().setEdgeWeight(graphEdge, tag.getDouble("Weight"));
             graphEdge.wrapped.deserializeNBT(tag);
         }
@@ -246,7 +247,7 @@ public final class GraphNetBacker {
         Object2IntOpenHashMap<GraphVertex> vertexMap = new Object2IntOpenHashMap<>();
         int i = 0;
         int g = 0;
-        NBTTagList vertices = new NBTTagList();
+        ListTag vertices = new ListTag();
         for (GraphVertex graphVertex : this.getGraph().vertexSet()) {
             vertexMap.put(graphVertex, i);
             NetGroup group = graphVertex.wrapped.getGroupUnsafe();
@@ -258,22 +259,22 @@ public final class GraphNetBacker {
                     groupID = g;
                     g++;
                 } else groupID = groupMap.getInt(group);
-                tag.setInteger("GroupID", groupID);
+                tag.putInt("GroupID", groupID);
             }
-            vertices.appendTag(tag);
+            vertices.add(tag);
             i++;
         }
-        compound.setTag("Vertices", vertices);
+        compound.put("Vertices", vertices);
 
-        NBTTagList edges = new NBTTagList();
+        ListTag edges = new ListTag();
         for (GraphEdge graphEdge : this.getGraph().edgeSet()) {
             CompoundTag tag = graphEdge.wrapped.serializeNBT();
-            tag.setInteger("SourceID", vertexMap.getInt(graphEdge.getSource()));
-            tag.setInteger("TargetID", vertexMap.getInt(graphEdge.getTarget()));
-            tag.setDouble("Weight", graphEdge.getWeight());
-            edges.appendTag(tag);
+            tag.putInt("SourceID", vertexMap.getInt(graphEdge.getSource()));
+            tag.putInt("TargetID", vertexMap.getInt(graphEdge.getTarget()));
+            tag.putDouble("Weight", graphEdge.getWeight());
+            edges.add(tag);
         }
-        compound.setTag("Edges", edges);
+        compound.put("Edges", edges);
 
         return compound;
     }

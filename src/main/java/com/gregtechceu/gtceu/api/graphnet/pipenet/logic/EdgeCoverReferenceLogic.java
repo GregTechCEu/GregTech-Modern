@@ -1,18 +1,21 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
-import gregtech.api.cover.Cover;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-import gregtech.api.util.DimensionFacingPos;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 
+import com.gregtechceu.gtceu.utils.DimensionFacingPos;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.Platform;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.BlockEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.network.FriendlyByteBuf;
 
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +27,10 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     public static final EdgeCoverReferenceLogic INSTANCE = new EdgeCoverReferenceLogic();
 
     @Nullable
-    private WeakReference<Cover> coverSource;
+    private WeakReference<CoverBehavior> coverSource;
     private DimensionFacingPos coverSourcePos;
     @Nullable
-    private WeakReference<Cover> coverTarget;
+    private WeakReference<CoverBehavior> coverTarget;
     private DimensionFacingPos coverTargetPos;
 
     public EdgeCoverReferenceLogic() {
@@ -35,29 +38,29 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     }
 
     @Contract("_,_ -> this")
-    public EdgeCoverReferenceLogic coverSource(@NotNull DimensionFacingPos pos, @NotNull Cover cover) {
+    public EdgeCoverReferenceLogic coverSource(@NotNull DimensionFacingPos pos, @NotNull CoverBehavior cover) {
         this.coverSource = new WeakReference<>(cover);
         this.coverSourcePos = pos;
         return this;
     }
 
     @Contract("_,_ -> this")
-    public EdgeCoverReferenceLogic coverTarget(@NotNull DimensionFacingPos pos, @NotNull Cover cover) {
+    public EdgeCoverReferenceLogic coverTarget(@NotNull DimensionFacingPos pos, @NotNull CoverBehavior cover) {
         this.coverTarget = new WeakReference<>(cover);
         this.coverTargetPos = pos;
         return this;
     }
 
-    private @Nullable Cover getSource() {
+    private @Nullable CoverBehavior getSource() {
         if (coverSource == null) return null;
-        Cover ref = coverSource.get();
+        CoverBehavior ref = coverSource.get();
         if (ref == null) {
-            Level world = DimensionManager.getWorld(coverSourcePos.getDimension());
-            if (world == null || !world.isBlockLoaded(coverSourcePos.getPos())) return null;
+            Level world = Platform.getMinecraftServer().getLevel(coverSourcePos.getDimension());
+            if (world == null || !world.isLoaded(coverSourcePos.getPos())) return null;
 
             BlockEntity tile = world.getBlockEntity(coverSourcePos.getPos());
             if (tile instanceof PipeBlockEntity pipe) {
-                Cover cover = pipe.getCoverHolder().getCoverAtSide(coverSourcePos.getFacing());
+                CoverBehavior cover = pipe.getCoverHolder().getCoverAtSide(coverSourcePos.getFacing());
                 if (cover != null) {
                     this.coverSource = new WeakReference<>(cover);
                     return cover;
@@ -77,16 +80,16 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
         }
     }
 
-    private @Nullable Cover getTarget() {
+    private @Nullable CoverBehavior getTarget() {
         if (coverTarget == null) return null;
-        Cover ref = coverTarget.get();
+        CoverBehavior ref = coverTarget.get();
         if (ref == null) {
-            Level world = DimensionManager.getWorld(coverTargetPos.getDimension());
-            if (world == null || !world.isBlockLoaded(coverTargetPos.getPos())) return null;
+            Level world = Platform.getMinecraftServer().getLevel(coverTargetPos.getDimension());
+            if (world == null || !world.isLoaded(coverTargetPos.getPos())) return null;
 
             BlockEntity tile = world.getBlockEntity(coverTargetPos.getPos());
             if (tile instanceof PipeBlockEntity pipe) {
-                Cover cover = pipe.getCoverHolder().getCoverAtSide(coverTargetPos.getFacing());
+                CoverBehavior cover = pipe.getCoverHolder().getCoverAtSide(coverTargetPos.getFacing());
                 if (cover != null) {
                     this.coverTarget = new WeakReference<>(cover);
                     return cover;
@@ -109,22 +112,22 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.setLong("SourcePos", coverSourcePos.getPos().toLong());
-        tag.setByte("SourceFacing", (byte) coverSourcePos.getFacing().ordinal());
-        tag.setInteger("SourceDim", coverSourcePos.getDimension());
-        tag.setLong("TargetPos", coverTargetPos.getPos().toLong());
-        tag.setByte("TargetFacing", (byte) coverTargetPos.getFacing().ordinal());
-        tag.setInteger("TargetDim", coverTargetPos.getDimension());
+        tag.putLong("SourcePos", coverSourcePos.getPos().asLong());
+        tag.putByte("SourceFacing", (byte) coverSourcePos.getFacing().ordinal());
+        tag.putString("SourceDim", coverSourcePos.getDimension().location().toString());
+        tag.putLong("TargetPos", coverTargetPos.getPos().asLong());
+        tag.putByte("TargetFacing", (byte) coverTargetPos.getFacing().ordinal());
+        tag.putString("TargetDim", coverTargetPos.getDimension().location().toString());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.coverSourcePos = new DimensionFacingPos(BlockPos.fromLong(nbt.getLong("SourcePos")),
-                GTUtil.DIRECTIONS[nbt.getByte("SourceFacing")], nbt.getInteger("SourceDim"));
+        this.coverSourcePos = new DimensionFacingPos(BlockPos.of(nbt.getLong("SourcePos")),
+                GTUtil.DIRECTIONS[nbt.getByte("SourceFacing")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("SourceDim"))));
         this.coverSource = new WeakReference<>(null);
-        this.coverTargetPos = new DimensionFacingPos(BlockPos.fromLong(nbt.getLong("TargetPos")),
-                GTUtil.DIRECTIONS[nbt.getByte("TargetFacing")], nbt.getInteger("TargetDim"));
+        this.coverTargetPos = new DimensionFacingPos(BlockPos.of(nbt.getLong("TargetPos")),
+                GTUtil.DIRECTIONS[nbt.getByte("TargetFacing")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("TargetDim"))));
         this.coverTarget = coverSource;
     }
 
@@ -139,8 +142,8 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     }
 
     @Override
-    public void encode(PacketBuffer buf, boolean fullChange) {}
+    public void encode(FriendlyByteBuf buf, boolean fullChange) {}
 
     @Override
-    public void decode(PacketBuffer buf, boolean fullChange) {}
+    public void decode(FriendlyByteBuf buf, boolean fullChange) {}
 }

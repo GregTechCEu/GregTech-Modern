@@ -20,7 +20,8 @@ import java.util.List;
  * B) making sure that logic entries requiring it are the same object across all synced nodes. <br>
  * <br>
  * MultiNodeHelpers have no standard implementation and must be handled by a net and its nodes; see
- * {@link com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet} and {@link com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode}
+ * {@link com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet} and
+ * {@link com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode}
  * for an example of this in action.
  */
 public class MultiNodeHelper implements INetLogicEntryListener {

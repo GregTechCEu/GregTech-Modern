@@ -18,13 +18,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, IAppearance {
+public interface ICoverable extends ITickSubscription, IAppearance, ICapabilityProvider {
 
     Level getLevel();
 
@@ -51,7 +55,16 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     void scheduleNeighborShapeUpdate();
 
+    /**
+     * @param side the side to check
+     * @return if the cover can be added at the side
+     */
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
+
+    /**
+     * @return if it is possible to attach any cover at all
+     */
+    boolean acceptsCovers();
 
     double getCoverPlateThickness();
 
@@ -64,14 +77,13 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
-     * Its an internal method, you should never call it yourself.
-     * <br>
      * Use {@link ICoverable#removeCover(boolean, Direction, Player)} and
      * {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
      * 
      * @param coverBehavior
      * @param side
      */
+    @ApiStatus.Internal
     void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side);
 
     @Nullable
@@ -151,6 +163,13 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         }
     }
 
+    /**
+     * @param side the side to get the neighbor at
+     * @return the neighbor tile entity at the side
+     */
+    @Nullable
+    BlockEntity getNeighbor(@NotNull Direction side);
+
     default void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         for (CoverBehavior cover : getCovers()) {
             cover.onNeighborChanged(block, fromPos, isMoving);
@@ -163,6 +182,13 @@ public interface ICoverable extends ITickSubscription, IAppearance {
                 return true;
         return false;
     }
+
+    /**
+     * @param side        the side to get the redstone from
+     * @param ignoreCover if the cover is being ignored
+     * @return the redstone signal being input at the side
+     */
+    int getInputRedstoneSignal(@NotNull Direction side, boolean ignoreCover);
 
     default boolean hasCover(Direction facing) {
         return getCoverAtSide(facing) != null;

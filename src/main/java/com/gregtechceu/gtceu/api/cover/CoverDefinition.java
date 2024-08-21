@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -24,9 +24,9 @@ public final class CoverDefinition {
     private final ResourceLocation id;
     private final CoverBehaviourProvider behaviorCreator;
     @Getter
-    private final ICoverRenderer coverRenderer;
+    private final CoverRenderer coverRenderer;
 
-    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator, ICoverRenderer coverRenderer) {
+    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator, CoverRenderer coverRenderer) {
         this.behaviorCreator = behaviorCreator;
         this.id = id;
         this.coverRenderer = coverRenderer;

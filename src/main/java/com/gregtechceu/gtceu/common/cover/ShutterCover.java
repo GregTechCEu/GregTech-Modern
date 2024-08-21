@@ -50,6 +50,11 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     }
 
     @Override
+    public boolean forcePipeRenderConnection() {
+        return false;
+    }
+
+    @Override
     public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
         this.workingEnabled = !this.workingEnabled;
         if (!playerIn.level().isClientSide) {

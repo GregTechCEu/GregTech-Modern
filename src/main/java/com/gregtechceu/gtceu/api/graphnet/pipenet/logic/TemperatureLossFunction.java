@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 
 import com.lowdragmc.lowdraglib.networking.IPacket;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;

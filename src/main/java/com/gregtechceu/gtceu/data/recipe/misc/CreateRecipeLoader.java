@@ -10,7 +10,7 @@ import com.simibubi.create.AllItems;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
-import static com.gregtechceu.gtceu.data.recipe.misc.MetaBlockEntityLoader.registerMachineRecipe;
+import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe;
 
 /**
  * @author KilaBash

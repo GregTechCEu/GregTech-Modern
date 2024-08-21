@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet;
 import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.ITraverseData;
-import gregtech.api.util.TaskScheduler;
-import gregtech.api.util.function.Task;
 
-import net.minecraft.world.World;
-
-import com.github.bsideup.jabel.Desugar;
+import com.gregtechceu.gtceu.utils.TaskScheduler;
+import com.gregtechceu.gtceu.utils.function.Task;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -39,7 +37,7 @@ public class NodeLossCache implements Task {
 
     private final Map<Key, NodeLossResult> cache = new Object2ObjectOpenHashMap<>();
 
-    private NodeLossCache(World world) {
+    private NodeLossCache(Level world) {
         TaskScheduler.scheduleTask(world, TaskScheduler.weakTask(this));
     }
 
@@ -69,6 +67,5 @@ public class NodeLossCache implements Task {
         return new Key(node, data.getTestObject(), data.getSimulatorKey());
     }
 
-    @Desugar
     public record Key(WorldPipeNetNode node, IPredicateTestObject testObject, SimulatorKey simulator) {}
 }

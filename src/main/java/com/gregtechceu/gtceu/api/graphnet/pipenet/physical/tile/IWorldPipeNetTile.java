@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import gregtech.api.cover.CoverableView;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.tileentity.BlockEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +31,9 @@ public interface IWorldPipeNetTile {
 
     // fluid piping
 
-    void spawnParticles(Direction direction, EnumParticleTypes particleType, int particleCount);
+    void spawnParticles(Direction direction, ParticleOptions particleType, int particleCount);
 
-    void dealAreaDamage(int size, Consumer<EntityLivingBase> damageFunction);
+    void dealAreaDamage(int size, Consumer<LivingEntity> damageFunction);
 
     void playLossSound();
 

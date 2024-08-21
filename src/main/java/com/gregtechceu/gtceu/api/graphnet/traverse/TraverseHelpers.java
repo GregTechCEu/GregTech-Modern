@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.graphnet.edge.AbstractNetFlowEdge;
 import com.gregtechceu.gtceu.api.graphnet.edge.NetEdge;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.FlowConsumptionStack;
-import gregtech.api.util.GTUtility;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -241,7 +241,7 @@ public final class TraverseHelpers {
         if (totalDesired == 0) return 0;
         maxMult = Math.min(maxMult, flowIn / totalDesired);
         // scaling
-        long mult = GTUtility.binarySearch(0, maxMult, l -> {
+        long mult = GTUtil.binarySearch(0, maxMult, l -> {
             for (DistributorHelper helper : distributorHelperMap.values()) {
                 if (!helper.supportsMult(l)) return false;
             }

@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-public class PropertyKey<T extends IMaterialProperty<T>> {
+public class PropertyKey<T extends IMaterialProperty> {
 
     public static final PropertyKey<BlastProperty> BLAST = new PropertyKey<>("blast", BlastProperty.class);
     public static final PropertyKey<AlloyBlastProperty> ALLOY_BLAST = new PropertyKey<>("blast_alloy",
             AlloyBlastProperty.class);
     public static final PropertyKey<DustProperty> DUST = new PropertyKey<>("dust", DustProperty.class);
+    public static final PropertyKey<PipeNetProperties> PIPENET_PROPERTIES = new PropertyKey<>("net_pipe",
+            PipeNetProperties.class);
     public static final PropertyKey<FluidPipeProperties> FLUID_PIPE = new PropertyKey<>("fluid_pipe",
             FluidPipeProperties.class);
     public static final PropertyKey<FluidProperty> FLUID = new PropertyKey<>("fluid", FluidProperty.class);
@@ -45,7 +47,7 @@ public class PropertyKey<T extends IMaterialProperty<T>> {
         }
     }
 
-    public T cast(IMaterialProperty<?> property) {
+    public T cast(IMaterialProperty property) {
         return this.type.cast(property);
     }
 
@@ -67,7 +69,7 @@ public class PropertyKey<T extends IMaterialProperty<T>> {
         return key;
     }
 
-    private static class EmptyProperty implements IMaterialProperty<EmptyProperty> {
+    private static class EmptyProperty implements IMaterialProperty {
 
         @Override
         public void verifyProperty(MaterialProperties properties) {

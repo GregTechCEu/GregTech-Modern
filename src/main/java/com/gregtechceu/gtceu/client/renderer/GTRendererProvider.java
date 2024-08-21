@@ -24,10 +24,7 @@ public class GTRendererProvider extends ATESRRendererProvider<BlockEntity> {
 
     private static GTRendererProvider INSTANCE;
 
-    private GTRendererProvider(BlockEntityRendererProvider.Context context) {
-        // ModelBellows.INSTANCE = new ModelBellows(context);
-        // ModelHungryChest.INSTANCE = new ModelHungryChest(context);
-    }
+    private GTRendererProvider(BlockEntityRendererProvider.Context context) {}
 
     public static GTRendererProvider getOrCreate(BlockEntityRendererProvider.Context context) {
         if (INSTANCE == null) {

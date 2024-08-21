@@ -7,9 +7,12 @@ import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraft.nbt.ListTag;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Iterator;
 import java.util.Objects;
 
-public abstract class NetNode implements INBTSerializable<CompoundTag> {
+public abstract class NetNode implements ITagSerializable<CompoundTag>, IContentChangeAware {
+
+    @Getter
+    @Setter
+    public Runnable onContentsChanged = () -> {};
 
     /**
      * For interacting with the internal graph representation ONLY, do not use or set this field otherwise.
@@ -60,6 +67,9 @@ public abstract class NetNode implements INBTSerializable<CompoundTag> {
             NetGroup group = getGroupUnsafe();
             if (group != null) group.clearPathCaches();
             else this.clearPathCache();
+            if (onContentsChanged != null) {
+                onContentsChanged.run();
+            }
         }
     }
 
@@ -121,8 +131,8 @@ public abstract class NetNode implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.setTag("Data", this.data.serializeNBT());
-        tag.setBoolean("IsActive", this.isActive());
+        tag.put("Data", this.data.serializeNBT());
+        tag.putBoolean("IsActive", this.isActive());
         return tag;
     }
 
@@ -130,7 +140,7 @@ public abstract class NetNode implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag nbt) {
         this.isActive = nbt.getBoolean("IsActive");
         this.data.clearData();
-        this.data.deserializeNBT((NBTTagList) nbt.getTag("Data"));
+        this.data.deserializeNBT((ListTag) nbt.get("Data"));
     }
 
     /**

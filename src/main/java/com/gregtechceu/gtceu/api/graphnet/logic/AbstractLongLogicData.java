@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractLongLogicData<T extends AbstractLongLogicData<T>> extends NetLogicEntry<T, NBTTagLong> {
+public abstract class AbstractLongLogicData<T extends AbstractLongLogicData<T>> extends NetLogicEntry<T, LongTag> {
 
     private long value;
 
@@ -29,22 +29,22 @@ public abstract class AbstractLongLogicData<T extends AbstractLongLogicData<T>> 
     }
 
     @Override
-    public NBTTagLong serializeNBT() {
-        return new NBTTagLong(this.value);
+    public LongTag serializeNBT() {
+        return LongTag.valueOf(this.value);
     }
 
     @Override
-    public void deserializeNBT(NBTTagLong nbt) {
-        this.value = nbt.getLong();
+    public void deserializeNBT(LongTag nbt) {
+        this.value = nbt.getAsLong();
     }
 
     @Override
-    public void encode(PacketBuffer buf, boolean fullChange) {
+    public void encode(FriendlyByteBuf buf, boolean fullChange) {
         buf.writeVarLong(this.value);
     }
 
     @Override
-    public void decode(PacketBuffer buf, boolean fullChange) {
+    public void decode(FriendlyByteBuf buf, boolean fullChange) {
         this.value = buf.readVarLong();
     }
 }

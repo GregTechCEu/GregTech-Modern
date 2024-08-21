@@ -17,6 +17,12 @@ public class GTRenderTypes extends RenderType {
                     .setCullState(NO_CULL)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
+    private static final RenderType BLOOM_QUAD = RenderType.create("bloom_quad",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(NO_CULL)
+                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .createCompositeState(false));
 
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
@@ -25,5 +31,9 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType getLightRing() {
         return LIGHT_RING;
+    }
+
+    public static RenderType getBloomQuad() {
+        return BLOOM_QUAD;
     }
 }

@@ -27,7 +27,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
@@ -93,6 +92,11 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     @Override
     public boolean canConnectRedstone() {
         return true;
+    }
+
+    @Override
+    public void onRedstoneInputSignalChange(int newSignalStrength) {
+        updateInput();
     }
 
     @Override
@@ -183,10 +187,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     private int getInputSignal() {
-        Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
-
-        return level.getSignal(sourcePos, attachedSide);
+        return coverHolder.getInputRedstoneSignal(attachedSide, true);
     }
 
     //////////////////////////////////////

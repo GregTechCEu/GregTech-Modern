@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block;
 
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet;
@@ -15,14 +14,17 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCoverHolder;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -35,14 +37,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -54,6 +58,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,13 +104,13 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
         super(properties);
         this.structure = structure;
         /*
-        setTranslationKey(structure.getName());
-        setSoundType(SoundType.METAL);
-        setHardness(2.0f);
-        setHarvestLevel(getToolClass(), 1);
-        setResistance(3.0f);
-        setLightOpacity(1);
-        disableStats();
+         * setTranslationKey(structure.getName());
+         * setSoundType(SoundType.METAL);
+         * setHardness(2.0f);
+         * setHarvestLevel(getToolClass(), 1);
+         * setResistance(3.0f);
+         * setLightOpacity(1);
+         * disableStats();
          */
     }
 
@@ -134,123 +141,84 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack item = player.getItemInHand(hand);
-        PipeBlockEntity tile = getBlockEntity(level, pos);
-        if (tile != null) {
-            if (tile.getFrameMaterial() == null) {
-                MaterialBlock frame = (MaterialBlock) ((BlockItem) item.getItem()).getBlock();
-                if (frame != null) {
-                    tile.setFrameMaterial(frame.material);
-                    SoundType type = frame.getSoundType(frame.defaultBlockState());
-                    level.playSound(player, pos, type.getPlaceSound(), SoundSource.BLOCKS,
-                            (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-                    if (!player.isCreative()) {
-                        item.shrink(1);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            }
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        BlockEntity entity = level.getBlockEntity(pos);
 
-            Direction facing = hit.getDirection();
-            Direction actualSide = ICoverable.determineGridSideHit(hit);
-            if (actualSide != null) facing = actualSide;
-            
-            // cover comes first
-            ICoverable coverable = tile.getCoverHolder();
-            CoverBehavior cover = coverable.getCoverAtSide(facing);
-            if (cover != null) {
-                if (ToolHelper.isTool(item, GTToolType.SCREWDRIVER)) {
-                    InteractionResult result = cover.onScrewdriverClick(player, hand, hit);
-                    if (result != InteractionResult.PASS) {
-                        if (result == InteractionResult.SUCCESS) {
-                            ToolHelper.damageItem(item, player);
-                            ToolHelper.playToolSound(GTToolType.SCREWDRIVER, (ServerPlayer) player);
-                            return InteractionResult.SUCCESS;
-                        }
-                        return InteractionResult.PASS;
-                    }
-                }
-                if (ToolHelper.isTool(item, GTToolType.SOFT_MALLET)) {
-                    InteractionResult result = cover.onSoftMalletClick(player, hand, hit);
-                    if (result != InteractionResult.PASS) {
-                        if (result == InteractionResult.SUCCESS) {
-                            ToolHelper.damageItem(item, player);
-                            ToolHelper.playToolSound(GTToolType.SOFT_MALLET, (ServerPlayer) player);
-                            return InteractionResult.SUCCESS;
-                        }
-                        return InteractionResult.PASS;
-                    }
-                }
-                //InteractionResult result = cover.onRightClick(player, hand, trace);
-                //if (result == EnumActionResult.SUCCESS) return true;
+        PipeBlockEntity pipeBlockEntity = null;
+        if (entity instanceof PipeBlockEntity pbe) {
+            pipeBlockEntity = pbe;
+        }
+        if (pipeBlockEntity == null) {
+            return InteractionResult.FAIL;
+        }
 
-                // allow crowbar to run even if the right click returns a failure
-                if (ToolHelper.isTool(item, GTToolType.CROWBAR)) {
-                    coverable.removeCover(facing, player);
-                    ToolHelper.damageItem(item, player);
-                    ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-            // frame removal
-            Material frame = tile.getFrameMaterial();
-            if (frame != null && ToolHelper.isTool(item, GTToolType.CROWBAR)) {
-                tile.setFrameMaterial(null);
-                popResource(level, pos, GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frame).asStack());
-                ToolHelper.damageItem(item, player);
-                ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);
-                return InteractionResult.SUCCESS;
-            }
-            // pipe modification
-            if (isPipeTool(item)) {
-                PipeBlockEntity other = tile.getPipeNeighbor(facing, true);
-
-                if (player.isShiftKeyDown() && allowsBlocking()) {
-                    ToolHelper.damageItem(item, player);
-                    ToolHelper.playToolSound(GTToolType.WRENCH, (ServerPlayer) player);
-                    if (tile.isBlocked(facing)) unblockTile(tile, other, facing);
-                    else blockTile(tile, other, facing);
-                } else {
-                    if (tile.isConnected(facing)) {
-                        ToolHelper.damageItem(item, player);
-                        ToolHelper.playToolSound(item, player);
-                        disconnectTile(tile, other, facing);
-                    } else if (coverCheck(tile, other, facing)) {
-                        ToolHelper.damageItem(item, player);
-                        ToolHelper.playToolSound(item, player);
-                        connectTile(tile, other, facing);
-                    } else {
-                        // if the covers disallow the connection, simply try to render a connection.
-                        connectTile(tile, null, facing);
-                    }
-                }
+        if (pipeBlockEntity.getFrameMaterial() == null) {
+            var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
+            if (frameBlock != null) {
+                pipeBlockEntity.setFrameMaterial(frameBlock.material);
+                if (!player.isCreative()) itemStack.shrink(1);
+                SoundType type = VanillaRecipeHelper.isMaterialWood(frameBlock.material) ? SoundType.WOOD :
+                        SoundType.METAL;
+                level.playSound(player, pos,
+                        type.getPlaceSound(), SoundSource.BLOCKS,
+                        (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
+                player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
         }
-        return super.use(state, level, pos, player, hand, hit);
-    }
-/*
-    @Override
-    public void onBlockClicked(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player playerIn) {
-        PipeBlockEntity tile = getBlockEntity(worldIn, pos);
-        if (tile != null) {
-            RayTraceAABB trace = collisionRayTrace(playerIn, worldIn, pos);
-            if (trace == null) {
-                super.onBlockClicked(worldIn, pos, playerIn);
-                return;
-            }
-            Direction facing = trace.sideHit;
-            Direction actualSide = CoverRayTracer.determineGridSideHit(trace);
-            if (actualSide != null) facing = actualSide;
-            Cover cover = tile.getCoverHolder().getCoverAtSide(facing);
-            if (cover != null) {
-                if (cover.onLeftClick(playerIn, trace)) return;
+
+        if (itemStack.getItem() instanceof PipeBlockItem itemPipe) {
+            BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
+            BlockState stateAtSide = level.getBlockState(offsetPos);
+            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
+                boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack,
+                        hit);
+                if (wasPlaced) {
+                    connectTile(pipeBlockEntity, pipeBlockEntity.getPipeNeighbor(hit.getDirection(), false),
+                            hit.getDirection());
+                }
+                return wasPlaced ? InteractionResult.CONSUME : InteractionResult.FAIL;
             }
         }
-        super.onBlockClicked(worldIn, pos, playerIn);
+
+        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
+        if (!types.isEmpty() && ToolHelper.canUse(itemStack)) {
+            var result = pipeBlockEntity.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
+                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
+                }
+            }
+            return result.getSecond();
+        }
+        return InteractionResult.PASS;
     }
-*/
+
+    /*
+     * @Override
+     * public void onBlockClicked(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player playerIn) {
+     * PipeBlockEntity tile = getBlockEntity(worldIn, pos);
+     * if (tile != null) {
+     * RayTraceAABB trace = collisionRayTrace(playerIn, worldIn, pos);
+     * if (trace == null) {
+     * super.onBlockClicked(worldIn, pos, playerIn);
+     * return;
+     * }
+     * Direction facing = trace.sideHit;
+     * Direction actualSide = CoverRayTracer.determineGridSideHit(trace);
+     * if (actualSide != null) facing = actualSide;
+     * Cover cover = tile.getCoverHolder().getCoverAtSide(facing);
+     * if (cover != null) {
+     * if (cover.onLeftClick(playerIn, trace)) return;
+     * }
+     * }
+     * super.onBlockClicked(worldIn, pos, playerIn);
+     * }
+     */
     /**
      * Should be called to verify if a connection can be formed before
      * {@link #connectTile(PipeBlockEntity, PipeBlockEntity, Direction)} is called.
@@ -260,7 +228,8 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     public static boolean coverCheck(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross,
                                      Direction facing) {
         CoverBehavior tileCover = tile.getCoverHolder().getCoverAtSide(facing);
-        CoverBehavior acrossCover = tileAcross != null ? tileAcross.getCoverHolder().getCoverAtSide(facing.getOpposite()) :
+        CoverBehavior acrossCover = tileAcross != null ?
+                tileAcross.getCoverHolder().getCoverAtSide(facing.getOpposite()) :
                 null;
         return (tileCover == null || tileCover.canPipePassThrough()) &&
                 (acrossCover == null || acrossCover.canPipePassThrough());
@@ -320,7 +289,8 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
         }
     }
 
-    public static void blockTile(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross, Direction facing) {
+    public static void blockTile(@NotNull PipeBlockEntity tile, @Nullable PipeBlockEntity tileAcross,
+                                 Direction facing) {
         tile.setBlocked(facing);
         if (tileAcross == null || tile.getLevel().isClientSide) return;
 
@@ -381,9 +351,9 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
 
     // misc stuff //
 
-
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
+                                TooltipFlag flag) {
         if (getStructure() instanceof IPipeChanneledStructure channeledStructure) {
             if (channeledStructure.getChannelCount() > 1)
                 tooltip.add(Component.translatable("gtceu.pipe.channels", channeledStructure.getChannelCount()));
@@ -414,7 +384,8 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     }
 
     @Override
-    public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
+    public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type,
+                                EntityType<?> entityType) {
         return false;
     }
 
@@ -431,23 +402,25 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
         }
     }
 
-    /* TODO fix
-    @Override
-    public boolean recolorBlock(@NotNull Level world, @NotNull BlockPos pos, @NotNull Direction side,
-                                @NotNull EnumDyeColor color) {
-        if (getStructure().isPaintable()) {
-            PipeBlockEntity tile = getBlockEntity(world, pos);
-            if (tile != null && tile.getPaintingColor() != color.colorValue) {
-                tile.setPaintingColor(color.colorValue, false);
-                return true;
-            }
-        }
-        return false;
-    }
+    /*
+     * TODO fix
+     * 
+     * @Override
+     * public boolean recolorBlock(@NotNull Level world, @NotNull BlockPos pos, @NotNull Direction side,
+     * 
+     * @NotNull EnumDyeColor color) {
+     * if (getStructure().isPaintable()) {
+     * PipeBlockEntity tile = getBlockEntity(world, pos);
+     * if (tile != null && tile.getPaintingColor() != color.colorValue) {
+     * tile.setPaintingColor(color.colorValue, false);
+     * return true;
+     * }
+     * }
+     * return false;
+     * }
      */
 
     // collision boxes //
-
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -500,7 +473,7 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
         if (hasAnyCover && ToolHelper.isTool(stack, GTToolType.SCREWDRIVER)) return true;
         final boolean acceptsCovers = coverable.acceptsCovers();
 
-        return GTUtil.isCoverBehaviorItem(stack, () -> hasAnyCover, coverDef -> acceptsCovers);
+        return CoverPlaceBehavior.isCoverBehaviorItem(stack, () -> hasAnyCover, coverDef -> acceptsCovers);
     }
 
     public boolean isPipeTool(@NotNull ItemStack stack) {
@@ -513,17 +486,9 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
 
     // blockstate //
 
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        constructState(builder).add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED);
-    }
-
-    protected @NotNull StateDefinition.Builder<Block, BlockState> constructState(StateDefinition.Builder<Block, BlockState> builder) {
-        return builder.add(AbstractPipeModel.THICKNESS_PROPERTY).add(AbstractPipeModel.CLOSED_MASK_PROPERTY)
-                .add(AbstractPipeModel.BLOCKED_MASK_PROPERTY).add(AbstractPipeModel.COLOR_PROPERTY)
-                .add(AbstractPipeModel.FRAME_MATERIAL_PROPERTY).add(AbstractPipeModel.FRAME_MASK_PROPERTY)
-                .add(CoverRendererPackage.PROPERTY);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED);
     }
 
     public static BlockState writeConnectionMask(@NotNull BlockState state, byte connectionMask) {
@@ -545,9 +510,18 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
 
     // tile entity //
 
+    @Nullable
     @Override
-    public final boolean hasBlockEntity(@NotNull BlockState state) {
-        return true;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                  BlockEntityType<T> blockEntityType) {
+        if (!level.isClientSide && state.getValue(BlockProperties.SERVER_TICK)) {
+            return (pLevel, pPos, pState, pTile) -> {
+                if (pTile instanceof IPipeNode<?, ?> pipeNode) {
+                    pipeNode.serverTick();
+                }
+            };
+        }
+        return null;
     }
 
     @Nullable
@@ -567,7 +541,7 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new PipeBlockEntity(/*TODO block entity type*/, pos, state);
+        return new PipeBlockEntity(GTBlockEntities.NEW_PIPE.get(), pos, state);
     }
 
     @Override
@@ -599,7 +573,6 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     }
 
     // cover compatibility //
-
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos,

@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.transfer;
 
-import net.minecraft.util.IStringSerializable;
-
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TransferControl<T> implements IStringSerializable {
+public abstract class TransferControl<T> implements StringRepresentable {
 
     private final String name;
 
@@ -14,7 +13,7 @@ public abstract class TransferControl<T> implements IStringSerializable {
     }
 
     @Override
-    public @NotNull String getName() {
+    public @NotNull String getSerializedName() {
         return name;
     }
 

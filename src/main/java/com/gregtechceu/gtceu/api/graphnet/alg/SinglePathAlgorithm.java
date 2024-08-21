@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.graphnet.graph.GraphEdge;
 import com.gregtechceu.gtceu.api.graphnet.graph.GraphVertex;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 
-import com.github.bsideup.jabel.Desugar;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.Iterator;
@@ -84,6 +83,5 @@ public final class SinglePathAlgorithm implements INetAlgorithm {
         return this.net.getGraph().getEdgeWeight(graphEdge);
     }
 
-    @Desugar
     private record Results(double weight, boolean valid) {}
 }

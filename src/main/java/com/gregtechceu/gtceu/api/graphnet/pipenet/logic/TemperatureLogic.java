@@ -10,12 +10,16 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IFreezable;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.CompleteLossOperator;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
+import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

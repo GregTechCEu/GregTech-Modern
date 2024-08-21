@@ -3,11 +3,10 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
-import net.minecraft.nbt.NBTTagByte;
-
+import net.minecraft.nbt.ByteTag;
 import org.jetbrains.annotations.NotNull;
 
-public final class BlockedPredicate extends EdgePredicate<BlockedPredicate, NBTTagByte> {
+public final class BlockedPredicate extends EdgePredicate<BlockedPredicate, ByteTag> {
 
     public static final BlockedPredicate INSTANCE = new BlockedPredicate();
 
@@ -22,12 +21,12 @@ public final class BlockedPredicate extends EdgePredicate<BlockedPredicate, NBTT
     }
 
     @Override
-    public NBTTagByte serializeNBT() {
-        return new NBTTagByte((byte) 0);
+    public ByteTag serializeNBT() {
+        return ByteTag.valueOf((byte) 0);
     }
 
     @Override
-    public void deserializeNBT(NBTTagByte nbt) {}
+    public void deserializeNBT(ByteTag nbt) {}
 
     @Override
     public boolean andy() {

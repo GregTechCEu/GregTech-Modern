@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.graphnet.predicate;
 
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.StringRepresentable;
@@ -14,10 +15,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
- * Note - since the internal map representation encodes keys using {@link StringRepresentable#getSerializedName()} on predicates,
+ * Note - since the internal map representation encodes keys using {@link StringRepresentable#getSerializedName()} on
+ * predicates,
  * making a predicate class return two different names is a valid way to register multiple instances.
  */
-public final class EdgePredicateHandler implements INBTSerializable<ListTag>, Predicate<IPredicateTestObject> {
+public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Predicate<IPredicateTestObject> {
 
     private final Map<String, EdgePredicate<?, ?>> predicateSet;
 

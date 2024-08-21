@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractIntLogicData<T extends AbstractIntLogicData<T>> extends NetLogicEntry<T, NBTTagInt> {
+public abstract class AbstractIntLogicData<T extends AbstractIntLogicData<T>> extends NetLogicEntry<T, IntTag> {
 
     private int value;
 
@@ -27,22 +27,22 @@ public abstract class AbstractIntLogicData<T extends AbstractIntLogicData<T>> ex
     }
 
     @Override
-    public NBTTagInt serializeNBT() {
-        return new NBTTagInt(this.value);
+    public IntTag serializeNBT() {
+        return IntTag.valueOf(this.value);
     }
 
     @Override
-    public void deserializeNBT(NBTTagInt nbt) {
-        this.value = nbt.getInt();
+    public void deserializeNBT(IntTag nbt) {
+        this.value = nbt.getAsInt();
     }
 
     @Override
-    public void encode(PacketBuffer buf, boolean fullChange) {
+    public void encode(FriendlyByteBuf buf, boolean fullChange) {
         buf.writeVarInt(this.value);
     }
 
     @Override
-    public void decode(PacketBuffer buf, boolean fullChange) {
+    public void decode(FriendlyByteBuf buf, boolean fullChange) {
         this.value = buf.readVarInt();
     }
 }

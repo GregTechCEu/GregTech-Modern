@@ -31,7 +31,7 @@ import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.PUMP;
 
-public class MetaBlockEntityLoader {
+public class MetaTileEntityLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP",

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate.test;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack> {
 
     public final Item item;
-    public final int meta;
     public final CompoundTag tag;
 
     public final int stackLimit;
@@ -22,29 +21,27 @@ public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack
 
     public ItemTestObject(@NotNull ItemStack stack) {
         item = stack.getItem();
-        meta = stack.getMetadata();
-        tag = stack.getTagCompound();
+        tag = stack.getTag();
         stackLimit = stack.getMaxStackSize();
-        this.hash = Objects.hash(item, meta, tag);
+        this.hash = Objects.hash(item, tag);
     }
 
     @Override
     @Contract(" -> new")
     public ItemStack recombine() {
-        return new ItemStack(item, 1, meta, tag);
+        return new ItemStack(item, 1, tag);
     }
 
     @Contract("_ -> new")
     public ItemStack recombine(int amount) {
         assert amount <= getStackLimit() && amount > 0;
-        return new ItemStack(item, amount, meta, tag);
+        return new ItemStack(item, amount, tag);
     }
 
     @Override
     public boolean test(@NotNull ItemStack stack) {
-        if (this.stackLimit == stack.getMaxStackSize() && this.item == stack.getItem() &&
-                this.meta == stack.getMetadata()) {
-            CompoundTag other = stack.getTagCompound();
+        if (this.stackLimit == stack.getMaxStackSize() && this.item == stack.getItem()) {
+            CompoundTag other = stack.getTag();
             return Objects.equals(this.tag, other);
         }
         return false;
@@ -59,7 +56,7 @@ public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemTestObject that = (ItemTestObject) o;
-        return meta == that.meta && Objects.equals(item, that.item) && Objects.equals(tag, that.tag);
+        return Objects.equals(item, that.item) && Objects.equals(tag, that.tag);
     }
 
     @Override

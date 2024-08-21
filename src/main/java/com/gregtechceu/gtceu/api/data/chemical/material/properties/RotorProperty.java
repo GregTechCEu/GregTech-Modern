@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public class RotorProperty implements IMaterialProperty<RotorProperty> {
+public class RotorProperty implements IMaterialProperty {
 
     /**
      * Power of rotors made from this Material.

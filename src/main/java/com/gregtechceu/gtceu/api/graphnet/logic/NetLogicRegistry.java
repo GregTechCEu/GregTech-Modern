@@ -12,7 +12,7 @@ public final class NetLogicRegistry {
     private static final Map<String, Supplier<NetLogicEntry<?, ?>>> REGISTRY = new Object2ObjectOpenHashMap<>();
 
     static void register(NetLogicEntry<?, ?> entry) {
-        REGISTRY.putIfAbsent(entry.getName(), entry::getNew);
+        REGISTRY.putIfAbsent(entry.getSerializedName(), entry::getNew);
     }
 
     public static @Nullable Supplier<@NotNull NetLogicEntry<?, ?>> getSupplierNullable(String name) {
