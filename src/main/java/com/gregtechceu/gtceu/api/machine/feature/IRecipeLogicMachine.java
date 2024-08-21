@@ -137,7 +137,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * @return whether to enable the efficiency modifier if config is enabled.
      */
     default boolean doEfficiencyModifier() {
-        return true;
+        return self().getDefinition().isDoEfficiencyModifier();
     }
 
     default boolean shouldWorkingPlaySound() {

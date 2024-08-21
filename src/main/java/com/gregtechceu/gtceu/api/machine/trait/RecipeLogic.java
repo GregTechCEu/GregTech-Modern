@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -233,7 +232,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         var modified = match;
         if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier && machine.doEfficiencyModifier()) {
             modified = modified.copy();
-            modified.duration = getRecipeDuration(match);
+            modified.duration = getRecipeDuration(modified);
         }
         modified = machine.fullModifyRecipe(modified);
         if (modified != null) {
@@ -268,10 +267,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     totalContinuousRunningTime++;
 
                     if (ConfigHolder.INSTANCE.machines.doEfficiencyModifier && machine.doEfficiencyModifier()) {
-                        long currentDuration = lastOriginRecipe.duration;
+                        long currentDuration = lastRecipe.duration;
                         if (lastBaseDuration != currentDuration) {
                             lastBaseDuration = currentDuration;
-                            maxEfficiency = getRecipeMaxEfficiency(lastOriginRecipe);
+                            maxEfficiency = getRecipeMaxEfficiency(lastRecipe);
                             efficiency = Math.min(efficiency, maxEfficiency);
                         }
                     }

@@ -116,6 +116,11 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     }
 
     @Override
+    public boolean doEfficiencyModifier() {
+        return false;
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
         traitSubscriptions.forEach(ISubscription::unsubscribe);

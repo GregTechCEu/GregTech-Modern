@@ -315,6 +315,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder doEfficiencyModifier(boolean doEfficiencyModifier) {
+        return (MultiblockMachineBuilder) super.doEfficiencyModifier(doEfficiencyModifier);
+    }
+
+    @Override
     public MultiblockMachineBuilder beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
         return (MultiblockMachineBuilder) super.beforeWorking(beforeWorking);
     }

@@ -156,6 +156,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return false;
     }
 
+    @Override
+    public boolean doEfficiencyModifier() {
+        return false;
+    }
+
     //////////////////////////////////////
     // ******* GUI ********//
     //////////////////////////////////////

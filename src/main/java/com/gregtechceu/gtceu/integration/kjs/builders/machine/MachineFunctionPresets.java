@@ -281,6 +281,15 @@ public class MachineFunctionPresets {
             }
 
             @Override
+            public MachineBuilder<D> doEfficiencyModifier(boolean doEfficiencyModifier) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.doEfficiencyModifier(doEfficiencyModifier);
+                }
+                return this;
+            }
+
+            @Override
             public MachineBuilder<D> appearance(Supplier<BlockState> appearance) {
                 for (var builder : builders) {
                     if (builder == null) continue;

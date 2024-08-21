@@ -129,6 +129,11 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return capability != EURecipeCapability.CAP;
     }
 
+    @Override
+    public boolean doEfficiencyModifier() {
+        return false;
+    }
+
     //////////////////////////////////////
     // ******* GUI ********//
     //////////////////////////////////////

@@ -207,6 +207,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return null;
     }
 
+    @Override
+    public boolean doEfficiencyModifier() {
+        return false;
+    }
+
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {

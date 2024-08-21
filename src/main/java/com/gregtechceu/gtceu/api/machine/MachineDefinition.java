@@ -69,6 +69,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
+    @Getter
+    @Setter
+    private boolean doEfficiencyModifier;
     @NotNull
     @Getter
     @Setter

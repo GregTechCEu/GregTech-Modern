@@ -414,10 +414,12 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         }, (progressWidget, machine) -> {
             progressWidget.setProgressSupplier(() -> (double) machine.getRecipeLogic().getEfficiency() /
                     machine.getRecipeLogic().getMaxEfficiency());
-            progressWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.efficiency_bar.tooltip",
-                    FormattingUtil.formatNumber0Places((float) machine.getRecipeLogic().getEfficiency() /
-                            machine.getRecipeLogic().getMaxEfficiency() * 100f))
-                    .toArray(Component[]::new));
+            progressWidget.setHoverTooltips(Component.translatable("gtceu.gui.efficiency_bar.tooltip.0"),
+                    Component.translatable("gtceu.gui.efficiency_bar.tooltip.1"));
+            progressWidget.setDynamicHoverTips(progress -> {
+                return Component.translatable("gtceu.gui.efficiency_bar.tooltip.2",
+                        FormattingUtil.formatNumber0Places((float) (progress * 100))).getString();
+            });
         });
     }
 

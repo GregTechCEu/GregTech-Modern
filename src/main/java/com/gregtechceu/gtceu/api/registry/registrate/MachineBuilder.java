@@ -124,6 +124,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
     @Setter
     private boolean alwaysTryModifyRecipe;
+    @Setter
+    private boolean doEfficiencyModifier;
     @NotNull
     @Getter
     @Setter
@@ -399,6 +401,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         });
         definition.setRecipeModifier(recipeModifier);
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
+        definition.setDoEfficiencyModifier(doEfficiencyModifier);
         definition.setBeforeWorking(this.beforeWorking);
         definition.setOnWorking(this.onWorking);
         definition.setOnWaiting(this.onWaiting);
