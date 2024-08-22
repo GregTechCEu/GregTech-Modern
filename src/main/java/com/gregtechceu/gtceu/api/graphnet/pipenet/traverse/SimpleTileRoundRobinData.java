@@ -36,6 +36,6 @@ public class SimpleTileRoundRobinData<T> extends AbstractTileRoundRobinData {
     }
 
     public @Nullable T getAtPointer(WorldPipeNetNode node, @Nullable SimulatorKey simulator) {
-        return getCapabilityAtPointer(cap, node, simulator);
+        return getCapabilityAtPointer(cap, node, simulator).resolve().orElse(null);
     }
 }

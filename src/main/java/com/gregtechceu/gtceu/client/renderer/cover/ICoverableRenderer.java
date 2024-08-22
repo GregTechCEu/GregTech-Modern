@@ -82,7 +82,7 @@ public interface ICoverableRenderer extends IRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, pos, level, modelState);
+                //cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, pos, level, modelState);
             }
         }
     }

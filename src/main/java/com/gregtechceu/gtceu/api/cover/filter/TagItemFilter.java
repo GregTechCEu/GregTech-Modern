@@ -36,6 +36,13 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
         return handler;
     }
 
+    @Override
+    public CompoundTag saveFilter() {
+        CompoundTag tag = super.saveFilter();
+        tag.putString("type", FilterType.FLUID_TAG.getSerializedName());
+        return tag;
+    }
+
     public void setOreDict(String oreDict) {
         cache.clear();
         super.setOreDict(oreDict);

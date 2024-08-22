@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.block.CableBlock;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeMaterialBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
@@ -51,14 +51,17 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         CompoundTag data = compoundTag.getCompound(getUid().toString());
         if (blockAccessor.getBlock() instanceof CableBlock cableBlock) {
-            CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(),
+            PipeMaterialBlockEntity cable = cableBlock.getBlockEntity(blockAccessor.getLevel(),
                     blockAccessor.getPosition());
             if (cable != null) {
                 var cableData = new CompoundTag();
+                // TODO fix
+                /*
                 cableData.putLong("maxVoltage", cable.getMaxVoltage());
                 cableData.putLong("currentVoltage", cable.getCurrentMaxVoltage());
                 cableData.putDouble("maxAmperage", cable.getMaxAmperage());
                 cableData.putDouble("currentAmperage", cable.getAverageAmperage());
+                */
                 data.put("cableData", cableData);
             }
         }

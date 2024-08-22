@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.ILaserRelay;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 
@@ -13,7 +14,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LaserRoutePath implements IRoutePath<ILaserContainer>, IAttachData {
+public class LaserRoutePath implements IRoutePath<ILaserRelay>, IAttachData {
 
     @Getter
     private final BlockPos targetPipePos;
@@ -43,7 +44,7 @@ public class LaserRoutePath implements IRoutePath<ILaserContainer>, IAttachData 
      * @return the handler
      */
     @Nullable
-    public ILaserContainer getHandler(Level level) {
+    public ILaserRelay getHandler(Level level) {
         return GTCapabilityHelper.getLaser(level, getTargetPipePos().relative(targetFacing),
                 targetFacing.getOpposite());
     }

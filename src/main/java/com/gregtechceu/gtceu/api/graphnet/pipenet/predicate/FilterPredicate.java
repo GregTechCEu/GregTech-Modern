@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import com.gregtechceu.gtceu.common.cover.filter.BaseFilterContainer;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 
 import net.minecraft.world.item.ItemStack;
@@ -16,38 +18,32 @@ public final class FilterPredicate extends EdgePredicate<FilterPredicate, Compou
 
     public static final FilterPredicate INSTANCE = new FilterPredicate();
 
-    private @Nullable BaseFilterContainer sourceFilter;
-    private @Nullable BaseFilterContainer targetFilter;
+    @Setter
+    private @Nullable Filter<?, ?> sourceFilter;
+    @Setter
+    private @Nullable Filter<?, ?> targetFilter;
 
     private FilterPredicate() {
         super("FluidFilter");
     }
 
-    public void setSourceFilter(@Nullable BaseFilterContainer sourceFilter) {
-        this.sourceFilter = sourceFilter;
-    }
-
-    public void setTargetFilter(@Nullable BaseFilterContainer targetFilter) {
-        this.targetFilter = targetFilter;
-    }
-
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        if (sourceFilter != null) tag.put("Source", sourceFilter.serializeNBT());
-        if (targetFilter != null) tag.put("Target", targetFilter.serializeNBT());
+        if (sourceFilter != null) tag.put("Source", sourceFilter.saveFilter());
+        if (targetFilter != null) tag.put("Target", targetFilter.saveFilter());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         if (nbt.contains("Source")) {
-            sourceFilter = new GenericFilterContainer();
-            sourceFilter.deserializeNBT(nbt.getCompound("Source"));
+            sourceFilter = Filter.FilterType.makeNew(nbt.getCompound("Source").getString("type"));
+            sourceFilter.loadFilter(nbt.getCompound("Source"));
         } else sourceFilter = null;
         if (nbt.contains("Target")) {
-            targetFilter = new GenericFilterContainer();
-            targetFilter.deserializeNBT(nbt.getCompound("Target"));
+            targetFilter = Filter.FilterType.makeNew(nbt.getCompound("Target").getString("type"));
+            targetFilter.loadFilter(nbt.getCompound("Target"));
         } else targetFilter = null;
     }
 
@@ -64,8 +60,8 @@ public final class FilterPredicate extends EdgePredicate<FilterPredicate, Compou
     @Override
     public boolean test(IPredicateTestObject object) {
         Object test = object.recombine();
-        if (sourceFilter != null && !sourceFilter.test(test)) return false;
-        return targetFilter == null || targetFilter.test(test);
+        if (sourceFilter != null && !sourceFilter.testGeneric(test)) return false;
+        return targetFilter == null || targetFilter.testGeneric(test);
     }
 
     private static class GenericFilterContainer extends BaseFilterContainer {

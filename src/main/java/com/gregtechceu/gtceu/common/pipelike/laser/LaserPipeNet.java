@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.ILaserRelay;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
@@ -118,7 +119,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
          * @return the handler
          */
         @Nullable
-        public ILaserContainer getHandler(@NotNull Level world) {
+        public ILaserRelay getHandler(@NotNull Level world) {
             return GTCapabilityHelper.getLaser(world, getHandlerPos(), faceToHandler.getOpposite());
         }
     }

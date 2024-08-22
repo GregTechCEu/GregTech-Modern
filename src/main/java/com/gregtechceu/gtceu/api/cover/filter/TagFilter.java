@@ -42,6 +42,11 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
 
     protected TagFilter() {}
 
+    @Override
+    public void loadFilter(CompoundTag tag) {
+        this.oreDictFilterExpression = tag.getString("oreDict");
+    }
+
     public CompoundTag saveFilter() {
         var tag = new CompoundTag();
         tag.putString("oreDict", oreDictFilterExpression);

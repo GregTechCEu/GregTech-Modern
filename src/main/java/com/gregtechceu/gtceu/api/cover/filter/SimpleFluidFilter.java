@@ -73,8 +73,19 @@ public class SimpleFluidFilter implements FluidFilter {
         };
     }
 
+    @Override
+    public void loadFilter(CompoundTag tag) {
+        this.isBlackList = tag.getBoolean("isBlackList");
+        this.ignoreNbt = tag.getBoolean("matchNbt");
+        var list = tag.getList("matches", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            this.matches[i] = FluidStack.loadFromTag((CompoundTag) list.get(i));
+        }
+    }
+
     public CompoundTag saveFilter() {
         var tag = new CompoundTag();
+        tag.putString("type", FilterType.FLUID.getSerializedName());
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);
         var list = new ListTag();

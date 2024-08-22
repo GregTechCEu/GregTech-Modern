@@ -67,6 +67,11 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
+        public void loadFilter(CompoundTag tag) {
+            throw new NotImplementedException("Not available for empty item filter");
+        }
+
+        @Override
         public CompoundTag saveFilter() {
             throw new NotImplementedException("Not available for empty item filter");
         }

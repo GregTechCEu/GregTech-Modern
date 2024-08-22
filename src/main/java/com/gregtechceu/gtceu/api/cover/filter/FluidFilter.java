@@ -64,6 +64,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
+        public void loadFilter(CompoundTag tag) {
+            throw new NotImplementedException("Not available for empty fluid filter");
+        }
+
+        @Override
         public CompoundTag saveFilter() {
             throw new NotImplementedException("Not available for empty fluid filter");
         }

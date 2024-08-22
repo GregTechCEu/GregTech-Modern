@@ -8,16 +8,15 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -27,13 +26,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 
 public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeCoverHolder.class);
+    @Getter
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
     private final PipeBlockEntity holder;
     @Persisted
@@ -270,14 +272,11 @@ public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return null;
+        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
-    public IManagedStorage getSyncStorage() {
-        return null;
+    public void onChanged() {
+        holder.onChanged();
     }
-
-    @Override
-    public void onChanged() {}
 }

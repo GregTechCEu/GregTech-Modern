@@ -25,18 +25,12 @@ public class GTBlockEntities {
     public static final BlockEntityEntry<PipeBlockEntity> NEW_PIPE = REGISTRATE
             .blockEntity("pipe", PipeBlockEntity::new)
             .validBlocks(Stream.concat(Arrays.stream(GTBlocks.DUCT_PIPES),
-                    Stream.concat(Arrays.stream(GTBlocks.OPTICAL_PIPES),
-                            Stream.concat(Arrays.stream(GTBlocks.LASER_PIPES),
+                    Stream.concat(Stream.of(GTBlocks.OPTICAL_PIPE),
+                            Stream.concat(Stream.of(GTBlocks.LASER_PIPE),
                                     Stream.concat(GTBlocks.ITEM_PIPE_BLOCKS.values().stream(),
                                             Stream.concat(GTBlocks.CABLE_BLOCKS.values().stream(),
                                                     GTBlocks.FLUID_PIPE_BLOCKS.values().stream())))))
                     .toArray(NonNullSupplier[]::new))
-            .register();
-
-    public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
-            .blockEntity("cable", CableBlockEntity::create)
-            .onRegister(CableBlockEntity::onBlockEntityRegister)
-            .validBlocks(GTBlocks.CABLE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
     public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
@@ -54,12 +48,7 @@ public class GTBlockEntities {
     public static final BlockEntityEntry<LaserPipeBlockEntity> LASER_PIPE = REGISTRATE
             .blockEntity("laser_pipe", LaserPipeBlockEntity::create)
             .onRegister(LaserPipeBlockEntity::onBlockEntityRegister)
-            .validBlocks(GTBlocks.LASER_PIPES)
-            .register();
-
-    public static final BlockEntityEntry<OpticalPipeBlockEntity> OPTICAL_PIPE = REGISTRATE
-            .blockEntity("optical_pipe", OpticalPipeBlockEntity::new)
-            .validBlocks(GTBlocks.OPTICAL_PIPES)
+            .validBlocks(GTBlocks.LASER_PIPE)
             .register();
 
     public static final BlockEntityEntry<DuctPipeBlockEntity> DUCT_PIPE = REGISTRATE

@@ -12,7 +12,7 @@ public final class NetPredicateRegistry {
     private static final Map<String, Supplier<EdgePredicate<?, ?>>> REGISTRY = new Object2ObjectOpenHashMap<>();
 
     static void register(@NotNull EdgePredicate<?, ?> predicate) {
-        REGISTRY.putIfAbsent(predicate.getName(), predicate::getNew);
+        REGISTRY.putIfAbsent(predicate.getSerializedName(), predicate::getNew);
     }
 
     public static @Nullable Supplier<@NotNull EdgePredicate<?, ?>> getSupplierNullable(String name) {

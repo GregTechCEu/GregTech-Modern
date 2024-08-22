@@ -1,20 +1,13 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.block.CableBlock;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.*;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_1F;
 
 public class CableInfoProvider implements IProbeInfoProvider {
 
@@ -26,6 +19,8 @@ public class CableInfoProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
+        // TODO fix
+        /*
         if (blockState.getBlock() instanceof CableBlock cableBlock) {
             CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(level, iProbeHitData.getPos());
             if (cable != null) {
@@ -48,5 +43,6 @@ public class CableInfoProvider implements IProbeInfoProvider {
                 horizontalPane.text(DECIMAL_FORMAT_1F.format(cable.getMaxAmperage()) + "A");
             }
         }
+        */
     }
 }

@@ -72,11 +72,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
-    @DescSynced
-    @Persisted(key = "cover")
-    protected final PipeCoverContainer coverContainer;
-
-    @Getter
     @Setter
     @DescSynced
     @Persisted
@@ -108,7 +103,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     public PipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-        this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
     }
@@ -146,13 +140,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Override
     public void setRemoved() {
         super.setRemoved();
-        coverContainer.onUnload();
     }
 
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        coverContainer.onLoad();
     }
 
     @Override
@@ -373,7 +365,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
                 context.getClickedPos(), false);
         Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
+        CoverBehavior coverBehavior = null;
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)

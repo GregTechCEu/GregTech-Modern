@@ -72,8 +72,19 @@ public class SimpleItemFilter implements ItemFilter {
         };
     }
 
+    @Override
+    public void loadFilter(CompoundTag tag) {
+        this.isBlackList = tag.getBoolean("isBlackList");
+        this.ignoreNbt = tag.getBoolean("matchNbt");
+        var list = tag.getList("matches", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            this.matches[i] = ItemStack.of((CompoundTag) list.get(i));
+        }
+    }
+
     public CompoundTag saveFilter() {
         var tag = new CompoundTag();
+        tag.putString("type", FilterType.ITEM.getSerializedName());
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);
         var list = new ListTag();
