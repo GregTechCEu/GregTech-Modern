@@ -83,7 +83,9 @@ public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
         return ICoverable.super.removeCover(side, player);
     }
 
+    @Override
     public void onLoad() {
+        ICoverable.super.onLoad();
         for (Direction side : GTUtil.DIRECTIONS) {
             this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(), side);
         }

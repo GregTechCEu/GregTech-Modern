@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.INeighborCache;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * Also delivers most of the Information about TileEntities.
  */
 public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
-                                     IAutoPersistBlockEntity {
+                                     IAutoPersistBlockEntity, INeighborCache {
 
     default BlockEntity self() {
         return (BlockEntity) this;

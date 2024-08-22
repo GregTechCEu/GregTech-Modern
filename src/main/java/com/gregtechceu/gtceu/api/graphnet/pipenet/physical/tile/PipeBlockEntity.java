@@ -487,7 +487,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 var listener = node.getData().createListener(
                         (e, r, f) -> writeCustomData(UPDATE_PIPE_LOGIC, buf -> {
                             buf.writeVarInt(networkID);
-                            buf.writeString(e.getName());
+                            buf.writeUtf(e.getSerializedName());
                             buf.writeBoolean(r);
                             buf.writeBoolean(f);
                             if (!r) {

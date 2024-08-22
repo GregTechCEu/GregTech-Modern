@@ -59,7 +59,7 @@ public abstract class PipeMaterialBlock extends PipeBlock {
         if (ConfigHolder.INSTANCE.dev.debug) {
             if (material != null)
                 tooltip.add(Component
-                        .literal("MetaItem Id: " + getStructure().getTagPrefix().name + material.toCamelCaseString()));
+                        .literal("MetaItem Id: " + getStructure().getPrefix().name + material.toCamelCaseString()));
         }
     }
 

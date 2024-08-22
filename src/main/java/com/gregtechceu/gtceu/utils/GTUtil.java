@@ -400,6 +400,13 @@ public class GTUtil {
         return distances.get(min);
     }
 
+    public static double geometricMean(double first, double... numbers) {
+        for (double number : numbers) {
+            first *= number;
+        }
+        return Math.pow(first, 1D / (1 + numbers.length));
+    }
+
     public static long binarySearch(long minValue, long maxValue, LongPredicate test, boolean ascending) {
         while (maxValue - minValue > 1) {
             long middle = (minValue + maxValue) / 2;

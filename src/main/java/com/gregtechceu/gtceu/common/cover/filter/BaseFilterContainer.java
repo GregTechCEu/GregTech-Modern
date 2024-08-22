@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.common.cover.filter;
 
 import com.gregtechceu.gtceu.api.blockentity.IDirtyNotifiable;
-import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
 
     private int maxTransferSize = 1;
     private int transferSize;
-    private @Nullable Filter<?, ?> currentFilter;
+    private @Nullable ItemFilter currentFilter;
     private @Nullable Runnable onFilterInstanceChange;
     private final IDirtyNotifiable dirtyNotifiable;
 
@@ -22,22 +23,22 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
         this.dirtyNotifiable = dirtyNotifiable;
     }
 
-    public boolean test(Object toTest) {
+    public boolean test(ItemStack toTest) {
         return !hasFilter() || getFilter().test(toTest);
     }
 
-    public MatchResult match(Object toMatch) {
+    public boolean match(ItemStack toMatch) {
         if (!hasFilter())
-            return MatchResult.create(true, toMatch, -1);
+            return true;
 
-        return getFilter().match(toMatch);
+        return getFilter().test(toMatch);
     }
 
-    public int getTransferLimit(Object stack) {
+    public int getTransferLimit(ItemStack stack) {
         if (!hasFilter() || isBlacklistFilter()) {
             return getTransferSize();
         }
-        return getFilter().getTransferLimit(stack, getTransferSize());
+        return getFilter().testItemCount(stack);
     }
 
     @Override
@@ -62,13 +63,13 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
 
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        if (ItemStack.areItemStacksEqual(stack, getFilterStack()))
+        if (ItemStack.isSameItemSameTags(stack, getFilterStack()))
             return;
 
         if (stack.isEmpty()) {
-            setFilter(null);
+            setItemFilter(null);
         } else if (isItemValid(stack)) {
-            setFilter(BaseFilter.getFilterFromStack(stack));
+            setItemFilter(ItemFilter.loadFilter(stack));
         }
 
         super.setStackInSlot(slot, stack);
@@ -87,7 +88,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (!isItemValid(stack)) return stack;
         var remainder = super.insertItem(slot, stack, simulate);
-        if (!simulate) setFilter(BaseFilter.getFilterFromStack(stack));
+        if (!simulate) setItemFilter(ItemFilter.loadFilter(stack));
         return remainder;
     }
 
@@ -105,29 +106,29 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     }
 
     public int getMaxTransferSize() {
-        return !showGlobalTransferLimitSlider() && hasFilter() ? currentFilter.getMaxTransferSize() :
+        return !showGlobalTransferLimitSlider() && hasFilter() ? currentFilter.getMaxStackSize() :
                 this.maxTransferSize;
     }
 
     public void setMaxTransferSize(int maxTransferSize) {
-        this.maxTransferSize = MathHelper.clamp(maxTransferSize, 1, Integer.MAX_VALUE);
-        this.transferSize = MathHelper.clamp(this.transferSize, 1, this.maxTransferSize);
-        if (hasFilter()) currentFilter.setMaxTransferSize(this.maxTransferSize);
+        this.maxTransferSize = Mth.clamp(maxTransferSize, 1, Integer.MAX_VALUE);
+        this.transferSize = Mth.clamp(this.transferSize, 1, this.maxTransferSize);
+        //if (hasFilter()) currentFilter.setMaxTransferSize(this.maxTransferSize);
     }
 
     public final boolean hasFilter() {
         return currentFilter != null;
     }
 
-    public final @Nullable Filter<?, ?> getFilter() {
+    public final @Nullable ItemFilter getFilter() {
         return currentFilter;
     }
 
-    public final void setFilter(@Nullable Filter<?, ?> newFilter) {
+    public final void setItemFilter(@Nullable ItemFilter newFilter) {
         this.currentFilter = newFilter;
         if (hasFilter()) {
-            this.currentFilter.setDirtyNotifiable(this.dirtyNotifiable);
-            this.currentFilter.setMaxTransferSize(this.maxTransferSize);
+            this.currentFilter.setOnUpdated($ -> this.dirtyNotifiable.markAsDirty());
+            //this.currentFilter.setMaxTransferSize(this.maxTransferSize);
         }
         if (onFilterInstanceChange != null) {
             this.onFilterInstanceChange.run();
@@ -135,16 +136,16 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     }
 
     public boolean showGlobalTransferLimitSlider() {
-        return this.maxTransferSize > 0 && (!hasFilter() || getFilter().showGlobalTransferLimitSlider());
+        return this.maxTransferSize > 0 && (!hasFilter()/* || getFilter().showGlobalTransferLimitSlider()*/);
     }
 
     public void setBlacklistFilter(boolean blacklistFilter) {
-        if (hasFilter()) getFilter().setBlacklistFilter(blacklistFilter);
+        if (hasFilter()) getFilter().setBlackList(blacklistFilter);
         onFilterInstanceChange();
     }
 
     public final boolean isBlacklistFilter() {
-        return hasFilter() && getFilter().isBlacklistFilter();
+        return hasFilter() && getFilter().isBlackList();
     }
 
     public int getTransferSize() {
@@ -158,11 +159,11 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
         if (isBlacklistFilter() || !hasFilter()) {
             return getTransferSize();
         }
-        return this.currentFilter.getTransferLimit(slotIndex, getTransferSize());
+        return this.currentFilter.testItemCount(getStackInSlot(slotIndex));
     }
 
     public void setTransferSize(int transferSize) {
-        this.transferSize = MathHelper.clamp(transferSize, 1, getMaxTransferSize());
+        this.transferSize = Mth.clamp(transferSize, 1, getMaxTransferSize());
         onFilterInstanceChange();
     }
 
@@ -177,7 +178,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt.getCompound("FilterInventory"));
-        setFilter(BaseFilter.getFilterFromStack(getFilterStack()));
+        setItemFilter(ItemFilter.loadFilter(getFilterStack()));
         if (nbt.contains("TransferStackSize"))
             this.transferSize = nbt.getInt("TransferStackSize");
     }
@@ -187,14 +188,13 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
         // also, ItemStackHandler's deserialization doesn't use setStackInSlot, so I have to do that manually here
         if (nbt.contains("FilterInventory")) {
             super.deserializeNBT(nbt.getCompound("FilterInventory"));
-            setFilter(BaseFilter.getFilterFromStack(getFilterStack()));
+            setItemFilter(ItemFilter.loadFilter(getFilterStack()));
         }
-
-        if (hasFilter())
-            getFilter().getFilterReader().handleLegacyNBT(nbt);
     }
 
     /** Uses Cleanroom MUI */
+    // TODO ui
+    /*
     public IWidget initUI(ModularPanel main, PanelSyncManager manager) {
         PanelSyncHandler panel = manager.panel("filter_panel", main, (syncManager, syncHandler) -> {
             var filter = hasFilter() ? getFilter() : BaseFilter.ERROR_FILTER;
@@ -236,9 +236,10 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
                         .alignment(Alignment.CenterRight).asWidget()
                         .left(36).right(0).height(18));
     }
+    */
 
     public void writeInitialSyncData(FriendlyByteBuf packetBuffer) {
-        packetBuffer.writeItemStack(this.getFilterStack());
+        packetBuffer.writeItem(this.getFilterStack());
         packetBuffer.writeInt(this.maxTransferSize);
         packetBuffer.writeInt(this.transferSize);
     }

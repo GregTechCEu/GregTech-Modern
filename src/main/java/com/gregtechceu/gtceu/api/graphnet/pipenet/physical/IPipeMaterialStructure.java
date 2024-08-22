@@ -4,5 +4,5 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 public interface IPipeMaterialStructure extends IPipeStructure {
 
-    TagPrefix getTagPrefix();
+    TagPrefix getPrefix();
 }

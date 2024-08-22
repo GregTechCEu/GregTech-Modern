@@ -31,7 +31,7 @@ public interface ISyncedBlockEntity {
      *
      * @param buf the buffer to write data to
      */
-    void writeInitialSyncData(@NotNull FriendlyByteBuf buf);
+    default void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {}
 
     /**
      * Used to receive Server -> Client sync data.
@@ -49,7 +49,7 @@ public interface ISyncedBlockEntity {
      *
      * @param buf the buffer to read data from
      */
-    void receiveInitialSyncData(@NotNull FriendlyByteBuf buf);
+    default void receiveInitialSyncData(@NotNull FriendlyByteBuf buf) {}
 
     /**
      * Used to send an anonymous Server -> Client packet.
@@ -70,7 +70,7 @@ public interface ISyncedBlockEntity {
      * @param dataWriter    a consumer which writes packet data to a buffer.
      * @see gregtech.api.capability.GregtechDataCodes
      */
-    void writeCustomData(int discriminator, @NotNull Consumer<@NotNull FriendlyByteBuf> dataWriter);
+    default void writeCustomData(int discriminator, @NotNull Consumer<@NotNull FriendlyByteBuf> dataWriter) {}
 
     /**
      * Used to receive an anonymous Server -> Client packet.
@@ -90,5 +90,5 @@ public interface ISyncedBlockEntity {
      * @param buf           the buffer containing the packet data.
      * @see gregtech.api.capability.GregtechDataCodes
      */
-    void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf);
+    default void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf) {}
 }

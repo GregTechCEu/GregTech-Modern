@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -59,7 +60,7 @@ import java.util.*;
  * @date 2023/2/17
  * @implNote MetaMachineBlockEntity
  */
-public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
+public class MetaMachineBlockEntity extends NeighborCacheBlockEntity implements IMachineBlockEntity {
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
@@ -71,7 +72,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     private final long offset = GTValues.RNG.nextInt(20);
 
     protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, true);
         this.metaMachine = getDefinition().createMetaMachine(this);
     }
 
@@ -266,10 +267,10 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
-            if (machine instanceof IDataAccessHatch computationProvider) {
+            if (machine instanceof IDataAccess computationProvider) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccess.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -321,6 +322,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+    }
+
+    @Override
+    public void markAsDirty() {
+        this.setChanged();
     }
 
     @Override

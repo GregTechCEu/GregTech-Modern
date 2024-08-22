@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -90,7 +91,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
+    public static ILaserRelay getLaser(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_LASER, level, pos, side);
     }
 
@@ -101,7 +102,7 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+    public static IDataAccess getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_DATA_ACCESS, level, pos, side);
     }
 

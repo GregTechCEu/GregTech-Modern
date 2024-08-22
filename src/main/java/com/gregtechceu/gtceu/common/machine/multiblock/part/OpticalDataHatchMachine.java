@@ -1,16 +1,19 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
-import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
+import com.gregtechceu.gtceu.api.capability.data.IStandardDataAccess;
+import com.gregtechceu.gtceu.api.capability.data.query.DataQueryObject;
+import com.gregtechceu.gtceu.api.capability.data.query.IBridgeable;
+import com.gregtechceu.gtceu.api.capability.data.query.RecipeDataQuery;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -22,14 +25,16 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpticalDataHatchMachine extends MultiblockPartMachine implements IOpticalDataAccessHatch {
+public class OpticalDataHatchMachine extends MultiblockPartMachine implements IStandardDataAccess {
+
+    private final Set<DataQueryObject> recentQueries = GTUtil.createWeakHashSet();
 
     @Getter
     private final boolean isTransmitter;
@@ -40,58 +45,41 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
     }
 
     @Override
-    public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
-        seen.add(this);
+    public boolean accessData(@NotNull DataQueryObject queryObject) {
+        if (!supportsQuery(queryObject) || !recentQueries.add(queryObject)) return false;
         if (!getControllers().isEmpty()) {
             if (isTransmitter()) {
                 IMultiController controller = getControllers().get(0);
-                if (!(controller instanceof IWorkable workable) || !workable.isActive()) return false;
+                if (!controller.isFormed() || (controller instanceof IWorkable workable && !workable.isActive())) return false;
 
-                List<IDataAccessHatch> dataAccesses = new ArrayList<>();
-                List<IDataAccessHatch> transmitters = new ArrayList<>();
+                List<IDataAccess> dataAccesses = new ArrayList<>();
+                List<IStandardDataAccess> reception = new ArrayList<>();
                 for (var part : controller.getParts()) {
                     Block block = part.self().getBlockState().getBlock();
-                    if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
+                    if (part instanceof IDataAccess hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                         dataAccesses.add(hatch);
                     }
-                    if (part instanceof IDataAccessHatch hatch &&
+                    if (part instanceof IStandardDataAccess hatch &&
                             PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
-                        transmitters.add(hatch);
+                        reception.add(hatch);
                     }
                 }
 
-                return isRecipeAvailable(dataAccesses, seen, recipe) ||
-                        isRecipeAvailable(transmitters, seen, recipe);
-            } else {
-                BlockEntity tileEntity = getLevel().getBlockEntity(getPos().relative(getFrontFacing()));
-                if (tileEntity == null) return false;
+                if (IDataAccess.accessData(dataAccesses, queryObject))
+                    return true;
 
-                if (tileEntity instanceof OpticalPipeBlockEntity) {
-                    // noinspection DataFlowIssue
-                    IDataAccessHatch cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
-                            getFrontFacing().getOpposite()).orElse(null);
-                    // noinspection ConstantValue
-                    return cap != null && cap.isRecipeAvailable(recipe, seen);
+                if (queryObject instanceof IBridgeable bridgeable && reception.size() > 1) {
+                    bridgeable.setBridged();
                 }
+                return IDataAccess.accessData(reception, queryObject);
+            } else {
+                BlockEntity tileEntity = getNeighbor(getFrontFacing());
+                if (tileEntity == null) return false;
+                IDataAccess cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
+                        getFrontFacing().getOpposite()).resolve().orElse(null);
+                return cap != null && cap.accessData(queryObject);
             }
         }
-        return false;
-    }
-
-    private static boolean isRecipeAvailable(@NotNull Iterable<? extends IDataAccessHatch> hatches,
-                                             @NotNull Collection<IDataAccessHatch> seen,
-                                             @NotNull GTRecipe recipe) {
-        for (IDataAccessHatch hatch : hatches) {
-            if (seen.contains(hatch)) continue;
-            if (hatch.isRecipeAvailable(recipe, seen)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isCreative() {
         return false;
     }
 
@@ -107,6 +95,13 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
 
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
-        return IOpticalDataAccessHatch.super.modifyRecipe(recipe);
+        // creative hatches do not need to check, they always have the recipe
+        // TODO creative data access hatch
+        //if (this.isCreative()) return recipe;
+        RecipeDataQuery query = new RecipeDataQuery(recipe);
+
+        // hatches need to have the recipe available
+        if (this.accessData(query)) return recipe;
+        return null;
     }
 }

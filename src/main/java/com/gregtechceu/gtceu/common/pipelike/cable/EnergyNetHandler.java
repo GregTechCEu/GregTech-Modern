@@ -40,7 +40,7 @@ public class EnergyNetHandler implements IEnergyContainer {
     }
 
     @Override
-    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate) {
         if (transfer) return 0;
         if (side == null) {
             if (facing == null) return 0;
@@ -88,7 +88,7 @@ public class EnergyNetHandler implements IEnergyContainer {
             if (cableBroken) continue;
 
             transfer = true;
-            long amps = dest.acceptEnergyFromNetwork(facing, pathVoltage, amperage - amperesUsed);
+            long amps = dest.acceptEnergyFromNetwork(facing, pathVoltage, amperage - amperesUsed, false);
             transfer = false;
             if (amps == 0) continue;
 
@@ -139,7 +139,7 @@ public class EnergyNetHandler implements IEnergyContainer {
         GTCEu.LOGGER.warn("Do not use changeEnergy() for cables! Use acceptEnergyFromNetwork()");
         return acceptEnergyFromNetwork(null,
                 energyToAdd / getInputAmperage(),
-                energyToAdd / getInputVoltage()) * getInputVoltage();
+                energyToAdd / getInputVoltage(), false) * getInputVoltage();
     }
 
     @Override

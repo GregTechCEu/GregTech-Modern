@@ -50,7 +50,7 @@ public class CoverSolarPanel extends CoverBehavior {
         if (GTUtil.canSeeSunClearly(level, blockPos)) {
             IEnergyContainer energyContainer = getEnergyContainer();
             if (energyContainer != null) {
-                energyContainer.acceptEnergyFromNetwork(null, EUt, 1);
+                energyContainer.acceptEnergyFromNetwork(null, EUt, 1, false);
             }
         }
     }

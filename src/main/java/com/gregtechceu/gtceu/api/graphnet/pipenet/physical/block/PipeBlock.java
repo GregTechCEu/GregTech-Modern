@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -68,7 +69,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-public abstract class PipeBlock extends Block implements EntityBlock, IBlockRendererProvider {
+public abstract class PipeBlock extends Block implements EntityBlock {
 
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
@@ -330,16 +331,16 @@ public abstract class PipeBlock extends Block implements EntityBlock, IBlockRend
     }
 
     public static Collection<WorldPipeNetNode> getNodesForTile(PipeBlockEntity tile) {
-        assert !tile.getLevel().isClientSide;
+        assert tile.getLevel() instanceof ServerLevel;
         return tile.getBlockType().getHandler(tile.getLevel(), tile.getBlockPos())
-                .getOrCreateFromNets(tile.getLevel(), tile.getBlockPos(), tile.getStructure());
+                .getOrCreateFromNets((ServerLevel) tile.getLevel(), tile.getBlockPos(), tile.getStructure());
     }
 
     @Override
     public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
         super.destroy(level, pos, state);
-        if (!level.isClientSide()) {
-            getHandler(level, pos).removeFromNets(level, pos, getStructure());
+        if (level instanceof ServerLevel serverLevel) {
+            getHandler(level, pos).removeFromNets(serverLevel, pos, getStructure());
         }
     }
 

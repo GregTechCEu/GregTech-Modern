@@ -37,13 +37,13 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
     private Level level;
     private ResourceKey<Level> fallbackDimension;
 
-    public WorldNet(String name, @NotNull Function<IGraphNet, INetGraph> graphBuilder,
+    public WorldNet(@NotNull Function<IGraphNet, INetGraph> graphBuilder,
                     AlgorithmBuilder... algorithmBuilders) {
         this.backer = new GraphNetBacker(this, graphBuilder.apply(this), algorithmBuilders);
     }
 
-    public WorldNet(String name, boolean directed, AlgorithmBuilder... algorithmBuilders) {
-        this(name, directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
+    public WorldNet(boolean directed, AlgorithmBuilder... algorithmBuilders) {
+        this(directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
                 algorithmBuilders);
     }
 

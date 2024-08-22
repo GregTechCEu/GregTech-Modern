@@ -57,6 +57,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -177,6 +178,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public long getOffsetTimer() {
         return holder.getOffsetTimer();
+    }
+
+    public @Nullable BlockEntity getNeighbor(@NotNull Direction side) {
+        return holder.getNeighbor(side);
     }
 
     public void markDirty() {

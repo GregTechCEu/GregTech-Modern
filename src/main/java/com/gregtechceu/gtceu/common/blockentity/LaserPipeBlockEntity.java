@@ -197,7 +197,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     private static class DefaultLaserContainer implements ILaserContainer {
 
         @Override
-        public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+        public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate) {
             return 0;
         }
 

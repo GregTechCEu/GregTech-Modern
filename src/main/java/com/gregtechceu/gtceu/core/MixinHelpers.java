@@ -30,6 +30,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -53,6 +54,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MixinHelpers {
@@ -288,6 +290,12 @@ public class MixinHelpers {
                 gtExtensions.setFlowingTexture(value.getBuilder().flowing());
                 gtExtensions.setStillTexture(value.getBuilder().still());
             }
+        }
+    }
+
+    public static void loadBakedModelTextures(ResourceLocation atlas, Consumer<ResourceLocation> consumer) {
+        if (atlas.equals(InventoryMenu.BLOCK_ATLAS)) {
+
         }
     }
 }

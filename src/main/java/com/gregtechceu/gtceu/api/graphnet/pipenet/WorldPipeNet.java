@@ -40,13 +40,13 @@ public abstract class WorldPipeNet extends WorldNet {
 
     private static final Object2ObjectOpenHashMap<ResourceKey<Level>, Set<WorldPipeNet>> dimensionNets = new Object2ObjectOpenHashMap<>();
 
-    public WorldPipeNet(String name, Function<IGraphNet, INetGraph> graphBuilder,
+    public WorldPipeNet(Function<IGraphNet, INetGraph> graphBuilder,
                         AlgorithmBuilder... algorithmBuilders) {
-        super(name, graphBuilder, algorithmBuilders);
+        super(graphBuilder, algorithmBuilders);
     }
 
-    public WorldPipeNet(String name, boolean directed, AlgorithmBuilder... algorithmBuilders) {
-        super(name, directed, algorithmBuilders);
+    public WorldPipeNet(boolean directed, AlgorithmBuilder... algorithmBuilders) {
+        super(directed, algorithmBuilders);
     }
 
     @Override
@@ -83,7 +83,7 @@ public abstract class WorldPipeNet extends WorldNet {
             dirty |= predicateEdge(edge, node, tile.getCoverHolder().getCoverAtSide(facing), neighborNode,
                     neighbor.getCoverHolder().getCoverAtSide(facing.getOpposite()));
         }
-        if (dirty) markDirty();
+        if (dirty) this.setDirty();
     }
 
     /**

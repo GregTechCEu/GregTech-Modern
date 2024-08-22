@@ -122,6 +122,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * @return modified recipe.
      *         null -- this recipe is unavailable
      */
+    @Nullable
     default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
     }

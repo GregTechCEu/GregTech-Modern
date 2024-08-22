@@ -232,7 +232,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 long outAmps = 0L;
 
                 if (genAmps > 0) {
-                    outAmps = energyContainer.acceptEnergyFromNetwork(outFacing.getOpposite(), voltage, genAmps);
+                    outAmps = energyContainer.acceptEnergyFromNetwork(outFacing.getOpposite(), voltage, genAmps, false);
                     if (outAmps == 0 && internalAmps == 0)
                         return;
                 }
@@ -260,7 +260,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         }
 
         @Override
-        public long acceptEnergyFromNetwork(@Nullable Direction side, long voltage, long amperage) {
+        public long acceptEnergyFromNetwork(@Nullable Direction side, long voltage, long amperage, boolean simulate) {
             var latestTimeStamp = getMachine().getOffsetTimer();
             if (lastTimeStamp < latestTimeStamp) {
                 amps = 0;

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -57,7 +58,7 @@ public class PipeNetProperties implements IMaterialProperty, IPipeNetNodeHandler
     }
 
     @Override
-    public @NotNull Collection<WorldPipeNetNode> getOrCreateFromNets(LevelAccessor level, BlockPos pos,
+    public @NotNull Collection<WorldPipeNetNode> getOrCreateFromNets(ServerLevel level, BlockPos pos,
                                                                      IPipeStructure structure) {
         List<WorldPipeNetNode> list = new ObjectArrayList<>();
         for (IPipeNetMaterialProperty p : properties.values()) {
@@ -70,7 +71,7 @@ public class PipeNetProperties implements IMaterialProperty, IPipeNetNodeHandler
     }
 
     @Override
-    public @NotNull Collection<WorldPipeNetNode> getFromNets(LevelAccessor level, BlockPos pos,
+    public @NotNull Collection<WorldPipeNetNode> getFromNets(ServerLevel level, BlockPos pos,
                                                              IPipeStructure structure) {
         List<WorldPipeNetNode> list = new ObjectArrayList<>();
         for (IPipeNetMaterialProperty p : properties.values()) {
@@ -83,7 +84,7 @@ public class PipeNetProperties implements IMaterialProperty, IPipeNetNodeHandler
     }
 
     @Override
-    public void removeFromNets(LevelAccessor level, BlockPos pos, IPipeStructure structure) {
+    public void removeFromNets(ServerLevel level, BlockPos pos, IPipeStructure structure) {
         for (IPipeNetMaterialProperty p : properties.values()) {
             if (p.supportsStructure(structure)) p.removeFromNet(level, pos, structure);
         }

@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.ActivablePipeModel;
+import com.gregtechceu.gtceu.client.renderer.pipe.CableModel;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -28,11 +30,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.google.common.collect.BiMap;
@@ -93,5 +91,11 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
+    }
+
+    @SubscribeEvent
+    public void registerModifiedModels(ModelEvent.ModifyBakingResult event) {
+        ActivablePipeModel.registerModels(event.getModels()::put);
+        CableModel.registerModels(event.getModels()::put);
     }
 }

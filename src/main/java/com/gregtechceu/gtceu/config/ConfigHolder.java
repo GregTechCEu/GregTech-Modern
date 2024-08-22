@@ -619,6 +619,11 @@ public class ConfigHolder {
         @Configurable.Comment({ "Duration of UI animations in ms", "Default: 300" })
         @Configurable.Range(min = 1)
         public int animationTime = 300;
+
+        @Configurable
+        @Configurable.Comment({ "Prevent optical and laser cables from animating when active.", "Default: false" })
+        public boolean preventAnimatedCables = false;
+
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
 

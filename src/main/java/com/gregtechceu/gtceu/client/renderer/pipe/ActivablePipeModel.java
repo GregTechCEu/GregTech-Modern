@@ -11,20 +11,19 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.ActivableCacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
-import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,29 +40,38 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
 
-    public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(Textures.OPTICAL_PIPE_IN,
-            Textures.OPTICAL_PIPE_SIDE, Textures.OPTICAL_PIPE_SIDE_OVERLAY, Textures.OPTICAL_PIPE_SIDE_OVERLAY_ACTIVE,
+    public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(() -> GTCEu.id("block/pipe/pipe_optical_in"),
+            () -> GTCEu.id("block/pipe/pipe_optical_side"),
+            () -> GTCEu.id("block/pipe/pipe_optical_side_overlay"),
+            () -> GTCEu.id("block/pipe/pipe_optical_side_overlay_active"),
             false, "optical");
-    public static final ActivablePipeModel LASER = new ActivablePipeModel(Textures.LASER_PIPE_IN,
-            Textures.LASER_PIPE_SIDE, Textures.LASER_PIPE_OVERLAY, Textures.LASER_PIPE_OVERLAY_EMISSIVE,
+    public static final ActivablePipeModel LASER = new ActivablePipeModel(() -> GTCEu.id("block/pipe/pipe_laser_in"),
+            () -> GTCEu.id("block/pipe/pipe_laser_side"),
+            () -> GTCEu.id("block/pipe/pipe_laser_side_overlay"),
+            () -> GTCEu.id("block/pipe/pipe_laser_side_overlay_emissive"),
             true, "laser");
 
-    private final Supplier<SpriteInformation> inTex;
-    private final Supplier<SpriteInformation> sideTex;
-    private final Supplier<SpriteInformation> overlayTex;
-    private final Supplier<SpriteInformation> overlayActiveTex;
+    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> inTex;
+    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> sideTex;
+    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> overlayTex;
+    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> overlayActiveTex;
+
+    private SpriteInformation inSprite;
+    private SpriteInformation sideSprite;
+    private SpriteInformation overlaySprite;
+    private SpriteInformation overlayActiveSprite;
 
     private final boolean emissiveActive;
 
-    public ActivablePipeModel(@NotNull Supplier<SpriteInformation> inTex, @NotNull Supplier<SpriteInformation> sideTex,
-                              @NotNull Supplier<SpriteInformation> overlayTex,
-                              @NotNull Supplier<SpriteInformation> overlayActiveTex, boolean emissiveActive,
+    public ActivablePipeModel(@NotNull Supplier<ResourceLocation> inTex, @NotNull Supplier<ResourceLocation> sideTex,
+                              @NotNull Supplier<ResourceLocation> overlayTex,
+                              @NotNull Supplier<ResourceLocation> overlayActiveTex, boolean emissiveActive,
                               String variant) {
         super(new ModelResourceLocation(loc, variant));
-        this.inTex = inTex;
-        this.sideTex = sideTex;
-        this.overlayTex = overlayTex;
-        this.overlayActiveTex = overlayActiveTex;
+        this.inTex = SupplierMemoizer.memoize(inTex);
+        this.sideTex = SupplierMemoizer.memoize(sideTex);
+        this.overlayTex = SupplierMemoizer.memoize(overlayTex);
+        this.overlayActiveTex = SupplierMemoizer.memoize(overlayActiveTex);
         this.emissiveActive = emissiveActive;
     }
 
@@ -90,19 +98,32 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     }
 
     @Override
-    public SpriteInformation getParticleSprite(@Nullable Material material) {
-        return sideTex.get();
+    protected @NotNull ActivableCacheKey toKey(@NotNull ModelData state) {
+        return ActivableCacheKey.of(state.get(THICKNESS_PROPERTY), state.get(ACTIVE_PROPERTY));
     }
 
     @Override
-    public @NotNull TextureAtlasSprite getParticleTexture() {
-        return getParticleSprite(null).sprite();
+    public SpriteInformation getParticleSprite(@Nullable Material material) {
+        return sideSprite;
     }
 
     @Override
     protected StructureQuadCache constructForKey(ActivableCacheKey key) {
-        return ActivableSQC.create(PipeQuadHelper.create(key.getThickness()), inTex.get(), sideTex.get(),
-                overlayTex.get(), overlayActiveTex.get());
+        if (inSprite == null && inTex != null) {
+            inSprite = new SpriteInformation(ModelFactory.getBlockSprite(inTex.get()), -1);
+        }
+        if (sideSprite == null && sideTex != null) {
+            sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex.get()), -1);
+        }
+        if (overlaySprite == null && overlayTex != null) {
+            overlaySprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayTex.get()), 0);
+        }
+        if (overlayActiveSprite == null && overlayActiveTex != null) {
+            overlayActiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayActiveTex.get()), 0);
+        }
+
+        return ActivableSQC.create(PipeQuadHelper.create(key.getThickness()), inSprite, sideSprite,
+                overlaySprite, overlayActiveSprite);
     }
 
     public boolean allowActive() {

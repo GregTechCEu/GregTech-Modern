@@ -317,4 +317,14 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         super.read(compound, clientPacket);
         workingSpeed = compound.contains("workingSpeed") ? compound.getFloat("workingSpeed") : 0;
     }
+
+    @Override
+    public void onNeighborChanged(@NotNull Direction facing) {
+
+    }
+
+    @Override
+    public void markAsDirty() {
+        this.setChanged();
+    }
 }

@@ -41,6 +41,10 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         return !isBlackList();
     }
 
+    default int getMaxStackSize() {
+        return 1;
+    }
+
     /**
      * An empty item filter that allows all items.<br>
      * ONLY TO BE USED FOR ITEM MATCHING! All other functionality will throw an exception.

@@ -67,6 +67,11 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
     }
 
     @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
+        return List.of();
+    }
+
+    @Override
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {
@@ -160,7 +165,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
 
     @Override
     public TextureAtlasSprite getParticleIcon(@NotNull ModelData data) {
-        return BakedModel.super.getParticleIcon(data);
+        return getParticleTexture(data.get(COLOR_PROPERTY), data.get(MATERIAL_PROPERTY));
     }
 
     public abstract SpriteInformation getParticleSprite(@Nullable Material material);
@@ -178,6 +183,16 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
     @Override
     public boolean isCustomRenderer() {
         return false;
+    }
+
+    @Override
+    public boolean usesBlockLight() {
+        return true;
+    }
+
+    @Override
+    public TextureAtlasSprite getParticleIcon() {
+        return getParticleSprite(null).sprite();
     }
 
     @Nullable
