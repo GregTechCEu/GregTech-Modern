@@ -255,7 +255,7 @@ public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
         if (covers.isEmpty()) return CoverRendererPackage.EMPTY;
         CoverRendererPackage rendererPackage = new CoverRendererPackage(shouldRenderCoverBackSides());
         for (var cover : covers.entrySet()) {
-            rendererPackage.addRenderer(cover.getValue().getCoverRenderer(), cover.getKey());
+            rendererPackage.addRenderer(cover.getValue().getRenderer(), cover.getKey());
         }
         return rendererPackage;
     }

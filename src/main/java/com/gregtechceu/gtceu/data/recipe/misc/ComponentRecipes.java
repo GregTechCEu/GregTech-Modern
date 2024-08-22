@@ -228,34 +228,34 @@ public class ComponentRecipes {
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("electric_pump_lv_%s", name), ELECTRIC_PUMP_LV.asStack(), "SXR", "dPw", "RMC", 'S',
                     new UnificationEntry(screw, Tin), 'X', new UnificationEntry(rotor, Tin), 'P',
-                    new UnificationEntry(pipeNormalFluid, Bronze), 'R', new UnificationEntry(ring, material), 'C',
+                    new UnificationEntry(pipeNormal, Bronze), 'R', new UnificationEntry(ring, material), 'C',
                     new UnificationEntry(cableGtSingle, Tin), 'M', ELECTRIC_MOTOR_LV.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("electric_pump_mv_%s", name), ELECTRIC_PUMP_MV.asStack(), "SXR", "dPw", "RMC", 'S',
                     new UnificationEntry(screw, Bronze), 'X', new UnificationEntry(rotor, Bronze), 'P',
-                    new UnificationEntry(pipeNormalFluid, Steel), 'R', new UnificationEntry(ring, material), 'C',
+                    new UnificationEntry(pipeNormal, Steel), 'R', new UnificationEntry(ring, material), 'C',
                     new UnificationEntry(cableGtSingle, Copper), 'M', ELECTRIC_MOTOR_MV.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("electric_pump_hv_%s", name), ELECTRIC_PUMP_HV.asStack(), "SXR", "dPw", "RMC", 'S',
                     new UnificationEntry(screw, Steel), 'X', new UnificationEntry(rotor, Steel), 'P',
-                    new UnificationEntry(pipeNormalFluid, StainlessSteel), 'R', new UnificationEntry(ring, material),
+                    new UnificationEntry(pipeNormal, StainlessSteel), 'R', new UnificationEntry(ring, material),
                     'C', new UnificationEntry(cableGtSingle, Gold), 'M', ELECTRIC_MOTOR_HV.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("electric_pump_ev_%s", name), ELECTRIC_PUMP_EV.asStack(), "SXR", "dPw", "RMC", 'S',
                     new UnificationEntry(screw, StainlessSteel), 'X', new UnificationEntry(rotor, StainlessSteel), 'P',
-                    new UnificationEntry(pipeNormalFluid, Titanium), 'R', new UnificationEntry(ring, material), 'C',
+                    new UnificationEntry(pipeNormal, Titanium), 'R', new UnificationEntry(ring, material), 'C',
                     new UnificationEntry(cableGtSingle, Aluminium), 'M', ELECTRIC_MOTOR_EV.asStack());
             if (!material.equals(Rubber))
                 VanillaRecipeHelper.addShapedRecipe(provider, material.equals(SiliconeRubber),
                         String.format("electric_pump_iv_%s", name), ELECTRIC_PUMP_IV.asStack(), "SXR", "dPw", "RMC",
                         'S', new UnificationEntry(screw, TungstenSteel), 'X',
                         new UnificationEntry(rotor, TungstenSteel), 'P',
-                        new UnificationEntry(pipeNormalFluid, TungstenSteel), 'R', new UnificationEntry(ring, material),
+                        new UnificationEntry(pipeNormal, TungstenSteel), 'R', new UnificationEntry(ring, material),
                         'C', new UnificationEntry(cableGtSingle, Tungsten), 'M', ELECTRIC_MOTOR_IV.asStack());
 
             ASSEMBLER_RECIPES.recipeBuilder("electric_pump_lv_" + name)
                     .inputItems(cableGtSingle, Tin)
-                    .inputItems(pipeNormalFluid, Bronze)
+                    .inputItems(pipeNormal, Bronze)
                     .inputItems(screw, Tin)
                     .inputItems(rotor, Tin)
                     .inputItems(ring, materialEntry.getValue(), 2)
@@ -265,7 +265,7 @@ public class ComponentRecipes {
 
             ASSEMBLER_RECIPES.recipeBuilder("electric_pump_mv_" + name)
                     .inputItems(cableGtSingle, Copper)
-                    .inputItems(pipeNormalFluid, Steel)
+                    .inputItems(pipeNormal, Steel)
                     .inputItems(screw, Bronze)
                     .inputItems(rotor, Bronze)
                     .inputItems(ring, materialEntry.getValue(), 2)
@@ -275,7 +275,7 @@ public class ComponentRecipes {
 
             ASSEMBLER_RECIPES.recipeBuilder("electric_pump_hv_" + name)
                     .inputItems(cableGtSingle, Gold)
-                    .inputItems(pipeNormalFluid, StainlessSteel)
+                    .inputItems(pipeNormal, StainlessSteel)
                     .inputItems(screw, Steel)
                     .inputItems(rotor, Steel)
                     .inputItems(ring, materialEntry.getValue(), 2)
@@ -285,7 +285,7 @@ public class ComponentRecipes {
 
             ASSEMBLER_RECIPES.recipeBuilder("electric_pump_ev_" + name)
                     .inputItems(cableGtSingle, Aluminium)
-                    .inputItems(pipeNormalFluid, Titanium)
+                    .inputItems(pipeNormal, Titanium)
                     .inputItems(screw, StainlessSteel)
                     .inputItems(rotor, StainlessSteel)
                     .inputItems(ring, materialEntry.getValue(), 2)
@@ -296,7 +296,7 @@ public class ComponentRecipes {
             if (!materialEntry.getValue().equals(Rubber))
                 ASSEMBLER_RECIPES.recipeBuilder("electric_pump_iv_" + name)
                         .inputItems(cableGtSingle, Tungsten)
-                        .inputItems(pipeNormalFluid, TungstenSteel)
+                        .inputItems(pipeNormal, TungstenSteel)
                         .inputItems(screw, TungstenSteel)
                         .inputItems(rotor, TungstenSteel)
                         .inputItems(ring, materialEntry.getValue(), 2)
@@ -359,7 +359,7 @@ public class ComponentRecipes {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_luv")
                 .inputItems(ELECTRIC_MOTOR_LuV)
-                .inputItems(pipeSmallFluid, NiobiumTitanium)
+                .inputItems(pipeSmall, NiobiumTitanium)
                 .inputItems(plate, HSSS, 2)
                 .inputItems(screw, HSSS, 8)
                 .inputItems(ring, SiliconeRubber, 4)
@@ -376,7 +376,7 @@ public class ComponentRecipes {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_zpm")
                 .inputItems(ELECTRIC_MOTOR_ZPM)
-                .inputItems(pipeNormalFluid, Polybenzimidazole)
+                .inputItems(pipeNormal, Polybenzimidazole)
                 .inputItems(plate, Osmiridium, 2)
                 .inputItems(screw, Osmiridium, 8)
                 .inputItems(ring, SiliconeRubber, 8)
@@ -393,7 +393,7 @@ public class ComponentRecipes {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_pump_uv")
                 .inputItems(ELECTRIC_MOTOR_UV)
-                .inputItems(pipeLargeFluid, Naquadah)
+                .inputItems(pipeLarge, Naquadah)
                 .inputItems(plate, Tritanium, 2)
                 .inputItems(screw, Tritanium, 8)
                 .inputItems(ring, SiliconeRubber, 16)
@@ -506,12 +506,12 @@ public class ComponentRecipes {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cover_fluid_voiding", COVER_FLUID_VOIDING.asStack(), "SDS",
                 "dPw", " E ", 'S', new UnificationEntry(screw, Steel), 'D', COVER_FLUID_DETECTOR.asStack(), 'P',
-                new UnificationEntry(pipeNormalFluid, Bronze), 'E', Items.ENDER_PEARL);
+                new UnificationEntry(pipeNormal, Bronze), 'E', Items.ENDER_PEARL);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_fluid_voiding")
                 .inputItems(screw, Steel, 2)
                 .inputItems(COVER_FLUID_DETECTOR)
-                .inputItems(pipeNormalFluid, Bronze)
+                .inputItems(pipeNormal, Bronze)
                 .inputItems(Items.ENDER_PEARL)
                 .outputItems(COVER_FLUID_VOIDING)
                 .duration(100).EUt(VA[LV]).save(provider);

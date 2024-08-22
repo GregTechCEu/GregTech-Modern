@@ -750,7 +750,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("fusion_coil").EUt(VA[ZPM]).inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .inputItems(FIELD_GENERATOR_IV.asStack(2)).inputItems(ELECTRIC_PUMP_IV)
                 .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(CustomTags.LuV_CIRCUITS, 4)
-                .inputItems(pipeSmallFluid, Naquadah, 4).inputItems(plate, Europium, 4)
+                .inputItems(pipeSmall, Naquadah, 4).inputItems(plate, Europium, 4)
                 .inputFluids(VanadiumGallium.getFluid(GTValues.L * 4)).outputItems(GTBlocks.FUSION_COIL.asStack())
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_glass").EUt(VA[LuV])

@@ -29,14 +29,14 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class PipeRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        pipeTinyFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeTiny);
-        pipeSmallFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeSmall);
-        pipeNormalFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNormal);
-        pipeLargeFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeLarge);
-        pipeHugeFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeHuge);
+        pipeTiny.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeTiny);
+        pipeSmall.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeSmall);
+        pipeNormal.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNormal);
+        pipeLarge.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeLarge);
+        pipeHuge.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeHuge);
 
-        pipeQuadrupleFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeQuadruple);
-        pipeNonupleFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNonuple);
+        pipeQuadruple.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeQuadruple);
+        pipeNonuple.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNonuple);
 
         pipeSmallItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeSmall);
         pipeNormalItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeNormal);
@@ -215,7 +215,7 @@ public class PipeRecipeHandler {
     private static void processPipeQuadruple(TagPrefix pipePrefix, Material material, FluidPipeProperties property,
                                              Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.WOOD)) return;
-        ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
+        ItemStack smallPipe = ChemicalHelper.get(pipeSmall, material);
         ItemStack quadPipe = ChemicalHelper.get(pipePrefix, material);
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("quadruple_%s_pipe", material.getName()),
                 quadPipe, "XX", "XX",
@@ -233,7 +233,7 @@ public class PipeRecipeHandler {
     private static void processPipeNonuple(TagPrefix pipePrefix, Material material, FluidPipeProperties property,
                                            Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.WOOD)) return;
-        ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
+        ItemStack smallPipe = ChemicalHelper.get(pipeSmall, material);
         ItemStack nonuplePipe = ChemicalHelper.get(pipePrefix, material);
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("nonuple_%s_pipe", material.getName()),
                 nonuplePipe, "XXX", "XXX", "XXX",

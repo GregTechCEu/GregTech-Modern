@@ -81,11 +81,11 @@ public class GCyMRecipes {
                 'C', CustomTags.EV_CIRCUITS, 'P', new UnificationEntry(plate, HSLASteel), 'R', ROBOT_ARM_HV.asStack(),
                 'K', CONVEYOR_MODULE_HV.asStack(), 'X', PACKER[HV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_mixer", LARGE_MIXER.asStack(), "FCF", "RXR", "MKM",
-                'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(pipeNormalFluid, Polybenzimidazole), 'R',
+                'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(pipeNormal, Polybenzimidazole), 'R',
                 ChemicalHelper.get(rotor, Osmiridium), 'M', ELECTRIC_MOTOR_IV.asStack(), 'X', MIXER[IV].asStack(), 'K',
                 new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_centrifuge", LARGE_CENTRIFUGE.asStack(), "SFS",
-                "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(pipeHugeFluid, StainlessSteel), 'S',
+                "CXC", "MKM", 'C', CustomTags.IV_CIRCUITS, 'F', ChemicalHelper.get(pipeHuge, StainlessSteel), 'S',
                 ChemicalHelper.get(spring, MolybdenumDisilicide), 'M', ELECTRIC_MOTOR_IV.asStack(), 'X',
                 CENTRIFUGE[IV].asStack(), 'K', new UnificationEntry(TagPrefix.cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_assembler", LARGE_ASSEMBLER.asStack(), "RKR", "CXC",
@@ -113,7 +113,7 @@ public class GCyMRecipes {
                 new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_vacuum_freezer", MEGA_VACUUM_FREEZER.asStack(), "PCP",
                 "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', VACUUM_FREEZER.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P',
-                new UnificationEntry(pipeNormalFluid, NiobiumTitanium), 'D',
+                new UnificationEntry(pipeNormal, NiobiumTitanium), 'D',
                 new UnificationEntry(plateDense, RhodiumPlatedPalladium), 'W',
                 new UnificationEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_autoclave", LARGE_AUTOCLAVE.asStack(), "PCP", "PAP",
@@ -135,7 +135,7 @@ public class GCyMRecipes {
                 new UnificationEntry(cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_distillery", LARGE_DISTILLERY.asStack(), "PZP",
                 "EDE", "PZP", 'Z', CustomTags.IV_CIRCUITS, 'D', DISTILLATION_TOWER.asStack(), 'E',
-                ELECTRIC_PUMP_IV.asStack(), 'P', ChemicalHelper.get(pipeLargeFluid, Iridium));
+                ELECTRIC_PUMP_IV.asStack(), 'P', ChemicalHelper.get(pipeLarge, Iridium));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_extractor", LARGE_EXTRACTOR.asStack(), "PTP", "EZC",
                 "BKB", 'Z', CustomTags.IV_CIRCUITS, 'B', ELECTRIC_PISTON_IV.asStack(), 'P', ELECTRIC_PUMP_IV.asStack(),
                 'E', EXTRACTOR[IV].asStack(), 'C', CANNER[IV].asStack(), 'T', CASING_TEMPERED_GLASS.asStack(), 'K',
@@ -145,7 +145,7 @@ public class GCyMRecipes {
                 new UnificationEntry(spring, MolybdenumDisilicide), 'K', new UnificationEntry(cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_solidifier", LARGE_SOLIDIFIER.asStack(), "PZP",
                 "ESE", "PKP", 'Z', CustomTags.IV_CIRCUITS, 'S', FLUID_SOLIDIFIER[IV].asStack(), 'E',
-                ELECTRIC_PUMP_IV.asStack(), 'P', ChemicalHelper.get(pipeNormalFluid, Polyethylene), 'K',
+                ELECTRIC_PUMP_IV.asStack(), 'P', ChemicalHelper.get(pipeNormal, Polyethylene), 'K',
                 new UnificationEntry(cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_wiremill", LARGE_WIREMILL.asStack(), "PZP", "SWS",
                 "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', WIREMILL[IV].asStack(), 'P',

@@ -524,7 +524,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_endpoint")
-                .inputItems(pipeLargeFluid, Bronze, 2)
+                .inputItems(pipeLarge, Bronze, 2)
                 .inputItems(plate, Steel, 8)
                 .inputItems(gear, Steel, 2)
                 .circuitMeta(1)
@@ -543,7 +543,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_pipe")
-                .inputItems(pipeLargeFluid, Bronze, 2)
+                .inputItems(pipeLarge, Bronze, 2)
                 .inputItems(plate, Steel, 8)
                 .circuitMeta(2)
                 .inputFluids(SolderingAlloy.getFluid(L / 2))

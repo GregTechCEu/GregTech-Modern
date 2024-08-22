@@ -95,4 +95,20 @@ public class LaserContainerList implements ILaserContainer {
     public boolean outputsEnergy(Direction side) {
         return true;
     }
+
+    @Override
+    public long receiveLaser(long laserVoltage, long laserAmperage) {
+        long available = laserAmperage;
+        List<? extends ILaserContainer> energyContainerList = this.energyContainerList;
+        for (ILaserContainer container : energyContainerList) {
+            long transmitted = container.receiveLaser(laserAmperage, laserAmperage);
+            if (transmitted > 0) {
+                available -= transmitted;
+                if (available <= 0) {
+                    return laserAmperage;
+                }
+            }
+        }
+        return laserAmperage - available;
+    }
 }

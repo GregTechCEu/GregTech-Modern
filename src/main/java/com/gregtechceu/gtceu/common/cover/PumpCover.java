@@ -92,6 +92,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Persisted
     @DescSynced
+    @Getter
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Long> transferRateWidget;

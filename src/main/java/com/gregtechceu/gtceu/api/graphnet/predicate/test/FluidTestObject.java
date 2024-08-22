@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.graphnet.predicate.test;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +27,12 @@ public final class FluidTestObject implements IPredicateTestObject, Predicate<Fl
     @Override
     @Contract(" -> new")
     public @NotNull FluidStack recombine() {
-        return new FluidStack(fluid, 1, tag);
+        return FluidStack.create(fluid, 1, tag);
     }
 
     @Contract("_ -> new")
     public @NotNull FluidStack recombine(int amount) {
-        return new FluidStack(fluid, amount, tag);
+        return FluidStack.create(fluid, amount, tag);
     }
 
     @Override

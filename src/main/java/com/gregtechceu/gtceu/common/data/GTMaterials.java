@@ -196,14 +196,14 @@ public class GTMaterials {
         toolHeadWireCutter
                 .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
 
-        pipeTinyFluid.setIgnored(Wood);
-        pipeHugeFluid.setIgnored(Wood);
-        pipeQuadrupleFluid.setIgnored(Wood);
-        pipeNonupleFluid.setIgnored(Wood);
-        pipeTinyFluid.setIgnored(TreatedWood);
-        pipeHugeFluid.setIgnored(TreatedWood);
-        pipeQuadrupleFluid.setIgnored(TreatedWood);
-        pipeNonupleFluid.setIgnored(TreatedWood);
+        pipeTiny.setIgnored(Wood);
+        pipeHuge.setIgnored(Wood);
+        pipeQuadruple.setIgnored(Wood);
+        pipeNonuple.setIgnored(Wood);
+        pipeTiny.setIgnored(TreatedWood);
+        pipeHuge.setIgnored(TreatedWood);
+        pipeQuadruple.setIgnored(TreatedWood);
+        pipeNonuple.setIgnored(TreatedWood);
 
         pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
         pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));

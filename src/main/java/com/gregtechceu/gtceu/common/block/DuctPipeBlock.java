@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -24,6 +23,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,7 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     public final PipeModel model;
     private final DuctPipeProperties properties;
 
-    public DuctPipeBlock(Properties properties, DuctPipeType type) {
+    public DuctPipeBlock(BlockBehaviour.Properties properties, DuctPipeType type) {
         super(properties, type);
         this.properties = new DuctPipeProperties(type.getRateMultiplier());
         this.model = type.createPipeModel();

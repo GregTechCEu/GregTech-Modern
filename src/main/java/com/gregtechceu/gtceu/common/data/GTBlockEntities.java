@@ -29,14 +29,14 @@ public class GTBlockEntities {
                             Stream.concat(Stream.of(GTBlocks.LASER_PIPE),
                                     Stream.concat(GTBlocks.ITEM_PIPE_BLOCKS.values().stream(),
                                             Stream.concat(GTBlocks.CABLE_BLOCKS.values().stream(),
-                                                    GTBlocks.FLUID_PIPE_BLOCKS.values().stream())))))
+                                                    GTBlocks.MATERIAL_PIPE_BLOCKS.values().stream())))))
                     .toArray(NonNullSupplier[]::new))
             .register();
 
     public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
             .blockEntity("fluid_pipe", FluidPipeBlockEntity::new)
             .onRegister(FluidPipeBlockEntity::onBlockEntityRegister)
-            .validBlocks(GTBlocks.FLUID_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
+            .validBlocks(GTBlocks.MATERIAL_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();
 
     public static final BlockEntityEntry<ItemPipeBlockEntity> ITEM_PIPE = REGISTRATE

@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistr
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
@@ -29,12 +31,11 @@ import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalPipeBlock;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
-import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidPipeType;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -119,9 +120,9 @@ public class GTBlocks {
             .builder();
     private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> MATERIAL_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
 
     //////////////////////////////////////
@@ -130,8 +131,7 @@ public class GTBlocks {
     public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
     public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> MATERIAL_PIPE_BLOCKS;
     public static final BlockEntry<DuctPipeBlock>[] DUCT_PIPES = new BlockEntry[DuctPipeType.VALUES.length];
     public static final BlockEntry<LaserPipeBlock> LASER_PIPE = REGISTRATE
             .block("normal_laser_pipe", (p) -> new LaserPipeBlock(p, LaserStructure.NORMAL))
@@ -143,7 +143,6 @@ public class GTBlocks {
             .addLayer(() -> RenderType::cutoutMipped)
             .item(com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
-            .color(() -> LaserPipeBlockItem::tintColor)
             .build()
             .register();
     public static final BlockEntry<OpticalPipeBlock> OPTICAL_PIPE = REGISTRATE
@@ -294,7 +293,7 @@ public class GTBlocks {
     // Cable/Wire Blocks
     private static void generateCableBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks...");
-        CableStructure.registerDefaultStructures(structure -> {
+        for (CableStructure structure : PipeStructureRegistry.getStructures(CableStructure.class)) {
             for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
                 GTRegistrate registrate = registry.getRegistrate();
                 for (Material material : registry.getAllMaterials()) {
@@ -303,7 +302,7 @@ public class GTBlocks {
                     }
                 }
             }
-        });
+        }
         CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
@@ -324,10 +323,9 @@ public class GTBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> MaterialPipeBlock::tintedColor)
-                .item(com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialPipeBlockItem::tintColor)
+                //.color(() -> ::tintColor)
                 .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();
@@ -335,31 +333,31 @@ public class GTBlocks {
     }
 
     // Fluid Pipe Blocks
-    private static void generateFluidPipeBlocks() {
-        GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks...");
-        for (var fluidPipeType : FluidPipeType.values()) {
+    private static void generateMaterialPipeBlocks() {
+        GTCEu.LOGGER.debug("Generating GTCEu Material Pipe Blocks...");
+        for (var structure : PipeStructureRegistry.getStructures(MaterialPipeStructure.class)) {
             for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
                 GTRegistrate registrate = registry.getRegistrate();
                 for (Material material : registry.getAllMaterials()) {
-                    if (allowFluidPipeBlock(material, fluidPipeType)) {
-                        registerFluidPipeBlock(material, fluidPipeType, registrate);
+                    if (allowFluidPipeBlock(material, structure)) {
+                        registerFluidPipeBlock(material, structure, registrate);
                     }
                 }
             }
         }
-        FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
+        MATERIAL_PIPE_BLOCKS = MATERIAL_PIPE_BLOCKS_BUILDER.build();
+        GTCEu.LOGGER.debug("Generating GTCEu Material Pipe Blocks... Complete!");
     }
 
-    private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
-        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
+    private static boolean allowFluidPipeBlock(Material material, MaterialPipeStructure fluidPipeType) {
+        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.prefix().isIgnored(material);
     }
 
-    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
+    private static void registerFluidPipeBlock(Material material, MaterialPipeStructure fluidPipeType,
                                                GTRegistrate registrate) {
         var entry = registrate
-                .block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name),
-                        p -> new FluidPipeBlock(p, fluidPipeType, material))
+                .block("%s_%s_pipe".formatted(material.getName(), fluidPipeType.name()),
+                        p -> new MaterialPipeBlock(p, fluidPipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
                     if (doMetalPipe(material)) {
@@ -367,64 +365,16 @@ public class GTBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(unificationBlock(fluidPipeType.tagPrefix, material))
+                .transform(unificationBlock(fluidPipeType.prefix(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> MaterialPipeBlock::tintedColor)
-                .item(MaterialPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        FLUID_PIPE_BLOCKS_BUILDER.put(fluidPipeType.tagPrefix, material, entry);
-    }
-
-    // Item Pipe Blocks
-    private static void generateItemPipeBlocks() {
-        GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks...");
-        for (var itemPipeType : ItemPipeType.values()) {
-            for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
-                GTRegistrate registrate = registry.getRegistrate();
-                for (Material material : registry.getAllMaterials()) {
-                    if (allowItemPipeBlock(material, itemPipeType)) {
-                        registerItemPipeBlock(material, itemPipeType, registrate);
-                    }
-                }
-            }
-        }
-        ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
-    }
-
-    private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
-        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
-    }
-
-    private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
-        var entry = registrate
-                .block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name),
-                        p -> new ItemPipeBlock(p, itemPipeType, material))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> {
-                    if (doMetalPipe(material)) {
-                        p.sound(GTSoundTypes.METAL_PIPE);
-                    }
-                    return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
-                })
-                .transform(unificationBlock(itemPipeType.getTagPrefix(), material))
-                .blockstate(NonNullBiConsumer.noop())
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> MaterialPipeBlock::tintedColor)
-                .item(MaterialPipeBlockItem::new)
-                .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialPipeBlockItem::tintColor)
-                .build()
-                .register();
-        ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix(), material, entry);
+        MATERIAL_PIPE_BLOCKS_BUILDER.put(fluidPipeType.prefix(), material, entry);
     }
 
     // Optical Pipe Blocks
@@ -1678,16 +1628,14 @@ public class GTBlocks {
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
         generateCableBlocks();        // Cable & Wire Blocks
-        generateFluidPipeBlocks();    // Fluid Pipe Blocks
-        generateItemPipeBlocks();     // Item Pipe Blocks
+        generateMaterialPipeBlocks(); // Material Pipe Blocks
         generateDuctPipeBlocks();     // Duct Pipe Blocks
 
         // Remove Builder Tables
         MATERIAL_BLOCKS_BUILDER = null;
         SURFACE_ROCK_BLOCKS_BUILDER = null;
         CABLE_BLOCKS_BUILDER = null;
-        FLUID_PIPE_BLOCKS_BUILDER = null;
-        ITEM_PIPE_BLOCKS_BUILDER = null;
+        MATERIAL_PIPE_BLOCKS_BUILDER = null;
 
         // GCyM
         GCyMBlocks.init();

@@ -17,8 +17,8 @@ import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
-import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemEndpointMachine;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;

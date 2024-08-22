@@ -96,7 +96,7 @@ public class MixinHelpers {
             GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
             GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
@@ -246,7 +246,7 @@ public class MixinHelpers {
         GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {

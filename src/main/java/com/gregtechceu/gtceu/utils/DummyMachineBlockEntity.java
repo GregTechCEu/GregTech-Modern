@@ -13,6 +13,10 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -44,5 +48,25 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     @Override
     public MultiManagedStorage getRootStorage() {
         return null;
+    }
+
+    @Override
+    public void onNeighborChanged(@NotNull Direction facing) {
+
+    }
+
+    @Override
+    public Level getLevel() {
+        return null;
+    }
+
+    @Override
+    public BlockPos getBlockPos() {
+        return null;
+    }
+
+    @Override
+    public void markAsDirty() {
+
     }
 }

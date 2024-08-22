@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
