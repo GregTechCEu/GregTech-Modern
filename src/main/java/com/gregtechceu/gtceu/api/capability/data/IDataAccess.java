@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.data;
 
 import com.gregtechceu.gtceu.api.capability.data.query.DataAccessFormat;
 import com.gregtechceu.gtceu.api.capability.data.query.DataQueryObject;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface IDataAccess {
@@ -10,7 +11,8 @@ public interface IDataAccess {
      * Queries this {@link IDataAccess} with the specified query.
      * 
      * @param queryObject the object representing the query. Can be cached in a weak set created by
-     *                    {@link com.gregtechceu.gtceu.utils.GTUtil#createWeakHashSet()} in order to prevent endless recursion.
+     *                    {@link com.gregtechceu.gtceu.utils.GTUtil#createWeakHashSet()} in order to prevent endless
+     *                    recursion.
      * @return if the query has been cancelled
      */
     boolean accessData(@NotNull DataQueryObject queryObject);

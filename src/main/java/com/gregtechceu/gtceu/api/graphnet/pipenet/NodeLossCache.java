@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet;
 import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.ITraverseData;
-
 import com.gregtechceu.gtceu.utils.TaskScheduler;
 import com.gregtechceu.gtceu.utils.function.Task;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;

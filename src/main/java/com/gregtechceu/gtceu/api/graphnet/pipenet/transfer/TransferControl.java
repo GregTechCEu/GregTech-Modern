@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.transfer;
 
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

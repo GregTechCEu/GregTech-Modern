@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.data.query;
 
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class DataQueryFormat implements StringRepresentable {

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -17,48 +19,56 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.transfer.TransferControlProvid
 import com.gregtechceu.gtceu.api.graphnet.pipenet.traverse.SimpleTileRoundRobinData;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.ItemTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseHelpers;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
-import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 import com.gregtechceu.gtceu.common.cover.filter.MergabilityInfo;
 import com.gregtechceu.gtceu.common.pipelike.net.item.*;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import mezz.jei.api.gui.drawable.IDrawable;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import lombok.Getter;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +88,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ConveyorCover extends CoverBehavior implements IUICover, IControllable,
-        TransferControlProvider, IItemTransferController {
+                           TransferControlProvider, IItemTransferController {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConveyorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
@@ -101,9 +111,15 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @Persisted
+    @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
+    private CoverableItemTransferWrapper itemHandlerWrapper;
     private Widget ioModeSwitch;
+
+    protected final Object2ObjectLinkedOpenHashMap<Object, SimpleTileRoundRobinData<IItemHandler>> roundRobinCache = new Object2ObjectLinkedOpenHashMap<>();
+
+    protected @Nullable CoverRenderer rendererInverted;
 
     @Persisted
     @DescSynced
@@ -146,11 +162,6 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public boolean canAttach() {
-        return getOwnItemTransfer() != null;
     }
 
     public void setTransferRate(int transferRate) {
@@ -221,12 +232,15 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             BlockEntity tileEntity = coverHolder.getNeighbor(side);
             IItemHandler itemHandler = tileEntity == null ? null :
                     tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve().orElse(null);
-            IItemHandler myItemHandler = coverHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve().orElse(null);
+            IItemHandler myItemHandler = coverHolder.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve()
+                    .orElse(null);
             if (itemHandler != null && myItemHandler != null) {
+                IItemTransfer itemTransfer = ItemTransferHelperImpl.toItemTransfer(itemHandler);
+                IItemTransfer myItemTransfer = ItemTransferHelperImpl.toItemTransfer(myItemHandler);
                 if (io == IO.OUT) {
-                    performTransferOnUpdate(myItemHandler, itemHandler);
+                    performTransferOnUpdate(myItemTransfer, itemTransfer);
                 } else {
-                    performTransferOnUpdate(itemHandler, myItemHandler);
+                    performTransferOnUpdate(itemTransfer, myItemTransfer);
                 }
             }
         }
@@ -247,7 +261,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         this.itemsLeftToTransferLastSecond = transferRate;
     }
 
-    protected void performTransferOnUpdate(@NotNull IItemHandler sourceHandler, @NotNull IItemHandler destHandler) {
+    protected void performTransferOnUpdate(@NotNull IItemTransfer sourceHandler, @NotNull IItemTransfer destHandler) {
         reportItemsTransfer(performTransfer(sourceHandler, destHandler, false, i -> 0,
                 i -> getItemsLeftToTransfer(), null));
     }
@@ -266,11 +280,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
      *                       Each filter slot will report its transfer before the next slot is calculated.
      * @return how much was transferred in total.
      */
-    protected int performTransfer(@NotNull IItemHandler sourceHandler, @NotNull IItemHandler destHandler,
+    protected int performTransfer(@NotNull IItemTransfer sourceHandler, @NotNull IItemTransfer destHandler,
                                   boolean byFilterSlot, @NotNull IntUnaryOperator minTransfer,
-                                  @NotNull IntUnaryOperator maxTransfer, @Nullable BiConsumer<Integer, Integer> transferReport) {
+                                  @NotNull IntUnaryOperator maxTransfer,
+                                  @Nullable BiConsumer<Integer, Integer> transferReport) {
         ItemFilter filter = filterHandler.getFilter();
-        byFilterSlot = byFilterSlot && filter != null; // can't be by filter slot if there is no filter
+        byFilterSlot = byFilterSlot && filter != ItemFilter.EMPTY; // can't be by filter slot if there is no filter
         Int2IntArrayMap extractableByFilterSlot = new Int2IntArrayMap();
         Int2ObjectArrayMap<MergabilityInfo<ItemTestObject>> filterSlotToMergability = new Int2ObjectArrayMap<>();
         for (int i = 0; i < sourceHandler.getSlots(); i++) {
@@ -278,7 +293,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             int extracted = stack.getCount();
             if (extracted == 0) continue;
             MatchResult match = null;
-            if (filter == null || (match = filter.match(stack)).isMatched()) {
+            if (filter == ItemFilter.EMPTY || (match = filter.match(stack)).isMatched()) {
                 int filterSlot = -1;
                 if (byFilterSlot) {
                     filterSlot = match.getFilterIndex();
@@ -341,7 +356,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return totalTransfer;
     }
 
-    protected int insertToHandler(@NotNull IItemHandler destHandler, ItemTestObject testObject, int count,
+    protected int insertToHandler(@NotNull IItemTransfer destHandler, ItemTestObject testObject, int count,
                                   boolean simulate) {
         if (!(destHandler instanceof IItemTraverseGuideProvider provider)) {
             return simpleInsert(destHandler, testObject, count, simulate);
@@ -402,7 +417,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return simulate ? roundRobinCache.clone() : roundRobinCache;
     }
 
-    protected int simpleInsert(@NotNull IItemHandler destHandler, ItemTestObject testObject, int count,
+    protected int simpleInsert(@NotNull IItemTransfer destHandler, ItemTestObject testObject, int count,
                                boolean simulate) {
         int available = count;
         for (int i = 0; i < destHandler.getSlots(); i++) {
@@ -422,27 +437,27 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @Override
-    public int insertToHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemHandler destHandler,
+    public int insertToHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemTransfer destHandler,
                                boolean simulate) {
-        if (getManualImportExportMode() == ManualImportExportMode.DISABLED) return amount;
-        if (getManualImportExportMode() == ManualImportExportMode.UNFILTERED ||
-                getFilterMode() == ItemFilterMode.FILTER_INSERT) // insert to handler is an extract from us
+        if (getManualIOMode() == ManualIOMode.DISABLED) return amount;
+        if (getManualIOMode() == ManualIOMode.UNFILTERED ||
+                io == IO.IN) // insert to handler is an extract from us
             return IItemTransferController.super.insertToHandler(testObject, amount, destHandler, simulate);
-        ItemFilterContainer filter = getItemFilter();
-        if (filter == null || filter.test(testObject.recombine())) {
+        ItemFilter filter = getFilterHandler().getFilter();
+        if (filter == ItemFilter.EMPTY || filter.test(testObject.recombine())) {
             return IItemTransferController.super.insertToHandler(testObject, amount, destHandler, simulate);
         } else return amount;
     }
 
     @Override
-    public int extractFromHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemHandler sourceHandler,
+    public int extractFromHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemTransfer sourceHandler,
                                   boolean simulate) {
-        if (getManualImportExportMode() == ManualImportExportMode.DISABLED) return 0;
-        if (getManualImportExportMode() == ManualImportExportMode.UNFILTERED ||
-                getFilterMode() == ItemFilterMode.FILTER_EXTRACT) // extract from handler is an insert to us
+        if (getManualIOMode() == ManualIOMode.DISABLED) return 0;
+        if (getManualIOMode() == ManualIOMode.UNFILTERED ||
+                io == IO.OUT) // extract from handler is an insert to us
             return IItemTransferController.super.extractFromHandler(testObject, amount, sourceHandler, simulate);
-        ItemFilterContainer filter = getItemFilter();
-        if (filter == null || filter.test(testObject.recombine())) {
+        ItemFilter filter = getFilterHandler().getFilter();
+        if (filter == ItemFilter.EMPTY || filter.test(testObject.recombine())) {
             return IItemTransferController.super.extractFromHandler(testObject, amount, sourceHandler, simulate);
         } else return 0;
     }
@@ -463,7 +478,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @NotNull
-    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemHandler inventory) {
+    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemTransfer inventory) {
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
         for (int srcIndex = 0; srcIndex < inventory.getSlots(); srcIndex++) {
@@ -472,7 +487,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 continue;
             }
 
-            var matchResult = itemFilterContainer.match(itemStack);
+            var matchResult = getFilterHandler().getFilter().match(itemStack);
             if (!matchResult.isMatched()) continue;
 
             if (!result.containsKey(itemStack)) {
@@ -491,159 +506,96 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @Override
-    public boolean canAttach(@NotNull CoverableView coverable, @NotNull Direction side) {
-        return coverable.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getAttachedSide());
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
+        return coverable.getCapability(ForgeCapabilities.ITEM_HANDLER, attachedSide).isPresent();
     }
 
     @Override
-    public boolean canInteractWithOutputSide() {
-        return true;
-    }
-
-    @Override
-    public void onRemoval() {
-        dropInventoryContents(itemFilterContainer);
-    }
-
-    @Override
-    public void renderCover(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline,
-                            Cuboid6 plateBox, BlockRenderLayer layer) {
-        if (conveyorMode == ConveyorMode.EXPORT) {
-            Textures.CONVEYOR_OVERLAY.renderSided(getAttachedSide(), plateBox, renderState, pipeline, translation);
-        } else {
-            Textures.CONVEYOR_OVERLAY_INVERTED.renderSided(getAttachedSide(), plateBox, renderState, pipeline,
-                    translation);
+    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+        if (!coverHolder.getLevel().isClientSide) {
+            createUI(playerIn);
         }
-    }
-
-    @Override
-    public @NotNull EnumActionResult onScrewdriverClick(@NotNull EntityPlayer playerIn, @NotNull EnumHand hand,
-                                                        @NotNull RayTraceResult hitResult) {
-        if (!getCoverableView().getWorld().isRemote) {
-            openUI((EntityPlayerMP) playerIn);
-        }
-        return EnumActionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, LazyOptional<T> defaultValue) {
         if (capability == ForgeCapabilities.ITEM_HANDLER) {
-            if (defaultValue == null) {
-                return null;
+            if (!defaultValue.isPresent()) {
+                return LazyOptional.empty();
             }
-            IItemHandler delegate = (IItemHandler) defaultValue;
-            if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != defaultValue) {
-                this.itemHandlerWrapper = new CoverableItemTransferWrapper(defaultValue);
+            IItemHandler delegate = (IItemHandler) defaultValue.resolve().orElse(null);
+            if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != delegate) {
+                this.itemHandlerWrapper = new CoverableItemTransferWrapper(
+                        ItemTransferHelperImpl.toItemTransfer(delegate));
             }
-            return itemHandlerWrapper;
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandlerWrapper);
+            return ForgeCapabilities.ITEM_HANDLER.orEmpty(capability,
+                    LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(itemHandlerWrapper)));
         }
-        if (capability == GregtechTileCapabilities.CAPABILITY_CONTROLLABLE) {
-            return GregtechTileCapabilities.CAPABILITY_CONTROLLABLE.cast(this);
+        if (capability == GTCapability.CAPABILITY_CONTROLLABLE) {
+            return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return defaultValue;
     }
 
-    @Override
-    public boolean usesMui2() {
-        return true;
+    @NotNull
+    protected String getUITitle() {
+        return "cover.conveyor.title";
+    }
+
+    protected void buildAdditionalUI(WidgetGroup group) {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
+    }
+
+    protected void configureFilter() {
+        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
     @Override
-    public ModularPanel buildUI(SidedPosGuiData guiData, PanelSyncManager guiSyncManager) {
-        var panel = GTGuis.createPanel(this, 176, 192 + 18);
+    public Widget createUIWidget() {
+        final var group = new WidgetGroup(0, 0, 176, 137);
+        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle(), GTValues.VN[tier])));
 
-        getItemFilterContainer().setMaxTransferSize(getMaxStackSize());
+        if (createThroughputRow()) {
+            group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
+                    .setMin(1).setMax(maxItemTransferRate));
+        }
 
-        return panel.child(CoverWithUI.createTitleRow(getPickItem()))
-                .child(createUI(panel, guiSyncManager))
-                .bindPlayerInventory();
-    }
-
-    protected ParentWidget<Column> createUI(ModularPanel mainPanel, PanelSyncManager guiSyncManager) {
-        var column = new Column().top(24).margin(7, 0)
-                .widthRel(1f).coverChildrenHeight();
-
-        EnumSyncValue<ManualImportExportMode> manualIOmode = new EnumSyncValue<>(ManualImportExportMode.class,
-                this::getManualImportExportMode, this::setManualImportExportMode);
-
-        EnumSyncValue<ConveyorMode> conveyorMode = new EnumSyncValue<>(ConveyorMode.class,
-                this::getConveyorMode, this::setConveyorMode);
-
-        IntSyncValue throughput = new IntSyncValue(this::getTransferRate, this::setTransferRate);
-        throughput.updateCacheFromSource(true);
-
-        StringSyncValue formattedThroughput = new StringSyncValue(throughput::getStringValue,
-                throughput::setStringValue);
-
-        EnumSyncValue<DistributionMode> distributionMode = new EnumSyncValue<>(DistributionMode.class,
-                this::getDistributionMode, this::setDistributionMode);
-
-        guiSyncManager.syncValue("manual_io", manualIOmode);
-        guiSyncManager.syncValue("conveyor_mode", conveyorMode);
-        guiSyncManager.syncValue("distribution_mode", distributionMode);
-        guiSyncManager.syncValue("throughput", throughput);
-
-        if (createThroughputRow())
-            column.child(new Row().coverChildrenHeight()
-                    .marginBottom(2).widthRel(1f)
-                    .child(new ButtonWidget<>()
-                            .left(0).width(18)
-                            .onMousePressed(mouseButton -> {
-                                int val = throughput.getValue() - getIncrementValue(MouseData.create(mouseButton));
-                                throughput.setValue(val, true, true);
-                                Interactable.playButtonClickSound();
-                                return true;
-                            })
-                            .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
-                    .child(new TextFieldWidget()
-                            .left(18).right(18)
-                            .setTextColor(Color.WHITE.darker(1))
-                            .setNumbers(1, maxItemTransferRate)
-                            .value(formattedThroughput)
-                            .background(GTGuiTextures.DISPLAY))
-                    .child(new ButtonWidget<>()
-                            .right(0).width(18)
-                            .onMousePressed(mouseButton -> {
-                                int val = throughput.getValue() + getIncrementValue(MouseData.create(mouseButton));
-                                throughput.setValue(val, true, true);
-                                Interactable.playButtonClickSound();
-                                return true;
-                            })
-                            .onUpdateListener(w -> w.overlay(createAdjustOverlay(true)))));
-
-        if (createFilterRow())
-            column.child(getItemFilterContainer().initUI(mainPanel, guiSyncManager));
-
-        if (createManualIOModeRow())
-            column.child(new EnumRowBuilder<>(ManualImportExportMode.class)
-                    .value(manualIOmode)
-                    .lang("cover.generic.manual_io")
-                    .overlay(new IDrawable[] {
-                            new DynamicDrawable(() -> conveyorMode.getValue().isImport() ?
-                                    GTGuiTextures.MANUAL_IO_OVERLAY_OUT[0] : GTGuiTextures.MANUAL_IO_OVERLAY_IN[0]),
-                            new DynamicDrawable(() -> conveyorMode.getValue().isImport() ?
-                                    GTGuiTextures.MANUAL_IO_OVERLAY_OUT[1] : GTGuiTextures.MANUAL_IO_OVERLAY_IN[1]),
-                            new DynamicDrawable(() -> conveyorMode.getValue().isImport() ?
-                                    GTGuiTextures.MANUAL_IO_OVERLAY_OUT[2] : GTGuiTextures.MANUAL_IO_OVERLAY_IN[2])
+        if (createConveyorModeRow()) {
+            ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
+                    (clickData, value) -> {
+                        setIo(value ? IO.IN : IO.OUT);
+                        ioModeSwitch.setHoverTooltips(
+                                LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
                     })
-                    .build());
+                    .setTexture(
+                            new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
+                            new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
+                    .setPressed(io == IO.IN)
+                    .setHoverTooltips(
+                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
+            group.addWidget(ioModeSwitch);
+        }
 
-        if (createConveyorModeRow())
-            column.child(new EnumRowBuilder<>(ConveyorMode.class)
-                    .value(conveyorMode)
-                    .lang("cover.generic.io")
-                    .overlay(GTGuiTextures.CONVEYOR_MODE_OVERLAY)
-                    .build());
+        if (createDistributionModeRow()) {
+            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
+                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
+        }
 
-        if (createDistributionModeRow())
-            column.child(new EnumRowBuilder<>(DistributionMode.class)
-                    .value(distributionMode)
-                    .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
-                    .lang("cover.generic.distribution.name")
-                    .build());
+        if (createManualIOModeRow()) {
+            group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
+                    ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
+                    .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+        }
 
-        return column;
+        if (createFilterRow()) {
+            group.addWidget(filterHandler.createFilterSlotUI(125, 108));
+            group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+        }
+
+        buildAdditionalUI(group);
+
+        return group;
     }
 
     protected boolean createThroughputRow() {
@@ -668,7 +620,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     protected int getMaxStackSize() {
         return 1;
-    }1
+    }
 
     @Override
     public @NotNull CoverRenderer getRenderer() {
@@ -683,16 +635,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(Textures.CONVEYOR_OVERLAY).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_conveyor"),
+                GTCEu.id("block/cover/overlay_conveyor_emissive")).build();
     }
 
     protected CoverRenderer buildRendererInverted() {
-        return new CoverRendererBuilder(Textures.CONVEYOR_OVERLAY_INVERTED).build();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    protected @NotNull ResourceLocation getPlateTexture() {
-        return Textures.VOLTAGE_CASINGS[this.tier].getSpriteOnSide(SimpleSidedCubeRenderer.RenderSide.SIDE);
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_conveyor_inverted"),
+                GTCEu.id("block/cover/overlay_conveyor_inverted_emissive")).build();
     }
 
     private class CoverableItemTransferWrapper extends ItemTransferDelegate {

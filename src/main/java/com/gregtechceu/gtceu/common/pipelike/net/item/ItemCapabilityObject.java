@@ -14,16 +14,19 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseDataProvider;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseGuide;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseHelpers;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +87,8 @@ public class ItemCapabilityObject implements IPipeCapabilityObject, IItemTransfe
         return null;
     }
 
-    public @NotNull ItemStack insertItem(@NotNull ItemStack stack, boolean simulate, boolean notifyChanges, Direction side) {
+    public @NotNull ItemStack insertItem(@NotNull ItemStack stack, boolean simulate, boolean notifyChanges,
+                                         Direction side) {
         if (this.transferring) return stack;
         this.transferring = true;
 
@@ -178,9 +182,7 @@ public class ItemCapabilityObject implements IPipeCapabilityObject, IItemTransfe
 
     // Unused
     @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
-    }
+    public void restoreFromSnapshot(Object snapshot) {}
 
     protected class Wrapper implements IItemTransfer, IItemTraverseGuideProvider {
 
@@ -244,8 +246,6 @@ public class ItemCapabilityObject implements IPipeCapabilityObject, IItemTransfe
 
         // Unused
         @Override
-        public void restoreFromSnapshot(Object snapshot) {
-
-        }
+        public void restoreFromSnapshot(Object snapshot) {}
     }
 }

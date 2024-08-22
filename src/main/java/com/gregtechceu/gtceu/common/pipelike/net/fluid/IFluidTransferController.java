@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.common.pipelike.net.fluid;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.transfer.TransferControl;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.transfer.TransferControlProvider;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.FluidTestObject;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +33,7 @@ public interface IFluidTransferController {
 
         @Override
         public long insertToHandler(@NotNull FluidTestObject testObject, int amount,
-                                   @NotNull IFluidTransfer destHandler, boolean doFill) {
+                                    @NotNull IFluidTransfer destHandler, boolean doFill) {
             return 0;
         }
 
@@ -46,7 +48,7 @@ public interface IFluidTransferController {
      * @return the amount filled.
      */
     default long insertToHandler(@NotNull FluidTestObject testObject, int amount, @NotNull IFluidTransfer destHandler,
-                                boolean doFill) {
+                                 boolean doFill) {
         return destHandler.fill(testObject.recombine(amount), doFill);
     }
 
@@ -54,7 +56,8 @@ public interface IFluidTransferController {
      * @return the fluidstack drained.
      */
     @Nullable
-    default FluidStack extractFromHandler(@Nullable FluidTestObject testObject, int amount, IFluidTransfer sourceHandler,
+    default FluidStack extractFromHandler(@Nullable FluidTestObject testObject, int amount,
+                                          IFluidTransfer sourceHandler,
                                           boolean doDrain) {
         if (testObject == null) return sourceHandler.drain(amount, doDrain);
         else {

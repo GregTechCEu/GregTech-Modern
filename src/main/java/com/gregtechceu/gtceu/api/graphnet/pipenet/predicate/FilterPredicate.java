@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
-
 import com.gregtechceu.gtceu.common.cover.filter.BaseFilterContainer;
-import lombok.Setter;
-import net.minecraft.nbt.CompoundTag;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

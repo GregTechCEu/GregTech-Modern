@@ -15,7 +15,9 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -25,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +42,6 @@ public class CableModel extends AbstractPipeModel<CacheKey> {
 
     public static final CableModel INSTANCE = new CableModel("wire");
     public static final CableModel[] INSULATED_INSTANCES = new CableModel[5];
-
 
     @OnlyIn(Dist.CLIENT)
     public static final Supplier<ResourceLocation> WIRE = () -> MaterialIconType.wire

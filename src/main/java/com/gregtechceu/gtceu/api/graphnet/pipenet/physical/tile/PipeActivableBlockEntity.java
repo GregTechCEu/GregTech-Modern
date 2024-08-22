@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class PipeActivableBlockEntity extends PipeBlockEntity implements IActivable {

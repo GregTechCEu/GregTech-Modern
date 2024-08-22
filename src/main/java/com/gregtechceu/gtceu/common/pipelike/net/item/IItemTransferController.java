@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.common.pipelike.net.item;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.transfer.TransferControl;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.transfer.TransferControlProvider;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.ItemTestObject;
+
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

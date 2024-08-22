@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.NodeLossResult;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.IWorldPipeNetTile;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;

@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.api.graphnet.predicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.StringRepresentable;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;

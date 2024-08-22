@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import net.minecraft.nbt.ByteTag;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class BlockedPredicate extends EdgePredicate<BlockedPredicate, ByteTag> {

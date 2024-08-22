@@ -21,28 +21,28 @@ public class CableInfoProvider implements IProbeInfoProvider {
                              BlockState blockState, IProbeHitData iProbeHitData) {
         // TODO fix
         /*
-        if (blockState.getBlock() instanceof CableBlock cableBlock) {
-            CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(level, iProbeHitData.getPos());
-            if (cable != null) {
-                long voltage = cable.getCurrentMaxVoltage();
-                double amperage = cable.getAverageAmperage();
-                IProbeInfo horizontalPane = iProbeInfo
-                        .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                horizontalPane.text(Component.translatable("gtceu.top.cable_voltage"));
-                if (voltage != 0) {
-                    horizontalPane.text(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]).text(" / ");
-                }
-                horizontalPane.text(GTValues.VNF[GTUtil.getTierByVoltage(cable.getMaxVoltage())]);
-
-                horizontalPane = iProbeInfo
-                        .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                horizontalPane.text(Component.translatable("gtceu.top.cable_amperage"));
-                if (amperage != 0) {
-                    horizontalPane.text(DECIMAL_FORMAT_1F.format(cable.getAverageAmperage()) + "A / ");
-                }
-                horizontalPane.text(DECIMAL_FORMAT_1F.format(cable.getMaxAmperage()) + "A");
-            }
-        }
-        */
+         * if (blockState.getBlock() instanceof CableBlock cableBlock) {
+         * CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(level, iProbeHitData.getPos());
+         * if (cable != null) {
+         * long voltage = cable.getCurrentMaxVoltage();
+         * double amperage = cable.getAverageAmperage();
+         * IProbeInfo horizontalPane = iProbeInfo
+         * .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+         * horizontalPane.text(Component.translatable("gtceu.top.cable_voltage"));
+         * if (voltage != 0) {
+         * horizontalPane.text(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]).text(" / ");
+         * }
+         * horizontalPane.text(GTValues.VNF[GTUtil.getTierByVoltage(cable.getMaxVoltage())]);
+         * 
+         * horizontalPane = iProbeInfo
+         * .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+         * horizontalPane.text(Component.translatable("gtceu.top.cable_amperage"));
+         * if (amperage != 0) {
+         * horizontalPane.text(DECIMAL_FORMAT_1F.format(cable.getAverageAmperage()) + "A / ");
+         * }
+         * horizontalPane.text(DECIMAL_FORMAT_1F.format(cable.getMaxAmperage()) + "A");
+         * }
+         * }
+         */
     }
 }

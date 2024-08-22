@@ -7,10 +7,11 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.ITraverseData;
 import com.gregtechceu.gtceu.api.graphnet.traverse.ITraverseGuideProvider;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseDataProvider;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseGuide;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface IItemTraverseGuideProvider extends
-        ITraverseGuideProvider<WorldPipeNetNode, FlowWorldPipeNetPath, ItemTestObject> {
+                                            ITraverseGuideProvider<WorldPipeNetNode, FlowWorldPipeNetPath, ItemTestObject> {
 
     @Nullable
     @Override

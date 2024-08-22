@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

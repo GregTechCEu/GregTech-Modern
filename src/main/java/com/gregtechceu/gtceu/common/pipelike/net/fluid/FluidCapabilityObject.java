@@ -15,16 +15,19 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseDataProvider;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseGuide;
 import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseHelpers;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +39,8 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
                                    IFluidTraverseGuideProvider {
 
     private final WorldPipeNet net;
-    @Getter @Setter
+    @Getter
+    @Setter
     private @Nullable PipeBlockEntity tile;
     @Getter
     private final int tanks;
@@ -99,7 +103,8 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
         if (this.transferring) return 0;
         this.transferring = true;
 
-        var guide = getGuide(FluidTraverseData::new, new FluidTestObject(resource), resource.getAmount(), simulate, side);
+        var guide = getGuide(FluidTraverseData::new, new FluidTestObject(resource), resource.getAmount(), simulate,
+                side);
         if (guide == null) return 0;
         int accepted = (int) TraverseHelpers.traverseFlood(guide.getData(), guide.getPaths(), guide.getFlow());
         guide.reportConsumedFlow(accepted);
@@ -166,9 +171,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
     }
 
     @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
-    }
+    public void restoreFromSnapshot(Object snapshot) {}
 
     @NotNull
     @Override
@@ -183,9 +186,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
     }
 
     @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-
-    }
+    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
 
     @Override
     public long getTankCapacity(int tank) {
@@ -265,9 +266,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
 
         // Unused.
         @Override
-        public void restoreFromSnapshot(Object snapshot) {
-
-        }
+        public void restoreFromSnapshot(Object snapshot) {}
 
         @NotNull
         @Override
@@ -276,9 +275,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
         }
 
         @Override
-        public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-
-        }
+        public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
 
         @Override
         public long getTankCapacity(int tank) {

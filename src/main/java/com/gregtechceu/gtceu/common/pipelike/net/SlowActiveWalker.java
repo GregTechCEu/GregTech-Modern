@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeActivableBlockEntity;
 import com.gregtechceu.gtceu.utils.TaskScheduler;
 import com.gregtechceu.gtceu.utils.function.Task;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

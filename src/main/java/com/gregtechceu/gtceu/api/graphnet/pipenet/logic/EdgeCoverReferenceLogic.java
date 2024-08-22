@@ -3,19 +3,20 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
-
 import com.gregtechceu.gtceu.utils.DimensionFacingPos;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,10 +125,12 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.coverSourcePos = new DimensionFacingPos(BlockPos.of(nbt.getLong("SourcePos")),
-                GTUtil.DIRECTIONS[nbt.getByte("SourceFacing")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("SourceDim"))));
+                GTUtil.DIRECTIONS[nbt.getByte("SourceFacing")],
+                ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("SourceDim"))));
         this.coverSource = new WeakReference<>(null);
         this.coverTargetPos = new DimensionFacingPos(BlockPos.of(nbt.getLong("TargetPos")),
-                GTUtil.DIRECTIONS[nbt.getByte("TargetFacing")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("TargetDim"))));
+                GTUtil.DIRECTIONS[nbt.getByte("TargetFacing")],
+                ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("TargetDim"))));
         this.coverTarget = coverSource;
     }
 

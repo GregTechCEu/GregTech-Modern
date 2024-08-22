@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate.test;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

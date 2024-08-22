@@ -19,13 +19,16 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.AbstractTraverseData;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.ReversibleLossOperator;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

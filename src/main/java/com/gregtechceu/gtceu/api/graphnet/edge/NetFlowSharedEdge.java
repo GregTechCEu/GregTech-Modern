@@ -3,9 +3,10 @@ package com.gregtechceu.gtceu.api.graphnet.edge;
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
+import net.minecraft.util.Mth;
+
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

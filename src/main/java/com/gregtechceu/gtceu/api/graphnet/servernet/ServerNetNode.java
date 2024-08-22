@@ -30,7 +30,8 @@ public class ServerNetNode extends NetNode {
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
         BlockPos pos = BlockPos.of(nbt.getLong("Pos"));
-        this.pos = GlobalPos.of(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("Dim"))), pos);
+        this.pos = GlobalPos.of(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("Dim"))),
+                pos);
     }
 
     @Override

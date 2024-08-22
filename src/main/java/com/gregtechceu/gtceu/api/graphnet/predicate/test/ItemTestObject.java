@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate.test;
 
 import net.minecraft.nbt.CompoundTag;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

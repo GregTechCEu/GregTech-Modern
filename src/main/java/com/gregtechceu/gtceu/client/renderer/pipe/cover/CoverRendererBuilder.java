@@ -11,10 +11,13 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
@@ -97,17 +100,20 @@ public class CoverRendererBuilder {
         }
     }
 
-    protected final TextureAtlasSprite sprite;
-    protected final TextureAtlasSprite spriteEmissive;
+    protected final ResourceLocation texture;
+    protected final ResourceLocation textureEmissive;
+
+    protected TextureAtlasSprite sprite;
+    protected TextureAtlasSprite spriteEmissive;
 
     protected UVMapper mapper = defaultMapper;
     protected UVMapper mapperEmissive = defaultMapper;
 
     protected ColorQuadCache plateQuads = PLATE_QUADS;
 
-    public CoverRendererBuilder(@NotNull TextureAtlasSprite sprite, @Nullable TextureAtlasSprite spriteEmissive) {
-        this.sprite = sprite;
-        this.spriteEmissive = spriteEmissive;
+    public CoverRendererBuilder(@NotNull ResourceLocation texture, @Nullable ResourceLocation textureEmissive) {
+        this.texture = texture;
+        this.textureEmissive = textureEmissive;
     }
 
     public CoverRendererBuilder setMapper(@NotNull UVMapper mapper) {
@@ -130,14 +136,21 @@ public class CoverRendererBuilder {
     }
 
     public CoverRenderer build() {
+        if (sprite == null) {
+            sprite = ModelFactory.getBlockSprite(texture);
+        }
+        if (spriteEmissive == null && textureEmissive != null) {
+            spriteEmissive = ModelFactory.getBlockSprite(textureEmissive);
+        }
+
         EnumMap<Direction, Pair<BakedQuad, BakedQuad>> spriteQuads = new EnumMap<>(Direction.class);
-        EnumMap<Direction, Pair<BakedQuad, BakedQuad>> spriteEmissiveQuads = spriteEmissive != null ?
+        EnumMap<Direction, Pair<BakedQuad, BakedQuad>> spriteEmissiveQuads = textureEmissive != null ?
                 new EnumMap<>(Direction.class) : null;
         for (Direction facing : GTUtil.DIRECTIONS) {
             spriteQuads.put(facing, ImmutablePair.of(
                     QuadHelper.buildQuad(facing, OVERLAY_BOXES_1.get(facing), mapper, sprite),
                     QuadHelper.buildQuad(facing.getOpposite(), OVERLAY_BOXES_1.get(facing), mapper, sprite)));
-            if (spriteEmissive != null) spriteEmissiveQuads.put(facing, ImmutablePair.of(
+            if (textureEmissive != null) spriteEmissiveQuads.put(facing, ImmutablePair.of(
                     QuadHelper.buildQuad(facing, OVERLAY_BOXES_2.get(facing), mapperEmissive, spriteEmissive),
                     QuadHelper.buildQuad(facing.getOpposite(), OVERLAY_BOXES_2.get(facing), mapperEmissive,
                             spriteEmissive)));

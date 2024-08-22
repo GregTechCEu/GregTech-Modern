@@ -6,12 +6,15 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.FlowWorldPipeNetPath;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.ItemTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.IEqualizableTraverseData;
+
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ItemEQTraverseData extends ItemTraverseData
@@ -34,7 +37,8 @@ public class ItemEQTraverseData extends ItemTraverseData
                 continue; // anti insert-to-our-source logic
 
             IItemHandler cap = capability.getValue()
-                    .getCapability(ForgeCapabilities.ITEM_HANDLER, capability.getKey().getOpposite()).resolve().orElse(null);
+                    .getCapability(ForgeCapabilities.ITEM_HANDLER, capability.getKey().getOpposite()).resolve()
+                    .orElse(null);
             if (cap != null) {
                 IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(cap);
                 if (destCount == 0) maxMinFlow = Integer.MAX_VALUE;

@@ -12,16 +12,18 @@ import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.SuperconductorLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.WorldEnergyNet;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
 
@@ -72,7 +74,9 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         super.entityInside(state, level, pos, entity);
-        if (!(level instanceof ServerLevel serverLevel) || getStructure().isInsulated() || !(entity instanceof LivingEntity living)) return;
+        if (!(level instanceof ServerLevel serverLevel) || getStructure().isInsulated() ||
+                !(entity instanceof LivingEntity living))
+            return;
         PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null && tile.getFrameMaterial() == null && tile.getOffsetTimer() % 10 == 0) {
             WorldPipeNetNode node = WorldEnergyNet.getWorldNet(serverLevel).getNode(pos);
@@ -88,9 +92,9 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
                     if (cumulativeDamage != 0) {
                         living.hurt(GTDamageTypes.ELECTRIC.source(serverLevel), cumulativeDamage);
                         // TODO advancement
-                        //if (living instanceof ServerPlayer serverPlayer) {
-                        //    AdvancementTriggers.ELECTROCUTION_DEATH.trigger(serverPlayer);
-                        //}
+                        // if (living instanceof ServerPlayer serverPlayer) {
+                        // AdvancementTriggers.ELECTROCUTION_DEATH.trigger(serverPlayer);
+                        // }
                     }
                 }
             }

@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.fluids;
 
-import lombok.Getter;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public enum FluidState {

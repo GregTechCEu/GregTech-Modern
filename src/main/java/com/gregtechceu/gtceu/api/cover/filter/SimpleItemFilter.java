@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -159,6 +160,12 @@ public class SimpleItemFilter implements ItemFilter {
         return totalItemCount;
     }
 
+    @Override
+    public MatchResult apply(ItemStack stack) {
+        int matchedSlot = itemFilterMatch(this.ignoreNbt, stack);
+        return MatchResult.create(matchedSlot != -1 == !isBlackList(), matches[matchedSlot], matchedSlot);
+    }
+
     public int getTotalConfiguredItemCount(ItemStack itemStack) {
         int totalCount = 0;
 
@@ -179,5 +186,23 @@ public class SimpleItemFilter implements ItemFilter {
         for (ItemStack match : matches) {
             match.setCount(Math.min(match.getCount(), maxStackSize));
         }
+    }
+
+    public int itemFilterMatch(boolean ignoreNBTData, ItemStack itemStack) {
+        for (int i = 0; i < matches.length; i++) {
+            ItemStack filterStack = matches[i];
+            if (!filterStack.isEmpty() && areItemsEqual(ignoreNBTData, filterStack, itemStack)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean areItemsEqual(boolean ignoreNBTData,
+                                         ItemStack filterStack, ItemStack itemStack) {
+        if (!ItemStack.isSameItem(filterStack, itemStack)) {
+            return false;
+        }
+        return ignoreNBTData || ItemStack.isSameItemSameTags(filterStack, itemStack);
     }
 }

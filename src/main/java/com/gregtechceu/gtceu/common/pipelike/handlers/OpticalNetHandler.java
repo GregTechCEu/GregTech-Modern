@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.net.optical.WorldOpticalNet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -31,7 +33,8 @@ public final class OpticalNetHandler implements IPipeNetNodeHandler {
     }
 
     @Override
-    public @NotNull Collection<WorldPipeNetNode> getFromNets(ServerLevel world, BlockPos pos, IPipeStructure structure) {
+    public @NotNull Collection<WorldPipeNetNode> getFromNets(ServerLevel world, BlockPos pos,
+                                                             IPipeStructure structure) {
         if (structure instanceof OpticalStructure) {
             WorldPipeNetNode node = WorldOpticalNet.getWorldNet(world).getNode(pos);
             if (node != null) return Collections.singletonList(node);
@@ -52,6 +55,5 @@ public final class OpticalNetHandler implements IPipeNetNodeHandler {
     public void addInformation(@NotNull ItemStack stack, BlockGetter worldIn, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flagIn, IPipeStructure structure) {
         tooltip.add(Component.translatable("block.gtceu.normal_optical_pipe.tooltip"));
-
     }
 }

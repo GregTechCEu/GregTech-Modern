@@ -92,7 +92,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, ICapabilityP
     default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition,
                                      ServerPlayer player) {
         CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
-        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
+        if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach(this, side)) {
             return false;
         }
         if (getCoverAtSide(side) != null) {
@@ -276,7 +276,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, ICapabilityP
         for (Direction facing : GTUtil.DIRECTIONS) {
             if (coverable.canPlaceCoverOnSide(coverDef, facing)) {
                 var cover = coverDef.createCoverBehavior(coverable, facing);
-                if (cover.canAttach()) {
+                if (cover.canAttach(coverable, facing)) {
                     return true;
                 }
             }

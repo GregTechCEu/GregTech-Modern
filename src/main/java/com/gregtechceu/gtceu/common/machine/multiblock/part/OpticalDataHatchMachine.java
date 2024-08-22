@@ -12,8 +12,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +50,8 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IS
         if (!getControllers().isEmpty()) {
             if (isTransmitter()) {
                 IMultiController controller = getControllers().get(0);
-                if (!controller.isFormed() || (controller instanceof IWorkable workable && !workable.isActive())) return false;
+                if (!controller.isFormed() || (controller instanceof IWorkable workable && !workable.isActive()))
+                    return false;
 
                 List<IDataAccess> dataAccesses = new ArrayList<>();
                 List<IStandardDataAccess> reception = new ArrayList<>();
@@ -97,7 +98,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IS
     public GTRecipe modifyRecipe(GTRecipe recipe) {
         // creative hatches do not need to check, they always have the recipe
         // TODO creative data access hatch
-        //if (this.isCreative()) return recipe;
+        // if (this.isCreative()) return recipe;
         RecipeDataQuery query = new RecipeDataQuery(recipe);
 
         // hatches need to have the recipe available

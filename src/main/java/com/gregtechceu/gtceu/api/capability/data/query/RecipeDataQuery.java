@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.data.query;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

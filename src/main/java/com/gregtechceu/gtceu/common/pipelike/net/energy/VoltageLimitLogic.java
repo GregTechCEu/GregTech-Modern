@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.api.graphnet.logic.AbstractLongLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class VoltageLimitLogic extends AbstractLongLogicData<VoltageLimitLogic> {

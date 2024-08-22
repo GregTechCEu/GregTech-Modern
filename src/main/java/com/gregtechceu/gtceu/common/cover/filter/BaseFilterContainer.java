@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.common.cover.filter;
 
 import com.gregtechceu.gtceu.api.blockentity.IDirtyNotifiable;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,7 +116,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     public void setMaxTransferSize(int maxTransferSize) {
         this.maxTransferSize = Mth.clamp(maxTransferSize, 1, Integer.MAX_VALUE);
         this.transferSize = Mth.clamp(this.transferSize, 1, this.maxTransferSize);
-        //if (hasFilter()) currentFilter.setMaxTransferSize(this.maxTransferSize);
+        // if (hasFilter()) currentFilter.setMaxTransferSize(this.maxTransferSize);
     }
 
     public final boolean hasFilter() {
@@ -128,7 +131,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
         this.currentFilter = newFilter;
         if (hasFilter()) {
             this.currentFilter.setOnUpdated($ -> this.dirtyNotifiable.markAsDirty());
-            //this.currentFilter.setMaxTransferSize(this.maxTransferSize);
+            // this.currentFilter.setMaxTransferSize(this.maxTransferSize);
         }
         if (onFilterInstanceChange != null) {
             this.onFilterInstanceChange.run();
@@ -136,7 +139,7 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     }
 
     public boolean showGlobalTransferLimitSlider() {
-        return this.maxTransferSize > 0 && (!hasFilter()/* || getFilter().showGlobalTransferLimitSlider()*/);
+        return this.maxTransferSize > 0 && (!hasFilter()/* || getFilter().showGlobalTransferLimitSlider() */);
     }
 
     public void setBlacklistFilter(boolean blacklistFilter) {
@@ -195,48 +198,48 @@ public abstract class BaseFilterContainer extends ItemStackTransfer {
     /** Uses Cleanroom MUI */
     // TODO ui
     /*
-    public IWidget initUI(ModularPanel main, PanelSyncManager manager) {
-        PanelSyncHandler panel = manager.panel("filter_panel", main, (syncManager, syncHandler) -> {
-            var filter = hasFilter() ? getFilter() : BaseFilter.ERROR_FILTER;
-            filter.setMaxTransferSize(getMaxTransferSize());
-            return filter.createPopupPanel(syncManager);
-        });
-
-        var filterButton = new ButtonWidget<>();
-        filterButton.setEnabled(hasFilter());
-
-        return new Row().coverChildrenHeight()
-                .marginBottom(2).widthRel(1f)
-                .child(new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(this, 0)
-                                .filter(this::isItemValid)
-                                .singletonSlotGroup(101)
-                                .changeListener((newItem, onlyAmountChanged, client, init) -> {
-                                    if (!isItemValid(newItem) && panel.isPanelOpen()) {
-                                        panel.closePanel();
-                                    }
-                                }))
-                        .size(18).marginRight(2)
-                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY.asIcon().size(16)))
-                .child(filterButton
-                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.FILTER_SETTINGS_OVERLAY.asIcon().size(16))
-                        .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
-                                GTGuiTextures.FILTER_SETTINGS_OVERLAY.asIcon().size(16))
-                        .setEnabledIf(w -> hasFilter())
-                        .onMousePressed(i -> {
-                            if (!panel.isPanelOpen()) {
-                                panel.openPanel();
-                            } else {
-                                panel.closePanel();
-                            }
-                            Interactable.playButtonClickSound();
-                            return true;
-                        }))
-                .child(IKey.dynamic(this::getFilterName)
-                        .alignment(Alignment.CenterRight).asWidget()
-                        .left(36).right(0).height(18));
-    }
-    */
+     * public IWidget initUI(ModularPanel main, PanelSyncManager manager) {
+     * PanelSyncHandler panel = manager.panel("filter_panel", main, (syncManager, syncHandler) -> {
+     * var filter = hasFilter() ? getFilter() : BaseFilter.ERROR_FILTER;
+     * filter.setMaxTransferSize(getMaxTransferSize());
+     * return filter.createPopupPanel(syncManager);
+     * });
+     * 
+     * var filterButton = new ButtonWidget<>();
+     * filterButton.setEnabled(hasFilter());
+     * 
+     * return new Row().coverChildrenHeight()
+     * .marginBottom(2).widthRel(1f)
+     * .child(new ItemSlot()
+     * .slot(SyncHandlers.itemSlot(this, 0)
+     * .filter(this::isItemValid)
+     * .singletonSlotGroup(101)
+     * .changeListener((newItem, onlyAmountChanged, client, init) -> {
+     * if (!isItemValid(newItem) && panel.isPanelOpen()) {
+     * panel.closePanel();
+     * }
+     * }))
+     * .size(18).marginRight(2)
+     * .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY.asIcon().size(16)))
+     * .child(filterButton
+     * .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.FILTER_SETTINGS_OVERLAY.asIcon().size(16))
+     * .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
+     * GTGuiTextures.FILTER_SETTINGS_OVERLAY.asIcon().size(16))
+     * .setEnabledIf(w -> hasFilter())
+     * .onMousePressed(i -> {
+     * if (!panel.isPanelOpen()) {
+     * panel.openPanel();
+     * } else {
+     * panel.closePanel();
+     * }
+     * Interactable.playButtonClickSound();
+     * return true;
+     * }))
+     * .child(IKey.dynamic(this::getFilterName)
+     * .alignment(Alignment.CenterRight).asWidget()
+     * .left(36).right(0).height(18));
+     * }
+     */
 
     public void writeInitialSyncData(FriendlyByteBuf packetBuffer) {
         packetBuffer.writeItem(this.getFilterStack());

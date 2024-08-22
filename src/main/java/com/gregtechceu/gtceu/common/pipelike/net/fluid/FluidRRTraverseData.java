@@ -7,17 +7,20 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.traverse.SimpleTileRoundRobinData;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.FluidTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.IRoundRobinTraverseData;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidRRTraverseData extends FluidTraverseData implements
-        IRoundRobinTraverseData<SimpleTileRoundRobinData<IFluidHandler>, WorldPipeNetNode, FlowWorldPipeNetPath> {
+                                 IRoundRobinTraverseData<SimpleTileRoundRobinData<IFluidHandler>, WorldPipeNetNode, FlowWorldPipeNetPath> {
 
     private final Object2ObjectLinkedOpenHashMap<Object, SimpleTileRoundRobinData<IFluidHandler>> cache;
 

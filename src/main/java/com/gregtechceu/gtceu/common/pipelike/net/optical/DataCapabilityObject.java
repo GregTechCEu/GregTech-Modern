@@ -13,11 +13,14 @@ import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.IOpticalTransferController;
 import com.gregtechceu.gtceu.common.pipelike.net.SlowActiveWalker;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +56,8 @@ public class DataCapabilityObject implements IPipeCapabilityObject, IDataAccess 
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 IDataAccess access = capability.getValue()
                         .getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (access != null) {
                     queryObject.setShouldTriggerWalker(false);
                     boolean cancelled = IOpticalTransferController.CONTROL

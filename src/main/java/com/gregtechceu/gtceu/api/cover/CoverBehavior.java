@@ -27,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -63,6 +65,9 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     @Persisted
     protected int redstoneSignalOutput = 0;
 
+    @OnlyIn(Dist.CLIENT)
+    protected @Nullable CoverRenderer renderer;
+
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         this.coverDefinition = definition;
         this.coverHolder = coverHolder;
@@ -96,7 +101,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
      *
      * @return true if cover can be attached, false otherwise
      */
-    public boolean canAttach() {
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
         return true;
     }
 
@@ -196,9 +201,13 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return true;
     }
 
-    public CoverRenderer getRenderer() {
-        return coverDefinition.getCoverRenderer();
+    @OnlyIn(Dist.CLIENT)
+    public @NotNull CoverRenderer getRenderer() {
+        if (renderer == null) renderer = buildRenderer();
+        return renderer;
     }
+
+    protected abstract CoverRenderer buildRenderer();
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,

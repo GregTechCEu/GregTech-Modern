@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.graphnet.edge.AbstractNetFlowEdge;
 import com.gregtechceu.gtceu.api.graphnet.edge.NetEdge;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.FlowConsumptionStack;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

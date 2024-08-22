@@ -57,11 +57,11 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 var cableData = new CompoundTag();
                 // TODO fix
                 /*
-                cableData.putLong("maxVoltage", cable.getMaxVoltage());
-                cableData.putLong("currentVoltage", cable.getCurrentMaxVoltage());
-                cableData.putDouble("maxAmperage", cable.getMaxAmperage());
-                cableData.putDouble("currentAmperage", cable.getAverageAmperage());
-                */
+                 * cableData.putLong("maxVoltage", cable.getMaxVoltage());
+                 * cableData.putLong("currentVoltage", cable.getCurrentMaxVoltage());
+                 * cableData.putDouble("maxAmperage", cable.getMaxAmperage());
+                 * cableData.putDouble("currentAmperage", cable.getAverageAmperage());
+                 */
                 data.put("cableData", cableData);
             }
         }

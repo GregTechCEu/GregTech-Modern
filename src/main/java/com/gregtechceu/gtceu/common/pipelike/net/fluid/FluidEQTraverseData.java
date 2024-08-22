@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.FlowWorldPipeNetPath;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.FluidTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.IEqualizableTraverseData;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import org.jetbrains.annotations.NotNull;
 
 public class FluidEQTraverseData extends FluidTraverseData

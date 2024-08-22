@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.utils;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 
 import java.util.Objects;
 

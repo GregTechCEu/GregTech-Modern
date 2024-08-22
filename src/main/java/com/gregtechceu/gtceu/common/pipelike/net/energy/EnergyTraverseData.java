@@ -15,13 +15,14 @@ import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.api.graphnet.traverse.AbstractTraverseData;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.ReversibleLossOperator;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.LongSupplier;
-import java.util.function.Supplier;
 
 public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, FlowWorldPipeNetPath> {
 
@@ -101,7 +102,8 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
                 continue; // anti insert-to-our-source logic
 
             IEnergyContainer container = capability.getValue()
-                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, capability.getKey().getOpposite()).resolve().orElse(null);
+                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, capability.getKey().getOpposite())
+                    .resolve().orElse(null);
             if (container != null) {
                 availableFlow -= IEnergyTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                         .getCoverAtSide(capability.getKey())).insertToHandler(pathVoltage, availableFlow, container,

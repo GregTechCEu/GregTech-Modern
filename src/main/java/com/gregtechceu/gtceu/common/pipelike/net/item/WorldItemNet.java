@@ -15,12 +15,13 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.BlockedPredicate;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.FilterPredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
-import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.WorldFluidNet;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

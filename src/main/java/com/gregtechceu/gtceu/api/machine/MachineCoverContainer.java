@@ -25,10 +25,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import lombok.Getter;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -209,7 +209,6 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             }
         }
     }
-
 
     @Override
     public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {

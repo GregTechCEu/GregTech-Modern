@@ -23,13 +23,13 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.*;
+import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
+import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.cable.CableStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalPipeBlock;
-import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
-import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
@@ -325,7 +325,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::cutoutMipped)
                 .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                //.color(() -> ::tintColor)
+                // .color(() -> ::tintColor)
                 .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();

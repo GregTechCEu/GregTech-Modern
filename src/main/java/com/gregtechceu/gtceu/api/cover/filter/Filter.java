@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import lombok.RequiredArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -15,7 +19,7 @@ import java.util.function.Supplier;
  * @date 2023/3/14
  * @implNote Filter
  */
-public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
+public interface Filter<T, S extends Filter<T, S>> extends Predicate<T>, Function<T, MatchResult> {
 
     WidgetGroup openConfigurator(int x, int y);
 
@@ -35,13 +39,21 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
         return this.test((T) test);
     }
 
+    default MatchResult match(T test) {
+        return this.apply(test);
+    }
+
+    default MatchResult matchGeneric(Object test) {
+        return this.apply((T) test);
+    }
+
     @RequiredArgsConstructor
     enum FilterType implements StringRepresentable {
+
         ITEM("item", SimpleItemFilter::new),
         ITEM_TAG("item_tag", TagItemFilter::new),
         FLUID("fluid", SimpleFluidFilter::new),
-        FLUID_TAG("fluid_tag", TagFluidFilter::new)
-        ;
+        FLUID_TAG("fluid_tag", TagFluidFilter::new);
 
         private final String name;
         private final Supplier<Filter<?, ?>> constructor;

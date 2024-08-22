@@ -9,11 +9,14 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.common.pipelike.net.SlowActiveWalker;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,10 +55,13 @@ public class LaserCapabilityObject implements IPipeCapabilityObject, ILaserRelay
             WorldPipeNetNode destination = path.getTargetNode();
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 ILaserRelay laser = capability.getValue()
-                        .getCapability(GTCapability.CAPABILITY_LASER, capability.getKey().getOpposite()).resolve().orElse(null);
+                        .getCapability(GTCapability.CAPABILITY_LASER, capability.getKey().getOpposite()).resolve()
+                        .orElse(null);
                 if (laser != null) {
-                    long transmitted = ILaserTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
-                            .getCoverAtSide(capability.getKey())).insertToHandler(laserVoltage, laserAmperage, laser);
+                    long transmitted = ILaserTransferController.CONTROL
+                            .get(destination.getBlockEntity().getCoverHolder()
+                                    .getCoverAtSide(capability.getKey()))
+                            .insertToHandler(laserVoltage, laserAmperage, laser);
                     if (transmitted > 0) {
                         SlowActiveWalker.dispatch(tile.getLevel(), path, 1, 2, 2);
                         available -= transmitted;

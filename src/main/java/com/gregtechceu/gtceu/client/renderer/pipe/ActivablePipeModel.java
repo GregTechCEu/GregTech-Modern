@@ -12,8 +12,10 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -25,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +43,8 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
 
-    public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(() -> GTCEu.id("block/pipe/pipe_optical_in"),
+    public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(
+            () -> GTCEu.id("block/pipe/pipe_optical_in"),
             () -> GTCEu.id("block/pipe/pipe_optical_side"),
             () -> GTCEu.id("block/pipe/pipe_optical_side_overlay"),
             () -> GTCEu.id("block/pipe/pipe_optical_side_overlay_active"),
@@ -80,7 +84,8 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
                                              byte blockedMask, ColorData data, @Nullable Material frameMaterial,
                                              byte frameMask, byte coverMask) {
         // don't render the main shape to the bloom layer
-        List<BakedQuad> quads = super.getQuads(key, connectionMask, closedMask, blockedMask, data, frameMaterial, frameMask, coverMask);
+        List<BakedQuad> quads = super.getQuads(key, connectionMask, closedMask, blockedMask, data, frameMaterial,
+                frameMask, coverMask);
 
         if (key.isActive() && allowActive()) {
             if (emissiveActive) {
@@ -131,7 +136,8 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     }
 
     @Override
-    protected @Nullable PipeItemModel<ActivableCacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world, LivingEntity entity) {
+    protected @Nullable PipeItemModel<ActivableCacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world,
+                                                                      LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
         return new PipeItemModel<>(this, new ActivableCacheKey(block.getStructure().getRenderThickness(), false),

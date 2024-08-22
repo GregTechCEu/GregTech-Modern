@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.cover.filter;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

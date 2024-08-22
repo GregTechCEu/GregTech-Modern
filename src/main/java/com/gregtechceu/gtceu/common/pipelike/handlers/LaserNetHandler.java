@@ -5,13 +5,14 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserStructure;
 import com.gregtechceu.gtceu.common.pipelike.net.laser.WorldLaserNet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -32,7 +33,8 @@ public final class LaserNetHandler implements IPipeNetNodeHandler {
     }
 
     @Override
-    public @NotNull Collection<WorldPipeNetNode> getFromNets(ServerLevel world, BlockPos pos, IPipeStructure structure) {
+    public @NotNull Collection<WorldPipeNetNode> getFromNets(ServerLevel world, BlockPos pos,
+                                                             IPipeStructure structure) {
         if (structure instanceof LaserStructure) {
             WorldPipeNetNode node = WorldLaserNet.getWorldNet(world).getNode(pos);
             if (node != null) return Collections.singletonList(node);

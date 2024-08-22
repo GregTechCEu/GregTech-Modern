@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SpriteInformationWrapper implements Supplier<SpriteInformation>, Consumer<SpriteInformation>,
-        BiConsumer<TextureAtlasSprite, Integer> {
+                                      BiConsumer<TextureAtlasSprite, Integer> {
 
     private SpriteInformation sprite;
 

@@ -22,6 +22,7 @@ public class MaterialPipeBlockItem extends PipeBlockItem {
     @Override
     public Component getName(ItemStack stack) {
         Material material = getBlock().material;
-        return material == null ? Component.literal("unnamed") : getBlock().getStructure().getPrefix().getLocalizedName(material);
+        return material == null ? Component.literal("unnamed") :
+                getBlock().getStructure().getPrefix().getLocalizedName(material);
     }
 }

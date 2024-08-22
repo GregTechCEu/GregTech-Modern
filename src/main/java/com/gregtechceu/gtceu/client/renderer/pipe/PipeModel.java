@@ -15,7 +15,9 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.PipeSpriteWoodClarifier;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.WoodCacheKey;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -26,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +84,8 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
     }
 
     public PipeModel(@NotNull PipeSpriteWoodClarifier inTex, boolean restrictive, String variant) {
-        this(inTex, wood -> wood ? GTCEu.id("block/pipe/pipe_side_wood") : GTCEu.id("block/pipe/pipe_side"), restrictive, variant);
+        this(inTex, wood -> wood ? GTCEu.id("block/pipe/pipe_side_wood") : GTCEu.id("block/pipe/pipe_side"),
+                restrictive, variant);
     }
 
     @Override
@@ -112,7 +116,8 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
             sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex.getTexture(key.isWood())), 0);
         }
         if (restrictiveSprite == null && restrictiveTex != null) {
-            restrictiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(restrictiveTex.getTexture(key.isWood())), -1);
+            restrictiveSprite = new SpriteInformation(
+                    ModelFactory.getBlockSprite(restrictiveTex.getTexture(key.isWood())), -1);
         }
         if (blockedSprite == null) {
             blockedSprite = new SpriteInformation(ModelFactory.getBlockSprite(blockedTex.getTexture(key.isWood())), -1);
@@ -129,7 +134,8 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
     }
 
     @Override
-    protected @Nullable PipeItemModel<WoodCacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world, LivingEntity entity) {
+    protected @Nullable PipeItemModel<WoodCacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world,
+                                                                 LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
         Material mater = null;

@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
