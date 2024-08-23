@@ -1,31 +1,25 @@
-package com.gregtechceu.gtceu.common.pipelike.block.optical;
+package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeActivableBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.handlers.DuctNetHandler;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-
 import org.jetbrains.annotations.NotNull;
 
-public class OpticalPipeBlock extends PipeActivableBlock {
+public class DuctPipeBlock extends PipeBlock {
 
-    public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalStructure structure) {
+    public DuctPipeBlock(Properties properties, DuctStructure structure) {
         super(properties, structure);
     }
 
     @Override
-    public GTToolType getToolClass() {
-        return GTToolType.WIRE_CUTTER;
-    }
-
-    @Override
     protected String getConnectLangKey() {
-        return "gregtech.tool_action.wire_cutter.connect";
+        return "gregtech.tool_action.wrench.connect";
     }
 
     @Override

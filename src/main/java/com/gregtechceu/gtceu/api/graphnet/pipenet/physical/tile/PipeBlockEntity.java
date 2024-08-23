@@ -212,8 +212,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         updateActiveStatus(facing, false);
     }
 
-    public boolean isConnected(Direction facing) {
-        return (this.connectionMask & 1 << facing.ordinal()) > 0;
+    public boolean isConnected(Direction side) {
+        return (this.connectionMask & 1 << side.ordinal()) > 0;
     }
 
     public boolean isConnectedCoverAdjusted(Direction facing) {

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MaterialPipeBlockItem extends PipeBlockItem {
 
-    public MaterialPipeBlockItem(Item.Properties properties, PipeMaterialBlock block) {
+    public MaterialPipeBlockItem(PipeMaterialBlock block, Item.Properties properties) {
         super(block, properties);
     }
 

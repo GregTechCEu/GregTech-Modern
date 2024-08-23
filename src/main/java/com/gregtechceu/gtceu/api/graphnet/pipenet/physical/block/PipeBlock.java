@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCoverHolder;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -516,7 +515,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
                                                                   BlockEntityType<T> blockEntityType) {
         if (!level.isClientSide && state.getValue(BlockProperties.SERVER_TICK)) {
             return (pLevel, pPos, pState, pTile) -> {
-                if (pTile instanceof IPipeNode<?, ?> pipeNode) {
+                if (pTile instanceof PipeBlockEntity pipeNode) {
                     pipeNode.serverTick();
                 }
             };
