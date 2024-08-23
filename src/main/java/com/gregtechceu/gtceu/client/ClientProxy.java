@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.renderer.pipe.CableModel;
+import com.gregtechceu.gtceu.client.renderer.pipe.PipeModel;
+import com.gregtechceu.gtceu.client.renderer.pipe.UnbakedPipeModel;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -94,8 +96,23 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerModifiedModels(ModelEvent.ModifyBakingResult event) {
+    public void modifyModels(ModelEvent.ModifyBakingResult event) {
         ActivablePipeModel.registerModels(event.getModels()::put);
         CableModel.registerModels(event.getModels()::put);
+        PipeModel.registerModels(event.getModels()::put);
+        ActivablePipeModel.registerModels(event.getModels()::put);
+    }
+
+    @SubscribeEvent
+    public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        ActivablePipeModel.registerModels((id, $) -> event.register(id));
+        CableModel.registerModels((id, $) -> event.register(id));
+        PipeModel.registerModels((id, $) -> event.register(id));
+        ActivablePipeModel.registerModels((id, $) -> event.register(id));
+    }
+
+    @SubscribeEvent
+    public void modelRegistry(final ModelEvent.RegisterGeometryLoaders e) {
+        e.register("pipe", UnbakedPipeModel.Loader.INSTANCE);
     }
 }

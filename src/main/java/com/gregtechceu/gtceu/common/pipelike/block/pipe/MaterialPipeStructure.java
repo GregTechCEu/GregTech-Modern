@@ -15,50 +15,50 @@ public record MaterialPipeStructure(String name, int material, int channelCount,
                                     float renderThickness, PipeModel model)
         implements IPipeMaterialStructure, IPipeChanneledStructure {
 
-    public static final MaterialPipeStructure TINY = new MaterialPipeStructure("pipe_tiny", 1, 1, false,
+    public static final MaterialPipeStructure TINY = new MaterialPipeStructure("tiny", 1, 1, false,
             TagPrefix.pipeTiny, 0.25f,
             PipeModel.INSTANCES[0]);
-    public static final MaterialPipeStructure SMALL = new MaterialPipeStructure("pipe_small", 2, 1, false,
+    public static final MaterialPipeStructure SMALL = new MaterialPipeStructure("small", 2, 1, false,
             TagPrefix.pipeSmall, 0.375f,
             PipeModel.INSTANCES[1]);
-    public static final MaterialPipeStructure NORMAL = new MaterialPipeStructure("pipe_normal", 6, 1, false,
+    public static final MaterialPipeStructure NORMAL = new MaterialPipeStructure("normal", 6, 1, false,
             TagPrefix.pipeNormal, 0.5f,
             PipeModel.INSTANCES[2]);
-    public static final MaterialPipeStructure LARGE = new MaterialPipeStructure("pipe_large", 12, 1, false,
+    public static final MaterialPipeStructure LARGE = new MaterialPipeStructure("large", 12, 1, false,
             TagPrefix.pipeLarge, 0.75f,
             PipeModel.INSTANCES[3]);
-    public static final MaterialPipeStructure HUGE = new MaterialPipeStructure("pipe_huge", 24, 1, false,
+    public static final MaterialPipeStructure HUGE = new MaterialPipeStructure("huge", 24, 1, false,
             TagPrefix.pipeHuge, 0.875f,
             PipeModel.INSTANCES[4]);
 
-    public static final MaterialPipeStructure QUADRUPLE = new MaterialPipeStructure("pipe_quadruple", 8, 4, false,
+    public static final MaterialPipeStructure QUADRUPLE = new MaterialPipeStructure("quadruple", 8, 4, false,
             TagPrefix.pipeQuadruple,
             0.95f, PipeModel.INSTANCES[5]);
-    public static final MaterialPipeStructure NONUPLE = new MaterialPipeStructure("pipe_nonuple", 18, 9, false,
+    public static final MaterialPipeStructure NONUPLE = new MaterialPipeStructure("nonuple", 18, 9, false,
             TagPrefix.pipeNonuple, 0.95f,
             PipeModel.INSTANCES[6]);
 
-    public static final MaterialPipeStructure TINY_RESTRICTIVE = new MaterialPipeStructure("pipe_tiny_restrictive", 1,
+    public static final MaterialPipeStructure TINY_RESTRICTIVE = new MaterialPipeStructure("tiny_restrictive", 1,
             1, true,
             TagPrefix.pipeTinyRestrictive, 0.25f, PipeModel.RESTRICTIVE_INSTANCES[0]);
-    public static final MaterialPipeStructure SMALL_RESTRICTIVE = new MaterialPipeStructure("pipe_small_restrictive", 2,
+    public static final MaterialPipeStructure SMALL_RESTRICTIVE = new MaterialPipeStructure("small_restrictive", 2,
             1, true,
             TagPrefix.pipeSmallRestrictive, 0.375f, PipeModel.RESTRICTIVE_INSTANCES[1]);
-    public static final MaterialPipeStructure NORMAL_RESTRICTIVE = new MaterialPipeStructure("pipe_normal_restrictive",
+    public static final MaterialPipeStructure NORMAL_RESTRICTIVE = new MaterialPipeStructure("normal_restrictive",
             6, 1, true,
             TagPrefix.pipeNormalRestrictive, 0.5f, PipeModel.RESTRICTIVE_INSTANCES[2]);
-    public static final MaterialPipeStructure LARGE_RESTRICTIVE = new MaterialPipeStructure("pipe_large_restrictive",
+    public static final MaterialPipeStructure LARGE_RESTRICTIVE = new MaterialPipeStructure("large_restrictive",
             12, 1, true,
             TagPrefix.pipeLargeRestrictive, 0.75f, PipeModel.RESTRICTIVE_INSTANCES[3]);
-    public static final MaterialPipeStructure HUGE_RESTRICTIVE = new MaterialPipeStructure("pipe_huge_restrictive", 24,
+    public static final MaterialPipeStructure HUGE_RESTRICTIVE = new MaterialPipeStructure("huge_restrictive", 24,
             1, true,
             TagPrefix.pipeHugeRestrictive, 0.875f, PipeModel.RESTRICTIVE_INSTANCES[4]);
 
     public static final MaterialPipeStructure QUADRUPLE_RESTRICTIVE = new MaterialPipeStructure(
-            "pipe_quadruple_restrictive", 8, 4, true,
+            "quadruple_restrictive", 8, 4, true,
             TagPrefix.pipeQuadrupleRestrictive, 0.95f, PipeModel.RESTRICTIVE_INSTANCES[5]);
     public static final MaterialPipeStructure NONUPLE_RESTRICTIVE = new MaterialPipeStructure(
-            "pipe_nonuple_restrictive", 18, 9, true,
+            "nonuple_restrictive", 18, 9, true,
             TagPrefix.pipeNonupleRestrictive, 0.95f, PipeModel.RESTRICTIVE_INSTANCES[6]);
 
     public MaterialPipeStructure(String name, int material, int channelCount, boolean restrictive, TagPrefix prefix,

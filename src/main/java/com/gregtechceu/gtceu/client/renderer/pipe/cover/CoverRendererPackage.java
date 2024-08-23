@@ -38,13 +38,15 @@ public final class CoverRendererPackage {
         plates.remove(facing);
     }
 
-    public void addQuads(List<BakedQuad> quads, RandomSource rand, ModelData modelData, ColorData data, RenderType renderType) {
+    public void addQuads(List<BakedQuad> quads, RandomSource rand, ModelData modelData, ColorData data,
+                         RenderType renderType) {
         for (var renderer : renderers.entrySet()) {
             EnumSet<Direction> plates = EnumSet.copyOf(this.plates);
             // force front and back plates to render
             plates.add(renderer.getKey());
             plates.add(renderer.getKey().getOpposite());
-            renderer.getValue().addQuads(quads, renderer.getKey(), rand, plates, renderBackside, modelData, data, renderType);
+            renderer.getValue().addQuads(quads, renderer.getKey(), rand, plates, renderBackside, modelData, data,
+                    renderType);
         }
     }
 

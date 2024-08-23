@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDetectorCover extends DetectorCover {
@@ -27,7 +28,8 @@ public class ItemDetectorCover extends DetectorCover {
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_item_detector"), GTCEu.id("block/cover/overlay_item_detector_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_item_detector"),
+                GTCEu.id("block/cover/overlay_item_detector_emissive")).build();
     }
 
     @Override

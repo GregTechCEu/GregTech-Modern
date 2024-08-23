@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.RequiredArgsConstructor;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

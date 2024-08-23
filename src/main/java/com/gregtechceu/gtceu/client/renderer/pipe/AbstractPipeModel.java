@@ -41,9 +41,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPipeModel<K extends CacheKey> implements BakedModel {
+
+    public static final Map<ModelResourceLocation, AbstractPipeModel<?>> MODELS = new Object2ObjectOpenHashMap<>();
 
     public static ModelProperty<Float> THICKNESS_PROPERTY = new ModelProperty<>();
 
@@ -64,6 +67,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
 
     public AbstractPipeModel(ModelResourceLocation loc) {
         this.loc = loc;
+        MODELS.put(loc, this);
     }
 
     @Override

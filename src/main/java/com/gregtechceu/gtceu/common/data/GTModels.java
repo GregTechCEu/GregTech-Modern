@@ -2,15 +2,31 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PipeNetProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
+import com.gregtechceu.gtceu.common.block.LampBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.cable.CableStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
@@ -18,6 +34,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
@@ -358,5 +375,121 @@ public class GTModels {
                 }
             }
         }
+    }
+
+    public static void registerPipeModels() {
+        for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            PipeNetProperties properties = material.getProperty(PropertyKey.PIPENET_PROPERTIES);
+            if (properties == null) continue;
+            if (properties.hasProperty(MaterialEnergyProperties.KEY)) {
+                for (var structure : PipeStructureRegistry.getStructures(CableStructure.class)) {
+                    if (!GTBlocks.CABLE_BLOCKS.contains(structure.prefix(), material)) {
+                        continue;
+                    }
+
+                    JsonObject json = new JsonObject();
+                    json.addProperty("loader", "gtceu:pipe");
+                    String modelId = structure.getModel().getLoc().toString();
+                    json.addProperty("model_id", modelId);
+
+                    CableBlock block = GTBlocks.CABLE_BLOCKS.get(structure.prefix(), material).get();
+                    ResourceLocation blockId = GTBlocks.CABLE_BLOCKS.get(structure.prefix(), material).getId();
+                    ResourceLocation blockModelId = blockId.withPrefix("block/");
+                    GTDynamicResourcePack.addBlockModel(blockModelId, json);
+                    GTDynamicResourcePack.addItemModel(blockId, json);
+
+                    createPipeBlockState(blockId, blockModelId, block);
+                }
+            }
+            for (var structure : PipeStructureRegistry.getStructures(MaterialPipeStructure.class)) {
+                if (!GTBlocks.MATERIAL_PIPE_BLOCKS.contains(structure.prefix(), material)) {
+                    continue;
+                }
+
+                JsonObject json = new JsonObject();
+                json.addProperty("loader", "gtceu:pipe");
+                String modelId = structure.getModel().getLoc().toString();
+                json.addProperty("model_id", modelId);
+
+                MaterialPipeBlock block = GTBlocks.MATERIAL_PIPE_BLOCKS.get(structure.prefix(), material).get();
+                ResourceLocation blockId = GTBlocks.MATERIAL_PIPE_BLOCKS.get(structure.prefix(), material).getId();
+                ResourceLocation blockModelId = blockId.withPrefix("block/");
+                GTDynamicResourcePack.addBlockModel(blockModelId, json);
+                GTDynamicResourcePack.addItemModel(blockId, json);
+
+                createPipeBlockState(blockId, blockModelId, block);
+            }
+        }
+        for (var structure : PipeStructureRegistry.getStructures(DuctStructure.class)) {
+            JsonObject json = new JsonObject();
+            json.addProperty("loader", "gtceu:pipe");
+            String modelId = structure.getModel().getLoc().toString();
+            json.addProperty("model_id", modelId);
+
+            DuctPipeBlock block = GTBlocks.DUCT_PIPE_BLOCKS.get(structure).get();
+            ResourceLocation blockId = GTBlocks.DUCT_PIPE_BLOCKS.get(structure).getId();
+            ResourceLocation blockModelId = blockId.withPrefix("block/");
+            GTDynamicResourcePack.addBlockModel(blockModelId, json);
+            GTDynamicResourcePack.addItemModel(blockId, json);
+
+            createPipeBlockState(blockId, blockModelId, block);
+        }
+        {
+            JsonObject json = new JsonObject();
+            json.addProperty("loader", "gtceu:pipe");
+            String modelId = LaserStructure.NORMAL.getModel().getLoc().toString();
+            json.addProperty("model_id", modelId);
+
+            LaserPipeBlock block = GTBlocks.LASER_PIPE.get();
+            ResourceLocation blockId = GTBlocks.LASER_PIPE.getId();
+            ResourceLocation blockModelId = blockId.withPrefix("block/");
+            GTDynamicResourcePack.addBlockModel(blockModelId, json);
+            GTDynamicResourcePack.addItemModel(blockId, json);
+
+            createPipeBlockState(blockId, blockModelId, block);
+        }
+        {
+            JsonObject json = new JsonObject();
+            json.addProperty("loader", "gtceu:pipe");
+            String modelId = OpticalStructure.INSTANCE.getModel().getLoc().toString();
+            json.addProperty("model_id", modelId);
+
+            OpticalPipeBlock block = GTBlocks.OPTICAL_PIPE.get();
+            ResourceLocation blockId = GTBlocks.OPTICAL_PIPE.getId();
+            ResourceLocation blockModelId = blockId.withPrefix("block/");
+            GTDynamicResourcePack.addBlockModel(blockModelId, json);
+            GTDynamicResourcePack.addItemModel(blockId, json);
+
+            createPipeBlockState(blockId, blockModelId, block);
+        }
+    }
+
+    private static void createPipeBlockState(ResourceLocation blockId, ResourceLocation blockModelId, Block block) {
+        Variant variant = Variant.variant().with(VariantProperties.MODEL, blockModelId);
+        GTDynamicResourcePack.addBlockState(blockId, MultiVariantGenerator.multiVariant(block)
+                .with(PropertyDispatch.property(PipeBlock.NORTH)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.SOUTH)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.WEST)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.EAST)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.UP)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.DOWN)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(PipeBlock.FRAMED)
+                        .select(true, variant)
+                        .select(false, variant))
+                .with(PropertyDispatch.property(BlockProperties.SERVER_TICK)
+                        .select(true, variant)
+                        .select(false, variant)));
     }
 }

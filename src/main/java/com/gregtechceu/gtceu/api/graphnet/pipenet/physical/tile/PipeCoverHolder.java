@@ -1,25 +1,31 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.editor.runtime.PersistedParser;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.*;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 
 public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
 
@@ -41,9 +48,10 @@ public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
     private final PipeBlockEntity holder;
-    @Persisted
-    @DescSynced
     @RequireRerender
+    @ReadOnlyManaged(onDirtyMethod = "onCoversDirty",
+                     serializeMethod = "serializeCovers",
+                     deserializeMethod = "deserializeCovers")
     private final EnumMap<Direction, CoverBehavior> covers = new EnumMap<>(Direction.class);
     private final int[] sidedRedstoneInput = new int[6];
 
@@ -281,5 +289,64 @@ public class PipeCoverHolder implements ICoverable, IEnhancedManaged {
     @Override
     public void onChanged() {
         holder.onChanged();
+    }
+
+    @SuppressWarnings("unused")
+    private boolean onCoversDirty(EnumMap<Direction, CoverBehavior> covers) {
+        for (CoverBehavior coverBehavior : covers.values()) {
+            if (coverBehavior != null) {
+                for (IRef ref : coverBehavior.getSyncStorage().getNonLazyFields()) {
+                    ref.update();
+                }
+                if (coverBehavior.getSyncStorage().hasDirtySyncFields() ||
+                        coverBehavior.getSyncStorage().hasDirtyPersistedFields()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unused")
+    private CompoundTag serializeCovers(EnumMap<Direction, CoverBehavior> covers) {
+        CompoundTag tagCompound = new CompoundTag();
+        ListTag coversList = new ListTag();
+        for (var entry : covers.entrySet()) {
+            CoverBehavior cover = entry.getValue();
+            if (cover != null) {
+                CompoundTag tag = new CompoundTag();
+                ResourceLocation coverId = cover.coverDefinition.getId();
+                tag.putString("id", coverId.toString());
+                tag.putByte("side", (byte) entry.getKey().get3DDataValue());
+                PersistedParser.serializeNBT(tag, cover.getClass(), cover);
+                coversList.add(tag);
+            }
+        }
+        tagCompound.put("Covers", coversList);
+        return tagCompound;
+    }
+
+    @SuppressWarnings("unused")
+    private EnumMap<Direction, CoverBehavior> deserializeCovers(CompoundTag tagCompound) {
+        EnumMap<Direction, CoverBehavior> map = new EnumMap<>(Direction.class);
+
+        ListTag coversList = tagCompound.getList("Covers", Tag.TAG_COMPOUND);
+        for (int index = 0; index < coversList.size(); index++) {
+            CompoundTag tag = coversList.getCompound(index);
+            if (tag.contains("id", Tag.TAG_STRING)) {
+                Direction coverSide = Direction.from3DDataValue(tag.getByte("Side"));
+                ResourceLocation coverLocation = new ResourceLocation(tag.getString("CoverId"));
+                CoverDefinition coverDefinition = GTRegistries.COVERS.get(coverLocation);
+                if (coverDefinition == null) {
+                    GTCEu.LOGGER.warn("Unable to find CoverDefinition for ResourceLocation {} at position {}",
+                            coverLocation, holder.getBlockPos());
+                } else {
+                    CoverBehavior cover = coverDefinition.createCoverBehavior(this, coverSide);
+                    PersistedParser.deserializeNBT(tag, new HashMap<>(), cover.getClass(), cover);
+                    map.put(coverSide, cover);
+                }
+            }
+        }
+        return map;
     }
 }

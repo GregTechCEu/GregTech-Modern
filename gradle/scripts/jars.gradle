@@ -3,6 +3,13 @@ tasks.register('slimJar', Jar) {
     from sourceSets.main.output
 }
 
+shadowJar {
+    configurations = [project.configurations.shadow]
+    archiveClassifier = "dev-shadow"
+    minimize()
+    relocate("org.jgrapht", "${maven_group}.repack.org.jgrapht")
+}
+
 obfuscation {
     reobfuscate(tasks.named('slimJar'), sourceSets.main) {
         archiveClassifier = "slim"

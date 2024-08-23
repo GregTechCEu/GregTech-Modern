@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.utils.OreDictExprFilter;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
-import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import lombok.Getter;
 
 import java.util.function.Consumer;
 

@@ -321,13 +321,13 @@ public class GTBlocks {
         return false;
     }
 
-    private static void registerCableBlock(Material material, CableStructure insulation, GTRegistrate registrate) {
+    private static void registerCableBlock(Material material, CableStructure structure, GTRegistrate registrate) {
         var entry = registrate
-                .block("%s_%s".formatted(material.getName(), insulation.name()),
-                        p -> new com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock(p, insulation, material))
+                .block("%s_%s".formatted(material.getName(), structure.name()),
+                        p -> new com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock(p, structure, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
-                .transform(unificationBlock(insulation.prefix(), material))
+                .transform(unificationBlock(structure.prefix(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -338,7 +338,7 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();
-        CABLE_BLOCKS_BUILDER.put(insulation.prefix(), material, entry);
+        CABLE_BLOCKS_BUILDER.put(structure.prefix(), material, entry);
     }
 
     // Fluid Pipe Blocks
@@ -362,11 +362,11 @@ public class GTBlocks {
         return material.hasProperty(PropertyKey.PIPENET_PROPERTIES) && !fluidPipeType.prefix().isIgnored(material);
     }
 
-    private static void registerMaterialPipeBlock(Material material, MaterialPipeStructure fluidPipeType,
+    private static void registerMaterialPipeBlock(Material material, MaterialPipeStructure pipeType,
                                                   GTRegistrate registrate) {
         var entry = registrate
-                .block("%s_%s_pipe".formatted(material.getName(), fluidPipeType.name()),
-                        p -> new MaterialPipeBlock(p, fluidPipeType, material))
+                .block("%s_%s_pipe".formatted(pipeType.name(), material.getName()),
+                        p -> new MaterialPipeBlock(p, pipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
                     if (doMetalPipe(material)) {
@@ -374,7 +374,7 @@ public class GTBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(unificationBlock(fluidPipeType.prefix(), material))
+                .transform(unificationBlock(pipeType.prefix(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -383,7 +383,7 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
-        MATERIAL_PIPE_BLOCKS_BUILDER.put(fluidPipeType.prefix(), material, entry);
+        MATERIAL_PIPE_BLOCKS_BUILDER.put(pipeType.prefix(), material, entry);
     }
 
     // Optical Pipe Blocks

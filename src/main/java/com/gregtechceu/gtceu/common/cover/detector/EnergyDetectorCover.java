@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import net.minecraft.core.Direction;
@@ -24,7 +23,8 @@ public class EnergyDetectorCover extends DetectorCover {
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_energy_detector"), GTCEu.id("block/cover/overlay_energy_detector_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_energy_detector"),
+                GTCEu.id("block/cover/overlay_energy_detector_emissive")).build();
     }
 
     @Override

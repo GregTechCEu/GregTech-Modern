@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DuctPipeModel extends AbstractPipeModel<CacheKey> {
 
-    private static final ResourceLocation loc = GTCEu.id("block/duct_pipe");
+    private static final ResourceLocation loc = GTCEu.id("pipe_duct");
 
     public static final DuctPipeModel INSTANCE = new DuctPipeModel();
 

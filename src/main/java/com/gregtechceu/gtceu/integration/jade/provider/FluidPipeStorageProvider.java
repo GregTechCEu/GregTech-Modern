@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.MaterialPipeBlockEntity;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,9 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.Accessor;
-import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.view.*;
 
 import java.util.ArrayList;
@@ -38,13 +36,13 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<Materia
                                                            MaterialPipeBlockEntity pipe, boolean showDetails) {
         List<ViewGroup<CompoundTag>> tanks = new ArrayList<>();
         /*
-        for (var tank : pipe.getFluidTanks()) {
-            if (tank.getFluidAmount() > 0) {
-                tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(
-                        JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
-            }
-        }
-        */
+         * for (var tank : pipe.getFluidTanks()) {
+         * if (tank.getFluidAmount() > 0) {
+         * tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(
+         * JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
+         * }
+         * }
+         */
         return tanks;
     }
 

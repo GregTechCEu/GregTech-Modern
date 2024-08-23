@@ -37,7 +37,7 @@ import java.util.function.BiConsumer;
 @OnlyIn(Dist.CLIENT)
 public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
 
-    private static final ResourceLocation loc = GTCEu.id("block/pipe_material");
+    private static final ResourceLocation loc = GTCEu.id("pipe_material");
 
     public static final PipeModel[] INSTANCES = new PipeModel[7];
     public static final PipeModel[] RESTRICTIVE_INSTANCES = new PipeModel[INSTANCES.length];

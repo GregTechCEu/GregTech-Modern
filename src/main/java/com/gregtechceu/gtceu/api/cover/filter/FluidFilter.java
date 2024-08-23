@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
@@ -90,8 +91,6 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public void setMaxTransferSize(int maxTransferSize) {
-
-        }
+        public void setMaxTransferSize(int maxTransferSize) {}
     };
 }

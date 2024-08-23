@@ -52,7 +52,7 @@ dependencyResolutionManagement {
         // Libs
         def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
         def parchmentVersion = "2023.09.03" // https://parchmentmc.org/docs/getting-started
-        def shadowVersion = "7.1.2"
+        def shadowVersion = "8.3.0"
         def spotlessVersion = "6.25.0"
         def modDevGradleVersion = "2.0.61-beta-pr-118-legacy"
         def vineFlowerVersion = "1.+"
@@ -151,7 +151,7 @@ dependencyResolutionManagement {
             library("minecraft", "com.mojang", "minecraft").versionRef(minecraft)
 
             def shadow = version("shadow", shadowVersion)
-            plugin("shadow", "com.github.johnrengelman.shadow").versionRef(shadow)
+            plugin("shadow", "com.gradleup.shadow").versionRef(shadow)
 
             def spotless = version("spotless", spotlessVersion)
             plugin("spotless", "com.diffplug.spotless").versionRef(spotless)

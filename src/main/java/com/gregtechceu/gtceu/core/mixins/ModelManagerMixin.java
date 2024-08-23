@@ -40,6 +40,7 @@ public abstract class ModelManagerMixin {
         ToolItemRenderer.reinitModels();
         SurfaceRockRenderer.reinitModels();
         GTModels.registerMaterialFluidModels();
+        GTModels.registerPipeModels();
         GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
     }
 }

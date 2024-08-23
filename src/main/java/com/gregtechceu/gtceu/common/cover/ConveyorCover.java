@@ -285,7 +285,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                                   @NotNull IntUnaryOperator maxTransfer,
                                   @Nullable BiConsumer<Integer, Integer> transferReport) {
         ItemFilter filter = filterHandler.getFilter();
-        byFilterSlot = byFilterSlot && getFilterHandler().isFilterPresent(); // can't be by filter slot if there is no filter
+        byFilterSlot = byFilterSlot && getFilterHandler().isFilterPresent(); // can't be by filter slot if there is no
+                                                                             // filter
         Int2IntArrayMap extractableByFilterSlot = new Int2IntArrayMap();
         Int2ObjectArrayMap<MergabilityInfo<ItemTestObject>> filterSlotToMergability = new Int2ObjectArrayMap<>();
         for (int i = 0; i < sourceHandler.getSlots(); i++) {

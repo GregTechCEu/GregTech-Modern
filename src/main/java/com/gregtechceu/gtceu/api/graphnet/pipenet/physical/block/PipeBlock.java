@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block;
 
-import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -49,6 +48,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -67,14 +67,16 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
+import static com.gregtechceu.gtceu.api.block.BlockProperties.SERVER_TICK;
+
 public abstract class PipeBlock extends Block implements EntityBlock {
 
-    public static final BooleanProperty NORTH = BooleanProperty.create("north");
-    public static final BooleanProperty EAST = BooleanProperty.create("east");
-    public static final BooleanProperty SOUTH = BooleanProperty.create("south");
-    public static final BooleanProperty WEST = BooleanProperty.create("west");
-    public static final BooleanProperty UP = BooleanProperty.create("up");
-    public static final BooleanProperty DOWN = BooleanProperty.create("down");
+    public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+    public static final BooleanProperty EAST = BlockStateProperties.EAST;
+    public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
+    public static final BooleanProperty WEST = BlockStateProperties.WEST;
+    public static final BooleanProperty UP = BlockStateProperties.UP;
+    public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
 
     public static final EnumMap<Direction, BooleanProperty> FACINGS = buildFacings();
 
@@ -478,7 +480,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED, SERVER_TICK);
     }
 
     public static BlockState writeConnectionMask(@NotNull BlockState state, byte connectionMask) {
@@ -504,7 +506,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> blockEntityType) {
-        if (!level.isClientSide && state.getValue(BlockProperties.SERVER_TICK)) {
+        if (!level.isClientSide && state.getValue(SERVER_TICK)) {
             return (pLevel, pPos, pState, pTile) -> {
                 if (pTile instanceof PipeBlockEntity pipeNode) {
                     pipeNode.serverTick();

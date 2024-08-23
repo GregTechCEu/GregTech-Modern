@@ -16,11 +16,11 @@ import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-
 import com.gregtechceu.gtceu.common.pipelike.net.item.IItemTransferController;
 import com.gregtechceu.gtceu.common.pipelike.net.item.ItemEQTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.item.ItemRRTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.item.ItemTraverseData;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
@@ -28,15 +28,15 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-
-import lombok.Getter;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntUnaryOperator;
@@ -76,12 +76,14 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"), GTCEu.id("block/cover/overlay_arm_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"),
+                GTCEu.id("block/cover/overlay_arm_emissive")).build();
     }
 
     @Override
     protected CoverRenderer buildRendererInverted() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"), GTCEu.id("block/cover/overlay_arm_inverted_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"),
+                GTCEu.id("block/cover/overlay_arm_inverted_emissive")).build();
     }
 
     @Override
@@ -306,7 +308,8 @@ public class RobotArmCover extends ConveyorCover {
 
                 IItemHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.ITEM_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
                     int contained = computeContained(container, getTestObject());
@@ -315,8 +318,8 @@ public class RobotArmCover extends ConveyorCover {
                     if (contained >= kept) continue;
                     availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, availableFlow), container,
-                            getSimulatorKey() != null);
+                                    (int) Math.min(kept - contained, availableFlow), container,
+                                    getSimulatorKey() != null);
                 }
             }
             return flowReachingDestination - availableFlow;
@@ -341,7 +344,8 @@ public class RobotArmCover extends ConveyorCover {
 
                 IItemHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.ITEM_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
                     int contained = computeContained(container, getTestObject());
@@ -354,7 +358,7 @@ public class RobotArmCover extends ConveyorCover {
                     maxMinFlow = Math.min(maxMinFlow, test -
                             IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                                     .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(), test,
-                                    container, true));
+                                            container, true));
                 }
             }
         }
@@ -369,7 +373,8 @@ public class RobotArmCover extends ConveyorCover {
 
                 IItemHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.ITEM_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
                     int contained = computeContained(container, getTestObject());
@@ -378,8 +383,8 @@ public class RobotArmCover extends ConveyorCover {
                     if (contained >= kept) continue;
                     availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, availableFlow), container,
-                            getSimulatorKey() != null);
+                                    (int) Math.min(kept - contained, availableFlow), container,
+                                    getSimulatorKey() != null);
                 }
             }
             return flowReachingDestination - availableFlow;
@@ -412,11 +417,10 @@ public class RobotArmCover extends ConveyorCover {
                 if (contained >= kept) return 0;
                 availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                         .getCoverAtSide(pointerFacing)).insertToHandler(getTestObject(),
-                        (int) Math.min(kept - contained, availableFlow), container,
-                        getSimulatorKey() != null);
+                                (int) Math.min(kept - contained, availableFlow), container,
+                                getSimulatorKey() != null);
             }
             return flowReachingDestination - availableFlow;
         }
     }
 }
-

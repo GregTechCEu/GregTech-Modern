@@ -143,7 +143,8 @@ public class BlockHighLightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeStructure = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().getStructure() :
+            var pipeStructure = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
+                    pipeBlockItem.getBlock().getStructure() :
                     null;
             if (pipeStructure != null && blockEntity instanceof PipeBlockEntity pipeBlockEntity &&
                     pipeBlockEntity.getStructure() == pipeStructure) {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.client.renderer.pipe.CableModel;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,26 +22,26 @@ public record CableStructure(String name, int material, int costFactor, TagPrefi
 
     public static final int INSULATION_BURN_TEMP = 1000;
 
-    public static final CableStructure WIRE_SINGLE = new CableStructure("wire_single", 1, 2, TagPrefix.wireGtSingle,
+    public static final CableStructure WIRE_SINGLE = new CableStructure("single_wire", 1, 2, TagPrefix.wireGtSingle,
             null, null, 0.125f, CableModel.INSTANCE);
-    public static final CableStructure WIRE_DOUBLE = new CableStructure("wire_double", 2, 2, TagPrefix.wireGtDouble,
+    public static final CableStructure WIRE_DOUBLE = new CableStructure("double_wire", 2, 2, TagPrefix.wireGtDouble,
             null, null, 0.25f, CableModel.INSTANCE);
-    public static final CableStructure WIRE_QUADRUPLE = new CableStructure("wire_quadruple", 4, 3,
+    public static final CableStructure WIRE_QUADRUPLE = new CableStructure("quadruple_wire", 4, 3,
             TagPrefix.wireGtQuadruple, null, null, 0.375f, CableModel.INSTANCE);
-    public static final CableStructure WIRE_OCTAL = new CableStructure("wire_octal", 8, 3, TagPrefix.wireGtOctal, null,
+    public static final CableStructure WIRE_OCTAL = new CableStructure("octal_wire", 8, 3, TagPrefix.wireGtOctal, null,
             null, 0.5f, CableModel.INSTANCE);
-    public static final CableStructure WIRE_HEX = new CableStructure("wire_hex", 16, 3, TagPrefix.wireGtHex, null, null,
+    public static final CableStructure WIRE_HEX = new CableStructure("hex_wire", 16, 3, TagPrefix.wireGtHex, null, null,
             0.75f, CableModel.INSTANCE);
 
-    public static final CableStructure CABLE_SINGLE = new CableStructure("cable_single", 1, 1, TagPrefix.cableGtSingle,
+    public static final CableStructure CABLE_SINGLE = new CableStructure("single_cable", 1, 1, TagPrefix.cableGtSingle,
             WIRE_SINGLE, INSULATION_BURN_TEMP, 0.25f, CableModel.INSULATED_INSTANCES[0]);
-    public static final CableStructure CABLE_DOUBLE = new CableStructure("cable_double", 2, 1, TagPrefix.cableGtDouble,
+    public static final CableStructure CABLE_DOUBLE = new CableStructure("double_cable", 2, 1, TagPrefix.cableGtDouble,
             WIRE_DOUBLE, INSULATION_BURN_TEMP, 0.375f, CableModel.INSULATED_INSTANCES[1]);
-    public static final CableStructure CABLE_QUADRUPLE = new CableStructure("cable_quadruple", 4, 1,
+    public static final CableStructure CABLE_QUADRUPLE = new CableStructure("quadruple_cable", 4, 1,
             TagPrefix.cableGtQuadruple, WIRE_QUADRUPLE, INSULATION_BURN_TEMP, 0.5f, CableModel.INSULATED_INSTANCES[2]);
-    public static final CableStructure CABLE_OCTAL = new CableStructure("cable_octal", 8, 1, TagPrefix.cableGtOctal,
+    public static final CableStructure CABLE_OCTAL = new CableStructure("octal_cable", 8, 1, TagPrefix.cableGtOctal,
             WIRE_OCTAL, INSULATION_BURN_TEMP, 0.75f, CableModel.INSULATED_INSTANCES[3]);
-    public static final CableStructure CABLE_HEX = new CableStructure("cable_hex", 16, 1, TagPrefix.cableGtHex,
+    public static final CableStructure CABLE_HEX = new CableStructure("hex_cable", 16, 1, TagPrefix.cableGtHex,
             WIRE_HEX, INSULATION_BURN_TEMP, 1f, CableModel.INSULATED_INSTANCES[4]);
 
     public CableStructure(String name, int material, int costFactor, TagPrefix prefix,

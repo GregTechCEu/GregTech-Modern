@@ -14,11 +14,11 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidEQTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidRRTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.IFluidTransferController;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -27,17 +27,18 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-
-import lombok.Getter;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.IntToLongFunction;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class FluidRegulatorCover extends PumpCover {
@@ -136,7 +137,7 @@ public class FluidRegulatorCover extends PumpCover {
 
     @Override
     protected long simpleInsert(@NotNull IFluidTransfer destHandler, FluidTestObject testObject, long count,
-                               boolean simulate) {
+                                boolean simulate) {
         if (transferMode == TransferMode.KEEP_EXACT) {
             assert getFilterHandler().isFilterPresent();
             int kept = getFilterHandler().getFilter().getTransferLimit(testObject.recombine());
@@ -192,8 +193,9 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private void setCurrentBucketModeTransferSize(long transferSize) {
-        this.getFilterHandler().getFilter().setMaxTransferSize((int) Math.min(Math.max(transferSize * this.bucketMode.multiplier, 0),
-                MAX_STACK_SIZE));
+        this.getFilterHandler().getFilter()
+                .setMaxTransferSize((int) Math.min(Math.max(transferSize * this.bucketMode.multiplier, 0),
+                        MAX_STACK_SIZE));
     }
 
     private void configureTransferSizeInput() {
@@ -242,7 +244,8 @@ public class FluidRegulatorCover extends PumpCover {
 
                 IFluidHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.FLUID_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IFluidTransfer container = FluidTransferHelperImpl.toFluidTransfer(containerCap);
                     long contained = computeContained(container, getTestObject());
@@ -251,8 +254,8 @@ public class FluidRegulatorCover extends PumpCover {
                     if (contained >= kept) continue;
                     availableFlow -= IFluidTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, availableFlow), container,
-                            getSimulatorKey() == null);
+                                    (int) Math.min(kept - contained, availableFlow), container,
+                                    getSimulatorKey() == null);
                 }
             }
             return flowReachingDestination - availableFlow;
@@ -278,7 +281,8 @@ public class FluidRegulatorCover extends PumpCover {
 
                 IFluidHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.FLUID_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IFluidTransfer container = FluidTransferHelperImpl.toFluidTransfer(containerCap);
                     long contained = computeContained(container, getTestObject());
@@ -290,8 +294,8 @@ public class FluidRegulatorCover extends PumpCover {
                     maxMinFlow = Math.min(maxMinFlow,
                             IFluidTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                                     .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                                    kept - contained,
-                                    container, false));
+                                            kept - contained,
+                                            container, false));
                 }
             }
         }
@@ -306,7 +310,8 @@ public class FluidRegulatorCover extends PumpCover {
 
                 IFluidHandler containerCap = capability.getValue()
                         .getCapability(ForgeCapabilities.FLUID_HANDLER,
-                                capability.getKey().getOpposite()).resolve().orElse(null);
+                                capability.getKey().getOpposite())
+                        .resolve().orElse(null);
                 if (containerCap != null) {
                     IFluidTransfer container = FluidTransferHelperImpl.toFluidTransfer(containerCap);
                     long contained = computeContained(container, getTestObject());
@@ -315,8 +320,8 @@ public class FluidRegulatorCover extends PumpCover {
                     if (contained >= kept) continue;
                     availableFlow -= IFluidTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, availableFlow), container,
-                            getSimulatorKey() == null);
+                                    (int) Math.min(kept - contained, availableFlow), container,
+                                    getSimulatorKey() == null);
                 }
             }
             return flowReachingDestination - availableFlow;
@@ -347,8 +352,8 @@ public class FluidRegulatorCover extends PumpCover {
                     int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
                     if (contained < kept) {
                         availableFlow -= IFluidTransferController.CONTROL.get(
-                                        destination.getBlockEntity().getCoverHolder()
-                                                .getCoverAtSide(pointerFacing))
+                                destination.getBlockEntity().getCoverHolder()
+                                        .getCoverAtSide(pointerFacing))
                                 .insertToHandler(getTestObject(),
                                         (int) Math.min(kept - contained, availableFlow), container,
                                         getSimulatorKey() == null);

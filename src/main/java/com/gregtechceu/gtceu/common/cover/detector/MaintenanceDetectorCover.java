@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.NotNull;
 
 public class MaintenanceDetectorCover extends DetectorCover {

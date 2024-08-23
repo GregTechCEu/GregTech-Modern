@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.client.renderer.pipe.DuctPipeModel;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.NotNull;
 

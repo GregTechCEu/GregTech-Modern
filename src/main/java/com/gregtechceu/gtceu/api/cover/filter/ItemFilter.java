@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -93,8 +94,6 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public void setMaxTransferSize(int maxTransferSize) {
-
-        }
+        public void setMaxTransferSize(int maxTransferSize) {}
     };
 }

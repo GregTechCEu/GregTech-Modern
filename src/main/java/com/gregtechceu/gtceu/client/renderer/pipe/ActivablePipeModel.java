@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @OnlyIn(Dist.CLIENT)
 public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
-    private static final ResourceLocation loc = GTCEu.id("block/pipe_activable");
+    private static final ResourceLocation loc = GTCEu.id("pipe_activable");
 
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
 

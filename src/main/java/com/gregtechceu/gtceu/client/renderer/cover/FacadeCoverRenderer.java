@@ -27,7 +27,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4d;
 import org.joml.Quaternionf;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

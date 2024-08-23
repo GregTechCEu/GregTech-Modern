@@ -38,7 +38,7 @@ public class CableModel extends AbstractPipeModel<CacheKey> {
 
     public static final int DEFAULT_INSULATION_COLOR = 0xFF404040;
 
-    private static final ResourceLocation loc = GTCEu.id("block/cable");
+    private static final ResourceLocation loc = GTCEu.id("pipe_cable");
 
     public static final CableModel INSTANCE = new CableModel("wire");
     public static final CableModel[] INSULATED_INSTANCES = new CableModel[5];
