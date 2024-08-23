@@ -32,7 +32,7 @@ public interface IFluidTransferController {
     IFluidTransferController NO_PASSAGE = new IFluidTransferController() {
 
         @Override
-        public long insertToHandler(@NotNull FluidTestObject testObject, int amount,
+        public long insertToHandler(@NotNull FluidTestObject testObject, long amount,
                                     @NotNull IFluidTransfer destHandler, boolean doFill) {
             return 0;
         }
@@ -47,7 +47,7 @@ public interface IFluidTransferController {
     /**
      * @return the amount filled.
      */
-    default long insertToHandler(@NotNull FluidTestObject testObject, int amount, @NotNull IFluidTransfer destHandler,
+    default long insertToHandler(@NotNull FluidTestObject testObject, long amount, @NotNull IFluidTransfer destHandler,
                                  boolean doFill) {
         return destHandler.fill(testObject.recombine(amount), doFill);
     }

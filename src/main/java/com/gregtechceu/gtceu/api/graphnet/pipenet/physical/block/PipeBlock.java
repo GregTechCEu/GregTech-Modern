@@ -102,15 +102,6 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     public PipeBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
         super(properties);
         this.structure = structure;
-        /*
-         * setTranslationKey(structure.getName());
-         * setSoundType(SoundType.METAL);
-         * setHardness(2.0f);
-         * setHarvestLevel(getToolClass(), 1);
-         * setResistance(3.0f);
-         * setLightOpacity(1);
-         * disableStats();
-         */
     }
 
     // net logic //
@@ -324,7 +315,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         }
     }
 
-    protected boolean allowsBlocking() {
+    public boolean allowsBlocking() {
         return true;
     }
 
@@ -540,7 +531,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new PipeBlockEntity(GTBlockEntities.NEW_PIPE.get(), pos, state);
+        return new PipeBlockEntity(GTBlockEntities.PIPE.get(), pos, state);
     }
 
     @Override
@@ -580,8 +571,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         if (tile != null) {
             Direction facing = GTUtil.getFacingToNeighbor(pos, neighborPos);
             if (facing != null) tile.onNeighborChanged(facing);
-            // TODO redstone
-            // tile.getCoverHolder().notifyBlockUpdate();
+            tile.getCoverHolder().notifyBlockUpdate();
         }
     }
 

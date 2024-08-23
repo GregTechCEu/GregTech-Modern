@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeActivableBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.handlers.DuctNetHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DuctPipeBlock extends PipeBlock {
@@ -23,7 +22,7 @@ public class DuctPipeBlock extends PipeBlock {
     }
 
     @Override
-    protected boolean allowsBlocking() {
+    public boolean allowsBlocking() {
         return false;
     }
 

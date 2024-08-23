@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.voiding;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
@@ -7,12 +8,16 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -21,9 +26,11 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -52,36 +59,58 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         super(definition, coverHolder, attachedSide);
     }
 
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_fluid_voiding_advanced"),
+                GTCEu.id("block/cover/overlay_fluid_voiding_advanced_emissive")).build();
+    }
+
     //////////////////////////////////////////////
     // *********** COVER LOGIC ***********//
     //////////////////////////////////////////////
 
     @Override
-    protected void doVoidFluids() {
-        IFluidTransfer fluidTransfer = getOwnFluidTransfer();
-        if (fluidTransfer == null) {
+    protected void doTransferFluids() {
+        IFluidHandler myFluidHandlerCap = coverHolder.getCapability(ForgeCapabilities.FLUID_HANDLER,
+                attachedSide).resolve().orElse(null);
+        if (myFluidHandlerCap == null) {
             return;
         }
-
+        IFluidTransfer myFluidHandler = FluidTransferHelperImpl.toFluidTransfer(myFluidHandlerCap);
         switch (voidingMode) {
-            case VOID_ANY -> voidAny(fluidTransfer);
-            case VOID_OVERFLOW -> voidOverflow(fluidTransfer);
+            case VOID_ANY -> GTTransferUtils.transferFluids(myFluidHandler, nullFluidTank, Integer.MAX_VALUE,
+                    getFilterHandler()::test);
+            case VOID_OVERFLOW -> voidOverflow(myFluidHandler, getFilterHandler()::test,
+                    this.globalTransferSizeMillibuckets);
         }
+        subscriptionHandler.updateSubscription();
     }
 
-    private void voidOverflow(IFluidTransfer fluidTransfer) {
-        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+    /**
+     * Performs one tick worth of Keep Exact behavior.
+     *
+     * @param sourceHandler source(s) to move fluids from
+     * @param fluidFilter   a predicate which determines what fluids may be moved
+     * @param keepAmount    the desired amount in milliBuckets of a particular fluid in the destination
+     */
+    protected void voidOverflow(final IFluidTransfer sourceHandler,
+                                final Predicate<FluidStack> fluidFilter,
+                                long keepAmount) {
+        if (sourceHandler == null || fluidFilter == null)
+            return;
 
-        for (FluidStack fluidStack : fluidAmounts.keySet()) {
-            long presentAmount = fluidAmounts.get(fluidStack);
-            long targetAmount = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
-            if (targetAmount <= 0L || targetAmount > presentAmount)
+        for (int i = 0; i < sourceHandler.getTanks(); ++i) {
+            FluidStack sourceFluid = sourceHandler.getFluidInTank(i);
+            if (this.getFilterHandler().isFilterPresent() &&
+                    voidingMode == VoidingMode.VOID_OVERFLOW) {
+                keepAmount = this.getFilterHandler().getFilter()
+                        .getTransferLimit(sourceFluid, (int) maxMilliBucketsPerTick);
+            }
+            if (sourceFluid.isEmpty() || sourceFluid.getAmount() == 0 ||
+                    !getFilterHandler().test(sourceFluid))
                 continue;
-
-            var toDrain = fluidStack.copy();
-            toDrain.setAmount(presentAmount - targetAmount);
-
-            fluidTransfer.drain(toDrain, false);
+            sourceFluid.setAmount(sourceFluid.getAmount() - keepAmount);
+            sourceHandler.drain(sourceFluid, true);
         }
     }
 

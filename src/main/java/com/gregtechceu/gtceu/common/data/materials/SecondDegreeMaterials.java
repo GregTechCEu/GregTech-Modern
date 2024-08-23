@@ -304,7 +304,7 @@ public class SecondDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(130, 115, 3.0f, 1920)
-                .fluidPipeProperties(2073, 50, true, true, false, false)
+                .fluidPipeProperties(2073, 50, true, true, false)
                 .blastTemp(1453, GasTier.LOW)
                 .buildAndRegister();
 

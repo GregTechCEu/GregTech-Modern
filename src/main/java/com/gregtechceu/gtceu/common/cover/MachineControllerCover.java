@@ -1,14 +1,18 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
@@ -30,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -71,8 +76,13 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public boolean canAttach() {
-        return !getAllowedModes().isEmpty();
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_controller"), null).build();
+    }
+
+    @Override
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
+        return !getAllowedModes(coverable, side).isEmpty();
     }
 
     @Override
@@ -183,6 +193,13 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         return Arrays.stream(ControllerMode.values())
                 .filter(mode -> mode.side != this.attachedSide)
                 .filter(mode -> getControllable(mode.side) != null)
+                .collect(Collectors.toList());
+    }
+
+    public static List<ControllerMode> getAllowedModes(ICoverable coverable, Direction attachedSide) {
+        return Arrays.stream(ControllerMode.values())
+                .filter(mode -> mode.side != attachedSide)
+                .filter(mode -> coverable.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, mode.side).isPresent())
                 .collect(Collectors.toList());
     }
 

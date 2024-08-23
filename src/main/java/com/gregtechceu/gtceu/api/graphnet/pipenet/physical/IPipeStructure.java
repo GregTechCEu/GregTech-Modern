@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -24,6 +26,11 @@ public interface IPipeStructure extends StringRepresentable {
     boolean isPaintable();
 
     AbstractPipeModel<?> getModel();
+
+
+    default ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    }
 
     /**
      * Allows for controlling what sides can be connected to based on current connections,

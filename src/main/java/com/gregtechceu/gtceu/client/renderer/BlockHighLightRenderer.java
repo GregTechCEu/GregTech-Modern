@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
@@ -141,10 +143,10 @@ public class BlockHighLightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
+            var pipeStructure = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().getStructure() :
                     null;
-            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
-                    pipeBlockEntity.getPipeType().type().equals(type.type())) {
+            if (pipeStructure != null && blockEntity instanceof PipeBlockEntity pipeBlockEntity &&
+                    pipeBlockEntity.getStructure() == pipeStructure) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
@@ -152,7 +154,7 @@ public class BlockHighLightRenderer {
                 RenderSystem.lineWidth(3);
 
                 drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ?
-                        pipeBlockEntity.getPipeTexture(true) : null);
+                        pipeStructure.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }

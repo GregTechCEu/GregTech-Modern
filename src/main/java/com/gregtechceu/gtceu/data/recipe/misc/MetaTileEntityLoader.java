@@ -1047,7 +1047,7 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.pipeLarge, GTMaterials.Polyethylene));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_mv", GTBlocks.HERMETIC_CASING_MV.asStack(),
                 "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium), 'F',
-                new UnificationEntry(TagPrefix.pipeLargeItem, GTMaterials.PolyvinylChloride));
+                new UnificationEntry(TagPrefix.pipeLarge, GTMaterials.PolyvinylChloride));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "hermetic_casing_hv", GTBlocks.HERMETIC_CASING_HV.asStack(),
                 "PPP", "PFP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel), 'F',
                 new UnificationEntry(TagPrefix.pipeLarge, GTMaterials.Polytetrafluoroethylene));

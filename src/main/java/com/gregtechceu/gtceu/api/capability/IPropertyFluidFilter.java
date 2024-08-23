@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.fluids.FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
-
 public interface IPropertyFluidFilter extends Predicate<FluidStack> {
 
     @Override

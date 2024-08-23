@@ -1,18 +1,23 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CoverSolarPanel extends CoverBehavior {
@@ -40,8 +45,13 @@ public class CoverSolarPanel extends CoverBehavior {
     }
 
     @Override
-    public boolean canAttach() {
-        return attachedSide == Direction.UP && getEnergyContainer() != null;
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_solar_panel"), null).build();
+    }
+
+    @Override
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
+        return side == Direction.UP && coverable.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER).isPresent();
     }
 
     protected void update() {

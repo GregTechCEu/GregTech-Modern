@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.client.renderer.pipe.DuctPipeModel;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -19,19 +21,6 @@ public record DuctStructure(String name, float renderThickness, float rateMultip
 
     public DuctStructure {
         PipeStructureRegistry.register(this);
-    }
-
-    @Override
-    public boolean canConnectTo(Direction side, byte connectionMask) {
-        byte connectionCount = 0;
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            if (facing == side) continue;
-            if (GTUtil.evalMask(facing, connectionMask)) {
-                connectionCount++;
-            }
-            if (connectionCount > 1) return false;
-        }
-        return true;
     }
 
     @Override

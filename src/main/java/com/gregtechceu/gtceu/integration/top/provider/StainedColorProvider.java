@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,7 @@ public class StainedColorProvider implements IProbeInfoProvider {
         int paintingColor = -1;
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
             paintingColor = machineBlockEntity.getMetaMachine().getPaintingColor();
-        } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipe) {
+        } else if (blockEntity instanceof PipeBlockEntity pipe) {
             paintingColor = pipe.getPaintingColor();
         }
         if (paintingColor != -1) {

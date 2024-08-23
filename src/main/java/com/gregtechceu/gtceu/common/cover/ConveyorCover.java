@@ -285,7 +285,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                                   @NotNull IntUnaryOperator maxTransfer,
                                   @Nullable BiConsumer<Integer, Integer> transferReport) {
         ItemFilter filter = filterHandler.getFilter();
-        byFilterSlot = byFilterSlot && filter != ItemFilter.EMPTY; // can't be by filter slot if there is no filter
+        byFilterSlot = byFilterSlot && getFilterHandler().isFilterPresent(); // can't be by filter slot if there is no filter
         Int2IntArrayMap extractableByFilterSlot = new Int2IntArrayMap();
         Int2ObjectArrayMap<MergabilityInfo<ItemTestObject>> filterSlotToMergability = new Int2ObjectArrayMap<>();
         for (int i = 0; i < sourceHandler.getSlots(); i++) {
@@ -293,7 +293,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             int extracted = stack.getCount();
             if (extracted == 0) continue;
             MatchResult match = null;
-            if (filter == ItemFilter.EMPTY || (match = filter.match(stack)).isMatched()) {
+            if (!getFilterHandler().isFilterPresent() || (match = filter.match(stack)).isMatched()) {
                 int filterSlot = -1;
                 if (byFilterSlot) {
                     filterSlot = match.getFilterIndex();
@@ -444,7 +444,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 io == IO.IN) // insert to handler is an extract from us
             return IItemTransferController.super.insertToHandler(testObject, amount, destHandler, simulate);
         ItemFilter filter = getFilterHandler().getFilter();
-        if (filter == ItemFilter.EMPTY || filter.test(testObject.recombine())) {
+        if (getFilterHandler().isFilterPresent() || filter.test(testObject.recombine())) {
             return IItemTransferController.super.insertToHandler(testObject, amount, destHandler, simulate);
         } else return amount;
     }
@@ -457,7 +457,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 io == IO.OUT) // extract from handler is an insert to us
             return IItemTransferController.super.extractFromHandler(testObject, amount, sourceHandler, simulate);
         ItemFilter filter = getFilterHandler().getFilter();
-        if (filter == ItemFilter.EMPTY || filter.test(testObject.recombine())) {
+        if (!getFilterHandler().isFilterPresent() || filter.test(testObject.recombine())) {
             return IItemTransferController.super.extractFromHandler(testObject, amount, sourceHandler, simulate);
         } else return 0;
     }

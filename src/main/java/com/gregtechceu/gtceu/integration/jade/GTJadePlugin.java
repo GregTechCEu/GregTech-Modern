@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.MaterialPipeBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
@@ -44,7 +46,7 @@ public class GTJadePlugin implements IWailaPlugin {
             registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
         }
 
-        registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
+        registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, MaterialPipeBlockEntity.class);
     }
 
     @Override

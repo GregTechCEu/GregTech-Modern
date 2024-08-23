@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class MaterialPipeBlockItem extends PipeBlockItem {
 
-    public MaterialPipeBlockItem(PipeMaterialBlock block, Item.Properties properties) {
+    public MaterialPipeBlockItem(MaterialPipeBlock block, Item.Properties properties) {
         super(block, properties);
     }
 
     @Override
-    public @NotNull PipeMaterialBlock getBlock() {
-        return (PipeMaterialBlock) super.getBlock();
+    public @NotNull MaterialPipeBlock getBlock() {
+        return (MaterialPipeBlock) super.getBlock();
     }
 
     @Override

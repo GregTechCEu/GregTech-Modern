@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.pipelike.net.energy.VoltageLimitLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.VoltageLossLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.WorldEnergyNet;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -32,9 +33,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.material.Fluid;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import snownee.jade.api.BlockAccessor;
 
 import java.util.List;
 
@@ -46,6 +48,7 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
     public static final MaterialPropertyKey<MaterialEnergyProperties> KEY = new MaterialPropertyKey<>(
             "EnergyProperties");
 
+    @Getter
     private final long voltageLimit;
     private final long amperageLimit;
     private int materialMeltTemperature;
@@ -71,10 +74,6 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
         this.superconductorCriticalTemperature = superconductorCriticalTemperature;
     }
 
-    public long getVoltageLimit() {
-        return voltageLimit;
-    }
-
     public static MaterialEnergyProperties create(long voltageLimit, long amperageLimit, long lossPerAmp,
                                                   int superconductorCriticalTemperature) {
         return new MaterialEnergyProperties(voltageLimit, amperageLimit, lossPerAmp,
@@ -85,8 +84,8 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
         return new MaterialEnergyProperties(voltageLimit, amperageLimit, lossPerAmp, 0);
     }
 
-    public static TagPrefix.MaterialRecipeHandler<MaterialEnergyProperties> registrationHandler(TagPrefix.MaterialRecipeHandler<MaterialEnergyProperties> handler) {
-        return (orePrefix, material, properties, provider) -> {
+    public static TagPrefix.MaterialRecipeHandler registrationHandler(TagPrefix.PropertyMaterialRecipeHandler<MaterialEnergyProperties> handler) {
+        return (orePrefix, material, provider) -> {
             if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES) && !material.hasFlag(NO_UNIFICATION) &&
                     material.getProperty(PropertyKey.PIPENET_PROPERTIES).hasProperty(KEY)) {
                 handler.accept(orePrefix, material,
@@ -210,7 +209,7 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
         } else return lossPerAmp;
     }
 
-    private long getAmperage(IPipeStructure structure) {
+    public long getAmperage(IPipeStructure structure) {
         if (structure instanceof CableStructure cable) {
             return amperageLimit * cable.material();
         } else if (structure instanceof MaterialPipeStructure pipe) {

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.block.cable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
 
-public class CableBlock extends PipeMaterialBlock implements IBurnable {
+public class CableBlock extends MaterialPipeBlock implements IBurnable {
 
     private static final Map<Material, Map<CableStructure, CableBlock>> CACHE = new Object2ObjectOpenHashMap<>();
 

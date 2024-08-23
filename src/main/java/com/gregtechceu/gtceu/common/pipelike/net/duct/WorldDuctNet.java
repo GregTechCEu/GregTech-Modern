@@ -8,8 +8,10 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.capabilities.Capability;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;

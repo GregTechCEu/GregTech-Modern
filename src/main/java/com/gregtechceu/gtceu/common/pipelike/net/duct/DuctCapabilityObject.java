@@ -14,14 +14,17 @@ import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +70,8 @@ public class DuctCapabilityObject implements IPipeCapabilityObject, IHazardParti
             WorldPipeNetNode destination = path.getTargetNode();
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 IHazardParticleContainer container = capability.getValue()
-                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite()).resolve()
+                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite())
+                        .resolve()
                         .orElse(null);
                 if (container != null && container.inputsHazard(side, condition)) {
                     return true;
@@ -85,7 +89,8 @@ public class DuctCapabilityObject implements IPipeCapabilityObject, IHazardParti
             WorldPipeNetNode destination = path.getTargetNode();
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 IHazardParticleContainer handler = capability.getValue()
-                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite()).resolve()
+                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite())
+                        .resolve()
                         .orElse(null);
                 if (handler == null) {
                     if (net.getLevel().getBlockEntity(path.getTargetNode().getEquivalencyData()
@@ -99,7 +104,8 @@ public class DuctCapabilityObject implements IPipeCapabilityObject, IHazardParti
                     savedData.addZone(path.getTargetNode().getEquivalencyData().relative(capability.getKey()),
                             differenceAmount, true, HazardProperty.HazardTrigger.INHALATION, condition);
                     total += differenceAmount;
-                    emitPollutionParticles((ServerLevel) net.getLevel(), path.getTargetNode().getEquivalencyData(), capability.getKey());
+                    emitPollutionParticles((ServerLevel) net.getLevel(), path.getTargetNode().getEquivalencyData(),
+                            capability.getKey());
                     break;
                 }
                 float change = handler.changeHazard(condition, differenceAmount);
@@ -121,7 +127,8 @@ public class DuctCapabilityObject implements IPipeCapabilityObject, IHazardParti
             WorldPipeNetNode destination = path.getTargetNode();
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 IHazardParticleContainer handler = capability.getValue()
-                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite()).resolve()
+                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite())
+                        .resolve()
                         .orElse(null);
                 if (handler != null) {
                     total += handler.getHazardStored(condition);
@@ -139,7 +146,8 @@ public class DuctCapabilityObject implements IPipeCapabilityObject, IHazardParti
             WorldPipeNetNode destination = path.getTargetNode();
             for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
                 IHazardParticleContainer handler = capability.getValue()
-                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite()).resolve()
+                        .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, capability.getKey().getOpposite())
+                        .resolve()
                         .orElse(null);
                 if (handler != null) {
                     total += handler.getHazardCapacity(condition);

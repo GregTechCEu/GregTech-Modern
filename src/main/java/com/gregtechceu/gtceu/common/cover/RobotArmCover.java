@@ -1,29 +1,45 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
+import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.traverse.SimpleTileRoundRobinData;
+import com.gregtechceu.gtceu.api.graphnet.predicate.test.ItemTestObject;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
+import com.gregtechceu.gtceu.common.pipelike.net.item.IItemTransferController;
+import com.gregtechceu.gtceu.common.pipelike.net.item.ItemEQTraverseData;
+import com.gregtechceu.gtceu.common.pipelike.net.item.ItemRRTraverseData;
+import com.gregtechceu.gtceu.common.pipelike.net.item.ItemTraverseData;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.function.IntUnaryOperator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -38,6 +54,7 @@ public class RobotArmCover extends ConveyorCover {
     @DescSynced
     @Getter
     protected TransferMode transferMode;
+    protected boolean noTransferDueToMinimum = false;
 
     @Persisted
     @Getter
@@ -58,81 +75,137 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    protected int doTransferItems(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
-        if (io == IO.OUT && itemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
-            return 0;
-        }
-        if (io == IO.IN && myItemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
-            return 0;
-        }
-        return switch (transferMode) {
-            case TRANSFER_ANY -> moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
-            case TRANSFER_EXACT -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
-            case KEEP_EXACT -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
-        };
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"), GTCEu.id("block/cover/overlay_arm_emissive")).build();
     }
 
-    protected int doTransferExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
-        Map<ItemStack, TypeItemInfo> sourceItemAmount = countInventoryItemsByType(sourceInventory);
-
-        Iterator<ItemStack> iterator = sourceItemAmount.keySet().iterator();
-        while (iterator.hasNext()) {
-            TypeItemInfo sourceInfo = sourceItemAmount.get(iterator.next());
-            int itemAmount = sourceInfo.totalCount;
-            int itemToMoveAmount = getFilteredItemAmount(sourceInfo.itemStack);
-
-            if (itemAmount >= itemToMoveAmount) {
-                sourceInfo.totalCount = itemToMoveAmount;
-            } else {
-                iterator.remove();
-            }
-        }
-
-        int itemsTransferred = 0;
-        int maxTotalTransferAmount = maxTransferAmount + itemsTransferBuffered;
-        boolean notEnoughTransferRate = false;
-        for (TypeItemInfo itemInfo : sourceItemAmount.values()) {
-            if (maxTotalTransferAmount >= itemInfo.totalCount) {
-                boolean result = moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo);
-                itemsTransferred += result ? itemInfo.totalCount : 0;
-                maxTotalTransferAmount -= result ? itemInfo.totalCount : 0;
-            } else {
-                notEnoughTransferRate = true;
-            }
-        }
-        // if we didn't transfer anything because of too small transfer rate, buffer it
-        if (itemsTransferred == 0 && notEnoughTransferRate) {
-            itemsTransferBuffered += maxTransferAmount;
-        } else {
-            // otherwise, if transfer succeed, empty transfer buffer value
-            itemsTransferBuffered = 0;
-        }
-        return Math.min(itemsTransferred, maxTransferAmount);
+    @Override
+    protected CoverRenderer buildRendererInverted() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_arm"), GTCEu.id("block/cover/overlay_arm_inverted_emissive")).build();
     }
 
-    protected int doKeepExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
-        Map<ItemStack, GroupItemInfo> targetItemAmounts = countInventoryItemsByMatchSlot(targetInventory);
-        Map<ItemStack, GroupItemInfo> sourceItemAmounts = countInventoryItemsByMatchSlot(sourceInventory);
-
-        Iterator<ItemStack> iterator = sourceItemAmounts.keySet().iterator();
-        while (iterator.hasNext()) {
-            ItemStack filteredItem = iterator.next();
-            GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
-            int itemToKeepAmount = getFilteredItemAmount(sourceInfo.itemStack);
-
-            int itemAmount = 0;
-            if (targetItemAmounts.containsKey(filteredItem)) {
-                GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
-                itemAmount = destItemInfo.totalCount;
-            }
-            if (itemAmount < itemToKeepAmount) {
-                sourceInfo.totalCount = itemToKeepAmount - itemAmount;
-            } else {
-                iterator.remove();
+    @Override
+    protected void refreshBuffer(int transferRate) {
+        if (this.transferMode == TransferMode.TRANSFER_EXACT && noTransferDueToMinimum) {
+            if (getFilterHandler().isFilterPresent()) {
+                this.noTransferDueToMinimum = false;
+                this.itemsLeftToTransferLastSecond += transferRate;
+                int max = getFilterHandler().getFilter().getMaxTransferSize();
+                if (this.itemsLeftToTransferLastSecond > max) {
+                    this.itemsLeftToTransferLastSecond = max;
+                }
+                return;
             }
         }
+        super.refreshBuffer(transferRate);
+    }
 
-        return moveInventoryItems(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount);
+    @Override
+    protected void performTransferOnUpdate(@NotNull IItemTransfer sourceHandler, @NotNull IItemTransfer destHandler) {
+        if (transferMode == TransferMode.TRANSFER_ANY) {
+            super.performTransferOnUpdate(sourceHandler, destHandler);
+            return;
+        }
+        if (!getFilterHandler().isFilterPresent()) return;
+        ItemFilter filter = getFilterHandler().getFilter();
+        if (transferMode == TransferMode.KEEP_EXACT) {
+            IntUnaryOperator maxflow = s -> Math.min(filter.getTransferLimit(s), getItemsLeftToTransfer());
+            reportItemsTransfer(performTransfer(sourceHandler, destHandler, true, s -> 0, maxflow, null));
+        } else if (transferMode == TransferMode.TRANSFER_EXACT) {
+            IntUnaryOperator maxflow = s -> {
+                int limit = filter.getTransferLimit(s);
+                if (getItemsLeftToTransfer() < limit) {
+                    noTransferDueToMinimum = true;
+                    return 0;
+                } else return limit;
+            };
+            performTransfer(sourceHandler, destHandler, true, maxflow, maxflow, (a, b) -> reportItemsTransfer(b));
+        }
+    }
+
+    @Override
+    protected @NotNull ItemTraverseData getTD(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator,
+                                              long queryTick, BlockPos sourcePos, Direction inputFacing) {
+        if (transferMode == TransferMode.KEEP_EXACT) {
+            return new KeepItemTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+        }
+        return super.getTD(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+    }
+
+    @Override
+    protected @NotNull ItemEQTraverseData getEQTD(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator,
+                                                  long queryTick, BlockPos sourcePos, Direction inputFacing) {
+        if (transferMode == TransferMode.KEEP_EXACT) {
+            return new KeepItemEQTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+        }
+        return super.getEQTD(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+    }
+
+    @Override
+    protected @NotNull ItemRRTraverseData getRRTD(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator,
+                                                  long queryTick, BlockPos sourcePos, Direction inputFacing,
+                                                  boolean simulate) {
+        if (transferMode == TransferMode.KEEP_EXACT) {
+            return new KeepItemRRTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing,
+                    getRoundRobinCache(simulate));
+        }
+        return super.getRRTD(net, testObject, simulator, queryTick, sourcePos, inputFacing, simulate);
+    }
+
+    @Override
+    protected int simpleInsert(@NotNull IItemTransfer destHandler, ItemTestObject testObject, int count,
+                               boolean simulate) {
+        if (transferMode == TransferMode.KEEP_EXACT) {
+            assert getFilterHandler().isFilterPresent();
+            int kept = getFilterHandler().getFilter().getTransferLimit(testObject.recombine());
+            count = Math.min(count, kept - computeContained(destHandler, testObject));
+        }
+        return super.simpleInsert(destHandler, testObject, count, simulate);
+    }
+
+    public void setTransferMode(TransferMode transferMode) {
+        if (this.transferMode != transferMode) {
+            this.transferMode = transferMode;
+            this.coverHolder.markDirty();
+            configureStackSizeInput();
+            this.getFilterHandler().getFilter().setMaxTransferSize(transferMode.maxStackSize);
+        }
+    }
+
+    @Override
+    public int insertToHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemTransfer destHandler,
+                               boolean simulate) {
+        if (io == IO.OUT) {
+            if (transferMode == TransferMode.KEEP_EXACT) {
+                int contained = computeContained(destHandler, testObject);
+                assert getFilterHandler().isFilterPresent();
+                int keep = getFilterHandler().getFilter().getTransferLimit(testObject.recombine());
+                if (contained >= keep) return amount;
+                int allowed = Math.min(keep - contained, amount);
+                return (amount - allowed) + super.insertToHandler(testObject, allowed, destHandler, simulate);
+            } else if (transferMode == TransferMode.TRANSFER_EXACT) {
+                assert getFilterHandler().isFilterPresent();
+                int required = getFilterHandler().getFilter().getTransferLimit(testObject.recombine());
+                if (amount < required) return amount;
+                return (amount - required) + super.insertToHandler(testObject, required, destHandler, simulate);
+            }
+        }
+        return super.insertToHandler(testObject, amount, destHandler, simulate);
+    }
+
+    @Override
+    public int extractFromHandler(@NotNull ItemTestObject testObject, int amount, @NotNull IItemTransfer sourceHandler,
+                                  boolean simulate) {
+        if (io == IO.IN) {
+            // TODO should extraction instead be ignored for transfer exact?
+            if (transferMode == TransferMode.TRANSFER_EXACT) {
+                assert getFilterHandler().isFilterPresent();
+                int required = getFilterHandler().getFilter().getTransferLimit(testObject.recombine());
+                if (amount < required) return 0;
+                else amount = required;
+            }
+        }
+        return super.extractFromHandler(testObject, amount, sourceHandler, simulate);
     }
 
     private int getFilteredItemAmount(ItemStack itemStack) {
@@ -177,16 +250,6 @@ public class RobotArmCover extends ConveyorCover {
         group.addWidget(this.stackSizeInput);
     }
 
-    private void setTransferMode(TransferMode transferMode) {
-        this.transferMode = transferMode;
-
-        configureStackSizeInput();
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
-    }
-
     @Override
     protected void configureFilter() {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
@@ -214,4 +277,146 @@ public class RobotArmCover extends ConveyorCover {
 
         return !this.filterHandler.getFilter().supportsAmounts();
     }
+
+    protected int computeContained(@NotNull IItemTransfer handler, @NotNull ItemTestObject testObject) {
+        int found = 0;
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ItemStack contained = handler.getStackInSlot(i);
+            if (testObject.test(contained)) {
+                found += contained.getCount();
+            }
+        }
+        return found;
+    }
+
+    protected class KeepItemTraverseData extends ItemTraverseData {
+
+        public KeepItemTraverseData(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator, long queryTick,
+                                    BlockPos sourcePos, Direction inputFacing) {
+            super(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+        }
+
+        @Override
+        public long finalizeAtDestination(@NotNull WorldPipeNetNode destination, long flowReachingDestination) {
+            long availableFlow = flowReachingDestination;
+            for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
+                if (destination.getEquivalencyData().equals(sourcePos) &&
+                        capability.getKey() == inputFacing)
+                    continue; // anti insert-to-our-source logic
+
+                IItemHandler containerCap = capability.getValue()
+                        .getCapability(ForgeCapabilities.ITEM_HANDLER,
+                                capability.getKey().getOpposite()).resolve().orElse(null);
+                if (containerCap != null) {
+                    IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
+                    int contained = computeContained(container, getTestObject());
+                    assert getFilterHandler().isFilterPresent();
+                    int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
+                    if (contained >= kept) continue;
+                    availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
+                            .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                            (int) Math.min(kept - contained, availableFlow), container,
+                            getSimulatorKey() != null);
+                }
+            }
+            return flowReachingDestination - availableFlow;
+        }
+    }
+
+    protected class KeepItemEQTraverseData extends ItemEQTraverseData {
+
+        public KeepItemEQTraverseData(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator, long queryTick,
+                                      BlockPos sourcePos, Direction inputFacing) {
+            super(net, testObject, simulator, queryTick, sourcePos, inputFacing);
+        }
+
+        @Override
+        protected void compute(@NotNull WorldPipeNetNode destination) {
+            this.destCount = 0;
+            this.maxMinFlow = 0;
+            for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
+                if (destination.getEquivalencyData().equals(sourcePos) &&
+                        capability.getKey() == inputFacing)
+                    continue; // anti insert-to-our-source logic
+
+                IItemHandler containerCap = capability.getValue()
+                        .getCapability(ForgeCapabilities.ITEM_HANDLER,
+                                capability.getKey().getOpposite()).resolve().orElse(null);
+                if (containerCap != null) {
+                    IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
+                    int contained = computeContained(container, getTestObject());
+                    assert getFilterHandler().isFilterPresent();
+                    int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
+                    if (contained >= kept) continue;
+                    if (destCount == 0) maxMinFlow = Integer.MAX_VALUE;
+                    destCount += 1;
+                    int test = kept - contained;
+                    maxMinFlow = Math.min(maxMinFlow, test -
+                            IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
+                                    .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(), test,
+                                    container, true));
+                }
+            }
+        }
+
+        @Override
+        public long finalizeAtDestination(@NotNull WorldPipeNetNode destination, long flowReachingDestination) {
+            long availableFlow = flowReachingDestination;
+            for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
+                if (destination.getEquivalencyData().equals(sourcePos) &&
+                        capability.getKey() == inputFacing)
+                    continue; // anti insert-to-our-source logic
+
+                IItemHandler containerCap = capability.getValue()
+                        .getCapability(ForgeCapabilities.ITEM_HANDLER,
+                                capability.getKey().getOpposite()).resolve().orElse(null);
+                if (containerCap != null) {
+                    IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
+                    int contained = computeContained(container, getTestObject());
+                    assert getFilterHandler().isFilterPresent();
+                    int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
+                    if (contained >= kept) continue;
+                    availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
+                            .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                            (int) Math.min(kept - contained, availableFlow), container,
+                            getSimulatorKey() != null);
+                }
+            }
+            return flowReachingDestination - availableFlow;
+        }
+    }
+
+    protected class KeepItemRRTraverseData extends ItemRRTraverseData {
+
+        public KeepItemRRTraverseData(IGraphNet net, ItemTestObject testObject, SimulatorKey simulator, long queryTick,
+                                      BlockPos sourcePos, Direction inputFacing,
+                                      @NotNull Object2ObjectLinkedOpenHashMap<Object, SimpleTileRoundRobinData<IItemHandler>> cache) {
+            super(net, testObject, simulator, queryTick, sourcePos, inputFacing, cache);
+        }
+
+        @Override
+        public long finalizeAtDestination(@NotNull SimpleTileRoundRobinData<IItemHandler> data,
+                                          @NotNull WorldPipeNetNode destination,
+                                          long flowReachingDestination) {
+            long availableFlow = flowReachingDestination;
+            Direction pointerFacing = data.getPointerFacing(getSimulatorKey());
+            if (destination.getEquivalencyData().equals(sourcePos) && pointerFacing == inputFacing)
+                return 0; // anti insert-to-our-source logic
+
+            IItemHandler containerCap = data.getAtPointer(destination, getSimulatorKey());
+            if (containerCap != null) {
+                IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
+                int contained = computeContained(container, getTestObject());
+                assert getFilterHandler().isFilterPresent();
+                int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
+                if (contained >= kept) return 0;
+                availableFlow = IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
+                        .getCoverAtSide(pointerFacing)).insertToHandler(getTestObject(),
+                        (int) Math.min(kept - contained, availableFlow), container,
+                        getSimulatorKey() != null);
+            }
+            return flowReachingDestination - availableFlow;
+        }
+    }
 }
+

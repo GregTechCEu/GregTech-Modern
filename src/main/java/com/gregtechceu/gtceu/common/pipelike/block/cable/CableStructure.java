@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IInsulatable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeMaterialStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.client.renderer.pipe.CableModel;
 
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,6 +75,11 @@ public record CableStructure(String name, int material, int costFactor, TagPrefi
     @Override
     public AbstractPipeModel<?> getModel() {
         return model;
+    }
+
+    @Override
+    public ResourceTexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
     }
 
     @Override

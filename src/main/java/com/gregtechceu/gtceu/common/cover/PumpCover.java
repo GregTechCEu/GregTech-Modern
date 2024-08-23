@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidEQTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidRRTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidTraverseData;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.IFluidTraverseGuideProvider;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -44,10 +45,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,15 +55,22 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.IntToLongFunction;
 import java.util.function.LongUnaryOperator;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -322,8 +327,9 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
      * @return how much was transferred in total.
      */
     protected long performTransfer(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler,
-                                  boolean byFilterSlot, @NotNull LongUnaryOperator minTransfer,
-                                  @NotNull LongUnaryOperator maxTransfer, @Nullable BiConsumer<Integer, Long> transferReport) {
+                                   boolean byFilterSlot, @NotNull IntToLongFunction minTransfer,
+                                   @NotNull IntToLongFunction maxTransfer,
+                                   @Nullable BiConsumer<Integer, Long> transferReport) {
         FluidFilter filter = this.filterHandler.getFilter();
         byFilterSlot = byFilterSlot && filter != FluidFilter.EMPTY; // can't be by filter slot if there is no filter
         Object2LongOpenHashMap<FluidTestObject> contained = new Object2LongOpenHashMap<>();
@@ -340,7 +346,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             if (filter == FluidFilter.EMPTY || (match = filter.match(contents)).isMatched()) {
                 int filterSlot = -1;
                 if (byFilterSlot) {
-                    assert filter != FluidFilter.EMPTY; // we know it is not null, because if it were byFilterSlot would be false.
+                    assert filter != FluidFilter.EMPTY; // we know it is not null, because if it were byFilterSlot would
+                                                        // be false.
                     filterSlot = match.getFilterIndex();
                 }
                 long min = minTransfer.applyAsLong(filterSlot);
@@ -363,9 +370,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return totalTransfer;
     }
 
-
     protected long insertToHandler(@NotNull IFluidTransfer destHandler, FluidTestObject testObject, long count,
-                                  boolean simulate) {
+                                   boolean simulate) {
         if (!(destHandler instanceof IFluidTraverseGuideProvider provider)) {
             return simpleInsert(destHandler, testObject, count, simulate);
         }
@@ -426,7 +432,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected long simpleInsert(@NotNull IFluidTransfer destHandler, FluidTestObject testObject, long count,
-                               boolean simulate) {
+                                boolean simulate) {
         return count - destHandler.fill(testObject.recombine(count), !simulate);
     }
 

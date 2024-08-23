@@ -26,7 +26,7 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+    public boolean placeBlock(BlockPlaceContext context, BlockState state) {
         if (super.placeBlock(context, state)) {
             ItemStack offhand = context.getPlayer().getOffhandItem();
             for (int i = 0; i < DyeColor.values().length; i++) {

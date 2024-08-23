@@ -83,14 +83,14 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
                     safeByte(modelData.get(CLOSED_MASK_PROPERTY)), safeByte(modelData.get(BLOCKED_MASK_PROPERTY)),
                     data, modelData.get(FRAME_MATERIAL_PROPERTY),
                     safeByte(modelData.get(FRAME_MASK_PROPERTY)), coverMask);
-            if (rendererPackage != null) renderCovers(quads, rendererPackage, rand, modelData);
+            if (rendererPackage != null) renderCovers(quads, rendererPackage, rand, modelData, renderType);
             return quads;
         }
         return Collections.emptyList();
     }
 
     protected void renderCovers(List<BakedQuad> quads, @NotNull CoverRendererPackage rendererPackage,
-                                RandomSource rand, @NotNull ModelData data) {
+                                RandomSource rand, @NotNull ModelData data, RenderType renderType) {
         int color = safeInt(data.get(COLOR_PROPERTY));
         if (data.get(AbstractPipeModel.MATERIAL_PROPERTY) != null) {
             Material material = data.get(AbstractPipeModel.MATERIAL_PROPERTY);
@@ -102,7 +102,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
                 }
             }
         }
-        rendererPackage.addQuads(quads, rand, new ColorData(color));
+        rendererPackage.addQuads(quads, rand, data, new ColorData(color), renderType);
     }
 
     protected ColorData computeColorData(@NotNull ModelData data) {

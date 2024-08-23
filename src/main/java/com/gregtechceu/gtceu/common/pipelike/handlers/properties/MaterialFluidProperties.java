@@ -20,19 +20,19 @@ import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidContainmentLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.WorldFluidNet;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;

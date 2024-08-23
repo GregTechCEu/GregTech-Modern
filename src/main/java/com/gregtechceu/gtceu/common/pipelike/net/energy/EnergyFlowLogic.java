@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -17,16 +18,17 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
 
     public static final EnergyFlowLogic INSTANCE = new EnergyFlowLogic();
 
+    private final AveragingPerTickCounter averageVoltageCounter = new AveragingPerTickCounter();
+    private final AveragingPerTickCounter averageAmperageCounter = new AveragingPerTickCounter();
+
     private static final int MEMORY_TICKS = 10;
 
+    @Getter
+    @NotNull
     private final Long2ObjectOpenHashMap<List<EnergyFlowData>> memory = new Long2ObjectOpenHashMap<>();
 
     protected EnergyFlowLogic() {
         super("EnergyFlow");
-    }
-
-    public @NotNull Long2ObjectOpenHashMap<List<EnergyFlowData>> getMemory() {
-        return memory;
     }
 
     public @NotNull List<EnergyFlowData> getFlow(long tick) {
@@ -34,6 +36,9 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
     }
 
     public void recordFlow(long tick, EnergyFlowData flow) {
+        averageVoltageCounter.increment(tick, flow.getEU());
+        averageAmperageCounter.increment(tick, flow.amperage());
+
         updateMemory(tick);
         memory.compute(tick, (k, v) -> {
             if (v == null) v = new ObjectArrayList<>();
@@ -50,6 +55,14 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
                 iter.remove();
             }
         }
+    }
+
+    public double getAverageAmperage(long currentTick) {
+        return averageAmperageCounter.getAverage(currentTick);
+    }
+
+    public double getAverageVoltage(long currentTick) {
+        return averageVoltageCounter.getAverage(currentTick);
     }
 
     @Override

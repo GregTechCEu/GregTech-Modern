@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -18,13 +18,13 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PipeMaterialBlockEntity extends PipeBlockEntity {
+public class MaterialPipeBlockEntity extends PipeBlockEntity {
 
     @Persisted
     @DescSynced
     private Material material;
 
-    public PipeMaterialBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public MaterialPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 
@@ -44,8 +44,8 @@ public class PipeMaterialBlockEntity extends PipeBlockEntity {
     }
 
     @Override
-    public @NotNull PipeMaterialBlock getBlockType() {
-        return (PipeMaterialBlock) super.getBlockType();
+    public @NotNull MaterialPipeBlock getBlockType() {
+        return (MaterialPipeBlock) super.getBlockType();
     }
 
     public void setMaterial(Material material) {

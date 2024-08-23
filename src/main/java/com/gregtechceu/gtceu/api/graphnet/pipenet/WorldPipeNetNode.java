@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
 
 public final class WorldPipeNetNode extends WorldNetNode {
 
-    private static final PipeBlockEntity FALLBACK = new PipeBlockEntity(GTBlockEntities.NEW_PIPE.get(), BlockPos.ZERO,
+    private static final PipeBlockEntity FALLBACK = new PipeBlockEntity(GTBlockEntities.PIPE.get(), BlockPos.ZERO,
             GTBlocks.MATERIAL_PIPE_BLOCKS.get(TagPrefix.pipeNormal, GTMaterials.Aluminium).getDefaultState());
 
     @Nullable

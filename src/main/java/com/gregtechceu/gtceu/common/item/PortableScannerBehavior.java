@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -358,10 +360,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 list.addAll(provider.getDataInfo(mode));
             }
 
-        } else if (tileEntity instanceof PipeBlockEntity<?, ?> pipe) {
+        } else if (tileEntity instanceof PipeBlockEntity pipe) {
 
             // Pipes need special name handling
-            list.add(pipe.getPipeBlock().getName().withStyle(ChatFormatting.BLUE));
+            list.add(pipe.getBlockType().getName().withStyle(ChatFormatting.BLUE));
 
             // Pipe-specific info
             if (tileEntity instanceof IDataInfoProvider dataInfoProvider) {
@@ -369,7 +371,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 list.addAll(dataInfoProvider.getDataInfo(mode));
             }
 
-            if (tileEntity instanceof FluidPipeBlockEntity) {
+            if (tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
                 // Getting fluid info always costs 500
                 energyCost += 500;
             }

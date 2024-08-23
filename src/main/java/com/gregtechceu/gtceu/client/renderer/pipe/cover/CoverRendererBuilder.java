@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,7 +45,7 @@ public class CoverRendererBuilder {
     private static final ColorQuadCache PLATE_QUADS;
     private static final EnumMap<Direction, SubListAddress> PLATE_COORDS = new EnumMap<>(Direction.class);
 
-    public static final EnumMap<Direction, VoxelShape> PLATE_AABBS = new EnumMap<>(Direction.class);
+    public static final EnumMap<Direction, AABB> PLATE_AABBS = new EnumMap<>(Direction.class);
     private static final EnumMap<Direction, Pair<Vector3f, Vector3f>> PLATE_BOXES = new EnumMap<>(Direction.class);
     private static final EnumMap<Direction, Pair<Vector3f, Vector3f>> OVERLAY_BOXES_1 = new EnumMap<>(
             Direction.class);
@@ -55,17 +56,16 @@ public class CoverRendererBuilder {
 
     static {
         for (Direction facing : GTUtil.DIRECTIONS) {
-            PLATE_AABBS.put(facing, ICoverable.getCoverPlateBox(facing, 1d / 16));
+            PLATE_AABBS.put(facing, ICoverable.getCoverPlateBox(facing, 1d / 16).bounds());
         }
         for (var value : PLATE_AABBS.entrySet()) {
             // make sure that plates render slightly below any normal block quad
-            // TODO replace .bounds() calls with actual VoxelShape support
             PLATE_BOXES.put(value.getKey(),
-                    QuadHelper.fullOverlay(value.getKey(), value.getValue().bounds(), -OVERLAY_DIST_1));
+                    QuadHelper.fullOverlay(value.getKey(), value.getValue(), -OVERLAY_DIST_1));
             OVERLAY_BOXES_1.put(value.getKey(),
-                    QuadHelper.fullOverlay(value.getKey(), value.getValue().bounds(), OVERLAY_DIST_1));
+                    QuadHelper.fullOverlay(value.getKey(), value.getValue(), OVERLAY_DIST_1));
             OVERLAY_BOXES_2.put(value.getKey(),
-                    QuadHelper.fullOverlay(value.getKey(), value.getValue().bounds(), OVERLAY_DIST_2));
+                    QuadHelper.fullOverlay(value.getKey(), value.getValue(), OVERLAY_DIST_2));
         }
         PLATE_QUADS = buildPlates(new SpriteInformation(defaultPlateSprite(), 0));
     }
@@ -156,7 +156,7 @@ public class CoverRendererBuilder {
                             spriteEmissive)));
         }
 
-        return (quads, side, rand, renderPlate, renderBackside, data) -> {
+        return (quads, side, rand, renderPlate, renderBackside, modelData, data, renderType) -> {
             addPlates(quads, getPlates(side, data, plateQuads), renderPlate);
             quads.add(spriteQuads.get(side).getLeft());
             if (renderBackside) quads.add(spriteQuads.get(side).getRight());

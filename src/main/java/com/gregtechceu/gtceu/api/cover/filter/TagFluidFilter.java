@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
@@ -21,6 +24,9 @@ import java.util.function.Consumer;
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
 
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
+
+    @Getter
+    protected long maxStackSize = 1L;
 
     protected TagFluidFilter() {}
 
@@ -43,6 +49,20 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         CompoundTag tag = super.saveFilter();
         tag.putString("type", FilterType.FLUID_TAG.getSerializedName());
         return tag;
+    }
+
+    @Override
+    public int getMaxTransferSize() {
+        return (int) maxStackSize;
+    }
+
+    @Override
+    public void setMaxTransferSize(int transferRate) {
+        transferRate = Mth.clamp(transferRate, 1, Integer.MAX_VALUE);
+        if (this.maxStackSize != transferRate) {
+            this.maxStackSize = transferRate;
+            onUpdated.accept(this);
+        }
     }
 
     public void setOreDict(String oreDict) {
@@ -70,5 +90,11 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     @Override
     public boolean supportsAmounts() {
         return false;
+    }
+
+    @Override
+    public MatchResult apply(FluidStack fluidStack) {
+        var match = OreDictExprFilter.matchesOreDict(matchRules, fluidStack);
+        return MatchResult.create(match != isBlackList(), match ? fluidStack.copy() : FluidStack.empty(), -1);
     }
 }

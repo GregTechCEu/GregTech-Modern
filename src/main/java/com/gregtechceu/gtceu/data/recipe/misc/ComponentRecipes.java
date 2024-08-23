@@ -488,12 +488,12 @@ public class ComponentRecipes {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cover_item_voiding", COVER_ITEM_VOIDING.asStack(), "SDS",
                 "dPw", " E ", 'S', new UnificationEntry(screw, Steel), 'D', COVER_ITEM_DETECTOR.asStack(), 'P',
-                new UnificationEntry(pipeNormalItem, Brass), 'E', Items.ENDER_PEARL);
+                new UnificationEntry(pipeNormal, Brass), 'E', Items.ENDER_PEARL);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_item_voiding")
                 .inputItems(screw, Steel, 2)
                 .inputItems(COVER_ITEM_DETECTOR)
-                .inputItems(pipeNormalItem, Brass)
+                .inputItems(pipeNormal, Brass)
                 .inputItems(Items.ENDER_PEARL)
                 .outputItems(COVER_ITEM_VOIDING)
                 .duration(100).EUt(VA[LV]).save(provider);

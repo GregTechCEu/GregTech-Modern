@@ -8,13 +8,16 @@ import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.CacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +60,8 @@ public class DuctPipeModel extends AbstractPipeModel<CacheKey> {
     }
 
     @Override
-    protected @Nullable PipeItemModel<CacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world, LivingEntity entity) {
+    protected @Nullable PipeItemModel<CacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world,
+                                                             LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
         return new PipeItemModel<>(this, new CacheKey(block.getStructure().getRenderThickness()), new ColorData());

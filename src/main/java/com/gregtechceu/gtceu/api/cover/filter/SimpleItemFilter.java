@@ -13,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -101,9 +102,29 @@ public class SimpleItemFilter implements ItemFilter {
         onUpdated.accept(this);
     }
 
+    @Override
+    public int getMaxTransferSize() {
+        return maxStackSize;
+    }
+
+    @Override
+    public void setMaxTransferSize(int maxTransferSize) {
+        maxTransferSize = Mth.clamp(maxTransferSize, 1, Integer.MAX_VALUE);
+        if (this.maxStackSize != maxTransferSize) {
+            this.maxStackSize = maxTransferSize;
+            onUpdated.accept(this);
+        }
+    }
+
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
         onUpdated.accept(this);
+    }
+
+    @Override
+    public int getTransferLimit(ItemStack stack, int transferSize) {
+        int matchedSlot = itemFilterMatch(ignoreNbt, stack);
+        return getTransferLimit(matchedSlot, transferSize);
     }
 
     public WidgetGroup openConfigurator(int x, int y) {

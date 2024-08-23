@@ -4,14 +4,15 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctStructure;
-import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.net.optical.WorldOpticalNet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -56,4 +57,3 @@ public final class DuctNetHandler implements IPipeNetNodeHandler {
         tooltip.add(Component.translatable("block.gtceu.normal_optical_pipe.tooltip"));
     }
 }
-

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -339,9 +340,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
 
         // PipeBlockEntity special case
-        if (be instanceof PipeBlockEntity<?, ?> pipe) {
+        if (be instanceof PipeBlockEntity pipe) {
             if (pipe.getPaintingColor() != this.color.getTextColor()) {
-                pipe.setPaintingColor(this.color.getTextColor());
+                pipe.setPaintingColor(this.color.getTextColor(), false);
                 return true;
             } else return false;
         }
@@ -442,9 +443,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
 
         // PipeBlockEntity special case
-        if (be instanceof PipeBlockEntity<?, ?> pipe) {
+        if (be instanceof PipeBlockEntity pipe) {
             if (pipe.isPainted()) {
-                pipe.setPaintingColor(pipe.getDefaultPaintingColor());
+                pipe.setPaintingColor(pipe.getDefaultPaintingColor(), false);
                 return true;
             } else return false;
         }

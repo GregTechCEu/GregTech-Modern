@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
@@ -187,7 +190,7 @@ public class MaterialBlock extends AppearanceBlock {
                 continue;
             }
             BlockEntity te = level.getBlockEntity(blockPos);
-            if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() != null) {
+            if (te instanceof PipeBlockEntity pbe && pbe.getFrameMaterial() != null) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -196,7 +199,7 @@ public class MaterialBlock extends AppearanceBlock {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
-            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() == null) {
+            } else if (te instanceof PipeBlockEntity pbe && pbe.getFrameMaterial() == null) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -223,7 +226,7 @@ public class MaterialBlock extends AppearanceBlock {
 
     public boolean removeFrame(Level level, BlockPos pos, Player player, ItemStack stack) {
         BlockEntity te = level.getBlockEntity(pos);
-        if (te instanceof PipeBlockEntity<?, ?> pipeTile) {
+        if (te instanceof PipeBlockEntity pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
             if (mat != null) {
                 pipeTile.setFrameMaterial(null);
@@ -245,17 +248,17 @@ public class MaterialBlock extends AppearanceBlock {
 
     public boolean replaceWithFramedPipe(Level level, BlockPos pos, BlockState state, Player player,
                                          ItemStack stackInHand, BlockHitResult hit) {
-        PipeBlock<?, ?, ?> pipeBlock = (PipeBlock<?, ?, ?>) ((PipeBlockItem) stackInHand.getItem()).getBlock();
-        if (pipeBlock.pipeType.getThickness() < 1) {
+        PipeBlock pipeBlock = ((PipeBlockItem) stackInHand.getItem()).getBlock();
+        if (pipeBlock.getStructure().getRenderThickness() < 1) {
             PipeBlockItem itemBlock = (PipeBlockItem) stackInHand.getItem();
             BlockState pipeState = pipeBlock.defaultBlockState();
             BlockPlaceContext context = new BlockPlaceContext(level, player, InteractionHand.MAIN_HAND, stackInHand,
                     hit);
             BlockState original = level.getBlockState(context.getClickedPos());
             itemBlock.placeBlock(context, pipeState);
-            var pipeTile = pipeBlock.getPipeTile(level, pos);
-            if (pipeTile instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
-                pipeBlockEntity.setFrameMaterial(material);
+            var pipeTile = pipeBlock.getBlockEntity(level, pos);
+            if (pipeTile != null) {
+                pipeTile.setFrameMaterial(material);
             } else {
                 // reset the state if we didn't place correctly
                 level.setBlockAndUpdate(context.getClickedPos(), original);

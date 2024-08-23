@@ -36,6 +36,7 @@ import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
 import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
 import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
@@ -310,8 +311,14 @@ public class GTBlocks {
     }
 
     private static boolean allowCableBlock(Material material, CableStructure insulation) {
-        return material.hasProperty(PropertyKey.WIRE) && !insulation.prefix().isIgnored(material) &&
-                !(insulation.isInsulated() && material.getProperty(PropertyKey.WIRE).isSuperconductor());
+        if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
+            return material.getProperty(PropertyKey.PIPENET_PROPERTIES).hasProperty(MaterialEnergyProperties.KEY) &&
+                    !insulation.prefix().isIgnored(material) &&
+                    !(insulation.isInsulated() && material.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                            .getProperty(MaterialEnergyProperties.KEY)
+                            .isSuperconductor());
+        }
+        return false;
     }
 
     private static void registerCableBlock(Material material, CableStructure insulation, GTRegistrate registrate) {
@@ -341,8 +348,8 @@ public class GTBlocks {
             for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
                 GTRegistrate registrate = registry.getRegistrate();
                 for (Material material : registry.getAllMaterials()) {
-                    if (allowFluidPipeBlock(material, structure)) {
-                        registerFluidPipeBlock(material, structure, registrate);
+                    if (allowMaterialPipeBlock(material, structure)) {
+                        registerMaterialPipeBlock(material, structure, registrate);
                     }
                 }
             }
@@ -351,12 +358,12 @@ public class GTBlocks {
         GTCEu.LOGGER.debug("Generating GTCEu Material Pipe Blocks... Complete!");
     }
 
-    private static boolean allowFluidPipeBlock(Material material, MaterialPipeStructure fluidPipeType) {
-        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.prefix().isIgnored(material);
+    private static boolean allowMaterialPipeBlock(Material material, MaterialPipeStructure fluidPipeType) {
+        return material.hasProperty(PropertyKey.PIPENET_PROPERTIES) && !fluidPipeType.prefix().isIgnored(material);
     }
 
-    private static void registerFluidPipeBlock(Material material, MaterialPipeStructure fluidPipeType,
-                                               GTRegistrate registrate) {
+    private static void registerMaterialPipeBlock(Material material, MaterialPipeStructure fluidPipeType,
+                                                  GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_pipe".formatted(material.getName(), fluidPipeType.name()),
                         p -> new MaterialPipeBlock(p, fluidPipeType, material))

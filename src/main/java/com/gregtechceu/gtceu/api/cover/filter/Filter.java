@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.RequiredArgsConstructor;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -34,6 +35,26 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T>, Functio
     }
 
     default void setBlackList(boolean blackList) {}
+
+    int getMaxTransferSize();
+
+    void setMaxTransferSize(int maxTransferSize);
+
+    default int getTransferLimit(int slot, int transferSize) {
+        return transferSize;
+    }
+
+    default int getTransferLimit(int slot) {
+        return getMaxTransferSize();
+    }
+
+    default int getTransferLimit(T stack, int transferSize) {
+        return 0;
+    }
+
+    default int getTransferLimit(T stack) {
+        return 0;
+    }
 
     default boolean testGeneric(Object test) {
         return this.test((T) test);

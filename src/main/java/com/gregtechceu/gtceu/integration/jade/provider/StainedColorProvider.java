@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
@@ -40,7 +41,7 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
                 int paintingColor = metaMachine.getPaintingColor();
                 compoundTag.putInt("StainedColor", paintingColor);
             }
-        } else if (blockAccessor.getBlockEntity() instanceof PipeBlockEntity<?, ?> pipe) {
+        } else if (blockAccessor.getBlockEntity() instanceof PipeBlockEntity pipe) {
             int paintingColor = pipe.getPaintingColor();
             compoundTag.putInt("StainedColor", paintingColor);
         }

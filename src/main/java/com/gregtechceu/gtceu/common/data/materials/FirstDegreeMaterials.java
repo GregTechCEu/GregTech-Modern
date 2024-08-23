@@ -599,7 +599,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(7.0F, 5.0F, 1024, 3)
                         .enchantability(14).build())
                 .rotorStats(160, 115, 4.0f, 480)
-                .fluidPipeProperties(2428, 75, true, true, true, false)
+                .fluidPipeProperties(2428, 59, 75, true, true, false)
                 .blastTemp(1700, GasTier.LOW, GTValues.VA[HV], 1100)
                 .buildAndRegister();
 
@@ -1299,7 +1299,7 @@ public class FirstDegreeMaterials {
                 .color(0xE1B454).secondaryColor(0x223033).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Manganese, 1, Phosphorus, 1)
-                .cableProperties(GTValues.V[GTValues.LV], 2, 0, true, 78)
+                .cableProperties(GTValues.V[GTValues.LV], 2, GTValues.V[GTValues.ULV], 500)
                 .blastTemp(1200, GasTier.LOW)
                 .buildAndRegister();
 
@@ -1309,7 +1309,7 @@ public class FirstDegreeMaterials {
                 .color(0x603c1a).secondaryColor(0x423e39).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Magnesium, 1, Boron, 2)
-                .cableProperties(GTValues.V[MV], 4, 0, true, 78)
+                .cableProperties(GTValues.V[GTValues.MV], 4, GTValues.V[GTValues.LV], 500)
                 .blastTemp(2500, GasTier.LOW, GTValues.VA[HV], 1000)
                 .buildAndRegister();
 
@@ -1319,7 +1319,7 @@ public class FirstDegreeMaterials {
                 .color(0x928547).secondaryColor(0x3f2e2e).iconSet(SHINY)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Mercury, 1, Barium, 2, Calcium, 2, Copper, 3, Oxygen, 8)
-                .cableProperties(GTValues.V[HV], 4, 0, true, 78)
+                .cableProperties(GTValues.V[GTValues.HV], 4, GTValues.V[GTValues.MV], 500)
                 .blastTemp(3300, GasTier.LOW, GTValues.VA[HV], 1500)
                 .buildAndRegister();
 
@@ -1329,7 +1329,7 @@ public class FirstDegreeMaterials {
                 .color(0x457045).secondaryColor(0x66ff00).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Uranium238, 1, Platinum, 3)
-                .cableProperties(GTValues.V[GTValues.EV], 6, 0, true, 30)
+                .cableProperties(GTValues.V[GTValues.EV], 6, GTValues.V[GTValues.HV], 500)
                 .blastTemp(4400, GasTier.MID, GTValues.VA[GTValues.EV], 1000)
                 .buildAndRegister()
                 .setFormula("UPt3", true);
@@ -1340,7 +1340,7 @@ public class FirstDegreeMaterials {
                 .color(0x850e85).secondaryColor(0x332f33).iconSet(SHINY)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Samarium, 1, Iron, 1, Arsenic, 1, Oxygen, 1)
-                .cableProperties(GTValues.V[GTValues.IV], 6, 0, true, 30)
+                .cableProperties(GTValues.V[GTValues.IV], 6, GTValues.V[GTValues.EV], 500)
                 .blastTemp(5200, GasTier.MID, GTValues.VA[GTValues.EV], 1500)
                 .buildAndRegister();
 
@@ -1350,7 +1350,7 @@ public class FirstDegreeMaterials {
                 .color(0x686760).secondaryColor(0x673300).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING, GENERATE_FINE_WIRE)
                 .components(Indium, 4, Tin, 2, Barium, 2, Titanium, 1, Copper, 7, Oxygen, 14)
-                .cableProperties(GTValues.V[GTValues.LuV], 8, 0, true, 5)
+                .cableProperties(GTValues.V[GTValues.LuV], 8, GTValues.V[GTValues.IV], 500)
                 .blastTemp(6000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
                 .buildAndRegister();
 
@@ -1360,7 +1360,7 @@ public class FirstDegreeMaterials {
                 .color(0x232020).secondaryColor(0xff009c).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(Uranium238, 1, Rhodium, 1, Naquadah, 2)
-                .cableProperties(GTValues.V[GTValues.ZPM], 8, 0, true, 5)
+                .cableProperties(GTValues.V[GTValues.ZPM], 8, GTValues.V[LuV], 500)
                 .blastTemp(9000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1500)
                 .buildAndRegister()
                 .setFormula("URhNq2", true);
@@ -1372,7 +1372,7 @@ public class FirstDegreeMaterials {
                 .color(0xc6b083).secondaryColor(0x45063d).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(NaquadahEnriched, 4, Trinium, 3, Europium, 2, Duranium, 1)
-                .cableProperties(GTValues.V[GTValues.UV], 16, 0, true, 3)
+                .cableProperties(GTValues.V[GTValues.UV], 16, GTValues.V[GTValues.ZPM], 500)
                 .blastTemp(9900, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1000)
                 .buildAndRegister();
 
@@ -1382,7 +1382,7 @@ public class FirstDegreeMaterials {
                 .color(0x897b76).secondaryColor(0x00c0ff).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Ruthenium, 1, Trinium, 2, Americium, 1, Neutronium, 2, Oxygen, 8)
-                .cableProperties(GTValues.V[GTValues.UHV], 24, 0, true, 3)
+                .cableProperties(GTValues.V[GTValues.UHV], 24, GTValues.V[GTValues.UV], 500)
                 .blastTemp(10800, GasTier.HIGHER)
                 .buildAndRegister();
 

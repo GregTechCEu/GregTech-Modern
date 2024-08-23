@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
-public abstract class PipeActivableBlock extends PipeBlock {
+public abstract class ActivablePipeBlock extends PipeBlock {
 
-    public PipeActivableBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
+    public ActivablePipeBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
         super(properties, structure);
     }
 

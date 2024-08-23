@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctStructure;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,15 +36,21 @@ public class PipeRecipeHandler {
         pipeQuadruple.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeQuadruple);
         pipeNonuple.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeNonuple);
 
-        pipeTinyRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
-        pipeSmallRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeTinyRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
+        pipeSmallRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
         pipeNormalRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
                 PipeRecipeHandler::processRestrictivePipe);
-        pipeLargeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
-        pipeHugeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeLargeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
+        pipeHugeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
 
-        pipeQuadrupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
-        pipeNonupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeQuadrupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
+        pipeNonupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
+                PipeRecipeHandler::processRestrictivePipe);
 
         addDuctRecipes(provider, Steel, 2);
         addDuctRecipes(provider, StainlessSteel, 4);

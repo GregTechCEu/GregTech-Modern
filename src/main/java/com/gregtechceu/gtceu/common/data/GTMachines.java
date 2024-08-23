@@ -688,7 +688,8 @@ public class GTMachines {
             var item = stack.getItem();
             if (item instanceof DrumMachineItem drumItem && material != null) {
                 if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
-                    MaterialFluidProperties pipeprops = material.getProperty(PropertyKey.PIPENET_PROPERTIES).getProperty(MaterialFluidProperties.KEY);
+                    MaterialFluidProperties pipeprops = material.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                            .getProperty(MaterialFluidProperties.KEY);
                     pipeprops.appendTooltips(list, true, true);
                 }
             }
@@ -738,7 +739,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
             "wooden_multiblock_tank", "Wooden Multiblock Tank", 250 * 1000,
             CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
-            new PropertyFluidFilter(340, false, false, false, false),
+            new PropertyFluidFilter(340, 121, false, false, false),
             (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay));
 
     public static final MachineDefinition STEEL_TANK_VALVE = registerTankValve(

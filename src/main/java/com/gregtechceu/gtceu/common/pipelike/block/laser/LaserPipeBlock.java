@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.block.laser;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeActivableBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.ActivablePipeBlock;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.pipelike.handlers.LaserNetHandler;
 
@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LaserPipeBlock extends PipeActivableBlock {
+public class LaserPipeBlock extends ActivablePipeBlock {
 
     public LaserPipeBlock(BlockBehaviour.Properties properties, LaserStructure structure) {
         super(properties, structure);
@@ -29,7 +29,7 @@ public class LaserPipeBlock extends PipeActivableBlock {
     }
 
     @Override
-    protected boolean allowsBlocking() {
+    public boolean allowsBlocking() {
         return false;
     }
 

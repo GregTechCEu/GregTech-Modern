@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.NeighborCacheBlockEntity;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IInsulatable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -31,12 +33,14 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
@@ -60,6 +64,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -87,6 +93,10 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                              implements IWorldPipeNetTile, ITickSubscription, IEnhancedManaged,
                              IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
 
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
+    @Getter
+    public final IManagedStorage syncStorage = new FieldManagedStorage(this);
+
     public static final int DEFAULT_COLOR = 0xFFFFFFFF;
 
     public static final int UPDATE_PIPE_LOGIC = 0;
@@ -99,12 +109,15 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     @Persisted
     @DescSynced
+    @Getter
     private byte connectionMask;
     @Persisted
     @DescSynced
+    @Getter
     private byte renderMask;
     @Persisted
     @DescSynced
+    @Getter
     private byte blockedMask;
     @Persisted
     @DescSynced
@@ -226,10 +239,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         return (this.renderMask & 1 << facing.ordinal()) > 0;
     }
 
-    public byte getConnectionMask() {
-        return connectionMask;
-    }
-
     public void setBlocked(Direction facing) {
         this.blockedMask |= (byte) (1 << facing.ordinal());
     }
@@ -240,10 +249,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     public boolean isBlocked(Direction facing) {
         return (this.blockedMask & 1 << facing.ordinal()) > 0;
-    }
-
-    public byte getBlockedMask() {
-        return blockedMask;
     }
 
     // paint //
@@ -671,12 +676,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public @NotNull ModelData getModelData() {
         byte frameMask = 0;
-        byte connectionMask = this.connectionMask;
         for (Direction facing : GTUtil.DIRECTIONS) {
             CoverBehavior cover = getCoverHolder().getCoverAtSide(facing);
             if (cover != null) {
                 frameMask |= (byte) (1 << facing.ordinal());
-                if (cover.forcePipeRenderConnection()) connectionMask |= (byte) (1 << facing.ordinal());
+                if (cover.forcePipeRenderConnection()) this.connectionMask |= (byte) (1 << facing.ordinal());
             }
         }
         return ModelData.builder()
@@ -693,7 +697,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     public void getCoverBoxes(Consumer<VoxelShape> consumer) {
         for (Direction facing : GTUtil.DIRECTIONS) {
             if (getCoverHolder().hasCover(facing)) {
-                consumer.accept(CoverRendererBuilder.PLATE_AABBS.get(facing));
+                consumer.accept(Shapes.create(CoverRendererBuilder.PLATE_AABBS.get(facing)));
             }
         }
     }
@@ -737,17 +741,68 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public Pair<@Nullable GTToolType, InteractionResult> onToolClick(@NotNull Set<GTToolType> toolTypes,
                                                                      ItemStack itemStack, UseOnContext context) {
-        return null;
+        // the side hit from the machine grid
+        var playerIn = context.getPlayer();
+        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
+
+        var hand = context.getHand();
+        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
+                context.getClickedPos(), false);
+        Direction gridSide = ICoverable.determineGridSideHit(hitResult);
+        CoverBehavior coverBehavior = gridSide == null ? null : covers.getCoverAtSide(gridSide);
+        if (gridSide == null) gridSide = hitResult.getDirection();
+
+        // Prioritize covers where they apply (Screwdriver, Soft Mallet)
+        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+            if (coverBehavior != null) {
+                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            if (coverBehavior != null) {
+                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
+            }
+        } else if (toolTypes.contains(this.getBlockType().getToolClass())) {
+            if (playerIn.isShiftKeyDown() && this.getBlockType().allowsBlocking()) {
+                boolean isBlocked = this.isBlocked(gridSide);
+                if (isBlocked) {
+                    this.setUnblocked(gridSide);
+                } else {
+                    this.setBlocked(gridSide);
+                }
+            } else {
+                boolean isOpen = this.isConnected(gridSide);
+                if (isOpen) {
+                    this.setDisconnected(gridSide);
+                } else {
+                    this.setConnected(gridSide, true);
+                }
+            }
+            playerIn.swing(hand);
+            return Pair.of(this.getBlockType().getToolClass(), InteractionResult.CONSUME);
+        } else if (toolTypes.contains(GTToolType.CROWBAR)) {
+            if (coverBehavior != null) {
+                if (isServerSide()) {
+                    covers.removeCover(gridSide, playerIn);
+                    playerIn.swing(hand);
+                    return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
+                }
+            } else {
+                if (frameMaterial != null) {
+                    Block.popResource(getLevel(), getBlockPos(),
+                            GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                    frameMaterial = null;
+                    playerIn.swing(hand);
+                    return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
+                }
+            }
+        }
+
+        return Pair.of(null, InteractionResult.PASS);
     }
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
-        return null;
-    }
-
-    @Override
-    public IManagedStorage getSyncStorage() {
-        return null;
+        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -755,6 +810,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     @Override
     public IManagedStorage getRootStorage() {
-        return null;
+        return syncStorage;
     }
 }

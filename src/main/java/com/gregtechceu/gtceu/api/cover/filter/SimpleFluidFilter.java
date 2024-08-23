@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -12,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -99,6 +101,31 @@ public class SimpleFluidFilter implements FluidFilter {
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
+    }
+
+    public void setMaxTransferSize(int transferRate) {
+        transferRate = Mth.clamp(transferRate, 1, Integer.MAX_VALUE);
+        if (this.maxStackSize != transferRate) {
+            this.maxStackSize = transferRate;
+            onUpdated.accept(this);
+        }
+    }
+
+    public int getMaxTransferSize() {
+        return isBlackList ? 1 : (int) this.maxStackSize;
+    }
+
+    @Override
+    public int getTransferLimit(FluidStack fluidStack, int transferSize) {
+        long limit = 0;
+
+        for (int i = 0; i < this.matches.length; i++) {
+            var fluid = this.matches[i];
+            if (fluid != null && fluid.isFluidEqual(fluidStack)) {
+                limit = fluid.getAmount();
+            }
+        }
+        return isBlackList ? transferSize : (int) limit;
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
@@ -190,5 +217,20 @@ public class SimpleFluidFilter implements FluidFilter {
             if (!match.isEmpty())
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
+    }
+
+    @Override
+    public MatchResult apply(FluidStack fluidStack) {
+        int index = -1;
+        FluidStack returnable = FluidStack.empty();
+        for (int i = 0; i < matches.length; i++) {
+            var fluid = matches[i];
+            if (fluid != null && fluid.isFluidEqual(fluidStack)) {
+                index = i;
+                returnable = fluid.copy();
+                break;
+            }
+        }
+        return MatchResult.create(index != -1, returnable, index);
     }
 }

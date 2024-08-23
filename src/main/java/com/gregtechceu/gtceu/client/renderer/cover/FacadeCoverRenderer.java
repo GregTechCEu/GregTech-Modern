@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.ModelUtil;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -25,6 +27,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -36,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4d;
 import org.joml.Quaternionf;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -140,5 +144,24 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                 }
             }
         }
+    }
+
+    public static CoverRenderer createRenderer(final BlockAndTintGetter world, BlockPos pos, final BlockState state) {
+        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+
+        BakedModel model = dispatcher.getBlockModel(state);
+
+        return (quads, side, rand, renderPlate, renderBackside, modelData, data, renderType) -> {
+            if (renderType != RenderType.cutoutMipped()) return;
+
+            AABB cube = CoverRendererBuilder.PLATE_AABBS.get(side);
+            for (BakedQuad quad : ModelUtil.getBakedModelQuads(model, world, pos, state, side, rand)) {
+                quads.add(FaceQuad.builder(side.getOpposite(), quad.getSprite())
+                        .cube(cube)
+                        .shade(quad.isShade())
+                        .tintIndex(quad.getTintIndex())
+                        .bake());
+            }
+        };
     }
 }

@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.client.renderer.pipe.cover;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,13 +38,13 @@ public final class CoverRendererPackage {
         plates.remove(facing);
     }
 
-    public void addQuads(List<BakedQuad> quads, RandomSource rand, ColorData data) {
+    public void addQuads(List<BakedQuad> quads, RandomSource rand, ModelData modelData, ColorData data, RenderType renderType) {
         for (var renderer : renderers.entrySet()) {
             EnumSet<Direction> plates = EnumSet.copyOf(this.plates);
             // force front and back plates to render
             plates.add(renderer.getKey());
             plates.add(renderer.getKey().getOpposite());
-            renderer.getValue().addQuads(quads, renderer.getKey(), rand, plates, renderBackside, data);
+            renderer.getValue().addQuads(quads, renderer.getKey(), rand, plates, renderBackside, modelData, data, renderType);
         }
     }
 

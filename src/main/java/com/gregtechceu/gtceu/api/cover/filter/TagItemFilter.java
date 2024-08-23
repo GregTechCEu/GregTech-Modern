@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,6 +23,9 @@ import java.util.function.Consumer;
 public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements ItemFilter {
 
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
+
+    @Getter
+    protected int maxStackSize = 1;
 
     protected TagItemFilter() {}
 
@@ -41,6 +48,20 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
         CompoundTag tag = super.saveFilter();
         tag.putString("type", FilterType.FLUID_TAG.getSerializedName());
         return tag;
+    }
+
+    @Override
+    public int getMaxTransferSize() {
+        return maxStackSize;
+    }
+
+    @Override
+    public void setMaxTransferSize(int transferRate) {
+        transferRate = Mth.clamp(transferRate, 1, Integer.MAX_VALUE);
+        if (this.maxStackSize != transferRate) {
+            this.maxStackSize = transferRate;
+            onUpdated.accept(this);
+        }
     }
 
     public void setOreDict(String oreDict) {
@@ -68,5 +89,11 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     @Override
     public boolean supportsAmounts() {
         return false;
+    }
+
+    @Override
+    public MatchResult apply(ItemStack itemStack) {
+        var match = OreDictExprFilter.matchesOreDict(matchRules, itemStack);
+        return MatchResult.create(match != isBlackList(), match ? itemStack.copy() : ItemStack.EMPTY, -1);
     }
 }

@@ -1,16 +1,22 @@
 package com.gregtechceu.gtceu.common.cover.voiding;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -18,6 +24,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -28,12 +36,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class FluidVoidingCover extends PumpCover {
 
+    protected final NullFluidTank nullFluidTank = new NullFluidTank();
+
     @Persisted
     @Getter
     protected boolean isEnabled = false;
 
     public FluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide, 0);
+    }
+
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_fluid_voiding"), null).build();
     }
 
     @Override
@@ -45,35 +60,24 @@ public class FluidVoidingCover extends PumpCover {
     // *********** COVER LOGIC ***********//
     //////////////////////////////////////////////
 
+
     @Override
-    protected void update() {
-        if (coverHolder.getOffsetTimer() % 5 != 0)
-            return;
+    public void update() {
+        if (isWorkingEnabled && coverHolder.getOffsetTimer() % 20 == 0) {
+            doTransferFluids();
+        }
+    }
 
-        doVoidFluids();
+    protected void doTransferFluids() {
+        IFluidHandler myFluidHandlerCap = coverHolder.getCapability(ForgeCapabilities.FLUID_HANDLER,
+                attachedSide).resolve().orElse(null);
+        if (myFluidHandlerCap == null) {
+            return;
+        }
+        IFluidTransfer myFluidHandler = FluidTransferHelperImpl.toFluidTransfer(myFluidHandlerCap);
+        GTTransferUtils.transferFluids(myFluidHandler, nullFluidTank, Integer.MAX_VALUE,
+                getFilterHandler()::test);
         subscriptionHandler.updateSubscription();
-    }
-
-    protected void doVoidFluids() {
-        IFluidTransfer fluidTransfer = getOwnFluidTransfer();
-        if (fluidTransfer == null) {
-            return;
-        }
-        voidAny(fluidTransfer);
-    }
-
-    void voidAny(IFluidTransfer fluidTransfer) {
-        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
-
-        for (FluidStack fluidStack : fluidAmounts.keySet()) {
-            if (!filterHandler.test(fluidStack))
-                continue;
-
-            var toDrain = fluidStack.copy();
-            toDrain.setAmount(fluidAmounts.get(fluidStack));
-
-            fluidTransfer.drain(toDrain, false);
-        }
     }
 
     public void setWorkingEnabled(boolean workingEnabled) {
@@ -130,5 +134,20 @@ public class FluidVoidingCover extends PumpCover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    class NullFluidTank extends FluidStorage {
+
+        public NullFluidTank() {
+            super(Integer.MAX_VALUE);
+        }
+
+        @Override
+        public long fill(FluidStack resource, boolean execute, boolean notifyChanges) {
+            if (FluidVoidingCover.this.filterHandler.test(resource)) {
+                return resource.getAmount();
+            }
+            return 0;
+        }
     }
 }

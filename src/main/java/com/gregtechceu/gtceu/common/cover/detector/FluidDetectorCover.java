@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -9,6 +12,8 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidDetectorCover extends DetectorCover {
 
@@ -17,8 +22,13 @@ public class FluidDetectorCover extends DetectorCover {
     }
 
     @Override
-    public boolean canAttach() {
-        return getFluidTransfer() != null;
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_fluid_detector"), GTCEu.id("block/cover/overlay_fluid_detector_emissive")).build();
+    }
+
+    @Override
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
+        return coverable.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent();
     }
 
     @Override

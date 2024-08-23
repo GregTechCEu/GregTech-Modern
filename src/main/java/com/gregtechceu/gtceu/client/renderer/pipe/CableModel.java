@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.ExtraCappedSQC;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.StructureQuadCache;
@@ -134,7 +134,7 @@ public class CableModel extends AbstractPipeModel<CacheKey> {
                                                              LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
-        Material mater = block instanceof PipeMaterialBlock mat ? mat.material : null;
+        Material mater = block instanceof MaterialPipeBlock mat ? mat.material : null;
         return new PipeItemModel<>(this, new CacheKey(block.getStructure().getRenderThickness()),
                 new ColorData(mater != null ? GTUtil.convertRGBtoARGB(mater.getMaterialRGB()) :
                         PipeBlockEntity.DEFAULT_COLOR, DEFAULT_INSULATION_COLOR));

@@ -155,7 +155,7 @@ public class OrganicChemistryMaterials {
                 .toolStats(
                         ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Fluorine, 4)
-                .fluidPipeProperties(600, 100, true, true, false, false)
+                .fluidPipeProperties(600, 100, true, true, false)
                 .buildAndRegister();
 
         Sugar = new Material.Builder(GTCEu.id("sugar"))

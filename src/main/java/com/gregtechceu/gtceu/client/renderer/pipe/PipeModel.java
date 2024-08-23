@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.pipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.BlockableSQC;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.RestrictiveSQC;
@@ -139,7 +139,7 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
         Material mater = null;
-        boolean wood = block instanceof PipeMaterialBlock mat && (mater = mat.material) != null &&
+        boolean wood = block instanceof MaterialPipeBlock mat && (mater = mat.material) != null &&
                 mater.hasProperty(PropertyKey.WOOD);
         return new PipeItemModel<>(this, new WoodCacheKey(block.getStructure().getRenderThickness(), wood),
                 new ColorData(mater != null ? GTUtil.convertRGBtoARGB(mater.getMaterialRGB()) :

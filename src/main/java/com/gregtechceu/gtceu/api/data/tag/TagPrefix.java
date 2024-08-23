@@ -1095,18 +1095,33 @@ public class TagPrefix {
     }
 
     @FunctionalInterface
-    public interface MaterialRecipeHandler<T extends IMaterialProperty> {
+    public interface PropertyMaterialRecipeHandler<T extends IMaterialProperty> {
 
         void accept(TagPrefix prefix, Material material, T property, Consumer<FinishedRecipe> provider);
     }
 
+    @FunctionalInterface
+    public interface MaterialRecipeHandler {
+
+        void accept(TagPrefix prefix, Material material, Consumer<FinishedRecipe> provider);
+    }
+
     public <T extends IMaterialProperty> void executeHandler(Consumer<FinishedRecipe> provider,
                                                              PropertyKey<T> propertyKey,
-                                                             MaterialRecipeHandler<T> handler) {
-        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+                                                             PropertyMaterialRecipeHandler<T> handler) {
+        executeHandler(provider, (prefix, material, provider1) -> {
             if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) &&
                     !ChemicalHelper.get(this, material).isEmpty()) {
-                handler.accept(this, material, material.getProperty(propertyKey), provider);
+                handler.accept(this, material, material.getProperty(propertyKey), provider1);
+            }
+        });
+    }
+
+    public void executeHandler(Consumer<FinishedRecipe> provider, MaterialRecipeHandler handler) {
+        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            if (!material.hasFlag(MaterialFlags.NO_UNIFICATION) &&
+                    !ChemicalHelper.get(this, material).isEmpty()) {
+                handler.accept(this, material, provider);
             }
         }
     }

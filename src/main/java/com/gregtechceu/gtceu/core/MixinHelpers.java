@@ -99,9 +99,6 @@ public class MixinHelpers {
             GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
-                MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
-            });
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
                 tagMap.computeIfAbsent(GTToolType.WRENCH.harvestTags.get(0).location(), path -> new ArrayList<>())
@@ -247,9 +244,6 @@ public class MixinHelpers {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
-            MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
-        });
-        GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {

@@ -42,11 +42,13 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
     protected final IFancyUIProvider mainPage;
 
-    /*
-     * Current Page: The page visible in the UI
-     * Current Home Page: The currently selected multiblock part's home page.
+    /**
+     * The page visible in the UI
      */
     protected IFancyUIProvider currentPage;
+    /**
+     * The currently selected multiblock part's home page.
+     */
     protected IFancyUIProvider currentHomePage;
 
     protected List<IFancyUIProvider> allPages;

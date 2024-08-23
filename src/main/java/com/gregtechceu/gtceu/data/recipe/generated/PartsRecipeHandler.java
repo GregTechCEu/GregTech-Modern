@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -149,7 +150,8 @@ public class PartsRecipeHandler {
             VanillaRecipeHelper.addShapelessRecipe(provider, String.format("fine_wire_%s", material.getName()),
                     fineWireStack, 'x', new UnificationEntry(foil, material));
 
-        if (material.hasProperty(PropertyKey.WIRE)) {
+        if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES) &&
+                material.getProperty(PropertyKey.PIPENET_PROPERTIES).hasProperty(MaterialEnergyProperties.KEY)) {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_to_fine_wire")
                     .inputItems(wireGtSingle, material)
                     .outputItems(wireFine, material, 4)
