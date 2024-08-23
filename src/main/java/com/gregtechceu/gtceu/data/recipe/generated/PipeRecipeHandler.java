@@ -2,20 +2,16 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctStructure;
-import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
@@ -30,38 +26,40 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class PipeRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        pipeTiny.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeTiny);
-        pipeSmall.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeSmall);
-        pipeNormal.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNormal);
-        pipeLarge.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeLarge);
-        pipeHuge.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeHuge);
+        pipeTiny.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeTiny);
+        pipeSmall.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeSmall);
+        pipeNormal.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeNormal);
+        pipeLarge.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeLarge);
+        pipeHuge.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeHuge);
 
-        pipeQuadruple.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeQuadruple);
-        pipeNonuple.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNonuple);
+        pipeQuadruple.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeQuadruple);
+        pipeNonuple.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processPipeNonuple);
 
-        pipeSmallItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeSmall);
-        pipeNormalItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeNormal);
-        pipeLargeItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeLarge);
-        pipeHugeItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeHuge);
-
-        pipeSmallRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
-        pipeNormalRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE,
+        pipeTinyRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeSmallRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeNormalRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES,
                 PipeRecipeHandler::processRestrictivePipe);
-        pipeLargeRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
-        pipeHugeRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
+        pipeLargeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeHugeRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+
+        pipeQuadrupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
+        pipeNonupleRestrictive.executeHandler(provider, PropertyKey.PIPENET_PROPERTIES, PipeRecipeHandler::processRestrictivePipe);
 
         addDuctRecipes(provider, Steel, 2);
         addDuctRecipes(provider, StainlessSteel, 4);
         addDuctRecipes(provider, TungstenSteel, 8);
     }
 
-    private static void processRestrictivePipe(TagPrefix pipePrefix, Material material, ItemPipeProperties property,
+    private static void processRestrictivePipe(TagPrefix pipePrefix, Material material, IMaterialProperty property,
                                                Consumer<FinishedRecipe> provider) {
         TagPrefix unrestrictive;
-        if (pipePrefix == pipeSmallRestrictive) unrestrictive = pipeSmallItem;
-        else if (pipePrefix == pipeNormalRestrictive) unrestrictive = pipeNormalItem;
-        else if (pipePrefix == pipeLargeRestrictive) unrestrictive = pipeLargeItem;
-        else if (pipePrefix == pipeHugeRestrictive) unrestrictive = pipeHugeItem;
+        if (pipePrefix == pipeTinyRestrictive) unrestrictive = pipeTiny;
+        else if (pipePrefix == pipeSmallRestrictive) unrestrictive = pipeSmall;
+        else if (pipePrefix == pipeNormalRestrictive) unrestrictive = pipeNormal;
+        else if (pipePrefix == pipeLargeRestrictive) unrestrictive = pipeLarge;
+        else if (pipePrefix == pipeHugeRestrictive) unrestrictive = pipeHuge;
+        else if (pipePrefix == pipeQuadrupleRestrictive) unrestrictive = pipeQuadruple;
+        else if (pipePrefix == pipeNonupleRestrictive) unrestrictive = pipeNonuple;
         else return;
 
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_" + pipePrefix.name)
@@ -213,7 +211,7 @@ public class PipeRecipeHandler {
         }
     }
 
-    private static void processPipeQuadruple(TagPrefix pipePrefix, Material material, FluidPipeProperties property,
+    private static void processPipeQuadruple(TagPrefix pipePrefix, Material material, IMaterialProperty property,
                                              Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmall, material);
@@ -231,7 +229,7 @@ public class PipeRecipeHandler {
                 .save(provider);
     }
 
-    private static void processPipeNonuple(TagPrefix pipePrefix, Material material, FluidPipeProperties property,
+    private static void processPipeNonuple(TagPrefix pipePrefix, Material material, IMaterialProperty property,
                                            Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmall, material);
@@ -251,16 +249,16 @@ public class PipeRecipeHandler {
 
     private static void addDuctRecipes(Consumer<FinishedRecipe> provider, Material material, int outputAmount) {
         VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPE_BLOCKS[DuctStructure.SMALL].asStack(outputAmount * 2), "w", "X", "h",
+                GTBlocks.DUCT_PIPE_BLOCKS.get(DuctStructure.SMALL).asStack(outputAmount * 2), "w", "X", "h",
                 'X', new UnificationEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPE_BLOCKS[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
+                GTBlocks.DUCT_PIPE_BLOCKS.get(DuctStructure.NORMAL).asStack(outputAmount), " X ", "wXh", " X ",
                 'X', new UnificationEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPE_BLOCKS[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                GTBlocks.DUCT_PIPE_BLOCKS.get(DuctStructure.LARGE).asStack(outputAmount), "XwX", "X X", "XhX",
                 'X', new UnificationEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPE_BLOCKS[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                GTBlocks.DUCT_PIPE_BLOCKS.get(DuctStructure.HUGE).asStack(outputAmount), "XwX", "X X", "XhX",
                 'X', new UnificationEntry(plateDouble, material));
     }
 

@@ -117,14 +117,14 @@ public class PipeNetProperties implements IMaterialProperty, IPipeNetNodeHandler
     public interface IPipeNetMaterialProperty extends IMaterialProperty {
 
         @Nullable
-        WorldPipeNetNode getOrCreateFromNet(LevelAccessor world, BlockPos pos, IPipeStructure structure);
+        WorldPipeNetNode getOrCreateFromNet(ServerLevel world, BlockPos pos, IPipeStructure structure);
 
         @Nullable
-        WorldPipeNetNode getFromNet(LevelAccessor world, BlockPos pos, IPipeStructure structure);
+        WorldPipeNetNode getFromNet(ServerLevel world, BlockPos pos, IPipeStructure structure);
 
         void mutateData(NetLogicData data, IPipeStructure structure);
 
-        void removeFromNet(LevelAccessor world, BlockPos pos, IPipeStructure structure);
+        void removeFromNet(ServerLevel world, BlockPos pos, IPipeStructure structure);
 
         boolean generatesStructure(IPipeStructure structure);
 

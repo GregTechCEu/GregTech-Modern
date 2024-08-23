@@ -32,7 +32,7 @@ public final class FluidTestObject implements IPredicateTestObject, Predicate<Fl
     }
 
     @Contract("_ -> new")
-    public @NotNull FluidStack recombine(int amount) {
+    public @NotNull FluidStack recombine(long amount) {
         return FluidStack.create(fluid, amount, tag);
     }
 

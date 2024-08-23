@@ -19,21 +19,21 @@ public class PropertyFluidFilter implements IPropertyFluidFilter {
     @Getter
     private final int maxFluidTemperature;
     @Getter
-    private final boolean gasProof;
+    private final int minFluidTemperature;
     @Getter
-    private final boolean cryoProof;
+    private final boolean gasProof;
     @Getter
     private final boolean plasmaProof;
 
     public PropertyFluidFilter(int maxFluidTemperature,
+                               int minFluidTemperature,
                                boolean gasProof,
                                boolean acidProof,
-                               boolean cryoProof,
                                boolean plasmaProof) {
         this.maxFluidTemperature = maxFluidTemperature;
+        this.minFluidTemperature = minFluidTemperature;
         this.gasProof = gasProof;
         if (acidProof) setCanContain(FluidAttributes.ACID, true);
-        this.cryoProof = cryoProof;
         this.plasmaProof = plasmaProof;
     }
 
@@ -65,8 +65,8 @@ public class PropertyFluidFilter implements IPropertyFluidFilter {
     public String toString() {
         return "SimplePropertyFluidFilter{" +
                 "maxFluidTemperature=" + maxFluidTemperature +
+                "minFluidTemperature=" + minFluidTemperature +
                 ", gasProof=" + gasProof +
-                ", cryoProof=" + cryoProof +
                 ", plasmaProof=" + plasmaProof +
                 ", containmentPredicate=" + containmentPredicate +
                 '}';

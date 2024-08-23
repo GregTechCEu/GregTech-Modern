@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -56,6 +55,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialFluidProperties;
 import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -687,8 +687,8 @@ public class GTMachines {
 
             var item = stack.getItem();
             if (item instanceof DrumMachineItem drumItem && material != null) {
-                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
+                if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
+                    MaterialFluidProperties pipeprops = material.getProperty(PropertyKey.PIPENET_PROPERTIES).getProperty(MaterialFluidProperties.KEY);
                     pipeprops.appendTooltips(list, true, true);
                 }
             }

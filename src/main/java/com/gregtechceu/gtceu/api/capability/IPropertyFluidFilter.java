@@ -26,7 +26,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     @Override
     default boolean test(@NotNull FluidStack stack) {
         Fluid fluid = stack.getFluid();
-        if (FluidHelper.getTemperature(stack) < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
+        if (FluidHelper.getTemperature(stack) < getMinFluidTemperature()) return false;
 
         if (fluid instanceof IAttributedFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
@@ -85,15 +85,17 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      */
     default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
         if (GTUtil.isShiftDown()) {
-            if (showTemperatureInfo)
+            if (showTemperatureInfo) {
                 tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
                         FormattingUtil.formatNumbers(getMaxFluidTemperature())));
+                tooltip.add(Component.translatable("gtceu.fluid_pipe.min_temperature",
+                        FormattingUtil.formatNumbers(getMinFluidTemperature())));
+            }
             if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
-            if (isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
             getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
-        } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
+        } else if (isGasProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
             if (showToolsInfo) {
                 tooltip.add(Component.translatable("gtceu.tooltip.tool_fluid_hold_shift"));
             } else {
@@ -112,17 +114,23 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
      *
-     * @return whether this filter allows gases
+     * @return the minimum allowed temperature for a fluid
      */
-    boolean isGasProof();
+    int getMinFluidTemperature();
 
     /**
-     * @return whether this filter allows cryogenic fluids
+     * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
+     *
+     * @return whether this filter allows gases
      */
-    boolean isCryoProof();
+    default boolean isGasProof() {
+        return canContain(FluidState.GAS);
+    }
 
     /**
      * @return whether this filter allows plasmas
      */
-    boolean isPlasmaProof();
+    default boolean isPlasmaProof() {
+        return canContain(FluidState.PLASMA);
+    }
 }

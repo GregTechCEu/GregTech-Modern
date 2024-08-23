@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -10,15 +11,26 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
+import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.traverse.SimpleTileRoundRobinData;
+import com.gregtechceu.gtceu.api.graphnet.predicate.test.FluidTestObject;
+import com.gregtechceu.gtceu.api.graphnet.traverse.TraverseHelpers;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
-
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidEQTraverseData;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidRRTraverseData;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidTraverseData;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.IFluidTraverseGuideProvider;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -26,29 +38,34 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
-import lombok.Getter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.BiConsumer;
+import java.util.function.LongUnaryOperator;
 
 /**
  * @author KilaBash
@@ -79,6 +96,11 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Persisted
     @DescSynced
     @Getter
+    @Setter
+    protected DistributionMode distributionMode = DistributionMode.INSERT_FIRST;
+    @Persisted
+    @DescSynced
+    @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
     @Persisted
     @DescSynced
@@ -96,6 +118,10 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Long> transferRateWidget;
+
+    protected final Object2ObjectLinkedOpenHashMap<Object, SimpleTileRoundRobinData<IFluidHandler>> roundRobinCache = new Object2ObjectLinkedOpenHashMap<>();
+
+    protected @Nullable CoverRenderer rendererInverted;
 
     /*
      * Transfer rate variables are treated as liters/millibuckets per tick.
@@ -140,8 +166,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     @Override
-    public boolean canAttach() {
-        return getOwnFluidTransfer() != null;
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
+        return coverable.getCapability(ForgeCapabilities.FLUID_HANDLER, side).isPresent();
     }
 
     public void setIo(IO io) {
@@ -174,6 +200,28 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         subscriptionHandler.updateSubscription();
+    }
+
+    @Override
+    public @NotNull CoverRenderer getRenderer() {
+        if (io == IO.OUT) {
+            if (renderer == null) renderer = buildRenderer();
+            return renderer;
+        } else {
+            if (rendererInverted == null) rendererInverted = buildRendererInverted();
+            return rendererInverted;
+        }
+    }
+
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_pump"),
+                GTCEu.id("block/cover/overlay_pump_emissive")).build();
+    }
+
+    protected CoverRenderer buildRendererInverted() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_pump_inverted"),
+                GTCEu.id("block/cover/overlay_pump_inverted_emissive")).build();
     }
 
     @Override
@@ -218,76 +266,172 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
-        if (timer % 5 != 0)
-            return;
-
-        if (milliBucketsLeftToTransferLastSecond > 0) {
-            long platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond * MILLIBUCKET_SIZE);
-            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid / MILLIBUCKET_SIZE;
+        if (isWorkingEnabled && getFluidsLeftToTransfer() > 0) {
+            BlockEntity tileEntity = coverHolder.getNeighbor(attachedSide);
+            IFluidHandler fluidHandlerCap = tileEntity == null ? null : tileEntity
+                    .getCapability(ForgeCapabilities.FLUID_HANDLER, attachedSide.getOpposite()).resolve().orElse(null);
+            IFluidHandler myFluidHandlerCap = coverHolder.getCapability(
+                    ForgeCapabilities.FLUID_HANDLER,
+                    attachedSide).resolve().orElse(null);
+            if (myFluidHandlerCap != null && fluidHandlerCap != null) {
+                IFluidTransfer myFluidHandler = FluidTransferHelperImpl.toFluidTransfer(myFluidHandlerCap);
+                IFluidTransfer fluidHandler = FluidTransferHelperImpl.toFluidTransfer(fluidHandlerCap);
+                if (io == IO.OUT) {
+                    performTransferOnUpdate(myFluidHandler, fluidHandler);
+                } else {
+                    performTransferOnUpdate(fluidHandler, myFluidHandler);
+                }
+            }
         }
-
         if (timer % 20 == 0) {
-            this.milliBucketsLeftToTransferLastSecond = currentMilliBucketsPerTick * 20;
+            refreshBuffer(maxMilliBucketsPerTick);
         }
 
         subscriptionHandler.updateSubscription();
     }
 
-    private long doTransferFluids(long platformTransferLimit) {
-        var adjacentFluidTransfer = getAdjacentFluidTransfer();
-        var ownFluidTransfer = getOwnFluidTransfer();
+    public long getFluidsLeftToTransfer() {
+        return milliBucketsLeftToTransferLastSecond;
+    }
 
-        if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
-            return switch (io) {
-                case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
-                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
-                default -> 0L;
-            };
+    public void reportFluidsTransfer(long transferred) {
+        milliBucketsLeftToTransferLastSecond -= transferred;
+    }
+
+    protected void refreshBuffer(long transferRate) {
+        this.milliBucketsLeftToTransferLastSecond = transferRate;
+    }
+
+    protected void performTransferOnUpdate(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler) {
+        reportFluidsTransfer(performTransfer(sourceHandler, destHandler, false, i -> 0,
+                i -> getFluidsLeftToTransfer(), null));
+    }
+
+    /**
+     * Performs transfer
+     *
+     * @param sourceHandler  the handler to pull from
+     * @param destHandler    the handler to push to
+     * @param byFilterSlot   whether to perform the transfer by filter slot.
+     * @param minTransfer    the minimum allowed transfer amount, when given a filter slot. If no filter exists or not
+     *                       transferring by slot, a filter slot of -1 will be passed in.
+     * @param maxTransfer    the maximum allowed transfer amount, when given a filter slot. If no filter exists or not
+     *                       transferring by slot, a filter slot of -1 will be passed in.
+     * @param transferReport where transfer is reported; a is the filter slot, b is the amount of transfer.
+     *                       Each filter slot will report its transfer before the next slot is calculated.
+     * @return how much was transferred in total.
+     */
+    protected long performTransfer(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler,
+                                  boolean byFilterSlot, @NotNull LongUnaryOperator minTransfer,
+                                  @NotNull LongUnaryOperator maxTransfer, @Nullable BiConsumer<Integer, Long> transferReport) {
+        FluidFilter filter = this.filterHandler.getFilter();
+        byFilterSlot = byFilterSlot && filter != FluidFilter.EMPTY; // can't be by filter slot if there is no filter
+        Object2LongOpenHashMap<FluidTestObject> contained = new Object2LongOpenHashMap<>();
+        for (int i = 0; i < sourceHandler.getTanks(); ++i) {
+            FluidStack contents = sourceHandler.getFluidInTank(i);
+            if (!contents.isEmpty()) contained.merge(new FluidTestObject(contents), contents.getAmount(), Long::sum);
+        }
+        var iter = contained.object2LongEntrySet().fastIterator();
+        long totalTransfer = 0;
+        while (iter.hasNext()) {
+            var content = iter.next();
+            FluidStack contents = content.getKey().recombine(content.getLongValue());
+            MatchResult match = null;
+            if (filter == FluidFilter.EMPTY || (match = filter.match(contents)).isMatched()) {
+                int filterSlot = -1;
+                if (byFilterSlot) {
+                    assert filter != FluidFilter.EMPTY; // we know it is not null, because if it were byFilterSlot would be false.
+                    filterSlot = match.getFilterIndex();
+                }
+                long min = minTransfer.applyAsLong(filterSlot);
+                long max = maxTransfer.applyAsLong(filterSlot);
+                if (max < min || max <= 0) continue;
+
+                if (contents.getAmount() < min) continue;
+                long transfer = Math.min(contents.getAmount(), max);
+                FluidStack extracted = sourceHandler.drain(content.getKey().recombine(transfer), false);
+                if (extracted == null || extracted.getAmount() < min) continue;
+                transfer = insertToHandler(destHandler, content.getKey(), extracted.getAmount(), true);
+                if (transfer <= 0 || transfer < min) continue;
+                extracted = sourceHandler.drain(content.getKey().recombine(transfer), true);
+                if (extracted == null) continue;
+                transfer = insertToHandler(destHandler, content.getKey(), extracted.getAmount(), false);
+                if (transferReport != null) transferReport.accept(filterSlot, transfer);
+                totalTransfer += transfer;
+            }
+        }
+        return totalTransfer;
+    }
+
+
+    protected long insertToHandler(@NotNull IFluidTransfer destHandler, FluidTestObject testObject, long count,
+                                  boolean simulate) {
+        if (!(destHandler instanceof IFluidTraverseGuideProvider provider)) {
+            return simpleInsert(destHandler, testObject, count, simulate);
+        }
+        switch (distributionMode) {
+            case INSERT_FIRST -> {
+                var guide = provider.getGuide(this::getTD, testObject, count, simulate);
+                if (guide == null) return 0;
+                int consumed = (int) TraverseHelpers.traverseFlood(guide.getData(), guide.getPaths(), guide.getFlow());
+                guide.reportConsumedFlow(consumed);
+                return consumed;
+            }
+            case ROUND_ROBIN_GLOBAL -> {
+                var guide = provider.getGuide(this::getEQTD, testObject, count, simulate);
+                if (guide == null) return 0;
+                int consumed = (int) TraverseHelpers.traverseEqualDistribution(guide.getData(),
+                        guide.getPathsSupplier(), guide.getFlow(), true);
+                guide.reportConsumedFlow(consumed);
+                return consumed;
+            }
+            case ROUND_ROBIN_PRIO -> {
+                var guide = provider
+                        .getGuide(
+                                (net, testObject1, simulator, queryTick, sourcePos, inputFacing) -> getRRTD(net,
+                                        testObject1, simulator, queryTick, sourcePos, inputFacing, simulate),
+                                testObject, count, simulate);
+                if (guide == null) return 0;
+                int consumed = (int) TraverseHelpers.traverseRoundRobin(guide.getData(), guide.getPaths(),
+                        guide.getFlow(), true);
+                guide.reportConsumedFlow(consumed);
+                return consumed;
+            }
         }
         return 0;
     }
 
-    protected long doTransferFluidsInternal(IFluidTransfer source, IFluidTransfer destination,
-                                            long platformTransferLimit) {
-        return transferAny(source, destination, platformTransferLimit);
+    @Contract("_, _, _, _, _, _ -> new")
+    protected @NotNull FluidTraverseData getTD(IGraphNet net, FluidTestObject testObject, SimulatorKey simulator,
+                                               long queryTick, BlockPos sourcePos, Direction inputFacing) {
+        return new FluidTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing);
     }
 
-    protected long transferAny(IFluidTransfer source, IFluidTransfer destination, long platformTransferLimit) {
-        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit,
-                filterHandler.getFilter());
+    @Contract("_, _, _, _, _, _ -> new")
+    protected @NotNull FluidEQTraverseData getEQTD(IGraphNet net, FluidTestObject testObject, SimulatorKey simulator,
+                                                   long queryTick, BlockPos sourcePos, Direction inputFacing) {
+        return new FluidEQTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing);
     }
 
-    protected enum TransferDirection {
-        INSERT,
-        EXTRACT
+    @Contract("_, _, _, _, _, _, _ -> new")
+    protected @NotNull FluidRRTraverseData getRRTD(IGraphNet net, FluidTestObject testObject, SimulatorKey simulator,
+                                                   long queryTick, BlockPos sourcePos, Direction inputFacing,
+                                                   boolean simulate) {
+        return new FluidRRTraverseData(net, testObject, simulator, queryTick, sourcePos, inputFacing,
+                getRoundRobinCache(simulate));
     }
 
-    protected Map<FluidStack, Long> enumerateDistinctFluids(IFluidTransfer fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(
-                FluidStackHashStrategy.comparingAllButAmount());
-
-        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
-            if (!canTransfer(fluidTransfer, direction, tank))
-                continue;
-
-            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
-            if (fluidStack.isEmpty())
-                continue;
-
-            summedFluids.putIfAbsent(fluidStack, 0L);
-            summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
-                return totalAmount + stack.getAmount();
-            });
-        }
-
-        return summedFluids;
+    protected Object2ObjectLinkedOpenHashMap<Object, SimpleTileRoundRobinData<IFluidHandler>> getRoundRobinCache(boolean simulate) {
+        return simulate ? roundRobinCache.clone() : roundRobinCache;
     }
 
-    private static boolean canTransfer(IFluidTransfer fluidTransfer, TransferDirection direction, int tank) {
-        return switch (direction) {
-            case INSERT -> fluidTransfer.supportsFill(tank);
-            case EXTRACT -> fluidTransfer.supportsDrain(tank);
-        };
+    protected long simpleInsert(@NotNull IFluidTransfer destHandler, FluidTestObject testObject, long count,
+                               boolean simulate) {
+        return count - destHandler.fill(testObject.recombine(count), !simulate);
+    }
+
+    protected boolean checkInputFluid(FluidStack fluidStack) {
+        return filterHandler.test(fluidStack);
     }
 
     //////////////////////////////////////

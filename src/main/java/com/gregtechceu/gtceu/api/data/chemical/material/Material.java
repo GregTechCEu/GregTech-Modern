@@ -11,12 +11,16 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialFluidProperties;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialItemProperties;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -1165,38 +1169,59 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder cableProperties(long voltage, int amperage, int loss) {
-            cableProperties((int) voltage, amperage, loss, false);
+        private PipeNetProperties getOrCreatePipeNetProperties() {
+            if (properties.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
+                return properties.getProperty(PropertyKey.PIPENET_PROPERTIES);
+            } else {
+                PipeNetProperties prop = new PipeNetProperties();
+                properties.setProperty(PropertyKey.PIPENET_PROPERTIES, prop);
+                return prop;
+            }
+        }
+
+        public Builder cableProperties(long voltage, long amperage, long loss) {
+            getOrCreatePipeNetProperties().setProperty(MaterialEnergyProperties.create(voltage, amperage, loss));
             return this;
         }
 
-        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
-            properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE, new WireProperties((int) voltage, amperage, loss, isSuperCon));
+        public Builder cableProperties(long voltage, long amperage, long loss, int superconductorTemperature) {
+            getOrCreatePipeNetProperties()
+                    .setProperty(MaterialEnergyProperties.create(voltage, amperage, loss, superconductorTemperature));
             return this;
         }
 
-        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
-                                       int criticalTemperature) {
-            properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE,
-                    new WireProperties((int) voltage, amperage, loss, isSuperCon, criticalTemperature));
+        public Builder fluidPipeProperties(int maxTemp, long throughput, boolean gasProof) {
+            getOrCreatePipeNetProperties().setProperty(
+                    MaterialFluidProperties.createMax(throughput, maxTemp).setContain(FluidState.GAS, gasProof));
             return this;
         }
 
-        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
-            return fluidPipeProperties(maxTemp, throughput, gasProof, false, false, false);
+        public Builder fluidPipeProperties(int maxTemp, long throughput, boolean gasProof, float priority) {
+            getOrCreatePipeNetProperties().setProperty(MaterialFluidProperties.createMax(throughput, maxTemp, priority)
+                    .setContain(FluidState.GAS, gasProof));
+            return this;
         }
 
         public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
-                                           boolean cryoProof, boolean plasmaProof) {
-            properties.setProperty(PropertyKey.FLUID_PIPE,
-                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
+                                           boolean plasmaProof) {
+            getOrCreatePipeNetProperties().setProperty(
+                    MaterialFluidProperties.createMax(throughput, maxTemp).setContain(FluidState.GAS, gasProof)
+                            .setContain(FluidAttributes.ACID, acidProof).setContain(FluidState.PLASMA, plasmaProof));
+            return this;
+        }
+
+        public Builder fluidPipeProperties(int maxTemp, int minTemp, int throughput, boolean gasProof,
+                                           boolean acidProof,
+                                           boolean plasmaProof) {
+            getOrCreatePipeNetProperties().setProperty(new MaterialFluidProperties(throughput, maxTemp, minTemp)
+                    .setContain(FluidState.GAS, gasProof).setContain(FluidAttributes.ACID, acidProof)
+                    .setContain(FluidState.PLASMA, plasmaProof));
             return this;
         }
 
         public Builder itemPipeProperties(int priority, float stacksPerSec) {
-            properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperties(priority, stacksPerSec));
+            getOrCreatePipeNetProperties()
+                    .setProperty(new MaterialItemProperties((long) (stacksPerSec * 16), priority));
             return this;
         }
 
