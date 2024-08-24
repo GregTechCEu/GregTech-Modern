@@ -35,11 +35,13 @@ public class WorldItemNet extends WorldPipeNet implements FlowWorldPipeNetPath.P
     private static final String DATA_ID = "gtceu_world_item_net";
 
     public static WorldItemNet getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> {
-            WorldItemNet net = new WorldItemNet();
-            net.load(tag);
-            return net;
+        WorldItemNet net = serverLevel.getDataStorage().computeIfAbsent(tag -> {
+            WorldItemNet netx = new WorldItemNet();
+            netx.load(tag);
+            return netx;
         }, WorldItemNet::new, DATA_ID);
+        net.setLevel(serverLevel);
+        return net;
     }
 
     public WorldItemNet() {

@@ -23,11 +23,13 @@ public class WorldLaserNet extends WorldPipeNet implements BasicWorldPipeNetPath
     private static final String DATA_ID = "gtceu_world_laser_net";
 
     public static WorldLaserNet getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> {
-            WorldLaserNet net = new WorldLaserNet();
-            net.load(tag);
-            return net;
+        WorldLaserNet net = serverLevel.getDataStorage().computeIfAbsent(tag -> {
+            WorldLaserNet netx = new WorldLaserNet();
+            netx.load(tag);
+            return netx;
         }, WorldLaserNet::new, DATA_ID);
+        net.setLevel(serverLevel);
+        return net;
     }
 
     public WorldLaserNet() {

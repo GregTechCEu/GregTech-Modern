@@ -22,11 +22,6 @@ public class DuctPipeBlock extends PipeBlock {
     }
 
     @Override
-    public boolean allowsBlocking() {
-        return false;
-    }
-
-    @Override
     protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
         return DuctNetHandler.INSTANCE;
     }

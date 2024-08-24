@@ -34,11 +34,13 @@ public class WorldFluidNet extends WorldPipeNet implements FlowWorldPipeNetPath.
     private static final String DATA_ID = "gtceu_world_fluid_net";
 
     public static WorldFluidNet getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> {
-            WorldFluidNet net = new WorldFluidNet();
-            net.load(tag);
-            return net;
+        WorldFluidNet net = serverLevel.getDataStorage().computeIfAbsent(tag -> {
+            WorldFluidNet netx = new WorldFluidNet();
+            netx.load(tag);
+            return netx;
         }, WorldFluidNet::new, DATA_ID);
+        net.setLevel(serverLevel);
+        return net;
     }
 
     public WorldFluidNet() {

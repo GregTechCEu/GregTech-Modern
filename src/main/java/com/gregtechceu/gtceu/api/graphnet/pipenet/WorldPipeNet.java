@@ -174,13 +174,6 @@ public abstract class WorldPipeNet extends WorldNet {
                 });
     }
 
-    public static String getDataID(final String baseID, final Level world) {
-        if (world == null || world.isClientSide)
-            throw new RuntimeException("WorldPipeNets should only be created on the server!");
-        ResourceKey<Level> dimension = world.dimension();
-        return baseID + '/' + dimension.location();
-    }
-
     /**
      * Get the network ID for this net. Must be unique and deterministic between server and client, but can change
      * between mod versions.

@@ -6,10 +6,13 @@ import com.gregtechceu.gtceu.api.graphnet.NetNode;
 import com.gregtechceu.gtceu.api.graphnet.alg.AlgorithmBuilder;
 import com.gregtechceu.gtceu.api.graphnet.edge.NetEdge;
 import com.gregtechceu.gtceu.api.graphnet.graph.INetGraph;
+import com.gregtechceu.gtceu.api.graphnet.graph.NetDirectedGraph;
+import com.gregtechceu.gtceu.api.graphnet.graph.NetUndirectedGraph;
 import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,22 +28,21 @@ public abstract class ServerNet extends SavedData implements IGraphNet {
 
     protected final GraphNetBacker backer;
 
-    /*
-     * public static ServerNet get(String name, ServerLevel level, Function<IGraphNet, INetGraph> graphBuilder,
-     * AlgorithmBuilder... algorithmBuilder) {
-     * return level.getDataStorage().computeIfAbsent(tag -> new ServerNet(tag, graphBuilder, algorithmBuilder), () ->
-     * new ServerNet(graphBuilder, algorithmBuilder), name);
-     * }
-     * 
-     * public static ServerNet get(String name, ServerLevel level, boolean directed, AlgorithmBuilder...
-     * algorithmBuilders) {
-     * return get(name, level, directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
-     * algorithmBuilders);
-     * }
-     */
+//    USERS: ADD THESE METHODS TO YOUR CLASS
+//    public static ServerNet get(ServerLevel level, Function<IGraphNet, INetGraph> graphBuilder,
+//                                AlgorithmBuilder... algorithmBuilder) {
+//        return level.getDataStorage().computeIfAbsent(tag -> new ServerNet(tag, graphBuilder, algorithmBuilder), () ->
+//                new ServerNet(graphBuilder, algorithmBuilder), name);
+//    }
+//
+//    public static ServerNet get(ServerLevel level, boolean directed, AlgorithmBuilder...
+//            algorithmBuilders) {
+//        return get(level, directed ? NetDirectedGraph.standardBuilder() : NetUndirectedGraph.standardBuilder(),
+//                algorithmBuilders);
+//    }
 
-    public ServerNet(Function<IGraphNet, INetGraph> graphBuilder,
-                     AlgorithmBuilder... algorithmBuilders) {
+
+    public ServerNet(Function<IGraphNet, INetGraph> graphBuilder, AlgorithmBuilder... algorithmBuilders) {
         this.backer = new GraphNetBacker(this, graphBuilder.apply(this), algorithmBuilders);
     }
 

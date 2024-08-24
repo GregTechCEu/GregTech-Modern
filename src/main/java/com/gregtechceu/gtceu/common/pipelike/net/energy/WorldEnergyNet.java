@@ -26,11 +26,13 @@ public final class WorldEnergyNet extends WorldPipeNet implements FlowWorldPipeN
     private static final String DATA_ID = "gtceu_world_energy_net";
 
     public static WorldEnergyNet getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> {
-            WorldEnergyNet net = new WorldEnergyNet();
-            net.load(tag);
-            return net;
+        WorldEnergyNet net = serverLevel.getDataStorage().computeIfAbsent(tag -> {
+            WorldEnergyNet netx = new WorldEnergyNet();
+            netx.load(tag);
+            return netx;
         }, WorldEnergyNet::new, DATA_ID);
+        net.setLevel(serverLevel);
+        return net;
     }
 
     public WorldEnergyNet() {

@@ -23,11 +23,13 @@ public class WorldOpticalNet extends WorldPipeNet implements BasicWorldPipeNetPa
     private static final String DATA_ID = "gtceu_world_optical_net";
 
     public static WorldOpticalNet getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> {
-            WorldOpticalNet net = new WorldOpticalNet();
-            net.load(tag);
-            return net;
+        WorldOpticalNet net = serverLevel.getDataStorage().computeIfAbsent(tag -> {
+            WorldOpticalNet netx = new WorldOpticalNet();
+            netx.load(tag);
+            return netx;
         }, WorldOpticalNet::new, DATA_ID);
+        net.setLevel(serverLevel);
+        return net;
     }
 
     public WorldOpticalNet() {
