@@ -169,7 +169,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
 
     @Override
     public TextureAtlasSprite getParticleIcon(@NotNull ModelData data) {
-        return getParticleTexture(data.get(COLOR_PROPERTY), data.get(MATERIAL_PROPERTY));
+        return getParticleTexture(safeInt(data.get(COLOR_PROPERTY)), data.get(MATERIAL_PROPERTY));
     }
 
     public abstract SpriteInformation getParticleSprite(@Nullable Material material);
@@ -204,7 +204,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
 
     @Override
     public @NotNull ItemOverrides getOverrides() {
-        return FakeItemOverrideList.INSTANCE;
+        return FakeItemOverrides.INSTANCE;
     }
 
     @Override
@@ -213,9 +213,9 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
         return ChunkRenderTypeSet.of(RenderType.cutoutMipped());
     }
 
-    protected static class FakeItemOverrideList extends ItemOverrides {
+    protected static class FakeItemOverrides extends ItemOverrides {
 
-        public static final FakeItemOverrideList INSTANCE = new FakeItemOverrideList();
+        public static final FakeItemOverrides INSTANCE = new FakeItemOverrides();
 
         @Nullable
         @Override

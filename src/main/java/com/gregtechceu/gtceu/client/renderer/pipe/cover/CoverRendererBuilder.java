@@ -23,7 +23,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -88,7 +87,7 @@ public class CoverRendererBuilder {
         int start = quads.size();
         Pair<Vector3f, Vector3f> box = PLATE_BOXES.get(facing);
         for (Direction dir : Direction.values()) {
-            quads.add(QuadHelper.buildQuad(dir, box, mapper, sprite, DefaultVertexFormat.BLOCK));
+            quads.add(QuadHelper.buildQuad(dir, box, mapper, sprite));
         }
         return new SubListAddress(start, quads.size());
     }

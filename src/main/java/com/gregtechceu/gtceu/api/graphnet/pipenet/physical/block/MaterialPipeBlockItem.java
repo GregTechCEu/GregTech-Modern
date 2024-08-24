@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class MaterialPipeBlockItem extends PipeBlockItem {
 
-    public MaterialPipeBlockItem(MaterialPipeBlock block, Item.Properties properties) {
+    public MaterialPipeBlockItem(PipeMaterialBlock block, Item.Properties properties) {
         super(block, properties);
     }
 
     @Override
-    public @NotNull MaterialPipeBlock getBlock() {
-        return (MaterialPipeBlock) super.getBlock();
+    public @NotNull PipeMaterialBlock getBlock() {
+        return (PipeMaterialBlock) super.getBlock();
     }
 
     @Override
@@ -24,5 +24,19 @@ public class MaterialPipeBlockItem extends PipeBlockItem {
         Material material = getBlock().material;
         return material == null ? Component.literal("unnamed") :
                 getBlock().getStructure().getPrefix().getLocalizedName(material);
+    }
+
+    @Override
+    public Component getDescription() {
+        Material material = getBlock().material;
+        return material == null ? Component.literal("unnamed") :
+                getBlock().getStructure().getPrefix().getLocalizedName(material);
+    }
+
+    @Override
+    public String getDescriptionId() {
+        Material material = getBlock().material;
+        return material == null ? "unnamed" :
+                getBlock().getStructure().getPrefix().getUnlocalizedName(material);
     }
 }

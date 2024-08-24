@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,62 +12,35 @@ import net.minecraftforge.client.model.IQuadTransformer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import net.minecraftforge.client.model.QuadTransformers;
 
 import static net.minecraftforge.client.model.IQuadTransformer.*;
 
+@MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class RecolorableBakedQuad extends BakedQuad {
 
     private final SpriteInformation spriteInformation;
-    private final VertexFormat format;
 
     public RecolorableBakedQuad(int[] unpackedData, int tint, Direction orientation,
-                                SpriteInformation texture, boolean applyDiffuseLighting, boolean hasAmbientOcclusion,
-                                VertexFormat format) {
+                                SpriteInformation texture, boolean applyDiffuseLighting, boolean hasAmbientOcclusion) {
         super(unpackedData, tint, orientation, texture.sprite(), applyDiffuseLighting, hasAmbientOcclusion);
         this.spriteInformation = texture;
-        this.format = format;
     }
 
-    public RecolorableBakedQuad withColor(ColorData data) {
+    public BakedQuad withColor(ColorData data) {
         if (!spriteInformation.colorable()) return this;
         int argb = data.colorsARGB()[spriteInformation.colorID()];
-
-        int[] newData = new int[format.getIntegerSize() * 4];
-
-        float a = ((argb >> 24) & 0xFF) / 255f; // alpha
-        float r = ((argb >> 16) & 0xFF) / 255f; // red
-        float g = ((argb >> 8) & 0xFF) / 255f; // green
-        float b = ((argb) & 0xFF) / 255f; // blue
-        float[] array = new float[] { r, g, b, a };
-        for (int v = 0; v < 4; v++) {
-            for (int e = 0; e < format.getElements().size(); e++) {
-                if (format.getElements().get(e).getUsage() == VertexFormatElement.Usage.COLOR) {
-                    newData[v * format.getIntegerSize() + IQuadTransformer.COLOR] = argb;
-                } else {
-                    int offset = findOffset(format.getElements().get(e));
-                    newData[v * format.getIntegerSize() + offset] = this.vertices[v * format.getIntegerSize() + offset];
-                }
-            }
-        }
-        return new RecolorableBakedQuad(newData, this.tintIndex, this.direction, this.spriteInformation,
-                this.isShade(), this.hasAmbientOcclusion(), this.format);
+        return QuadTransformers.applyingColor(argb).process(this);
     }
 
-    public static RecolorableBakedQuad.Builder of(BakedQuad quad, VertexFormat format) {
-        Builder builder = new Builder(format);
-        QuadHelper.putBakedQuad(builder, quad);
-        return builder;
-    }
-
+    @Accessors(chain = true)
     public static class Builder implements VertexConsumer {
 
-        @Getter
-        private final VertexFormat vertexFormat;
         private final int[] unpackedData;
         @Setter
         private int quadTint = -1;
@@ -82,16 +56,16 @@ public class RecolorableBakedQuad extends BakedQuad {
         private int vertices = 0;
         private int elements = 0;
         private boolean full = false;
+        @Setter
         private boolean contractUVs = false;
 
-        public Builder(VertexFormat vertexFormat) {
-            this.vertexFormat = vertexFormat;
-            unpackedData = new int[vertexFormat.getIntegerSize() * 4];
+        public Builder() {
+            unpackedData = new int[STRIDE * 4];
         }
 
         @Override
         public VertexConsumer vertex(double x, double y, double z) {
-            int offset = vertices * vertexFormat.getIntegerSize() + POSITION;
+            int offset = vertices * STRIDE + POSITION;
             unpackedData[offset] = Float.floatToRawIntBits((float) x);
             unpackedData[offset + 1] = Float.floatToRawIntBits((float) y);
             unpackedData[offset + 2] = Float.floatToRawIntBits((float) z);
@@ -101,7 +75,7 @@ public class RecolorableBakedQuad extends BakedQuad {
 
         @Override
         public VertexConsumer color(int red, int green, int blue, int alpha) {
-            int offset = vertices * vertexFormat.getIntegerSize() + COLOR;
+            int offset = vertices * STRIDE + COLOR;
             unpackedData[offset] = ((alpha & 0xFF) << 24) |
                     ((blue & 0xFF) << 16) |
                     ((green & 0xFF) << 8) |
@@ -112,7 +86,7 @@ public class RecolorableBakedQuad extends BakedQuad {
 
         @Override
         public VertexConsumer uv(float u, float v) {
-            int offset = vertices * vertexFormat.getIntegerSize() + UV0;
+            int offset = vertices * STRIDE + UV0;
             unpackedData[offset] = Float.floatToRawIntBits(u);
             unpackedData[offset + 1] = Float.floatToRawIntBits(v);
             addElement();
@@ -122,7 +96,7 @@ public class RecolorableBakedQuad extends BakedQuad {
         @Override
         public VertexConsumer overlayCoords(int u, int v) {
             if (UV1 >= 0) {
-                int offset = vertices * vertexFormat.getIntegerSize() + UV1;
+                int offset = vertices * STRIDE + UV1;
                 unpackedData[offset] = (u & 0xFFFF) | ((v & 0xFFFF) << 16);
                 addElement();
             }
@@ -131,7 +105,7 @@ public class RecolorableBakedQuad extends BakedQuad {
 
         @Override
         public VertexConsumer uv2(int u, int v) {
-            int offset = vertices * vertexFormat.getIntegerSize() + UV2;
+            int offset = vertices * STRIDE + UV2;
             unpackedData[offset] = (u & 0xFFFF) | ((v & 0xFFFF) << 16);
             addElement();
             return this;
@@ -139,7 +113,7 @@ public class RecolorableBakedQuad extends BakedQuad {
 
         @Override
         public VertexConsumer normal(float x, float y, float z) {
-            int offset = vertices * vertexFormat.getIntegerSize() + NORMAL;
+            int offset = vertices * STRIDE + NORMAL;
             unpackedData[offset] = ((int) (x * 127.0f) & 0xFF) |
                     (((int) (y * 127.0f) & 0xFF) << 8) |
                     (((int) (z * 127.0f) & 0xFF) << 16);
@@ -159,9 +133,9 @@ public class RecolorableBakedQuad extends BakedQuad {
         public void put(int element, int... data) {
             for (int i = 0; i < 4; i++) {
                 if (i < data.length) {
-                    unpackedData[vertices * vertexFormat.getIntegerSize() + element] = data[i];
+                    unpackedData[vertices * STRIDE + element] = data[i];
                 } else {
-                    unpackedData[vertices * vertexFormat.getIntegerSize() + element] = 0;
+                    unpackedData[vertices * STRIDE + element] = 0;
                 }
             }
             addElement();
@@ -169,7 +143,7 @@ public class RecolorableBakedQuad extends BakedQuad {
 
         private void addElement() {
             elements++;
-            if (elements == vertexFormat.getElements().size()) {
+            if (elements == DefaultVertexFormat.BLOCK.getElements().size()) {
                 vertices++;
                 elements = 0;
             }
@@ -190,26 +164,15 @@ public class RecolorableBakedQuad extends BakedQuad {
                 float tY = texture.sprite().contents().height() / (texture.sprite().getV1() - texture.sprite().getV0());
                 float tS = Math.max(tX, tY);
                 float ep = 1f / (tS * 0x100);
-                int uve = 0;
-                while (uve < vertexFormat.getElements().size()) {
-                    VertexFormatElement e = vertexFormat.getElements().get(uve);
-                    if (e.getUsage() == VertexFormatElement.Usage.UV && e.getIndex() == 0) {
-                        break;
-                    }
-                    uve++;
-                }
-                if (uve == vertexFormat.getElements().size()) {
-                    throw new IllegalStateException("Can't contract UVs: format doesn't contain UVs");
-                }
                 float[] uvc = new float[4];
                 for (int v = 0; v < 4; v++) {
                     for (int i = 0; i < 4; i++) {
-                        uvc[i] += Float.intBitsToFloat(unpackedData[v * uve + i] / 4);
+                        uvc[i] += Float.intBitsToFloat(unpackedData[v * STRIDE + i] / 4);
                     }
                 }
                 for (int v = 0; v < 4; v++) {
                     for (int i = 0; i < 4; i++) {
-                        float uo = Float.intBitsToFloat(unpackedData[v * uve + i]);
+                        float uo = Float.intBitsToFloat(unpackedData[v * STRIDE + i]);
                         float eps = 1f / 0x100;
                         float un = uo * (1 - eps) + uvc[i] * eps;
                         float ud = uo - un;
@@ -227,12 +190,12 @@ public class RecolorableBakedQuad extends BakedQuad {
                                 un = uo + (ud < 0 ? ep : -ep);
                             }
                         }
-                        unpackedData[v * uve + i] = Float.floatToRawIntBits(un);
+                        unpackedData[v * STRIDE + i] = Float.floatToRawIntBits(un);
                     }
                 }
             }
             return new RecolorableBakedQuad(unpackedData, quadTint, quadOrientation, texture, shade,
-                    hasAmbientOcclusion, vertexFormat);
+                    hasAmbientOcclusion);
         }
     }
 

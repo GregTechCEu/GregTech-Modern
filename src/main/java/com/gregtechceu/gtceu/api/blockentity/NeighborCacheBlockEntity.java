@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
@@ -7,6 +8,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public abstract class NeighborCacheBlockEntity extends SyncedBlockEntity implements INeighborCache,
+public abstract class NeighborCacheBlockEntity extends BaseSyncedBlockEntity implements INeighborCache,
                                                IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
 
     private final BlockEntity[] neighbors = new BlockEntity[6];
@@ -88,7 +90,8 @@ public abstract class NeighborCacheBlockEntity extends SyncedBlockEntity impleme
         return neighbor;
     }
 
-    public void onNeighborChanged(@NotNull Direction facing) {
-        this.neighbors[facing.get3DDataValue()] = this;
+    public void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving) {
+        Direction facing = GTUtil.getFacingToNeighbor(this.getBlockPos(), fromPos);
+        if (facing != null) this.neighbors[facing.get3DDataValue()] = this;
     }
 }

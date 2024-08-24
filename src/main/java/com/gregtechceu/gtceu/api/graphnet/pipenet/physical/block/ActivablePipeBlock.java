@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeActivableBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.ActivablePipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,13 +23,18 @@ public abstract class ActivablePipeBlock extends PipeBlock {
     }
 
     @Override
-    public @Nullable PipeActivableBlockEntity getBlockEntity(@NotNull BlockGetter world, @NotNull BlockPos pos) {
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new ActivablePipeBlockEntity(GTBlockEntities.ACTIVABLE_PIPE.get(), pos, state);
+    }
+
+    @Override
+    public @Nullable ActivablePipeBlockEntity getBlockEntity(@NotNull BlockGetter world, @NotNull BlockPos pos) {
         if (lastTilePos.get().equals(pos)) {
             PipeBlockEntity tile = lastTile.get().get();
-            if (tile != null && !tile.isRemoved()) return (PipeActivableBlockEntity) tile;
+            if (tile != null && !tile.isRemoved()) return (ActivablePipeBlockEntity) tile;
         }
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof PipeActivableBlockEntity pipe) {
+        if (tile instanceof ActivablePipeBlockEntity pipe) {
             lastTilePos.set(pos.immutable());
             lastTile.set(new WeakReference<>(pipe));
             return pipe;

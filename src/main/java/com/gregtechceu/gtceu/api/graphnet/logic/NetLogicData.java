@@ -201,7 +201,6 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
         }
     }
 
-    // @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(getEntries().size());
         for (NetLogicEntry<?, ?> entry : getEntries()) {
@@ -214,7 +213,6 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
         }
     }
 
-    // @Override
     public void decode(FriendlyByteBuf buf) {
         this.logicEntrySet.clear();
         int entryCount = buf.readVarInt();

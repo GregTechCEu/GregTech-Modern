@@ -147,9 +147,9 @@ public class RenderBufferHelper {
         float r = red, g = green, b = blue;
 
         if (shade) {
-            r *= 0.6;
-            g *= 0.6;
-            b *= 0.6;
+            r *= 0.6f;
+            g *= 0.6f;
+            b *= 0.6f;
         }
         buffer.vertex(minX, minY, minZ).color(r, g, b, a).endVertex();
         buffer.vertex(minX, minY, maxZ).color(r, g, b, a).endVertex();

@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -319,7 +320,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     @Override
-    public void onNeighborChanged(@NotNull Direction facing) {}
+    public void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving) {}
 
     @Override
     public void markAsDirty() {

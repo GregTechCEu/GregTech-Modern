@@ -104,6 +104,15 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     public PipeBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
         super(properties);
         this.structure = structure;
+        this.registerDefaultState(this.defaultBlockState()
+                .setValue(NORTH, false)
+                .setValue(EAST, false)
+                .setValue(SOUTH, false)
+                .setValue(WEST, false)
+                .setValue(UP, false)
+                .setValue(DOWN, false)
+                .setValue(FRAMED, false)
+                .setValue(SERVER_TICK, false));
     }
 
     // net logic //
@@ -414,6 +423,22 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     // collision boxes //
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var tile = getBlockEntity(level, pos);
+        if (tile == null) {
+            return super.getCollisionShape(state, level, pos, context);
+        }
+        if (tile.getFrameMaterial() != null) {
+            return MaterialBlock.FRAME_COLLISION_BOX;
+        }
+        List<VoxelShape> shapes = new ArrayList<>();
+        shapes.add(getStructure().getPipeBoxes(tile));
+        tile.getCoverBoxes(shapes::add);
+        return shapes.stream().reduce(Shapes.empty(), Shapes::or);
+    }
+
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
@@ -427,7 +452,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
             return Shapes.block();
         }
         if (tile.getFrameMaterial() != null) {
-            return Shapes.block();
+            return MaterialBlock.FRAME_COLLISION_BOX;
         }
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(getStructure().getPipeBoxes(tile));
@@ -435,13 +460,15 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         return shapes.stream().reduce(Shapes.empty(), Shapes::or);
     }
 
-    public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, Entity entity) {
-        if (entity instanceof Player player) {
-            return hasPipeCollisionChangingItem(world, pos, player.getMainHandItem()) ||
-                    hasPipeCollisionChangingItem(world, pos, player.getOffhandItem()) ||
-                    entity.isShiftKeyDown() && isHoldingPipe(player);
-        }
-        return false;
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, Player player) {
+        return hasPipeCollisionChangingItem(world, pos, player.getMainHandItem()) ||
+                hasPipeCollisionChangingItem(world, pos, player.getOffhandItem()) ||
+                player.isShiftKeyDown() && isHoldingPipe(player);
     }
 
     public boolean isHoldingPipe(Player player) {
@@ -486,6 +513,15 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED, SERVER_TICK);
+    }
+
+    @Override
+    public boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
+        BlockEntity tile = pLevel.getBlockEntity(pPos);
+        if (tile != null) {
+            return tile.triggerEvent(pId, pParam);
+        }
+        return false;
     }
 
     public static BlockState writeConnectionMask(@NotNull BlockState state, byte connectionMask) {
@@ -541,14 +577,16 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         return new PipeBlockEntity(GTBlockEntities.PIPE.get(), pos, state);
     }
 
+    /*
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, level, pos, neighbor);
         Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
         if (facing == null) return;
         PipeBlockEntity tile = getBlockEntity(level, pos);
-        if (tile != null) tile.onNeighborChanged(facing);
+        if (tile != null) tile.onNeighborChanged(level.getBlockState(neighbor).getBlock(), neighbor, false);
     }
+     */
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
@@ -576,10 +614,10 @@ public abstract class PipeBlock extends Block implements EntityBlock {
                                 Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         PipeBlockEntity tile = getBlockEntity(level, pos);
         if (tile != null) {
-            Direction facing = GTUtil.getFacingToNeighbor(pos, neighborPos);
-            if (facing != null) tile.onNeighborChanged(facing);
-            tile.getCoverHolder().notifyBlockUpdate();
+            tile.onNeighborChanged(neighborBlock, neighborPos, movedByPiston);
+            tile.getCoverHolder().updateInputRedstoneSignals();
         }
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
     }
 
     @Override

@@ -25,11 +25,11 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public abstract class MaterialPipeBlock extends PipeBlock {
+public abstract class PipeMaterialBlock extends PipeBlock {
 
     public final Material material;
 
-    public MaterialPipeBlock(BlockBehaviour.Properties properties, IPipeMaterialStructure structure,
+    public PipeMaterialBlock(BlockBehaviour.Properties properties, IPipeMaterialStructure structure,
                              Material material) {
         super(properties, structure);
         this.material = material;
@@ -48,15 +48,11 @@ public abstract class MaterialPipeBlock extends PipeBlock {
 
     @Override
     protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
-        MaterialPipeBlockEntity tile = getBlockEntity(world, pos);
-        if (tile != null) return tile.getMaterial().getProperty(PropertyKey.PIPENET_PROPERTIES);
-        else return GTMaterials.Aluminium.getProperty(PropertyKey.PIPENET_PROPERTIES);
+        return material.getProperty(PropertyKey.PIPENET_PROPERTIES);
     }
 
     @Override
     protected @NotNull IPipeNetNodeHandler getHandler(@NotNull ItemStack stack) {
-        Material material = this.material;
-        if (material == null) material = GTMaterials.Aluminium;
         return material.getProperty(PropertyKey.PIPENET_PROPERTIES);
     }
 

@@ -44,21 +44,22 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
 
     public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(
-            () -> GTCEu.id("block/pipe/pipe_optical_in"),
-            () -> GTCEu.id("block/pipe/pipe_optical_side"),
-            () -> GTCEu.id("block/pipe/pipe_optical_side_overlay"),
-            () -> GTCEu.id("block/pipe/pipe_optical_side_overlay_active"),
+            GTCEu.id("block/pipe/pipe_optical_in"),
+            GTCEu.id("block/pipe/pipe_optical_side"),
+            GTCEu.id("block/pipe/pipe_optical_side_overlay"),
+            GTCEu.id("block/pipe/pipe_optical_side_overlay_active"),
             false, "optical");
-    public static final ActivablePipeModel LASER = new ActivablePipeModel(() -> GTCEu.id("block/pipe/pipe_laser_in"),
-            () -> GTCEu.id("block/pipe/pipe_laser_side"),
-            () -> GTCEu.id("block/pipe/pipe_laser_side_overlay"),
-            () -> GTCEu.id("block/pipe/pipe_laser_side_overlay_emissive"),
+    public static final ActivablePipeModel LASER = new ActivablePipeModel(
+            GTCEu.id("block/pipe/pipe_laser_in"),
+            GTCEu.id("block/pipe/pipe_laser_side"),
+            GTCEu.id("block/pipe/pipe_laser_side_overlay"),
+            GTCEu.id("block/pipe/pipe_laser_side_overlay_emissive"),
             true, "laser");
 
-    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> inTex;
-    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> sideTex;
-    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> overlayTex;
-    private final SupplierMemoizer.MemoizedSupplier<ResourceLocation> overlayActiveTex;
+    private final ResourceLocation inTex;
+    private final ResourceLocation sideTex;
+    private final ResourceLocation overlayTex;
+    private final ResourceLocation overlayActiveTex;
 
     private SpriteInformation inSprite;
     private SpriteInformation sideSprite;
@@ -67,15 +68,16 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     private final boolean emissiveActive;
 
-    public ActivablePipeModel(@NotNull Supplier<ResourceLocation> inTex, @NotNull Supplier<ResourceLocation> sideTex,
-                              @NotNull Supplier<ResourceLocation> overlayTex,
-                              @NotNull Supplier<ResourceLocation> overlayActiveTex, boolean emissiveActive,
+    public ActivablePipeModel(@NotNull ResourceLocation inTex,
+                              @NotNull ResourceLocation sideTex,
+                              @NotNull ResourceLocation overlayTex,
+                              @NotNull ResourceLocation overlayActiveTex, boolean emissiveActive,
                               String variant) {
         super(new ModelResourceLocation(loc, variant));
-        this.inTex = SupplierMemoizer.memoize(inTex);
-        this.sideTex = SupplierMemoizer.memoize(sideTex);
-        this.overlayTex = SupplierMemoizer.memoize(overlayTex);
-        this.overlayActiveTex = SupplierMemoizer.memoize(overlayActiveTex);
+        this.inTex = inTex;
+        this.sideTex = sideTex;
+        this.overlayTex = overlayTex;
+        this.overlayActiveTex = overlayActiveTex;
         this.emissiveActive = emissiveActive;
     }
 
@@ -83,7 +85,6 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     public @NotNull List<BakedQuad> getQuads(ActivableCacheKey key, byte connectionMask, byte closedMask,
                                              byte blockedMask, ColorData data, @Nullable Material frameMaterial,
                                              byte frameMask, byte coverMask) {
-        // don't render the main shape to the bloom layer
         List<BakedQuad> quads = super.getQuads(key, connectionMask, closedMask, blockedMask, data, frameMaterial,
                 frameMask, coverMask);
 
@@ -114,17 +115,17 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     @Override
     protected StructureQuadCache constructForKey(ActivableCacheKey key) {
-        if (inSprite == null && inTex != null) {
-            inSprite = new SpriteInformation(ModelFactory.getBlockSprite(inTex.get()), -1);
+        if (inSprite == null) {
+            inSprite = new SpriteInformation(ModelFactory.getBlockSprite(inTex), -1);
         }
-        if (sideSprite == null && sideTex != null) {
-            sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex.get()), -1);
+        if (sideSprite == null) {
+            sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex), -1);
         }
-        if (overlaySprite == null && overlayTex != null) {
-            overlaySprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayTex.get()), 0);
+        if (overlaySprite == null) {
+            overlaySprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayTex), 0);
         }
-        if (overlayActiveSprite == null && overlayActiveTex != null) {
-            overlayActiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayActiveTex.get()), 0);
+        if (overlayActiveSprite == null) {
+            overlayActiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayActiveTex), 0);
         }
 
         return ActivableSQC.create(PipeQuadHelper.create(key.getThickness()), inSprite, sideSprite,

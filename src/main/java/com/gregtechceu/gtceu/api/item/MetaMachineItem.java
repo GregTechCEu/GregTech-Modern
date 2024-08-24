@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.nio.channels.Pipe;
 
 /**
  * @author KilaBash
@@ -59,7 +60,7 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
             if (block instanceof PipeBlock pipeBlock) {
                 PipeBlockEntity pipeTile = pipeBlock.getBlockEntity(level, possiblePipe);
                 if (pipeTile != null && pipeTile.canConnectTo(side.getOpposite())) {
-                    pipeTile.setConnected(side, true);
+                    PipeBlock.connectTile(pipeTile, null, side);
                 }
             }
         }

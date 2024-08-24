@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
@@ -136,7 +135,7 @@ public final class PipeQuadHelper {
     }
 
     public RecolorableBakedQuad visitQuad(Direction normal, Pair<Vector3f, Vector3f> box, UVMapper uv) {
-        return QuadHelper.buildQuad(normal, box, uv, targetSprite, DefaultVertexFormat.BLOCK);
+        return QuadHelper.buildQuad(normal, box, uv, targetSprite);
     }
 
     public static List<RecolorableBakedQuad> createFrame(TextureAtlasSprite sprite) {

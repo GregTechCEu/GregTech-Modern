@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.net;
 
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeActivableBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.ActivablePipeBlockEntity;
 import com.gregtechceu.gtceu.utils.TaskScheduler;
 import com.gregtechceu.gtceu.utils.function.Task;
 
@@ -103,7 +103,7 @@ public class SlowActiveWalker implements Task {
     }
 
     protected void activate(@NotNull WorldPipeNetNode node, boolean active) {
-        if (node.getBlockEntity() instanceof PipeActivableBlockEntity activable) {
+        if (node.getBlockEntity() instanceof ActivablePipeBlockEntity activable) {
             activable.setActive(active);
         }
     }

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.pipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.MaterialPipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.BlockableSQC;
@@ -43,13 +43,13 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
     public static final PipeModel[] RESTRICTIVE_INSTANCES = new PipeModel[INSTANCES.length];
 
     static {
-        model(0, wood -> GTCEu.id("blocks/pipe/pipe_tiny_in"));
-        model(1, wood -> wood ? GTCEu.id("blocks/pipe/pipe_small_in_wood") : GTCEu.id("blocks/pipe/pipe_small_in"));
-        model(2, wood -> wood ? GTCEu.id("blocks/pipe/pipe_normal_in_wood") : GTCEu.id("blocks/pipe/pipe_normal_in"));
-        model(3, wood -> wood ? GTCEu.id("blocks/pipe/pipe_large_in_wood") : GTCEu.id("blocks/pipe/pipe_large_in"));
-        model(4, wood -> GTCEu.id("blocks/pipe/pipe_huge_in"));
-        model(5, wood -> GTCEu.id("blocks/pipe/pipe_quadruple_in"));
-        model(6, wood -> GTCEu.id("blocks/pipe/pipe_nonuple_in"));
+        model(0, wood -> GTCEu.id("block/pipe/pipe_tiny_in"));
+        model(1, wood -> wood ? GTCEu.id("block/pipe/pipe_small_in_wood")  : GTCEu.id("block/pipe/pipe_small_in"));
+        model(2, wood -> wood ? GTCEu.id("block/pipe/pipe_normal_in_wood") : GTCEu.id("block/pipe/pipe_normal_in"));
+        model(3, wood -> wood ? GTCEu.id("block/pipe/pipe_large_in_wood")  : GTCEu.id("block/pipe/pipe_large_in"));
+        model(4, wood -> GTCEu.id("block/pipe/pipe_huge_in"));
+        model(5, wood -> GTCEu.id("block/pipe/pipe_quadruple_in"));
+        model(6, wood -> GTCEu.id("block/pipe/pipe_nonuple_in"));
     }
 
     private static void model(int i, PipeSpriteWoodClarifier clarifier) {
@@ -79,8 +79,8 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
 
     public PipeModel(@NotNull PipeSpriteWoodClarifier inTex, @NotNull PipeSpriteWoodClarifier sideTex,
                      boolean restrictive, String variant) {
-        this(inTex, sideTex, restrictive ? wood -> GTCEu.id("blocks/pipe/pipe_restrictive") : null,
-                wood -> GTCEu.id("blocks/pipe/pipe_blocked"), variant);
+        this(inTex, sideTex, restrictive ? wood -> GTCEu.id("block/pipe/pipe_restrictive") : null,
+                wood -> GTCEu.id("block/pipe/pipe_blocked"), variant);
     }
 
     public PipeModel(@NotNull PipeSpriteWoodClarifier inTex, boolean restrictive, String variant) {
@@ -96,10 +96,6 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
     @Override
     public TextureAtlasSprite getParticleIcon(@NotNull ModelData data) {
         return getParticleSprite(null).sprite();
-    }
-
-    public @NotNull TextureAtlasSprite getParticleTexture(Material material) {
-        return sideSprite.sprite();
     }
 
     @Override
@@ -139,7 +135,7 @@ public class PipeModel extends AbstractPipeModel<WoodCacheKey> {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
         Material mater = null;
-        boolean wood = block instanceof MaterialPipeBlock mat && (mater = mat.material) != null &&
+        boolean wood = block instanceof PipeMaterialBlock mat && (mater = mat.material) != null &&
                 mater.hasProperty(PropertyKey.WOOD);
         return new PipeItemModel<>(this, new WoodCacheKey(block.getStructure().getRenderThickness(), wood),
                 new ColorData(mater != null ? GTUtil.convertRGBtoARGB(mater.getMaterialRGB()) :

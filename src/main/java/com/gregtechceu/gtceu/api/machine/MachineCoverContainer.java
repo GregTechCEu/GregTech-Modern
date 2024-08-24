@@ -22,6 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -82,8 +84,12 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     @Override
     public void onLoad() {
         ICoverable.super.onLoad();
-        for (Direction side : GTUtil.DIRECTIONS) {
-            this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(), side);
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, () -> {
+                for (Direction side : GTUtil.DIRECTIONS) {
+                    this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(), side);
+                }
+            }));
         }
     }
 

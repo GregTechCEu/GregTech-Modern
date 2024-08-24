@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
-import com.gregtechceu.gtceu.common.cover.filter.BaseFilterContainer;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -62,23 +60,6 @@ public final class FilterPredicate extends EdgePredicate<FilterPredicate, Compou
         Object test = object.recombine();
         if (sourceFilter != null && !sourceFilter.testGeneric(test)) return false;
         return targetFilter == null || targetFilter.testGeneric(test);
-    }
-
-    private static class GenericFilterContainer extends BaseFilterContainer {
-
-        protected GenericFilterContainer() {
-            super(() -> {});
-        }
-
-        @Override
-        protected boolean isItemValid(ItemStack stack) {
-            return true;
-        }
-
-        @Override
-        protected String getFilterName() {
-            return "";
-        }
     }
 
     @Override

@@ -78,7 +78,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,7 +122,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     private int paintingColor = -1;
 
     @Getter
-    @Setter
     @DescSynced
     private @Nullable Material frameMaterial;
 
@@ -133,11 +131,12 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Persisted
     @DescSynced
     @Getter
-    protected final PipeCoverHolder covers = new PipeCoverHolder(this);
+    protected final PipeCoverHolder coverHolder = new PipeCoverHolder(this);
     private final Object2ObjectOpenHashMap<Capability<?>, IPipeCapabilityObject> capabilities = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectOpenCustomHashMap<WorldPipeNetNode, PipeCapabilityWrapper> netCapabilities = WorldPipeNet
             .getSensitiveHashMap();
 
+    @Getter
     @Nullable
     private TemperatureLogic temperatureLogic;
     @OnlyIn(Dist.CLIENT)
@@ -167,16 +166,20 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     }
 
     @Override
-    public void clearRemoved() {
-        super.clearRemoved();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::scheduleRenderUpdate));
-        }
+    public void scheduleRenderUpdate() {
+        super.scheduleRenderUpdate();
+        requestModelDataUpdate();
     }
 
     @Override
-    public void scheduleRenderUpdate() {
-        super.scheduleRenderUpdate();
+    public boolean triggerEvent(int id, int type) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -218,12 +221,14 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         } else {
             this.renderMask &= ~(1 << facing.ordinal());
         }
+        getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FACINGS.get(facing), true));
     }
 
     public void setDisconnected(Direction facing) {
         this.connectionMask &= ~(1 << facing.ordinal());
         this.renderMask &= ~(1 << facing.ordinal());
         updateActiveStatus(facing, false);
+        getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FACINGS.get(facing), false));
     }
 
     public boolean isConnected(Direction side) {
@@ -242,14 +247,26 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     public void setBlocked(Direction facing) {
         this.blockedMask |= (byte) (1 << facing.ordinal());
+        scheduleRenderUpdate();
     }
 
     public void setUnblocked(Direction facing) {
         this.blockedMask &= (byte) ~(1 << facing.ordinal());
+        scheduleRenderUpdate();
     }
 
     public boolean isBlocked(Direction facing) {
         return (this.blockedMask & 1 << facing.ordinal()) > 0;
+    }
+
+    public void setFrameMaterial(@Nullable Material frameMaterial) {
+        this.frameMaterial = frameMaterial;
+        if (frameMaterial != null) {
+            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FRAMED, true));
+        } else {
+            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FRAMED, false));
+        }
+        scheduleRenderUpdate();
     }
 
     // paint //
@@ -263,6 +280,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             paintingColor |= 0xFF000000;
         }
         this.paintingColor = paintingColor;
+        scheduleRenderUpdate();
     }
 
     public boolean isPainted() {
@@ -324,14 +342,18 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public void onLoad() {
         super.onLoad();
-        initialize();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::initialize));
+        }
     }
 
     // activeness //
 
     @Override
-    public void onNeighborChanged(@NotNull Direction facing) {
-        super.onNeighborChanged(facing);
+    public void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving) {
+        super.onNeighborChanged(fromBlock, fromPos, isMoving);
+        Direction facing = GTUtil.getFacingToNeighbor(this.getBlockPos(), fromPos);
+        coverHolder.onNeighborChanged(fromBlock, fromPos, isMoving);
         updateActiveStatus(facing, false);
     }
 
@@ -365,11 +387,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public PipeCapabilityWrapper getWrapperForNode(WorldPipeNetNode node) {
         return netCapabilities.get(node);
-    }
-
-    @Override
-    public @NotNull PipeCoverHolder getCoverHolder() {
-        return covers;
     }
 
     /**
@@ -436,7 +453,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (capability == GTCapability.CAPABILITY_COVERABLE) {
-            return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCovers));
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverHolder));
         }
         LazyOptional<T> pipeCapability;
         IPipeCapabilityObject object = capabilities.get(capability);
@@ -522,8 +539,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {
         buf.writeVarInt(netLogicDatas.size());
-        for (var entry : netLogicDatas.entrySet()) {
-            buf.writeVarInt(entry.getKey());
+        for (var entry : netLogicDatas.int2ObjectEntrySet()) {
+            buf.writeVarInt(entry.getIntKey());
             entry.getValue().encode(buf);
         }
     }
@@ -570,7 +587,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                             NetLogicEntry<?, ?> entry = data.getLogicEntryNullable(identifier);
                             if (entry != null) entry.decode(buf, false);
                             data.markLogicEntryAsUpdated(entry, false);
-                        } else return;
+                        } else {
+                            // FIXME fix the issue that causes 4 bytes from the server to not be read correctly.
+                            buf.readerIndex(buf.writerIndex());
+                            return;
+                        }
                     }
                     if (identifier.equals(TemperatureLogic.INSTANCE.getSerializedName())) {
                         TemperatureLogic tempLogic = this.netLogicDatas.get(networkID)
@@ -580,6 +601,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 }
             }
         }
+        // FIXME fix the issue that causes 4 bytes from the server to not be read correctly.
+        buf.readerIndex(buf.writerIndex());
     }
 
     // particle //
@@ -597,10 +620,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         } else {
             overheatParticle.setTemperatureLogic(logic);
         }
-    }
-
-    public @Nullable TemperatureLogic getTemperatureLogic() {
-        return temperatureLogic;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -642,20 +661,17 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
 
-    @SuppressWarnings("ConstantConditions") // yes this CAN actually be null
-    public void markDirty() {
-        if (getLevel() != null && getBlockPos() != null) {
-            getLevel().setBlocksDirty(getBlockPos(), this.getBlockState(), this.getBlockState());
-        }
-    }
-
     @Override
+    @SuppressWarnings("ConstantConditions") // yes this CAN actually be null
     public void markAsDirty() {
-        markDirty();
+        if (hasLevel()) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_KNOWN_SHAPE);
+        }
         // this most notably gets called when the covers of a pipe get updated, aka the edge predicates need syncing.
         for (var node : this.netCapabilities.keySet()) {
             node.getNet().updatePredication(node, this);
         }
+        this.setChanged();
     }
 
     public static @Nullable PipeBlockEntity getTileNoLoading(BlockPos pos, ResourceKey<Level> dimension) {
@@ -737,13 +753,14 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(getBlockType().getToolClass()) || toolTypes.contains(GTToolType.SCREWDRIVER))
             return true;
-        for (CoverBehavior cover : covers.getCovers()) {
+        for (CoverBehavior cover : coverHolder.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
         return false;
     }
 
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(getBlockType().getToolClass())) {
             if (player.isShiftKeyDown() && this.getBlockType().allowsBlocking()) {
                 return getStructure().getPipeTexture(isBlocked(side));
@@ -751,7 +768,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 return getStructure().getPipeTexture(isConnected(side));
             }
         }
-        var cover = covers.getCoverAtSide(side);
+        var cover = coverHolder.getCoverAtSide(side);
         if (cover != null) {
             return cover.sideTips(player, pos, state, toolTypes, side);
         }
@@ -769,7 +786,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
                 context.getClickedPos(), false);
         Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        CoverBehavior coverBehavior = gridSide == null ? null : covers.getCoverAtSide(gridSide);
+        CoverBehavior coverBehavior = gridSide == null ? null : coverHolder.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
@@ -785,16 +802,16 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             if (playerIn.isShiftKeyDown() && this.getBlockType().allowsBlocking()) {
                 boolean isBlocked = this.isBlocked(gridSide);
                 if (isBlocked) {
-                    this.setUnblocked(gridSide);
+                    PipeBlock.unblockTile(this, this.getPipeNeighbor(gridSide, true), gridSide);
                 } else {
-                    this.setBlocked(gridSide);
+                    PipeBlock.blockTile(this, this.getPipeNeighbor(gridSide, true), gridSide);
                 }
             } else {
                 boolean isOpen = this.isConnected(gridSide);
                 if (isOpen) {
-                    this.setDisconnected(gridSide);
+                    PipeBlock.disconnectTile(this, this.getPipeNeighbor(gridSide, true), gridSide);
                 } else {
-                    this.setConnected(gridSide, true);
+                    PipeBlock.connectTile(this, this.getPipeNeighbor(gridSide, true), gridSide);
                 }
             }
             playerIn.swing(hand);
@@ -802,7 +819,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (isServerSide()) {
-                    covers.removeCover(gridSide, playerIn);
+                    coverHolder.removeCover(gridSide, playerIn);
                     playerIn.swing(hand);
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
@@ -826,7 +843,9 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     }
 
     @Override
-    public void onChanged() {}
+    public void onChanged() {
+        this.markAsDirty();
+    }
 
     @Override
     public IManagedStorage getRootStorage() {

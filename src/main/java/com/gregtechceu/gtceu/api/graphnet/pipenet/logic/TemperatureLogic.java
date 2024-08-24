@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, CompoundTag> {
 
@@ -304,10 +305,7 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
             buf.writeVarInt(this.thermalMass);
             this.temperatureLossFunction.encode(buf);
             buf.writeVarInt(this.functionPriority);
-            // laughs in java 9
-            // noinspection ReplaceNullCheck
-            if (this.partialBurnTemperature == null) buf.writeVarInt(-1);
-            else buf.writeVarInt(this.partialBurnTemperature);
+            buf.writeVarInt(Objects.requireNonNullElse(this.partialBurnTemperature, -1));
         }
     }
 

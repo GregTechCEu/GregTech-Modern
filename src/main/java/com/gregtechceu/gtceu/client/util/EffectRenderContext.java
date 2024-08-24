@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +26,7 @@ public final class EffectRenderContext {
     }
 
     @Getter
-    private final Frustum camera = new Frustum(Minecraft.getInstance().levelRenderer.getFrustum());
+    private Frustum frustum = new Frustum(Minecraft.getInstance().levelRenderer.getFrustum());
 
     @Nullable
     private Entity renderViewEntity;
@@ -52,25 +53,22 @@ public final class EffectRenderContext {
     private float rotationXZ;
 
     @NotNull
-    public EffectRenderContext update(@NotNull Entity renderViewEntity, float partialTicks) {
+    public EffectRenderContext update(@NotNull Entity renderViewEntity, Camera camera, Frustum frustum, float partialTicks) {
         this.renderViewEntity = renderViewEntity;
         this.partialTicks = partialTicks;
 
-        this.cameraX = renderViewEntity.xOld +
-                (renderViewEntity.getX() - renderViewEntity.xOld) * partialTicks;
-        this.cameraY = renderViewEntity.yOld +
-                (renderViewEntity.getY() - renderViewEntity.yOld) * partialTicks;
-        this.cameraZ = renderViewEntity.zOld +
-                (renderViewEntity.getZ() - renderViewEntity.zOld) * partialTicks;
+        this.cameraX = camera.getPosition().x;
+        this.cameraY = camera.getPosition().y;
+        this.cameraZ = camera.getPosition().z;
         this.cameraViewDir = renderViewEntity.getViewVector(partialTicks);
 
-        this.rotationY = Minecraft.getInstance().gameRenderer.getMainCamera().getYRot();
-        this.rotationX = Minecraft.getInstance().gameRenderer.getMainCamera().getXRot();
+        this.rotationY = camera.getYRot();
+        this.rotationX = camera.getXRot();
         // this.rotationYZ = ActiveRenderInfo.getRotationYZ();
         // this.rotationXY = ActiveRenderInfo.getRotationXY();
         // this.rotationXZ = ActiveRenderInfo.getRotationXZ();
 
-        this.camera.prepare(this.cameraX, this.cameraY, this.cameraZ);
+        this.frustum = frustum;
 
         return this;
     }

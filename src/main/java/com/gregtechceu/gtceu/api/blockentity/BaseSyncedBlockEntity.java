@@ -26,11 +26,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public abstract class SyncedBlockEntity extends BlockEntity implements ISyncedBlockEntity, INeighborCache {
+public abstract class BaseSyncedBlockEntity extends BlockEntity implements ISyncedBlockEntity, INeighborCache {
 
     private final PacketDataList updates = new PacketDataList();
 
-    public SyncedBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public BaseSyncedBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 
@@ -53,7 +53,7 @@ public abstract class SyncedBlockEntity extends BlockEntity implements ISyncedBl
      *
      * @param syncedBlockEntity other synced tile entity
      */
-    public void addPacketsFrom(SyncedBlockEntity syncedBlockEntity) {
+    public void addPacketsFrom(BaseSyncedBlockEntity syncedBlockEntity) {
         if (this == syncedBlockEntity || syncedBlockEntity.updates.isEmpty()) return;
         boolean wasEmpty = this.updates.isEmpty();
         this.updates.addAll(syncedBlockEntity.updates);
@@ -87,7 +87,7 @@ public abstract class SyncedBlockEntity extends BlockEntity implements ISyncedBl
                 receiveCustomData(Integer.parseInt(discriminatorKey), new FriendlyByteBuf(backedBuffer));
                 if (backedBuffer.readableBytes() != 0) {
                     GTCEu.LOGGER.error(
-                            "Class {} failed to finish reading receiveCustomData with discriminator {} and {} bytes remaining",
+                            "Block entity {} failed to finish reading receiveCustomData with discriminator {} and {} bytes remaining",
                             BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(this.getType()), discriminatorKey,
                             backedBuffer.readableBytes());
                 }
@@ -97,7 +97,7 @@ public abstract class SyncedBlockEntity extends BlockEntity implements ISyncedBl
 
     @Override
     public final @NotNull CompoundTag getUpdateTag() {
-        CompoundTag updateTag = super.getUpdateTag();
+        CompoundTag updateTag = super.saveWithoutMetadata();
         ByteBuf backedBuffer = Unpooled.buffer();
         writeInitialSyncData(new FriendlyByteBuf(backedBuffer));
         byte[] updateData = Arrays.copyOfRange(backedBuffer.array(), 0, backedBuffer.writerIndex());
@@ -112,7 +112,7 @@ public abstract class SyncedBlockEntity extends BlockEntity implements ISyncedBl
         ByteBuf backedBuffer = Unpooled.copiedBuffer(updateData);
         receiveInitialSyncData(new FriendlyByteBuf(backedBuffer));
         if (backedBuffer.readableBytes() != 0) {
-            GTCEu.LOGGER.error("Class {} failed to finish reading initialSyncData with {} bytes remaining",
+            GTCEu.LOGGER.error("Block entity {} failed to finish reading initialSyncData with {} bytes remaining",
                     BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(this.getType()), backedBuffer.readableBytes());
         }
     }

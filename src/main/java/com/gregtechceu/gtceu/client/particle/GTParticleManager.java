@@ -4,9 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +34,7 @@ import java.util.*;
  * Singleton class responsible for managing, updating and rendering {@link GTParticle} instances.
  */
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GTCEu.MOD_ID)
 public class GTParticleManager {
 
     public static final GTParticleManager INSTANCE = new GTParticleManager();
@@ -83,7 +86,7 @@ public class GTParticleManager {
                     try {
                         particle.onUpdate();
                     } catch (RuntimeException exception) {
-                        GTCEu.LOGGER.error("particle update error: {}", particle.toString(), exception);
+                        GTCEu.LOGGER.error("particle update error: {}", particle, exception);
                         particle.setExpired();
                     }
                     if (particle.isAlive()) continue;
@@ -118,10 +121,10 @@ public class GTParticleManager {
         depthDisabledParticles.clear();
     }
 
-    public void renderParticles(@NotNull Entity renderViewEntity, float partialTicks) {
+    public void renderParticles(@NotNull PoseStack poseStack, @NotNull Entity renderViewEntity, Camera camera, Frustum frustum, float partialTicks) {
         if (depthEnabledParticles.isEmpty() && depthDisabledParticles.isEmpty()) return;
 
-        EffectRenderContext instance = EffectRenderContext.getInstance().update(renderViewEntity, partialTicks);
+        EffectRenderContext instance = EffectRenderContext.getInstance().update(renderViewEntity, camera, frustum, partialTicks);
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -129,17 +132,17 @@ public class GTParticleManager {
         if (!depthDisabledParticles.isEmpty()) {
             RenderSystem.depthMask(false);
 
-            renderGlParticlesInLayer(depthDisabledParticles, instance);
+            renderGlParticlesInLayer(poseStack, depthDisabledParticles, instance);
 
             RenderSystem.depthMask(true);
         }
 
-        renderGlParticlesInLayer(depthEnabledParticles, instance);
+        renderGlParticlesInLayer(poseStack, depthEnabledParticles, instance);
 
         RenderSystem.disableBlend();
     }
 
-    private static void renderGlParticlesInLayer(@NotNull Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
+    private static void renderGlParticlesInLayer(@NotNull PoseStack poseStack, @NotNull Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
                                                  @NotNull EffectRenderContext context) {
         for (var e : renderQueue.entrySet()) {
             @Nullable
@@ -158,7 +161,7 @@ public class GTParticleManager {
                                 handler.preDraw(buffer);
                             }
                         }
-                        particle.renderParticle(buffer, context);
+                        particle.renderParticle(poseStack, buffer, context);
                     } catch (Throwable throwable) {
                         GTCEu.LOGGER.error("particle render error: {}", particle, throwable);
                         particle.setExpired();
@@ -192,7 +195,7 @@ public class GTParticleManager {
     public static void renderWorld(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             Entity entity = Minecraft.getInstance().getCameraEntity();
-            INSTANCE.renderParticles(entity == null ? Minecraft.getInstance().player : entity, event.getPartialTick());
+            INSTANCE.renderParticles(event.getPoseStack(), entity == null ? Minecraft.getInstance().player : entity, event.getCamera(), event.getFrustum(), event.getPartialTick());
         }
     }
 

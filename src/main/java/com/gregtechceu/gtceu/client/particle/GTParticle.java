@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.particle;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,6 +39,7 @@ public abstract class GTParticle {
     @Getter
     private double squaredRenderRange = -1;
 
+    @Getter
     private boolean expired;
 
     protected GTParticle(double posX, double posY, double posZ) {
@@ -56,10 +58,6 @@ public abstract class GTParticle {
         return !expired;
     }
 
-    public final boolean isExpired() {
-        return expired;
-    }
-
     public final void setExpired() {
         if (this.expired) return;
         this.expired = true;
@@ -69,8 +67,7 @@ public abstract class GTParticle {
     /**
      * @return {@code true} to render the particle with
      *         {@link com.mojang.blaze3d.systems.RenderSystem#depthMask(boolean) depth mask} feature disabled; in
-     *         other
-     *         words, render the particle without modifying depth buffer.
+     *         other words, render the particle without modifying depth buffer.
      */
     public boolean shouldDisableDepth() {
         return false;
@@ -104,10 +101,11 @@ public abstract class GTParticle {
      * called between a {@link IRenderSetup#preDraw(BufferBuilder)} call and a
      * {@link IRenderSetup#postDraw(BufferBuilder)} call.
      *
-     * @param buffer  buffer builder
-     * @param context render context
+     * @param poseStack
+     * @param buffer    buffer builder
+     * @param context   render context
      */
-    public void renderParticle(@NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {}
+    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {}
 
     /**
      * @return Render setup for this particle, if exists

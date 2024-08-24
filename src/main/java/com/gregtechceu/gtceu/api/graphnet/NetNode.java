@@ -34,9 +34,15 @@ public abstract class NetNode implements ITagSerializable<CompoundTag>, IContent
     @ApiStatus.Internal
     public GraphVertex wrapper;
 
+    /**
+     * Determines whether the node should be treated as a valid destination of pathing algorithms
+     */
+    @Getter
     private boolean isActive = false;
 
+    @Getter
     private final @NotNull IGraphNet net;
+    @Getter
     private final @NotNull NetLogicData data;
     private @Nullable NetGroup group = null;
 
@@ -46,17 +52,6 @@ public abstract class NetNode implements ITagSerializable<CompoundTag>, IContent
     public NetNode(@NotNull IGraphNet net) {
         this.net = net;
         this.data = net.getDefaultNodeData();
-    }
-
-    public @NotNull IGraphNet getNet() {
-        return net;
-    }
-
-    /**
-     * Determines whether the node should be treated as a valid destination of pathing algorithms
-     */
-    public boolean isActive() {
-        return isActive;
     }
 
     /**
@@ -72,10 +67,6 @@ public abstract class NetNode implements ITagSerializable<CompoundTag>, IContent
                 onContentsChanged.run();
             }
         }
-    }
-
-    public @NotNull NetLogicData getData() {
-        return data;
     }
 
     public boolean traverse(long queryTick, boolean simulate) {

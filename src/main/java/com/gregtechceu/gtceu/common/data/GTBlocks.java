@@ -137,27 +137,26 @@ public class GTBlocks {
     public static Table<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> MATERIAL_PIPE_BLOCKS;
     public static Map<DuctStructure, BlockEntry<DuctPipeBlock>> DUCT_PIPE_BLOCKS;
     public static final BlockEntry<LaserPipeBlock> LASER_PIPE = REGISTRATE
-            .block("normal_laser_pipe", (p) -> new LaserPipeBlock(p, LaserStructure.NORMAL))
+            .block("laser_pipe", (p) -> new LaserPipeBlock(p, LaserStructure.NORMAL))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .addLayer(() -> RenderType::cutoutMipped)
-            .item(com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem::new)
+            .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
     public static final BlockEntry<OpticalPipeBlock> OPTICAL_PIPE = REGISTRATE
-            .block("normal_optical_pipe", (p) -> new OpticalPipeBlock(p, OpticalStructure.INSTANCE))
-            .lang("Optical Fiber Cable")
+            .block("optical_fiber_cable", (p) -> new OpticalPipeBlock(p, OpticalStructure.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .addLayer(() -> RenderType::cutoutMipped)
-            .item(com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem::new)
+            .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
@@ -324,7 +323,7 @@ public class GTBlocks {
     private static void registerCableBlock(Material material, CableStructure structure, GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s".formatted(material.getName(), structure.name()),
-                        p -> new com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock(p, structure, material))
+                        p -> new CableBlock(p, structure, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
                 .transform(unificationBlock(structure.prefix(), material))
@@ -332,9 +331,8 @@ public class GTBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .item(PipeBlockItem::new)
+                .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                // .color(() -> ::tintColor)
                 .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();

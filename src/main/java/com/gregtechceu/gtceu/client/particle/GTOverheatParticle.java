@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.BloomUtils;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
@@ -12,16 +13,19 @@ import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -146,6 +150,7 @@ public class GTOverheatParticle extends GTParticle {
     }
 
     private final PipeBlockEntity tileEntity;
+    @Setter
     private @NotNull TemperatureLogic temperatureLogic;
 
     protected VoxelShape pipeBoxes;
@@ -176,10 +181,6 @@ public class GTOverheatParticle extends GTParticle {
                 .map(Shapes::create)
                 .reduce(Shapes.empty(), Shapes::or)
                 .optimize();
-    }
-
-    public void setTemperatureLogic(@NotNull TemperatureLogic logic) {
-        this.temperatureLogic = logic;
     }
 
     @Override
@@ -232,23 +233,53 @@ public class GTOverheatParticle extends GTParticle {
                 '}';
     }
 
+    @Nullable
     @Override
-    public void renderParticle(@NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
+    public IRenderSetup getRenderSetup() {
+        return SETUP;
+    }
+
+    @Override
+    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
+        if (insulated) {
+            return;
+        }
+
         if (GTCEu.isShimmerLoaded()) {
-            BloomUtils.entityBloom(source -> renderBloomEffect(source, context));
+            BloomUtils.entityBloom(source -> renderBloomEffect(poseStack, source.getBuffer(GTRenderTypes.getBloomQuad()), context));
+        } else {
+            renderBloomEffect(poseStack, buffer, context);
         }
     }
 
-    public void renderBloomEffect(@NotNull MultiBufferSource source, @NotNull EffectRenderContext context) {
+    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, @NotNull EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
         float blue = (color & 0xFF) / 255f;
 
-        VertexConsumer buffer = source.getBuffer(GTRenderTypes.getBloomQuad());
-
-        // buffer.setTranslation(posX - context.cameraX(), posY - context.cameraY(), posZ - context.cameraZ());
+        poseStack.pushPose();
+        poseStack.translate(posX - context.cameraX(), posY - context.cameraY(), posZ - context.cameraZ());
         for (AABB cuboid : pipeBoxes.toAabbs()) {
+            cuboid.inflate(0.01);
             RenderBufferHelper.renderCubeFace(buffer, cuboid, red, green, blue, alpha, true);
         }
+        poseStack.popPose();
     }
+    private static final IRenderSetup SETUP = new IRenderSetup() {
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public void preDraw(@NotNull BufferBuilder buffer) {
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            RenderSystem.enableBlend();
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        }
+
+        @Override
+        @OnlyIn(Dist.CLIENT)
+        public void postDraw(@NotNull BufferBuilder buffer) {
+            Tesselator.getInstance().end();
+            RenderSystem.disableBlend();
+        }
+    };
 }

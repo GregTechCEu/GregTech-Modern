@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.MaterialPipeBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.ActivablePipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.*;
 
@@ -23,12 +24,15 @@ public class GTBlockEntities {
 
     public static final BlockEntityEntry<PipeBlockEntity> PIPE = REGISTRATE
             .blockEntity("pipe", PipeBlockEntity::new)
-            .validBlocks(Stream.concat(GTBlocks.DUCT_PIPE_BLOCKS.values().stream(),
-                    Stream.concat(Stream.of(GTBlocks.OPTICAL_PIPE), Stream.of(GTBlocks.LASER_PIPE)))
-                    .toArray(NonNullSupplier[]::new))
+            .validBlocks(GTBlocks.DUCT_PIPE_BLOCKS.values().toArray(NonNullSupplier[]::new))
             .register();
 
-    public static final BlockEntityEntry<PipeBlockEntity> MATERIAL_PIPE = REGISTRATE
+    public static final BlockEntityEntry<ActivablePipeBlockEntity> ACTIVABLE_PIPE = REGISTRATE
+            .blockEntity("activable_pipe", ActivablePipeBlockEntity::new)
+            .validBlocks(Stream.of(GTBlocks.OPTICAL_PIPE, GTBlocks.LASER_PIPE).toArray(NonNullSupplier[]::new))
+            .register();
+
+    public static final BlockEntityEntry<MaterialPipeBlockEntity> MATERIAL_PIPE = REGISTRATE
             .blockEntity("material_pipe", MaterialPipeBlockEntity::new)
             .validBlocks(Stream.concat(GTBlocks.CABLE_BLOCKS.values().stream(),
                     GTBlocks.MATERIAL_PIPE_BLOCKS.values().stream())

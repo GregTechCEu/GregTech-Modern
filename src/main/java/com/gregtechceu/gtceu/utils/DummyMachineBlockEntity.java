@@ -11,13 +11,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     }
 
     @Override
-    public void onNeighborChanged(@NotNull Direction facing) {}
+    public void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving) {}
 
     @Override
     public Level getLevel() {

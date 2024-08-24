@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,9 @@ public interface INeighborCache extends IHasWorldObjectAndCoords {
     /**
      * Called when an adjacent neighboring block has changed at a side in some way
      *
-     * @param facing the side at which the neighbor has changed
+     * @param fromBlock
+     * @param fromPos   the side at which the neighbor has changed
+     * @param isMoving
      */
-    void onNeighborChanged(@NotNull Direction facing);
+    void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving);
 }

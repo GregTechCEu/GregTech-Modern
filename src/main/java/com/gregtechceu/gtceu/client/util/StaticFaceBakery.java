@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
+import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
+import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.FaceInfo;
@@ -19,6 +21,7 @@ import net.minecraftforge.client.model.ForgeFaceData;
 import net.minecraftforge.client.model.QuadTransformers;
 
 import com.mojang.math.Transformation;
+import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
@@ -93,7 +96,7 @@ public class StaticFaceBakery {
                                      TextureAtlasSprite sprite,
                                      Direction facing,
                                      ModelState transform,
-                                     @javax.annotation.Nullable BlockElementRotation partRotation,
+                                     @Nullable BlockElementRotation partRotation,
                                      boolean shade,
                                      int emissivity) {
         BlockFaceUV blockfaceuv = face.uv;
@@ -121,6 +124,51 @@ public class StaticFaceBakery {
         ForgeHooksClient.fillNormal(aint, direction);
         ForgeFaceData data = face.getFaceData();
         BakedQuad quad = new BakedQuad(aint, face.tintIndex, direction, sprite, shade, data.ambientOcclusion());
+        if (!ForgeFaceData.DEFAULT.equals(data)) {
+            QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
+            QuadTransformers.applyingColor(data.color()).processInPlace(quad);
+        }
+        com.lowdragmc.lowdraglib.client.bakedpipeline.QuadTransformers.settingEmissivity(emissivity)
+                .processInPlace(quad);
+
+        return quad;
+    }
+
+    public static RecolorableBakedQuad bakeRecolorableQuad(
+            Vector3f posFrom,
+            Vector3f posTo,
+            BlockElementFace face,
+            SpriteInformation sprite,
+            Direction facing,
+            ModelState transform,
+            @Nullable BlockElementRotation partRotation,
+            boolean shade,
+            int emissivity) {
+        BlockFaceUV blockfaceuv = face.uv;
+        if (transform.isUvLocked()) {
+            blockfaceuv = recomputeUVs(face.uv, facing, transform.getRotation());
+        }
+
+        float[] afloat = new float[blockfaceuv.uvs.length];
+        System.arraycopy(blockfaceuv.uvs, 0, afloat, 0, afloat.length);
+        float f = sprite.sprite().uvShrinkRatio();
+        float f1 = (blockfaceuv.uvs[0] + blockfaceuv.uvs[0] + blockfaceuv.uvs[2] + blockfaceuv.uvs[2]) / VERTEX_COUNT;
+        float f2 = (blockfaceuv.uvs[1] + blockfaceuv.uvs[1] + blockfaceuv.uvs[3] + blockfaceuv.uvs[3]) / VERTEX_COUNT;
+        blockfaceuv.uvs[0] = Mth.lerp(f, blockfaceuv.uvs[0], f1);
+        blockfaceuv.uvs[2] = Mth.lerp(f, blockfaceuv.uvs[2], f1);
+        blockfaceuv.uvs[1] = Mth.lerp(f, blockfaceuv.uvs[1], f2);
+        blockfaceuv.uvs[3] = Mth.lerp(f, blockfaceuv.uvs[3], f2);
+        int[] aint = makeVertices(blockfaceuv, sprite.sprite(), facing, setupShape(posFrom, posTo), transform.getRotation(),
+                partRotation, shade);
+        Direction direction = calculateFacing(aint);
+        System.arraycopy(afloat, 0, blockfaceuv.uvs, 0, afloat.length);
+        if (partRotation == null) {
+            recalculateWinding(aint, direction);
+        }
+
+        ForgeHooksClient.fillNormal(aint, direction);
+        ForgeFaceData data = face.getFaceData();
+        RecolorableBakedQuad quad = new RecolorableBakedQuad(aint, face.tintIndex, direction, sprite, shade, data.ambientOcclusion());
         if (!ForgeFaceData.DEFAULT.equals(data)) {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);
@@ -180,7 +228,7 @@ public class StaticFaceBakery {
                                       Direction orientation,
                                       float[] posDiv16,
                                       Transformation rotation,
-                                      @javax.annotation.Nullable BlockElementRotation partRotation,
+                                      @Nullable BlockElementRotation partRotation,
                                       boolean shade) {
         int[] aint = new int[32];
 
@@ -199,7 +247,7 @@ public class StaticFaceBakery {
                                    float[] posDiv16,
                                    TextureAtlasSprite sprite,
                                    Transformation rotation,
-                                   @javax.annotation.Nullable BlockElementRotation partRotation,
+                                   @Nullable BlockElementRotation partRotation,
                                    boolean shade) {
         FaceInfo.VertexInfo faceinfo$vertexinfo = FaceInfo.fromFacing(facing).getVertexInfo(vertexIndex);
         Vector3f vector3f = new Vector3f(posDiv16[faceinfo$vertexinfo.xFace], posDiv16[faceinfo$vertexinfo.yFace],
@@ -236,7 +284,7 @@ public class StaticFaceBakery {
     }
 
     private static void applyElementRotation(Vector3f vec,
-                                             @javax.annotation.Nullable BlockElementRotation partRotation) {
+                                             @Nullable BlockElementRotation partRotation) {
         if (partRotation != null) {
             Vector3f vector3f;
             Vector3f vector3f1;
@@ -288,43 +336,43 @@ public class StaticFaceBakery {
     }
 
     private static void recalculateWinding(int[] vertices, Direction direction) {
-        int[] aint = new int[vertices.length];
-        System.arraycopy(vertices, 0, aint, 0, vertices.length);
-        float[] afloat = new float[Direction.values().length];
-        afloat[FaceInfo.Constants.MIN_X] = 999.0F;
-        afloat[FaceInfo.Constants.MIN_Y] = 999.0F;
-        afloat[FaceInfo.Constants.MIN_Z] = 999.0F;
-        afloat[FaceInfo.Constants.MAX_X] = -999.0F;
-        afloat[FaceInfo.Constants.MAX_Y] = -999.0F;
-        afloat[FaceInfo.Constants.MAX_Z] = -999.0F;
+        int[] newVertices = new int[vertices.length];
+        System.arraycopy(vertices, 0, newVertices, 0, vertices.length);
+        float[] normals = new float[Direction.values().length];
+        normals[FaceInfo.Constants.MIN_X] = 999.0F;
+        normals[FaceInfo.Constants.MIN_Y] = 999.0F;
+        normals[FaceInfo.Constants.MIN_Z] = 999.0F;
+        normals[FaceInfo.Constants.MAX_X] = -999.0F;
+        normals[FaceInfo.Constants.MAX_Y] = -999.0F;
+        normals[FaceInfo.Constants.MAX_Z] = -999.0F;
 
         for (int i = 0; i < 4; ++i) {
             int j = 8 * i;
-            float f = Float.intBitsToFloat(aint[j]);
-            float f1 = Float.intBitsToFloat(aint[j + 1]);
-            float f2 = Float.intBitsToFloat(aint[j + 2]);
-            if (f < afloat[FaceInfo.Constants.MIN_X]) {
-                afloat[FaceInfo.Constants.MIN_X] = f;
+            float f = Float.intBitsToFloat(newVertices[j]);
+            float f1 = Float.intBitsToFloat(newVertices[j + 1]);
+            float f2 = Float.intBitsToFloat(newVertices[j + 2]);
+            if (f < normals[FaceInfo.Constants.MIN_X]) {
+                normals[FaceInfo.Constants.MIN_X] = f;
             }
 
-            if (f1 < afloat[FaceInfo.Constants.MIN_Y]) {
-                afloat[FaceInfo.Constants.MIN_Y] = f1;
+            if (f1 < normals[FaceInfo.Constants.MIN_Y]) {
+                normals[FaceInfo.Constants.MIN_Y] = f1;
             }
 
-            if (f2 < afloat[FaceInfo.Constants.MIN_Z]) {
-                afloat[FaceInfo.Constants.MIN_Z] = f2;
+            if (f2 < normals[FaceInfo.Constants.MIN_Z]) {
+                normals[FaceInfo.Constants.MIN_Z] = f2;
             }
 
-            if (f > afloat[FaceInfo.Constants.MAX_X]) {
-                afloat[FaceInfo.Constants.MAX_X] = f;
+            if (f > normals[FaceInfo.Constants.MAX_X]) {
+                normals[FaceInfo.Constants.MAX_X] = f;
             }
 
-            if (f1 > afloat[FaceInfo.Constants.MAX_Y]) {
-                afloat[FaceInfo.Constants.MAX_Y] = f1;
+            if (f1 > normals[FaceInfo.Constants.MAX_Y]) {
+                normals[FaceInfo.Constants.MAX_Y] = f1;
             }
 
-            if (f2 > afloat[FaceInfo.Constants.MAX_Z]) {
-                afloat[FaceInfo.Constants.MAX_Z] = f2;
+            if (f2 > normals[FaceInfo.Constants.MAX_Z]) {
+                normals[FaceInfo.Constants.MAX_Z] = f2;
             }
         }
 
@@ -332,22 +380,23 @@ public class StaticFaceBakery {
 
         for (int i1 = 0; i1 < 4; ++i1) {
             int j1 = 8 * i1;
-            FaceInfo.VertexInfo faceinfo$vertexinfo = faceinfo.getVertexInfo(i1);
-            float f8 = afloat[faceinfo$vertexinfo.xFace];
-            float f3 = afloat[faceinfo$vertexinfo.yFace];
-            float f4 = afloat[faceinfo$vertexinfo.zFace];
-            vertices[j1] = Float.floatToRawIntBits(f8);
-            vertices[j1 + 1] = Float.floatToRawIntBits(f3);
-            vertices[j1 + 2] = Float.floatToRawIntBits(f4);
+            FaceInfo.VertexInfo vertexInfo = faceinfo.getVertexInfo(i1);
+            float x = normals[vertexInfo.xFace];
+            float y = normals[vertexInfo.yFace];
+            float z = normals[vertexInfo.zFace];
+            vertices[j1] = Float.floatToRawIntBits(x);
+            vertices[j1 + 1] = Float.floatToRawIntBits(y);
+            vertices[j1 + 2] = Float.floatToRawIntBits(z);
 
             for (int k = 0; k < 4; ++k) {
                 int l = 8 * k;
-                float f5 = Float.intBitsToFloat(aint[l]);
-                float f6 = Float.intBitsToFloat(aint[l + 1]);
-                float f7 = Float.intBitsToFloat(aint[l + 2]);
-                if (Mth.equal(f8, f5) && Mth.equal(f3, f6) && Mth.equal(f4, f7)) {
-                    vertices[j1 + 4] = aint[l + 4];
-                    vertices[j1 + 4 + 1] = aint[l + 4 + 1];
+                float nX = Float.intBitsToFloat(newVertices[l]);
+                float xY = Float.intBitsToFloat(newVertices[l + 1]);
+                float nZ = Float.intBitsToFloat(newVertices[l + 2]);
+                //noinspection SuspiciousNameCombination
+                if (Mth.equal(x, nX) && Mth.equal(y, xY) && Mth.equal(z, nZ)) {
+                    vertices[j1 + 4] = newVertices[l + 4];
+                    vertices[j1 + 4 + 1] = newVertices[l + 4 + 1];
                 }
             }
         }

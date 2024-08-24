@@ -17,7 +17,6 @@ public interface IBurnable {
      * Called when the block should be fully burned.
      */
     default void fullyBurn(BlockState state, Level world, BlockPos pos) {
-        assert Blocks.FIRE != null;
         world.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
     }
 }
