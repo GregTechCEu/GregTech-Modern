@@ -28,7 +28,6 @@
         "CreeperMixin",
         "EntityMixin",
         "IFoliagePlacerTypeAccessor",
-        "IHolderReferenceAccessor",
         "IngredientAccessor",
         "IntersectionIngredientAccessor",
         "InventoryMixin",

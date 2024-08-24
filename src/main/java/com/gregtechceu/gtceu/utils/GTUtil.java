@@ -21,11 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -520,7 +520,8 @@ public class GTUtil {
             return false;
         }
 
-        Biome biome = world.getBiome(blockPos.above()).value();
+        Holder<Biome> biomeHolder = world.getBiome(blockPos.above());
+        Biome biome = biomeHolder.value();
         if (world.isRaining()) {
             if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
                 return false;
@@ -531,9 +532,9 @@ public class GTUtil {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.isJAVDLoaded() &&
-                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+        ResourceLocation javdVoidBiome = new ResourceLocation(GTValues.MODID_JAVD, "void");
+        if (GTCEu.isJAVDLoaded() && javdVoidBiome
+                .equals(biomeHolder.unwrapKey().map(ResourceKey::location).orElse(null))) {
             return !world.isDay();
         } else return world.isDay();
     }
