@@ -42,7 +42,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import com.google.common.collect.Tables;
@@ -50,6 +49,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -297,11 +297,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     // ********** MISC ***********//
     //////////////////////////////////////
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        super.onDrops(drops, entity);
-        clearInventory(drops, chargerInventory);
+    public void onMachineRemoved() {
+        super.onMachineRemoved();
+        clearInventory(chargerInventory);
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(drops, circuitInventory.storage);
+            clearInventory(circuitInventory.storage);
         }
     }
 
@@ -400,7 +400,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
@@ -413,6 +413,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -228,17 +227,12 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
-            for (Direction direction : GTUtil.DIRECTIONS) {
-                machine.getCoverContainer().removeCover(direction, null);
-            }
-            if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
-                machineModifyDrops.onDrops(drops, (Player) entity);
+            if (machine instanceof IMachineModifyDrops machineModifyDrops) {
+                machineModifyDrops.onDrops(drops);
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
@@ -257,8 +251,14 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
-                if (getMachine(pLevel, pPos) instanceof IMachineLife machineLife) {
+                MetaMachine machine = getMachine(pLevel, pPos);
+                if (machine instanceof IMachineLife machineLife) {
                     machineLife.onMachineRemoved();
+                }
+                if (machine != null) {
+                    for (Direction direction : GTUtil.DIRECTIONS) {
+                        machine.getCoverContainer().removeCover(direction, null);
+                    }
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);

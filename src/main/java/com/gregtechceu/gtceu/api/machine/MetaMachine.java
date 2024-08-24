@@ -78,8 +78,6 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
-import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.BOTH;
-import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.ITEM;
 
 /**
  * @author KilaBash
@@ -493,29 +491,29 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         traits.add(trait);
     }
 
-    public static void clearInventory(List<ItemStack> itemBuffer, IItemTransfer inventory) {
+    public void clearInventory(IItemTransfer inventory) {
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
                 inventory.onContentsChanged();
-                itemBuffer.add(stackInSlot);
+                Block.popResource(getLevel(), getPos(), stackInSlot);
             }
         }
     }
 
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
+    public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held, Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
         if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
-            if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
+            if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
         return false;
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (player.isShiftKeyDown()) {
                 if (isFacingValid(side)) {
@@ -533,7 +531,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, toolTypes, side);
+            return cover.sideTips(player, pos, state, toolTypes, side);
         }
         return null;
     }
