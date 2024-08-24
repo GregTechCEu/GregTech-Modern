@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;

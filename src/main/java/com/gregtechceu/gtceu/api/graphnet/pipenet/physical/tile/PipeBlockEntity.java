@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -729,6 +730,32 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 getLevel().setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
             }
         }
+    }
+
+    @Override
+    public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
+                                    Set<GTToolType> toolTypes) {
+        if (toolTypes.contains(getBlockType().getToolClass()) || toolTypes.contains(GTToolType.SCREWDRIVER))
+            return true;
+        for (CoverBehavior cover : covers.getCovers()) {
+            if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
+        }
+        return false;
+    }
+
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(getBlockType().getToolClass())) {
+            if (player.isShiftKeyDown() && this.getBlockType().allowsBlocking()) {
+                return getStructure().getPipeTexture(isBlocked(side));
+            } else {
+                return getStructure().getPipeTexture(isConnected(side));
+            }
+        }
+        var cover = covers.getCoverAtSide(side);
+        if (cover != null) {
+            return cover.sideTips(player, pos, state, toolTypes, side);
+        }
+        return null;
     }
 
     @Override
