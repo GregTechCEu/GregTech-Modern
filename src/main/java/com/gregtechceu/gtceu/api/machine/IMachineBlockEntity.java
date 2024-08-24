@@ -35,24 +35,6 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
         return self().getBlockPos();
     }
 
-    default void notifyBlockUpdate() {
-        if (level() != null) {
-            level().updateNeighborsAt(pos(), level().getBlockState(pos()).getBlock());
-        }
-    }
-
-    default void scheduleRenderUpdate() {
-        var pos = pos();
-        if (level() != null) {
-            var state = level().getBlockState(pos);
-            if (level().isClientSide) {
-                level().sendBlockUpdated(pos, state, state, 1 << 3);
-            } else {
-                level().blockEvent(pos, state.getBlock(), 1, 0);
-            }
-        }
-    }
-
     default long getOffsetTimer() {
         return level() == null ? getOffset() : (level().getGameTime() + getOffset());
     }

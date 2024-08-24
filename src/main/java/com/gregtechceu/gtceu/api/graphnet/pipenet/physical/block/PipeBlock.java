@@ -55,12 +55,12 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -416,18 +416,23 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        MutableObject<VoxelShape> shape = new MutableObject<>(Shapes.empty());
-        PipeBlockEntity tile = getBlockEntity(level, pos);
-        if (tile != null) {
-            tile.getCoverBoxes(bb -> shape.setValue(Shapes.or(shape.getValue(), bb)));
-            if (tile.getFrameMaterial() != null) {
-                shape.setValue(Shapes.or(shape.getValue(), Shapes.block()));
+        if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
+            if (hasPipeCollisionChangingItem(level, pos, player)) {
+                return Shapes.block();
             }
-            shape.setValue(Shapes.or(shape.getValue(), getStructure().getPipeBoxes(tile)));
-        } else {
-            shape.setValue(Shapes.block());
         }
-        return shape.getValue();
+
+        PipeBlockEntity tile = getBlockEntity(level, pos);
+        if (tile == null) {
+            return Shapes.block();
+        }
+        if (tile.getFrameMaterial() != null) {
+            return Shapes.block();
+        }
+        List<VoxelShape> shapes = new ArrayList<>();
+        shapes.add(getStructure().getPipeBoxes(tile));
+        tile.getCoverBoxes(shapes::add);
+        return shapes.stream().reduce(Shapes.empty(), Shapes::or);
     }
 
     public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, Entity entity) {

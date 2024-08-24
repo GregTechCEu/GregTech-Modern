@@ -48,8 +48,7 @@ public interface IPipeStructure extends StringRepresentable {
             pipeBoxes = Shapes.or(pipeBoxes, getSideBox(null, thickness));
         }
         for (Direction facing : GTUtil.DIRECTIONS) {
-            if (tileContext.isConnected(facing))
-                pipeBoxes = Shapes.or(pipeBoxes, getSideBox(facing, thickness));
+            if (tileContext.isConnected(facing)) pipeBoxes = Shapes.or(pipeBoxes, getSideBox(facing, thickness));
         }
         return pipeBoxes;
     }

@@ -631,13 +631,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     // misc overrides //
 
-    @Override
-    public void notifyBlockUpdate() {
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
-        }
-    }
-
     public void scheduleNeighborShapeUpdate() {
         Level level = getLevel();
         BlockPos pos = getBlockPos();

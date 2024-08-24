@@ -4,7 +4,8 @@ dependencies {
     // Shadowed Dependencies
     // Packages that aren't mods, and thus need to be included in the release files.
 
-    shadow('org.jgrapht:jgrapht-core:1.5.2')  // JGraphT 1.5.2
+    api(shadow('org.jgrapht:jgrapht-core:1.5.2'))  // JGraphT 1.5.2
+    forgeRuntimeLibrary('org.jgrapht:jgrapht-core:1.5.2')
 
     // LDLib
     modApi(forge.ldlib.forge) { transitive = false }

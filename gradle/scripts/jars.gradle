@@ -4,16 +4,25 @@ tasks.register('slimJar', Jar) {
 }
 
 shadowJar {
+    dependsOn shadowJar.configurations
     configurations = [project.configurations.shadow]
     archiveClassifier = "dev-shadow"
     minimize()
     relocate("org.jgrapht", "${maven_group}.repack.org.jgrapht")
+    relocate("org.jheaps", "${maven_group}.repack.org.jheaps")
+    relocate("org.apfloat", "${maven_group}.repack.org.apfloat")
 }
 
 obfuscation {
     reobfuscate(tasks.named('slimJar'), sourceSets.main) {
         archiveClassifier = "slim"
     }
+}
+
+jar {
+    exclude ".cache/*"
+
+    archiveClassifier = "dev"
 }
 
 tasks.register('sourcesJar', Jar) {
