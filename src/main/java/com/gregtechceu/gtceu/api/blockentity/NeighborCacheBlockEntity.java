@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;

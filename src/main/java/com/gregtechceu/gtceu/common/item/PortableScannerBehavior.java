@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -22,9 +24,13 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowData;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.WorldEnergyNet;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -360,19 +366,66 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             }
 
         } else if (tileEntity instanceof PipeBlockEntity pipe) {
-
             // Pipes need special name handling
             list.add(pipe.getBlockType().getName().withStyle(ChatFormatting.BLUE));
+
+            if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_ELECTRICAL_INFO) {
+                if (level instanceof ServerLevel serverLevel) {
+                    NetLogicData data = pipe.getNetLogicData(WorldEnergyNet.getWorldNet(serverLevel).getNetworkID());
+                    if (data != null) {
+                        int cumulativeCount = 0;
+                        long cumulativeVoltage = 0;
+                        long cumulativeAmperage = 0;
+                        for (var memory : data.getLogicEntryDefaultable(EnergyFlowLogic.INSTANCE).getMemory().entrySet()) {
+                            cumulativeCount++;
+                            int count = 0;
+                            double voltage = 0;
+                            long amperage = 0;
+                            for (EnergyFlowData flow : memory.getValue()) {
+                                count++;
+                                long prev = amperage;
+                                amperage += flow.amperage();
+                                // weighted average
+                                voltage = voltage * prev / amperage + (double) (flow.voltage() * flow.amperage()) / amperage;
+                            }
+                            if (count != 0) {
+                                cumulativeVoltage += voltage / count;
+                                cumulativeAmperage += amperage / count;
+                            }
+                        }
+                        if (cumulativeCount != 0) {
+                            cumulativeVoltage /= cumulativeCount;
+                            cumulativeAmperage /= cumulativeCount;
+                        }
+                        list.add(Component.translatable("behavior.portable_scanner.divider"));
+                        list.add(Component.translatable("behavior.portable_scanner.eu_per_sec",
+                                Component.translatable(FormattingUtil.formatNumbers(cumulativeVoltage))
+                                        .withStyle(ChatFormatting.RED)));
+                        list.add(Component.translatable("behavior.portable_scanner.amp_per_sec",
+                                Component.translatable(FormattingUtil.formatNumbers(cumulativeAmperage))
+                                        .withStyle(ChatFormatting.RED)));
+
+                        long tick = Platform.getMinecraftServer().getTickCount();
+                        int temp = data.getLogicEntryDefaultable(TemperatureLogic.INSTANCE).getTemperature(tick);
+                        list.add(Component.translatable("behavior.portable_scanner.temperature",
+                                Component.translatable(FormattingUtil.formatNumbers(temp))
+                                        .withStyle(ChatFormatting.RED)));
+
+                    }
+                }
+            }
+
+            if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_BLOCK_INFO) {
+                if (tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
+                    // Getting fluid info always costs 500
+                    energyCost += 500;
+                }
+            }
 
             // Pipe-specific info
             if (tileEntity instanceof IDataInfoProvider dataInfoProvider) {
                 list.add(Component.translatable("behavior.portable_scanner.divider"));
                 list.addAll(dataInfoProvider.getDataInfo(mode));
-            }
-
-            if (tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent()) {
-                // Getting fluid info always costs 500
-                energyCost += 500;
             }
         } else if (tileEntity instanceof IDataInfoProvider dataInfoProvider) {
             list.add(Component.translatable("behavior.portable_scanner.divider"));

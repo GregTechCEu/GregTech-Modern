@@ -1,28 +1,28 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 
 import com.lowdragmc.lowdraglib.networking.IPacket;
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 
-public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, IPacket {
+public class TemperatureLossFunction implements ITagSerializable<CompoundTag>, IPacket {
 
     private static final Float2ObjectArrayMap<TemperatureLossFunction> CABLE_LOSS_CACHE = new Float2ObjectArrayMap<>();
     private static final Float2ObjectArrayMap<TemperatureLossFunction> PIPE_LOSS_CACHE = new Float2ObjectArrayMap<>();
 
-    private EnumLossFunction function;
+    private LossFunction function;
     private float factorX;
     private float factorY;
 
-    public TemperatureLossFunction(EnumLossFunction function, float factorX) {
+    public TemperatureLossFunction(LossFunction function, float factorX) {
         this.function = function;
         this.factorX = factorX;
     }
 
-    public TemperatureLossFunction(EnumLossFunction function, float factorX, float factorY) {
+    public TemperatureLossFunction(LossFunction function, float factorX, float factorY) {
         this.function = function;
         this.factorX = factorX;
         this.factorY = factorY;
@@ -41,7 +41,7 @@ public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, I
     public static TemperatureLossFunction getOrCreateCable(float factor) {
         TemperatureLossFunction function = CABLE_LOSS_CACHE.get(factor);
         if (function == null) {
-            function = new TemperatureLossFunction(EnumLossFunction.WEAK_SCALING, factor, 0.35f);
+            function = new TemperatureLossFunction(LossFunction.WEAK_SCALING, factor, 0.35f);
             CABLE_LOSS_CACHE.put(factor, function);
         }
         return function;
@@ -51,7 +51,7 @@ public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, I
         TemperatureLossFunction function = PIPE_LOSS_CACHE.get(factor);
         if (function == null) {
             // since pipes are hollow the exponent is larger
-            function = new TemperatureLossFunction(EnumLossFunction.WEAK_SCALING, factor, 0.45f);
+            function = new TemperatureLossFunction(LossFunction.WEAK_SCALING, factor, 0.45f);
             PIPE_LOSS_CACHE.put(factor, function);
         }
         return function;
@@ -68,7 +68,7 @@ public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, I
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        function = EnumLossFunction.values()[nbt.getInt("Ordinal")];
+        function = LossFunction.values()[nbt.getInt("Ordinal")];
         factorX = nbt.getFloat("X");
         factorY = nbt.getFloat("Y");
     }
@@ -82,7 +82,7 @@ public class TemperatureLossFunction implements INBTSerializable<CompoundTag>, I
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        function = EnumLossFunction.values()[buf.readVarInt()];
+        function = LossFunction.values()[buf.readVarInt()];
         factorX = buf.readFloat();
         factorY = buf.readFloat();
     }

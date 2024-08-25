@@ -74,15 +74,16 @@ public class EnergyCapabilityObject implements IPipeCapabilityObject, IEnergyCon
         long tick = Platform.getMinecraftServer().getTickCount();
 
         AbstractNetFlowEdge internalBuffer = this.internalBuffers.get(side);
-        if (internalBuffer != null) {
-            long limit = internalBuffer.getFlowLimit(IPredicateTestObject.INSTANCE, net, tick, simulator);
-            if (limit <= 0) {
-                this.transferring = false;
-                return 0;
-            } else if (amperage > limit) {
-                amperage = limit;
-            }
-        }
+        // Disable this as it broke overamping
+        //if (internalBuffer != null) {
+        //    long limit = internalBuffer.getFlowLimit(IPredicateTestObject.INSTANCE, net, tick, simulator);
+        //    if (limit <= 0) {
+        //        this.transferring = false;
+        //        return 0;
+        //    } else if (amperage > limit) {
+        //        amperage = limit;
+        //    }
+        //}
         long availableAmperage = amperage;
 
         EnergyTraverseData data = new EnergyTraverseData(net, IPredicateTestObject.INSTANCE, simulator, tick, voltage,

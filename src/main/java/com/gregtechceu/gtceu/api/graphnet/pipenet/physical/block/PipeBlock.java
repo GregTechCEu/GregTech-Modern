@@ -48,8 +48,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -71,28 +69,6 @@ import static com.gregtechceu.gtceu.api.block.BlockProperties.SERVER_TICK;
 
 public abstract class PipeBlock extends Block implements EntityBlock {
 
-    public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
-    public static final BooleanProperty EAST = BlockStateProperties.EAST;
-    public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
-    public static final BooleanProperty WEST = BlockStateProperties.WEST;
-    public static final BooleanProperty UP = BlockStateProperties.UP;
-    public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-
-    public static final EnumMap<Direction, BooleanProperty> FACINGS = buildFacings();
-
-    private static @NotNull EnumMap<Direction, BooleanProperty> buildFacings() {
-        EnumMap<Direction, BooleanProperty> map = new EnumMap<>(Direction.class);
-        map.put(Direction.NORTH, NORTH);
-        map.put(Direction.EAST, EAST);
-        map.put(Direction.SOUTH, SOUTH);
-        map.put(Direction.WEST, WEST);
-        map.put(Direction.UP, UP);
-        map.put(Direction.DOWN, DOWN);
-        return map;
-    }
-
-    public static final BooleanProperty FRAMED = BooleanProperty.create("framed");
-
     // do not touch these two unless you know what you are doing
     protected final ThreadLocal<BlockPos> lastTilePos = ThreadLocal.withInitial(() -> new BlockPos(0, 0, 0));
     protected final ThreadLocal<WeakReference<PipeBlockEntity>> lastTile = ThreadLocal
@@ -104,15 +80,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     public PipeBlock(BlockBehaviour.Properties properties, IPipeStructure structure) {
         super(properties);
         this.structure = structure;
-        this.registerDefaultState(this.defaultBlockState()
-                .setValue(NORTH, false)
-                .setValue(EAST, false)
-                .setValue(SOUTH, false)
-                .setValue(WEST, false)
-                .setValue(UP, false)
-                .setValue(DOWN, false)
-                .setValue(FRAMED, false)
-                .setValue(SERVER_TICK, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(SERVER_TICK, false));
     }
 
     // net logic //
@@ -516,7 +484,7 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, FRAMED, SERVER_TICK);
+        builder.add(SERVER_TICK);
     }
 
     @Override
@@ -526,23 +494,6 @@ public abstract class PipeBlock extends Block implements EntityBlock {
             return tile.triggerEvent(pId, pParam);
         }
         return false;
-    }
-
-    public static BlockState writeConnectionMask(@NotNull BlockState state, byte connectionMask) {
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            state = state.setValue(FACINGS.get(facing), GTUtil.evalMask(facing, connectionMask));
-        }
-        return state;
-    }
-
-    public static byte readConnectionMask(@NotNull BlockState state) {
-        byte mask = 0;
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            if (state.getValue(FACINGS.get(facing))) {
-                mask |= (byte) (1 << facing.ordinal());
-            }
-        }
-        return mask;
     }
 
     // tile entity //

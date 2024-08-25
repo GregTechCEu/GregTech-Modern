@@ -4,7 +4,7 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
  * A bunch of loss functions. By the power of Wolfram Alpha.
  * <a href="https://www.desmos.com/calculator/vjuksr3ut0">Demonstration Graph</a>
  */
-public enum EnumLossFunction {
+public enum LossFunction {
 
     // DO NOT REORDER FUNCTIONS, THE ORDER IS USED FOR NBT SERIALIZATION
     /**
@@ -25,7 +25,7 @@ public enum EnumLossFunction {
     /**
      * x% of value is lost every tick.
      * <br>
-     * Faster than {@link EnumLossFunction#ARITHMETIC} at large values, but slower at small values.
+     * Faster than {@link LossFunction#ARITHMETIC} at large values, but slower at small values.
      */
     GEOMETRIC {
 
@@ -38,7 +38,7 @@ public enum EnumLossFunction {
     /**
      * value is raised to the power of 1 - x every tick.
      * <br>
-     * Faster than {@link EnumLossFunction#GEOMETRIC} at large values, but incredibly slow at small values.
+     * Faster than {@link LossFunction#GEOMETRIC} at large values, but incredibly slow at small values.
      */
     POWER {
 
@@ -52,8 +52,8 @@ public enum EnumLossFunction {
     /**
      * x% of value is lost, then y more, every tick.
      * <br>
-     * Slightly faster than {@link EnumLossFunction#GEOMETRIC} at large values,
-     * slightly faster than {@link EnumLossFunction#ARITHMETIC} at small values.
+     * Slightly faster than {@link LossFunction#GEOMETRIC} at large values,
+     * slightly faster than {@link LossFunction#ARITHMETIC} at small values.
      */
     GEOMETRIC_ARITHMETIC {
 
@@ -73,8 +73,8 @@ public enum EnumLossFunction {
     /**
      * value is raised to the power of 1 - x, then y% more is lost, every tick.
      * <br>
-     * Slightly faster than {@link EnumLossFunction#POWER} at large values,
-     * slightly faster than {@link EnumLossFunction#GEOMETRIC} at small values.
+     * Slightly faster than {@link LossFunction#POWER} at large values,
+     * slightly faster than {@link LossFunction#GEOMETRIC} at small values.
      */
     POWER_GEOMETRIC {
 

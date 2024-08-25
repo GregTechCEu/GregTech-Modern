@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
@@ -171,7 +172,7 @@ public class GTOverheatParticle extends GTParticle {
     }
 
     private int getTemperature() {
-        long tick = Platform.getMinecraftServer().getTickCount();
+        long tick = Minecraft.getInstance().levelRenderer.getTicks();
         return temperatureLogic.getTemperature(tick);
     }
 

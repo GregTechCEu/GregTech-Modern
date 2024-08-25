@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.cable.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.block.cable.CableStructure;
@@ -467,27 +466,6 @@ public class GTModels {
     private static void createPipeBlockState(ResourceLocation blockId, ResourceLocation blockModelId, Block block) {
         Variant variant = Variant.variant().with(VariantProperties.MODEL, blockModelId);
         GTDynamicResourcePack.addBlockState(blockId, MultiVariantGenerator.multiVariant(block)
-                .with(PropertyDispatch.property(PipeBlock.NORTH)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.SOUTH)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.WEST)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.EAST)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.UP)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.DOWN)
-                        .select(true, variant)
-                        .select(false, variant))
-                .with(PropertyDispatch.property(PipeBlock.FRAMED)
-                        .select(true, variant)
-                        .select(false, variant))
                 .with(PropertyDispatch.property(BlockProperties.SERVER_TICK)
                         .select(true, variant)
                         .select(false, variant)));

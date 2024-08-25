@@ -31,6 +31,8 @@ import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.gregtechceu.gtceu.utils.TaskHandler;
+import com.gregtechceu.gtceu.utils.TaskScheduler;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -221,14 +223,14 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         } else {
             this.renderMask &= ~(1 << facing.ordinal());
         }
-        getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FACINGS.get(facing), true));
+        scheduleRenderUpdate();
     }
 
     public void setDisconnected(Direction facing) {
         this.connectionMask &= ~(1 << facing.ordinal());
         this.renderMask &= ~(1 << facing.ordinal());
         updateActiveStatus(facing, false);
-        getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FACINGS.get(facing), false));
+        scheduleRenderUpdate();
     }
 
     public boolean isConnected(Direction side) {
@@ -261,11 +263,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     public void setFrameMaterial(@Nullable Material frameMaterial) {
         this.frameMaterial = frameMaterial;
-        if (frameMaterial != null) {
-            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FRAMED, true));
-        } else {
-            level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(PipeBlock.FRAMED, false));
-        }
         scheduleRenderUpdate();
     }
 
@@ -340,8 +337,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
+    public void clearRemoved() {
+        super.clearRemoved();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::initialize));
         }
@@ -519,6 +516,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                         }));
                 this.listeners.add(listener);
                 node.getData().addListener(listener);
+                // Manually resync the data, as it's loaded & the listeners are queried for the first time *before*
+                // we call `addListener` on the line above.
+                for (var entry : node.getData().getEntries()) {
+                    node.getData().markLogicEntryAsUpdated(entry, true);
+                }
                 if (firstNode) {
                     firstNode = false;
                     this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
@@ -531,6 +533,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         }
     }
 
+    /*
     @Override
     public void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {
         buf.writeVarInt(netLogicDatas.size());
@@ -554,6 +557,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         }
         scheduleRenderUpdate();
     }
+    */
 
     @Override
     public void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf) {
@@ -581,11 +585,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                             NetLogicEntry<?, ?> entry = data.getLogicEntryNullable(identifier);
                             if (entry != null) entry.decode(buf, false);
                             data.markLogicEntryAsUpdated(entry, false);
-                        } else {
-                            // FIXME fix the issue that causes 4 bytes from the server to not be read correctly.
-                            buf.readerIndex(buf.writerIndex());
-                            return;
-                        }
+                        } else return;
                     }
                     if (identifier.equals(TemperatureLogic.INSTANCE.getSerializedName())) {
                         TemperatureLogic tempLogic = this.netLogicDatas.get(networkID)
@@ -595,8 +595,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 }
             }
         }
-        // FIXME fix the issue that causes 4 bytes from the server to not be read correctly.
-        buf.readerIndex(buf.writerIndex());
     }
 
     // particle //
@@ -689,6 +687,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         }
         return ModelData.builder()
                 .with(AbstractPipeModel.THICKNESS_PROPERTY, this.getStructure().getRenderThickness())
+                .with(AbstractPipeModel.CONNECTED_MASK_PROPERTY, connectionMask)
                 .with(AbstractPipeModel.CLOSED_MASK_PROPERTY, renderMask)
                 .with(AbstractPipeModel.BLOCKED_MASK_PROPERTY, blockedMask)
                 .with(AbstractPipeModel.COLOR_PROPERTY, getPaintingColor())

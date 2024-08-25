@@ -59,14 +59,7 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
     public void partialBurn(BlockState state, Level world, BlockPos pos) {
         CableStructure structure = getStructure();
         if (structure.partialBurnStructure() != null) {
-            CableBlock newBlock = CACHE.get(material).get(structure.partialBurnStructure());
-            BlockState newState = newBlock.defaultBlockState()
-                    .setValue(NORTH, state.getValue(NORTH))
-                    .setValue(EAST, state.getValue(EAST))
-                    .setValue(SOUTH, state.getValue(SOUTH))
-                    .setValue(WEST, state.getValue(WEST))
-                    .setValue(UP, state.getValue(UP))
-                    .setValue(DOWN, state.getValue(DOWN));
+            BlockState newState = CACHE.get(material).get(structure.partialBurnStructure()).defaultBlockState();
             world.setBlockAndUpdate(pos, newState);
         }
     }

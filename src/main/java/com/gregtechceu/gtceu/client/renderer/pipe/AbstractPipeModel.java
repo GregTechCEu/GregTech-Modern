@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.pipe;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.ColorQuadCache;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.StructureQuadCache;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;

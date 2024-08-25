@@ -311,11 +311,7 @@ public class GTBlocks {
 
     private static boolean allowCableBlock(Material material, CableStructure insulation) {
         if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
-            return material.getProperty(PropertyKey.PIPENET_PROPERTIES).hasProperty(MaterialEnergyProperties.KEY) &&
-                    !insulation.prefix().isIgnored(material) &&
-                    !(insulation.isInsulated() && material.getProperty(PropertyKey.PIPENET_PROPERTIES)
-                            .getProperty(MaterialEnergyProperties.KEY)
-                            .isSuperconductor());
+            return material.getProperty(PropertyKey.PIPENET_PROPERTIES).generatesStructure(insulation);
         }
         return false;
     }
@@ -357,7 +353,8 @@ public class GTBlocks {
     }
 
     private static boolean allowMaterialPipeBlock(Material material, MaterialPipeStructure fluidPipeType) {
-        return material.hasProperty(PropertyKey.PIPENET_PROPERTIES) && !fluidPipeType.prefix().isIgnored(material);
+        return material.hasProperty(PropertyKey.PIPENET_PROPERTIES) &&
+                material.getProperty(PropertyKey.PIPENET_PROPERTIES).generatesStructure(fluidPipeType);
     }
 
     private static void registerMaterialPipeBlock(Material material, MaterialPipeStructure pipeType,
