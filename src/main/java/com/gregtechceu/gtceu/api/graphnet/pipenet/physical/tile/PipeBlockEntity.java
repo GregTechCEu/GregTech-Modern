@@ -529,6 +529,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             this.listeners.trim();
             this.capabilities.trim();
             this.netCapabilities.trim();
+            updateActiveStatus(null, false);
         }
     }
 

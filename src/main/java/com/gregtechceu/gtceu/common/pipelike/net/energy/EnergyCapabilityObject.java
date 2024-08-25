@@ -74,16 +74,17 @@ public class EnergyCapabilityObject implements IPipeCapabilityObject, IEnergyCon
         long tick = Platform.getMinecraftServer().getTickCount();
 
         AbstractNetFlowEdge internalBuffer = this.internalBuffers.get(side);
-        // Disable this as it broke overamping
-        //if (internalBuffer != null) {
-        //    long limit = internalBuffer.getFlowLimit(IPredicateTestObject.INSTANCE, net, tick, simulator);
-        //    if (limit <= 0) {
-        //        this.transferring = false;
-        //        return 0;
-        //    } else if (amperage > limit) {
-        //        amperage = limit;
-        //    }
-        //}
+        long bufferOverflowAmperage = 0;
+        if (internalBuffer != null) {
+            long limit = internalBuffer.getFlowLimit(IPredicateTestObject.INSTANCE, net, tick, simulator);
+            if (limit <= 0) {
+                this.transferring = false;
+                return 0;
+            } else if (amperage > limit) {
+                bufferOverflowAmperage = amperage - limit;
+                amperage = limit;
+            }
+        }
         long availableAmperage = amperage;
 
         EnergyTraverseData data = new EnergyTraverseData(net, IPredicateTestObject.INSTANCE, simulator, tick, voltage,
@@ -95,7 +96,13 @@ public class EnergyCapabilityObject implements IPipeCapabilityObject, IEnergyCon
         }
         long accepted = amperage - availableAmperage;
 
-        if (internalBuffer != null) data.consumeFlowLimit(internalBuffer, node, accepted);
+        if (internalBuffer != null) {
+            data.consumeFlowLimit(internalBuffer, node, accepted);
+            if (bufferOverflowAmperage > 0) {
+                data.handleOverflow(node, bufferOverflowAmperage);
+                accepted += bufferOverflowAmperage;
+            }
+        }
         if (!simulate) {
             EnergyGroupData group = getEnergyData();
             if (group != null) {
