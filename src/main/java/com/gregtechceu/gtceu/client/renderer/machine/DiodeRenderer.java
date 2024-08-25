@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -52,10 +53,13 @@ public class DiodeRenderer extends TieredHullMachineRenderer{
         }
 
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, 2));
+            quads.add(StaticFaceBakery.bakeFace(
+                    StaticFaceBakery.SLIGHTLY_OVER_BLOCK, modelFacing,
+                    ModelFactory.getBlockSprite(frontFaceTexture), modelState, 2, 0, true, true));
         } else if (side != null && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState, 2));
+            quads.add(StaticFaceBakery.bakeFace(
+                    StaticFaceBakery.SLIGHTLY_OVER_BLOCK, modelFacing,
+                    ModelFactory.getBlockSprite(otherFaceTexture), modelState, 2, 0, true, true));
         }
-
     }
 }

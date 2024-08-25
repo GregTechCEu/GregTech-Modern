@@ -58,14 +58,6 @@ public class HullMachine extends TieredPartMachine {
     }
 
     @Override
-    public int tintColor(int index) {
-        if (index == 2) {
-            return GTValues.VC[getTier()];
-        }
-        return super.tintColor(index);
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
         if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
