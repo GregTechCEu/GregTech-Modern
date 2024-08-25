@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:normal_optical_pipe"
+          "name": "gtceu:optical_fiber_cable"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/normal_optical_pipe"
+  "random_sequence": "gtceu:blocks/optical_fiber_cable"
 }

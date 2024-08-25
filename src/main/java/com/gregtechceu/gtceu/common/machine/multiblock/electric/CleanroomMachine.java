@@ -457,7 +457,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         // if (metaBlockEntity instanceof FuelMultiblockController) return true;
         if (metaBlockEntity instanceof LargeMinerMachine) return true;
         if (metaBlockEntity instanceof FluidDrillMachine) return true;
-        // if (metaBlockEntity instanceof MetaBlockEntityCentralMonitor) return true;
+        // if (metaBlockEntity instanceof MetaTileEntityCentralMonitor) return true;
         if (metaBlockEntity instanceof CokeOvenMachine) return true;
         if (metaBlockEntity instanceof PrimitiveBlastFurnaceMachine) return true;
         return metaBlockEntity instanceof PrimitivePumpMachine;

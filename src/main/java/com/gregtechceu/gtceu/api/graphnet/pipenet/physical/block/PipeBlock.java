@@ -343,10 +343,9 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
-        if (tileEntity instanceof PipeBlockEntity pipeTile) {
+        if (blockEntity instanceof PipeBlockEntity pipeTile) {
             pipeTile.getDrops(drops, state);
         }
         return drops;

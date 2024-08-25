@@ -760,8 +760,8 @@ public class LangHandler {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaBlockEntity =",
-                " null!");
+        provider.add("behavior.portable_scanner.debug_machine_invalid_null",
+                "invalid! MetaTileEntity = null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
         provider.add("behavior.portable_scanner.divider", "=========================");
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");

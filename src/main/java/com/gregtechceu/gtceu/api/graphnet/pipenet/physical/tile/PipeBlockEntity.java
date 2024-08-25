@@ -162,7 +162,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     }
 
     public void getDrops(@NotNull List<ItemStack> drops, @NotNull BlockState state) {
-        drops.add(getMainDrop(state));
         if (getFrameMaterial() != null)
             drops.add(GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, getFrameMaterial()).asStack());
     }

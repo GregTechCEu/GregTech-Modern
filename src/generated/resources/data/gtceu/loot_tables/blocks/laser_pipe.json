@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:normal_laser_pipe"
+          "name": "gtceu:laser_pipe"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/normal_laser_pipe"
+  "random_sequence": "gtceu:blocks/laser_pipe"
 }
