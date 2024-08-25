@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.client.particle;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +105,8 @@ public abstract class GTParticle {
      * @param buffer    buffer builder
      * @param context   render context
      */
-    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {}
+    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+                               @NotNull EffectRenderContext context) {}
 
     /**
      * @return Render setup for this particle, if exists

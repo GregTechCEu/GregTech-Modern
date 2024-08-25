@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -23,6 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
@@ -121,10 +121,12 @@ public class GTParticleManager {
         depthDisabledParticles.clear();
     }
 
-    public void renderParticles(@NotNull PoseStack poseStack, @NotNull Entity renderViewEntity, Camera camera, Frustum frustum, float partialTicks) {
+    public void renderParticles(@NotNull PoseStack poseStack, @NotNull Entity renderViewEntity, Camera camera,
+                                Frustum frustum, float partialTicks) {
         if (depthEnabledParticles.isEmpty() && depthDisabledParticles.isEmpty()) return;
 
-        EffectRenderContext instance = EffectRenderContext.getInstance().update(renderViewEntity, camera, frustum, partialTicks);
+        EffectRenderContext instance = EffectRenderContext.getInstance().update(renderViewEntity, camera, frustum,
+                partialTicks);
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -142,7 +144,8 @@ public class GTParticleManager {
         RenderSystem.disableBlend();
     }
 
-    private static void renderGlParticlesInLayer(@NotNull PoseStack poseStack, @NotNull Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
+    private static void renderGlParticlesInLayer(@NotNull PoseStack poseStack,
+                                                 @NotNull Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
                                                  @NotNull EffectRenderContext context) {
         for (var e : renderQueue.entrySet()) {
             @Nullable
@@ -193,9 +196,10 @@ public class GTParticleManager {
 
     @SubscribeEvent
     public static void renderWorld(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
             Entity entity = Minecraft.getInstance().getCameraEntity();
-            INSTANCE.renderParticles(event.getPoseStack(), entity == null ? Minecraft.getInstance().player : entity, event.getCamera(), event.getFrustum(), event.getPartialTick());
+            INSTANCE.renderParticles(event.getPoseStack(), entity == null ? Minecraft.getInstance().player : entity,
+                    event.getCamera(), event.getFrustum(), event.getPartialTick());
         }
     }
 

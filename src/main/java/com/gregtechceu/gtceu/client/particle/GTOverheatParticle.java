@@ -12,18 +12,19 @@ import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -240,19 +241,30 @@ public class GTOverheatParticle extends GTParticle {
     }
 
     @Override
-    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
-        if (insulated) {
-            return;
+    public boolean shouldRender(@NotNull EffectRenderContext context) {
+        if (this.insulated) return false;
+        for (AABB cuboid : pipeBoxes.toAabbs()) {
+            if (!context.frustum().isVisible(cuboid.move(posX, posY, posZ))) {
+                return false;
+            }
         }
+        return true;
+    }
 
+    @Override
+    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+                               @NotNull EffectRenderContext context) {
         if (GTCEu.isShimmerLoaded()) {
-            BloomUtils.entityBloom(source -> renderBloomEffect(poseStack, source.getBuffer(GTRenderTypes.getBloomQuad()), context));
+            final PoseStack finalStack = RenderUtils.copyPoseStack(poseStack);
+            BloomUtils.entityBloom(
+                    source -> renderBloomEffect(finalStack, source.getBuffer(GTRenderTypes.getBloomQuad()), context));
         } else {
             renderBloomEffect(poseStack, buffer, context);
         }
     }
 
-    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, @NotNull EffectRenderContext context) {
+    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer,
+                                  @NotNull EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
         float blue = (color & 0xFF) / 255f;
@@ -260,11 +272,11 @@ public class GTOverheatParticle extends GTParticle {
         poseStack.pushPose();
         poseStack.translate(posX - context.cameraX(), posY - context.cameraY(), posZ - context.cameraZ());
         for (AABB cuboid : pipeBoxes.toAabbs()) {
-            cuboid.inflate(0.01);
-            RenderBufferHelper.renderCubeFace(buffer, cuboid, red, green, blue, alpha, true);
+            RenderBufferHelper.renderCubeFace(poseStack, buffer, cuboid, red, green, blue, alpha, true);
         }
         poseStack.popPose();
     }
+
     private static final IRenderSetup SETUP = new IRenderSetup() {
 
         @Override
