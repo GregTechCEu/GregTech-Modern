@@ -27,7 +27,10 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.PUMP;
 
 public class MetaTileEntityLoader {
 
@@ -878,6 +881,7 @@ public class MetaTileEntityLoader {
                 GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
 
         for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
+            if (machine == null) continue;
             int tier = machine.getTier();
             int j = Math.min(fluidMap.length - 1, tier / 2);
             for (; j < fluidMap.length; j++) {
@@ -896,6 +900,7 @@ public class MetaTileEntityLoader {
         }
 
         for (var machine : GTMachines.FLUID_EXPORT_HATCH) {
+            if (machine == null) continue;
             int tier = machine.getTier();
             int j = Math.min(fluidMap.length - 1, tier / 2);
             for (; j < fluidMap.length; j++) {
@@ -914,6 +919,7 @@ public class MetaTileEntityLoader {
         }
 
         for (var machine : GTMachines.ITEM_IMPORT_BUS) {
+            if (machine == null) continue;
             int tier = machine.getTier();
             int j = Math.min(fluidMap.length - 1, tier / 2);
             for (; j < fluidMap.length; j++) {
@@ -932,6 +938,7 @@ public class MetaTileEntityLoader {
         }
 
         for (var machine : GTMachines.ITEM_EXPORT_BUS) {
+            if (machine == null) continue;
             int tier = machine.getTier();
             int j = Math.min(fluidMap.length - 1, tier / 2);
             for (; j < fluidMap.length; j++) {
