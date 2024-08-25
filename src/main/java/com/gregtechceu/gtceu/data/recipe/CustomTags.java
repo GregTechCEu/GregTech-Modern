@@ -138,4 +138,5 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createModTag(Registries.ENTITY_TYPE, "spiders");
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluids");
+    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
 }
