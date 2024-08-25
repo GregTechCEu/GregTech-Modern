@@ -5,8 +5,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-@FunctionalInterface
-public interface PipeSpriteWoodClarifier {
+public record TextureInformation(ResourceLocation texture, int colorID) {
 
-    ResourceLocation getTexture(boolean isWoodVariant);
+    public boolean colorable() {
+        return colorID >= 0;
+    }
 }

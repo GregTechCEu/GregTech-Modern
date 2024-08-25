@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.nio.channels.Pipe;
 
 /**
  * @author KilaBash
@@ -55,12 +54,12 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
         boolean superVal = super.placeBlock(context, state);
 
         if (!level.isClientSide) {
-            BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
+            BlockPos possiblePipe = pos.relative(side.getOpposite());
             Block block = level.getBlockState(possiblePipe).getBlock();
             if (block instanceof PipeBlock pipeBlock) {
                 PipeBlockEntity pipeTile = pipeBlock.getBlockEntity(level, possiblePipe);
                 if (pipeTile != null && pipeTile.canConnectTo(side.getOpposite())) {
-                    PipeBlock.connectTile(pipeTile, null, side);
+                    pipeTile.updateActiveStatus(side.getOpposite(), true);
                 }
             }
         }

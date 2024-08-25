@@ -87,7 +87,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, () -> {
                 for (Direction side : GTUtil.DIRECTIONS) {
-                    this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(), side);
+                    this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(),
+                            side);
                 }
             }));
         }

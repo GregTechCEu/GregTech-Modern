@@ -12,11 +12,11 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
-import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 

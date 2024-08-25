@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeMaterialStructur
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.MaterialPipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -33,6 +32,12 @@ public abstract class PipeMaterialBlock extends PipeBlock {
                              Material material) {
         super(properties, structure);
         this.material = material;
+    }
+
+    @Nullable
+    public static PipeMaterialBlock getBlockFromItem(@NotNull ItemStack stack) {
+        if (stack.getItem() instanceof MaterialPipeBlockItem block) return block.getBlock();
+        else return null;
     }
 
     @Override

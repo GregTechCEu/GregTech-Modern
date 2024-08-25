@@ -19,7 +19,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
 
-    private final AbstractPipeModel<?> model;
+    private final PipeModelRedirector model;
 
     @Override
     public BakedModel bake(IGeometryBakingContext iGeometryBakingContext, ModelBaker baker,
@@ -43,7 +43,7 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
             String[] id = GsonHelper.getAsString(jsonObject, "model_id").split("#");
             ResourceLocation modelId = new ModelResourceLocation(new ResourceLocation(id[0]),
                     id.length > 1 ? id[1] : "");
-            return new UnbakedPipeModel(AbstractPipeModel.MODELS.get(modelId));
+            return new UnbakedPipeModel(PipeModelRegistry.MODELS.get(modelId));
         }
     }
 }

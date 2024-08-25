@@ -523,16 +523,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                     firstNode = false;
                     this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
                 }
-                // TODO
-                // this and updateActiveStatus() theoretically only need to be called when loading old world data;
-                // is there a way to detect that and skip if so?
-                node.getNet().updatePredication(node, this);
             }
             this.netLogicDatas.trim();
             this.listeners.trim();
             this.capabilities.trim();
             this.netCapabilities.trim();
-            updateActiveStatus(null, false);
         }
     }
 
@@ -560,7 +555,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         scheduleRenderUpdate();
     }
 
-    // TODO figure out replacement
     @Override
     public void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf) {
         if (discriminator == UPDATE_PIPE_LOGIC) {

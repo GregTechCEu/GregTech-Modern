@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -32,10 +31,6 @@ public class DuctPipeModel extends AbstractPipeModel<CacheKey> {
 
     private SpriteInformation sideSprite;
     private SpriteInformation endSprite;
-
-    public DuctPipeModel() {
-        super(new ModelResourceLocation(loc, ""));
-    }
 
     @Override
     protected @NotNull CacheKey toKey(@NotNull ModelData state) {
@@ -60,10 +55,11 @@ public class DuctPipeModel extends AbstractPipeModel<CacheKey> {
     }
 
     @Override
-    protected @Nullable PipeItemModel<CacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world,
-                                                             LivingEntity entity) {
+    protected @Nullable PipeItemModel<CacheKey> getItemModel(PipeModelRedirector redirector, @NotNull ItemStack stack,
+                                                             ClientLevel world, LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
-        return new PipeItemModel<>(this, new CacheKey(block.getStructure().getRenderThickness()), new ColorData());
+        return new PipeItemModel<>(redirector, this, new CacheKey(block.getStructure().getRenderThickness()),
+                new ColorData());
     }
 }

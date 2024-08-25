@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
-import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
-import com.gregtechceu.gtceu.client.renderer.pipe.DuctPipeModel;
+import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
+import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public record DuctStructure(String name, float renderThickness, float rateMultiplier) implements IPipeStructure {
 
@@ -36,14 +34,7 @@ public record DuctStructure(String name, float renderThickness, float rateMultip
     }
 
     @Override
-    public AbstractPipeModel<?> getModel() {
-        return DuctPipeModel.INSTANCE;
-    }
-
-    public static void registerDefaultStructures(Consumer<DuctStructure> register) {
-        register.accept(SMALL);
-        register.accept(NORMAL);
-        register.accept(LARGE);
-        register.accept(HUGE);
+    public PipeModelRedirector getModel() {
+        return PipeModelRegistry.getDuctModel();
     }
 }

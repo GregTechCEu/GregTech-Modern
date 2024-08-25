@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.pipe;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.CacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,9 +12,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -22,9 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
-public class PipeItemModel<K extends CacheKey> implements BakedModel {
+public class PipeItemModel<K extends CacheKey> implements IDynamicBakedModel {
 
     private static final Map<ItemDisplayContext, Matrix4f> CAMERA_TRANSFORMS = new HashMap<>();
 
@@ -49,35 +51,39 @@ public class PipeItemModel<K extends CacheKey> implements BakedModel {
         return quatFromXYZDegrees(new Vector3f(x, y, z));
     }
 
+    private final PipeModelRedirector redirector;
     private final AbstractPipeModel<K> basis;
     private final K key;
     private final ColorData data;
 
-    public PipeItemModel(AbstractPipeModel<K> basis, K key, ColorData data) {
+    public PipeItemModel(PipeModelRedirector redirector, AbstractPipeModel<K> basis, K key, ColorData data) {
+        this.redirector = redirector;
         this.basis = basis;
         this.key = key;
         this.data = data;
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                             @NotNull RandomSource rand, @NotNull ModelData modelData,
+                                             @Nullable RenderType renderType) {
         byte z = 0;
         return basis.getQuads(key, (byte) 0b1100, z, z, data, null, z, z);
     }
 
     @Override
     public boolean useAmbientOcclusion() {
-        return basis.useAmbientOcclusion();
+        return redirector.useAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return basis.isGui3d();
+        return redirector.isGui3d();
     }
 
     @Override
     public boolean usesBlockLight() {
-        return basis.usesBlockLight();
+        return redirector.usesBlockLight();
     }
 
     @Override
@@ -89,12 +95,12 @@ public class PipeItemModel<K extends CacheKey> implements BakedModel {
     public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack,
                                      boolean applyLeftHandTransform) {
         poseStack.mulPoseMatrix(CAMERA_TRANSFORMS.get(transformType));
-        return BakedModel.super.applyTransform(transformType, poseStack, applyLeftHandTransform);
+        return this;
     }
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return basis.getParticleIcon();
+        return redirector.getParticleIcon();
     }
 
     @Override

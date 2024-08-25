@@ -53,7 +53,8 @@ public final class EffectRenderContext {
     private float rotationXZ;
 
     @NotNull
-    public EffectRenderContext update(@NotNull Entity renderViewEntity, Camera camera, Frustum frustum, float partialTicks) {
+    public EffectRenderContext update(@NotNull Entity renderViewEntity, Camera camera, Frustum frustum,
+                                      float partialTicks) {
         this.renderViewEntity = renderViewEntity;
         this.partialTicks = partialTicks;
 

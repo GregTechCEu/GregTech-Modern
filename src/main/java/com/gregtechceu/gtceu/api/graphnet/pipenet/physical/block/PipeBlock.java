@@ -425,18 +425,20 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
+                                                 CollisionContext context) {
         var tile = getBlockEntity(level, pos);
         if (tile == null) {
-            return super.getCollisionShape(state, level, pos, context);
-        }
-        if (tile.getFrameMaterial() != null) {
-            return MaterialBlock.FRAME_COLLISION_BOX;
+            return Shapes.block();
         }
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(getStructure().getPipeBoxes(tile));
         tile.getCoverBoxes(shapes::add);
-        return shapes.stream().reduce(Shapes.empty(), Shapes::or);
+        VoxelShape shape = shapes.stream().reduce(Shapes.empty(), Shapes::or);
+        if (tile.getFrameMaterial() != null) {
+            return Shapes.or(shape, MaterialBlock.FRAME_COLLISION_BOX);
+        }
+        return shape;
     }
 
     @Override
@@ -451,17 +453,19 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         if (tile == null) {
             return Shapes.block();
         }
-        if (tile.getFrameMaterial() != null) {
-            return MaterialBlock.FRAME_COLLISION_BOX;
-        }
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(getStructure().getPipeBoxes(tile));
         tile.getCoverBoxes(shapes::add);
-        return shapes.stream().reduce(Shapes.empty(), Shapes::or);
+        VoxelShape shape = shapes.stream().reduce(Shapes.empty(), Shapes::or);
+        if (tile.getFrameMaterial() != null) {
+            return Shapes.or(shape, MaterialBlock.FRAME_COLLISION_BOX);
+        }
+        return shape;
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
+                                  BlockPos pos, BlockPos neighborPos) {
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
@@ -578,14 +582,14 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     }
 
     /*
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, level, pos, neighbor);
-        Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
-        if (facing == null) return;
-        PipeBlockEntity tile = getBlockEntity(level, pos);
-        if (tile != null) tile.onNeighborChanged(level.getBlockState(neighbor).getBlock(), neighbor, false);
-    }
+     * @Override
+     * public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+     * super.onNeighborChange(state, level, pos, neighbor);
+     * Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
+     * if (facing == null) return;
+     * PipeBlockEntity tile = getBlockEntity(level, pos);
+     * if (tile != null) tile.onNeighborChanged(level.getBlockState(neighbor).getBlock(), neighbor, false);
+     * }
      */
 
     @Override

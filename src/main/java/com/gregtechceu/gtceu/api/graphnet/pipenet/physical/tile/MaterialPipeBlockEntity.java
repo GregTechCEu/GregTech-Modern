@@ -26,6 +26,7 @@ public class MaterialPipeBlockEntity extends PipeBlockEntity {
     public int getDefaultPaintingColor() {
         return GTUtil.convertRGBtoARGB(getBlockType().material.getMaterialRGB());
     }
+
     @Override
     public @NotNull ModelData getModelData() {
         return super.getModelData().derive().with(AbstractPipeModel.MATERIAL_PROPERTY, getBlockType().material).build();

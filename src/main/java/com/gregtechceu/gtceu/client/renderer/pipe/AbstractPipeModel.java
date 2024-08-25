@@ -16,10 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -35,24 +32,21 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractPipeModel<K extends CacheKey> implements BakedModel {
-
-    public static final Map<ModelResourceLocation, AbstractPipeModel<?>> MODELS = new Object2ObjectOpenHashMap<>();
+public abstract class AbstractPipeModel<K extends CacheKey> {
 
     public static ModelProperty<Float> THICKNESS_PROPERTY = new ModelProperty<>();
 
     public static ModelProperty<Material> FRAME_MATERIAL_PROPERTY = new ModelProperty<>();
     public static ModelProperty<Byte> FRAME_MASK_PROPERTY = new ModelProperty<>();
 
+    public static ModelProperty<Byte> CONNECTED_MASK_PROPERTY = new ModelProperty<>();
     public static ModelProperty<Byte> CLOSED_MASK_PROPERTY = new ModelProperty<>();
     public static ModelProperty<Byte> BLOCKED_MASK_PROPERTY = new ModelProperty<>();
 
@@ -62,20 +56,6 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
     protected final Object2ObjectOpenHashMap<ResourceLocation, ColorQuadCache> frameCache = new Object2ObjectOpenHashMap<>();
     protected final Object2ObjectOpenHashMap<K, StructureQuadCache> pipeCache = new Object2ObjectOpenHashMap<>();
 
-    @Getter
-    private final ModelResourceLocation loc;
-
-    public AbstractPipeModel(ModelResourceLocation loc) {
-        this.loc = loc;
-        MODELS.put(loc, this);
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
-        return List.of();
-    }
-
-    @Override
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {
@@ -83,7 +63,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
             ColorData data = computeColorData(modelData);
             CoverRendererPackage rendererPackage = modelData.get(CoverRendererPackage.PROPERTY);
             byte coverMask = rendererPackage == null ? 0 : rendererPackage.getMask();
-            List<BakedQuad> quads = getQuads(toKey(modelData), PipeBlock.readConnectionMask(state),
+            List<BakedQuad> quads = getQuads(toKey(modelData), safeByte(modelData.get(CONNECTED_MASK_PROPERTY)),
                     safeByte(modelData.get(CLOSED_MASK_PROPERTY)), safeByte(modelData.get(BLOCKED_MASK_PROPERTY)),
                     data, modelData.get(FRAME_MATERIAL_PROPERTY),
                     safeByte(modelData.get(FRAME_MASK_PROPERTY)), coverMask);
@@ -167,65 +147,18 @@ public abstract class AbstractPipeModel<K extends CacheKey> implements BakedMode
         return spriteInformation.sprite();
     }
 
-    @Override
     public TextureAtlasSprite getParticleIcon(@NotNull ModelData data) {
         return getParticleTexture(safeInt(data.get(COLOR_PROPERTY)), data.get(MATERIAL_PROPERTY));
     }
 
     public abstract SpriteInformation getParticleSprite(@Nullable Material material);
 
-    @Override
-    public boolean useAmbientOcclusion() {
-        return true;
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return true;
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return true;
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return getParticleSprite(null).sprite();
-    }
-
     @Nullable
-    protected abstract PipeItemModel<K> getItemModel(@NotNull ItemStack stack, ClientLevel world, LivingEntity entity);
+    protected abstract PipeItemModel<K> getItemModel(PipeModelRedirector redirector, @NotNull ItemStack stack,
+                                                     ClientLevel world, LivingEntity entity);
 
-    @Override
-    public @NotNull ItemOverrides getOverrides() {
-        return FakeItemOverrides.INSTANCE;
-    }
-
-    @Override
     public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand,
                                              @NotNull ModelData data) {
         return ChunkRenderTypeSet.of(RenderType.cutoutMipped());
-    }
-
-    protected static class FakeItemOverrides extends ItemOverrides {
-
-        public static final FakeItemOverrides INSTANCE = new FakeItemOverrides();
-
-        @Nullable
-        @Override
-        public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel level,
-                                  @Nullable LivingEntity entity, int seed) {
-            if (originalModel instanceof AbstractPipeModel<?> model) {
-                PipeItemModel<?> item = model.getItemModel(stack, level, entity);
-                if (item != null) return item;
-            }
-            return originalModel;
-        }
     }
 }

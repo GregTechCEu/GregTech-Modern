@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.FaceInfo;
@@ -135,15 +136,15 @@ public class StaticFaceBakery {
     }
 
     public static RecolorableBakedQuad bakeRecolorableQuad(
-            Vector3f posFrom,
-            Vector3f posTo,
-            BlockElementFace face,
-            SpriteInformation sprite,
-            Direction facing,
-            ModelState transform,
-            @Nullable BlockElementRotation partRotation,
-            boolean shade,
-            int emissivity) {
+                                                           Vector3f posFrom,
+                                                           Vector3f posTo,
+                                                           BlockElementFace face,
+                                                           SpriteInformation sprite,
+                                                           Direction facing,
+                                                           ModelState transform,
+                                                           @Nullable BlockElementRotation partRotation,
+                                                           boolean shade,
+                                                           int emissivity) {
         BlockFaceUV blockfaceuv = face.uv;
         if (transform.isUvLocked()) {
             blockfaceuv = recomputeUVs(face.uv, facing, transform.getRotation());
@@ -158,7 +159,8 @@ public class StaticFaceBakery {
         blockfaceuv.uvs[2] = Mth.lerp(f, blockfaceuv.uvs[2], f1);
         blockfaceuv.uvs[1] = Mth.lerp(f, blockfaceuv.uvs[1], f2);
         blockfaceuv.uvs[3] = Mth.lerp(f, blockfaceuv.uvs[3], f2);
-        int[] aint = makeVertices(blockfaceuv, sprite.sprite(), facing, setupShape(posFrom, posTo), transform.getRotation(),
+        int[] aint = makeVertices(blockfaceuv, sprite.sprite(), facing, setupShape(posFrom, posTo),
+                transform.getRotation(),
                 partRotation, shade);
         Direction direction = calculateFacing(aint);
         System.arraycopy(afloat, 0, blockfaceuv.uvs, 0, afloat.length);
@@ -168,7 +170,8 @@ public class StaticFaceBakery {
 
         ForgeHooksClient.fillNormal(aint, direction);
         ForgeFaceData data = face.getFaceData();
-        RecolorableBakedQuad quad = new RecolorableBakedQuad(aint, face.tintIndex, direction, sprite, shade, data.ambientOcclusion());
+        RecolorableBakedQuad quad = new RecolorableBakedQuad(aint, face.tintIndex, direction, sprite, shade,
+                data.ambientOcclusion());
         if (!ForgeFaceData.DEFAULT.equals(data)) {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);
@@ -393,7 +396,7 @@ public class StaticFaceBakery {
                 float nX = Float.intBitsToFloat(newVertices[l]);
                 float xY = Float.intBitsToFloat(newVertices[l + 1]);
                 float nZ = Float.intBitsToFloat(newVertices[l + 2]);
-                //noinspection SuspiciousNameCombination
+                // noinspection SuspiciousNameCombination
                 if (Mth.equal(x, nX) && Mth.equal(y, xY) && Mth.equal(z, nZ)) {
                     vertices[j1 + 4] = newVertices[l + 4];
                     vertices[j1 + 4 + 1] = newVertices[l + 4 + 1];

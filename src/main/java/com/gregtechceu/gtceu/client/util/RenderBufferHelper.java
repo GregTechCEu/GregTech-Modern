@@ -130,7 +130,8 @@ public class RenderBufferHelper {
         buffer.vertex(minX, maxY, maxZ).color(r, g, b, a).endVertex();
     }
 
-    public static void renderCubeFace(PoseStack poseStack, VertexConsumer buffer, AABB cuboid, float r, float g, float b, float a,
+    public static void renderCubeFace(PoseStack poseStack, VertexConsumer buffer, AABB cuboid, float r, float g,
+                                      float b, float a,
                                       boolean shade) {
         renderCubeFace(poseStack, buffer,
                 (float) cuboid.minX, (float) cuboid.minY, (float) cuboid.minZ,

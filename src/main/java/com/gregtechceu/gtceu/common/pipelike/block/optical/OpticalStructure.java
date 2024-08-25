@@ -3,26 +3,23 @@ package com.gregtechceu.gtceu.common.pipelike.block.optical;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
-import com.gregtechceu.gtceu.client.renderer.pipe.ActivablePipeModel;
+import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
+import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
-
-public record OpticalStructure(String name, float renderThickness, ActivablePipeModel model) implements IPipeStructure {
+public record OpticalStructure(String name, float renderThickness, PipeModelRedirector model)
+        implements IPipeStructure {
 
     public static final OpticalStructure INSTANCE = new OpticalStructure("optical_pipe_normal", 0.375f,
-            ActivablePipeModel.OPTICAL);
+            PipeModelRegistry.getOpticalModel());
 
-    public OpticalStructure(String name, float renderThickness, ActivablePipeModel model) {
-        this.name = name;
-        this.renderThickness = renderThickness;
-        this.model = model;
+    public OpticalStructure {
         PipeStructureRegistry.register(this);
     }
 
@@ -60,11 +57,7 @@ public record OpticalStructure(String name, float renderThickness, ActivablePipe
     }
 
     @Override
-    public AbstractPipeModel<?> getModel() {
+    public PipeModelRedirector getModel() {
         return model;
-    }
-
-    public static void registerDefaultStructures(Consumer<OpticalStructure> register) {
-        register.accept(INSTANCE);
     }
 }

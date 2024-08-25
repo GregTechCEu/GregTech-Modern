@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.pipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
@@ -10,17 +9,14 @@ import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ActivableCacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
+import com.gregtechceu.gtceu.client.renderer.pipe.util.TextureInformation;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,34 +28,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
-    private static final ResourceLocation loc = GTCEu.id("pipe_activable");
-
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
 
-    public static final ActivablePipeModel OPTICAL = new ActivablePipeModel(
-            GTCEu.id("block/pipe/pipe_optical_in"),
-            GTCEu.id("block/pipe/pipe_optical_side"),
-            GTCEu.id("block/pipe/pipe_optical_side_overlay"),
-            GTCEu.id("block/pipe/pipe_optical_side_overlay_active"),
-            false, "optical");
-    public static final ActivablePipeModel LASER = new ActivablePipeModel(
-            GTCEu.id("block/pipe/pipe_laser_in"),
-            GTCEu.id("block/pipe/pipe_laser_side"),
-            GTCEu.id("block/pipe/pipe_laser_side_overlay"),
-            GTCEu.id("block/pipe/pipe_laser_side_overlay_emissive"),
-            true, "laser");
-
-    private final ResourceLocation inTex;
-    private final ResourceLocation sideTex;
-    private final ResourceLocation overlayTex;
-    private final ResourceLocation overlayActiveTex;
+    private final TextureInformation inTex;
+    private final TextureInformation sideTex;
+    private final TextureInformation overlayTex;
+    private final TextureInformation overlayActiveTex;
 
     private SpriteInformation inSprite;
     private SpriteInformation sideSprite;
@@ -68,12 +47,10 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     private final boolean emissiveActive;
 
-    public ActivablePipeModel(@NotNull ResourceLocation inTex,
-                              @NotNull ResourceLocation sideTex,
-                              @NotNull ResourceLocation overlayTex,
-                              @NotNull ResourceLocation overlayActiveTex, boolean emissiveActive,
-                              String variant) {
-        super(new ModelResourceLocation(loc, variant));
+    public ActivablePipeModel(@NotNull TextureInformation inTex,
+                              @NotNull TextureInformation sideTex,
+                              @NotNull TextureInformation overlayTex,
+                              @NotNull TextureInformation overlayActiveTex, boolean emissiveActive) {
         this.inTex = inTex;
         this.sideTex = sideTex;
         this.overlayTex = overlayTex;
@@ -116,16 +93,18 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     @Override
     protected StructureQuadCache constructForKey(ActivableCacheKey key) {
         if (inSprite == null) {
-            inSprite = new SpriteInformation(ModelFactory.getBlockSprite(inTex), -1);
+            inSprite = new SpriteInformation(ModelFactory.getBlockSprite(inTex.texture()), inTex.colorID());
         }
         if (sideSprite == null) {
-            sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex), -1);
+            sideSprite = new SpriteInformation(ModelFactory.getBlockSprite(sideTex.texture()), sideTex.colorID());
         }
         if (overlaySprite == null) {
-            overlaySprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayTex), 0);
+            overlaySprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayTex.texture()),
+                    overlayTex.colorID());
         }
         if (overlayActiveSprite == null) {
-            overlayActiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayActiveTex), 0);
+            overlayActiveSprite = new SpriteInformation(ModelFactory.getBlockSprite(overlayActiveTex.texture()),
+                    overlayActiveTex.colorID());
         }
 
         return ActivableSQC.create(PipeQuadHelper.create(key.getThickness()), inSprite, sideSprite,
@@ -137,16 +116,13 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     }
 
     @Override
-    protected @Nullable PipeItemModel<ActivableCacheKey> getItemModel(@NotNull ItemStack stack, ClientLevel world,
+    protected @Nullable PipeItemModel<ActivableCacheKey> getItemModel(PipeModelRedirector redirector,
+                                                                      @NotNull ItemStack stack, ClientLevel world,
                                                                       LivingEntity entity) {
         PipeBlock block = PipeBlock.getBlockFromItem(stack);
         if (block == null) return null;
-        return new PipeItemModel<>(this, new ActivableCacheKey(block.getStructure().getRenderThickness(), false),
+        return new PipeItemModel<>(redirector, this,
+                new ActivableCacheKey(block.getStructure().getRenderThickness(), false),
                 new ColorData(PipeBlockEntity.DEFAULT_COLOR));
-    }
-
-    public static void registerModels(BiConsumer<ModelResourceLocation, BakedModel> registry) {
-        registry.accept(OPTICAL.getLoc(), OPTICAL);
-        registry.accept(LASER.getLoc(), LASER);
     }
 }
