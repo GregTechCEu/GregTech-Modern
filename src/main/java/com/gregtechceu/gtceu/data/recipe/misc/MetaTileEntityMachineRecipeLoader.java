@@ -602,7 +602,6 @@ public class MetaTileEntityMachineRecipeLoader {
 
             ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer")
                     .inputItems(DUAL_IMPORT_HATCH[LuV], 1)
-                    .inputItems(DUAL_EXPORT_HATCH[LuV], 1)
                     .inputItems(EMITTER_LuV, 1)
                     .inputItems(CustomTags.LuV_CIRCUITS, 4)
                     .inputItems(AEBlocks.PATTERN_PROVIDER.asItem(), 3)
@@ -615,7 +614,10 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputFluids(SolderingAlloy.getFluid(L * 4))
                     .inputFluids(Lubricant.getFluid(500))
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
-                    .duration(600).EUt(LuV).save(provider);
+                    .scannerResearch(b -> b.researchStack(DUAL_IMPORT_HATCH[LuV].asStack())
+                            .duration(1200)
+                            .EUt(VA[LuV]))
+                    .duration(600).EUt(VA[LuV]).save(provider);
             ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer_proxy")
                     .inputItems(HULL[LuV], 1)
                     .inputItems(SENSOR_LuV, 2)
@@ -627,7 +629,9 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputFluids(SolderingAlloy.getFluid(L * 4))
                     .inputFluids(Lubricant.getFluid(500))
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER_PROXY)
-                    .duration(600).EUt(LuV).save(provider);
+                    .stationResearch(b -> b.researchStack(GTAEMachines.ME_PATTERN_BUFFER.asStack())
+                            .CWUt(32))
+                    .duration(600).EUt(VA[ZPM]).save(provider);
         }
     }
 
