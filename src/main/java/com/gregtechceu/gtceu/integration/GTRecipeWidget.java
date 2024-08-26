@@ -127,13 +127,12 @@ public class GTRecipeWidget extends WidgetGroup {
             capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
-        yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT + 4,
-                        Component.translatable("recipe.condition.dimension_marker.tooltip")));
-                addWidget(dimCondition.setupDimensionMarkers(53 - xOffset, yOffset - 4)
+                addWidget(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
