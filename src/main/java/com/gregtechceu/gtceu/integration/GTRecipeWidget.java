@@ -127,7 +127,9 @@ public class GTRecipeWidget extends WidgetGroup {
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(dimCondition.setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44, recipe.recipeType.getRecipeUI().getJEISize().height - 32)
+                addWidget(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
