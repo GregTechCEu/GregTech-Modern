@@ -81,6 +81,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
             if (item.isEmpty()) continue;
             if (FacadeItemBehaviour.isValidFacade(item)) {
                 FacadeItemBehaviour.setFacadeStack(itemStack, item);
+                itemStack.setCount(6);
                 break;
             }
         }
