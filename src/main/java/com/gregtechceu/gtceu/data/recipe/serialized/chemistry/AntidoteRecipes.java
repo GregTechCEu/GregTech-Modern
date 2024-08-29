@@ -136,6 +136,7 @@ public class AntidoteRecipes {
 
     public static void dtpaProcess(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("dichloroethane")
+                .circuitMeta(2)
                 .inputFluids(Ethylene.getFluid(1000))
                 .inputFluids(Chlorine.getFluid(2000))
                 .notConsumableFluid(Iron3Chloride.getFluid(100))

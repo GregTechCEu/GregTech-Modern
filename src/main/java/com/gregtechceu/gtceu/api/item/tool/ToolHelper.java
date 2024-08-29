@@ -425,7 +425,8 @@ public class ToolHelper {
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
                 GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
+                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine,
+                        be.getMetaMachine().recipeLogic.getChanceCaches())) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix == null) {
@@ -511,9 +512,10 @@ public class ToolHelper {
     }
 
     private static Tier getTier(int harvestLevel) {
-        return TierSortingRegistry.getSortedTiers().stream()
-                .dropWhile(tier -> tier.getLevel() < harvestLevel || tier.getLevel() > harvestLevel).findAny()
-                .orElse(Tiers.WOOD);
+        List<Tier> tiers = TierSortingRegistry.getSortedTiers().stream()
+                .filter(tier -> tier.getLevel() == harvestLevel)
+                .toList();
+        return !tiers.isEmpty() ? tiers.get(tiers.size() - 1) : Tiers.WOOD;
     }
 
     public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {

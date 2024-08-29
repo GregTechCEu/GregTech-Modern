@@ -44,10 +44,10 @@ public class IntegrationLang {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
         provider.add("gtceu.top.energy_production", "Producing");
-        provider.add("gtceu.top.transform_up", "§cStep Up§r");
-        provider.add("gtceu.top.transform_down", "§aStep Down§r");
-        provider.add("gtceu.top.transform_input", "§6Input:§r");
-        provider.add("gtceu.top.transform_output", "§9Output:§r");
+        provider.add("gtceu.top.transform_up", "§cStep Up§r %s");
+        provider.add("gtceu.top.transform_down", "§aStep Down§r %s");
+        provider.add("gtceu.top.transform_input", "§6Input:§r %s");
+        provider.add("gtceu.top.transform_output", "§9Output:§r %s");
         provider.add("gtceu.top.convert_eu", "Converting §eEU§r -> §cFE§r");
         provider.add("gtceu.top.convert_fe", "Converting §cFE§r -> §eEU§r");
         provider.add("gtceu.top.fuel_min_consume", "Needs");
@@ -63,7 +63,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.maintenance.hard_hammer", "Plating is dented");
         provider.add("gtceu.top.maintenance.wire_cutter", "Wires burned out");
         provider.add("gtceu.top.maintenance.crowbar", "That doesn't belong there");
-        provider.add("gtceu.top.primitive_pump_production", "Production:");
+        provider.add("gtceu.top.primitive_pump_production", "Production: %s mB/s");
         provider.add("gtceu.top.filter.label", "Filter:");
         provider.add("gtceu.top.link_cover.color", "Color:");
         provider.add("gtceu.top.mode.export", "Exporting");
@@ -82,9 +82,11 @@ public class IntegrationLang {
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
         provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
+        provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
-        provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
+        provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");

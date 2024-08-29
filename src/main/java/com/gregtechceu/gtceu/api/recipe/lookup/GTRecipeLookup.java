@@ -446,7 +446,7 @@ public class GTRecipeLookup {
                     }
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
-                        retrieveCachedIngredient(list, cap.convertToMapIngredient(content), ingredientRoot);
+                        list.add(cap.convertToMapIngredient(content));
                     }
                 }
             }

@@ -3,6 +3,9 @@
     "type": "item",
     "res": "gtceu:raw_aluminium_block"
   },
+  "items": [
+    "#forge:storage_blocks"
+  ],
   "page": "gtceu:materials/raw_ore_block",
   "position": [
     -300,

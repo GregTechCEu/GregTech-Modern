@@ -79,10 +79,11 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private static boolean checkActiveModContainerIsGregtech() {
+    private boolean checkActiveModContainerIsGregtech() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(GTCEu.MOD_ID) ||
-                container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
+        return container != null && (container.getModId().equals(this.registryName.getNamespace()) ||
+                container.getModId().equals(GTCEu.MOD_ID) ||
+                container.getModId().equals("minecraft")); // check for minecraft modid in case of datagen or a mishap
     }
 
     public void register(K key, V value) {

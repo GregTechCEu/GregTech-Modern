@@ -28,7 +28,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
     static ItemStackHashStrategy comparingAll() {
         return builder().compareItem(true)
                 .compareCount(true)
-                .compareDamage(true)
                 .compareTag(true)
                 .build();
     }
@@ -41,14 +40,13 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      */
     static ItemStackHashStrategy comparingAllButCount() {
         return builder().compareItem(true)
-                .compareDamage(true)
                 .compareTag(true)
                 .build();
     }
 
-    static ItemStackHashStrategy comparingItemDamageCount() {
+    static ItemStackHashStrategy comparingItemTagCount() {
         return builder().compareItem(true)
-                .compareDamage(true)
+                .compareTag(true)
                 .compareCount(true)
                 .build();
     }
@@ -58,7 +56,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      */
     class ItemStackHashStrategyBuilder {
 
-        private boolean item, count, damage, tag;
+        private boolean item, count, tag;
 
         /**
          * Defines whether the Item type should be considered for equality.
@@ -79,17 +77,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
          */
         public ItemStackHashStrategyBuilder compareCount(boolean choice) {
             count = choice;
-            return this;
-        }
-
-        /**
-         * Defines whether damage values should be considered for equality.
-         *
-         * @param choice {@code true} to consider this property, {@code false} to ignore it.
-         * @return {@code this}
-         */
-        public ItemStackHashStrategyBuilder compareDamage(boolean choice) {
-            damage = choice;
             return this;
         }
 
@@ -115,7 +102,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             item ? o.getItem() : null,
                             count ? o.getCount() : null,
-                            damage ? o.getDamageValue() : null,
                             tag ? o.getTag() : null);
                 }
 
@@ -126,7 +112,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
 
                     return (!item || a.getItem() == b.getItem()) &&
                             (!count || a.getCount() == b.getCount()) &&
-                            (!damage || a.getDamageValue() == b.getDamageValue()) &&
                             (!tag || Objects.equals(a.getTag(), b.getTag()));
                 }
             };

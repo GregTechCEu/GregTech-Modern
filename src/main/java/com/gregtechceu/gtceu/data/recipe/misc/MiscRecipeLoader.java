@@ -65,7 +65,7 @@ public class MiscRecipeLoader {
                 .chancedOutput(gem, Flint, 9000, 0)
                 .chancedOutput(gem, Flint, 8000, 0)
                 .chancedOutput(gem, Flint, 6000, 0)
-                .chancedOutput(gem, Flint, 3300, 0)
+                .chancedOutput(gem, Flint, "1/3", 0)
                 .chancedOutput(gem, Flint, 2500, 0)
                 .save(provider);
 
@@ -387,12 +387,6 @@ public class MiscRecipeLoader {
                     .outputItems(dustSmall, Glass, 3)
                     .save(provider);
         }
-
-        // Glass Fluid Extraction
-        EXTRACTOR_RECIPES.recipeBuilder("extract_glass_block")
-                .inputItems(new ItemStack(Blocks.GLASS))
-                .outputFluids(Glass.getFluid(L))
-                .duration(20).EUt(30).save(provider);
 
         // Glass Plate in Alloy Smelter
         ALLOY_SMELTER_RECIPES.recipeBuilder("glass_plate")

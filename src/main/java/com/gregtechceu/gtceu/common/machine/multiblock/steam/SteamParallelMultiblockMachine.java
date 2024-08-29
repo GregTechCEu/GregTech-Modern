@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -83,7 +84,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         // also set the duration to just 1.5x the original, instead of fully multiplied
         recipe.duration = (int) (duration * 1.5);
         eut = (long) Math.min(32, Math.ceil(eut * 1.33));
-        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
         return recipe;
     }
 

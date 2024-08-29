@@ -147,7 +147,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
         machine.afterWorking();
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
         }
         depleteVein();
         // try it again

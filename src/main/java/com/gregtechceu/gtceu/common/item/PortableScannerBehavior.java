@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -386,11 +386,11 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             if (level instanceof ServerLevel serverLevel) {
                 list.add(Component.translatable("behavior.portable_scanner.divider"));
                 var veinData = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
-                Fluid fluid = veinData.getFluidInChunk(pos.getX() / 16, pos.getZ() / 16);
+                Fluid fluid = veinData.getFluidInChunk(pos.getX() >> 4, pos.getZ() >> 4);
 
                 if (fluid != null) {
                     FluidStack stack = new FluidStack(fluid,
-                            veinData.getOperationsRemaining(pos.getX() / 16, pos.getZ() / 16));
+                            veinData.getOperationsRemaining(pos.getX() >> 4, pos.getZ() >> 4));
                     double fluidPercent = stack.getAmount() * 100.0 / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
 
                     if (player.isCreative()) {
@@ -398,7 +398,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(stack.getTranslationKey())
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(
-                                        veinData.getFluidYield(pos.getX() / 16, pos.getZ() / 16)))
+                                        veinData.getFluidYield(pos.getX() >> 4, pos.getZ() >> 4)))
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(fluidPercent))
                                         .withStyle(ChatFormatting.YELLOW)));

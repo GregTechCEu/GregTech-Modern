@@ -11,12 +11,15 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.recipe.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -121,10 +124,14 @@ public class GTRecipeWidget extends WidgetGroup {
             capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
-        yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
+            if (condition instanceof DimensionCondition dimCondition) {
+                addWidget(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
+                        .setBackgroundTexture(IGuiTexture.EMPTY));
+            } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
@@ -199,11 +206,8 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void addButtons() {
         // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
-        int x = getSize().width + 3 - this.xOffset, y = 3;
-        if (LDLib.isEmiLoaded()) {
-            x = getSize().width - xOffset - 18;
-            y = getSize().height - 30;
-        }
+        int x = getSize().width - xOffset - 18;
+        int y = getSize().height - 30;
         addWidget(
                 new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
                         cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
@@ -260,15 +264,24 @@ public class GTRecipeWidget extends WidgetGroup {
         updateScreen();
     }
 
-    public static void setConsumedChance(Content content, List<Component> tooltips) {
+    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips) {
         var chance = content.chance;
-        if (chance < 1) {
-            tooltips.add(chance == 0 ?
-                    Component.translatable("gtceu.gui.content.chance_0") :
-                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
-            if (content.tierChanceBoost != 0) {
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
-                        content.tierChanceBoost * 100));
+        if (chance < ChanceLogic.getMaxChancedValue()) {
+            if (chance == 0) {
+                tooltips.add(Component.translatable("gtceu.gui.content.chance_0"));
+            } else {
+                float chanceFloat = 100 * (float) content.chance / content.maxChance;
+                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                    tooltips.add(Component.translatable("gtceu.gui.content.chance_1_logic",
+                            FormattingUtil.formatNumber2Places(chanceFloat), logic.getTranslation())
+                            .withStyle(ChatFormatting.YELLOW));
+                } else {
+                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chanceFloat));
+                }
+                if (content.tierChanceBoost != 0) {
+                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
+                            content.tierChanceBoost / 100.0f));
+                }
             }
         }
     }

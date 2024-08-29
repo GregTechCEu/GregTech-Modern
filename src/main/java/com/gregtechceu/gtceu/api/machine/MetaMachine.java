@@ -143,7 +143,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
     }
 
-    public Level getLevel() {
+    public @Nullable Level getLevel() {
         return holder.level();
     }
 
@@ -209,9 +209,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
      * @param tag     the CompoundTag to load data from
      * @param forDrop if the save is done for dropping the machine as an item.
      */
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {}
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+        for (MachineTrait trait : this.getTraits()) {
+            trait.saveCustomPersistedData(tag, forDrop);
+        }
+    }
 
-    public void loadCustomPersistedData(CompoundTag tag) {}
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+        for (MachineTrait trait : this.getTraits()) {
+            trait.loadCustomPersistedData(tag);
+        }
+    }
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//

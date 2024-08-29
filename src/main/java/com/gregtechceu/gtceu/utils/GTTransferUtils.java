@@ -37,14 +37,14 @@ public class GTTransferUtils {
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
             FluidStack currentFluid = sourceHandler.getFluidInTank(i);
-            if (currentFluid == FluidStack.empty() || currentFluid.getAmount() == 0 ||
+            if (currentFluid.isEmpty() ||
                     !fluidFilter.test(currentFluid)) {
                 continue;
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
             FluidStack fluidStack = sourceHandler.drain(currentFluid, true);
-            if (fluidStack == FluidStack.empty() || fluidStack.getAmount() == 0) {
+            if (fluidStack.isEmpty()) {
                 continue;
             }
 
@@ -259,6 +259,26 @@ public class GTTransferUtils {
             return stack;
         }
         return handler.insertItem(slot, stack, simulate);
+    }
+
+    public static ItemStack extractItemAccountNotifiableList(
+                                                             IItemTransfer handler, int slot, int amount,
+                                                             boolean simulate) {
+        if (handler instanceof ItemTransferList transferList) {
+            int index = 0;
+            for (var transfer : transferList.transfers) {
+                if (slot - index < transfer.getSlots()) {
+                    if (transfer instanceof NotifiableItemStackHandler notifiable) {
+                        return notifiable.extractItemInternal(slot - index, amount, simulate);
+                    } else {
+                        return transfer.extractItem(slot - index, amount, simulate);
+                    }
+                }
+                index += transfer.getSlots();
+            }
+            return ItemStack.EMPTY;
+        }
+        return handler.extractItem(slot, amount, simulate);
     }
 
     /**

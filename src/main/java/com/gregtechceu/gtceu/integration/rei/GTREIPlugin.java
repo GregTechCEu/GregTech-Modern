@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCatego
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
 
+import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -25,6 +27,7 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.forge.REIPluginClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,7 @@ import static me.shedaniel.rei.plugin.common.BuiltinPlugin.SMELTING;
  * @date 2023/2/25
  * @implNote REIPlugin
  */
+@REIPluginClient
 public class GTREIPlugin implements REIClientPlugin {
 
     @Override
@@ -48,7 +52,7 @@ public class GTREIPlugin implements REIClientPlugin {
         registry.add(new GTBedrockFluidDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     registry.add(new GTRecipeTypeDisplayCategory(gtRecipeType));
                 }
             }
@@ -108,13 +112,13 @@ public class GTREIPlugin implements REIClientPlugin {
             }
 
             var name = material.getName();
-            var label = ToUpperAllWords(name.replace("_", " "));
+            var label = toUpperAllWords(name.replace("_", " "));
             registry.group(GTCEu.id("ore/" + name), Component.translatable("tagprefix.stone", label),
                     EntryIngredients.ofItems(items));
         }
     }
 
-    private static String ToUpperAllWords(String text) {
+    private static String toUpperAllWords(String text) {
         StringBuilder result = new StringBuilder();
         result.append(text.substring(0, 1).toUpperCase());
         for (int i = 1; i < text.length(); i++) {
