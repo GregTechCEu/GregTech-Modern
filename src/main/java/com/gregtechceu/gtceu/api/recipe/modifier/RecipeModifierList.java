@@ -33,10 +33,12 @@ public class RecipeModifierList implements RecipeModifier {
 
         for (RecipeModifier modifier : modifiers) {
             if (modifiedRecipe != null) {
-                modifiedRecipe.duration = result.getDuration();
-                modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
-                        ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
                 modifiedRecipe = modifier.apply(machine, modifiedRecipe, params, result);
+                if(modifiedRecipe != null) {
+                    modifiedRecipe.duration = result.getDuration();
+                    modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
+                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+                }
 
             }
         }

@@ -56,7 +56,7 @@ public class GTRecipeModifiers {
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
             .memoize(ElectricOverclockModifier::new);
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe, params, result) -> GTRecipeModifiers
-            .hatchParallel(machine, recipe, false).getFirst();
+            .hatchParallel(machine, recipe, false, params, result);
 
     public static final RecipeModifier SUBTICK_PARALLEL = GTRecipeModifiers::subtickParallel;
 
@@ -155,17 +155,21 @@ public class GTRecipeModifiers {
         return ParallelLogic.applyParallel(machine, recipe, maxParallel, modifyDuration);
     }
 
-    public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                        boolean modifyDuration) {
+    public static GTRecipe hatchParallel(MetaMachine machine, @NotNull GTRecipe recipe,
+                                                        boolean modifyDuration,
+                                                        @NotNull OCParams params, @NotNull OCResult result) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance)
                     .map(IParallelHatch.class::cast).findAny();
             if (optional.isPresent()) {
                 IParallelHatch hatch = optional.get();
-                return ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(), modifyDuration);
+                var recipeEU = RecipeHelper.getInputEUt(recipe);
+                var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(), modifyDuration);
+                result.init(recipeEU, recipe.duration, parallelRecipe.getSecond());
+                return parallelRecipe.getFirst();
             }
         }
-        return Pair.of(recipe, 1);
+        return recipe;
     }
 
     public static GTRecipe crackerOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
