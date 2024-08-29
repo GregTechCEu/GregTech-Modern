@@ -2077,7 +2077,7 @@ public class GTMachines {
                             .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
                             .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
                             .recipeType(DUMMY_RECIPES)
-                            .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
+                            //.recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                             .pattern(definition -> FactoryBlockPattern.start()
                                     .aisle("XXX", "CCC", "XXX")
                                     .aisle("XXX", "C#C", "XXX")

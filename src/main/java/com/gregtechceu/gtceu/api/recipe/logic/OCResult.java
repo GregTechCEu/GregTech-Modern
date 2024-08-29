@@ -39,6 +39,6 @@ public final class OCResult {
                 "EUt=" + eut + ", " +
                 "duration=" + duration + ", " +
                 "parallel=" + parallel + ", " +
-                "parallelEUt=" + parallelEUt + ", " + ']';
+                "parallelEUt=" + parallelEUt + ']';
     }
 }

@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.recipe.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -128,7 +130,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
         if (machine instanceof SimpleSteamMachine steamMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
                 return null;
@@ -136,6 +138,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine
 
             var modified = recipe.copy();
             modified.conditions.add(VentCondition.INSTANCE);
+
+            if(steamMachine.isHighPressure) {
+                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration);
+            } else {
+                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2);
+            }
 
             if (!steamMachine.isHighPressure) {
                 modified.duration *= 2;

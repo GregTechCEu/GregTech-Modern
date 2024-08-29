@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -101,13 +102,13 @@ public class GTRecipeModifiers {
         @Override
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (RecipeHelper.getRecipeEUtTier(recipe) / recipe.parallels > overclockMachine.getMaxOverclockTier()) {
+                if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
-                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
+                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(), params, result);
             }
             if (machine instanceof ITieredMachine tieredMachine &&
-                    RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+                    result.getEut() > tieredMachine.getTier()) {
                 return null;
             }
             return recipe;
@@ -180,7 +181,7 @@ public class GTRecipeModifiers {
                         if (coilMachine.getCoilTier() > 0) {
                             result.setEut(Math.max(1, (long)(result.getEut() * (1.0 - coilMachine.getCoilTier() * 0.1))));
                         }
-                    }), recipe, coilMachine.getOverclockVoltage());
+                    }), recipe, coilMachine.getOverclockVoltage(), params, result);
         }
         return null;
     }
@@ -200,7 +201,7 @@ public class GTRecipeModifiers {
                             params, result, maxVoltage,
                             blastFurnaceTemperature,
                             recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0)),
-                    recipe, coilMachine.getOverclockVoltage());
+                    recipe, coilMachine.getOverclockVoltage(), params, result);
         }
         return null;
     }
@@ -225,7 +226,7 @@ public class GTRecipeModifiers {
                         } else {
                             result.setDuration(Math.max(1, (int)(result.getDuration() * 2.0 / (tier + 1))));
                         }
-                    }), recipe, coilMachine.getOverclockVoltage());
+                    }), recipe, coilMachine.getOverclockVoltage(), params, result);
         }
         return null;
     }
@@ -236,15 +237,16 @@ public class GTRecipeModifiers {
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
             final int FURNACE_DURATION = 128;
             var parallel = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
-            double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1, maxParallel * 1.0));
+            //double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1, maxParallel * 1.0));
 
             recipe = parallel.getFirst() == recipe ? parallel.getFirst().copy() : parallel.getFirst();
 
             int parallelValue = parallel.getSecond();
-            recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
+            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue);
+            /*recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
             recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));*/
             return recipe;
         }
         return null;
@@ -257,7 +259,7 @@ public class GTRecipeModifiers {
                         OverclockingLogic.subTickParallelOC(params, result,
                                 maxVoltage,
                                 OverclockingLogic.STD_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
-                    }), recipe, electricMachine.getOverclockVoltage());
+                    }), recipe, electricMachine.getOverclockVoltage(), params, result);
 
         }
         return null;

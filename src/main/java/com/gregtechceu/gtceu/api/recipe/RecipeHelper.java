@@ -65,26 +65,27 @@ public class RecipeHelper {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
+    public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage,
+                @NotNull OCParams params, @NotNull OCResult result) {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
-            var ocResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (ocResult.getEut() != EUt || recipe.duration != ocResult.getDuration()) {
+            performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
+            if (result.getEut() != EUt || recipe.duration != result.getDuration()) {
                 recipe = recipe.copy();
-                recipe.duration = ocResult.getDuration();
+                recipe.duration = result.getDuration();
                 for (Content content : recipe.getTickInputContents(EURecipeCapability.CAP)) {
-                    content.content = ocResult.getEut();
+                    content.content = result.getEut();
                 }
             }
         }
         EUt = getOutputEUt(recipe);
         if (EUt > 0) {
-            var ocResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
-            if (ocResult.getEut() != EUt || recipe.duration != ocResult.getDuration()) {
+            performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
+            if (result.getEut() != EUt || recipe.duration != result.getDuration()) {
                 recipe = recipe.copy();
-                recipe.duration = ocResult.getDuration();
+                recipe.duration = result.getDuration();
                 for (Content content : recipe.getTickOutputContents(EURecipeCapability.CAP)) {
-                    content.content = ocResult.getEut();
+                    content.content = result.getEut();
                 }
             }
         }
@@ -98,8 +99,9 @@ public class RecipeHelper {
      * @param recipe the recipe to overclock
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    public static OCResult performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
-                                                  long maxOverclockVoltage) {
+    public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
+                                                  long maxOverclockVoltage,
+                                           @NotNull OCParams params, @NotNull OCResult result) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = maxOverclockVoltage < Integer.MAX_VALUE ? logic.getOverclockForTier(maxOverclockVoltage) :
                 GTUtil.getFakeVoltageTier(maxOverclockVoltage);
@@ -109,17 +111,15 @@ public class RecipeHelper {
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
-        OCParams ocParams = new OCParams();
-        OCResult ocResult = new OCResult();
-        ocParams.initialize(EUt, recipe.duration, numberOfOCs);
-        if(ocParams.getOcAmount() <= 0) {
+
+        params.initialize(EUt, recipe.duration, numberOfOCs);
+        if(params.getOcAmount() <= 0) {
             // number of OCs is <=0, so do not overclock
-            ocResult.init(ocParams.getEut(), ocParams.getDuration());
+            result.init(params.getEut(), params.getDuration());
         } else {
-            logic.getLogic().runOverclockingLogic(ocParams, ocResult, maxOverclockVoltage);
+            logic.getLogic().runOverclockingLogic(params, result, maxOverclockVoltage);
         }
-        ocParams.reset();
-        return ocResult;
+        params.reset();
     }
 
     public static <T> List<T> getInputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {

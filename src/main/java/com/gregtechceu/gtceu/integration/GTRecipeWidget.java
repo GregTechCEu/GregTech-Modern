@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.recipe.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -253,9 +255,11 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > getMinTier() && inputEUt != 0) {
-            LongIntPair pair = RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier]);
-            duration = pair.rightInt();
-            inputEUt = pair.firstLong();
+            OCParams p = new OCParams();
+            OCResult r = new OCResult();
+            RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier], p, r);
+            duration = r.getDuration();
+            inputEUt = r.getEut();
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);

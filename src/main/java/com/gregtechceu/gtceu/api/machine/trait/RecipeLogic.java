@@ -84,8 +84,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     @Persisted
     protected GTRecipe lastOriginRecipe;
-    protected OCParams ocParams;
-    protected OCResult ocResult;
+    protected OCParams ocParams = new OCParams();
+    protected OCResult ocResult = new OCResult();
     @Persisted
     @Getter
     @Setter
@@ -144,6 +144,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
+        ocResult.reset();
         updateTickSubscription();
     }
 
