@@ -342,6 +342,7 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
+        provider.add("item.gtceu.basic_tape.tooltip", "Not strong enough for mechanical issues");
 
         provider.add("item.gtceu.sus_record.desc", "sussy!");
     }

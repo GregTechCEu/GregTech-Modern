@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.client.util.ToolChargeBarRenderer;
+import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.client.renderer.item.LampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,12 +25,14 @@ public class GuiGraphicsMixin {
                      target = "Lnet/minecraft/client/gui/GuiGraphics;minecraft:Lnet/minecraft/client/Minecraft;",
                      shift = At.Shift.BEFORE,
                      ordinal = 0))
-    private void gtceu$renderCustomDurabilityBars(Font font, ItemStack stack, int x, int y, String text,
-                                                  CallbackInfo ci) {
+    private void gtceu$renderCustomItemDecorations(Font font, ItemStack stack, int x, int y, String text,
+                                                   CallbackInfo ci) {
         if (stack.getItem() instanceof IGTTool toolItem) {
             ToolChargeBarRenderer.renderBarsTool((GuiGraphics) (Object) this, toolItem, stack, x, y);
         } else if (stack.getItem() instanceof IComponentItem componentItem) {
             ToolChargeBarRenderer.renderBarsItem((GuiGraphics) (Object) this, componentItem, stack, x, y);
+        } else if (stack.getItem() instanceof LampBlockItem) {
+            LampItemOverlayRenderer.renderOverlay((GuiGraphics) (Object) this, stack, x, y);
         }
     }
 }

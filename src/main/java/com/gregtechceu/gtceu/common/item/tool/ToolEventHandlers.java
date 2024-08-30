@@ -21,11 +21,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -34,11 +33,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
@@ -102,45 +100,47 @@ public class ToolEventHandlers {
      * Handles mined blocks teleporting straight into inventory
      * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
      */
-    public static ObjectArrayList<ItemStack> onHarvestDrops(@Nullable Player player, ItemStack tool, Level world,
-                                                            BlockPos pos, BlockState state, boolean isSilkTouch,
-                                                            int fortuneLevel, ObjectArrayList<ItemStack> drops,
-                                                            float dropChance) {
-        if (player != null && world instanceof ServerLevel serverLevel) {
-            if (tool.isEmpty() || !tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
-                return drops;
-            }
-            if (!isSilkTouch) {
-                ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance,
-                        player.getRandom());
-            }
-            if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
+    public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
+                                                 BlockPos pos, BlockState state, boolean isSilkTouch,
+                                                 int fortuneLevel, List<ItemStack> drops,
+                                                 float dropChance) {
+        if (!tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
+            return drops;
+        }
+        if (!isSilkTouch) {
+            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
+                    player.getRandom());
+        }
+        if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
 
-            CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
-            Block block = state.getBlock();
-            if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
-                Item iceBlock = block.asItem();
-                if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
-                    drops.add(new ItemStack(iceBlock));
-                    world.getServer().tell(new TickTask(0, () -> {
-                        FluidState flowingState = world.getFluidState(pos);
-                        if (flowingState == Fluids.FLOWING_WATER.defaultFluidState()) {
-                            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                        }
-                    }));
-                    ((IGTTool) tool.getItem()).playSound(player);
-                }
-            }
-            if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
-                Iterator<ItemStack> dropItr = drops.iterator();
-                while (dropItr.hasNext()) {
-                    ItemStack dropStack = dropItr.next();
-                    ItemEntity drop = new ItemEntity(EntityType.ITEM, world);
-                    drop.setItem(dropStack);
-
-                    if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
-                        dropItr.remove();
+        CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
+        Block block = state.getBlock();
+        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
+            Item iceBlock = block.asItem();
+            if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
+                drops.add(new ItemStack(iceBlock));
+                level.getServer().tell(new TickTask(0, () -> {
+                    BlockState oldState = level.getBlockState(pos);
+                    if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
+                        // I think it may be a waterlogged block, although the probability is very small
+                        BlockState newState = oldState.hasProperty(BlockStateProperties.WATERLOGGED) ?
+                                oldState.setValue(BlockStateProperties.WATERLOGGED, false) :
+                                Blocks.AIR.defaultBlockState();
+                        level.setBlockAndUpdate(pos, newState);
                     }
+                }));
+                ((IGTTool) tool.getItem()).playSound(player);
+            }
+        }
+        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
+            Iterator<ItemStack> dropItr = drops.iterator();
+            while (dropItr.hasNext()) {
+                ItemStack dropStack = dropItr.next();
+                ItemEntity drop = new ItemEntity(EntityType.ITEM, level);
+                drop.setItem(dropStack);
+
+                if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
+                    dropItr.remove();
                 }
             }
         }

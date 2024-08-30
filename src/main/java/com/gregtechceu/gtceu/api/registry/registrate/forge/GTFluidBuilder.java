@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
+import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Items;
@@ -32,12 +33,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.base.Preconditions;
 import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.*;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import com.tterrag.registrate.util.nullness.*;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import com.tterrag.registrate.util.nullness.NonNullBiFunction;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -232,6 +239,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
         return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material, this.langKey))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
+                .tag(ItemTags.create(new ResourceLocation("ae2", "p2p_attunements/fluid_p2p_tunnel")))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())

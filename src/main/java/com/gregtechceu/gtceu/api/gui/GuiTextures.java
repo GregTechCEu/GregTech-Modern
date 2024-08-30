@@ -83,6 +83,10 @@ public class GuiTextures {
             "gtceu:textures/gui/base/fluid_tank_overlay.png");
     public static final ResourceBorderTexture SLOT = new ResourceBorderTexture("gtceu:textures/gui/base/slot.png", 18,
             18, 1, 1);
+    public static final ResourceBorderTexture SLOT_DARK = new ResourceBorderTexture(
+            "gtceu:textures/gui/base/slot_dark.png", 18,
+            18, 1, 1);
+
     public static final ResourceTexture SLOT_DARKENED = new ResourceTexture(
             "gtceu:textures/gui/base/darkened_slot.png");
     public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/slot_%s.png");
@@ -142,6 +146,8 @@ public class GuiTextures {
             "gtceu:textures/gui/widget/clipboard_text_box.png", 9, 18, 1, 1);
     public static final ResourceTexture DISTRIBUTION_MODE = new ResourceTexture(
             "gtceu:textures/gui/widget/button_distribution_mode.png");
+    public static final ResourceTexture BUTTON_AUTO_PULL = new ResourceTexture(
+            "gtceu:textures/gui/widget/button_me_auto_pull.png");
     public static final ResourceTexture LOCK = new ResourceTexture("gtceu:textures/gui/widget/lock.png");
     public static final ResourceTexture LOCK_WHITE = new ResourceTexture("gtceu:textures/gui/widget/lock_white.png");
     public static final ResourceTexture SWITCH = new ResourceTexture("gtceu:textures/gui/widget/switch.png");
@@ -164,6 +170,10 @@ public class GuiTextures {
     public static final ResourceTexture IO_CONFIG_COVER_SETTINGS = new ResourceTexture(
             "gtceu:textures/gui/icon/io_config/cover_settings.png");
 
+    public static final ResourceTexture PATTERN_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/pattern_overlay.png");
+    public static final ResourceTexture REFUND_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/refund_overlay.png");
     // INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture(
             "gtceu:textures/gui/base/indicator_no_energy.png");
@@ -542,6 +552,12 @@ public class GuiTextures {
                     offset);
         }
     }
+
+    // Lamp item overlay
+    public static final ResourceTexture LAMP_NO_BLOOM = new ResourceTexture(
+            "gtceu:textures/gui/item_overlay/lamp_no_bloom.png");
+    public static final ResourceTexture LAMP_NO_LIGHT = new ResourceTexture(
+            "gtceu:textures/gui/item_overlay/lamp_no_light.png");
 
     // ME hatch/bus
     public static final ResourceTexture NUMBER_BACKGROUND = new ResourceTexture(

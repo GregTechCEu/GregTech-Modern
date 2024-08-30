@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -91,9 +92,16 @@ public class MinerMachine extends WorkableTieredMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
     protected ItemStackTransfer createChargerItemHandler(Object... args) {
         var transfer = new ItemStackTransfer();
-        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
+        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return transfer;
     }
 
@@ -210,10 +218,9 @@ public class MinerMachine extends WorkableTieredMachine
             .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
                 WidgetGroup template = createTemplate(inventorySize).createDefault();
                 SlotWidget batterySlot = createBatterySlot().createDefault();
-                batterySlot.setSelfPosition(new Position(79, 62));
+                batterySlot.setSelfPosition(new Position(100, 10));
                 WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172),
                         template.getSize().height + 8);
-                group.addWidget(batterySlot);
                 Size size = group.getSize();
 
                 template.setSelfPosition(new Position(
@@ -221,6 +228,7 @@ public class MinerMachine extends WorkableTieredMachine
                         (size.height - template.getSize().height) / 2));
 
                 group.addWidget(template);
+                group.addWidget(batterySlot);
                 return group;
             }, (template, machine) -> {
                 if (machine instanceof MinerMachine minerMachine) {

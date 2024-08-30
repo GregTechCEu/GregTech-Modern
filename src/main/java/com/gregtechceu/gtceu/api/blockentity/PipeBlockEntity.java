@@ -391,20 +391,23 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 boolean isOpen = this.isConnected(gridSide);
                 this.setConnection(gridSide, !isOpen, false);
             }
+            playerIn.swing(hand);
             return Pair.of(getPipeTuneTool(), InteractionResult.CONSUME);
         } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
                     getCoverContainer().removeCover(gridSide, playerIn);
+                    playerIn.swing(hand);
+                    return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
             } else {
                 if (frameMaterial != null) {
                     Block.popResource(getLevel(), getPipePos(),
                             GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = null;
+                    playerIn.swing(hand);
+                    return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
             }
         }
 

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,13 +37,21 @@ public class CoilBlock extends ActiveBlock {
 
     public ICoilType coilType;
 
+    //@formatter:off
     public CoilBlock(Properties properties, ICoilType coilType) {
-        super(properties, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+        this(properties, coilType, Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                 Map.of("all", coilType.getTexture())) : null,
-                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer_all"),
+                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer/all"),
                         Map.of("bot_all", coilType.getTexture(),
                                 "top_all", new ResourceLocation(coilType.getTexture() + "_bloom"))) :
                         null);
+    }
+    //@formatter:on
+
+    @SuppressWarnings("DataFlowIssue")
+    public CoilBlock(Properties properties, ICoilType coilType,
+                     @Nullable IRenderer renderer, @Nullable IRenderer activeRenderer) {
+        super(properties, renderer, activeRenderer);
         this.coilType = coilType;
     }
 

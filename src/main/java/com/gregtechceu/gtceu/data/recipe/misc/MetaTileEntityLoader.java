@@ -1,18 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -32,13 +27,14 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.PUMP;
 
 public class MetaTileEntityLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        CraftingComponent.initializeComponents();
-
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP",
                 "PwP", "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_lv", GTBlocks.MACHINE_CASING_LV.asStack(), "PPP",
@@ -552,6 +548,13 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_hatch", GTMachines.COKE_OVEN_HATCH.asStack(),
                 "CD", 'C', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D', GTMachines.WOODEN_DRUM.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
+                GTMachines.CHARCOAL_PILE_IGNITER.asStack(),
+                "ERE", "EHE", "FFF",
+                'E', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze),
+                'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron),
+                'H', GTBlocks.BRONZE_BRICKS_HULL,
+                'F', Items.FLINT_AND_STEEL);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
                 GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
                 GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', CustomTags.LV_CIRCUITS,
@@ -837,7 +840,7 @@ public class MetaTileEntityLoader {
                 'R', ROTOR);
 
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.ULV, HV), "CDC", "DHD", "PDP",
-                'H', HULL, 'D', GTItems.DIODE, 'P', PLATE, 'C', CABLE_QUAD);
+                'H', HULL, 'D', CustomTags.DIODES, 'P', PLATE, 'C', CABLE_QUAD);
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, HV, GTValues.LuV), "CDC", "DHD", "PDP",
                 'H', HULL, 'D', GTItems.SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.LuV, GTMachines.DIODE.length),
@@ -869,17 +872,131 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T',
                 CustomTags.WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_16, "WTW", "WMW", 'M', HULL, 'W', WIRE_HEX, 'T',
-                CustomTags.WOODEN_CHESTS);;
+                CustomTags.WOODEN_CHESTS);
 
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 CustomTags.WOODEN_CHESTS, 'B', CABLE, 'C', CIRCUIT);
-        registerMachineRecipe(provider, GTMachines.FLUID_IMPORT_HATCH, " G", " M", 'M', HULL, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.FLUID_EXPORT_HATCH, " M", " G", 'M', HULL, 'G', GLASS);
 
-        registerMachineRecipe(provider, GTMachines.ITEM_IMPORT_BUS, " C", " M", 'M', HULL, 'C',
-                CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.ITEM_EXPORT_BUS, " M", " C", 'M', HULL, 'C',
-                CustomTags.WOODEN_CHESTS);
+        Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
+                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
+
+        for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 2 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems((ItemStack) HULL.getIngredient(tier))
+                        .inputItems((ItemStack) DRUM.getIngredient(tier))
+                        .circuitMeta(1)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
+
+        for (var machine : GTMachines.FLUID_EXPORT_HATCH) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 2 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("fluid_export_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems((ItemStack) HULL.getIngredient(tier))
+                        .inputItems((ItemStack) DRUM.getIngredient(tier))
+                        .circuitMeta(2)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
+
+        for (var machine : GTMachines.ITEM_IMPORT_BUS) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 2 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("item_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems((ItemStack) HULL.getIngredient(tier))
+                        .inputItems((ItemStack) CRATE.getIngredient(tier))
+                        .circuitMeta(1)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
+
+        for (var machine : GTMachines.ITEM_EXPORT_BUS) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 2 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("item_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems((ItemStack) HULL.getIngredient(tier))
+                        .inputItems((ItemStack) CRATE.getIngredient(tier))
+                        .circuitMeta(2)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
+
+        for (var machine : GTMachines.DUAL_IMPORT_HATCH) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 8 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("dual_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
+                        .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
+                        .inputItems((UnificationEntry) PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems((UnificationEntry) FRAME.getIngredient(tier), 3)
+                        .circuitMeta(1)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
+
+        for (var machine : GTMachines.DUAL_EXPORT_HATCH) {
+            if (machine == null) continue;
+            int tier = machine.getTier();
+            int j = Math.min(fluidMap.length - 1, tier / 2);
+            for (; j < fluidMap.length; j++) {
+                int fluidAmount = GTValues.L * 8 * (tier + 1);
+                GTRecipeTypes.ASSEMBLER_RECIPES
+                        .recipeBuilder("dual_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
+                        .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
+                        .inputItems((UnificationEntry) PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems((UnificationEntry) FRAME.getIngredient(tier), 3)
+                        .circuitMeta(2)
+                        .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
+                        .outputItems(machine)
+                        .duration(300)
+                        .EUt(VA[tier])
+                        .save(provider);
+            }
+        }
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wooden_crate", GTMachines.WOODEN_CRATE.asStack(), "RPR",
                 "PsP", "RPR", 'P', ItemTags.PLANKS, 'R', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
@@ -1038,26 +1155,15 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Neutronium), 'U', GTItems.ELECTRIC_PUMP_UV.asStack(),
                 'G', GTItems.FIELD_GENERATOR_ZPM.asStack(), 'H', GTBlocks.HERMETIC_CASING_UHV.asStack());
 
-        // TODO Buffers
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_lv", GTMachines.BUFFER[0].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.LV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_LV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_LV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_mv", GTMachines.BUFFER[1].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.MV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_MV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_MV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "buffer_hv", GTMachines.BUFFER[2].getStackForm(), "HP",
-        // "CV", 'H', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', MetaItems.ELECTRIC_PUMP_HV.getStackForm(), 'V',
-        // MetaItems.CONVEYOR_MODULE_HV.getStackForm(), 'C', new UnificationEntry(TagPrefix.circuit,
-        // MarkerGTMaterials.Tier.LV));
+        registerMachineRecipe(provider, true, GTMachines.BUFFER, "HP", "CV",
+                'H', HULL, 'P', PUMP, 'V', CONVEYOR, 'C', CustomTags.LV_CIRCUITS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMachines.CLEANROOM.asStack(), "FFF", "RHR",
                 "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R',
                 new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
-        if (ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters && GTCEu.isRebornEnergyLoaded()) {
+        if (ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_1A, " WW", "RMC", " WW", 'C', CIRCUIT,
                     'M', HULL, 'W', CABLE, 'R', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy));
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_4A, " WW", "RMC", " WW", 'C', CIRCUIT,

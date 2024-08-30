@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/material_sets/dull/block",
+  "textures": {
+    "top_all": "gtceu:block/material_sets/radioactive/block_secondary"
+  }
+}

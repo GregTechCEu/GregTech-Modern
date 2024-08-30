@@ -204,6 +204,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
     }
 
+    public MachineBuilder<DEFINITION> tieredHullRenderer(ResourceLocation model) {
+        return renderer(() -> new TieredHullMachineRenderer(tier, model));
+    }
+
     public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
         return renderer(() -> new OverlayTieredMachineRenderer(tier,
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
@@ -274,7 +278,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> noRecipeModifier() {
-        this.recipeModifier = ((machine, recipe) -> recipe);
+        this.recipeModifier = ((machine, recipe, params, result) -> recipe);
         this.alwaysTryModifyRecipe = false;
         return this;
     }
@@ -334,7 +338,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         })
                 .color(() -> () -> IMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
-                .properties(properties -> properties.noLootTable())
+                .properties(BlockBehaviour.Properties::noLootTable)
                 .addLayer(() -> RenderType::cutoutMipped)
                 // .tag(GTToolType.WRENCH.harvestTag)
                 .blockstate(NonNullBiConsumer.noop())

@@ -291,7 +291,7 @@ public class FluidBuilder {
     private void determineName(@Nullable Material material, @Nullable FluidStorageKey key) {
         if (name != null) return;
         if (material == null || key == null) throw new IllegalArgumentException("Fluid must have a name");
-        name = key.getRegistryNameFor(material.getName());
+        name = key.getRegistryNameFor(material);
     }
 
     private void determineTextures(@Nullable Material material, @Nullable FluidStorageKey key, @NotNull String modid) {

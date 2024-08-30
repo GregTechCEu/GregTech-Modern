@@ -19,12 +19,13 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
-import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
@@ -89,15 +90,15 @@ public class CommonProxy {
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
+            ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
 
+        GTValueProviderTypes.init(eventBus);
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
-        // init common features
-        GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
     public static void init() {
@@ -132,6 +133,7 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init();
+        ChanceLogic.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
@@ -226,6 +228,7 @@ public class CommonProxy {
         event.enqueueWork(() -> {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
+            CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
         });
     }
 
@@ -254,7 +257,7 @@ public class CommonProxy {
                     event.getPackType(),
                     Pack.Position.BOTTOM,
                     GTDynamicResourcePack::new));
-        } else {
+        } else if (event.getPackType() == PackType.SERVER_DATA) {
             // Clear old data
             GTDynamicDataPack.clearServer();
 

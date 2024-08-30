@@ -13,7 +13,10 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -54,7 +57,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-    private static final long STEAM_PER_WATER = 160;
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
     @Getter
@@ -116,7 +118,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
             var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
-                    (STEAM_PER_WATER * 100000);
+                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000L);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
@@ -134,7 +136,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     maxDrain - drainWater.get(0).getAmount();
 
             boolean hasDrainedWater = drained > 0;
-            steamGenerated = drained * STEAM_PER_WATER;
+            steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
             if (hasDrainedWater) {
                 // fill steam
@@ -195,11 +197,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
             if (largeBoilerMachine.throttle < 100) {
                 var copied = recipe.copy();
-                copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
+                result.setDuration(recipe.duration * 100 / largeBoilerMachine.throttle);
                 return copied;
             }
             return recipe;

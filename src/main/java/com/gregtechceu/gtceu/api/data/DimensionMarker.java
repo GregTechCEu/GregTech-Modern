@@ -26,37 +26,38 @@ public class DimensionMarker {
     public static final int MAX_TIER = 99;
 
     @Getter
-    public final int tier; // Not only used to represent dimension tier, but also for sorting
+    public final int tier; // not only used to represent dimension tier, but also for sorting
 
+    @Getter
     @Nullable
-    private final String overrideName;
+    private final String overrideName; // there may be other uses, so we store it
 
-    private final SupplierMemoizer.MemoizedSupplier<ItemStack> markerSupplier;
+    private final SupplierMemoizer.MemoizedSupplier<ItemStack> iconSupplier;
 
-    public DimensionMarker(int tier, ResourceLocation resourceLocation, @Nullable String overrideName) {
+    public DimensionMarker(int tier, ResourceLocation itemKey, @Nullable String overrideName) {
         this.tier = tier;
-        this.markerSupplier = SupplierMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(resourceLocation)
+        this.overrideName = overrideName;
+        this.iconSupplier = SupplierMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
                 .map(Holder::get)
                 .map(this::getStack)
                 .orElse(ItemStack.EMPTY));
-        this.overrideName = overrideName;
     }
 
     public DimensionMarker(int tier, Supplier<? extends ItemLike> supplier, @Nullable String overrideName) {
         this.tier = tier;
-        this.markerSupplier = SupplierMemoizer.memoize(() -> getStack(supplier.get().asItem()));
         this.overrideName = overrideName;
+        this.iconSupplier = SupplierMemoizer.memoize(() -> getStack(supplier.get().asItem()));
     }
 
-    public ItemStack getMarker() {
-        return markerSupplier.get();
+    public ItemStack getIcon() {
+        return iconSupplier.get();
     }
 
-    public void register(ResourceLocation id) {
+    public void register(ResourceLocation dimKey) {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
-        GTRegistries.DIMENSION_MARKERS.register(id, this);
+        GTRegistries.DIMENSION_MARKERS.register(dimKey, this);
     }
 
     private ItemStack getStack(Item item) {
@@ -76,12 +77,12 @@ public class DimensionMarker {
         @Nullable
         private String overrideName;
 
-        public Builder(ResourceLocation id) {
-            super(id);
+        public Builder(ResourceLocation dimKey) {
+            super(dimKey);
         }
 
-        public Builder(ResourceLocation id, Object... args) {
-            this(id);
+        public Builder(ResourceLocation dimKey, Object... args) {
+            this(dimKey);
         }
 
         @HideFromJS
