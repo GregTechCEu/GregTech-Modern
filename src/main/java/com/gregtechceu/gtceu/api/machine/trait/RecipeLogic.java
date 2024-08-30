@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -75,13 +77,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     protected GTRecipe lastRecipe;
     /**
-     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}' which can be found
+     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe, OCParams, OCResult)}'
+     * which can be found
      * from {@link RecipeManager}.
      */
     @Nullable
     @Getter
     @Persisted
     protected GTRecipe lastOriginRecipe;
+    protected OCParams ocParams = new OCParams();
+    protected OCResult ocResult = new OCResult();
     @Persisted
     @Getter
     @Setter
@@ -140,6 +145,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
+        ocResult.reset();
         updateTickSubscription();
     }
 
@@ -217,7 +223,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match);
+        var matchCopy = match.copy();
+        var modified = machine.fullModifyRecipe(matchCopy, ocParams, ocResult);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
@@ -454,7 +461,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe);
+                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), ocParams, ocResult);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -497,6 +504,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
+            ocResult.reset();
         }
     }
 

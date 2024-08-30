@@ -278,7 +278,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> noRecipeModifier() {
-        this.recipeModifier = ((machine, recipe) -> recipe);
+        this.recipeModifier = ((machine, recipe, params, result) -> recipe);
         this.alwaysTryModifyRecipe = false;
         return this;
     }
