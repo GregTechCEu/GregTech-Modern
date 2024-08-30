@@ -30,18 +30,18 @@ public class RecipeModifierList implements RecipeModifier {
     @Override
     public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
         GTRecipe modifiedRecipe = recipe;
-
         for (RecipeModifier modifier : modifiers) {
             if (modifiedRecipe != null) {
                 modifiedRecipe = modifier.apply(machine, modifiedRecipe, params, result);
-                if(modifiedRecipe != null) {
-                    modifiedRecipe.duration = result.getDuration();
-                    modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
-                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
-                }
-
             }
         }
+
+        if(modifiedRecipe != null) {
+            modifiedRecipe.duration = result.getDuration();
+            modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
+                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+        }
+        result.reset();
 
         return modifiedRecipe;
     }

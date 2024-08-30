@@ -39,9 +39,14 @@ public class OverclockingLogic {
     public static final int COIL_EUT_DISCOUNT_TEMPERATURE = 900;
 
     public static final OverclockingLogic PERFECT_OVERCLOCK = new OverclockingLogic(PERFECT_DURATION_FACTOR,
-            STD_VOLTAGE_FACTOR);
+            STD_VOLTAGE_FACTOR, false);
     public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(
-            STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR);
+            STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
+
+    public static final OverclockingLogic PERFECT_OVERCLOCK_SUBTICK = new OverclockingLogic(PERFECT_DURATION_FACTOR,
+            STD_VOLTAGE_FACTOR, true);
+    public static final OverclockingLogic NON_PERFECT_OVERCLOCK_SUBTICK = new OverclockingLogic(
+            STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
 
     @Getter
     protected Logic logic;
@@ -50,13 +55,23 @@ public class OverclockingLogic {
         this.logic = logic;
     }
 
-    public OverclockingLogic(double durationFactor, double voltageFactor) {
-        this.logic = (ocParams, ocResult, maxVoltage) -> standardOverclockingLogic(
-                ocParams,
-                ocResult,
-                maxVoltage,
-                durationFactor,
-                voltageFactor);
+    public OverclockingLogic(double durationFactor, double voltageFactor, boolean subtick) {
+        if(subtick) {
+            this.logic = (ocParams, ocResult, maxVoltage) -> subTickParallelOC(
+                    ocParams,
+                    ocResult,
+                    maxVoltage,
+                    durationFactor,
+                    voltageFactor);
+        }
+        else {
+            this.logic = (ocParams, ocResult, maxVoltage) -> standardOverclockingLogic(
+                    ocParams,
+                    ocResult,
+                    maxVoltage,
+                    durationFactor,
+                    voltageFactor);
+        }
     }
 
     /**

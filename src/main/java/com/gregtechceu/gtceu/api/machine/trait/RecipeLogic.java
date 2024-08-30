@@ -222,7 +222,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match, ocParams, ocResult);
+        var matchCopy = match.copy();
+        var modified = machine.fullModifyRecipe(matchCopy, ocParams, ocResult);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
@@ -455,7 +456,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe, ocParams, ocResult);
+                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), ocParams, ocResult);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -498,6 +499,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
+            ocResult.reset();
         }
     }
 

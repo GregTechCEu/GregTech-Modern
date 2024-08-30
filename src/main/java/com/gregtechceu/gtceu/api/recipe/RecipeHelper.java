@@ -70,24 +70,10 @@ public class RecipeHelper {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
             performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
-            if (result.getEut() != EUt || recipe.duration != result.getDuration()) {
-                recipe = recipe.copy();
-                recipe.duration = result.getDuration();
-                for (Content content : recipe.getTickInputContents(EURecipeCapability.CAP)) {
-                    content.content = result.getEut();
-                }
-            }
         }
         EUt = getOutputEUt(recipe);
         if (EUt > 0) {
             performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
-            if (result.getEut() != EUt || recipe.duration != result.getDuration()) {
-                recipe = recipe.copy();
-                recipe.duration = result.getDuration();
-                for (Content content : recipe.getTickOutputContents(EURecipeCapability.CAP)) {
-                    content.content = result.getEut();
-                }
-            }
         }
         return recipe;
     }
