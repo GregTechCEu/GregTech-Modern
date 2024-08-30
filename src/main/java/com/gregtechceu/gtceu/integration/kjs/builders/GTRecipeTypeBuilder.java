@@ -67,6 +67,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         steamMoveType = ProgressTexture.FillDirection.LEFT_TO_RIGHT;
         slotOverlays = new Byte2ObjectArrayMap<>();
         this.sound = null;
+        this.hasResearchSlot = false;
         this.maxTooltips = 3;
         this.isFuelRecipeType = false;
         this.smallRecipeMap = null;
@@ -139,6 +140,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.getRecipeUI().setSteamProgressBarTexture(steamProgressBarTexture);
         type.getRecipeUI().setSteamMoveType(steamMoveType);
         type.setSound(sound);
+        type.setHasResearchSlot(hasResearchSlot);
         type.setMaxTooltips(maxTooltips);
         type.setFuelRecipeType(isFuelRecipeType);
         type.setSmallRecipeMap(smallRecipeMap);
