@@ -258,7 +258,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 .fromItemStackCollection(recipe.getOutputContents(ItemRecipeCapability.CAP)
                         .stream()
                         .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
-                        //.filter(ingredient -> !ingredient.isEmpty())
+                        // .filter(ingredient -> !ingredient.isEmpty())
                         .map(ingredient -> ingredient.getItems()[0])
                         .toList());
 

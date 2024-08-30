@@ -22,5 +22,4 @@ public final class OCParams {
         this.duration = 0;
         this.ocAmount = 0;
     }
-
 }

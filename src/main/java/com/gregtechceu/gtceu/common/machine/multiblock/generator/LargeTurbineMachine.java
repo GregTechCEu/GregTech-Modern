@@ -88,7 +88,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine))
             return null;
 

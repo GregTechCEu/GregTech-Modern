@@ -76,7 +76,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
         var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false);
@@ -87,8 +88,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         result.setDuration((int) (duration * 1.5));
         result.setEut((long) Math.min(32, Math.ceil(eut * 1.33)));
         result.setParallel(parallelRecipe.getSecond());
-        //recipe.duration = (int) (duration * 1.5);
-        //eut = (long) Math.min(32, Math.ceil(eut * 1.33));
+        // recipe.duration = (int) (duration * 1.5);
+        // eut = (long) Math.min(32, Math.ceil(eut * 1.33));
         recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
                 ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
         return recipe;

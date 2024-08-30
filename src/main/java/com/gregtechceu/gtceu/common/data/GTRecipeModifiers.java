@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -10,12 +9,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
@@ -23,8 +19,8 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -32,11 +28,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -58,8 +52,10 @@ public class GTRecipeModifiers {
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe, params, result) -> GTRecipeModifiers
             .hatchParallel(machine, recipe, false, params, result);
 
-    /*public static final RecipeModifier SUBTICK_PARALLEL = GTRecipeModifiers::subtickParallel;
-    public static final RecipeModifier SUBTICK_PARALLEL_PERFECT_OC = GTRecipeModifiers::subtickParallelPerfectOC;*/
+    /*
+     * public static final RecipeModifier SUBTICK_PARALLEL = GTRecipeModifiers::subtickParallel;
+     * public static final RecipeModifier SUBTICK_PARALLEL_PERFECT_OC = GTRecipeModifiers::subtickParallelPerfectOC;
+     */
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe, params, result) -> {
@@ -101,12 +97,14 @@ public class GTRecipeModifiers {
 
         @Nullable
         @Override
-        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                              @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
                 if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
-                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(), params, result);
+                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(),
+                        params, result);
             }
             if (machine instanceof ITieredMachine tieredMachine &&
                     result.getEut() > tieredMachine.getTier()) {
@@ -157,15 +155,16 @@ public class GTRecipeModifiers {
     }
 
     public static GTRecipe hatchParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                        boolean modifyDuration,
-                                                        @NotNull OCParams params, @NotNull OCResult result) {
+                                         boolean modifyDuration,
+                                         @NotNull OCParams params, @NotNull OCResult result) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance)
                     .map(IParallelHatch.class::cast).findAny();
             if (optional.isPresent()) {
                 IParallelHatch hatch = optional.get();
                 var recipeEU = RecipeHelper.getInputEUt(recipe);
-                var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(), modifyDuration);
+                var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(),
+                        modifyDuration);
                 result.init(recipeEU, recipe.duration, parallelRecipe.getSecond());
                 return parallelRecipe.getFirst();
             }
@@ -173,26 +172,28 @@ public class GTRecipeModifiers {
         return recipe;
     }
 
-    public static GTRecipe crackerOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe crackerOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                            @NotNull OCResult result) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
             }
-            var re =  RecipeHelper.applyOverclock(
+            var re = RecipeHelper.applyOverclock(
                     new OverclockingLogic((p, r, maxVoltage) -> {
                         OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
                                 .runOverclockingLogic(params, result, maxVoltage);
                     }), recipe, coilMachine.getOverclockVoltage(), params, result);
 
             if (coilMachine.getCoilTier() > 0) {
-                result.setEut(Math.max(1, (long)(result.getEut() * (1.0 - coilMachine.getCoilTier() * 0.1))));
+                result.setEut(Math.max(1, (long) (result.getEut() * (1.0 - coilMachine.getCoilTier() * 0.1))));
             }
             return re;
         }
         return null;
     }
 
-    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                        @NotNull OCResult result) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
                     100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
@@ -212,7 +213,8 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe,
+                                                 @NotNull OCParams params, @NotNull OCResult result) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
@@ -236,50 +238,58 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe multiSmelterParallel(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe multiSmelterParallel(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                                @NotNull OCResult result) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
 
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
             final int FURNACE_DURATION = 128;
             var parallel = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
-            //double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1, maxParallel * 1.0));
+            // double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1,
+            // maxParallel * 1.0));
 
             recipe = parallel.getFirst() == recipe ? parallel.getFirst().copy() : parallel.getFirst();
 
             int parallelValue = parallel.getSecond();
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
             result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue);
-            /*recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
-            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));*/
+            /*
+             * recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
+             * recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+             * ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+             */
             return recipe;
         }
         return null;
     }
 
-    /*public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
-        if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-            return RecipeHelper.applyOverclock(
-                    new OverclockingLogic((p, r, maxVoltage) -> {
-                        OverclockingLogic.subTickParallelOC(params, result,
-                                maxVoltage,
-                                OverclockingLogic.STD_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
-                    }), recipe, electricMachine.getOverclockVoltage(), params, result);
-
-        }
-        return null;
-    }
-
-    public static GTRecipe subtickParallelPerfectOC(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
-        if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-            return RecipeHelper.applyOverclock(
-                    new OverclockingLogic((p, r, maxVoltage) -> {
-                        OverclockingLogic.subTickParallelOC(params, result,
-                                maxVoltage,
-                                OverclockingLogic.PERFECT_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
-                    }), recipe, electricMachine.getOverclockVoltage(), params, result);
-
-        }
-        return null;
-    }*/
+    /*
+     * public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams
+     * params, @NotNull OCResult result) {
+     * if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
+     * return RecipeHelper.applyOverclock(
+     * new OverclockingLogic((p, r, maxVoltage) -> {
+     * OverclockingLogic.subTickParallelOC(params, result,
+     * maxVoltage,
+     * OverclockingLogic.STD_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
+     * }), recipe, electricMachine.getOverclockVoltage(), params, result);
+     * 
+     * }
+     * return null;
+     * }
+     * 
+     * public static GTRecipe subtickParallelPerfectOC(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams
+     * params, @NotNull OCResult result) {
+     * if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
+     * return RecipeHelper.applyOverclock(
+     * new OverclockingLogic((p, r, maxVoltage) -> {
+     * OverclockingLogic.subTickParallelOC(params, result,
+     * maxVoltage,
+     * OverclockingLogic.PERFECT_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
+     * }), recipe, electricMachine.getOverclockVoltage(), params, result);
+     * 
+     * }
+     * return null;
+     * }
+     */
 }

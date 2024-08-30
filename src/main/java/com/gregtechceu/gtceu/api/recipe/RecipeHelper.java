@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -16,7 +15,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.world.item.ItemStack;
 
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -29,6 +27,7 @@ import java.util.stream.Collectors;
  * @implNote RecipeHelper
  */
 public class RecipeHelper {
+
     public static long getInputEUt(GTRecipe recipe) {
         return recipe.getTickInputContents(EURecipeCapability.CAP).stream()
                 .map(Content::getContent)
@@ -66,7 +65,7 @@ public class RecipeHelper {
      * @return a new recipe
      */
     public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage,
-                @NotNull OCParams params, @NotNull OCResult result) {
+                                          @NotNull OCParams params, @NotNull OCResult result) {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
             performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
@@ -86,7 +85,7 @@ public class RecipeHelper {
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
     public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
-                                                  long maxOverclockVoltage,
+                                           long maxOverclockVoltage,
                                            @NotNull OCParams params, @NotNull OCResult result) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = maxOverclockVoltage < Integer.MAX_VALUE ? logic.getOverclockForTier(maxOverclockVoltage) :
@@ -99,7 +98,7 @@ public class RecipeHelper {
         // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
 
         params.initialize(EUt, recipe.duration, numberOfOCs);
-        if(params.getOcAmount() <= 0) {
+        if (params.getOcAmount() <= 0) {
             // number of OCs is <=0, so do not overclock
             result.init(params.getEut(), params.getDuration());
         } else {

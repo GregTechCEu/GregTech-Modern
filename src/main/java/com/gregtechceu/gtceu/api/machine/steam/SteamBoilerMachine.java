@@ -256,10 +256,11 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected abstract long getBaseSteamOutput();
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = recipe.copy();
-            if(boilerMachine.isHighPressure)
+            if (boilerMachine.isHighPressure)
                 result.setDuration(result.getDuration() / 2);
             // recipe.duration *= 12; // maybe?
             recipe.duration = boilerMachine.isHighPressure ? recipe.duration / 2 : recipe.duration;

@@ -130,7 +130,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof SimpleSteamMachine steamMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
                 return null;
@@ -139,7 +140,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine
             var modified = recipe.copy();
             modified.conditions.add(VentCondition.INSTANCE);
 
-            if(steamMachine.isHighPressure) {
+            if (steamMachine.isHighPressure) {
                 result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration);
             } else {
                 result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2);

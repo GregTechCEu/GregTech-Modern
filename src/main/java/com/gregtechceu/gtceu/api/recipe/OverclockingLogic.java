@@ -21,8 +21,8 @@ public class OverclockingLogic {
          * Performs the actual overclocking on the provided recipe.
          * Override this to call custom overclocking mechanics
          *
-         * @param ocParams        the parameters for the overclock
-         * @param ocResult        the result to store the overclock in
+         * @param ocParams   the parameters for the overclock
+         * @param ocResult   the result to store the overclock in
          * @param maxVoltage the maximum voltage the recipe is allowed to be run at
          */
         void runOverclockingLogic(@NotNull OCParams ocParams, @NotNull OCResult ocResult, long maxVoltage);
@@ -56,15 +56,14 @@ public class OverclockingLogic {
     }
 
     public OverclockingLogic(double durationFactor, double voltageFactor, boolean subtick) {
-        if(subtick) {
+        if (subtick) {
             this.logic = (ocParams, ocResult, maxVoltage) -> subTickParallelOC(
                     ocParams,
                     ocResult,
                     maxVoltage,
                     durationFactor,
                     voltageFactor);
-        }
-        else {
+        } else {
             this.logic = (ocParams, ocResult, maxVoltage) -> standardOverclockingLogic(
                     ocParams,
                     ocResult,
@@ -89,13 +88,14 @@ public class OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    public static void standardOverclockingLogic(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage, double durationFactor,
-                                                        double voltageFactor) {
+    public static void standardOverclockingLogic(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+                                                 double durationFactor,
+                                                 double voltageFactor) {
         double duration = params.getDuration();
         double eut = params.getEut();
         int ocAmount = params.getOcAmount();
 
-        while(ocAmount-- > 0) {
+        while (ocAmount-- > 0) {
             // it is important to do voltage first,
             // so overclocking voltage does not go above the limit before changing duration
 
@@ -113,7 +113,7 @@ public class OverclockingLogic {
             // in case duration overclocking would waste energy
             eut = potentialVoltage;
         }
-        result.init((long)eut, (int)duration);
+        result.init((long) eut, (int) duration);
     }
 
     /**
@@ -133,20 +133,21 @@ public class OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    public static void subTickNonParallelOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage, double durationFactor,
+    public static void subTickNonParallelOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+                                            double durationFactor,
                                             double voltageFactor) {
         double duration = params.getDuration();
         double eut = params.getEut();
         int ocAmount = params.getOcAmount();
 
-        while(ocAmount-- > 0) {
+        while (ocAmount-- > 0) {
             double potentialEUt = eut * voltageFactor;
-            if(potentialEUt > maxVoltage || potentialEUt < 1) break;
+            if (potentialEUt > maxVoltage || potentialEUt < 1) break;
 
             double potentialDuration = duration * durationFactor;
-            if(potentialDuration < 1) {
+            if (potentialDuration < 1) {
                 potentialEUt = eut * durationFactor;
-                if(potentialEUt > maxVoltage || potentialEUt < 1) break;
+                if (potentialEUt > maxVoltage || potentialEUt < 1) break;
             } else {
                 duration = potentialDuration;
             }
@@ -184,7 +185,7 @@ public class OverclockingLogic {
         int parallelIterAmount = 0;
         boolean shouldParallel = false;
 
-        while(ocAmount-- > 0) {
+        while (ocAmount-- > 0) {
             // it is important to do voltage first,
             // so overclocking voltage does not go above the limit before changing duration
 
@@ -193,11 +194,10 @@ public class OverclockingLogic {
             if (potentialVoltage > maxVoltage) break;
             eut = potentialVoltage;
 
-            if(shouldParallel) {
+            if (shouldParallel) {
                 parallel /= durationFactor;
                 parallelIterAmount++;
-            }
-            else {
+            } else {
                 double potentialDuration = duration * durationFactor;
                 if (potentialDuration < 1) {
                     parallel /= durationFactor;
@@ -208,7 +208,8 @@ public class OverclockingLogic {
                 }
             }
         }
-        result.init((long) (eut / Math.pow(voltageFactor, parallelIterAmount)), (int)duration, (int)parallel, (long)eut);
+        result.init((long) (eut / Math.pow(voltageFactor, parallelIterAmount)), (int) duration, (int) parallel,
+                (long) eut);
     }
 
     /**
@@ -233,7 +234,8 @@ public class OverclockingLogic {
      * @param providedTemp the provided temperature
      * @param requiredTemp the temperature required by the recipe
      */
-    public static void heatingCoilOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage, int providedTemp, int requiredTemp) {
+    public static void heatingCoilOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+                                     int providedTemp, int requiredTemp) {
         int perfectOCAmount = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp) / 2;
         double duration = params.getDuration();
         double eut = params.getEut();
@@ -242,15 +244,15 @@ public class OverclockingLogic {
         int parallelIterAmount = 0;
         boolean shouldParallel = false;
 
-        while(ocAmount-- > 0) {
+        while (ocAmount-- > 0) {
             boolean perfect = perfectOCAmount-- > 0;
 
             double potentialEUt = eut * STD_VOLTAGE_FACTOR;
-            if(potentialEUt > maxVoltage) break;
+            if (potentialEUt > maxVoltage) break;
             eut = potentialEUt;
 
-            if(shouldParallel) {
-                if(perfect) {
+            if (shouldParallel) {
+                if (perfect) {
                     parallel *= PERFECT_DURATION_FACTOR_INV;
                 } else {
                     parallel *= STD_DURATION_FACTOR_INV;
@@ -258,14 +260,14 @@ public class OverclockingLogic {
                 parallelIterAmount++;
             } else {
                 double potentialDuration;
-                if(perfect) {
+                if (perfect) {
                     potentialDuration = duration * PERFECT_DURATION_FACTOR;
                 } else {
                     potentialDuration = duration * STD_DURATION_FACTOR;
                 }
 
-                if(potentialDuration < 1) {
-                    if(perfect) {
+                if (potentialDuration < 1) {
+                    if (perfect) {
                         parallel *= PERFECT_DURATION_FACTOR_INV;
                     } else {
                         parallel *= STD_DURATION_FACTOR_INV;
@@ -279,7 +281,8 @@ public class OverclockingLogic {
             }
         }
 
-        result.init((long)(eut / Math.pow(STD_VOLTAGE_FACTOR, parallelIterAmount)), (int)duration, (int)parallel, (long)eut);
+        result.init((long) (eut / Math.pow(STD_VOLTAGE_FACTOR, parallelIterAmount)), (int) duration, (int) parallel,
+                (long) eut);
     }
 
     /**
@@ -304,36 +307,35 @@ public class OverclockingLogic {
      * @param providedTemp the provided temperature
      * @param requiredTemp the temperature required by the recipe
      */
-    public static void heatingCoilNonSubTickOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage, int providedTemp, int requiredTemp) {
-
+    public static void heatingCoilNonSubTickOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+                                               int providedTemp, int requiredTemp) {
         int amountPerfectOC = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp) / 2;
         double duration = params.getDuration();
         double eut = params.getEut();
         double ocAmount = params.getOcAmount();
 
-        while(ocAmount-- > 0) {
+        while (ocAmount-- > 0) {
             boolean perfect = amountPerfectOC-- > 0;
 
             double potentialEUt = eut * STD_VOLTAGE_FACTOR;
-            if(potentialEUt > maxVoltage) {
+            if (potentialEUt > maxVoltage) {
                 break;
             }
             eut = potentialEUt;
 
             double potentialDuration;
-            if(perfect) {
+            if (perfect) {
                 potentialDuration = duration * PERFECT_DURATION_FACTOR;
             } else {
                 potentialDuration = duration * STD_DURATION_FACTOR;
             }
-            if(potentialDuration < 1) {
+            if (potentialDuration < 1) {
                 break;
             }
             duration = potentialDuration;
         }
-        result.init((long)eut, (int)duration);
+        result.init((long) eut, (int) duration);
     }
-
 
     /**
      * @param providedTemp the temperate provided by the machine
@@ -353,10 +355,10 @@ public class OverclockingLogic {
      * @return the discounted EU/t
      */
     public static long applyCoilEUtDiscount(long recipeEUt, int providedTemp, int requiredTemp) {
-        if(requiredTemp < COIL_EUT_DISCOUNT_TEMPERATURE) return recipeEUt;
+        if (requiredTemp < COIL_EUT_DISCOUNT_TEMPERATURE) return recipeEUt;
         int amountEUtDiscount = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp);
-        if(amountEUtDiscount < 1) return recipeEUt;
-        return (long)(recipeEUt * Math.min(1, Math.pow(0.95, amountEUtDiscount)));
+        if (amountEUtDiscount < 1) return recipeEUt;
+        return (long) (recipeEUt * Math.min(1, Math.pow(0.95, amountEUtDiscount)));
     }
 
     /**

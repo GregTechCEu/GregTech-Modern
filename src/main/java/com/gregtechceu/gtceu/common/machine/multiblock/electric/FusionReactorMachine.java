@@ -148,7 +148,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                     !recipe.data.contains("eu_to_start") ||
@@ -160,7 +161,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
             // if the stored heat is >= required energy, recipe is okay to run
             if (heatDiff <= 0) {
-                return RecipeHelper.applyOverclock(new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
+                return RecipeHelper.applyOverclock(
+                        new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
                         fusionReactorMachine.getMaxVoltage(), params, result);
             }
             // if the remaining energy needed is more than stored, do not run
@@ -172,7 +174,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             // increase the stored heat
             fusionReactorMachine.heat += heatDiff;
             fusionReactorMachine.updatePreHeatSubscription();
-            return RecipeHelper.applyOverclock(new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
+            return RecipeHelper.applyOverclock(
+                    new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
                     fusionReactorMachine.getMaxVoltage(), params, result);
         }
         return null;

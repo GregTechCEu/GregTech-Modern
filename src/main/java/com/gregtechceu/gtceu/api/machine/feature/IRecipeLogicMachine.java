@@ -120,7 +120,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
+     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe, OCParams, OCResult)} before setting up recipe.
      * 
      * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
      *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.

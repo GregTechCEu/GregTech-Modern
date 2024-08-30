@@ -36,7 +36,6 @@ import net.minecraft.util.Mth;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;

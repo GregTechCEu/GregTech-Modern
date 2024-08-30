@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public final class OCResult {
+
     private long eut;
     private long parallelEUt;
     private int duration;

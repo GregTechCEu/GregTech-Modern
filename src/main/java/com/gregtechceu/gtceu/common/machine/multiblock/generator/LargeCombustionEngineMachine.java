@@ -110,7 +110,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof LargeCombustionEngineMachine engineMachine) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             // has lubricant
