@@ -203,7 +203,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             if (largeBoilerMachine.throttle < 100) {
                 var copied = recipe.copy();
                 result.setDuration(recipe.duration * 100 / largeBoilerMachine.throttle);
-                // copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
                 return copied;
             }
             return recipe;

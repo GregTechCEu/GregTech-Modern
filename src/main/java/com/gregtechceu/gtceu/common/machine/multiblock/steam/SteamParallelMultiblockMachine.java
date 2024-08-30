@@ -88,8 +88,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         result.setDuration((int) (duration * 1.5));
         result.setEut((long) Math.min(32, Math.ceil(eut * 1.33)));
         result.setParallel(parallelRecipe.getSecond());
-        // recipe.duration = (int) (duration * 1.5);
-        // eut = (long) Math.min(32, Math.ceil(eut * 1.33));
         recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
                 ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
         return recipe;

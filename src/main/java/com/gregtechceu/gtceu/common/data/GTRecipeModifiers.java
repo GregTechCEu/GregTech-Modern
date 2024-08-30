@@ -52,11 +52,6 @@ public class GTRecipeModifiers {
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe, params, result) -> GTRecipeModifiers
             .hatchParallel(machine, recipe, false, params, result);
 
-    /*
-     * public static final RecipeModifier SUBTICK_PARALLEL = GTRecipeModifiers::subtickParallel;
-     * public static final RecipeModifier SUBTICK_PARALLEL_PERFECT_OC = GTRecipeModifiers::subtickParallelPerfectOC;
-     */
-
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe, params, result) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return recipe;
@@ -262,34 +257,4 @@ public class GTRecipeModifiers {
         }
         return null;
     }
-
-    /*
-     * public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams
-     * params, @NotNull OCResult result) {
-     * if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-     * return RecipeHelper.applyOverclock(
-     * new OverclockingLogic((p, r, maxVoltage) -> {
-     * OverclockingLogic.subTickParallelOC(params, result,
-     * maxVoltage,
-     * OverclockingLogic.STD_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
-     * }), recipe, electricMachine.getOverclockVoltage(), params, result);
-     * 
-     * }
-     * return null;
-     * }
-     * 
-     * public static GTRecipe subtickParallelPerfectOC(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams
-     * params, @NotNull OCResult result) {
-     * if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
-     * return RecipeHelper.applyOverclock(
-     * new OverclockingLogic((p, r, maxVoltage) -> {
-     * OverclockingLogic.subTickParallelOC(params, result,
-     * maxVoltage,
-     * OverclockingLogic.PERFECT_DURATION_FACTOR, OverclockingLogic.STD_VOLTAGE_FACTOR);
-     * }), recipe, electricMachine.getOverclockVoltage(), params, result);
-     * 
-     * }
-     * return null;
-     * }
-     */
 }
