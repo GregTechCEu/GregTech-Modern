@@ -62,6 +62,7 @@ public class LangHandler {
         provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
+        provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
 
         provider.add("gtceu.io.import", "Import");
@@ -267,6 +268,8 @@ public class LangHandler {
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
+        provider.add("metaarmor.nms.boosted_jump.enabled", "NanoMuscle™ Suite: Jump Boost Enabled");
+        provider.add("metaarmor.nms.boosted_jump.disabled", "NanoMuscle™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
@@ -469,6 +472,7 @@ public class LangHandler {
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
         replace(provider, GTMaterials.RTMAlloy.getUnlocalizedName(), "RTM Alloy");
+        replace(provider, GTMaterials.HSLASteel.getUnlocalizedName(), "HSLA Steel");
 
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
@@ -878,9 +882,9 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("gtceu.universal.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
-        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of Steam while working");
+        provider.add("gtceu.universal.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of §fSteam §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_hour_lubricant",
-                "Uses §f%d mB/hr §7of Lubricant while working");
+                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
@@ -905,8 +909,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
-        provider.add("gtceu.recipe.environmental_hazard.reverse", "Area must be free of %s");
-        provider.add("gtceu.recipe.environmental_hazard", "Area must have %s");
+        provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");
+        provider.add("gtceu.recipe.environmental_hazard", "§cArea must have %s");
         provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
         provider.add("gtceu.recipe.research", "Requires Research");
@@ -1051,7 +1055,7 @@ public class LangHandler {
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
-        provider.add("gtceu.multiblock.idling", "Idling.");
+        provider.add("gtceu.multiblock.idling", "§6Idling.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
@@ -1189,6 +1193,8 @@ public class LangHandler {
         provider.add("fluid.tile.water", "Water");
         provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
+        provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
+        provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
         provider.add("gtceu.debug.f3_h.enabled",
@@ -1206,8 +1212,12 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
+        provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
+        provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
+        provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
+
         // gui
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
@@ -1259,10 +1269,14 @@ public class LangHandler {
 
         provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
         provider.add("gtceu.gui.me_network.offline", "Network Status: §4Offline§r");
+        provider.add("gtceu.gui.waiting_list", "Sending Queue:");
         provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
         provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
         provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
+        provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
 
         // Decor Stuff
         replace(provider, "block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");

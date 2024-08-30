@@ -26,7 +26,7 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new CableInfoProvider());
         oneProbe.registerProvider(new MachineModeProvider());
         oneProbe.registerProvider(new StainedColorProvider());
-        // oneProbe.registerProvider(new PrimitivePumpInfoProvider());
+        oneProbe.registerProvider(new PrimitivePumpProvider());
         oneProbe.registerProvider(new CoverProvider());
         oneProbe.registerProvider(new HazardCleanerInfoProvider());
         oneProbe.registerProvider(new TransformerInfoProvider());

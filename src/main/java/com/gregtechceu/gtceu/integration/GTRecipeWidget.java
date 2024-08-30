@@ -125,13 +125,12 @@ public class GTRecipeWidget extends WidgetGroup {
             capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
-        yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT + 4,
-                        Component.translatable("recipe.condition.dimension_marker.tooltip")));
-                addWidget(dimCondition.setupDimensionMarkers(53 - xOffset, yOffset - 4)
+                addWidget(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
@@ -208,11 +207,8 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void addButtons() {
         // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
-        int x = getSize().width + 3 - this.xOffset, y = 3;
-        if (LDLib.isEmiLoaded()) {
-            x = getSize().width - xOffset - 18;
-            y = getSize().height - 30;
-        }
+        int x = getSize().width - xOffset - 18;
+        int y = getSize().height - 30;
         addWidget(
                 new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
                         cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),

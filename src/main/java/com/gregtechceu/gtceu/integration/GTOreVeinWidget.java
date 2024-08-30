@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -148,13 +149,13 @@ public class GTOreVeinWidget extends WidgetGroup {
             var transfer = new ItemStackTransfer(dimMarkers.length);
             for (int i = 0; i < dimMarkers.length; i++) {
                 var dimMarker = dimMarkers[i];
-                var markerItem = dimMarker.getMarker();
+                var icon = dimMarker.getIcon();
                 int row = Math.floorDiv(i, rowSlots);
                 SlotWidget dimSlot = new SlotWidget(transfer, i,
                         5 + (16 + interval) * (i - row * rowSlots),
                         yPosition + 18 * row,
                         false, false).setIngredientIO(IngredientIO.CATALYST);
-                transfer.setStackInSlot(i, markerItem);
+                transfer.setStackInSlot(i, icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.setOverlay(
                             new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))
@@ -190,12 +191,12 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public String getOreName(GTOreDefinition oreDefinition) {
-        ResourceLocation id = GTRegistries.ORE_VEINS.getKey(oreDefinition);
+        ResourceLocation id = ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
 
     public String getFluidName(BedrockFluidDefinition fluid) {
-        ResourceLocation id = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid);
+        ResourceLocation id = ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
         return id.getPath();
     }
 }

@@ -48,6 +48,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
     private float charge = 0.0F;
     private static final byte RUNNING_TIMER = 10; // .5 seconds
+    private static final byte JUMPING_TIMER = 10; // .5 seconds
     private static final double LEGGING_ACCEL = 0.085D;
 
     @OnlyIn(Dist.CLIENT)
@@ -78,6 +79,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 ArmorUtils.NIGHTVISION_DURATION;
         byte runningTimer = data.contains("runningTimer") ? data.getByte("runningTimer") : RUNNING_TIMER;
+        byte boostedJumpTimer = data.contains("boostedJumpTimer") ? data.getByte("boostedJumpTimer") : JUMPING_TIMER;
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
@@ -131,11 +133,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             boolean jumping = KeyBind.VANILLA_JUMP.isKeyDown(player);
             boolean sneaking = KeyBind.VANILLA_SNEAK.isKeyDown(player);
 
-            if (canUseEnergy) {
+            if (canUseEnergy && sprinting) {
                 if (runningTimer == 0) {
                     runningTimer = RUNNING_TIMER;
                     item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                    ret = true;
                 }
             }
             if (canUseEnergy && (player.onGround() || player.isInWater()) && sprinting) {
@@ -160,36 +161,50 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = KeyBind.VANILLA_JUMP.isKeyDown(player);
-            if (!world.isClientSide) {
-                boolean onGround = !data.contains("onGround") || data.getBoolean("onGround");
-                if (onGround && !player.onGround() && jumping) {
-                    item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                    ret = true;
-                }
+            boolean boostedJump = data.contains("boostedJump") && data.getBoolean("boostedJump");
+            if (boostedJumpTimer == 0 && KeyBind.BOOTS_ENABLE.isKeyDown(player)) {
+                boostedJump = !boostedJump;
+                boostedJumpTimer = JUMPING_TIMER;
+                player.displayClientMessage(Component
+                        .translatable("metaarmor.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+            }
+            if (boostedJump) {
+                if (!world.isClientSide) {
+                    boolean onGround = !data.contains("onGround") || data.getBoolean("onGround");
+                    if (onGround && !player.onGround() && jumping) {
+                        item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                        ret = true;
+                    }
 
-                if (player.onGround() != onGround) {
-                    data.putBoolean("onGround", player.onGround());
-                }
-            } else {
-                if (canUseEnergy && player.onGround()) {
-                    this.charge = 1.0F;
-                }
+                    if (player.onGround() != onGround) {
+                        data.putBoolean("onGround", player.onGround());
+                    }
+                } else {
+                    if (canUseEnergy && player.onGround()) {
+                        this.charge = 1.0F;
+                    }
 
-                Vec3 delta = player.getDeltaMovement();
-                if (delta.y >= 0.0D && this.charge > 0.0F && !player.isInWater()) {
-                    if (jumping) {
-                        if (this.charge == 1.0F) {
-                            player.setDeltaMovement(delta.x * 3.6D, delta.y, delta.z * 3.6D);
+                    Vec3 delta = player.getDeltaMovement();
+                    if (delta.y >= 0.0D && this.charge > 0.0F && !player.isInWater()) {
+                        if (jumping) {
+                            if (this.charge == 1.0F) {
+                                player.setDeltaMovement(delta.x * 3.6D, delta.y, delta.z * 3.6D);
+                            }
+                            // gives an arc path for movement force
+                            player.addDeltaMovement(new Vec3(0.0, this.charge * 0.32, 0.0));
+                            this.charge = (float) (this.charge * 0.7D);
+                        } else if (this.charge < 1.0F) {
+                            this.charge = 0.0F;
                         }
-                        // gives an arc path for movement force
-                        player.addDeltaMovement(new Vec3(0.0, this.charge * 0.32, 0.0));
-                        this.charge = (float) (this.charge * 0.7D);
-                    } else if (this.charge < 1.0F) {
-                        this.charge = 0.0F;
                     }
                 }
             }
             updateStepHeight(player);
+            data.putBoolean("boostedJump", boostedJump);
+
+            if (boostedJumpTimer > 0) boostedJumpTimer--;
+
+            data.putInt("boostedJumpTimer", boostedJumpTimer);
         }
 
         if (ret) {
@@ -328,7 +343,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("Nightvision");
+            boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

@@ -63,7 +63,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.maintenance.hard_hammer", "Plating is dented");
         provider.add("gtceu.top.maintenance.wire_cutter", "Wires burned out");
         provider.add("gtceu.top.maintenance.crowbar", "That doesn't belong there");
-        provider.add("gtceu.top.primitive_pump_production", "Production:");
+        provider.add("gtceu.top.primitive_pump_production", "Production: %s mB/s");
         provider.add("gtceu.top.filter.label", "Filter:");
         provider.add("gtceu.top.link_cover.color", "Color:");
         provider.add("gtceu.top.mode.export", "Exporting");
@@ -82,9 +82,11 @@ public class IntegrationLang {
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
         provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
+        provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
-        provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
+        provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");

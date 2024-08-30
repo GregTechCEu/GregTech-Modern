@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.networking.IHandlerContext;
@@ -57,15 +57,7 @@ public class SPacketSyncFluidVeins implements IPacket {
 
     @Override
     public void execute(IHandlerContext handler) {
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
-        }
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
-        for (var entry : veins.entrySet()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(entry.getKey(), entry.getValue());
-        }
-        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
+        ClientProxy.CLIENT_FLUID_VEINS.clear();
+        ClientProxy.CLIENT_FLUID_VEINS.putAll(veins);
     }
 }

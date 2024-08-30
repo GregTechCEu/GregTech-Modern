@@ -317,7 +317,7 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public boolean isInput(RecipeJS recipe, InputItem value, ReplacementMatch match) {
+        public boolean isOutput(RecipeJS recipe, InputItem value, ReplacementMatch match) {
             return match instanceof ItemMatch m && value.validForMatching() && m.contains(value.ingredient);
         }
 

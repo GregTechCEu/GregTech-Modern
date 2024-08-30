@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -25,6 +26,8 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
@@ -40,6 +43,7 @@ import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -48,7 +52,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -183,12 +186,7 @@ public class ForgeCommonEventListener {
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
-                if (player.level().getGameTime() % 100 == 0) {
-                    for (ArmorItem.Type type : property.hazardTrigger.protectionType().getEquipmentTypes()) {
-                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
-                                p -> p.broadcastBreakEvent(type.getSlot()));
-                    }
-                }
+                property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
@@ -354,6 +352,84 @@ public class ForgeCommonEventListener {
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
+            }
+        });
+
+        event.getMappings(Registries.BLOCK, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus", "adv_stocking_bus" -> mapping
+                        .remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlock());
+                case "stocking_hatch", "adv_stocking_hatch" -> mapping
+                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlock());
+                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getBlock());
+                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlock());
+            }
+            if (path.contains("input_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlock());
+                }
+            } else if (path.contains("output_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getBlock());
+                }
+            }
+        });
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus", "adv_stocking_bus" -> mapping
+                        .remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlockEntityType());
+                case "stocking_hatch", "adv_stocking_hatch" -> mapping
+                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlockEntityType());
+                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getBlockEntityType());
+                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlockEntityType());
+            }
+            if (path.contains("input_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlockEntityType());
+                }
+            } else if (path.contains("output_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getBlockEntityType());
+                }
+            }
+        });
+        event.getMappings(Registries.ITEM, "gregiceng").forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            switch (path) {
+                case "stocking_bus", "adv_stocking_bus" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getItem());
+                case "stocking_hatch", "adv_stocking_hatch" -> mapping
+                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getItem());
+                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getItem());
+                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getItem());
+            }
+            if (path.contains("input_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getItem());
+                }
+            } else if (path.contains("output_buffer")) {
+                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                if (mapping.getRegistry().containsKey(newName)) {
+                    mapping.remap(mapping.getRegistry().getValue(newName));
+                } else {
+                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getItem());
+                }
             }
         });
 

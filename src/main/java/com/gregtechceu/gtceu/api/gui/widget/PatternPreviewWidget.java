@@ -165,7 +165,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     public static PatternPreviewWidget getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
         if (LEVEL == null) {
             if (Minecraft.getInstance().level == null) {
-                LDLib.LOGGER.error("Try to init pattern previews before level load");
+                GTCEu.LOGGER.error("Try to init pattern previews before level load");
                 throw new IllegalStateException();
             }
             LEVEL = new TrackedDummyWorld();

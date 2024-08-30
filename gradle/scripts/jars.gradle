@@ -1,9 +1,5 @@
 apply plugin: "dev.architectury.loom"
 
-java {
-    withSourcesJar()
-}
-
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
@@ -25,6 +21,12 @@ jar {
 remapSlimJar {
     addNestedDependencies = false
     archiveClassifier = "slim"
+}
+
+tasks.register('sourcesJar', Jar) {
+    from delombok.outputs.files
+    dependsOn delombok
+    archiveClassifier = "sources"
 }
 
 tasks.remapJar.dependsOn('remapSlimJar')

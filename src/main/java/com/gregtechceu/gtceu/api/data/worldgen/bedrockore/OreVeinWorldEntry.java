@@ -47,7 +47,7 @@ public class OreVeinWorldEntry {
         var tag = new CompoundTag();
         tag.putInt("oreYield", oreYield);
         tag.putInt("operationsRemaining", operationsRemaining);
-        if (definition != null) {
+        if (definition != null && GTRegistries.BEDROCK_ORE_DEFINITIONS.getKey(definition) != null) {
             tag.putString("vein", GTRegistries.BEDROCK_ORE_DEFINITIONS.getKey(definition).toString());
         }
         return tag;
