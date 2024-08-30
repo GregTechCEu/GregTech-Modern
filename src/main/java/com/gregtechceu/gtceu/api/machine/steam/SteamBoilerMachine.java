@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -256,9 +258,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected abstract long getBaseSteamOutput();
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = recipe.copy();
+            if (boilerMachine.isHighPressure)
+                result.setDuration(result.getDuration() / 2);
             // recipe.duration *= 12; // maybe?
             recipe.duration = boilerMachine.isHighPressure ? recipe.duration / 2 :
                     recipe.duration;
