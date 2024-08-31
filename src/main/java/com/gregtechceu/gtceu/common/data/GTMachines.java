@@ -854,10 +854,16 @@ public class GTMachines {
     public static final MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
             (tier, builder) -> builder
+
                     .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.input.tooltip"))
+                    .tooltips(
+                       Component.translatable("gtceu.machine.energy_hatch.input.tooltip"),
+                       Component.translatable("gtceu.machine.energy_hatch.input.tooltip.max_voltage_in", V[tier],VNF[tier]),
+                       Component.translatable("gtceu.machine.energy_hatch.input.tooltip.max_amps_in" ,2),
+                       Component.translatable("gtceu.machine.energy_hatch.input.tooltip.max_eu_storage", V[tier] * 32),
+                       Component.translatable("gtceu.universal.enabled"))
                     .overlayTieredHullRenderer("energy_hatch.input")
                     .compassNode("energy_hatch")
                     .register(),

@@ -749,7 +749,10 @@ public class MachineLang {
 
         provider.add("gtceu.machine.dual_hatch.import.tooltip", "Item and Fluid Input for Multiblocks");
         provider.add("gtceu.machine.dual_hatch.export.tooltip", "Item and Fluid Output for Multiblocks");
-        provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
+        provider.add("gtceu.machine.energy_hatch.input.tooltip", "§7Energy Input for Multiblocks");
+        provider.add("gtceu.machine.energy_hatch.input.tooltip.max_voltage_in", "§aVoltage IN§f: %s/t (%s§f)");
+        provider.add("gtceu.machine.energy_hatch.input.tooltip.max_amps_in", "§eAmperage IN up to§f: %sA");
+        provider.add("gtceu.machine.energy_hatch.input.tooltip.max_eu_storage", "§cEnergy Capacity§f: %s EU");
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip",
                 "Multiple Ampere Energy Input for Multiblocks");
         provider.add("gtceu.machine.substation_hatch.input.tooltip", "Energy Input for the Power Substation");
