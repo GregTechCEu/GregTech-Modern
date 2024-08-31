@@ -256,7 +256,7 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
-        public GTRecipeJS itemOutputs(InputItem... outputs) {
+        public GTRecipeJS itemOutputs(OutputItem... outputs) {
             return outputItems(outputs);
         }
 
@@ -268,8 +268,8 @@ public interface GTRecipeSchema {
             return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
         }
 
-        public GTRecipeJS outputItems(InputItem... outputs) {
-            for (InputItem itemStack : outputs) {
+        public GTRecipeJS outputItems(OutputItem... outputs) {
+            for (OutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
                 }
@@ -278,11 +278,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
-            return outputItems(InputItem.of(new ItemStack(input, amount)));
+            return outputItems(OutputItem.of(new ItemStack(input, amount)));
         }
 
         public GTRecipeJS outputItems(Item input) {
-            return outputItems(InputItem.of(new ItemStack(input)));
+            return outputItems(OutputItem.of(new ItemStack(input)));
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material) {
@@ -290,7 +290,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material, int count) {
-            return outputItems(InputItem.of(ChemicalHelper.get(orePrefix, material, count)));
+            return outputItems(OutputItem.of(ChemicalHelper.get(orePrefix, material, count)));
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine) {
@@ -298,7 +298,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(InputItem.of(machine.asStack(count)));
+            return outputItems(OutputItem.of(machine.asStack(count)));
         }
 
         public GTRecipeJS itemOutputsRanged(InputItem ingredient, int min, int max) {
@@ -380,7 +380,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(OutputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                         ChanceLogic.getMaxChancedValue(), chance, new Throwable());
@@ -397,14 +397,14 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
+            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
+            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS chancedOutput(InputItem stack, String fraction, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(OutputItem stack, String fraction, int tierChanceBoost) {
             if (stack.isEmpty()) {
                 return this;
             }
@@ -472,7 +472,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
+            return chancedOutput(OutputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
                     tierChanceBoost);
         }
 

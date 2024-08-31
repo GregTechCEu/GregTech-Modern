@@ -25,12 +25,12 @@ import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
+import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.*;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
-import dev.latvian.mods.kubejs.util.TinyMap;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;
@@ -284,11 +284,11 @@ public class GTRecipeComponents {
             return FluidIngredientJS.of(from);
         }
     };
-    public static final RecipeComponent<InputItem> INPUT_ITEM_OUT = new RecipeComponent<>() {
+    public static final RecipeComponent<OutputItem> OUTPUT_ITEM = new RecipeComponent<>() {
 
         @Override
         public String componentType() {
-            return "input_item_out";
+            return "output_item";
         }
 
         @Override
@@ -298,7 +298,7 @@ public class GTRecipeComponents {
 
         @Override
         public Class<?> componentClass() {
-            return InputItem.class;
+            return OutputItem.class;
         }
 
         @Override
@@ -307,22 +307,22 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, InputItem value) {
-            return recipe.writeInputItem(value);
+        public JsonElement write(RecipeJS recipe, OutputItem value) {
+            return recipe.writeOutputItem(value);
         }
 
         @Override
-        public InputItem read(RecipeJS recipe, Object from) {
-            return recipe.readInputItem(from);
+        public OutputItem read(RecipeJS recipe, Object from) {
+            return recipe.readOutputItem(from);
         }
 
         @Override
-        public boolean isOutput(RecipeJS recipe, InputItem value, ReplacementMatch match) {
-            return match instanceof ItemMatch m && value.validForMatching() && m.contains(value.ingredient);
+        public boolean isOutput(RecipeJS recipe, OutputItem value, ReplacementMatch match) {
+            return match instanceof ItemMatch m && m.contains(value.item);
         }
 
         @Override
-        public String checkEmpty(RecipeKey<InputItem> key, InputItem value) {
+        public String checkEmpty(RecipeKey<OutputItem> key, OutputItem value) {
             if (value.isEmpty()) {
                 return "Ingredient '" + key.name + "' can't be empty!";
             }
@@ -330,10 +330,12 @@ public class GTRecipeComponents {
             return "";
         }
 
-        @Override
-        public RecipeComponent<TinyMap<Character, InputItem>> asPatternKey() {
-            return MapRecipeComponent.ITEM_PATTERN_KEY;
-        }
+        /*
+         * @Override
+         * public RecipeComponent<TinyMap<Character, OutputItem>> asPatternKey() {
+         * return MapRecipeComponent.ITEM_PATTERN_KEY;
+         * }
+         */
 
         @Override
         public String toString() {
@@ -343,7 +345,7 @@ public class GTRecipeComponents {
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
-    public static final ContentJS<InputItem> ITEM_OUT = new ContentJS<>(INPUT_ITEM_OUT,
+    public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(OUTPUT_ITEM,
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);
