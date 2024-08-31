@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,8 +52,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @NotNull
     RecipeLogic getRecipeLogic();
 
-    default GTRecipe fullModifyRecipe(GTRecipe recipe) {
-        return doModifyRecipe(recipe.trimRecipeOutputs(this.getOutputLimits()));
+    default GTRecipe fullModifyRecipe(GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+        return doModifyRecipe(recipe.trimRecipeOutputs(this.getOutputLimits()), params, result);
     }
 
     /**
@@ -62,8 +64,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().apply(self(), recipe);
+    default GTRecipe doModifyRecipe(GTRecipe recipe, @NotNull OCParams params, @NotNull OCResult result) {
+        return self().getDefinition().getRecipeModifier().apply(self(), recipe, params, result);
     }
 
     /**
@@ -118,7 +120,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
+     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe, OCParams, OCResult)} before setting up recipe.
      * 
      * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
      *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
