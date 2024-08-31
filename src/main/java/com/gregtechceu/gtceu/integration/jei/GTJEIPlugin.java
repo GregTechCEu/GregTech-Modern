@@ -65,7 +65,6 @@ public class GTJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
-        MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);

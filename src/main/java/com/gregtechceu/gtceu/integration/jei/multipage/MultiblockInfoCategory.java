@@ -38,14 +38,6 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
                 .toList());
     }
 
-    public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registration.addRecipeCatalyst(multiblockDefinition.asStack(), RECIPE_TYPE);
-            }
-        }
-    }
-
     @Override
     @NotNull
     public RecipeType<MultiblockInfoWrapper> getRecipeType() {

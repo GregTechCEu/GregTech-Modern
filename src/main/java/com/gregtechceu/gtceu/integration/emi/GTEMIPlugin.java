@@ -68,7 +68,6 @@ public class GTEMIPlugin implements EmiPlugin {
         GTOreVeinEmiCategory.registerDisplays(registry);
         GTBedrockFluidEmiCategory.registerDisplays(registry);
         // workstations
-        MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingEmiCategory.registerWorkStations(registry);

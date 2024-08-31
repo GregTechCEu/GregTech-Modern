@@ -58,7 +58,6 @@ public class GTREIPlugin implements REIClientPlugin {
             }
         }
         // workstations
-        MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingDisplayCategory.registerWorkstations(registry);

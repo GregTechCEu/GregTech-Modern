@@ -35,14 +35,6 @@ public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<Mult
                 .forEach(registry::add);
     }
 
-    public static void registerWorkStations(CategoryRegistry registry) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registry.addWorkstations(CATEGORY, EntryStacks.of(multiblockDefinition.asStack()));
-            }
-        }
-    }
-
     @Override
     public int getDisplayHeight() {
         return 160 + 8;
