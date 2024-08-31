@@ -40,12 +40,8 @@ public class BlockTagLoader {
                 GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
     }
 
-    private static void create(RegistrateTagsProvider<Block> provider, String tagName, ResourceLocation... rls) {
-        create(provider, TagUtil.createBlockTag(tagName), rls);
-    }
-
     private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,
-                               ResourceLocation... rls) {
+                               Block... rls) {
         create(provider, ChemicalHelper.getBlockTag(prefix, material), rls);
     }
 

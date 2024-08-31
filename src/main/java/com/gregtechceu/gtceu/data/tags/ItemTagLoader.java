@@ -36,17 +36,17 @@ public class ItemTagLoader {
                 Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
                 Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
                 Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).getId(),
-                GTItems.MATERIAL_ITEMS.get(lens, NetherStar).getId());
-        create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).getId());
-        create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).getId());
-        create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
-        create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
-        create(provider, lens, Color.Purple, GTItems.MATERIAL_ITEMS.get(lens, Amethyst).getId());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get(),
+                GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+        create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).get());
+        create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).get());
+        create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).get());
+        create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
+        create(provider, lens, Color.Purple, GTItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
 
         create(provider, CustomTags.PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
-        create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).getId());
+        create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).get());
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
@@ -80,12 +80,8 @@ public class ItemTagLoader {
                 .addOptionalTag(CustomTags.MAX_CIRCUITS.location());
     }
 
-    private static void create(RegistrateTagsProvider<Item> provider, String tagName, ResourceLocation... rls) {
-        create(provider, TagUtil.createItemTag(tagName), rls);
-    }
-
     private static void create(RegistrateTagsProvider<Item> provider, TagPrefix prefix, Material material,
-                               ResourceLocation... rls) {
+                               Item... rls) {
         create(provider, ChemicalHelper.getTag(prefix, material), rls);
     }
 
