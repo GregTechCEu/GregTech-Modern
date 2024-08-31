@@ -82,7 +82,6 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         }
 
         if (Platform.getMinecraftServer() != null) {
-            GTNetwork.NETWORK.sendToAll(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
         }
     }
 

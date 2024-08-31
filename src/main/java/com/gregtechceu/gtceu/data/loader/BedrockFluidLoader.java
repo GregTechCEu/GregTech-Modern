@@ -78,11 +78,6 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
         if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
         }
-
-        if (Platform.getMinecraftServer() != null) {
-            GTNetwork.NETWORK
-                    .sendToAll(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
-        }
     }
 
     public static BedrockFluidDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
