@@ -52,7 +52,7 @@ public class BlockTagLoader {
     public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
         var builder = provider.addTag(tagKey);
         for (Block block : rls) {
-            builder.addOptional(BuiltInRegistries.BLOCK.getKey(block));
+            builder.add(BuiltInRegistries.BLOCK.getResourceKey(block).get());
         }
     }
 

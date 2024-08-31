@@ -16,12 +16,9 @@ import net.minecraft.world.level.material.Fluid;
 public class CustomTags {
 
     // Added Vanilla tags
-    public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
-    public static final TagKey<Item> GLASS_BLOCKS = TagUtil.createItemTag("glass");
-    public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
-    public static final TagKey<Item> SEEDS = TagUtil.createItemTag("seeds");
-    public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concrete");
-    public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powder");
+    public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concretes");
+    public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powders");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
@@ -30,6 +27,7 @@ public class CustomTags {
     public static final TagKey<Item> DIODES = TagUtil.createModItemTag("diodes");
     public static final TagKey<Item> INDUCTORS = TagUtil.createModItemTag("inductors");
 
+    public static final TagKey<Item> CIRCUITS = TagUtil.createModItemTag("circuits");
     public static final TagKey<Item> ULV_CIRCUITS = TagUtil.createModItemTag("circuits/ulv");
     public static final TagKey<Item> LV_CIRCUITS = TagUtil.createModItemTag("circuits/lv");
     public static final TagKey<Item> MV_CIRCUITS = TagUtil.createModItemTag("circuits/mv");
@@ -47,7 +45,7 @@ public class CustomTags {
     public static final TagKey<Item> MAX_CIRCUITS = TagUtil.createModItemTag("circuits/max");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] CIRCUITS = new TagKey[] {
+    public static final TagKey<Item>[] CIRCUITS_ARRAY = new TagKey[] {
             ULV_CIRCUITS,
             LV_CIRCUITS,
             MV_CIRCUITS,
@@ -65,6 +63,7 @@ public class CustomTags {
             MAX_CIRCUITS
     };
 
+    public static final TagKey<Item> BATTERIES = TagUtil.createModItemTag("batteries/ulv");
     public static final TagKey<Item> ULV_BATTERIES = TagUtil.createModItemTag("batteries/ulv");
     public static final TagKey<Item> LV_BATTERIES = TagUtil.createModItemTag("batteries/lv");
     public static final TagKey<Item> MV_BATTERIES = TagUtil.createModItemTag("batteries/mv");
@@ -77,7 +76,7 @@ public class CustomTags {
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] BATTERIES = new TagKey[] {
+    public static final TagKey<Item>[] BATTERIES_ARRAY = new TagKey[] {
             ULV_BATTERIES,
             LV_BATTERIES,
             MV_BATTERIES,
@@ -93,7 +92,6 @@ public class CustomTags {
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
 
     // Platform-dependent tags
-    public static final TagKey<Item> RUBBER_LOGS_ITEM = TagUtil.createModItemTag("logs/rubber");
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createBlockTag("needs_gold_tool");
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createBlockTag("needs_netherite_tool");
@@ -112,16 +110,10 @@ public class CustomTags {
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
-    public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concrete");
-    public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powder");
-    public static final TagKey<Block> GLASS_BLOCKS_BLOCK = TagUtil.createBlockTag("glass");
-    public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
+    public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");
+    public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powders");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK,
             new ResourceLocation(GTValues.MODID_CREATE, "seats"));
-    public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
-
-    public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createModBlockTag("logs/rubber");
-    public static final TagKey<Item> WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
     public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");

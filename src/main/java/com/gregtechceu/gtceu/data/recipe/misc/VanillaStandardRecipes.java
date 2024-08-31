@@ -574,7 +574,7 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(CustomTags.WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+                .inputItems(Tags.Items.CHESTS_WOODEN).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
                 .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
@@ -1019,7 +1019,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV])
-                .inputItems(CustomTags.WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
+                .inputItems(Tags.Items.CHESTS_WOODEN).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
                 .outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL)

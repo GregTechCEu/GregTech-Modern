@@ -15,9 +15,9 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import net.minecraftforge.common.Tags;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -44,7 +44,7 @@ public class ItemTagLoader {
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
         create(provider, lens, Color.Purple, GTItems.MATERIAL_ITEMS.get(lens, Amethyst).getId());
 
-        create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
+        create(provider, CustomTags.PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
         create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).getId());
 
@@ -61,6 +61,23 @@ public class ItemTagLoader {
         provider.addTag(ItemTags.PLANKS)
                 .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, TreatedWood).getId()))
                 .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, Wood).getId()));
+
+        provider.addTag(CustomTags.CIRCUITS)
+                .addTag(CustomTags.ULV_CIRCUITS)
+                .addTag(CustomTags.LV_CIRCUITS)
+                .addTag(CustomTags.MV_CIRCUITS)
+                .addTag(CustomTags.HV_CIRCUITS)
+                .addTag(CustomTags.EV_CIRCUITS)
+                .addTag(CustomTags.IV_CIRCUITS)
+                .addTag(CustomTags.LuV_CIRCUITS)
+                .addTag(CustomTags.ZPM_CIRCUITS)
+                .addTag(CustomTags.UV_CIRCUITS)
+                .addOptionalTag(CustomTags.UHV_CIRCUITS.location())
+                .addOptionalTag(CustomTags.UEV_CIRCUITS.location())
+                .addOptionalTag(CustomTags.UIV_CIRCUITS.location())
+                .addOptionalTag(CustomTags.UXV_CIRCUITS.location())
+                .addOptionalTag(CustomTags.OpV_CIRCUITS.location())
+                .addOptionalTag(CustomTags.MAX_CIRCUITS.location());
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, String tagName, ResourceLocation... rls) {
