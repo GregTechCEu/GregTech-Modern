@@ -330,13 +330,6 @@ public class GTRecipeComponents {
             return "";
         }
 
-        /*
-         * @Override
-         * public RecipeComponent<TinyMap<Character, OutputItem>> asPatternKey() {
-         * return MapRecipeComponent.ITEM_PATTERN_KEY;
-         * }
-         */
-
         @Override
         public String toString() {
             return componentType();
