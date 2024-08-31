@@ -119,7 +119,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         private ItemStackTransfer itemTransfer;
 
         public InaccessibleInfiniteHandler(MetaMachine holder) {
-            super(holder, 0, IO.OUT, IO.NONE);
+            super(holder, 1, IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
 
