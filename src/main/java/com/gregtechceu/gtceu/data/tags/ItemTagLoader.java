@@ -72,7 +72,7 @@ public class ItemTagLoader {
                 .addTag(CustomTags.LuV_CIRCUITS)
                 .addTag(CustomTags.ZPM_CIRCUITS)
                 .addTag(CustomTags.UV_CIRCUITS)
-                .addOptionalTag(CustomTags.UHV_CIRCUITS.location())
+                .addTag(CustomTags.UHV_CIRCUITS)
                 .addOptionalTag(CustomTags.UEV_CIRCUITS.location())
                 .addOptionalTag(CustomTags.UIV_CIRCUITS.location())
                 .addOptionalTag(CustomTags.UXV_CIRCUITS.location())
