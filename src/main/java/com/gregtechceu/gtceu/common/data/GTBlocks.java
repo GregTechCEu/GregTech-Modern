@@ -1355,7 +1355,6 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.OAK_PLANKS)
             .lang("Treated Wood Planks")
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
-            .tag(BlockTags.PLANKS)
             .item()
             // purposefully omit planks item tag as this block is treated differently from wood in recipes
             .tag(TagUtil.createItemTag("treated_wood")) // matches IE treated wood tag
