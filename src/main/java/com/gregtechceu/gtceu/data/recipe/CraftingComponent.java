@@ -923,9 +923,6 @@ public class CraftingComponent {
 
     public static class Component {
 
-        /**
-         * All values in {@code ingredients} should be of the same type for casting purposes. UB if otherwise.
-         */
         private final Map<Integer, Object> ingredients;
 
         public Component(Map<Integer, Object> craftingComponents) {
