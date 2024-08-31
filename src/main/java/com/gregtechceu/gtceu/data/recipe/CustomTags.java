@@ -132,4 +132,5 @@ public class CustomTags {
             "chemical_immune");
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
+    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
 }

@@ -643,7 +643,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    (int) Math.min(4000000L * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
+                    (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
             (tier, builder) -> builder
                     .langValue("Super Chest " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -653,7 +653,7 @@ public class GTMachines {
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier))))
+                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_chest")
                     .register(),
             LOW_TIERS);
@@ -661,7 +661,7 @@ public class GTMachines {
     public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
                     tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            (int) Math.min(4000000L * (long) Math.pow(2, tier), Integer.MAX_VALUE)),
+                            (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
             (tier, builder) -> builder
                     .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -672,7 +672,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
                                     /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier))))
+                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_chest")
                     .register(),
             HIGH_TIERS);
@@ -698,7 +698,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier)),
+                    4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
                     .langValue("Super Tank " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -708,7 +708,7 @@ public class GTMachines {
                     .tooltipBuilder(createTankTooltips("stored", null))
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier))))
+                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_tank")
                     .register(),
             LOW_TIERS);
@@ -716,7 +716,7 @@ public class GTMachines {
     public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
                     tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier)),
+                            4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
                     .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -727,7 +727,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier))))
+                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_tank")
                     .register(),
             HIGH_TIERS);
@@ -1115,14 +1115,15 @@ public class GTMachines {
                                     new PartAbility[] { PartAbility.IMPORT_ITEMS })
                     .overlayTieredHullRenderer("dual_hatch.import")
                     .tooltips(
-                            Component.translatable("gtceu.machine.buffer.import.tooltip"),
+                            Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable(
                                     "gtceu.universal.tooltip.item_storage_capacity",
                                     (int) Math.pow((tier - 4), 2)),
                             Component.translatable(
                                     "gtceu.universal.tooltip.fluid_storage_capacity_mult",
                                     (tier - 4),
-                                    DualHatchPartMachine.INITIAL_TANK_CAPACITY * (1L << (tier - 6))),
+                                    DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY,
+                                            tier)),
                             Component.translatable("gtceu.universal.enabled"))
                     .compassNode("dual_hatch")
                     .register(),
@@ -1139,14 +1140,14 @@ public class GTMachines {
                                     new PartAbility[] { PartAbility.EXPORT_ITEMS })
                     .overlayTieredHullRenderer("dual_hatch.export")
                     .tooltips(
-                            Component.translatable("gtceu.machine.buffer.export.tooltip"),
+                            Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
                             Component.translatable(
                                     "gtceu.universal.tooltip.item_storage_capacity",
-                                    (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
+                                    (int) Math.pow((tier - 4), 2)),
                             Component.translatable(
                                     "gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                    1 + Math.min(9, tier),
-                                    FluidHatchPartMachine.getTankCapacity(
+                                    (tier - 4),
+                                    DualHatchPartMachine.getTankCapacity(
                                             DualHatchPartMachine.INITIAL_TANK_CAPACITY, tier)),
                             Component.translatable("gtceu.universal.enabled"))
                     .compassNode("dual_hatch")
@@ -1329,8 +1330,8 @@ public class GTMachines {
             .tooltips(GTMachines.defaultEnvironmentRequirement())
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_PTFE_INERT)
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
@@ -1398,8 +1399,8 @@ public class GTMachines {
             .multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -1421,7 +1422,9 @@ public class GTMachines {
             .multiblock("pyrolyse_oven", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers::pyrolyseOvenOverclock, GTRecipeModifiers.SUBTICK_PARALLEL)
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK),
+                    GTRecipeModifiers::pyrolyseOvenOverclock)
             .appearanceBlock(MACHINE_CASING_ULV)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -1477,8 +1480,9 @@ public class GTMachines {
             .multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK),
+                    GTRecipeModifiers::multiSmelterParallel)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                     Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
@@ -1585,8 +1589,8 @@ public class GTMachines {
             .multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("YSY", "YYY", "YYY")
@@ -1616,8 +1620,8 @@ public class GTMachines {
             .langValue("Evaporation Tower")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.EVAPORATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STAINLESS_EVAPORATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("FYF", "YYY", "FYF")
@@ -1648,8 +1652,8 @@ public class GTMachines {
             .multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -1672,8 +1676,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .alwaysTryModifyRecipe(true)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.SUBTICK_PARALLEL,
-                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
                     .aisle("FIF", "RTR", "SAG", "#Y#")
@@ -2081,7 +2085,7 @@ public class GTMachines {
                             .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
                             .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
                             .recipeType(DUMMY_RECIPES)
-                            .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
+                            // .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                             .pattern(definition -> FactoryBlockPattern.start()
                                     .aisle("XXX", "CCC", "XXX")
                                     .aisle("XXX", "C#C", "XXX")

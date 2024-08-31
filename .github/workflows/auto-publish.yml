@@ -3,10 +3,6 @@ name: Auto Publish, Releasing
 on:
   workflow_dispatch:
     inputs:
-      lastReleaseTag:
-        description: 'tag of the last full release.'
-        required: true
-        type: string
       releaseType:
         description: 'release type'
         required: true
@@ -65,14 +61,6 @@ jobs:
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
-
-      - name: Update CHANGELOG
-        id: changelog
-        uses: requarks/changelog-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fromTag: ${{ github.ref_name }}
-          toTag: ${{ inputs.lastReleaseTag }}
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: mc-publish-forge

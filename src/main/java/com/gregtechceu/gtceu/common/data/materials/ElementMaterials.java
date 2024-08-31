@@ -205,7 +205,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(1358))
                 .ore()
                 .color(0xe77c56).secondaryColor(0xe4673e).iconSet(BRIGHT)
-                .appendFlags(EXT_METAL, MORTAR_GRINDABLE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
+                .appendFlags(EXT_METAL, MORTAR_GRINDABLE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_RING,
+                        GENERATE_FINE_WIRE)
                 .element(GTElements.Cu)
                 .cableProperties(GTValues.V[2], 1, 2)
                 .fluidPipeProperties(1696, 6, true)
@@ -838,7 +839,7 @@ public class ElementMaterials {
 
         Titanium = new Material.Builder(GTCEu.id("titanium")) // todo Ore? Look at EBF recipe here if we do Ti ores
                 .ingot(3).fluid()
-                .color(0xee3be8).secondaryColor(0xff64bc).iconSet(METALLIC)
+                .color(0xed8eea).secondaryColor(0xff64bc).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)

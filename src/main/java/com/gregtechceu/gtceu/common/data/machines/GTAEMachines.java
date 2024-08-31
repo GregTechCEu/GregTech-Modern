@@ -51,7 +51,7 @@ public class GTAEMachines {
             .langValue("ME Output Bus")
             .tier(EV)
             .rotationState(RotationState.ALL)
-            .abilities(PartAbility.IMPORT_ITEMS)
+            .abilities(PartAbility.EXPORT_ITEMS)
             .overlayTieredHullRenderer("me_item_bus.export")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.me.item_export.tooltip"),
