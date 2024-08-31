@@ -56,8 +56,10 @@ import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuild
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import dev.latvian.mods.kubejs.item.InputItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
@@ -186,6 +188,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtSuOut", GTRecipeComponents.SU_OUT);
 
         event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
+        event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUT);
 
         event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
         event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
@@ -304,6 +307,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof ChanceLogic capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(chars.toString());
             return null;
+        });
+        typeWrappers.register(ExtendedOutputItem.class, (ctx, o) -> {
+            if (o instanceof ExtendedOutputItem inOut) return inOut;
+            else if (o instanceof InputItem input) return new ExtendedOutputItem(input.ingredient, input.count);
+            InputItem item = InputItem.of(o);
+            return new ExtendedOutputItem(item.ingredient, item.count);
         });
 
         typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {

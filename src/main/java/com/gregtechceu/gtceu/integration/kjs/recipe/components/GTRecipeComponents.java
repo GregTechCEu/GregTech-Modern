@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
+import dev.latvian.mods.kubejs.util.TinyMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -284,11 +286,12 @@ public class GTRecipeComponents {
             return FluidIngredientJS.of(from);
         }
     };
-    public static final RecipeComponent<OutputItem> OUTPUT_ITEM = new RecipeComponent<>() {
+    public static final RecipeComponent<ExtendedOutputItem> EXTENDED_OUT = new RecipeComponent<>() {
+        public static final RecipeComponent<TinyMap<Character, ExtendedOutputItem>> ITEM_PATTERN_KEY = new MapRecipeComponent<>(StringComponent.CHARACTER, EXTENDED_OUT, true);
 
         @Override
         public String componentType() {
-            return "output_item";
+            return "extended_output_item";
         }
 
         @Override
@@ -307,22 +310,33 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, OutputItem value) {
+        public JsonElement write(RecipeJS recipe, ExtendedOutputItem value) {
+            if(value.ingredient.getInner() instanceof IntProviderIngredient ingredient) {
+                return ingredient.toJson();
+            }
             return recipe.writeOutputItem(value);
         }
 
         @Override
-        public OutputItem read(RecipeJS recipe, Object from) {
-            return recipe.readOutputItem(from);
+        public ExtendedOutputItem read(RecipeJS recipe, Object from) {
+            if (from instanceof IntProviderIngredient intProvider) {
+                return new ExtendedOutputItem(intProvider, 1);
+            }
+            return ExtendedOutputItem.fromOutputItem(recipe.readOutputItem(from));
         }
 
         @Override
-        public boolean isOutput(RecipeJS recipe, OutputItem value, ReplacementMatch match) {
-            return match instanceof ItemMatch m && m.contains(value.item);
+        public boolean isOutput(RecipeJS recipe, ExtendedOutputItem value, ReplacementMatch match) {
+            return match instanceof ItemMatch m && !value.isEmpty() && m.contains(value.ingredient);
         }
 
         @Override
-        public String checkEmpty(RecipeKey<OutputItem> key, OutputItem value) {
+        public ExtendedOutputItem replaceOutput(RecipeJS recipe, ExtendedOutputItem original, ReplacementMatch match, OutputReplacement with) {
+            return isOutput(recipe, original, match) ? read(recipe, with.replaceOutput(recipe, match, original)) : original;
+        }
+
+        @Override
+        public String checkEmpty(RecipeKey<ExtendedOutputItem> key, ExtendedOutputItem value) {
             if (value.isEmpty()) {
                 return "Ingredient '" + key.name + "' can't be empty!";
             }
@@ -334,11 +348,16 @@ public class GTRecipeComponents {
         public String toString() {
             return componentType();
         }
+
+        @Override
+        public RecipeComponent<TinyMap<Character, ExtendedOutputItem>> asPatternKey() {
+            return ITEM_PATTERN_KEY;
+        }
     };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
-    public static final ContentJS<OutputItem> ITEM_OUT = new ContentJS<>(OUTPUT_ITEM,
+    public static final ContentJS<ExtendedOutputItem> ITEM_OUT = new ContentJS<>(EXTENDED_OUT,
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);
