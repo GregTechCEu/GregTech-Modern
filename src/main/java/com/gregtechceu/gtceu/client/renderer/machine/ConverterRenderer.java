@@ -23,14 +23,15 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ConverterRenderer extends TieredHullMachineRenderer {
-    private final ResourceLocation ENERGY_IN;
-    private final ResourceLocation ENERGY_OUT;
+
     private static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
     private static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
+    private final ResourceLocation ENERGY_IN;
+    private final ResourceLocation ENERGY_OUT;
 
     public ConverterRenderer(int tier, int baseAmp) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
-        switch (baseAmp){
+        switch (baseAmp) {
             case 4:
                 ENERGY_IN = TransformerRenderer.ENERGY_IN_4A;
                 ENERGY_OUT = TransformerRenderer.ENERGY_OUT_4A;
@@ -65,9 +66,11 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
             isFeToEu = converter.isFeToEu();
         }
         if (side == frontFacing && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, (isFeToEu?2:-1)));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState,
+                    (isFeToEu ? 2 : -1)));
         } else if (side != null && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState, (isFeToEu?-1:2)));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState,
+                    (isFeToEu ? -1 : 2)));
         }
     }
 

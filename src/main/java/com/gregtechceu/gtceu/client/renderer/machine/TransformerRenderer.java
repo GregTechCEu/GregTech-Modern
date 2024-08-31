@@ -27,7 +27,8 @@ import java.util.function.Consumer;
  * @date 2023/3/10
  * @implNote TransformerRenderer
  */
-public class TransformerRenderer extends TieredHullMachineRenderer{
+public class TransformerRenderer extends TieredHullMachineRenderer {
+
     public final static ResourceLocation ENERGY_IN_1A = GTCEu.id("block/overlay/machine/overlay_energy_in_1a");
     public final static ResourceLocation ENERGY_IN_2A = GTCEu.id("block/overlay/machine/overlay_energy_in_2a");
     public final static ResourceLocation ENERGY_IN_4A = GTCEu.id("block/overlay/machine/overlay_energy_in_4a");
