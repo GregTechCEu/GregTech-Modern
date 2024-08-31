@@ -78,6 +78,18 @@ public class ItemTagLoader {
                 .addOptionalTag(CustomTags.UXV_CIRCUITS.location())
                 .addOptionalTag(CustomTags.OpV_CIRCUITS.location())
                 .addOptionalTag(CustomTags.MAX_CIRCUITS.location());
+
+        provider.addTag(CustomTags.BATTERIES)
+                .addTag(CustomTags.ULV_BATTERIES)
+                .addTag(CustomTags.LV_BATTERIES)
+                .addTag(CustomTags.MV_BATTERIES)
+                .addTag(CustomTags.HV_BATTERIES)
+                .addTag(CustomTags.EV_BATTERIES)
+                .addTag(CustomTags.IV_BATTERIES)
+                .addTag(CustomTags.LuV_BATTERIES)
+                .addTag(CustomTags.ZPM_BATTERIES)
+                .addTag(CustomTags.UV_BATTERIES)
+                .addTag(CustomTags.UHV_BATTERIES);
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, TagPrefix prefix, Material material,

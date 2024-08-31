@@ -63,7 +63,7 @@ public class CustomTags {
             MAX_CIRCUITS
     };
 
-    public static final TagKey<Item> BATTERIES = TagUtil.createModItemTag("batteries/ulv");
+    public static final TagKey<Item> BATTERIES = TagUtil.createModItemTag("batteries");
     public static final TagKey<Item> ULV_BATTERIES = TagUtil.createModItemTag("batteries/ulv");
     public static final TagKey<Item> LV_BATTERIES = TagUtil.createModItemTag("batteries/lv");
     public static final TagKey<Item> MV_BATTERIES = TagUtil.createModItemTag("batteries/mv");
