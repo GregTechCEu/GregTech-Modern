@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import appeng.items.materials.StorageComponentItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -17,12 +19,19 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife {
+public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -131,6 +140,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         }
 
         @Override
+        public int getSize() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE; // todo add me components for sizing
+        }
+
+        @Override
         public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                                             @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, handlerIO, getTransfer());
@@ -142,6 +161,11 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
             @Override
             public int getSlots() {
                 return 1;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return Integer.MAX_VALUE; // todo add me components for sizing
             }
 
             @Override
