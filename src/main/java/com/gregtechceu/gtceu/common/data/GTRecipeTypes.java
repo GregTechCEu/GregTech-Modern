@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.misc.VanillaFluidCraft;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -726,6 +727,10 @@ public class GTRecipeTypes {
                 ShapedEnergyTransferRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("tool_head_replace_recipe_serializer"),
                 ToolHeadReplaceRecipe.SERIALIZER);
+
+        // TODO: WIP
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("vanilla_fluid_craft_recipe"),
+                VanillaFluidCraft.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {
