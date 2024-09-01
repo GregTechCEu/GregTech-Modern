@@ -20,8 +20,6 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
@@ -38,8 +36,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
-import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -95,7 +91,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -520,7 +515,7 @@ public class GTBlocks {
 
     // Multiblock Machine Casing Blocks
     public static final BlockEntry<Block> CASING_WOOD_WALL = createSidedCasingBlock("wood_wall",
-            "block/casings/wood_wall");
+            GTCEu.id("block/casings/wood_wall"));
     public static final BlockEntry<Block> CASING_COKE_BRICKS = createCasingBlock("coke_oven_bricks",
             GTCEu.id("block/casings/solid/machine_coke_bricks"));
     public static final BlockEntry<Block> CASING_PRIMITIVE_BRICKS = createCasingBlock("firebricks",
@@ -621,7 +616,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/pipe/machine_casing_pipe_titanium"));
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_PIPE = createCasingBlock("tungstensteel_pipe_casing",
             GTCEu.id("block/casings/pipe/machine_casing_pipe_tungstensteel"));
-    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createPipeCasingBlock("ptfe",
+    public static final BlockEntry<Block> CASING_POLYTETRAFLUOROETHYLENE_PIPE = createCasingBlock("ptfe_pipe_casing",
             GTCEu.id("block/casings/pipe/machine_casing_pipe_polytetrafluoroethylene"));
     public static final BlockEntry<MinerPipeBlock> MINER_PIPE = REGISTRATE.block("miner_pipe", MinerPipeBlock::new)
             .initialProperties(() -> Blocks.BEDROCK)
@@ -634,19 +629,13 @@ public class GTBlocks {
 
     // The Pump Deck
     public static final BlockEntry<Block> CASING_PUMP_DECK = REGISTRATE
-            .block("pump_deck", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                            Map.of("bottom", GTCEu.id("block/casings/pump_deck/bottom"),
-                                    "top", GTCEu.id("block/casings/pump_deck/top"),
-                                    "side", GTCEu.id("block/casings/pump_deck/side"))) :
-                            null))
+            .block("pump_deck", Block::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.sound(SoundType.WOOD).mapColor(MapColor.WOOD))
             .addLayer(() -> RenderType::cutoutMipped)
-            .blockstate(NonNullBiConsumer.noop())
+            .blockstate(GTModels.createSidedCasingModel("pump_deck", GTCEu.id("block/casings/pump_deck")))
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_AXE)
-            .item(RendererBlockItem::new)
-            .model(NonNullBiConsumer.noop())
+            .item(BlockItem::new)
             .build()
             .register();
 
@@ -755,112 +744,80 @@ public class GTBlocks {
 
     // HPCA, AT
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE
-            .block("computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/computer_casing")) : null))
+            .block("computer_casing", Block::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
-            .blockstate(NonNullBiConsumer.noop())
+            .blockstate((ctx, prov) -> {
+                prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(GTCEu.id("block/computer_casing")));
+            })
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-            .item(RendererBlockItem::new)
-            .model(NonNullBiConsumer.noop())
+            .item(BlockItem::new)
             .build()
             .register();
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE
-            .block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new CTMModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
+            .block("advanced_computer_casing", Block::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
-            .blockstate(NonNullBiConsumer.noop())
+            .blockstate((ctx, prov) -> {
+                prov.simpleBlock(ctx.getEntry(),
+                        prov.models().getExistingFile(GTCEu.id("block/advanced_computer_casing")));
+            })
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-            .item(RendererBlockItem::new)
-            .model(NonNullBiConsumer.noop())
+            .item(BlockItem::new)
             .build()
             .register();
     public static final BlockEntry<Block> COMPUTER_HEAT_VENT = REGISTRATE
-            .block("computer_heat_vent", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_column"),
-                            Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
-                                    "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) :
-                            null))
+            .block("computer_heat_vent", Block::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .addLayer(() -> RenderType::cutoutMipped)
-            .blockstate(NonNullBiConsumer.noop())
+            .blockstate((ctx, prov) -> {
+                prov.simpleBlock(ctx.getEntry(), prov.models().cubeColumn("computer_heat_vent",
+                        GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
+                        GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot")));
+            })
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-            .item(RendererBlockItem::new)
-            .model(NonNullBiConsumer.noop())
+            .item(BlockItem::new)
             .build()
             .register();;
     public static final BlockEntry<Block> HIGH_POWER_CASING = createCasingBlock("high_power_casing",
             GTCEu.id("block/casings/hpca/high_power_casing"));
 
-    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture) {
-        return createPipeCasingBlock(name, texture, () -> Blocks.IRON_BLOCK);
-    }
-
-    private static BlockEntry<Block> createPipeCasingBlock(String name, ResourceLocation texture,
-                                                           NonNullSupplier<? extends Block> properties) {
-        return REGISTRATE
-                .block("%s_pipe_casing".formatted(name.toLowerCase(Locale.ROOT)), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                                Map.of("all", texture)) : null))
-                .lang("%s Pipe Casing".formatted(name))
-                .initialProperties(properties)
+    @SuppressWarnings("SameParameterValue")
+    private static BlockEntry<Block> createSidedCasingBlock(String name, ResourceLocation texture) {
+        return REGISTRATE.block(name, Block::new)
+                .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createSidedCasingModel(name, texture))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
     }
 
-    // THIS IS JUST FOR PTFE PIPE CASING
-    public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
-        return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK,
-                () -> RenderType::cutoutMipped);
-    }
-
-    private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
-        return createCasingBlock(
-                name, properties -> new RendererBlock(properties,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom", GTCEu.id(texture + "/bottom"),
-                                        "top", GTCEu.id(texture + "/top"),
-                                        "side", GTCEu.id(texture + "/side"))) :
-                                null),
-                () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
-    }
-
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture,
                                                             Supplier<Supplier<RenderType>> type) {
-        return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
+        return createCasingBlock(name, GlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
-    public static BlockEntry<Block> createCasingBlock(String name,
-                                                      BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier,
-                                                      ResourceLocation texture,
-                                                      NonNullSupplier<? extends Block> properties,
-                                                      Supplier<Supplier<RenderType>> type) {
-        return createCasingBlock(name, p -> blockSupplier.apply(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", texture)) : null),
-                properties, type);
+    public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
+        return createCasingBlock(name, Block::new, texture, () -> Blocks.IRON_BLOCK,
+                () -> RenderType::cutoutMipped);
     }
 
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier,
+                                                      ResourceLocation texture,
                                                       NonNullSupplier<? extends Block> properties,
                                                       Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, blockSupplier)
                 .initialProperties(properties)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(type)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.cubeAllModel(name, texture))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
     }
@@ -868,20 +825,14 @@ public class GTBlocks {
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         BlockEntry<Block> entry = REGISTRATE
-                .block("%s_machine_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube/tinted/bottom_top"),
-                                Map.of("bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
-                                        "top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
-                                        "side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))) :
-                                null))
+                .block("%s_machine_casing".formatted(tierName), Block::new)
                 .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createMachineCasingModel(tierName))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
         if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
@@ -893,22 +844,14 @@ public class GTBlocks {
     private static BlockEntry<Block> createHermeticCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         BlockEntry<Block> entry = REGISTRATE
-                .block("%s_hermetic_casing".formatted(tierName), p -> (Block) new RendererBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/hermetic_casing"),
-                                Map.of("bot_bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)),
-                                        "bot_top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)),
-                                        "bot_side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)),
-                                        "top_side",
-                                        GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay"))) :
-                                null))
+                .block("%s_hermetic_casing".formatted(tierName), Block::new)
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createHermeticCasingModel(tierName))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
         if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
@@ -918,18 +861,12 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
-        return REGISTRATE.block(name, p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                        Map.of("bottom", GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
-                                "top", GTCEu.id("block/casings/steam/%s/top".formatted(material)),
-                                "side", GTCEu.id("block/casings/steam/%s/side".formatted(material)))) :
-                        null))
+        return REGISTRATE.block(name, Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createSteamCasingModel(name, material))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
     }
@@ -940,10 +877,9 @@ public class GTBlocks {
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createCoilModel("%s_coil_block".formatted(coilType.getName()), coilType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
                 .register();
@@ -953,22 +889,14 @@ public class GTBlocks {
 
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData) {
         BlockEntry<BatteryBlock> batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
-                p -> new BatteryBlock(p, batteryData, Platform.isClient() ?
-                        new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom",
-                                        GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
-                                        "top",
-                                        GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
-                                        "side",
-                                        GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/side"))) :
-                        null))
+                p -> new BatteryBlock(p, batteryData))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createBatteryBlockModel("%s_battery".formatted(batteryData.getBatteryName()),
+                        batteryData))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
                 .build()
                 .register();
@@ -982,10 +910,9 @@ public class GTBlocks {
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(5.0f, 10.0f).sound(SoundType.METAL))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createFusionCasingModel(casingType.getSerializedName(), casingType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), CustomTags.TOOL_TIERS[casingType.getHarvestLevel()])
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
         ALL_FUSION_CASINGS.put(casingType, casingBlock);
@@ -993,17 +920,14 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
-        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), p -> (Block) new RendererBlock(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", GTCEu.id("block/casings/cleanroom/" + filterType))) : null))
+        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
                         .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createCleanroomFilterModel(filterType.getSerializedName(), filterType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), CustomTags.TOOL_TIERS[1])
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
         GTCEuAPI.CLEANROOM_FILTERS.put(filterType, filterBlock);
@@ -1011,40 +935,26 @@ public class GTBlocks {
     }
 
     protected static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
-        String finalName = "%s".formatted(name);
-        return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
-                Platform.isClient() ? new CTMModelRenderer(GTCEu.id(baseModelPath)) : null,
-                Platform.isClient() ? new CTMModelRenderer(GTCEu.id("%s_active".formatted(baseModelPath))) : null))
+        return REGISTRATE.block(name, ActiveBlock::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createActiveModel(GTCEu.id(baseModelPath)))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
+                .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), GTCEu.id(baseModelPath)))
                 .build()
                 .register();
     }
 
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
         BlockEntry<ActiveBlock> block = REGISTRATE
-                .block("%s_casing".formatted(type.name()), p -> new ActiveBlock(p,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom", type.bottom(),
-                                        "top", type.top(),
-                                        "side", type.side())) :
-                                null,
-                        Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/fire_box_active"),
-                                Map.of("bottom", type.bottom(),
-                                        "top", type.top(),
-                                        "side", type.side())) :
-                                null))
+                .block("%s_casing".formatted(type.name()), ActiveBlock::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
-                .blockstate(NonNullBiConsumer.noop())
+                .blockstate(GTModels.createFireboxModel("%s_casing".formatted(type.name()), type))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(RendererBlockItem::new)
-                .model(NonNullBiConsumer.noop())
+                .item(BlockItem::new)
                 .build()
                 .register();
         ALL_FIREBOXES.put(type, block);
@@ -1570,16 +1480,14 @@ public class GTBlocks {
     public static BlockEntry<Block> DARK_CONCRETE;
 
     public static BlockEntry<Block> BRITTLE_CHARCOAL = REGISTRATE
-            .block("brittle_charcoal", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                            Map.of("all", GTCEu.id("block/misc/brittle_charcoal"))) : null))
+            .block("brittle_charcoal", Block::new)
             .properties(p -> p.strength(0.5f).explosionResistance(8.0f).sound(SoundType.STONE))
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
             .lang("Brittle Charcoal")
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
-            .blockstate(NonNullBiConsumer.noop())
-            .item((b, p) -> new RendererBlockItem(b, p) {
+            .blockstate(GTModels.cubeAllModel("brittle_charcoal", GTCEu.id("block/misc/brittle_charcoal")))
+            .item((b, p) -> new BlockItem(b, p) {
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
@@ -1589,7 +1497,6 @@ public class GTBlocks {
                     tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
                 }
             })
-            .model(NonNullBiConsumer.noop())
             .build()
             .register();
 
