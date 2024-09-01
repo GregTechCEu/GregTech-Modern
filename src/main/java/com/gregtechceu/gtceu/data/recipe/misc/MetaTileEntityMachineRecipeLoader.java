@@ -431,7 +431,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("maintenance_hatch")
                 .inputItems(HULL[LV])
-                .circuitMeta(1)
+                .circuitMeta(8)
                 .outputItems(MAINTENANCE_HATCH)
                 .duration(100).EUt(VA[LV]).save(provider);
 
