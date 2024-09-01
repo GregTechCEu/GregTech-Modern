@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -12,6 +13,8 @@ import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
@@ -32,6 +35,7 @@ import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -99,8 +103,25 @@ public class GTRecipeModifiers {
                 if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
-                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(),
+
+                var modifiedRecipe = RecipeHelper.applyOverclock(overclockingLogic, recipe,
+                        overclockMachine.getOverclockVoltage(),
                         params, result);
+                if (!modifiedRecipe.modified) {
+                    modifiedRecipe.duration = result.getDuration();
+                    modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
+                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+
+                    if (result.getParallel() > 1) {
+                        modifiedRecipe = ParallelLogic
+                                .applyParallel(machine, modifiedRecipe, result.getParallel(), false)
+                                .getFirst();
+                    }
+                    result.reset();
+                    modifiedRecipe.modified = true;
+                }
+
+                return modifiedRecipe;
             }
             if (machine instanceof ITieredMachine tieredMachine &&
                     result.getEut() > tieredMachine.getTier()) {
