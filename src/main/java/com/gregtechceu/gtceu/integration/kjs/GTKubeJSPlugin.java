@@ -50,6 +50,7 @@ import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTElements;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -214,6 +215,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("Symptom", Symptom.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
+        event.add("CraftingComponent", CraftingComponent.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
