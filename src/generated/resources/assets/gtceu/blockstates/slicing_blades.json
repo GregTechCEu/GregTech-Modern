@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/variant/slicing_blades"
+    },
+    "active=true": {
+      "model": "gtceu:block/variant/slicing_blades_active"
+    }
+  }
+}
