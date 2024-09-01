@@ -280,7 +280,7 @@ public class MiscRecipeLoader {
         /*
          * ASSEMBLER_RECIPES.recipeBuilder("monitor_screen").duration(80).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
-         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(1))
+         * .inputItems(CraftingComponent.HULL.getIngredient(1))
          * .inputItems(wireFine, AnnealedCopper, 8)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(GTMachines.MONITOR_SCREEN)
@@ -288,7 +288,7 @@ public class MiscRecipeLoader {
          * 
          * ASSEMBLER_RECIPES.recipeBuilder("central_monitor").duration(100).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
-         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(3))
+         * .inputItems(CraftingComponent.HULL.getIngredient(3))
          * .inputItems(circuit, Tier.HV, 2)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(GTMachines.CENTRAL_MONITOR)

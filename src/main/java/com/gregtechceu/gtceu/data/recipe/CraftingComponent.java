@@ -847,7 +847,7 @@ public class CraftingComponent {
                 { 7, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
                 { 8, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
                 { 9, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
-                { GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT },
+                { GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -862,7 +862,7 @@ public class CraftingComponent {
                 { 6, GTItems.VOLTAGE_COIL_LuV.asStack() },
                 { 7, GTItems.VOLTAGE_COIL_ZPM.asStack() },
                 { 8, GTItems.VOLTAGE_COIL_UV.asStack() },
-                { GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV },
+                { GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -923,9 +923,6 @@ public class CraftingComponent {
 
     public static class Component {
 
-        /**
-         * All values in {@code ingredients} should be of the same type for casting purposes. UB if otherwise.
-         */
         private final Map<Integer, Object> ingredients;
 
         public Component(Map<Integer, Object> craftingComponents) {

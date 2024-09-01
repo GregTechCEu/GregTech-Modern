@@ -41,19 +41,15 @@ public class BlockTagLoader {
                 GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
     }
 
-    private static void create(RegistrateTagsProvider<Block> provider, String tagName, ResourceLocation... rls) {
-        create(provider, TagUtil.createBlockTag(tagName), rls);
-    }
-
     private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,
-                               ResourceLocation... rls) {
+                               Block... rls) {
         create(provider, ChemicalHelper.getBlockTag(prefix, material), rls);
     }
 
     public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
         var builder = provider.addTag(tagKey);
         for (Block block : rls) {
-            builder.addOptional(BuiltInRegistries.BLOCK.getKey(block));
+            builder.add(BuiltInRegistries.BLOCK.getResourceKey(block).get());
         }
     }
 

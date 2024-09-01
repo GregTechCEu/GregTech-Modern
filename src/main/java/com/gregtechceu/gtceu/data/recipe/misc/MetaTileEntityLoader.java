@@ -30,7 +30,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.Arrays;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.PUMP;
@@ -477,7 +476,7 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_macerator_bronze",
                 GTMachines.STEAM_MACERATOR.left().asStack(), "DXD", "XMX", "PXP", 'M', GTBlocks.BRONZE_HULL.asStack(),
-                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.TAG_PISTONS,
+                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.PISTONS,
                 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_macerator_steel",
                 GTMachines.STEAM_MACERATOR.right().asStack(), "WSW", "PMP", "WWW", 'M',
@@ -487,7 +486,7 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.TinAlloy));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_extractor_bronze",
                 GTMachines.STEAM_EXTRACTOR.left().asStack(), "XXX", "PMG", "XXX", 'M', GTBlocks.BRONZE_HULL.asStack(),
-                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.TAG_PISTONS,
+                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.PISTONS,
                 'G', new ItemStack(Blocks.GLASS));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_extractor_steel",
                 GTMachines.STEAM_EXTRACTOR.right().asStack(), "PSP", "WMW", "PPP", 'M',
@@ -497,7 +496,7 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hammer_bronze",
                 GTMachines.STEAM_HAMMER.left().asStack(), "XPX", "XMX", "XAX", 'M', GTBlocks.BRONZE_HULL.asStack(), 'X',
-                new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.TAG_PISTONS, 'A',
+                new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.PISTONS, 'A',
                 Blocks.ANVIL);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hammer_steel",
                 GTMachines.STEAM_HAMMER.right().asStack(), "WSW", "PMP", "WWW", 'M',
@@ -506,7 +505,7 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.TinAlloy));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_compressor_bronze",
                 GTMachines.STEAM_COMPRESSOR.left().asStack(), "XXX", "PMP", "XXX", 'M', GTBlocks.BRONZE_HULL.asStack(),
-                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.TAG_PISTONS);
+                'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze), 'P', CustomTags.PISTONS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_compressor_steel",
                 GTMachines.STEAM_COMPRESSOR.right().asStack(), "PSP", "WMW", "PPP", 'M',
                 GTMachines.STEAM_COMPRESSOR.left().asStack(), 'S',
@@ -526,7 +525,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_rock_breaker_bronze",
                 GTMachines.STEAM_ROCK_CRUSHER.left().asStack(), "PXP", "XMX", "DXD", 'M',
                 GTBlocks.BRONZE_HULL.asStack(), 'X', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Bronze),
-                'P', CustomTags.TAG_PISTONS, 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond));
+                'P', CustomTags.PISTONS, 'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_rock_breaker_steel",
                 GTMachines.STEAM_ROCK_CRUSHER.right().asStack(), "WSW", "PMP", "WWW", 'M',
                 GTMachines.STEAM_ROCK_CRUSHER.left().asStack(), 'W',
@@ -891,8 +890,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems((ItemStack) HULL.getIngredient(tier))
-                        .inputItems((ItemStack) DRUM.getIngredient(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -910,8 +909,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_export_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems((ItemStack) HULL.getIngredient(tier))
-                        .inputItems((ItemStack) DRUM.getIngredient(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -929,8 +928,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("item_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems((ItemStack) HULL.getIngredient(tier))
-                        .inputItems((ItemStack) CRATE.getIngredient(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -948,8 +947,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("item_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems((ItemStack) HULL.getIngredient(tier))
-                        .inputItems((ItemStack) CRATE.getIngredient(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -969,8 +968,8 @@ public class MetaTileEntityLoader {
                         .recipeBuilder("dual_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
-                        .inputItems((UnificationEntry) PIPE_NONUPLE.getIngredient(tier))
-                        .inputItems((UnificationEntry) FRAME.getIngredient(tier), 3)
+                        .inputItems(PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems(FRAME.getIngredient(tier), 3)
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -990,8 +989,8 @@ public class MetaTileEntityLoader {
                         .recipeBuilder("dual_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
-                        .inputItems((UnificationEntry) PIPE_NONUPLE.getIngredient(tier))
-                        .inputItems((UnificationEntry) FRAME.getIngredient(tier), 3)
+                        .inputItems(PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems(FRAME.getIngredient(tier), 3)
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
