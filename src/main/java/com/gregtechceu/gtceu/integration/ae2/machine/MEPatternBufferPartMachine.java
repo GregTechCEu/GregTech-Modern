@@ -46,7 +46,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -405,10 +404,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        super.onDrops(drops, entity);
-        clearInventory(drops, patternInventory);
-        clearInventory(drops, shareInventory);
+    public void onMachineRemoved() {
+        clearInventory(patternInventory);
+        clearInventory(shareInventory);
     }
 
     public class InternalSlot implements INBTSerializable<CompoundTag>, IContentChangeAware {

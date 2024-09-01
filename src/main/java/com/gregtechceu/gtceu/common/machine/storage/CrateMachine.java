@@ -36,8 +36,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -47,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine, IMachineModifyDrops, IMachineLife,
+public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
                           IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
@@ -144,8 +142,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineMod
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        if (!isTaped)
-            MetaMachine.clearInventory(drops, inventory.storage);
+    public void onMachineRemoved() {
+        if (!isTaped) clearInventory(inventory.storage);
     }
 }
