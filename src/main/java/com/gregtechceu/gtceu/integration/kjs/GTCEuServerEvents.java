@@ -14,6 +14,4 @@ public interface GTCEuServerEvents {
     EventHandler ORE_VEIN_MODIFICATION = GROUP.server("oreVeins", () -> GTOreVeinEventJS.class);
     EventHandler BEDROCK_ORE_VEIN_MODIFICATION = GROUP.server("bedrockOreVeins", () -> GTBedrockOreVeinEventJS.class);
     EventHandler FLUID_VEIN_MODIFICATION = GROUP.server("fluidVeins", () -> GTFluidVeinEventJS.class);
-
-    EventHandler CRAFTING_COMPONENTS = GROUP.server("craftingComponents", () -> GTFluidVeinEventJS.class);
 }

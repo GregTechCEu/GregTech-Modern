@@ -638,7 +638,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.toolHeadChainsaw)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)));
 
     // made of 4 Ingots.
