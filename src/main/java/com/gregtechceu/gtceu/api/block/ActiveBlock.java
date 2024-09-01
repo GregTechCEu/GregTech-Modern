@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,18 +17,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvider {
+public class ActiveBlock extends AppearanceBlock {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    private final IRenderer renderer;
-    private final IRenderer activeRenderer;
-
-    public ActiveBlock(Properties properties, IRenderer renderer, IRenderer activeRenderer) {
+    public ActiveBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
-        this.renderer = renderer;
-        this.activeRenderer = activeRenderer;
     }
 
     @Override
@@ -49,13 +41,6 @@ public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvid
 
     public boolean isActive(BlockState state) {
         return state.getValue(ACTIVE);
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(BlockState state) {
-        return isActive(state) ? activeRenderer : renderer;
     }
 
     @Override

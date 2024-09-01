@@ -182,6 +182,127 @@ public class GTModels {
         };
     }
 
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createSidedCasingModel(String name,
+                                                                                                                       ResourceLocation texture) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().cubeBottomTop(name,
+                    texture.withSuffix("/side"),
+                    texture.withSuffix("/bottom"),
+                    texture.withSuffix("/top")));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> cubeAllModel(String name,
+                                                                                                             ResourceLocation texture) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(name, texture));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createMachineCasingModel(String tierName) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(),
+                    prov.models()
+                            .withExistingParent("%s_machine_casing".formatted(tierName),
+                                    GTCEu.id("block/cube/tinted/bottom_top"))
+                            .texture("bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)))
+                            .texture("top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)))
+                            .texture("side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName))));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createHermeticCasingModel(String tierName) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models()
+                    .withExistingParent("%s_hermetic_casing".formatted(tierName), GTCEu.id("block/hermetic_casing"))
+                    .texture("bot_bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)))
+                    .texture("bot_top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)))
+                    .texture("bot_side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))
+                    .texture("top_side", GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay")));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createSteamCasingModel(String name,
+                                                                                                                       String material) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().cubeBottomTop(name,
+                    GTCEu.id("block/casings/steam/%s/side".formatted(material)),
+                    GTCEu.id("block/casings/steam/%s/bottom".formatted(material)),
+                    GTCEu.id("block/casings/steam/%s/top".formatted(material))));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, CoilBlock>, RegistrateBlockstateProvider> createCoilModel(String name,
+                                                                                                                    ICoilType coilType) {
+        return (ctx, prov) -> {
+            ActiveBlock block = ctx.getEntry();
+            ModelFile inactive = prov.models().cubeAll(name, coilType.getTexture());
+            ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/cube_2_layer/all"))
+                    .texture("bot_all", coilType.getTexture())
+                    .texture("top_all", coilType.getTexture().withSuffix("_bloom"));
+            prov.getVariantBuilder(block)
+                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, BatteryBlock>, RegistrateBlockstateProvider> createBatteryBlockModel(String name,
+                                                                                                                               IBatteryData batteryData) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().cubeBottomTop(name,
+                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
+                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
+                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/side")));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, FusionCasingBlock>, RegistrateBlockstateProvider> createFusionCasingModel(String name,
+                                                                                                                                    IFusionCasingType casingType) {
+        return (ctx, prov) -> {
+            ActiveBlock block = ctx.getEntry();
+            ModelFile inactive = prov.models().cubeAll(name, casingType.getTexture());
+            ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/cube_2_layer/all"))
+                    .texture("bot_all", casingType.getTexture())
+                    .texture("top_all", new ResourceLocation(casingType.getTexture() + "_bloom"));
+            prov.getVariantBuilder(block)
+                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createCleanroomFilterModel(String name,
+                                                                                                                           IFilterType type) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(name, GTCEu.id("block/casings/cleanroom/" + type)));
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, ActiveBlock>, RegistrateBlockstateProvider> createActiveModel(ResourceLocation modelPath) {
+        return (ctx, prov) -> {
+            ActiveBlock block = ctx.getEntry();
+            ModelFile inactive = prov.models().getExistingFile(modelPath);
+            ModelFile active = prov.models().getExistingFile(modelPath.withSuffix("_active"));
+            prov.getVariantBuilder(block)
+                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, ActiveBlock>, RegistrateBlockstateProvider> createFireboxModel(String name,
+                                                                                                                         BoilerFireboxType type) {
+        return (ctx, prov) -> {
+            ActiveBlock block = ctx.getEntry();
+            ModelFile inactive = prov.models().cubeBottomTop(name, type.side(), type.bottom(), type.top());
+            ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/fire_box_active"))
+                    .texture("side", type.side())
+                    .texture("bottom", type.bottom())
+                    .texture("top", type.top());
+            prov.getVariantBuilder(block)
+                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+        };
+    }
+
     /**
      * register fluid models for materials
      */
