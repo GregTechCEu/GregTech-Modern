@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
-import dev.latvian.mods.kubejs.util.TinyMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +32,7 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.util.TinyMap;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;
@@ -286,8 +286,7 @@ public class GTRecipeComponents {
             return FluidIngredientJS.of(from);
         }
     };
-    public static final RecipeComponent<ExtendedOutputItem> EXTENDED_OUT = new RecipeComponent<>() {
-        public static final RecipeComponent<TinyMap<Character, ExtendedOutputItem>> ITEM_PATTERN_KEY = new MapRecipeComponent<>(StringComponent.CHARACTER, EXTENDED_OUT, true);
+    public static final RecipeComponent<ExtendedOutputItem> EXTENDED_OUTPUT = new RecipeComponent<>() {
 
         @Override
         public String componentType() {
@@ -311,9 +310,6 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, ExtendedOutputItem value) {
-            if(value.ingredient.getInner() instanceof IntProviderIngredient ingredient) {
-                return ingredient.toJson();
-            }
             return recipe.writeOutputItem(value);
         }
 
@@ -331,8 +327,10 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public ExtendedOutputItem replaceOutput(RecipeJS recipe, ExtendedOutputItem original, ReplacementMatch match, OutputReplacement with) {
-            return isOutput(recipe, original, match) ? read(recipe, with.replaceOutput(recipe, match, original)) : original;
+        public ExtendedOutputItem replaceOutput(RecipeJS recipe, ExtendedOutputItem original, ReplacementMatch match,
+                                                OutputReplacement with) {
+            return isOutput(recipe, original, match) ? read(recipe, with.replaceOutput(recipe, match, original)) :
+                    original;
         }
 
         @Override
@@ -348,16 +346,11 @@ public class GTRecipeComponents {
         public String toString() {
             return componentType();
         }
-
-        @Override
-        public RecipeComponent<TinyMap<Character, ExtendedOutputItem>> asPatternKey() {
-            return ITEM_PATTERN_KEY;
-        }
     };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
-    public static final ContentJS<ExtendedOutputItem> ITEM_OUT = new ContentJS<>(EXTENDED_OUT,
+    public static final ContentJS<ExtendedOutputItem> ITEM_OUT = new ContentJS<>(EXTENDED_OUTPUT,
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);

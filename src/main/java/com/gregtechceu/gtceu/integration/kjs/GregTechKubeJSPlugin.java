@@ -59,19 +59,23 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
-import dev.latvian.mods.kubejs.item.InputItem;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
+import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
+import dev.latvian.mods.kubejs.item.InputItem;
+import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
@@ -79,6 +83,7 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
+import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
@@ -188,7 +193,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtSuOut", GTRecipeComponents.SU_OUT);
 
         event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
-        event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUT);
+        event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUTPUT);
 
         event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
         event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
@@ -255,7 +260,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
-        typeWrappers.register(GTRecipeType.class, (ctx, o) -> {
+        typeWrappers.registerSimple(GTRecipeType.class, o -> {
             if (o instanceof Wrapper w) {
                 o = w.unwrap();
             }
@@ -264,28 +269,28 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
-        typeWrappers.register(Element.class, (ctx, o) -> {
+        typeWrappers.registerSimple(Element.class, o -> {
             if (o instanceof Element element) return element;
             if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
             return null;
         });
-        typeWrappers.register(Material.class, (ctx, o) -> {
+        typeWrappers.registerSimple(Material.class, o -> {
             if (o instanceof Material material) return material;
             if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
             return null;
         });
-        typeWrappers.register(MachineDefinition.class, (ctx, o) -> {
+        typeWrappers.registerSimple(MachineDefinition.class, o -> {
             if (o instanceof MachineDefinition definition) return definition;
             if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
             return null;
         });
 
-        typeWrappers.register(TagPrefix.class, (ctx, o) -> {
+        typeWrappers.registerSimple(TagPrefix.class, o -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        typeWrappers.register(UnificationEntry.class, (ctx, o) -> {
+        typeWrappers.registerSimple(UnificationEntry.class, o -> {
             if (o instanceof UnificationEntry entry) return entry;
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
@@ -298,35 +303,30 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
             return null;
         });
-        typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
+        typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
             return null;
         });
-        typeWrappers.register(ChanceLogic.class, (ctx, o) -> {
+        typeWrappers.registerSimple(ChanceLogic.class, o -> {
             if (o instanceof ChanceLogic capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(chars.toString());
             return null;
         });
-        typeWrappers.register(ExtendedOutputItem.class, (ctx, o) -> {
-            if (o instanceof ExtendedOutputItem inOut) return inOut;
-            else if (o instanceof InputItem input) return new ExtendedOutputItem(input.ingredient, input.count);
-            InputItem item = InputItem.of(o);
-            return new ExtendedOutputItem(item.ingredient, item.count);
-        });
+        typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
 
-        typeWrappers.register(MaterialIconSet.class, (ctx, o) -> {
+        typeWrappers.registerSimple(MaterialIconSet.class, o -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
             if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
             return null;
         });
-        typeWrappers.register(MaterialStack.class, (ctx, o) -> {
+        typeWrappers.registerSimple(MaterialStack.class, o -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        typeWrappers.register(MaterialStackWrapper.class, (ctx, o) -> {
+        typeWrappers.registerSimple(MaterialStackWrapper.class, o -> {
             if (o instanceof MaterialStackWrapper wrapper) return wrapper;
             if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
             if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
@@ -334,51 +334,51 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
-        typeWrappers.register(IWorldGenLayer.class, (ctx, o) -> {
+        typeWrappers.registerSimple(IWorldGenLayer.class, o -> {
             if (o instanceof IWorldGenLayer layer) return layer;
             if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
             return null;
         });
-        typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
+        typeWrappers.registerSimple(HeightRangePlacement.class, o -> {
             if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(BiomeWeightModifier.class, (ctx, o) -> {
+        typeWrappers.registerSimple(BiomeWeightModifier.class, o -> {
             if (o instanceof BiomeWeightModifier modifier) return modifier;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(VeinGenerator.class, (ctx, o) -> {
+        typeWrappers.registerSimple(VeinGenerator.class, o -> {
             if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(IndicatorGenerator.class, (ctx, o) -> {
+        typeWrappers.registerSimple(IndicatorGenerator.class, o -> {
             if (o instanceof IndicatorGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.register(IndicatorPlacement.class, (ctx, o) -> {
+        typeWrappers.registerSimple(IndicatorPlacement.class, o -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
             return null;
         });
-        typeWrappers.register(MedicalCondition.class, (ctx, o) -> {
+        typeWrappers.registerSimple(MedicalCondition.class, o -> {
             if (o instanceof MedicalCondition condition) return condition;
             if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
             return null;
         });
         // jank because Rhino doesn't agree that it's an interface
-        typeWrappers.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
+        typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
         });

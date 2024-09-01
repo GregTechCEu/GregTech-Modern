@@ -299,12 +299,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(ExtendedOutputItem.of(machine.asStack(count)));
+            return outputItems(new ExtendedOutputItem(machine.asStack(count)));
         }
 
         public GTRecipeJS itemOutputsRanged(ExtendedOutputItem ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP,
-                    new ExtendedOutputItem(new IntProviderIngredient(ingredient.ingredient, UniformInt.of(min, max)), 1));
+            return outputItemsRanged(ingredient.ingredient.getInner(), min, max);
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
@@ -312,12 +311,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {
-            return output(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
+            return outputItemsRanged(Ingredient.of(stack), min, max);
         }
 
         public GTRecipeJS outputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
-            return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), min, max);
+            return outputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
@@ -895,14 +893,17 @@ public interface GTRecipeSchema {
 
         @Override
         public OutputItem readOutputItem(Object from) {
-            if (from instanceof SizedIngredient ingredient) {
+            if (from instanceof ExtendedOutputItem outputItem) {
+                return outputItem;
+            } else if (from instanceof OutputItem outputItem) {
+                return outputItem;
+            } else if (from instanceof SizedIngredient ingredient) {
                 if (ingredient.getInner() instanceof IntProviderIngredient intProvider) {
-                    return ExtendedOutputItem.of(intProvider);
+                    return new ExtendedOutputItem(intProvider, 1);
                 }
                 return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
             } else if (from instanceof IntProviderIngredient ingredient) {
-                return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN)
-                        .withRolls(ingredient.getCountProvider());
+                return new ExtendedOutputItem(ingredient, 1);
             } else if (from instanceof JsonObject jsonObject) {
                 float chance = 1.0f;
                 if (jsonObject.has("chance")) {
@@ -923,6 +924,7 @@ public interface GTRecipeSchema {
                 if (extended.ingredient.getInner() instanceof IntProviderIngredient intProvider) {
                     return intProvider.toJson();
                 }
+                return extended.ingredient.toJson();
             }
             return SizedIngredient.create(value.item).toJson();
         }
