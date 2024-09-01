@@ -38,7 +38,7 @@ public class RecipeModifierList implements RecipeModifier {
             }
         }
 
-        if (modifiedRecipe != null) {
+        if (modifiedRecipe != null && !modifiedRecipe.modified) {
             modifiedRecipe.duration = result.getDuration();
             modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
                     ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
@@ -47,6 +47,7 @@ public class RecipeModifierList implements RecipeModifier {
                 modifiedRecipe = ParallelLogic.applyParallel(machine, modifiedRecipe, result.getParallel(), false)
                         .getFirst();
             }
+            modifiedRecipe.modified = true;
         }
         result.reset();
 
