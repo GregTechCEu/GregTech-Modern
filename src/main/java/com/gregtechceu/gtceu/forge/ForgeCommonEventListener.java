@@ -60,10 +60,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
@@ -239,19 +236,31 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()), serverPlayer);
-            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()),
-                    serverPlayer);
-            GTNetwork.NETWORK.sendToPlayer(
-                    new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), serverPlayer);
-
             if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
 
-            ServerLevel level = (ServerLevel) event.getEntity().level();
+            ServerLevel level = serverPlayer.serverLevel();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
-                    serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()), serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        ServerPlayer player = event.getPlayer();
+        if (player == null) {
+            // if player == null, the /reload command was ran. sync to all players.
+            GTNetwork.NETWORK.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
+            GTNetwork.NETWORK.sendToAll(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
+            GTNetwork.NETWORK
+                    .sendToAll(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
+        } else {
+            // else it's a player logging in. sync to only that player.
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()), player);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()),
+                    player);
+            GTNetwork.NETWORK.sendToPlayer(
+                    new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()), player);
         }
     }
 
