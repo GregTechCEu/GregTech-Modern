@@ -95,7 +95,7 @@ public class GTRecipeModifiers {
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
                               @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
 
