@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
@@ -36,8 +36,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -48,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IMachineModifyDrops, IRotorHolderMachine, IInteractedMachine {
+                                    implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
@@ -88,8 +86,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, inventory.storage);
+    public void onMachineRemoved() {
+        clearInventory(inventory.storage);
     }
 
     @Override

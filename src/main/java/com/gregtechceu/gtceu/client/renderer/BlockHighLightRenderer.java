@@ -64,17 +64,29 @@ public class BlockHighLightRenderer {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight
-            if (!toolType.isEmpty() && blockEntity instanceof IToolGridHighLight gridHighLight) {
+            if (!toolType.isEmpty()) {
+                IToolGridHighLight gridHighLight = null;
+                if (blockEntity instanceof IToolGridHighLight highLight) {
+                    gridHighLight = highLight;
+                } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighLight highLight) {
+                    gridHighLight = highLight;
+                }
+                if (gridHighLight == null) {
+                    return;
+                }
+                var state = level.getBlockState(blockPos);
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
-                if (gridHighLight.shouldRenderGrid(player, held, toolType)) {
+                if (gridHighLight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     var buffer = multiBufferSource.getBuffer(RenderType.lines());
                     RenderSystem.lineWidth(3);
-                    drawGridOverlays(poseStack, buffer, target, side -> gridHighLight.sideTips(player, toolType, side));
+                    final IToolGridHighLight finalGridHighLight = gridHighLight;
+                    drawGridOverlays(poseStack, buffer, target,
+                            side -> finalGridHighLight.sideTips(player, blockPos, state, toolType, side));
                 } else {
                     var facing = target.getDirection();
-                    var texture = gridHighLight.sideTips(player, toolType, facing);
+                    var texture = gridHighLight.sideTips(player, blockPos, state, toolType, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();

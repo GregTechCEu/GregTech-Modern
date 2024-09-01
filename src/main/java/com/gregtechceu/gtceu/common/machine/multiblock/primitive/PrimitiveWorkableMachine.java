@@ -4,9 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -16,10 +15,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
-                                      implements IMachineModifyDrops, IEnvironmentalHazardEmitter {
+                                      implements IMachineLife, IEnvironmentalHazardEmitter {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PrimitiveWorkableMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -80,9 +75,9 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        MetaMachine.clearInventory(drops, importItems.storage);
-        MetaMachine.clearInventory(drops, exportItems.storage);
+    public void onMachineRemoved() {
+        clearInventory(importItems.storage);
+        clearInventory(exportItems.storage);
     }
 
     @Override
