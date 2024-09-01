@@ -46,6 +46,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
@@ -216,6 +217,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("Symptom", Symptom.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
+        event.add("CraftingComponent", CraftingComponent.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);

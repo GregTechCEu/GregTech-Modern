@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
@@ -10,9 +11,13 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 
 import java.util.EnumMap;
@@ -919,6 +924,11 @@ public class CraftingComponent {
                 { 8, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
                 { FALLBACK, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
+        if (GTCEu.isKubeJSLoaded()) {
+            KJSCallWrapper.craftingComponentModification();
+        }
     }
 
     public static class Component {
@@ -949,6 +959,13 @@ public class CraftingComponent {
         public void appendIngredients(Map<Integer, Object> newIngredients) {
             ingredients.remove(GTValues.FALLBACK);
             newIngredients.forEach((key, value) -> ingredients.merge(key, value, (v1, v2) -> v2));
+        }
+    }
+
+    private static final class KJSCallWrapper {
+
+        private static void craftingComponentModification() {
+            GTCEuStartupEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
         }
     }
 }
