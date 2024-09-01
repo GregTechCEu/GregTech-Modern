@@ -13,7 +13,6 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,14 +35,6 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
                 .map(MultiblockMachineDefinition.class::cast)
                 .map(MultiblockInfoWrapper::new)
                 .toList());
-    }
-
-    public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registration.addRecipeCatalyst(multiblockDefinition.asStack(), RECIPE_TYPE);
-            }
-        }
     }
 
     @Override

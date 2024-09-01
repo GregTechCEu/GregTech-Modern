@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -12,17 +14,18 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 
-public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
+public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
-    public static final GTBedrockFluidEmiCategory CATEGORY = new GTBedrockFluidEmiCategory();
+    public static final GTBedrockOreEmiCategory CATEGORY = new GTBedrockOreEmiCategory();
 
-    public GTBedrockFluidEmiCategory() {
-        super(GTCEu.id("bedrock_fluid_diagram"), EmiStack.of(GTMaterials.Oil.getFluid().getBucket().asItem()));
+    public GTBedrockOreEmiCategory() {
+        super(GTCEu.id("bedrock_ore_diagram"),
+                EmiStack.of(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Tungstate)));
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (BedrockFluidDefinition fluid : ClientProxy.CLIENT_FLUID_VEINS.values()) {
-            registry.addRecipe(new GTBedrockFluid(fluid));
+        for (BedrockOreDefinition fluid : ClientProxy.CLIENT_BEDROCK_ORE_VEINS.values()) {
+            registry.addRecipe(new GTBedrockOre(fluid));
         }
     }
 
@@ -33,6 +36,6 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("gtceu.jei.bedrock_fluid_diagram");
+        return Component.translatable("gtceu.jei.bedrock_ore_diagram");
     }
 }
