@@ -14,11 +14,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class GTBedrockOre extends ModularEmiRecipe<WidgetGroup> {
 
-    private final BedrockOreDefinition fluid;
+    private final BedrockOreDefinition bedrockOre;
 
-    public GTBedrockOre(BedrockOreDefinition fluid) {
-        super(() -> new GTOreVeinWidget(fluid));
-        this.fluid = fluid;
+    public GTBedrockOre(BedrockOreDefinition bedrockOre) {
+        super(() -> new GTOreVeinWidget(bedrockOre));
+        this.bedrockOre = bedrockOre;
     }
 
     @Override
@@ -28,6 +28,6 @@ public class GTBedrockOre extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(fluid);
+        return ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(bedrockOre).withPrefix("/bedrock_ore_diagram/");
     }
 }
