@@ -32,7 +32,6 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
-import dev.latvian.mods.kubejs.util.TinyMap;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;

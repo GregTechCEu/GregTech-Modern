@@ -60,22 +60,17 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
-import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
@@ -83,7 +78,6 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
-import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
