@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -36,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife {
+public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -119,7 +120,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         private CustomItemStackHandler itemTransfer;
 
         public InaccessibleInfiniteHandler(MetaMachine holder) {
-            super(holder, 0, IO.OUT, IO.NONE);
+            super(holder, 1, IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
 
@@ -128,6 +129,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                 this.itemTransfer = new ItemStackTransferDelegate();
             }
             return itemTransfer;
+        }
+
+        @Override
+        public int getSize() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE; // todo add me components for sizing
         }
 
         @Override
@@ -143,6 +154,11 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
             @Override
             public int getSlots() {
                 return 1;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return Integer.MAX_VALUE; // todo add me components for sizing
             }
 
             @Override
