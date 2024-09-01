@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -82,10 +80,6 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         GTOres.updateLargestVeinSize();
         if (!GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.freeze();
-        }
-
-        if (Platform.getMinecraftServer() != null) {
-            PacketDistributor.sendToAllPlayers(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
         }
     }
 

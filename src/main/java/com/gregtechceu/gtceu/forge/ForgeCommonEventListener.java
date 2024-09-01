@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
@@ -45,6 +46,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -176,9 +178,29 @@ public class ForgeCommonEventListener {
             if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
 
-            ServerLevel level = (ServerLevel) event.getEntity().level();
+            ServerLevel level = serverPlayer.serverLevel();
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        ServerPlayer player = event.getPlayer();
+        if (player == null) {
+            // if player == null, the /reload command was ran. sync to all players.
+            PacketDistributor.sendToAllPlayers(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
+            PacketDistributor
+                    .sendToAllPlayers(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
+            PacketDistributor
+                    .sendToAllPlayers(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
+        } else {
+            // else it's a player logging in. sync to only that player.
+            PacketDistributor.sendToPlayer(player, new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
+            PacketDistributor.sendToPlayer(player,
+                    new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
+            PacketDistributor.sendToPlayer(player,
+                    new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
         }
     }
 

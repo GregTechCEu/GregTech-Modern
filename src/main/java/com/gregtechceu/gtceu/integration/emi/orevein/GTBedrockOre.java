@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 
@@ -12,22 +12,22 @@ import net.minecraft.resources.ResourceLocation;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import org.jetbrains.annotations.Nullable;
 
-public class GTBedrockFluid extends ModularEmiRecipe<WidgetGroup> {
+public class GTBedrockOre extends ModularEmiRecipe<WidgetGroup> {
 
-    private final BedrockFluidDefinition fluid;
+    private final BedrockOreDefinition bedrockOre;
 
-    public GTBedrockFluid(BedrockFluidDefinition fluid) {
-        super(() -> new GTOreVeinWidget(fluid));
-        this.fluid = fluid;
+    public GTBedrockOre(BedrockOreDefinition bedrockOre) {
+        super(() -> new GTOreVeinWidget(bedrockOre));
+        this.bedrockOre = bedrockOre;
     }
 
     @Override
     public EmiRecipeCategory getCategory() {
-        return GTBedrockFluidEmiCategory.CATEGORY;
+        return GTBedrockOreEmiCategory.CATEGORY;
     }
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid).withPrefix("/bedrock_fluid_diagram/");
+        return ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(bedrockOre).withPrefix("/bedrock_ore_diagram/");
     }
 }

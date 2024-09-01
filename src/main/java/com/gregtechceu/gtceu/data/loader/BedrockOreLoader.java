@@ -72,11 +72,6 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
         }
-
-        if (Platform.getMinecraftServer() != null) {
-            PacketDistributor
-                    .sendToAllPlayers(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
-        }
     }
 
     public static BedrockOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {

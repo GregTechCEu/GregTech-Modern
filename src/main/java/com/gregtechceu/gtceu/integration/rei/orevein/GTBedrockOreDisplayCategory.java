@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -23,22 +23,22 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBedrockFluidDisplay> {
+public class GTBedrockOreDisplayCategory extends ModularUIDisplayCategory<GTBedrockOreDisplay> {
 
-    public static final CategoryIdentifier<GTBedrockFluidDisplay> CATEGORY = CategoryIdentifier
-            .of(GTCEu.id("bedrock_fluid_diagram"));
+    public static final CategoryIdentifier<GTBedrockOreDisplay> CATEGORY = CategoryIdentifier
+            .of(GTCEu.id("bedrock_ore_diagram"));
 
     private final Renderer icon;
 
     private final Size size;
 
-    public GTBedrockFluidDisplayCategory() {
+    public GTBedrockOreDisplayCategory() {
         this.icon = IGui2Renderer.toDrawable(new ItemStackTexture(GTMaterials.Oil.getFluid().getBucket().asItem()));
         this.size = new Size(10 + GTOreVeinWidget.width, 140);
     }
 
     @Override
-    public CategoryIdentifier<? extends GTBedrockFluidDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<? extends GTBedrockOreDisplay> getCategoryIdentifier() {
         return CATEGORY;
     }
 
@@ -48,26 +48,26 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
     }
 
     @Override
-    public int getDisplayWidth(GTBedrockFluidDisplay display) {
+    public int getDisplayWidth(GTBedrockOreDisplay display) {
         return getSize().width;
     }
 
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.bedrock_fluid_diagram");
+        return Component.translatable("gtceu.jei.bedrock_ore_diagram");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (BedrockFluidDefinition fluid : ClientProxy.CLIENT_FLUID_VEINS.values()) {
-            registry.add(new GTBedrockFluidDisplay(fluid));
+        for (BedrockOreDefinition fluid : ClientProxy.CLIENT_BEDROCK_ORE_VEINS.values()) {
+            registry.add(new GTBedrockOreDisplay(fluid));
         }
     }
 
     public static void registerWorkstations(CategoryRegistry registry) {
-        registry.addWorkstations(GTBedrockFluidDisplayCategory.CATEGORY,
+        registry.addWorkstations(GTBedrockOreDisplayCategory.CATEGORY,
                 EntryStacks.of(GTItems.PROSPECTOR_HV.asStack()));
-        registry.addWorkstations(GTBedrockFluidDisplayCategory.CATEGORY,
+        registry.addWorkstations(GTBedrockOreDisplayCategory.CATEGORY,
                 EntryStacks.of(GTItems.PROSPECTOR_LUV.asStack()));
     }
 }

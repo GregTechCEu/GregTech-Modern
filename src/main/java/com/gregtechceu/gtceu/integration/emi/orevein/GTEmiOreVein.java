@@ -31,7 +31,7 @@ public class GTEmiOreVein extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
+        return ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition).withPrefix("/ore_vein_diagram/");
     }
 
     @Override

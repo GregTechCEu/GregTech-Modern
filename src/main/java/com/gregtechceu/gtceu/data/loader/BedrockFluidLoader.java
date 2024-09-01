@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.data.worldgen.GTBedrockFluids;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -70,11 +68,6 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
 
         if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
-        }
-
-        if (Platform.getMinecraftServer() != null) {
-            PacketDistributor
-                    .sendToAllPlayers(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
         }
     }
 
