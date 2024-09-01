@@ -4,22 +4,21 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
-import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.renderer.item.LampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
-
 import com.gregtechceu.gtceu.utils.ResearchManager;
-import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-
 import net.minecraft.world.level.Level;
+
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,17 +51,19 @@ public class GuiGraphicsMixin {
         }
     }
 
-    @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V",
+            at = @At(value = "HEAD"),
+            cancellable = true)
     protected void gtceu$renderItem(@Nullable LivingEntity livingEntity, @Nullable Level level, ItemStack stack, int x,
                                     int y, int seed, int z, CallbackInfo ci) {
         var self = (GuiGraphics) (Object) this;
         var minecraft = Minecraft.getInstance();
 
         Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
-        if(Screen.hasShiftDown() && researchData != null) {
+        if (Screen.hasShiftDown() && researchData != null) {
             Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
             if (recipes != null && !recipes.isEmpty()) {
-                for(var recipe : recipes) {
+                for (var recipe : recipes) {
                     ItemStack output = ItemRecipeCapability.CAP
                             .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
 
@@ -73,7 +74,6 @@ public class GuiGraphicsMixin {
                 }
             }
         }
-
     }
 
     private static void renderInstead(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,

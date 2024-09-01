@@ -103,7 +103,8 @@ public class GTRecipeModifiers {
                     return null;
                 }
 
-                var modifiedRecipe = RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(),
+                var modifiedRecipe = RecipeHelper.applyOverclock(overclockingLogic, recipe,
+                        overclockMachine.getOverclockVoltage(),
                         params, result);
                 if (!modifiedRecipe.modified) {
                     modifiedRecipe.duration = result.getDuration();
@@ -111,7 +112,8 @@ public class GTRecipeModifiers {
                             ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
 
                     if (result.getParallel() > 1) {
-                        modifiedRecipe = ParallelLogic.applyParallel(machine, modifiedRecipe, result.getParallel(), false)
+                        modifiedRecipe = ParallelLogic
+                                .applyParallel(machine, modifiedRecipe, result.getParallel(), false)
                                 .getFirst();
                     }
                     result.reset();
