@@ -172,6 +172,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
             for (FluidStack fluidStack : recipeOutputs) {
                 if (fluidStack.getAmount() <= 0) continue;
+                if (fluidStack.isEmpty()) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
                     amountToInsert = Integer.MAX_VALUE;

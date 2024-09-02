@@ -199,7 +199,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
         @Override
         public int getSlotLimit(int slot) {
-            return Integer.MAX_VALUE; // todo add me components for sizing
+            return Integer.MAX_VALUE;
         }
 
         @Override
