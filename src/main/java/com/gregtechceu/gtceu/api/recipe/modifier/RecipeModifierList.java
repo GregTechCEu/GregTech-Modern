@@ -38,12 +38,12 @@ public class RecipeModifierList implements RecipeModifier {
             }
         }
 
-        if (modifiedRecipe != null) {
+        if (modifiedRecipe != null && result.getDuration() != 0) {
             modifiedRecipe.duration = result.getDuration();
             if (result.getEut() > 0) {
                 modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
                         ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
-            } else {
+            } else if (result.getEut() < 0) {
                 modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(-result.getEut(),
                         ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
             }
