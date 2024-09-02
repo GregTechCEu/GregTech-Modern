@@ -13,6 +13,7 @@ public class IntegrationLang {
     public static void init(RegistrateLangProvider provider) {
         initRecipeViewerLang(provider);
         initWailaLikeLang(provider);
+        initMinimapLang(provider);
     }
 
     /** JEI, REI, EMI */
@@ -96,5 +97,9 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_computation", " / %s CWU");
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
+    }
+
+    private static void initMinimapLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
     }
 }
