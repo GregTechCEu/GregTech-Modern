@@ -85,7 +85,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     private boolean canInsertCell(ItemStack item) {
         var grid = getMainNode().getGrid();
         if (item.getItem() instanceof StorageComponentItem compItem) {
-            long newSize = (long)compItem.getBytes(item) * 8L;
+            long newSize = (long) compItem.getBytes(item) * 8L;
             if (newSize >= capacitySize) {
                 return true;
             } else {
@@ -238,7 +238,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                 int count = stack.getCount();
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
                 long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
-                if(canInsertItem()) {
+                if (canInsertItem()) {
                     if (changeValue > 0) {
                         if (!simulate) {
                             internalBuffer.storage.put(key, oldValue + changeValue);
