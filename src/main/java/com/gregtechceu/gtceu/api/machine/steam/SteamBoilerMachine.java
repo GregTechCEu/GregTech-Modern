@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -261,7 +260,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                           @NotNull OCResult result) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = recipe.copy();
-            result.init(RecipeHelper.getInputEUt(recipe), recipe.duration);
+            result.init(0, recipe.duration);
             if (boilerMachine.isHighPressure)
                 result.setDuration(result.getDuration() / 2);
             // recipe.duration *= 12; // maybe?
