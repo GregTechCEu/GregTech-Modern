@@ -143,11 +143,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
                 result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2);
             }
 
-            if (!steamMachine.isHighPressure) {
-                modified.duration *= 2;
-                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
-            }
-
             return modified;
         }
         return null;
