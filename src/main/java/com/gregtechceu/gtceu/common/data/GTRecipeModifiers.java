@@ -225,9 +225,9 @@ public class GTRecipeModifiers {
 
             if (coilMachine.getCoilTier() == 0) {
                 // 75% speed with cupro coils
-                result.setDuration(Math.max(1, (int) recipe.duration * 4 / 3));
+                result.setDuration(Math.max(1, (int) result.getDuration() * 4 / 3));
             } else {
-                result.setDuration(Math.max(1, (int) (recipe.duration * 2.0 / (tier + 1))));
+                result.setDuration(Math.max(1, (int) (result.getDuration() * 2.0 / (tier + 1))));
             }
             return re;
         }

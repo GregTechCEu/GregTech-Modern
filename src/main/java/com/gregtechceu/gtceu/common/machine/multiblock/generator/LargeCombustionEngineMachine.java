@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -13,8 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -122,11 +119,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 if (engineMachine.isOxygenBoosted) { // boost production
                     recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
                     long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
-                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-                            ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+                    result.init(-eut, recipe.duration, parallelResult.getSecond());
                 } else {
                     recipe = parallelResult.getFirst();
+                    result.init(-RecipeHelper.getOutputEUt(recipe), recipe.duration, parallelResult.getSecond());
                 }
+
                 return recipe;
             }
         }
