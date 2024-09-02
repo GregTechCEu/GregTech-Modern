@@ -252,7 +252,6 @@ public class WoodMachineRecipes {
                             // .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
                             .material(TreatedWood)
                             .generateLogToPlankRecipe(false)
-                            .registerAllTags()
                             .registerAllUnificationInfo()
                             .build());
         }

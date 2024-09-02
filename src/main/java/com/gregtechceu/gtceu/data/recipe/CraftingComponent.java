@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
@@ -10,9 +11,14 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -469,10 +475,10 @@ public class CraftingComponent {
          */
         GLASS = new Component(Stream.of(new Object[][] {
 
-                { GTValues.FALLBACK, CustomTags.GLASS_BLOCKS },
-                { ULV, CustomTags.GLASS_BLOCKS },
-                { LV, CustomTags.GLASS_BLOCKS },
-                { MV, CustomTags.GLASS_BLOCKS },
+                { GTValues.FALLBACK, Tags.Items.GLASS },
+                { ULV, Tags.Items.GLASS },
+                { LV, Tags.Items.GLASS },
+                { MV, Tags.Items.GLASS },
                 { HV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
                 { EV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
                 { IV, GTBlocks.CASING_LAMINATED_GLASS.asStack() },
@@ -846,7 +852,7 @@ public class CraftingComponent {
                 { 7, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
                 { 8, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
                 { 9, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
-                { GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT },
+                { GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -861,7 +867,7 @@ public class CraftingComponent {
                 { 6, GTItems.VOLTAGE_COIL_LuV.asStack() },
                 { 7, GTItems.VOLTAGE_COIL_ZPM.asStack() },
                 { 8, GTItems.VOLTAGE_COIL_UV.asStack() },
-                { GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV },
+                { GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -918,13 +924,15 @@ public class CraftingComponent {
                 { 8, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
                 { FALLBACK, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
+        if (GTCEu.isKubeJSLoaded()) {
+            KJSCallWrapper.craftingComponentModification();
+        }
     }
 
     public static class Component {
 
-        /**
-         * All values in {@code ingredients} should be of the same type for casting purposes. UB if otherwise.
-         */
         private final Map<Integer, Object> ingredients;
 
         public Component(Map<Integer, Object> craftingComponents) {
@@ -951,6 +959,13 @@ public class CraftingComponent {
         public void appendIngredients(Map<Integer, Object> newIngredients) {
             ingredients.remove(GTValues.FALLBACK);
             newIngredients.forEach((key, value) -> ingredients.merge(key, value, (v1, v2) -> v2));
+        }
+    }
+
+    private static final class KJSCallWrapper {
+
+        private static void craftingComponentModification() {
+            GTCEuStartupEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
         }
     }
 }

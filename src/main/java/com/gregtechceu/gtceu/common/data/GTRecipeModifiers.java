@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -95,10 +94,12 @@ public class GTRecipeModifiers {
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
                               @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
-                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(),
+
+                return RecipeHelper.applyOverclock(overclockingLogic, recipe,
+                        overclockMachine.getOverclockVoltage(),
                         params, result);
             }
             if (machine instanceof ITieredMachine tieredMachine &&

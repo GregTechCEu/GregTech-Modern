@@ -22,8 +22,7 @@ public class AppearanceBlock extends Block implements IAppearance {
     @Override
     public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
-        var appearance = AppearanceBlock.class.cast(this).getBlockAppearance(state, level, pos, side, queryState,
-                queryPos);
+        var appearance = this.getBlockAppearance(state, level, pos, side, queryState, queryPos);
         return appearance == null ? state : appearance;
     }
 }

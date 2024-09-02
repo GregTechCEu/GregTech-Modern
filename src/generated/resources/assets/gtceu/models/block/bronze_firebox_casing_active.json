@@ -1,0 +1,8 @@
+{
+  "parent": "gtceu:block/fire_box_active",
+  "textures": {
+    "bottom": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
+    "side": "gtceu:block/casings/firebox/machine_casing_firebox_bronze",
+    "top": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks"
+  }
+}

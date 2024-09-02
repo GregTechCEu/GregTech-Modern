@@ -66,8 +66,6 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
 
     public static void registerWorkstations(CategoryRegistry registry) {
         registry.addWorkstations(GTBedrockFluidDisplayCategory.CATEGORY,
-                EntryStacks.of(GTItems.PROSPECTOR_LV.asStack()));
-        registry.addWorkstations(GTBedrockFluidDisplayCategory.CATEGORY,
                 EntryStacks.of(GTItems.PROSPECTOR_HV.asStack()));
         registry.addWorkstations(GTBedrockFluidDisplayCategory.CATEGORY,
                 EntryStacks.of(GTItems.PROSPECTOR_LUV.asStack()));
