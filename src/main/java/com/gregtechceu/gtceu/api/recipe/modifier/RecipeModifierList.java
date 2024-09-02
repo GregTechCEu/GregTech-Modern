@@ -38,7 +38,7 @@ public class RecipeModifierList implements RecipeModifier {
             }
         }
 
-        if (modifiedRecipe != null) {
+        if (modifiedRecipe != null && result.getDuration() != 0) {
             modifiedRecipe.duration = result.getDuration();
             if (result.getEut() > 0) {
                 modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
