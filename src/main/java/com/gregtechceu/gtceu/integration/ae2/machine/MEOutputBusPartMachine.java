@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import appeng.items.materials.StorageComponentItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -11,12 +12,16 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -27,6 +32,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,6 +50,14 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
     @Persisted
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
+    @Getter
+    @Persisted
+    protected NotifiableItemStackHandler storageSlot;
+
+    @Nullable
+    protected ISubscription storageSub;
+
+    private long slotSize = 0;
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
@@ -56,7 +70,48 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @Override
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.internalBuffer = new KeyStorage();
+        this.storageSlot = new NotifiableItemStackHandler(this, 1, io);
+        this.storageSlot.setFilter(item -> canInsertCell(item));
         return new InaccessibleInfiniteHandler(this);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if(isRemote()) return;
+
+        storageSub = storageSlot.addChangedListener(this::updateStorageSize);
+        updateStorageSize();
+    }
+
+    private boolean canInsertCell(ItemStack item) {
+        var grid = getMainNode().getGrid();
+        if(item.getItem() instanceof StorageComponentItem compItem) {
+            int newSize = compItem.getBytes(item);
+            if(newSize >= slotSize) {
+                return true;
+            } else {
+                if(grid != null && !internalBuffer.isEmpty()) {
+                    for (var slot : this.internalBuffer) {
+                        long entrySize = grid.getStorageService().getInventory().getAvailableStacks().get(slot.getKey());
+                        if(entrySize > newSize) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void updateStorageSize() {
+        if(this.storageSlot.getStackInSlot(0).getItem() instanceof StorageComponentItem compItem) {
+            slotSize = (long)(compItem.getBytes(this.storageSlot.getStackInSlot(0)) * 4L) / (1024L);
+        }
+        else if (this.storageSlot.getStackInSlot(0).isEmpty()) {
+            slotSize = 64;
+        }
     }
 
     @Override
@@ -110,6 +165,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                 "gtceu.gui.me_network.offline"));
         group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
         // display list
+        group.addWidget(new SlotWidget(storageSlot.storage, 0, 140, 0));
         group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
 
         return group;
