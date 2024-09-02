@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.items.materials.StorageComponentItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -16,23 +15,22 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
+import appeng.items.materials.StorageComponentItem;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -78,7 +76,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if(isRemote()) return;
+        if (isRemote()) return;
 
         storageSub = storageSlot.addChangedListener(this::updateStorageSize);
         updateStorageSize();
@@ -86,15 +84,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
     private boolean canInsertCell(ItemStack item) {
         var grid = getMainNode().getGrid();
-        if(item.getItem() instanceof StorageComponentItem compItem) {
+        if (item.getItem() instanceof StorageComponentItem compItem) {
             int newSize = compItem.getBytes(item);
-            if(newSize >= slotSize) {
+            if (newSize >= slotSize) {
                 return true;
             } else {
-                if(grid != null && !internalBuffer.isEmpty()) {
+                if (grid != null && !internalBuffer.isEmpty()) {
                     for (var slot : this.internalBuffer) {
-                        long entrySize = grid.getStorageService().getInventory().getAvailableStacks().get(slot.getKey());
-                        if(entrySize > newSize) {
+                        long entrySize = grid.getStorageService().getInventory().getAvailableStacks()
+                                .get(slot.getKey());
+                        if (entrySize > newSize) {
                             return false;
                         }
                     }
@@ -106,10 +105,9 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     }
 
     private void updateStorageSize() {
-        if(this.storageSlot.getStackInSlot(0).getItem() instanceof StorageComponentItem compItem) {
-            slotSize = (long)(compItem.getBytes(this.storageSlot.getStackInSlot(0)) * 4L) / (1024L);
-        }
-        else if (this.storageSlot.getStackInSlot(0).isEmpty()) {
+        if (this.storageSlot.getStackInSlot(0).getItem() instanceof StorageComponentItem compItem) {
+            slotSize = (long) (compItem.getBytes(this.storageSlot.getStackInSlot(0)) * 4L) / (1024L);
+        } else if (this.storageSlot.getStackInSlot(0).isEmpty()) {
             slotSize = 64;
         }
     }
