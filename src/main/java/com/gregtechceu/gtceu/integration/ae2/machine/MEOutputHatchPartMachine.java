@@ -182,7 +182,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         private long getCachedAmount() {
             long fluidAmount = 0;
             var grid = getMainNode().getGrid();
-            if (grid != null && internalBuffer.isEmpty()) {
+            if (grid != null && !internalBuffer.isEmpty()) {
                 for (var tank : internalBuffer) {
                     fluidAmount += grid.getStorageService().getInventory().getAvailableStacks()
                             .get(tank.getKey());
