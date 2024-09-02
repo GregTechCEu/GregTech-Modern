@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -62,7 +63,7 @@ public class OverlayedFluidHandler {
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
             if (overlayedTank.fluid != null && FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
-                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+                int inserted = Ints.saturatedCast(overlayedTank.tryInsert(fluid, amountToInsert));
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;

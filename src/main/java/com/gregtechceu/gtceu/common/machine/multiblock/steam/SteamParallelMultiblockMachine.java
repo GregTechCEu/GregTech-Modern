@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -81,15 +79,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
         var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false);
-        recipe = parallelRecipe.getFirst() == recipe ? parallelRecipe.getFirst().copy() : parallelRecipe.getFirst();
+        recipe = parallelRecipe.getFirst() == recipe ? recipe : parallelRecipe.getFirst();
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
         // also set the duration to just 1.5x the original, instead of fully multiplied
-        result.setDuration((int) (duration * 1.5));
-        result.setEut((long) Math.min(32, Math.ceil(eut * 1.33)));
-        result.setParallel(parallelRecipe.getSecond());
-        recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-                ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+        result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond());
         return recipe;
     }
 

@@ -164,31 +164,35 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
                         .map(IFluidHandler.class::cast)
                         .toList()));
 
+        List<FluidStack> recipeOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP)
+                .stream()
+                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .filter(ingredient -> !ingredient.ingredient().isEmpty())
+                .map(ingredient -> ingredient.getFluids()[0])
+                .toList();
+
         while (minMultiplier != maxMultiplier) {
             overlayedFluidHandler.reset();
 
-            int amountLeft = 0;
+            int returnedAmount = 0;
+            int amountToInsert = 0;
 
-            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
-                    .map(FluidRecipeCapability.CAP::of).filter(ingredient -> !ingredient.ingredient().hasNoFluids())
-                    .map(ingredient -> ingredient.getFluids()[0]).toList()) {
+            for (FluidStack fluidStack : recipeOutputs) {
                 if (fluidStack.getAmount() <= 0) continue;
+                if (fluidStack.isEmpty()) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
-                    amountLeft = Integer.MAX_VALUE;
+                    amountToInsert = Integer.MAX_VALUE;
                 } else {
-                    amountLeft = fluidStack.getAmount() * multiplier;
+                    amountToInsert = fluidStack.getAmount() * multiplier;
                 }
-                int inserted = overlayedFluidHandler.insertFluid(fluidStack, amountLeft);
-                if (inserted > 0) {
-                    amountLeft -= inserted;
-                }
-                if (amountLeft > 0) {
+                returnedAmount = amountToInsert - overlayedFluidHandler.insertFluid(fluidStack, amountToInsert);
+                if (returnedAmount > 0) {
                     break;
                 }
             }
 
-            int[] bin = ParallelLogic.adjustMultiplier(amountLeft == 0, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(returnedAmount == 0, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];
@@ -273,8 +277,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
         // Iterate through the fluid inputs in the recipe
         for (Map.Entry<SizedFluidIngredient, Integer> fs : fluidCountMap.entrySet()) {
-            long needed = fs.getValue();
-            long available = 0;
+            int needed = fs.getValue();
+            int available = 0;
             // For every fluid gathered from the fluid inputs.
             for (Map.Entry<FluidKey, Integer> inputFluid : fluidStacks.entrySet()) {
                 FluidStack stack = new FluidStack(inputFluid.getKey().fluid, inputFluid.getValue(),
