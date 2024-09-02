@@ -55,7 +55,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @Nullable
     protected ISubscription storageSub;
 
-    private long slotSize = 0;
+    private long capacitySize = 0;
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.OUT, args);
@@ -85,30 +85,21 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     private boolean canInsertCell(ItemStack item) {
         var grid = getMainNode().getGrid();
         if (item.getItem() instanceof StorageComponentItem compItem) {
-            int newSize = compItem.getBytes(item);
-            if (newSize >= slotSize) {
+            long newSize = (long)compItem.getBytes(item) * 8L;
+            if (newSize >= capacitySize) {
                 return true;
             } else {
-                if (grid != null && !internalBuffer.isEmpty()) {
-                    for (var slot : this.internalBuffer) {
-                        long entrySize = grid.getStorageService().getInventory().getAvailableStacks()
-                                .get(slot.getKey());
-                        if (entrySize > newSize) {
-                            return false;
-                        }
-                    }
-                }
+                return ((InaccessibleInfiniteHandler) (getInventory())).getCachedAmount() >= newSize;
             }
-            return true;
         }
         return false;
     }
 
     private void updateStorageSize() {
         if (this.storageSlot.getStackInSlot(0).getItem() instanceof StorageComponentItem compItem) {
-            slotSize = (long) (compItem.getBytes(this.storageSlot.getStackInSlot(0)) * 4L) / (1024L);
+            capacitySize = (compItem.getBytes(this.storageSlot.getStackInSlot(0)) * 8L);
         } else if (this.storageSlot.getStackInSlot(0).isEmpty()) {
-            slotSize = 64;
+            capacitySize = 64L;
         }
     }
 
@@ -190,6 +181,22 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
             return Integer.MAX_VALUE;
         }
 
+        private long getCachedAmount() {
+            long itemAmount = 0;
+            var grid = getMainNode().getGrid();
+            if (grid != null && !internalBuffer.isEmpty()) {
+                for (var slot : internalBuffer) {
+                    itemAmount += grid.getStorageService().getInventory().getAvailableStacks()
+                            .get(slot.getKey());
+                }
+            }
+            return itemAmount;
+        }
+
+        private boolean canInsertItem() {
+            return getCachedAmount() < capacitySize;
+        }
+
         @Override
         public int getSlotLimit(int slot) {
             return Integer.MAX_VALUE; // todo add me components for sizing
@@ -231,15 +238,18 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                 int count = stack.getCount();
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
                 long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
-                if (changeValue > 0) {
-                    if (!simulate) {
-                        internalBuffer.storage.put(key, oldValue + changeValue);
-                        internalBuffer.onChanged();
+                if(canInsertItem()) {
+                    if (changeValue > 0) {
+                        if (!simulate) {
+                            internalBuffer.storage.put(key, oldValue + changeValue);
+                            internalBuffer.onChanged();
+                        }
+                        return stack.copyWithCount((int) (count - changeValue));
+                    } else {
+                        return ItemStack.EMPTY;
                     }
-                    return stack.copyWithCount((int) (count - changeValue));
-                } else {
-                    return ItemStack.EMPTY;
                 }
+                return ItemStack.EMPTY;
             }
 
             @Override
