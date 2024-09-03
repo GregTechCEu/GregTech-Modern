@@ -92,39 +92,29 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition NAQUADAH_VEIN = create("naquadah_vein", vein -> vein
-            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(30)
+            .clusterSize(UniformInt.of(48, 80)).density(0.25f).weight(30)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(10, 90)
             .biomes(BiomeTags.IS_END)
-            .veinedVeinGenerator(generator -> generator
-                    .oreBlock(new VeinBlockDefinition(Naquadah, 3))
-                    .rareBlock(new VeinBlockDefinition(Plutonium239, 1))
-                    .rareBlockChance(0.25f)
-                    .veininessThreshold(0.01f)
-                    .maxRichnessThreshold(0.175f)
-                    .minRichness(0.7f)
-                    .maxRichness(1.0f)
-                    .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f))
+            .cuboidVeinGenerator(generator -> generator
+                    .top(b -> b.mat(Naquadah).size(2))
+                    .middle(b -> b.mat(Naquadah).size(3))
+                    .bottom(b -> b.mat(Naquadah).size(2))
+                    .spread(b -> b.mat(Plutonium239)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Naquadah)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition PITCHBLENDE_VEIN = create("pitchblende_vein_end", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(1.0f).weight(30)
+            .clusterSize(UniformInt.of(32, 64)).density(0.25f).weight(30)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_END)
-            .veinedVeinGenerator(generator -> generator
-                    .oreBlock(new VeinBlockDefinition(Pitchblende, 3))
-                    .rareBlock(new VeinBlockDefinition(Uraninite, 2))
-                    .rareBlockChance(0.33f)
-                    .veininessThreshold(0.01f)
-                    .maxRichnessThreshold(0.175f)
-                    .minRichness(0.7f)
-                    .maxRichness(1.0f)
-                    .edgeRoundoffBegin(3)
-                    .maxEdgeRoundoff(0.1f))
+            .cuboidVeinGenerator(generator -> generator
+                    .top(b -> b.mat(Pitchblende).size(2))
+                    .middle(b -> b.mat(Pitchblende).size(3))
+                    .bottom(b -> b.mat(Pitchblende).size(2))
+                    .spread(b -> b.mat(Uraninite)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Pitchblende)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
