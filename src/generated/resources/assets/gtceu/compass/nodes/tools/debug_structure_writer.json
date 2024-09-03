@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:debug_structure_writer"
+  },
+  "items": [
+    "gtceu:debug_structure_writer"
+  ],
+  "page": "gtceu:tools/debug_structure_writer",
+  "position": [
+    -250,
+    0
+  ],
+  "section": "gtceu:tools"
+}
