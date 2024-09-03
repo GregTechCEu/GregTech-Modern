@@ -486,6 +486,13 @@ public class GTItems {
             .onRegister(
                     attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
             .register();
+    public static ItemEntry<ComponentItem> DEBUG_STRUCTURE_WRITER = REGISTRATE
+            .item("debug_structure_writer", ComponentItem::create)
+            .lang("Debug Structure Writer")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.TOOLS))
+            .onRegister( attach(StructureWriterBehaviour.INSTANCE))
+            .register();
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {
