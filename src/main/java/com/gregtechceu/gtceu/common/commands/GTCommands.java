@@ -54,6 +54,7 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
+                        .requires(source -> source.hasPermission(3))
                         .then(literal("ui_editor")
                                 .executes(context -> {
                                     GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE,
@@ -61,7 +62,6 @@ public class GTCommands {
                                     return 1;
                                 }))
                         .then(literal("check_recipes_valid")
-                                .requires(cs -> cs.hasPermission(0))
                                 .executes(context -> {
                                     for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()
                                             .getRecipes()) {
@@ -75,7 +75,6 @@ public class GTCommands {
                                     return 1;
                                 }))
                         .then(literal("dump_data")
-                                .requires(source -> source.hasPermission(3))
                                 .then(literal("bedrock_fluid_veins")
                                         .executes(context -> dumpDataRegistry(context,
                                                 GTRegistries.BEDROCK_FLUID_DEFINITIONS,
@@ -92,7 +91,6 @@ public class GTCommands {
                                                 GTOreDefinition.FULL_CODEC,
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
-                                .requires(source -> source.hasPermission(3))
                                 .then(argument("vein",
                                         GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
                                         .executes(context -> GTCommands.placeVein(context,
