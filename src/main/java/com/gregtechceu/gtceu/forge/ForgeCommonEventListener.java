@@ -205,7 +205,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
+        GTCommands.register(event.getDispatcher(), event.getBuildContext());
+        MedicalConditionCommands.register(event.getDispatcher(), event.getBuildContext());
+        HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent

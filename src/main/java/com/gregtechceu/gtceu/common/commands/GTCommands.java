@@ -40,13 +40,8 @@ import static net.minecraft.commands.Commands.*;
  */
 public class ServerCommands {
 
-    private static final SimpleCommandExceptionType ERROR_CLEAR_EVERYTHING_FAILED = new SimpleCommandExceptionType(
-            Component.translatable("commands.effect.clear.everything.failed"));
-    private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
-            Component.translatable("commands.effect.give.failed"));
-
-    public static List<LiteralArgumentBuilder<CommandSourceStack>> createServerCommands() {
-        return List.of(
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
+        dispatcher.register(
                 literal("gtceu")
                         .then(literal("ui_editor")
                                 .executes(context -> {
