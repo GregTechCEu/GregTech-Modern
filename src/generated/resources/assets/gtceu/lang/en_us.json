@@ -2301,6 +2301,7 @@
   "config.gtceu.option.nerfWoodCrafting": "nerfWoodCrafting",
   "config.gtceu.option.orderedAssemblyLineFluids": "orderedAssemblyLineFluids",
   "config.gtceu.option.orderedAssemblyLineItems": "orderedAssemblyLineItems",
+  "config.gtceu.option.oreFortuneDrops": "oreFortuneDrops",
   "config.gtceu.option.oreGenerationChunkCacheSize": "oreGenerationChunkCacheSize",
   "config.gtceu.option.oreIndicatorChunkCacheSize": "oreIndicatorChunkCacheSize",
   "config.gtceu.option.oreVeinGridSize": "oreVeinGridSize",

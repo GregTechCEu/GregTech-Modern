@@ -554,6 +554,9 @@ public class ConfigHolder {
     public static class GameplayConfigs {
 
         @Configurable
+        @Configurable.Comment({ "Enable fortune for ore drops", "Default: false" })
+        public boolean oreFortuneDrops = false;
+        @Configurable
         @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
         public boolean hazardsEnabled = true;
         @Configurable
