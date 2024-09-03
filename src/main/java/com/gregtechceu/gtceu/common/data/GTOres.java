@@ -757,18 +757,18 @@ public class GTOres {
     }
 
     public static void updateLargestVeinSize() {
+        // map to average of min & max values.
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
                 .map(GTOreDefinition::clusterSize)
-                .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of
-                                                                                                 // min & max values.
-                .max(Integer::compareTo)
+                .mapToInt(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2)
+                .max()
                 .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
-                .flatMap(definition -> definition.indicatorGenerators().stream()
-                        .map(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
+                .flatMapToInt(definition -> definition.indicatorGenerators().stream()
+                        .mapToInt(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
                                 (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))
-                .max(Integer::compareTo)
+                .max()
                 .orElse(0);
     }
 

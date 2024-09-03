@@ -80,18 +80,17 @@ public class CuboidVeinGenerator extends VeinGenerator {
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
-        int totalWeight = top.layers + middle.layers + bottom.layers;
         top.target.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                 material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, top.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, top.layers)));
         middle.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, middle.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, middle.layers)));
         bottom.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, bottom.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, bottom.layers)));
         spread.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
@@ -239,7 +238,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
                                 long randomSeed, BlockPos pos,
                                 RandomSource random, int weightX, int weightZ) {
         var spread = this.spread.target;
-        if (random.nextFloat() <= entry.density() / spreadDivisor && shouldPlaceOre(random, weightX, weightZ)) {
+        if (random.nextFloat() <= entry.density() * spreadDivisor && shouldPlaceOre(random, weightX, weightZ)) {
             generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, spread, entry));
             return true;
         }
@@ -292,7 +291,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
         middleLayer1 = (int) (totalLayers / 7.0f * 3.0f);
         middleLayer2 = (int) (totalLayers / 7.0f * 4.0f);
         topLayer = (int) (totalLayers / 7.0f * 6.0f);
-        spreadDivisor = top.layers + middle.layers - 1;
+        spreadDivisor = (top.layers + middle.layers - 1) / 2;
         return this;
     }
 

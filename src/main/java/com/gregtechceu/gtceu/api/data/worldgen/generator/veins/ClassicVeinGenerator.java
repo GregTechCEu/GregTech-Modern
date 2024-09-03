@@ -81,19 +81,18 @@ public class ClassicVeinGenerator extends VeinGenerator {
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
         List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
-        int totalWeight = primary.layers + secondary.layers + between.layers;
         primary.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, primary.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, primary.layers)));
         secondary.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, secondary.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, secondary.layers)));
         between.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, between.layers / totalWeight)));
+                .forEach(entry -> result.add(Map.entry(entry, between.layers)));
         sporadic.target
                 .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
                         material -> Stream.of(Either.<BlockState, Material>right(material)))
