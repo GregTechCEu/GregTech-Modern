@@ -283,6 +283,10 @@ public class GTOreDefinition {
 
     public GTOreDefinition cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
         var veinGenerator = new CuboidVeinGenerator(this);
+        if (inferredProperties.heightRange != null) {
+            veinGenerator.minY(inferredProperties.heightRange.getFirst());
+            veinGenerator.maxY(inferredProperties.heightRange.getSecond());
+        }
 
         config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
