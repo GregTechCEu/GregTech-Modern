@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
-
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -23,12 +23,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +65,6 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
             player.setMaxUpStep(0.6f);
         }
-
     }
 
     @Override
@@ -112,8 +111,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         });
     }
 
-    public void addInfo(ItemStack itemStack, List<Component> lines) {
-    }
+    public void addInfo(ItemStack itemStack, List<Component> lines) {}
 
     public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
