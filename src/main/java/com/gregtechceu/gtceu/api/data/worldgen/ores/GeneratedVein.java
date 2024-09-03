@@ -9,7 +9,6 @@ import net.minecraft.world.level.ChunkPos;
 
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.Message;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -31,7 +30,8 @@ import java.util.function.Function;
 
 public class GTRegistryArgument<K, V> implements ArgumentType<V> {
 
-    private static final SimpleCommandExceptionType ERROR_INVALID = new SimpleCommandExceptionType(Component.translatable("argument.id.invalid"));
+    private static final SimpleCommandExceptionType ERROR_INVALID = new SimpleCommandExceptionType(
+            Component.translatable("argument.id.invalid"));
 
     private static final Collection<String> EXAMPLES = Arrays.asList("gtceu:iron_vein", "gtceu:pitchblende_vein_end",
             "gtceu:lava_deposit");
@@ -67,13 +67,14 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
             }
             return registry.get(loc);
         }
-        throw new SimpleCommandExceptionType(Component.literal("Invalid key class! this should never happen!")).createWithContext(reader);
+        throw new SimpleCommandExceptionType(Component.literal("Invalid key class! this should never happen!"))
+                .createWithContext(reader);
     }
 
     public static String readId(StringReader reader) throws CommandSyntaxException {
         int cursor = reader.getCursor();
 
-        while(reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek())) {
+        while (reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek())) {
             reader.skip();
         }
 

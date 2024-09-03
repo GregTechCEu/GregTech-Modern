@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import lombok.Getter;
-import org.antlr.v4.tool.Rule;
 
 import java.util.Map;
 import java.util.stream.Collectors;
