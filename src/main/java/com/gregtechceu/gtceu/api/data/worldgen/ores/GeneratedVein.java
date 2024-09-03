@@ -9,7 +9,9 @@ import net.minecraft.world.level.ChunkPos;
 
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,6 +48,10 @@ public class GeneratedVein {
      */
     public Map<BlockPos, OreBlockPlacer> consumeOres(ChunkPos chunk) {
         return this.generatedOres.getOrDefault(chunk, Map.of());
+    }
+
+    public Set<ChunkPos> getGeneratedChunks() {
+        return generatedOres.keySet();
     }
 
     @Override

@@ -35,7 +35,7 @@ import java.util.Map;
 public class GTOreLoader extends SimpleJsonResourceReloadListener {
 
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
-    private static final String FOLDER = "gtceu/ore_veins";
+    public static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public GTOreLoader() {

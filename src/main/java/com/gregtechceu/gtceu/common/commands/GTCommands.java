@@ -1,44 +1,55 @@
 package com.gregtechceu.gtceu.common.commands;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
-import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
-import com.gregtechceu.gtceu.common.commands.arguments.MedicalConditionArgument;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
+import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
+import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
+import com.gregtechceu.gtceu.data.loader.GTOreLoader;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
+import com.lowdragmc.lowdraglib.Platform;
+
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
 
-import com.mojang.brigadier.arguments.*;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.Path;
 
 import static net.minecraft.commands.Commands.*;
 
 /**
  * @author KilaBash
  * @date 2023/2/9
- * @implNote ServerCommands
+ * @implNote GTCommands
  */
-public class ServerCommands {
+public class GTCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
@@ -63,194 +74,80 @@ public class ServerCommands {
                                     }
                                     return 1;
                                 }))
-                        .then(literal("medical_condition")
-                                .requires(source -> source.hasPermission(2))
-                                .then(literal("query")
-                                        .executes(context -> queryMedicalConditions(
-                                                context.getSource().getPlayerOrException()))
-                                        .then(argument("target", EntityArgument.player())
-                                                .executes(context -> queryMedicalConditions(
-                                                        EntityArgument.getPlayer(context, "target")))))
-                                .then(literal("clear")
-                                        .executes(context -> clearMedicalConditions(
-                                                Collections.singleton(context.getSource().getPlayerOrException()),
-                                                null))
-                                        .then(argument("targets", EntityArgument.players())
-                                                .executes(context -> clearMedicalConditions(
-                                                        EntityArgument.getPlayers(context, "targets"), null))
-                                                .then(argument("condition",
-                                                        MedicalConditionArgument.medicalCondition())
-                                                        .executes(context -> {
-                                                            Collection<ServerPlayer> targets = EntityArgument
-                                                                    .getPlayers(context, "targets");
-                                                            MedicalCondition condition = MedicalConditionArgument
-                                                                    .getCondition(context, "condition");
-                                                            return clearMedicalConditions(targets, condition);
-                                                        }))))
-                                .then(literal("apply")
-                                        .then(argument("targets", EntityArgument.players())
-                                                .then(argument("condition",
-                                                        MedicalConditionArgument.medicalCondition())
-                                                        .executes(context -> {
-                                                            MedicalCondition condition = MedicalConditionArgument
-                                                                    .getCondition(context, "condition");
-                                                            Collection<ServerPlayer> players = EntityArgument
-                                                                    .getPlayers(context, "targets");
-                                                            return applyMedicalConditions(players, condition, 1);
-                                                        }).then(argument("progression_multiplier",
-                                                                FloatArgumentType.floatArg(0))
-                                                                .executes(context -> {
-                                                                    MedicalCondition condition = MedicalConditionArgument
-                                                                            .getCondition(context, "condition");
-                                                                    Collection<ServerPlayer> players = EntityArgument
-                                                                            .getPlayers(context, "targets");
-                                                                    float strength = FloatArgumentType.getFloat(
-                                                                            context,
-                                                                            "progression_multiplier");
-                                                                    return applyMedicalConditions(players,
-                                                                            condition, strength);
-                                                                }))))))
-                        .then(literal("environmental_hazard")
-                                .then(argument("condition", MedicalConditionArgument.medicalCondition())
-                                        .then(argument("can_spread", BoolArgumentType.bool())
-                                                .then(argument("source", BlockPosArgument.blockPos())
-                                                        .then(literal("chunk")
-                                                                .then(Commands
-                                                                        .argument("strength",
-                                                                                IntegerArgumentType.integer(1))
-                                                                        .executes(
-                                                                                ServerCommands::spawnChunkEnvironmentalHazard)))
-                                                        .then(literal("local")
-                                                                .then(Commands
-                                                                        .argument("from", BlockPosArgument.blockPos())
-                                                                        .then(Commands
-                                                                                .argument("to",
-                                                                                        BlockPosArgument.blockPos())
-                                                                                .executes(
-                                                                                        ServerCommands::spawnLocalEnvironmentalHazard)))))))
-                                .then(literal("clear")
-                                        .then(argument("source", BlockPosArgument.blockPos())
-                                                .executes(context -> {
-                                                    BlockPos source = BlockPosArgument.getBlockPos(context, "source");
-                                                    return clearEnvironmentalHazard(context, source, null);
-                                                })
-                                                .then(argument("condition", MedicalConditionArgument.medicalCondition())
-                                                        .executes(context -> {
-                                                            BlockPos source = BlockPosArgument.getBlockPos(context,
-                                                                    "source");
-                                                            MedicalCondition condition = MedicalConditionArgument
-                                                                    .getCondition(context, "condition");
-                                                            return clearEnvironmentalHazard(context, source, condition);
-                                                        }))))));
+                        .then(literal("dump_data")
+                                .requires(source -> source.hasPermission(3))
+                                .then(literal("bedrock_fluid_veins")
+                                        .executes(context -> dumpDataRegistry(context,
+                                                GTRegistries.BEDROCK_FLUID_DEFINITIONS,
+                                                BedrockFluidDefinition.FULL_CODEC,
+                                                BedrockFluidLoader.FOLDER)))
+                                .then(literal("bedrock_ore_veins")
+                                        .executes(context -> dumpDataRegistry(context,
+                                                GTRegistries.BEDROCK_ORE_DEFINITIONS,
+                                                BedrockOreDefinition.FULL_CODEC,
+                                                BedrockOreLoader.FOLDER)))
+                                .then(literal("ore_veins")
+                                        .executes(context -> dumpDataRegistry(context,
+                                                GTRegistries.ORE_VEINS,
+                                                GTOreDefinition.FULL_CODEC,
+                                                GTOreLoader.FOLDER))))
+                        .then(literal("place_vein")
+                                .requires(source -> source.hasPermission(3))
+                                .then(argument("vein",
+                                        GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
+                                        .executes(context -> GTCommands.placeVein(context,
+                                                context.getSource().getEntityOrException().blockPosition()))
+                                        .then(argument("position", BlockPosArgument.blockPos())
+                                                .executes(context -> GTCommands.placeVein(context,
+                                                        BlockPosArgument.getBlockPos(context, "position")))))));
     }
 
-    private static int queryMedicalConditions(ServerPlayer target) throws CommandSyntaxException {
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
-        if (tracker == null) {
-            throw EntityArgument.NO_PLAYERS_FOUND.create();
+    private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
+                                            GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {
+        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
+        var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
+        int dumpedCount = 0;
+        for (ResourceLocation id : registry.keys()) {
+            T entry = registry.get(id);
+            JsonElement json = codec.encodeStart(ops, entry).getOrThrow(false, GTCEu.LOGGER::error);
+            GTDynamicDataPack.writeJson(id, folder, parent, json);
+            dumpedCount++;
         }
-        int count = tracker.getMedicalConditions().size();
-        if (count == 0) {
-            target.sendSystemMessage(
-                    Component.translatable("command.gtceu.medical_condition.get.empty", target.getName()));
-        } else {
-            target.sendSystemMessage(
-                    Component.translatable("command.gtceu.medical_condition.get", target.getName()));
-        }
-        for (var entry : tracker.getMedicalConditions().object2FloatEntrySet()) {
-            String langKey = "command.gtceu.medical_condition.get.element";
-            if (entry.getKey().maxProgression * 2 <= entry.getFloatValue() &&
-                    entry.getKey().canBePermanent) {
-                langKey = "command.gtceu.medical_condition.get.element.permanent";
+        final int result = dumpedCount;
+        context.getSource().sendSuccess(
+                () -> Component.translatable("command.gtceu.dump_data.success", result,
+                        registry.getRegistryName().toString(), parent.toString()),
+                true);
+        return result;
+    }
+
+    private static int placeVein(CommandContext<CommandSourceStack> context, BlockPos sourcePos) {
+        GTOreDefinition vein = context.getArgument("vein", GTOreDefinition.class);
+        ResourceLocation id = GTRegistries.ORE_VEINS.getKey(vein);
+
+        ChunkPos chunkPos = new ChunkPos(sourcePos);
+        ServerLevel level = context.getSource().getLevel();
+
+        GeneratedVeinMetadata metadata = new GeneratedVeinMetadata(id, chunkPos, sourcePos, vein);
+        RandomSource random = level.random;
+
+        OrePlacer placer = new OrePlacer();
+        OreGenerator generator = placer.getOreGenCache().getOreGenerator();
+
+        try (BulkSectionAccess access = new BulkSectionAccess(level)) {
+            var generated = generator.generateOres(new OreGenerator.VeinConfiguration(metadata, random), level,
+                    chunkPos);
+            if (generated.isEmpty()) {
+                throw new CommandRuntimeException(Component.translatable("command.gtceu.place_vein.failure",
+                        id.toString(), sourcePos.toString()));
             }
-            target.sendSystemMessage(
-                    Component.translatable(langKey,
-                            Component.translatable("gtceu.medical_condition." + entry.getKey().name),
-                            entry.getFloatValue() / 20f));
-        }
-        return count;
-    }
-
-    private static int clearMedicalConditions(Collection<ServerPlayer> targets,
-                                              @Nullable MedicalCondition condition) throws CommandSyntaxException {
-        int count = 0;
-        for (ServerPlayer target : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
-            if (tracker == null) {
-                continue;
+            for (ChunkPos pos : generated.get().getGeneratedChunks()) {
+                placer.placeVein(pos, random, access, generated.get(), AlwaysTrueTest.INSTANCE);
             }
-            if (condition == null) {
-                count += tracker.getMedicalConditions().keySet().size();
-                for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
-                    tracker.removeMedicalCondition(medicalCondition);
-                }
-            } else {
-                count++;
-                tracker.removeMedicalCondition(condition);
-            }
+            context.getSource().sendSuccess(() -> Component.translatable("command.gtceu.place_vein.success",
+                    id.toString(), sourcePos.toString()), true);
         }
-        if (count == 0) {
-            throw ERROR_CLEAR_EVERYTHING_FAILED.create();
-        }
-        return count;
-    }
 
-    private static int applyMedicalConditions(Collection<ServerPlayer> targets, MedicalCondition condition,
-                                              float strength) throws CommandSyntaxException {
-        int success = 0;
-        for (ServerPlayer player : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-            if (tracker == null) {
-                continue;
-            }
-            tracker.progressCondition(condition, strength);
-            success++;
-        }
-        if (success == 0) {
-            throw ERROR_GIVE_FAILED.create();
-        }
-        return success;
-    }
-
-    private static int spawnChunkEnvironmentalHazard(CommandContext<CommandSourceStack> context) {
-        ServerLevel serverLevel = context.getSource().getLevel();
-
-        BlockPos source = BlockPosArgument.getBlockPos(context, "source");
-        int strength = IntegerArgumentType.getInteger(context, "strength");
-        MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
-        boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
-
-        EnvironmentalHazardSavedData.getOrCreate(serverLevel)
-                .addZone(source, strength, canSpread, HazardProperty.HazardTrigger.INHALATION, condition);
-
-        return 1;
-    }
-
-    private static int spawnLocalEnvironmentalHazard(CommandContext<CommandSourceStack> context) {
-        ServerLevel serverLevel = context.getSource().getLevel();
-        BlockPos source = BlockPosArgument.getBlockPos(context, "source");
-        BlockPos from = BlockPosArgument.getBlockPos(context, "from");
-        BlockPos to = BlockPosArgument.getBlockPos(context, "to");
-
-        MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
-        boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
-
-        LocalizedHazardSavedData.getOrCreate(serverLevel)
-                .addCuboidZone(source, from, to, canSpread, HazardProperty.HazardTrigger.INHALATION, condition);
-
-        return 1;
-    }
-
-    private static int clearEnvironmentalHazard(CommandContext<CommandSourceStack> context,
-                                                BlockPos clearAt, MedicalCondition condition) {
-        ServerLevel serverLevel = context.getSource().getLevel();
-        if (condition == null) {
-            EnvironmentalHazardSavedData.getOrCreate(serverLevel).removeZone(clearAt);
-            LocalizedHazardSavedData.getOrCreate(serverLevel).removeZoneByPosition(clearAt);
-        } else {
-            EnvironmentalHazardSavedData.getOrCreate(serverLevel).removeZone(clearAt, condition);
-            LocalizedHazardSavedData.getOrCreate(serverLevel).removeZoneByPosition(clearAt, condition);
-        }
         return 1;
     }
 }
