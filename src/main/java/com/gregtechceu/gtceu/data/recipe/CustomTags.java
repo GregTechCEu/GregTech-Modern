@@ -90,6 +90,7 @@ public class CustomTags {
     };
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
+    public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
 
     // Platform-dependent tags
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
