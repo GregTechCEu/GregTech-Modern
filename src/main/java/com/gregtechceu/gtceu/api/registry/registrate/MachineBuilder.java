@@ -119,9 +119,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    @Setter
-    private RecipeModifier recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK
-            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
+    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.ELECTRIC_OVERCLOCK
+            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK));
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
@@ -262,14 +261,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
-        this.recipeModifier = recipeModifier;
-        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier) {
+        this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
+                new RecipeModifierList(recipeModifier);
         return this;
     }
 
+    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
+        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this.recipeModifier(recipeModifier);
+    }
+
     public MachineBuilder<DEFINITION> recipeModifiers(RecipeModifier... recipeModifiers) {
-        return this.recipeModifier(new RecipeModifierList(recipeModifiers));
+        this.recipeModifier = new RecipeModifierList(recipeModifiers);
+        return this;
     }
 
     public MachineBuilder<DEFINITION> recipeModifiers(boolean alwaysTryModifyRecipe,
@@ -278,7 +283,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> noRecipeModifier() {
-        this.recipeModifier = ((machine, recipe, params, result) -> recipe);
+        this.recipeModifier = new RecipeModifierList(((machine, recipe, params, result) -> recipe));
         this.alwaysTryModifyRecipe = false;
         return this;
     }
