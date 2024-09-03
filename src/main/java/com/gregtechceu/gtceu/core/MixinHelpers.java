@@ -213,10 +213,10 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
+                    // disable fortune by default for balance reasons.
+                    // (for now, until we can think of a better solution.)
                     if (ConfigHolder.INSTANCE.gameplay.oreFortuneDrops) {
-                        builder.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)); // disable fortune
-                                                                                                     // by
-                        // default for balance reasons. (for now, until we can think of a better solution.)
+                        builder.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE));
                     }
 
                     Supplier<Material> outputDustMat = type.material();
