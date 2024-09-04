@@ -44,8 +44,6 @@ public class GTJadePlugin implements IWailaPlugin {
             registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
             registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
         }
-
-        registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, MaterialPipeBlockEntity.class);
     }
 
     @Override
@@ -70,8 +68,6 @@ public class GTJadePlugin implements IWailaPlugin {
             registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);
             registration.registerBlockComponent(new MEPatternBufferProvider(), Block.class);
         }
-
-        registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
 
     static {
