@@ -2801,6 +2801,7 @@
     "gtceu.jei.bedrock_fluid.raw_oil_deposit": "原油油田",
     "gtceu.jei.bedrock_fluid.salt_water_deposit": "塩水田",
     "gtceu.jei.bedrock_fluid_diagram": "岩盤液体図",
+    "gtceu.jei.bedrock_ore_diagram": "岩盤鉱石図",
     "gtceu.jei.fluid.dep_amount_hover": "鉱脈の枯渇する量",
     "gtceu.jei.fluid.dep_chance_hover": "採掘による液体脈の枯渇確率",
     "gtceu.jei.fluid.dep_yield_hover": "液体脈が枯渇した時の最大収量",
