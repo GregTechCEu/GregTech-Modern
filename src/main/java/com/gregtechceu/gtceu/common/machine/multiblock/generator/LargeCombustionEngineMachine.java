@@ -117,11 +117,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
                 var parallelResult = GTRecipeModifiers.fastParallel(engineMachine, recipe, maxParallel, false);
                 if (engineMachine.isOxygenBoosted) { // boost production
-                    recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
                     long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
                     result.init(-eut, recipe.duration, parallelResult.getSecond());
                 } else {
-                    recipe = parallelResult.getFirst();
                     result.init(-RecipeHelper.getOutputEUt(recipe), recipe.duration, parallelResult.getSecond());
                 }
 
