@@ -54,7 +54,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     private long capacitySize = 0;
 
     public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+        super(holder, IO.OUT, args);
     }
 
     /////////////////////////////////
@@ -65,8 +65,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.internalBuffer = new KeyStorage();
         this.storageSlot = new NotifiableItemStackHandler(this, 1, io);
-        this.storageSlot.setFilter(item -> canInsertCell(item));
-        return new InaccessibleInfiniteTank(this);
+        this.storageSlot.setFilter(this::canInsertCell);
+        return new InaccessibleInfiniteTank(this, this.internalBuffer);
     }
 
     @Override
@@ -79,7 +79,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     }
 
     private boolean canInsertCell(ItemStack item) {
-        var grid = getMainNode().getGrid();
         if (item.getItem() instanceof StorageComponentItem compItem) {
             long newSize = (long) compItem.getBytes(item) * 8L;
             if (newSize >= capacitySize) {
@@ -88,7 +87,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
                 return ((MEOutputHatchPartMachine.InaccessibleInfiniteTank) (tank)).getCachedAmount() >= newSize;
             }
         }
-        return false;
+        return item.getCount() == 1;
     }
 
     private void updateStorageSize() {
@@ -160,10 +159,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
         private FluidStorage[] fluidStorages;
+        private KeyStorage internalIBuffer;
 
-        public InaccessibleInfiniteTank(MetaMachine holder) {
-            super(holder, 0, 0, IO.OUT, IO.NONE);
+        public InaccessibleInfiniteTank(MetaMachine holder, KeyStorage buffer) {
+            super(holder, 0, 0, IO.OUT, IO.OUT);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
+            this.internalIBuffer = buffer;
         }
 
         @Override
@@ -184,8 +185,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
             var grid = getMainNode().getGrid();
             if (grid != null && !internalBuffer.isEmpty()) {
                 for (var tank : internalBuffer) {
-                    fluidAmount += grid.getStorageService().getInventory().getAvailableStacks()
-                            .get(tank.getKey());
+                    fluidAmount += tank.getLongValue();
                 }
             }
             return fluidAmount;
@@ -204,12 +204,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         private class FluidStorageDelegate extends FluidStorage {
 
             public FluidStorageDelegate() {
-                super(0L);
+                super(Long.MAX_VALUE);
             }
 
             @Override
             public long getCapacity() {
-                return Long.MAX_VALUE;
+                return capacitySize;
             }
 
             @Override
@@ -219,6 +219,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
 
             @Override
             public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                super.fill(tank, resource, simulate, notifyChanges);
                 var key = AEFluidKey.of(resource.getFluid(), resource.getTag());
                 long amount = resource.getAmount();
                 long oldValue = internalBuffer.storage.getOrDefault(key, 0);
@@ -226,6 +227,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
                 if (canInsertFluid()) {
                     if (changeValue > 0 && !simulate) {
                         internalBuffer.storage.put(key, oldValue + changeValue);
+
                         internalBuffer.onChanged();
                     }
                 }
@@ -244,7 +246,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
 
             @Override
             public boolean isFluidValid(FluidStack stack) {
-                return false;
+                return true;
             }
 
             @Override

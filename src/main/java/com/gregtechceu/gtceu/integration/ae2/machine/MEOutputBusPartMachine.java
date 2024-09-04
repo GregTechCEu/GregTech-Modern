@@ -186,8 +186,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
             var grid = getMainNode().getGrid();
             if (grid != null && !internalBuffer.isEmpty()) {
                 for (var slot : internalBuffer) {
-                    itemAmount += grid.getStorageService().getInventory().getAvailableStacks()
-                            .get(slot.getKey());
+                    itemAmount += slot.getLongValue();
                 }
             }
             return itemAmount;
@@ -218,7 +217,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
 
             @Override
             public int getSlotLimit(int slot) {
-                return Integer.MAX_VALUE; // todo add me components for sizing
+                return (int)capacitySize; // todo add me components for sizing
             }
 
             @Override
