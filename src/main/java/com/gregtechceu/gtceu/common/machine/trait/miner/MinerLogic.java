@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -39,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
@@ -217,13 +217,13 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 BlockState blockState = serverLevel.getBlockState(blocksToMine.getFirst());
 
                 // check to make sure the ore is still there,
-                while (!blockState.is(CustomTags.ORE_BLOCKS)) {
+                while (!blockState.is(Tags.Blocks.ORES)) {
                     blocksToMine.removeFirst();
                     if (blocksToMine.isEmpty()) break;
                     blockState = serverLevel.getBlockState(blocksToMine.getFirst());
                 }
                 // When we are here we have an ore to mine! I'm glad we aren't threaded
-                if (!blocksToMine.isEmpty() & blockState.is(CustomTags.ORE_BLOCKS)) {
+                if (!blocksToMine.isEmpty() & blockState.is(Tags.Blocks.ORES)) {
                     LootParams.Builder builder = new LootParams.Builder(serverLevel)
                             .withParameter(LootContextParams.BLOCK_STATE, blockState)
                             .withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(blocksToMine.getFirst()))
@@ -499,7 +499,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                         BlockState state = getMachine().getLevel().getBlockState(blockPos);
                         if (state.getBlock().defaultDestroyTime() >= 0 &&
                                 getMachine().getLevel().getBlockEntity(blockPos) == null &&
-                                state.is(CustomTags.ORE_BLOCKS)) {
+                                state.is(Tags.Blocks.ORES)) {
                             blocks.addLast(blockPos);
                         }
                         // move to the next x position

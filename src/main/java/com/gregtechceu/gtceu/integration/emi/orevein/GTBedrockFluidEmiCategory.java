@@ -27,7 +27,6 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerWorkStations(EmiRegistry registry) {
-        registry.addWorkstation(CATEGORY, EmiStack.of(GTItems.PROSPECTOR_LV.asStack()));
         registry.addWorkstation(CATEGORY, EmiStack.of(GTItems.PROSPECTOR_HV.asStack()));
         registry.addWorkstation(CATEGORY, EmiStack.of(GTItems.PROSPECTOR_LUV.asStack()));
     }

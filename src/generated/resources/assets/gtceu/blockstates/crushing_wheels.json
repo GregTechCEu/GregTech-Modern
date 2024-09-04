@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/variant/crushing_wheels"
+    },
+    "active=true": {
+      "model": "gtceu:block/variant/crushing_wheels_active"
+    }
+  }
+}

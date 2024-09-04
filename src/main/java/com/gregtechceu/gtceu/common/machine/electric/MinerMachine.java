@@ -47,7 +47,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -130,9 +129,9 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, exportItems.storage);
-        clearInventory(drops, chargerInventory);
+    public void onMachineRemoved() {
+        clearInventory(exportItems.storage);
+        clearInventory(chargerInventory);
     }
 
     @Override
