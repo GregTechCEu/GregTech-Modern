@@ -22,7 +22,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -44,7 +43,6 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         this.maxCapacity = maxCapacity;
         this.tier = tier;
         this.type = type;
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
