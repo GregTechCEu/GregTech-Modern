@@ -2847,6 +2847,7 @@
   "gtceu.jei.bedrock_fluid.raw_oil_deposit": "Raw Oil Deposit",
   "gtceu.jei.bedrock_fluid.salt_water_deposit": "Salt Water Deposit",
   "gtceu.jei.bedrock_fluid_diagram": "Bedrock Fluid Diagram",
+  "gtceu.jei.bedrock_ore_diagram": "Bedrock Ore Diagram",
   "gtceu.jei.fluid.dep_amount_hover": "The amount the vein will be depleted by",
   "gtceu.jei.fluid.dep_chance_hover": "The percentage chance for the vein to be depleted upon harvest",
   "gtceu.jei.fluid.dep_yield_hover": "The maximum yield of the vein when it is fully depleted",

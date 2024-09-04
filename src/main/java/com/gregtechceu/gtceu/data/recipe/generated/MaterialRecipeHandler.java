@@ -59,7 +59,7 @@ public class MaterialRecipeHandler {
 
     public static void processDust(TagPrefix dustPrefix, Material mat, DustProperty property,
                                    Consumer<FinishedRecipe> provider) {
-        String id = "%s_%s_".formatted(FormattingUtil.toLowerCaseUnder(dustPrefix.name),
+        String id = "%s_%s".formatted(FormattingUtil.toLowerCaseUnder(dustPrefix.name),
                 mat.getName().toLowerCase(Locale.ROOT));
         ItemStack dustStack = ChemicalHelper.get(dustPrefix, mat);
         OreProperty oreProperty = mat.hasProperty(PropertyKey.ORE) ? mat.getProperty(PropertyKey.ORE) : null;
@@ -137,7 +137,7 @@ public class MaterialRecipeHandler {
                     // smelting magnetic dusts is handled elsewhere
                     if (!mat.hasFlag(IS_MAGNETIC)) {
                         // do not register inputs by ore dict here. Let other mods register their own dust -> ingots
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_demagnetize_from_dust",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 } else {
@@ -165,7 +165,7 @@ public class MaterialRecipeHandler {
                 if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_dust_to_ingot",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 }

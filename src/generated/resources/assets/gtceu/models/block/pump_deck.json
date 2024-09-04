@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "gtceu:block/casings/pump_deck/bottom",
+    "side": "gtceu:block/casings/pump_deck/side",
+    "top": "gtceu:block/casings/pump_deck/top"
+  }
+}
