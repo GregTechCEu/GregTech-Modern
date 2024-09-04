@@ -2,20 +2,14 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.api.graphnet.logic.AbstractLongLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-
-import org.jetbrains.annotations.NotNull;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 
 public final class VoltageLimitLogic extends AbstractLongLogicData<VoltageLimitLogic> {
 
-    public static final VoltageLimitLogic INSTANCE = new VoltageLimitLogic().setValue(0);
+    public static final NetLogicEntryType<VoltageLimitLogic> TYPE = new NetLogicEntryType<>("VoltageLimit", () -> new VoltageLimitLogic().setValue(0));
 
     private VoltageLimitLogic() {
-        super("VoltageLimit");
-    }
-
-    @Override
-    public @NotNull VoltageLimitLogic getNew() {
-        return new VoltageLimitLogic().setValue(INSTANCE.getValue());
+        super(TYPE);
     }
 
     @Override

@@ -83,9 +83,9 @@ public class FluidTraverseData extends AbstractTraverseData<WorldPipeNetNode, Fl
             return result.getLossFunction();
         } else {
             FluidContainmentLogic containmentLogic = node.getData()
-                    .getLogicEntryDefaultable(FluidContainmentLogic.INSTANCE);
+                    .getLogicEntryDefaultable(FluidContainmentLogic.TYPE);
 
-            TemperatureLogic temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
+            TemperatureLogic temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
             if (temperatureLogic != null) {
                 result = temperatureLogic.getLossResult(getQueryTick());
                 boolean overMax = fluidTemp > containmentLogic.getMaximumTemperature() &&
@@ -167,10 +167,10 @@ public class FluidTraverseData extends AbstractTraverseData<WorldPipeNetNode, Fl
     public void consumeFlowLimit(@NotNull AbstractNetFlowEdge edge, NetNode targetNode,
                                  long consumption) {
         super.consumeFlowLimit(edge, targetNode, consumption);
-        TemperatureLogic temperatureLogic = targetNode.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
+        TemperatureLogic temperatureLogic = targetNode.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
         if (temperatureLogic != null) {
             FluidContainmentLogic containmentLogic = targetNode.getData()
-                    .getLogicEntryDefaultable(FluidContainmentLogic.INSTANCE);
+                    .getLogicEntryDefaultable(FluidContainmentLogic.TYPE);
             boolean overMax = fluidTemp > containmentLogic.getMaximumTemperature() &&
                     !(state == FluidState.PLASMA && containmentLogic.contains(FluidState.PLASMA));
             temperatureLogic.moveTowardsTemperature(fluidTemp,

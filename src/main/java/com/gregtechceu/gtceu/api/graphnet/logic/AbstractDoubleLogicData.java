@@ -10,12 +10,12 @@ public abstract class AbstractDoubleLogicData<T extends AbstractDoubleLogicData<
 
     private double value;
 
-    protected AbstractDoubleLogicData(@NotNull String name) {
-        super(name);
+    protected AbstractDoubleLogicData(@NotNull NetLogicEntryType<T> type) {
+        super(type);
     }
 
     public T getWith(double value) {
-        return getNew().setValue(value);
+        return getType().supplier().get().setValue(value);
     }
 
     protected T setValue(double value) {

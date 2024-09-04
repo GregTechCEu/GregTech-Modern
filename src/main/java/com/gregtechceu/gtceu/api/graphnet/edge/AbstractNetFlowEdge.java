@@ -50,11 +50,11 @@ public abstract class AbstractNetFlowEdge extends NetEdge {
     }
 
     protected int getChannelCount() {
-        return getData().getLogicEntryDefaultable(ChannelCountLogic.INSTANCE).getValue();
+        return getData().getLogicEntryDefaultable(ChannelCountLogic.TYPE).getValue();
     }
 
     public long getThroughput() {
-        return getData().getLogicEntryDefaultable(ThroughputLogic.INSTANCE).getValue();
+        return getData().getLogicEntryDefaultable(ThroughputLogic.TYPE).getValue();
     }
 
     public long getFlowLimit(IPredicateTestObject channel, IGraphNet graph, long queryTick,

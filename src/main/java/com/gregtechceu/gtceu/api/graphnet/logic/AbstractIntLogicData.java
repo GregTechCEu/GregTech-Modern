@@ -9,12 +9,12 @@ public abstract class AbstractIntLogicData<T extends AbstractIntLogicData<T>> ex
 
     private int value;
 
-    protected AbstractIntLogicData(@NotNull String name) {
-        super(name);
+    protected AbstractIntLogicData(@NotNull NetLogicEntryType<T> type) {
+        super(type);
     }
 
     public T getWith(int value) {
-        return getNew().setValue(value);
+        return getType().supplier().get().setValue(value);
     }
 
     protected T setValue(int value) {

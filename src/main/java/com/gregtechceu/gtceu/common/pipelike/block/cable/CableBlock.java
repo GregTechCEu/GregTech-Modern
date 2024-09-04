@@ -74,8 +74,8 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
         if (tile != null && tile.getFrameMaterial() == null && tile.getOffsetTimer() % 10 == 0) {
             WorldPipeNetNode node = WorldEnergyNet.getWorldNet(serverLevel).getNode(pos);
             if (node != null) {
-                if (node.getData().getLogicEntryNullable(SuperconductorLogic.INSTANCE) != null) return;
-                EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.INSTANCE);
+                if (node.getData().getLogicEntryNullable(SuperconductorLogic.TYPE) != null) return;
+                EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.TYPE);
                 if (logic != null) {
                     long tick = Platform.getMinecraftServer().getTickCount();
                     long cumulativeDamage = 0;

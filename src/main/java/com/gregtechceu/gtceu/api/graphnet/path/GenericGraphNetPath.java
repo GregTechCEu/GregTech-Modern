@@ -24,7 +24,7 @@ public class GenericGraphNetPath extends AbstractNetPath<NetNode, NetEdge> {
 
     public GenericGraphNetPath(GraphVertex vertex) {
         this(Collections.singletonList(vertex), Collections.emptyList(),
-                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.INSTANCE).getValue());
+                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.TYPE).getValue());
     }
 
     public GenericGraphNetPath(List<GraphVertex> vertices, List<GraphEdge> edges, double weight) {

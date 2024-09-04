@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.graphnet.NetNode;
 import com.gregtechceu.gtceu.api.graphnet.logic.INetLogicEntryListener;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.NodeLossResult;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IFreezable;
@@ -28,7 +29,7 @@ import java.util.Objects;
 
 public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, CompoundTag> {
 
-    public static final TemperatureLogic INSTANCE = new TemperatureLogic();
+    public static final NetLogicEntryType<TemperatureLogic> TYPE = new NetLogicEntryType<>("Temperature", TemperatureLogic::new);
 
     public static final int DEFAULT_TEMPERATURE = 298;
 
@@ -46,7 +47,7 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
     private long lastRestorationTick;
 
     private TemperatureLogic() {
-        super("Temperature");
+        super(TYPE);
     }
 
     public TemperatureLogic getWith(@NotNull TemperatureLossFunction temperatureRestorationFunction,
@@ -74,7 +75,7 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
     public TemperatureLogic getWith(@NotNull TemperatureLossFunction temperatureRestorationFunction,
                                     int temperatureMaximum, int temperatureMinimum, int thermalMass,
                                     @Nullable Integer partialBurnTemperature, int functionPriority) {
-        return getNew()
+        return new TemperatureLogic()
                 .setRestorationFunction(temperatureRestorationFunction)
                 .setTemperatureMaximum(temperatureMaximum)
                 .setTemperatureMinimum(temperatureMinimum)
@@ -97,10 +98,6 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
     @Override
     public void deregisterFromNetLogicData(NetLogicData data) {
         if (!isMultiNodeHelper) this.netListener = new WeakReference<>(null);
-    }
-
-    public @NotNull TemperatureLogic getNew() {
-        return new TemperatureLogic();
     }
 
     public boolean isOverMaximum(int temperature) {

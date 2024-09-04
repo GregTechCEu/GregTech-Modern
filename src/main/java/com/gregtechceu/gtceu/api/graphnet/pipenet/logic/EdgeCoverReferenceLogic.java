@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.logic;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.utils.DimensionFacingPos;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -25,7 +26,7 @@ import java.lang.ref.WeakReference;
 
 public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverReferenceLogic, CompoundTag> {
 
-    public static final EdgeCoverReferenceLogic INSTANCE = new EdgeCoverReferenceLogic();
+    public static final NetLogicEntryType<EdgeCoverReferenceLogic> TYPE = new NetLogicEntryType<>("EdgeCoverReference", EdgeCoverReferenceLogic::new);
 
     @Nullable
     private WeakReference<CoverBehavior> coverSource;
@@ -35,7 +36,7 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
     private DimensionFacingPos coverTargetPos;
 
     public EdgeCoverReferenceLogic() {
-        super("EdgeCoverReference");
+        super(TYPE);
     }
 
     @Contract("_,_ -> this")
@@ -132,11 +133,6 @@ public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverRefere
                 GTUtil.DIRECTIONS[nbt.getByte("TargetFacing")],
                 ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("TargetDim"))));
         this.coverTarget = coverSource;
-    }
-
-    @Override
-    public @NotNull EdgeCoverReferenceLogic getNew() {
-        return new EdgeCoverReferenceLogic();
     }
 
     @Override

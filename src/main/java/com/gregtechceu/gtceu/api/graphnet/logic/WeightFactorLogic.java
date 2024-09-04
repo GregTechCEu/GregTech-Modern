@@ -1,18 +1,11 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import org.jetbrains.annotations.NotNull;
-
 public final class WeightFactorLogic extends AbstractDoubleLogicData<WeightFactorLogic> {
 
-    public static final WeightFactorLogic INSTANCE = new WeightFactorLogic().setValue(0.1d);
+    public static final NetLogicEntryType<WeightFactorLogic> TYPE = new NetLogicEntryType<>("WeightFactor", () -> new WeightFactorLogic().setValue(0.1d));
 
     private WeightFactorLogic() {
-        super("WeightFactor");
-    }
-
-    @Override
-    public @NotNull WeightFactorLogic getNew() {
-        return new WeightFactorLogic();
+        super(TYPE);
     }
 
     @Override

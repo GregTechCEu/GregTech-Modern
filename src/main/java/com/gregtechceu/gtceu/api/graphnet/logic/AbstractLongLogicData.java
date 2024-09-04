@@ -10,12 +10,12 @@ public abstract class AbstractLongLogicData<T extends AbstractLongLogicData<T>> 
 
     private long value;
 
-    protected AbstractLongLogicData(@NotNull String name) {
-        super(name);
+    protected AbstractLongLogicData(@NotNull NetLogicEntryType<T> type) {
+        super(type);
     }
 
     public T getWith(long value) {
-        return getNew().setValue(value);
+        return getType().supplier().get().setValue(value);
     }
 
     @Contract("_ -> this")

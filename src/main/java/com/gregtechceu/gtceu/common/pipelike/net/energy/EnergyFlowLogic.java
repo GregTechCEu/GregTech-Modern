@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
 
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
 
-    public static final EnergyFlowLogic INSTANCE = new EnergyFlowLogic();
+    public static final NetLogicEntryType<EnergyFlowLogic> TYPE = new NetLogicEntryType<>("EnergyFlow", EnergyFlowLogic::new);
 
     private final AveragingPerTickCounter averageVoltageCounter = new AveragingPerTickCounter();
     private final AveragingPerTickCounter averageAmperageCounter = new AveragingPerTickCounter();
@@ -28,7 +29,7 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
     private final Long2ObjectOpenHashMap<List<EnergyFlowData>> memory = new Long2ObjectOpenHashMap<>();
 
     protected EnergyFlowLogic() {
-        super("EnergyFlow");
+        super(TYPE);
     }
 
     public @NotNull List<EnergyFlowData> getFlow(long tick) {
@@ -72,11 +73,6 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
 
     @Override
     public void deserializeNBT(ByteTag nbt) {}
-
-    @Override
-    public @NotNull EnergyFlowLogic getNew() {
-        return new EnergyFlowLogic();
-    }
 
     @Override
     public boolean shouldEncode() {

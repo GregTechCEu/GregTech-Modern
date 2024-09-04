@@ -54,14 +54,14 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
 
     @Override
     public ReversibleLossOperator traverseToNode(@NotNull WorldPipeNetNode node, long flowReachingNode) {
-        VoltageLimitLogic limitLogic = node.getData().getLogicEntryNullable(VoltageLimitLogic.INSTANCE);
+        VoltageLimitLogic limitLogic = node.getData().getLogicEntryNullable(VoltageLimitLogic.TYPE);
         if (limitLogic != null) {
             long voltage = limitLogic.getValue();
             if (voltage < pathVoltage) overVoltageInformation.put(node,
                     new OverVoltageInformation(voltage, flowReachingNode));
         }
-        TemperatureLogic temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
-        if (!node.getData().getLogicEntryDefaultable(SuperconductorLogic.INSTANCE)
+        TemperatureLogic temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
+        if (!node.getData().getLogicEntryDefaultable(SuperconductorLogic.TYPE)
                 .canSuperconduct(temperatureLogic == null ? TemperatureLogic.DEFAULT_TEMPERATURE :
                         temperatureLogic.getTemperature(getQueryTick()))) {
             pathVoltage -= node.getData().getLogicEntryDefaultable(VoltageLossLogic.INSTANCE).getValue();
@@ -82,7 +82,7 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
     }
 
     public void handleOverflow(@NotNull WorldPipeNetNode node, long overflow) {
-        TemperatureLogic logic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
+        TemperatureLogic logic = (TemperatureLogic) node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
         if (logic != null) {
             // this occurs after finalization but before path reset.
             logic.applyThermalEnergy(calculateHeatA(overflow, pathVoltage), getQueryTick());
@@ -126,9 +126,9 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
     }
 
     private void recordFlow(@NotNull NetNode node, long amperes) {
-        EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.INSTANCE);
+        EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.TYPE);
         if (logic == null) {
-            logic = EnergyFlowLogic.INSTANCE.getNew();
+            logic = EnergyFlowLogic.TYPE.supplier().get();
             node.getData().setLogicEntry(logic);
         }
         logic.recordFlow(getQueryTick(), new EnergyFlowData(amperes, pathVoltage));
@@ -159,7 +159,7 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
         }
 
         public void doHeating(WorldPipeNetNode node, long finalVoltage, long tick) {
-            TemperatureLogic logic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
+            TemperatureLogic logic = (TemperatureLogic) node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
             if (logic != null) {
                 logic.applyThermalEnergy(calculateHeatV(amperage, finalVoltage, voltageCap), tick);
             }

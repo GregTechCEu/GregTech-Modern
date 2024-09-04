@@ -89,8 +89,8 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
     public NetEdge addEdge(@NotNull NetNode source, @NotNull NetNode target, boolean bothWays) {
         nodeClassCheck(source);
         nodeClassCheck(target);
-        double weight = source.getData().getLogicEntryDefaultable(WeightFactorLogic.INSTANCE).getValue() +
-                target.getData().getLogicEntryDefaultable(WeightFactorLogic.INSTANCE).getValue();
+        double weight = source.getData().getLogicEntryDefaultable(WeightFactorLogic.TYPE).getValue() +
+                target.getData().getLogicEntryDefaultable(WeightFactorLogic.TYPE).getValue();
         NetEdge edge = backer.addEdge(source, target, weight);
         if (bothWays) {
             if (this.getGraph().isDirected()) {

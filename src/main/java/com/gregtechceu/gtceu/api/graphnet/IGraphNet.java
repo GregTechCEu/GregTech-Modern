@@ -125,7 +125,7 @@ public interface IGraphNet {
      */
     @NotNull
     default NetLogicData getDefaultNodeData() {
-        return new NetLogicData().setLogicEntry(WeightFactorLogic.INSTANCE.getWith(1));
+        return new NetLogicData().setLogicEntry(WeightFactorLogic.TYPE.getWith(1));
     }
 
     /**

@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 
 import com.lowdragmc.lowdraglib.networking.IPacket;
 
+import lombok.Getter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,18 +19,13 @@ import org.jetbrains.annotations.Nullable;
  * {@link #union(NetLogicEntry)} behavior.
  */
 public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag>
-                                   implements INBTSerializable<N>, StringRepresentable, IPacket {
+                                   implements INBTSerializable<N>, IPacket {
 
-    private final @NotNull String name;
+    @Getter
+    private final @NotNull NetLogicEntryType<T> type;
 
-    protected NetLogicEntry(@NotNull String name) {
-        this.name = name;
-        NetLogicRegistry.register(this);
-    }
-
-    @Override
-    public final @NotNull String getSerializedName() {
-        return name;
+    protected NetLogicEntry(@NotNull NetLogicEntryType<T> type) {
+        this.type = type;
     }
 
     public void deserializeNBTNaive(@Nullable Tag nbt) {
@@ -91,8 +86,6 @@ public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag
     public void registerToNetLogicData(NetLogicData data) {}
 
     public void deregisterFromNetLogicData(NetLogicData data) {}
-
-    public abstract @NotNull T getNew();
 
     public T cast(NetLogicEntry<?, ?> entry) {
         return (T) entry;

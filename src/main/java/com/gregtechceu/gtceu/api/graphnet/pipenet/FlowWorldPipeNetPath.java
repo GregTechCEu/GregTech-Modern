@@ -24,7 +24,7 @@ public class FlowWorldPipeNetPath extends AbstractNetPath<WorldPipeNetNode, Abst
 
     public FlowWorldPipeNetPath(GraphVertex vertex) {
         this(Collections.singletonList(vertex), Collections.emptyList(),
-                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.INSTANCE).getValue());
+                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.TYPE).getValue());
     }
 
     public FlowWorldPipeNetPath(List<GraphVertex> vertices, List<GraphEdge> edges, double weight) {

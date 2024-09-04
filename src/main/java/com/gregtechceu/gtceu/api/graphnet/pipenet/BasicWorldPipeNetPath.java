@@ -24,7 +24,7 @@ public class BasicWorldPipeNetPath extends AbstractNetPath<WorldPipeNetNode, Net
 
     public BasicWorldPipeNetPath(GraphVertex vertex) {
         this(Collections.singletonList(vertex), Collections.emptyList(),
-                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.INSTANCE).getValue());
+                vertex.wrapped.getData().getLogicEntryDefaultable(WeightFactorLogic.TYPE).getValue());
     }
 
     public BasicWorldPipeNetPath(List<GraphVertex> vertices, List<GraphEdge> edges, double weight) {

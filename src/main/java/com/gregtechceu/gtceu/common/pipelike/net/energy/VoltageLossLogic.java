@@ -2,20 +2,14 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.api.graphnet.logic.AbstractLongLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-
-import org.jetbrains.annotations.NotNull;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 
 public final class VoltageLossLogic extends AbstractLongLogicData<VoltageLossLogic> {
 
-    public static final VoltageLossLogic INSTANCE = new VoltageLossLogic().setValue(0);
+    public static final NetLogicEntryType<VoltageLossLogic> INSTANCE = new NetLogicEntryType<>("VoltageLoss", () -> new VoltageLossLogic().setValue(0));
 
     private VoltageLossLogic() {
-        super("VoltageLoss");
-    }
-
-    @Override
-    public @NotNull VoltageLossLogic getNew() {
-        return new VoltageLossLogic();
+        super(INSTANCE);
     }
 
     @Override

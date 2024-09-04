@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.net.fluid;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.BitSet;
 import java.util.Collection;
@@ -24,7 +24,7 @@ import java.util.Set;
 
 public final class FluidContainmentLogic extends NetLogicEntry<FluidContainmentLogic, CompoundTag> {
 
-    public static final FluidContainmentLogic INSTANCE = new FluidContainmentLogic().contain(FluidState.LIQUID);
+    public static final NetLogicEntryType<FluidContainmentLogic> TYPE = new NetLogicEntryType<>("FluidContainment", () -> new FluidContainmentLogic().contain(FluidState.LIQUID));
 
     private int maximumTemperature;
 
@@ -32,13 +32,13 @@ public final class FluidContainmentLogic extends NetLogicEntry<FluidContainmentL
     private @NotNull EnumSet<FluidState> containableStates = EnumSet.noneOf(FluidState.class);
 
     public FluidContainmentLogic() {
-        super("FluidContainment");
+        super(TYPE);
     }
 
     public @NotNull FluidContainmentLogic getWith(Collection<FluidState> states,
                                                   @NotNull Collection<FluidAttribute> attributes,
                                                   int maximumTemperature) {
-        FluidContainmentLogic logic = getNew();
+        FluidContainmentLogic logic = new FluidContainmentLogic();
         logic.containableStates.addAll(states);
         for (FluidAttribute attribute : attributes) {
             logic.contain(attribute);
@@ -88,13 +88,13 @@ public final class FluidContainmentLogic extends NetLogicEntry<FluidContainmentL
     }
 
     @Override
-    public @Nullable FluidContainmentLogic union(NetLogicEntry<?, ?> other) {
+    public @NotNull FluidContainmentLogic union(NetLogicEntry<?, ?> other) {
         if (other instanceof FluidContainmentLogic logic) {
             if (this.containableAttributes.equals(logic.containableAttributes) &&
                     this.containableStates.equals(logic.containableStates)) {
                 return this;
             } else {
-                FluidContainmentLogic returnable = getNew();
+                FluidContainmentLogic returnable = new FluidContainmentLogic();
                 returnable.containableStates = EnumSet.copyOf(this.containableStates);
                 returnable.containableStates.retainAll(logic.containableStates);
                 returnable.containableAttributes.addAll(this.containableAttributes);
@@ -124,11 +124,6 @@ public final class FluidContainmentLogic extends NetLogicEntry<FluidContainmentL
             containableAttributes.add(new ResourceLocation(list.getString(i)));
         }
         containableStates = GTUtil.maskToSet(FluidState.class, BitSet.valueOf(nbt.getByteArray("States")));
-    }
-
-    @Override
-    public @NotNull FluidContainmentLogic getNew() {
-        return new FluidContainmentLogic();
     }
 
     @Override

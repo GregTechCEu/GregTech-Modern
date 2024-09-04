@@ -1,36 +1,67 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 public final class NetLogicRegistry {
 
-    private static final Map<String, Supplier<NetLogicEntry<?, ?>>> REGISTRY = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, NetLogicEntryType<?>> REGISTRY = new Object2ObjectOpenHashMap<>();
 
-    static void register(NetLogicEntry<?, ?> entry) {
-        REGISTRY.putIfAbsent(entry.getSerializedName(), entry::getNew);
+    static void register(NetLogicEntryType<?> entry) {
+        REGISTRY.putIfAbsent(entry.getSerializedName(), entry);
     }
 
-    public static @Nullable Supplier<@NotNull NetLogicEntry<?, ?>> getSupplierNullable(String name) {
+    public static @Nullable NetLogicEntryType<?> getTypeNullable(String name) {
         return REGISTRY.get(name);
     }
 
-    public static @NotNull Supplier<@Nullable NetLogicEntry<?, ?>> getSupplierNotNull(String name) {
-        return REGISTRY.getOrDefault(name, () -> null);
+    public static @NotNull NetLogicEntryType<?> getTypeNotNull(String name) {
+        return REGISTRY.getOrDefault(name, EmptyLogicEntry.TYPE);
     }
 
-    public static @NotNull Supplier<@NotNull NetLogicEntry<?, ?>> getSupplierErroring(String name) {
-        Supplier<NetLogicEntry<?, ?>> supplier = REGISTRY.get(name);
-        if (supplier == null) throwNonexistenceError();
-        return supplier;
+    public static @NotNull NetLogicEntryType<?> getTypeErroring(String name) {
+        NetLogicEntryType<?> type = REGISTRY.get(name);
+        if (type == null) throwNonexistenceError();
+        return type;
     }
 
     public static void throwNonexistenceError() {
         throw new RuntimeException("Could not find a matching supplier for an encoded NetLogicEntry. " +
                 "This suggests that the server and client have different GT versions or modifications.");
+    }
+
+    private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, Tag> {
+
+        private static final NetLogicEntryType<EmptyLogicEntry> TYPE = new NetLogicEntryType<>("Empty", EmptyLogicEntry::new);
+
+        protected EmptyLogicEntry() {
+            super(TYPE);
+        }
+
+        @Override
+        public @Nullable Tag serializeNBT() {
+            throw new RuntimeException("Can't serialize empty logic entry!");
+        }
+
+        @Override
+        public void deserializeNBT(Tag arg) {
+            throw new RuntimeException("Can't deserialize empty logic entry!");
+        }
+
+        @Override
+        public void encode(FriendlyByteBuf buf, boolean fullChange) {
+            throw new RuntimeException("Can't serialize empty logic entry!");
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buf, boolean fullChange) {
+            throw new RuntimeException("Can't deserialize empty logic entry!");
+        }
+
     }
 }

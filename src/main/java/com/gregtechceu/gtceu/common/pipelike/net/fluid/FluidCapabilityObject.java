@@ -54,7 +54,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
                                                                                           WorldPipeNetNode node) {
         this.net = net;
         this.node = node;
-        this.tanks = node.getData().getLogicEntryDefaultable(ChannelCountLogic.INSTANCE)
+        this.tanks = node.getData().getLogicEntryDefaultable(ChannelCountLogic.TYPE)
                 .getValue();
         for (Direction facing : GTUtil.DIRECTIONS) {
             AbstractNetFlowEdge edge = (AbstractNetFlowEdge) net.getNewEdge();

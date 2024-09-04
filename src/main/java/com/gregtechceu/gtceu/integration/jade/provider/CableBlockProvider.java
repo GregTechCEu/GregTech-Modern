@@ -61,7 +61,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 return;
             }
             WorldPipeNetNode node = WorldEnergyNet.getWorldNet(serverLevel).getNode(blockAccessor.getPosition());
-            EnergyFlowLogic logic = node.getData().getLogicEntryDefaultable(EnergyFlowLogic.INSTANCE);
+            EnergyFlowLogic logic = node.getData().getLogicEntryDefaultable(EnergyFlowLogic.TYPE);
 
             long currentTick = serverLevel.getServer().getTickCount();
             long totalVoltage = 0L;

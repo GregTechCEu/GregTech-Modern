@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicRegistry;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
@@ -133,7 +134,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Persisted
     @DescSynced
     @Getter
-    protected final PipeCoverHolder coverHolder = new PipeCoverHolder(this);
+    protected final PipeCoverHolder covers = new PipeCoverHolder(this);
+    @Getter
     private final Object2ObjectOpenHashMap<Capability<?>, IPipeCapabilityObject> capabilities = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectOpenCustomHashMap<WorldPipeNetNode, PipeCapabilityWrapper> netCapabilities = WorldPipeNet
             .getSensitiveHashMap();
@@ -506,7 +508,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 var listener = node.getData().createListener(
                         (e, r, f) -> writeCustomData(UPDATE_PIPE_LOGIC, buf -> {
                             buf.writeVarInt(networkID);
-                            buf.writeUtf(e.getSerializedName());
+                            buf.writeUtf(e.getType().id());
                             buf.writeBoolean(r);
                             buf.writeBoolean(f);
                             if (!r) {
@@ -522,7 +524,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 }
                 if (firstNode) {
                     firstNode = false;
-                    this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.INSTANCE);
+                    this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
                 }
             }
             this.netLogicDatas.trim();
@@ -569,10 +571,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 boolean removed = buf.readBoolean();
                 boolean fullChange = buf.readBoolean();
                 if (removed) {
-                    this.netLogicDatas.computeIfPresent(networkID, (k, v) -> v.removeLogicEntry(identifier));
+                    NetLogicEntryType<?> logic = NetLogicRegistry.getTypeErroring(identifier);
+                    this.netLogicDatas.computeIfPresent(networkID, (k, v) -> v.removeLogicEntry(logic));
                 } else {
                     if (fullChange) {
-                        NetLogicEntry<?, ?> logic = NetLogicRegistry.getSupplierErroring(identifier).get();
+                        NetLogicEntry<?, ?> logic = NetLogicRegistry.getTypeErroring(identifier).supplier().get();
                         logic.decode(buf, true);
                         this.netLogicDatas.compute(networkID, (k, v) -> {
                             if (v == null) v = new NetLogicData();
@@ -582,14 +585,15 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                     } else {
                         NetLogicData data = this.netLogicDatas.get(networkID);
                         if (data != null) {
-                            NetLogicEntry<?, ?> entry = data.getLogicEntryNullable(identifier);
+                            NetLogicEntryType<?> logic = NetLogicRegistry.getTypeErroring(identifier);
+                            NetLogicEntry<?, ?> entry = data.getLogicEntryNullable(logic);
                             if (entry != null) entry.decode(buf, false);
                             data.markLogicEntryAsUpdated(entry, false);
                         } else return;
                     }
-                    if (identifier.equals(TemperatureLogic.INSTANCE.getSerializedName())) {
+                    if (identifier.equals(TemperatureLogic.TYPE.getSerializedName())) {
                         TemperatureLogic tempLogic = this.netLogicDatas.get(networkID)
-                                .getLogicEntryNullable(TemperatureLogic.INSTANCE);
+                                .getLogicEntryNullable(TemperatureLogic.TYPE);
                         if (tempLogic != null) updateTemperatureLogic(tempLogic);
                     }
                 }

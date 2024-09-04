@@ -178,11 +178,11 @@ public final class MaterialFluidProperties implements PipeNetProperties.IPipeNet
         if (structure instanceof MaterialPipeStructure pipe) {
             long throughput = getThroughput(structure);
             float coolingFactor = (float) Math.sqrt((double) pipe.material() / (4 + pipe.channelCount()));
-            data.setLogicEntry(WeightFactorLogic.INSTANCE.getWith(getFlowPriority(structure)))
-                    .setLogicEntry(ThroughputLogic.INSTANCE.getWith(throughput))
-                    .setLogicEntry(FluidContainmentLogic.INSTANCE.getWith(containableStates, containedAttributes,
+            data.setLogicEntry(WeightFactorLogic.TYPE.getWith(getFlowPriority(structure)))
+                    .setLogicEntry(ThroughputLogic.TYPE.getWith(throughput))
+                    .setLogicEntry(FluidContainmentLogic.TYPE.getWith(containableStates, containedAttributes,
                             maxFluidTemperature))
-                    .setLogicEntry(TemperatureLogic.INSTANCE
+                    .setLogicEntry(TemperatureLogic.TYPE
                             .getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor), materialMeltTemperature,
                                     minFluidTemperature, 50 * pipe.material(), null));
         }
