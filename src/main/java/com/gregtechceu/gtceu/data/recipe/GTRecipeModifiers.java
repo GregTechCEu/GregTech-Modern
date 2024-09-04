@@ -166,6 +166,8 @@ public class GTRecipeModifiers {
                 var recipeEU = RecipeHelper.getInputEUt(recipe);
                 var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(),
                         modifyDuration);
+                if (parallelRecipe.getSecond() == 0)
+                    return null;
                 result.init(recipeEU, recipe.duration, parallelRecipe.getSecond());
                 return parallelRecipe.getFirst();
             }
