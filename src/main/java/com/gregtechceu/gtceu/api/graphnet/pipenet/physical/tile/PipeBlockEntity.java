@@ -576,7 +576,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                     this.netLogicDatas.computeIfPresent(networkID, (k, v) -> v.removeLogicEntry(logic));
                 } else {
                     if (fullChange) {
-                        NetLogicEntry<?, ?> logic = NetLogicRegistry.getTypeErroring(identifier).supplier().get();
+                        NetLogicEntry<?, ?> logic = NetLogicRegistry.getTypeErroring(identifier).getNew();
                         logic.decode(buf, true);
                         this.netLogicDatas.compute(networkID, (k, v) -> {
                             if (v == null) v = new NetLogicData();

@@ -42,7 +42,7 @@ public class V0 extends BaseGTSchema {
                 "minRedstoneStrength", DSL.intType().template(),
                 "controllerMode", DSL.string().template()));
         for (CoverDefinition cover : GTCovers.CONVEYORS) {
-            schema.register(map, cover.getId().toString(), () -> DSL.and(
+            schema.register(map, cover.getId().toString(), () -> DSL.allWithRemainder(
                     DSL.fields(
                             "transferRate", DSL.intType().template(),
                             "distributionMode", DSL.string().template(),
@@ -54,7 +54,7 @@ public class V0 extends BaseGTSchema {
                                     "filterItem", References.ITEM_STACK.in(schema)))));
         }
         for (CoverDefinition cover : GTCovers.ROBOT_ARMS) {
-            schema.register(map, cover.getId().toString(), () -> DSL.and(
+            schema.register(map, cover.getId().toString(), () -> DSL.allWithRemainder(
                     DSL.fields(
                             "transferRate", DSL.intType().template(),
                             "distributionMode", DSL.string().template(),
@@ -69,7 +69,7 @@ public class V0 extends BaseGTSchema {
                                     "filterItem", References.ITEM_STACK.in(schema)))));
         }
         for (CoverDefinition cover : GTCovers.PUMPS) {
-            schema.register(map, cover.getId().toString(), () -> DSL.and(
+            schema.register(map, cover.getId().toString(), () -> DSL.allWithRemainder(
                     DSL.fields(
                             "currentMilliBucketsPerTick", DSL.longType().template(),
                             "distributionMode", DSL.string().template(),
@@ -84,7 +84,7 @@ public class V0 extends BaseGTSchema {
                                     "filterItem", References.ITEM_STACK.in(schema)))));
         }
         for (CoverDefinition cover : GTCovers.FLUID_REGULATORS) {
-            schema.register(map, cover.getId().toString(), () -> DSL.and(
+            schema.register(map, cover.getId().toString(), () -> DSL.allWithRemainder(
                     DSL.fields(
                             "currentMilliBucketsPerTick", DSL.longType().template(),
                             "distributionMode", DSL.string().template(),
@@ -100,7 +100,7 @@ public class V0 extends BaseGTSchema {
                             "filterHandler", DSL.field(
                                     "filterItem", References.ITEM_STACK.in(schema)))));
         }
-        schema.register(map, "gtceu:item_voiding", () -> DSL.and(
+        schema.register(map, "gtceu:item_voiding", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "transferRate", DSL.intType().template(),
                         "distributionMode", DSL.string().template(),
@@ -111,7 +111,7 @@ public class V0 extends BaseGTSchema {
                         "filterHandler", DSL.field(
                                 "filterItem", References.ITEM_STACK.in(schema))),
                 DSL.fields("isEnabled", DSL.bool().template())));
-        schema.register(map, "gtceu:item_voiding_advanced", () -> DSL.and(
+        schema.register(map, "gtceu:item_voiding_advanced", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "transferRate", DSL.intType().template(),
                         "distributionMode", DSL.string().template(),
@@ -125,7 +125,7 @@ public class V0 extends BaseGTSchema {
                         "isEnabled", DSL.bool().template(),
                         "voidingMode", DSL.string().template(),
                         "globalVoidingLimit", DSL.intType().template())));
-        schema.register(map, "gtceu:fluid_voiding", () -> DSL.and(
+        schema.register(map, "gtceu:fluid_voiding", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "currentMilliBucketsPerTick", DSL.longType().template(),
                         "distributionMode", DSL.string().template(),
@@ -139,7 +139,7 @@ public class V0 extends BaseGTSchema {
                         "filterHandler", DSL.field(
                                 "filterItem", References.ITEM_STACK.in(schema))),
                 DSL.fields("isEnabled", DSL.bool().template())));
-        schema.register(map, "gtceu:fluid_voiding_advanced", () -> DSL.and(
+        schema.register(map, "gtceu:fluid_voiding_advanced", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "currentMilliBucketsPerTick", DSL.longType().template(),
                         "distributionMode", DSL.string().template(),
@@ -165,7 +165,7 @@ public class V0 extends BaseGTSchema {
         schema.register(map, "gtceu:fluid_detector", () -> DSL.fields(
                 "isWorkingEnabled", DSL.bool().template(),
                 "isInverted", DSL.bool().template()));
-        schema.register(map, "gtceu:fluid_detector_advanced", () -> DSL.and(
+        schema.register(map, "gtceu:fluid_detector_advanced", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "isWorkingEnabled", DSL.bool().template(),
                         "isInverted", DSL.bool().template(),
@@ -177,7 +177,7 @@ public class V0 extends BaseGTSchema {
         schema.register(map, "gtceu:item_detector", () -> DSL.fields(
                 "isWorkingEnabled", DSL.bool().template(),
                 "isInverted", DSL.bool().template()));
-        schema.register(map, "gtceu:item_detector_advanced", () -> DSL.and(
+        schema.register(map, "gtceu:item_detector_advanced", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "isWorkingEnabled", DSL.bool().template(),
                         "isInverted", DSL.bool().template(),
@@ -187,7 +187,7 @@ public class V0 extends BaseGTSchema {
                         "filterHandler", DSL.field(
                                 "filterItem", References.ITEM_STACK.in(schema)))));
         schema.register(map, "gtceu:energy_detector", () -> DSL.remainder());
-        schema.register(map, "gtceu:energy_detector_advanced", () -> DSL.and(
+        schema.register(map, "gtceu:energy_detector_advanced", () -> DSL.allWithRemainder(
                 DSL.fields(
                         "isWorkingEnabled", DSL.bool().template(),
                         "isInverted", DSL.bool().template(),
@@ -212,7 +212,7 @@ public class V0 extends BaseGTSchema {
         Supplier<TypeTemplate> cover = () -> DSL.fields(
                 "side", DSL.intType().template(),
                 GTReferences.COVER.in(schema));
-        Supplier<TypeTemplate> covers = () -> DSL.and(
+        Supplier<TypeTemplate> covers = () -> DSL.allWithRemainder(
                 DSL.fields(
                         "up", cover.get(),
                         "down", cover.get(),
@@ -221,27 +221,25 @@ public class V0 extends BaseGTSchema {
                         "south", cover.get(),
                         "west", cover.get(),
                         "east", cover.get()));
-        final Supplier<TypeTemplate> pipe = () -> DSL.and(
-                DSL.fields(
+        final Supplier<TypeTemplate> pipe = () -> DSL.allWithRemainder(
+                DSL.optionalFields(
                         "connections", DSL.intType().template(),
                         "blockedConnections", DSL.intType().template(),
-                        "cover", covers.get()
-                ),
-                DSL.fields(
+                        "cover", covers.get(),
                         "paintingColor", DSL.intType().template(),
                         "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)
                 ));
 
-        schema.register(map, "gtceu:cable", () -> DSL.fields(
-                "temperature", DSL.intType().template(),
+        schema.register(map, "gtceu:cable", () -> DSL.and(
+                DSL.optionalFields("temperature", DSL.intType().template()),
                 pipe.get()));
         schema.register(map, "gtceu:fluid_pipe", pipe);
         schema.register(map, "gtceu:item_pipe", pipe);
-        schema.register(map, "gtceu:laser_pipe", () -> DSL.fields(
-                "active", DSL.bool().template(),
+        schema.register(map, "gtceu:laser_pipe", () -> DSL.and(
+                DSL.optionalFields("active", DSL.bool().template()),
                 pipe.get()));
-        schema.register(map, "gtceu:optical_pipe", () -> DSL.fields(
-                "isActive", DSL.bool().template(),
+        schema.register(map, "gtceu:optical_pipe", () -> DSL.and(
+                DSL.optionalFields("isActive", DSL.bool().template()),
                 pipe.get()));
         schema.register(map, "gtceu:duct_pipe", pipe);
         return map;
@@ -251,7 +249,7 @@ public class V0 extends BaseGTSchema {
         Supplier<TypeTemplate> cover = () -> DSL.fields(
                 "side", DSL.intType().template(),
                 GTReferences.COVER.in(schema));
-        Supplier<TypeTemplate> covers = () -> DSL.and(
+        Supplier<TypeTemplate> covers = () -> DSL.allWithRemainder(
                 DSL.fields(
                         "up", cover.get(),
                         "down", cover.get(),

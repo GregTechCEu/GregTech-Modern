@@ -22,7 +22,7 @@ public class V2 extends BaseGTSchema {
                 DSL.fields(
                         "side", DSL.byteType().template(),
                         GTReferences.COVER.in(schema))));
-        final Supplier<TypeTemplate> pipe = () -> DSL.and(
+        final Supplier<TypeTemplate> pipe = () -> DSL.allWithRemainder(
                 DSL.fields(
                         "connectionMask", DSL.byteType().template(),
                         "renderMask", DSL.byteType().template(),
@@ -33,10 +33,9 @@ public class V2 extends BaseGTSchema {
                         "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)));
 
         schema.register(map, "gtceu:pipe", pipe);
-        schema.register(map,
-                "gtceu:activable_pipe",
-                () -> DSL.fields(
-                        "active", DSL.bool().template(),
+        schema.register(map, "gtceu:activable_pipe",
+                () -> DSL.and(
+                        DSL.optionalFields("active", DSL.bool().template()),
                         pipe.get()));
         schema.register(map, "gtceu:material_pipe", pipe);
         return map;

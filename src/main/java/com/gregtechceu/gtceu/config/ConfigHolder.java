@@ -135,7 +135,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Whether to run datafixers on world load.",
-                "Do note that mods like ModernFix will interfere with this.",
+                "Do note that mods like ModernFix will likely interfere with this.",
                 "Default: true" })
         public boolean doDatafixers = true;
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
+import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;

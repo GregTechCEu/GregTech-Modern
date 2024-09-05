@@ -10,6 +10,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
+import java.util.Arrays;
+
 import static net.minecraftforge.client.model.IQuadTransformer.*;
 
 @MethodsReturnNonnullByDefault
@@ -32,7 +34,8 @@ public class RecolorableBakedQuad extends BakedQuad {
     protected RecolorableBakedQuad(BakedQuad prototype, int tintIndex,
                                    SpriteInformation spriteInformation,
                                    Int2ObjectOpenHashMap<RecolorableBakedQuad> cache) {
-        super(prototype.getVertices(), tintIndex, prototype.getDirection(), spriteInformation.sprite(),
+        super(Arrays.copyOf(prototype.getVertices(), prototype.getVertices().length), tintIndex,
+                prototype.getDirection(), spriteInformation.sprite(),
                 prototype.isShade(), prototype.hasAmbientOcclusion());
         this.spriteInformation = spriteInformation;
         this.cache = cache;

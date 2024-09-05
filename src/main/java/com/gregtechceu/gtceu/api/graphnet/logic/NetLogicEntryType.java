@@ -7,7 +7,9 @@ import java.util.function.Supplier;
 public record NetLogicEntryType<T extends NetLogicEntry<T, ?>>(String id, Supplier<T> supplier)
         implements StringRepresentable {
 
-    public NetLogicEntryType {
+    public NetLogicEntryType(String id, Supplier<T> supplier) {
+        this.id = id;
+        this.supplier = supplier;
         NetLogicRegistry.register(this);
     }
 

@@ -71,21 +71,25 @@ public class GTDataFixers {
                 createRenamer(OilVariantsRenameFix.RENAMED_BLOCK_IDS)));
 
         Schema schemaV2 = builder.addSchema(2, V2::new);
-        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Item pipe rename fix",
-                createRenamer(Pattern.compile("_item_pipe"), "_pipe")));
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Fluid pipe rename fix",
-                createRenamer(Pattern.compile("_fluid_pipe"), "_pipe")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Item pipe rename fix",
-                createRenamer(Pattern.compile("_item_pipe"), "_pipe")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Fluid pipe rename fix",
-                createRenamer(Pattern.compile("_fluid_pipe"), "_pipe")));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:cable"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:fluid_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:duct_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:laser_pipe"));
+        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Item pipe rename fix",
+                createRenamer(Pattern.compile("(.+?)_(.+?)_item_pipe"), "$2_$1_pipe")));
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Fluid pipe rename fix",
+                createRenamer(Pattern.compile("(.+?)_(.+?)_fluid_pipe"), "$2_$1_pipe")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Item pipe rename fix",
+                createRenamer(Pattern.compile("(.+?)_(.+?)_item_pipe"), "$2_$1_pipe")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Fluid pipe rename fix",
+                createRenamer(Pattern.compile("(.+?)_(.+?)_fluid_pipe"), "$2_$1_pipe")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Optical cable rename fix",
+                createRenamer("gtceu:normal_optical_pipe", "gtceu:optical_fiber_cable")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Laser cable rename fix",
+                createRenamer("gtceu:normal_laser_pipe", "gtceu:laser_pipe")));
         builder.addFixer(new ActivablePipeConnectionFix(schemaV2, false, "gtceu:optical_pipe"));
         builder.addFixer(BlockEntityRenameFix.create(schemaV2, "Pipe block entity rename fix",
                 createRenamer(Map.of(

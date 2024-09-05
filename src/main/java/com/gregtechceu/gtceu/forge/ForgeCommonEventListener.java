@@ -452,5 +452,9 @@ public class ForgeCommonEventListener {
                 }
             }
         });
+
+        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
     }
 }

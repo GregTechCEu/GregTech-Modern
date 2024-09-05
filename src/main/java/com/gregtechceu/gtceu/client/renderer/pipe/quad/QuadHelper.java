@@ -40,7 +40,7 @@ public final class QuadHelper {
                 uv.map(normal, box));
         return StaticFaceBakery.bakeQuad(box.getLeft(), box.getRight(), face, targetSprite, normal,
                 BlockModelRotation.X0_Y0,
-                null, false, 15);
+                null, true, 0);
     }
 
     @Contract("_ -> new")
