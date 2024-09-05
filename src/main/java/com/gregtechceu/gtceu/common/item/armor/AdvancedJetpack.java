@@ -25,49 +25,6 @@ public class AdvancedJetpack extends Jetpack {
     }
 
     @Override
-    public void onArmorTick(Level world, Player player, @NotNull ItemStack item) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
-        if (cont == null) {
-            return;
-        }
-
-        CompoundTag data = item.getOrCreateTag();
-        // Assume no tags exist if we don't see the enabled tag
-        if(!data.contains("enabled")) {
-            data.putBoolean("enabled", true);
-            data.putBoolean("hover", false);
-            data.putByte("toggleTimer", (byte) 0);
-        }
-
-        boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
-        byte toggleTimer = data.getByte("toggleTimer");
-
-        String messageKey = null;
-        if(toggleTimer == 0) {
-            if(KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-                jetpackEnabled = !jetpackEnabled;
-                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
-                data.putBoolean("enabled", jetpackEnabled);
-            } else if(KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
-                data.putBoolean("hover", hoverMode);
-            }
-
-            if(messageKey != null) {
-                toggleTimer = 5;
-                if(!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
-            }
-        }
-
-        if (toggleTimer > 0) toggleTimer--;
-        data.putByte("toggleTimer", toggleTimer);
-
-        performFlying(player, jetpackEnabled, hoverMode, item);
-    }
-
-    @Override
     public double getSprintEnergyModifier() {
         return 2.5D;
     }
