@@ -25,44 +25,46 @@ public class AdvancedJetpack extends Jetpack {
     }
 
     @Override
-    public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(stack);
+    public void onArmorTick(Level world, Player player, @NotNull ItemStack item) {
+        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
         if (cont == null) {
             return;
         }
-        CompoundTag data = stack.getOrCreateTag();
-        boolean hoverMode = data.contains("hover") && data.getBoolean("hover");
-        byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
-        boolean jetpackEnabled = !data.contains("enabled") || data.getBoolean("enabled");
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hoverMode = !hoverMode;
-            toggleTimer = 5;
-            data.putBoolean("hover", hoverMode);
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
-            }
+        CompoundTag data = item.getOrCreateTag();
+        // Assume no tags exist if we don't see the enabled tag
+        if(!data.contains("enabled")) {
+            data.putBoolean("enabled", true);
+            data.putBoolean("hover", false);
+            data.putByte("toggleTimer", (byte) 0);
         }
 
-        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-            jetpackEnabled = !jetpackEnabled;
-            toggleTimer = 5;
-            data.putBoolean("enabled", jetpackEnabled);
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
-                        true);
+        boolean jetpackEnabled = data.getBoolean("enabled");
+        boolean hoverMode = data.getBoolean("hover");
+        byte toggleTimer = data.getByte("toggleTimer");
+
+        String messageKey = null;
+        if(toggleTimer == 0) {
+            if(KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+                jetpackEnabled = !jetpackEnabled;
+                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                data.putBoolean("enabled", jetpackEnabled);
+            } else if(KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+                hoverMode = !hoverMode;
+                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                data.putBoolean("hover", hoverMode);
+            }
+
+            if(messageKey != null) {
+                toggleTimer = 5;
+                if(!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
-
-        performFlying(player, jetpackEnabled, hoverMode, stack);
 
         if (toggleTimer > 0) toggleTimer--;
-
-        data.putBoolean("hover", hoverMode);
-        data.putBoolean("enabled", jetpackEnabled);
         data.putByte("toggleTimer", toggleTimer);
+
+        performFlying(player, jetpackEnabled, hoverMode, item);
     }
 
     @Override
