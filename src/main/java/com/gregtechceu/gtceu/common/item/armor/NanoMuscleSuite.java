@@ -84,8 +84,6 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             }
             data.putBoolean("nightVision", nightVision);
 
-        } else if (type == ArmorItem.Type.BOOTS) {
-            updateStepHeight(player);
         }
 
         if (nightVisionTimer > 0) nightVisionTimer--;
