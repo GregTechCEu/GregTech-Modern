@@ -209,22 +209,57 @@ public class V0 extends BaseGTSchema {
         for (MachineDefinition definition : GTRegistries.MACHINES) {
             registerInventory(schema, map, definition.getId().toString());
         }
+        Supplier<TypeTemplate> cover = () -> DSL.fields(
+                "side", DSL.intType().template(),
+                GTReferences.COVER.in(schema));
+        Supplier<TypeTemplate> covers = () -> DSL.and(
+                DSL.fields(
+                        "up", cover.get(),
+                        "down", cover.get(),
+                        "north", cover.get()),
+                DSL.fields(
+                        "south", cover.get(),
+                        "west", cover.get(),
+                        "east", cover.get()));
+        final Supplier<TypeTemplate> pipe = () -> DSL.and(
+                DSL.fields(
+                        "connections", DSL.intType().template(),
+                        "blockedConnections", DSL.intType().template(),
+                        "cover", covers.get()
+                ),
+                DSL.fields(
+                        "paintingColor", DSL.intType().template(),
+                        "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)
+                ));
+
+        schema.register(map, "gtceu:cable", () -> DSL.fields(
+                "temperature", DSL.intType().template(),
+                pipe.get()));
+        schema.register(map, "gtceu:fluid_pipe", pipe);
+        schema.register(map, "gtceu:item_pipe", pipe);
+        schema.register(map, "gtceu:laser_pipe", () -> DSL.fields(
+                "active", DSL.bool().template(),
+                pipe.get()));
+        schema.register(map, "gtceu:optical_pipe", () -> DSL.fields(
+                "isActive", DSL.bool().template(),
+                pipe.get()));
+        schema.register(map, "gtceu:duct_pipe", pipe);
         return map;
     }
 
     protected static void registerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {
-        TypeTemplate cover = DSL.fields(
+        Supplier<TypeTemplate> cover = () -> DSL.fields(
                 "side", DSL.intType().template(),
                 GTReferences.COVER.in(schema));
-        TypeTemplate covers = DSL.and(
+        Supplier<TypeTemplate> covers = () -> DSL.and(
                 DSL.fields(
-                        "up", cover,
-                        "down", cover,
-                        "north", cover),
+                        "up", cover.get(),
+                        "down", cover.get(),
+                        "north", cover.get()),
                 DSL.fields(
-                        "south", cover,
-                        "west", cover,
-                        "east", cover));
+                        "south", cover.get(),
+                        "west", cover.get(),
+                        "east", cover.get()));
 
         schema.register(map, name, () -> DSL.or(
                 DSL.fields(
@@ -236,7 +271,7 @@ public class V0 extends BaseGTSchema {
                         DSL.field("storage",
                                 DSL.field("Items",
                                         DSL.list(References.ITEM_STACK.in(schema)))),
-                        DSL.field("cover", covers)),
+                        DSL.field("cover", covers.get())),
                 DSL.or(
                         DSL.fields(
                                 "inventory",

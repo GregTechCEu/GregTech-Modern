@@ -64,7 +64,7 @@ public class DataCapabilityObject implements IPipeCapabilityObject, IDataAccess 
                             .get(destination.getBlockEntity().getCoverHolder()
                                     .getCoverAtSide(capability.getKey()))
                             .queryHandler(queryObject, access);
-                    if (queryObject.shouldTriggerWalker()) {
+                    if (queryObject.isShouldTriggerWalker()) {
                         SlowActiveWalker.dispatch(tile.getLevel(), path, 1);
                     }
                     if (cancelled) return true;

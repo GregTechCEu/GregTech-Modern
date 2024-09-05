@@ -18,27 +18,27 @@ public class V2 extends BaseGTSchema {
     @Override
     public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
         Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
-        TypeTemplate covers = DSL.field("Covers", DSL.list(
+        final Supplier<TypeTemplate> covers = () -> DSL.field("covers", DSL.list(
                 DSL.fields(
                         "side", DSL.byteType().template(),
                         GTReferences.COVER.in(schema))));
-        final TypeTemplate pipe = DSL.and(
+        final Supplier<TypeTemplate> pipe = () -> DSL.and(
                 DSL.fields(
                         "connectionMask", DSL.byteType().template(),
                         "renderMask", DSL.byteType().template(),
-                        "coverHolder", covers),
+                        "coverHolder", covers.get()),
                 DSL.fields(
                         "blockedMask", DSL.byteType().template(),
                         "paintingColor", DSL.intType().template(),
                         "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)));
 
-        schema.register(map, "gtceu:pipe", () -> pipe);
+        schema.register(map, "gtceu:pipe", pipe);
         schema.register(map,
                 "gtceu:activable_pipe",
                 () -> DSL.fields(
                         "active", DSL.bool().template(),
-                        pipe));
-        schema.register(map, "gtceu:material_pipe", () -> pipe);
+                        pipe.get()));
+        schema.register(map, "gtceu:material_pipe", pipe);
         return map;
     }
 }

@@ -3,15 +3,14 @@ package com.gregtechceu.gtceu.common.data.datafixer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.common.datafixer.fixes.ActivablePipeConnectionFix;
+import com.gregtechceu.gtceu.common.datafixer.fixes.PipeConnectionFix;
 import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
 import com.gregtechceu.gtceu.common.datafixer.schemas.V2;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.util.datafix.fixes.AddNewChoices;
-import net.minecraft.util.datafix.fixes.BlockRenameFix;
-import net.minecraft.util.datafix.fixes.ItemRenameFix;
-import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.util.datafix.fixes.*;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -73,12 +72,30 @@ public class GTDataFixers {
 
         Schema schemaV2 = builder.addSchema(2, V2::new);
         builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));
-        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe blocks", References.BLOCK_NAME));
-        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe items", References.ITEM_NAME));
         builder.addFixer(ItemRenameFix.create(schemaV2, "Item pipe rename fix",
                 createRenamer(Pattern.compile("_item_pipe"), "_pipe")));
         builder.addFixer(ItemRenameFix.create(schemaV2, "Fluid pipe rename fix",
                 createRenamer(Pattern.compile("_fluid_pipe"), "_pipe")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Item pipe rename fix",
+                createRenamer(Pattern.compile("_item_pipe"), "_pipe")));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Fluid pipe rename fix",
+                createRenamer(Pattern.compile("_fluid_pipe"), "_pipe")));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:cable"));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:fluid_pipe"));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:duct_pipe"));
+        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:laser_pipe"));
+        builder.addFixer(new ActivablePipeConnectionFix(schemaV2, false, "gtceu:optical_pipe"));
+        builder.addFixer(BlockEntityRenameFix.create(schemaV2, "Pipe block entity rename fix",
+                createRenamer(Map.of(
+                        "gtceu:cable", "gtceu:material_pipe",
+                        "gtceu:fluid_pipe", "gtceu:material_pipe",
+                        "gtceu:item_pipe", "gtceu:material_pipe",
+                        "gtceu:laser_pipe", "gtceu:activable_pipe",
+                        "gtceu:optical_pipe", "gtceu:activable_pipe",
+                        "gtceu:duct_pipe", "gtceu:pipe"
+                ))));
     }
 
     private static UnaryOperator<String> createRenamer(String pOldName, String pNewName) {

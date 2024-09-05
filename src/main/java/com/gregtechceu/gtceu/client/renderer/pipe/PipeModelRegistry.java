@@ -239,7 +239,7 @@ public final class PipeModelRegistry {
                         return new CableModel(material);
                     }
                     return new CableModel(material, CableModel.INSULATION[insulation - 1], CableModel.INSULATION_FULL);
-                }, Objects::nonNull));
+                }, m -> true));
 
         ResourceLocation loc = GTCEu.id("block/cable");
         for (int i = 0; i < CABLE_MODEL_COUNT; i++) {
