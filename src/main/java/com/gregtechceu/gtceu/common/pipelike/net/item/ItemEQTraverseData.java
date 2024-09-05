@@ -79,12 +79,13 @@ public class ItemEQTraverseData extends ItemTraverseData
                 continue; // anti insert-to-our-source logic
 
             IItemHandler containerCap = capability.getValue()
-                    .getCapability(ForgeCapabilities.ITEM_HANDLER, capability.getKey().getOpposite()).resolve().orElse(null);
+                    .getCapability(ForgeCapabilities.ITEM_HANDLER, capability.getKey().getOpposite()).resolve()
+                    .orElse(null);
             if (containerCap != null) {
                 IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
                 availableFlow = IItemTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
                         .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                        (int) Math.min(Integer.MAX_VALUE, flowPerDestination), container, simulating());
+                                (int) Math.min(Integer.MAX_VALUE, flowPerDestination), container, simulating());
             }
         }
         return flowReachingNode - availableFlow;

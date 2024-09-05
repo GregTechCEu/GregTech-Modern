@@ -356,7 +356,7 @@ public class RobotArmCover extends ConveyorCover {
                     if (contained >= kept) continue;
                     availableFlow = IItemTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, flowPerDestination), container, simulating());
+                                    (int) Math.min(kept - contained, flowPerDestination), container, simulating());
                 }
             }
             return flowReachingNode - availableFlow;

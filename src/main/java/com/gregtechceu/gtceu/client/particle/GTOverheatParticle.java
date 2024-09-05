@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
 import net.minecraft.client.Minecraft;

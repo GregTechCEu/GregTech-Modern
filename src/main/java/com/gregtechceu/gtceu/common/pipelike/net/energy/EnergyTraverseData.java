@@ -128,7 +128,7 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
     private void recordFlow(@NotNull NetNode node, long amperes) {
         EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.TYPE);
         if (logic == null) {
-            logic = EnergyFlowLogic.TYPE.supplier().get();
+            logic = EnergyFlowLogic.TYPE.getNew();
             node.getData().setLogicEntry(logic);
         }
         logic.recordFlow(getQueryTick(), new EnergyFlowData(amperes, pathVoltage));

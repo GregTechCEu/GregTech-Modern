@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.graphnet.graph.INetGraph;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
-import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldNet;
 import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldPosNet;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

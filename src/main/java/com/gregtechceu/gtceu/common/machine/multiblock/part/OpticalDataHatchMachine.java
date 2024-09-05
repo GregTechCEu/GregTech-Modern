@@ -97,8 +97,6 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IS
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
         // creative hatches do not need to check, they always have the recipe
-        // TODO creative data access hatch
-        // if (this.isCreative()) return recipe;
         RecipeDataQuery query = new RecipeDataQuery(recipe);
 
         // hatches need to have the recipe available

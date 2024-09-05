@@ -29,7 +29,8 @@ import java.util.Objects;
 
 public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, CompoundTag> {
 
-    public static final NetLogicEntryType<TemperatureLogic> TYPE = new NetLogicEntryType<>("Temperature", TemperatureLogic::new);
+    public static final NetLogicEntryType<TemperatureLogic> TYPE = new NetLogicEntryType<>("Temperature",
+            TemperatureLogic::new);
 
     public static final int DEFAULT_TEMPERATURE = 298;
 

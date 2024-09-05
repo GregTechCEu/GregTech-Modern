@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,8 @@ public final class NetLogicRegistry {
 
     private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, Tag> {
 
-        private static final NetLogicEntryType<EmptyLogicEntry> TYPE = new NetLogicEntryType<>("Empty", EmptyLogicEntry::new);
+        private static final NetLogicEntryType<EmptyLogicEntry> TYPE = new NetLogicEntryType<>("Empty",
+                EmptyLogicEntry::new);
 
         protected EmptyLogicEntry() {
             super(TYPE);
@@ -62,6 +64,5 @@ public final class NetLogicRegistry {
         public void decode(FriendlyByteBuf buf, boolean fullChange) {
             throw new RuntimeException("Can't deserialize empty logic entry!");
         }
-
     }
 }

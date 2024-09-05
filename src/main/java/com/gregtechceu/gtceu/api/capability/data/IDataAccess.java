@@ -45,7 +45,7 @@ public interface IDataAccess {
         for (IDataAccess access : accesses) {
             query.setShouldTriggerWalker(false);
             cancelled = access.accessData(query);
-            if (!walk) walk = query.shouldTriggerWalker();
+            if (!walk) walk = query.isShouldTriggerWalker();
             if (cancelled) break;
         }
         query.setShouldTriggerWalker(walk);

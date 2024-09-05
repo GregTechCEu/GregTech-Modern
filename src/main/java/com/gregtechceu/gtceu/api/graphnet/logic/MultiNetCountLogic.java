@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 public final class MultiNetCountLogic extends AbstractIntLogicData<MultiNetCountLogic> {
 
-    public static final MultiNetCountLogic INSTANCE = new MultiNetCountLogic().setValue(1);
+    public static final NetLogicEntryType<MultiNetCountLogic> TYPE = new NetLogicEntryType<>("MultiNetCount",
+            () -> new MultiNetCountLogic().setValue(1));
 
     public MultiNetCountLogic() {
-        super("MultiNetCount");
+        super(TYPE);
     }
 
     @Override

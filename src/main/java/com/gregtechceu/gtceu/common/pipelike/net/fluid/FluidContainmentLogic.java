@@ -24,7 +24,8 @@ import java.util.Set;
 
 public final class FluidContainmentLogic extends NetLogicEntry<FluidContainmentLogic, CompoundTag> {
 
-    public static final NetLogicEntryType<FluidContainmentLogic> TYPE = new NetLogicEntryType<>("FluidContainment", () -> new FluidContainmentLogic().contain(FluidState.LIQUID));
+    public static final NetLogicEntryType<FluidContainmentLogic> TYPE = new NetLogicEntryType<>("FluidContainment",
+            () -> new FluidContainmentLogic().contain(FluidState.LIQUID));
 
     private int maximumTemperature;
 

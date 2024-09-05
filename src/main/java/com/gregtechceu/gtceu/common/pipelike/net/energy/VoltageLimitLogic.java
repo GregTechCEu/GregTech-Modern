@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 
 public final class VoltageLimitLogic extends AbstractLongLogicData<VoltageLimitLogic> {
 
-    public static final NetLogicEntryType<VoltageLimitLogic> TYPE = new NetLogicEntryType<>("VoltageLimit", () -> new VoltageLimitLogic().setValue(0));
+    public static final NetLogicEntryType<VoltageLimitLogic> TYPE = new NetLogicEntryType<>("VoltageLimit",
+            () -> new VoltageLimitLogic().setValue(0));
 
     private VoltageLimitLogic() {
         super(TYPE);

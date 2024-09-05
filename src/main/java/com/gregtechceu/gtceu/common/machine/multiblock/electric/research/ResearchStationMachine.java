@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.data.IComputationUser;
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
+import com.gregtechceu.gtceu.api.capability.data.query.ComputationQuery;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
@@ -22,15 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ResearchStationMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver {
+public class ResearchStationMachine extends WorkableElectricMultiblockMachine implements IComputationUser {
 
-    @Getter
-    private IOpticalComputationProvider computationProvider;
     @Getter
     private IObjectHolder objectHolder;
 
@@ -52,36 +53,26 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            IOpticalComputationProvider provider = part.self().holder.self()
-                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER).resolve().orElse(null);
-            if (provider != null) {
-                this.computationProvider = provider;
-            }
-            if (part instanceof IObjectHolder objectHolder) {
-                this.objectHolder = objectHolder;
+            if (part instanceof IObjectHolder holder) {
+                if (part.self().getFrontFacing() != this.getFrontFacing().getOpposite()) {
+                    onStructureInvalid();
+                    return;
+                }
+                this.objectHolder = holder;
                 this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP,
-                        Collections.singletonList(objectHolder.getAsHandler()));
+                        Collections.singletonList(holder.getAsHandler()));
+                break;
             }
         }
 
         // should never happen, but would rather do this than have an obscure NPE
-        if (computationProvider == null || objectHolder == null) {
+        if (objectHolder == null) {
             onStructureInvalid();
         }
-    }
-
-    @Override
-    public boolean checkPattern() {
-        boolean isFormed = super.checkPattern();
-        if (isFormed && objectHolder != null && objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
-            onStructureInvalid();
-        }
-        return isFormed;
     }
 
     @Override
     public void onStructureInvalid() {
-        computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
         for (IMultiPart part : getParts()) {
             if (part instanceof IObjectHolder holder) {
@@ -97,6 +88,21 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     @Override
     public boolean dampingWhenWaiting() {
         return false;
+    }
+
+    @Override
+    public long requestCWU(long requested, boolean simulate) {
+        return queryConnected().requestCWU(requested, simulate);
+    }
+
+    private ComputationQuery queryConnected() {
+        ComputationQuery query = new ComputationQuery();
+        List<IDataAccess> dataAccesses = getParts().stream()
+                .filter(IDataAccess.class::isInstance)
+                .map(IDataAccess.class::cast)
+                .toList();
+        IDataAccess.accessData(dataAccesses, query);
+        return query;
     }
 
     private static class ResearchStationRecipeLogic extends RecipeLogic {
@@ -217,9 +223,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             holder.setHeldItem(ItemStack.EMPTY);
 
             ItemStack outputItem = ItemStack.EMPTY;
-            if (lastRecipe.getOutputContents(ItemRecipeCapability.CAP).size() >= 1) {
+            var outputContents = lastRecipe.getOutputContents(ItemRecipeCapability.CAP);
+            if (!outputContents.isEmpty()) {
                 outputItem = ItemRecipeCapability.CAP
-                        .of(getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(outputContents.get(0).content).getItems()[0];
             }
             holder.setDataItem(outputItem);
             holder.setLocked(false);

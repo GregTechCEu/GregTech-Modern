@@ -182,7 +182,8 @@ public final class PipeModelRegistry {
         array[1] = new PipeModel(pipeSmallWood, pipeSideWood, false);
         array[2] = new PipeModel(pipeNormalWood, pipeSideWood, false);
         array[3] = new PipeModel(pipeLargeWood, pipeSideWood, false);
-        registerPipeOverride(new MaterialModelOverride.StandardOverride<>(array, m -> m != null && m.hasProperty(PropertyKey.WOOD)));
+        registerPipeOverride(
+                new MaterialModelOverride.StandardOverride<>(array, m -> m != null && m.hasProperty(PropertyKey.WOOD)));
 
         array = new PipeModel[PIPE_MODEL_COUNT];
         array[0] = new PipeModel(pipeTiny, pipeSide, true);

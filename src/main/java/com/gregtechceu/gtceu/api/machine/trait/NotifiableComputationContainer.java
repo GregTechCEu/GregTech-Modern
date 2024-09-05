@@ -1,15 +1,18 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.data.IComputationDataAccess;
 import com.gregtechceu.gtceu.api.capability.data.IComputationProvider;
 import com.gregtechceu.gtceu.api.capability.data.IComputationUser;
-import com.gregtechceu.gtceu.api.capability.data.query.ComputationQuery;
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
 import com.gregtechceu.gtceu.api.capability.data.query.DataQueryObject;
+import com.gregtechceu.gtceu.api.capability.data.query.IBridgeable;
+import com.gregtechceu.gtceu.api.capability.data.query.IComputationQuery;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -17,23 +20,22 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.gregtechceu.gtceu.utils.reference.WeakHashSet;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import com.google.common.primitives.Ints;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry.getController;
-
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Long>
-                                            implements IComputationProvider, IComputationUser {
+                                            implements IComputationProvider, IComputationUser, IComputationDataAccess {
 
     @Getter
     protected IO handlerIO;
@@ -51,6 +53,51 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         this.transmitter = transmitter;
 
         this.lastTimeStamp = Long.MIN_VALUE;
+    }
+
+    @Override
+    public boolean accessData(@NotNull DataQueryObject queryObject) {
+        if (!supportsQuery(queryObject) || !recentQueries.add(queryObject)) return false;
+
+        if (isTransmitter()) {
+            MetaMachine machine = getMachine();
+            if (machine instanceof IWorkable workable && !workable.isActive()) return false;
+
+            List<IComputationDataAccess> accesses = new ArrayList<>();
+            if (machine instanceof IComputationProvider provider &&
+                    queryObject instanceof IComputationQuery cq) {
+                cq.registerProvider(provider);
+            }
+            if (machine instanceof IComputationDataAccess dataAccess) {
+                accesses.add(dataAccess);
+            }
+            if (machine instanceof IMultiPart part) {
+                for (IMultiController controller : part.getControllers()) {
+                    if (controller instanceof IComputationProvider provider &&
+                            queryObject instanceof IComputationQuery cq) {
+                        cq.registerProvider(provider);
+                    }
+                    if (controller instanceof IComputationDataAccess dataAccess) {
+                        accesses.add(dataAccess);
+                    }
+                    for (MachineTrait trait : controller.self().getTraits()) {
+                        if (trait instanceof IComputationDataAccess dataAccess) {
+                            accesses.add(dataAccess);
+                        }
+                    }
+                }
+            }
+            if (queryObject instanceof IBridgeable bridgeable && accesses.size() > 1) {
+                bridgeable.setBridged();
+            }
+            return IDataAccess.accessData(accesses, queryObject);
+        } else {
+            Direction front = machine.getFrontFacing();
+            IDataAccess access = GTCapabilityHelper.getDataAccess(machine.getLevel(), machine.getPos().relative(front),
+                    front.getOpposite());
+            if (access == null) return false;
+            return access.accessData(queryObject);
+        }
     }
 
     @Override
@@ -229,7 +276,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
 
     @Override
     public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
-                                           boolean simulate) {
+                                        boolean simulate) {
         IComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 

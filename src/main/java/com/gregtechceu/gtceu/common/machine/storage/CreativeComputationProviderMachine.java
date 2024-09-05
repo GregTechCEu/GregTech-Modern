@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.capability.data.IComputationProvider;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -20,25 +21,22 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeComputationProviderMachine extends MetaMachine
-                                                implements IUIMachine, IOpticalComputationProvider {
+                                                implements IUIMachine, IComputationProvider {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CreativeComputationProviderMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
-    private int maxCWUt;
-    private int lastRequestedCWUt;
-    private int requestedCWUPerSec;
+    private long maxCWUt;
+    private long lastRequestedCWUt;
+    private long requestedCWUPerSec;
     @Persisted
     @Getter
     private boolean active;
@@ -74,10 +72,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int requestCWUt(
-                           int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        int requestedCWUt = active ? Math.min(cwut, maxCWUt) : 0;
+    public long supplyCWU(long cwut, boolean simulate) {
+        long requestedCWUt = active ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
             this.requestedCWUPerSec += requestedCWUt;
         }
@@ -85,14 +81,12 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public long maxCWUt() {
         return active ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public boolean supportsBridging() {
         return true;
     }
 

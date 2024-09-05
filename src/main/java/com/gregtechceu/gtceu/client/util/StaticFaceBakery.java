@@ -170,8 +170,9 @@ public class StaticFaceBakery {
 
         ForgeHooksClient.fillNormal(aint, direction);
         ForgeFaceData data = face.getFaceData();
-        RecolorableBakedQuad quad = new RecolorableBakedQuad(aint, face.tintIndex, direction, sprite, shade,
-                data.ambientOcclusion());
+        RecolorableBakedQuad quad = new RecolorableBakedQuad(
+                new BakedQuad(aint, face.tintIndex, direction, sprite.sprite(), shade, data.ambientOcclusion()),
+                sprite);
         if (!ForgeFaceData.DEFAULT.equals(data)) {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);

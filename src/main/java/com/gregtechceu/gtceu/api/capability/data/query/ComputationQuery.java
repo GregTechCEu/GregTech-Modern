@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.data.query;
 
 import com.gregtechceu.gtceu.api.capability.data.IComputationProvider;
+
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 

@@ -92,7 +92,8 @@ public class DynamicWeightsShortestPathsAlgorithm extends DefaultManyToManyShort
         private boolean isUnique(Path path) {
             for (Path other : visited) {
                 if (path.getOrderedNodes().equals(other.getOrderedNodes()) &&
-                        path.getOrderedEdges().equals(other.getOrderedEdges())) return false;
+                        path.getOrderedEdges().equals(other.getOrderedEdges()))
+                    return false;
             }
             return true;
         }

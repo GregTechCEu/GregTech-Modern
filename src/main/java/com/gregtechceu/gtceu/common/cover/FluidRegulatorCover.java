@@ -292,7 +292,7 @@ public class FluidRegulatorCover extends PumpCover {
                     if (contained >= kept) continue;
                     availableFlow -= IFluidTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
                             .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                            (int) Math.min(kept - contained, flowPerDestination), container, !simulating());
+                                    (int) Math.min(kept - contained, flowPerDestination), container, !simulating());
                 }
             }
             return flowReachingNode - availableFlow;

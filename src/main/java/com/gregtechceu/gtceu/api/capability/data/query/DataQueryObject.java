@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.data.query;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class DataQueryObject {
@@ -8,18 +10,12 @@ public abstract class DataQueryObject {
 
     private final int id;
 
+    @Getter
+    @Setter
     private boolean shouldTriggerWalker = false;
 
     public DataQueryObject() {
         this.id = ID++;
-    }
-
-    public void setShouldTriggerWalker(boolean shouldTriggerWalker) {
-        this.shouldTriggerWalker = shouldTriggerWalker;
-    }
-
-    public boolean shouldTriggerWalker() {
-        return shouldTriggerWalker;
     }
 
     @NotNull

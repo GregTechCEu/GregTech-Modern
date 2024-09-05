@@ -3,19 +3,12 @@ package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.QuadTransformers;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import static net.minecraftforge.client.model.IQuadTransformer.*;
 
@@ -28,7 +21,8 @@ public class RecolorableBakedQuad extends BakedQuad {
 
     /**
      * Create a new recolorable quad based off of a baked quad prototype.
-     * @param prototype the prototype.
+     * 
+     * @param prototype         the prototype.
      * @param spriteInformation the sprite information of this baked quad.
      */
     public RecolorableBakedQuad(BakedQuad prototype, SpriteInformation spriteInformation) {
@@ -36,7 +30,8 @@ public class RecolorableBakedQuad extends BakedQuad {
     }
 
     protected RecolorableBakedQuad(BakedQuad prototype, int tintIndex,
-                                   SpriteInformation spriteInformation, Int2ObjectOpenHashMap<RecolorableBakedQuad> cache) {
+                                   SpriteInformation spriteInformation,
+                                   Int2ObjectOpenHashMap<RecolorableBakedQuad> cache) {
         super(prototype.getVertices(), tintIndex, prototype.getDirection(), spriteInformation.sprite(),
                 prototype.isShade(), prototype.hasAmbientOcclusion());
         this.spriteInformation = spriteInformation;
@@ -45,12 +40,14 @@ public class RecolorableBakedQuad extends BakedQuad {
 
     /**
      * Get a recolorable quad based off of this quad but aligned with the given color data.
+     * 
      * @param data the color data.
      * @return a quad colored based on the color data.
      */
     public RecolorableBakedQuad withColor(ColorData data) {
         if (!spriteInformation.colorable()) return this;
         int argb = data.colorsARGB()[spriteInformation.colorID()];
-        return cache.computeIfAbsent(argb, (c) -> new RecolorableBakedQuad(this, c, this.spriteInformation, this.cache));
+        return cache.computeIfAbsent(argb,
+                (c) -> new RecolorableBakedQuad(this, c, this.spriteInformation, this.cache));
     }
 }

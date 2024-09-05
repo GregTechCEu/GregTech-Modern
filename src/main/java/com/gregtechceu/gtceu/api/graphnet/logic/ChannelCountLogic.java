@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 public final class ChannelCountLogic extends AbstractIntLogicData<ChannelCountLogic> {
 
-    public static final NetLogicEntryType<ChannelCountLogic> TYPE = new NetLogicEntryType<>("ChannelCount", () -> new ChannelCountLogic().setValue(1));
+    public static final NetLogicEntryType<ChannelCountLogic> TYPE = new NetLogicEntryType<>("ChannelCount",
+            () -> new ChannelCountLogic().setValue(1));
 
     public ChannelCountLogic() {
         super(TYPE);

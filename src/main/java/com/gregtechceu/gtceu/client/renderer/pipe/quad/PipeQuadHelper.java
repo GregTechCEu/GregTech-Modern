@@ -79,6 +79,7 @@ public final class PipeQuadHelper {
         float large = 0.5f + thickness / 2;
         return new PipeQuadHelper((float) x, (float) y, (float) z, small, large);
     }
+
     @Contract("_ -> new")
     public static @NotNull PipeQuadHelper create(float thickness) {
         return create(thickness, 0, 0, 0);

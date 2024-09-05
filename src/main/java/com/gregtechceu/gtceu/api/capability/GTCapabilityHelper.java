@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.capability.data.IComputationProvider;
+import com.gregtechceu.gtceu.api.capability.data.IComputationUser;
 import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -96,9 +98,15 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos,
-                                                                            @Nullable Direction side) {
+    public static IComputationProvider getComputationProvider(Level level, BlockPos pos,
+                                                              @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, level, pos, side);
+    }
+
+    @Nullable
+    public static IComputationUser getComputationUser(Level level, BlockPos pos,
+                                                      @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_USER, level, pos, side);
     }
 
     @Nullable

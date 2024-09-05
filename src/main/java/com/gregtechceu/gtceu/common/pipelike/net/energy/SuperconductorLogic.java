@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 
 public final class SuperconductorLogic extends AbstractIntLogicData<SuperconductorLogic> {
 
-    public static final NetLogicEntryType<SuperconductorLogic> TYPE = new NetLogicEntryType<>("Superconductor", () -> new SuperconductorLogic().setValue(0));
+    public static final NetLogicEntryType<SuperconductorLogic> TYPE = new NetLogicEntryType<>("Superconductor",
+            () -> new SuperconductorLogic().setValue(0));
 
     public SuperconductorLogic() {
         super(TYPE);
@@ -14,5 +15,4 @@ public final class SuperconductorLogic extends AbstractIntLogicData<Superconduct
     public boolean canSuperconduct(int temp) {
         return this.getValue() > temp;
     }
-
 }

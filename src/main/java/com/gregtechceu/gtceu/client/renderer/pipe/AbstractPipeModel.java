@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.CacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.gregtechceu.gtceu.utils.reference.WeakHashSet;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -69,6 +69,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
         pipeCache = new Object2ObjectOpenHashMap<>();
         PIPE_CACHES.add(pipeCache);
     }
+
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {

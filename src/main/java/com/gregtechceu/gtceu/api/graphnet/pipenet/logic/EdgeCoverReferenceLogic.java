@@ -26,7 +26,8 @@ import java.lang.ref.WeakReference;
 
 public final class EdgeCoverReferenceLogic extends NetLogicEntry<EdgeCoverReferenceLogic, CompoundTag> {
 
-    public static final NetLogicEntryType<EdgeCoverReferenceLogic> TYPE = new NetLogicEntryType<>("EdgeCoverReference", EdgeCoverReferenceLogic::new);
+    public static final NetLogicEntryType<EdgeCoverReferenceLogic> TYPE = new NetLogicEntryType<>("EdgeCoverReference",
+            EdgeCoverReferenceLogic::new);
 
     @Nullable
     private WeakReference<CoverBehavior> coverSource;

@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 
 import com.lowdragmc.lowdraglib.networking.IPacket;
 
-import lombok.Getter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

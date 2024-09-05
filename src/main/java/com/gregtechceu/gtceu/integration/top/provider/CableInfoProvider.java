@@ -36,7 +36,7 @@ public class CableInfoProvider implements IProbeInfoProvider {
                 return;
             }
             WorldPipeNetNode node = WorldEnergyNet.getWorldNet(serverLevel).getNode(iProbeHitData.getPos());
-            EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.INSTANCE);
+            EnergyFlowLogic logic = node.getData().getLogicEntryNullable(EnergyFlowLogic.TYPE);
 
             long currentTick = serverLevel.getServer().getTickCount();
             long totalVoltage = 0L;

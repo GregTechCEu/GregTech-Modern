@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
+
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -17,7 +17,8 @@ import java.util.List;
 
 public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
 
-    public static final NetLogicEntryType<EnergyFlowLogic> TYPE = new NetLogicEntryType<>("EnergyFlow", EnergyFlowLogic::new);
+    public static final NetLogicEntryType<EnergyFlowLogic> TYPE = new NetLogicEntryType<>("EnergyFlow",
+            EnergyFlowLogic::new);
 
     private final AveragingPerTickCounter averageVoltageCounter = new AveragingPerTickCounter();
     private final AveragingPerTickCounter averageAmperageCounter = new AveragingPerTickCounter();

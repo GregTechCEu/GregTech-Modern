@@ -131,7 +131,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @DescSynced
     @Getter
     protected final PipeCoverHolder coverHolder = new PipeCoverHolder(this);
-    @Getter
     private final Object2ObjectOpenHashMap<Capability<?>, IPipeCapabilityObject> capabilities = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectOpenCustomHashMap<WorldPipeNetNode, PipeCapabilityWrapper> netCapabilities = WorldPipeNet
             .getSensitiveHashMap();
@@ -242,6 +241,17 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     public boolean renderClosed(Direction facing) {
         return (this.renderMask & 1 << facing.ordinal()) > 0;
+    }
+
+    public byte getCoverAdjustedConnectionMask() {
+        byte connectionMask = this.connectionMask;
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = getCoverHolder().getCoverAtSide(dir);
+            if (cover != null) {
+                if (cover.forcePipeRenderConnection()) connectionMask |= 1 << dir.ordinal();
+            }
+        }
+        return connectionMask;
     }
 
     public void setBlocked(Direction facing) {
@@ -527,30 +537,30 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     }
 
     /*
-    @Override
-    public void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {
-        buf.writeVarInt(netLogicDatas.size());
-        for (var entry : netLogicDatas.int2ObjectEntrySet()) {
-            buf.writeVarInt(entry.getIntKey());
-            entry.getValue().encode(buf);
-        }
-    }
-
-    @Override
-    public void receiveInitialSyncData(@NotNull FriendlyByteBuf buf) {
-        if (level.isClientSide) {
-            netLogicDatas.clear();
-            int count = buf.readVarInt();
-            for (int i = 0; i < count; i++) {
-                int networkID = buf.readVarInt();
-                NetLogicData data = new NetLogicData();
-                data.decode(buf);
-                netLogicDatas.put(networkID, data);
-            }
-        }
-        scheduleRenderUpdate();
-    }
-    */
+     * @Override
+     * public void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {
+     * buf.writeVarInt(netLogicDatas.size());
+     * for (var entry : netLogicDatas.int2ObjectEntrySet()) {
+     * buf.writeVarInt(entry.getIntKey());
+     * entry.getValue().encode(buf);
+     * }
+     * }
+     * 
+     * @Override
+     * public void receiveInitialSyncData(@NotNull FriendlyByteBuf buf) {
+     * if (level.isClientSide) {
+     * netLogicDatas.clear();
+     * int count = buf.readVarInt();
+     * for (int i = 0; i < count; i++) {
+     * int networkID = buf.readVarInt();
+     * NetLogicData data = new NetLogicData();
+     * data.decode(buf);
+     * netLogicDatas.put(networkID, data);
+     * }
+     * }
+     * scheduleRenderUpdate();
+     * }
+     */
 
     @Override
     public void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf) {

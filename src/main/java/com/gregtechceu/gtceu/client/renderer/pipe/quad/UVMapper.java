@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Vector3f;
 
