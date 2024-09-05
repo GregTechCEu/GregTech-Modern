@@ -71,8 +71,8 @@ public interface IJetpack {
         double deltaY = player.getDeltaMovement().y();
 
         if ((!flightEnabled || !hover) && player.getY() < player.level().getMinBuildHeight() - 5) {
-                performEHover(stack, player);
-        } else if(!flightEnabled) {
+            performEHover(stack, player);
+        } else if (!flightEnabled) {
             return;
         }
 
@@ -101,7 +101,7 @@ public interface IJetpack {
             } else {
                 if (flyKeyDown && descendKeyDown) {
                     potentialY = 0;
-                } else if( flyKeyDown ) {
+                } else if (flyKeyDown) {
                     potentialY = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
                 } else { // Free fall, don't need to edit motion
                     editMotion = false;
@@ -127,14 +127,15 @@ public interface IJetpack {
                 if (KeyBind.VANILLA_RIGHT.isKeyDown(player)) movement = movement.add(-speedSideways, 0, 0);
 
                 var dist = movement.length();
-                if(dist >= 1.0E-7) {
+                if (dist >= 1.0E-7) {
                     player.moveRelative((float) dist, movement);
-                    if(!editMotion) editMotion = true;
+                    if (!editMotion) editMotion = true;
                 }
             }
 
-            if(editMotion) {
-                int energyUsed = (int) Math.round(getEnergyPerUse() * (player.isSprinting() ? getSprintEnergyModifier() : 1));
+            if (editMotion) {
+                int energyUsed = (int) Math
+                        .round(getEnergyPerUse() * (player.isSprinting() ? getSprintEnergyModifier() : 1));
                 drainEnergy(stack, energyUsed);
                 ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
             }

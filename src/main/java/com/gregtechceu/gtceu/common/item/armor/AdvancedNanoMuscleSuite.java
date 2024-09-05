@@ -50,7 +50,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
         CompoundTag data = item.getOrCreateTag();
         // Assume no tags exist if we don't see the enabled tag
-        if(!data.contains("enabled")) {
+        if (!data.contains("enabled")) {
             data.putBoolean("enabled", true);
             data.putBoolean("hover", false);
             data.putByte("toggleTimer", (byte) 0);
@@ -63,18 +63,18 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         boolean canShare = data.getBoolean("canShare");
 
         String messageKey = null;
-        if(toggleTimer == 0) {
-            if(KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
                 messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
                 data.putBoolean("enabled", jetpackEnabled);
-            } else if(KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
                 messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
                 data.putBoolean("hover", hoverMode);
-            } else if(KeyBind.ARMOR_CHARGING.isKeyDown(player)) {
+            } else if (KeyBind.ARMOR_CHARGING.isKeyDown(player)) {
                 canShare = !canShare;
-                if(canShare && cont.getCharge() == 0) { // Only allow for charging to be enabled if charge is nonzero
+                if (canShare && cont.getCharge() == 0) { // Only allow for charging to be enabled if charge is nonzero
                     messageKey = "metaarmor.nms.share.error";
                     canShare = false;
                 } else {
@@ -83,9 +83,9 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                 data.putBoolean("canShare", canShare);
             }
 
-            if(messageKey != null) {
+            if (messageKey != null) {
                 toggleTimer = 5;
-                if(!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
 

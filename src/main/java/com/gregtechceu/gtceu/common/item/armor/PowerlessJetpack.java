@@ -74,7 +74,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         CompoundTag data = stack.getOrCreateTag();
 
         if (data.contains("burnTimer")) burnTimer = data.getShort("burnTimer");
-        if(!data.contains("enabled")) {
+        if (!data.contains("enabled")) {
             data.putBoolean("enabled", true);
             data.putBoolean("hover", false);
             data.putByte("toggleTimer", (byte) 0);
@@ -85,20 +85,20 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         byte toggleTimer = data.getByte("toggleTimer");
 
         String messageKey = null;
-        if(toggleTimer == 0) {
-            if(KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
                 messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
                 data.putBoolean("enabled", jetpackEnabled);
-            } else if(KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
                 messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
                 data.putBoolean("hover", hoverMode);
             }
 
-            if(messageKey != null) {
+            if (messageKey != null) {
                 toggleTimer = 5;
-                if(!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
 

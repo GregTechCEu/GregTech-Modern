@@ -45,7 +45,6 @@ import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -277,18 +276,19 @@ public class ForgeCommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if(boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(), (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
+                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);
-            } else if(chest.getItem() instanceof ArmorComponentItem armor &&
-                        armor.getArmorLogic() instanceof IJetpack jetpack &&
-                        jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-                        player.fallDistance >= player.getHealth() + 3.2f) {
-                IJetpack.performEHover(chest, player);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            }
+            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() instanceof IJetpack jetpack &&
+                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+                    player.fallDistance >= player.getHealth() + 3.2f) {
+                        IJetpack.performEHover(chest, player);
+                        player.fallDistance = 0;
+                        event.setCanceled(true);
+                    }
         }
     }
 
