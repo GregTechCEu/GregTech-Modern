@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
 
+import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -18,29 +19,29 @@ import java.util.List;
  * @date 2023/2/20
  * @implNote ItemRecipeCapability
  */
-public class CWURecipeCapability extends RecipeCapability<Integer> {
+public class CWURecipeCapability extends RecipeCapability<Long> {
 
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super("cwu", 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
+        super("cwu", 0xFFEEEE00, false, 3, SerializerLong.INSTANCE);
     }
 
     @Override
-    public Integer copyInner(Integer content) {
+    public Long copyInner(Long content) {
         return content;
     }
 
     @Override
-    public Integer copyWithModifier(Integer content, ContentModifier modifier) {
-        return modifier.apply(content).intValue();
+    public Long copyWithModifier(Long content, ContentModifier modifier) {
+        return modifier.apply(content).longValue();
     }
 
     @Override
     public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput, MutableInt yOffset) {
         if (perTick) {
-            int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
+            long cwu = contents.stream().map(Content::getContent).mapToLong(CWURecipeCapability.CAP::of).sum();
             group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
                     LocalizationUtils.format("gtceu.recipe.computation_per_tick", cwu)));
         }

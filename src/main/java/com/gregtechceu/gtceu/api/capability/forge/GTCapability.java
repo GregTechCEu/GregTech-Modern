@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.data.IComputationProvider;
+import com.gregtechceu.gtceu.api.capability.data.IComputationUser;
 import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -36,7 +38,9 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<ILaserRelay> CAPABILITY_LASER = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<IOpticalComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager
+    public static final Capability<IComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager
+            .get(new CapabilityToken<>() {});
+    public static final Capability<IComputationUser> CAPABILITY_COMPUTATION_USER = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IDataAccess> CAPABILITY_DATA_ACCESS = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -58,7 +62,8 @@ public class GTCapability {
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);
         event.register(ILaserRelay.class);
-        event.register(IOpticalComputationProvider.class);
+        event.register(IComputationProvider.class);
+        event.register(IComputationUser.class);
         event.register(IDataAccess.class);
         event.register(IMedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);
