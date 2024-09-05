@@ -414,10 +414,10 @@ public class GTUtil {
             if (test.test(middle) ^ !ascending) {
                 maxValue = middle;
             } else {
-                minValue = maxValue;
+                minValue = middle;
             }
         }
-        return ascending ? maxValue : minValue;
+        return test.test(ascending ? minValue : maxValue) ^ ascending ? maxValue : minValue;
     }
 
     public static int convertRGBtoARGB(int colorValue) {

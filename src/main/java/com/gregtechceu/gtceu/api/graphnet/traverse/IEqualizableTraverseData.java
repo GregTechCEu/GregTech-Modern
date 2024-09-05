@@ -20,4 +20,16 @@ public interface IEqualizableTraverseData<N extends NetNode, P extends INetPath<
      * this node requires.
      */
     long getMaxFlowToLeastDestination(@NotNull N destination);
+
+    /**
+     * Called in preference to {@link ITraverseData#finalizeAtDestination(NetNode, long)} to provide the equalization.
+     */
+    long finalizeAtDestination(@NotNull N node, long flowReachingNode, int expectedDestinations);
+
+    /**
+     * @deprecated use {@link #finalizeAtDestination(NetNode, long, int)} instead.
+     */
+    @Override
+    @Deprecated
+    long finalizeAtDestination(@NotNull N destination, long flowReachingDestination);
 }

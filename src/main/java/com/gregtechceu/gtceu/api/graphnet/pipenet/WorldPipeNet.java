@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldNet;
+import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldPosNet;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class WorldPipeNet extends WorldNet {
+public abstract class WorldPipeNet extends WorldPosNet {
 
     public static final int MULTI_NET_TIMEOUT = 10;
 

@@ -32,8 +32,6 @@ import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.gregtechceu.gtceu.utils.TaskHandler;
-import com.gregtechceu.gtceu.utils.TaskScheduler;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -79,7 +77,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +100,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     public static final int UPDATE_PIPE_LOGIC = 0;
 
     private final Int2ObjectOpenHashMap<NetLogicData> netLogicDatas = new Int2ObjectOpenHashMap<>();
-    private final ObjectOpenHashSet<NetLogicData.LogicDataListener> listeners = new ObjectOpenHashSet<>();
 
     // information that is only required for determining graph topology should be stored on the tile entity level,
     // while information interacted with during graph traversal should be stored on the NetLogicData level.
@@ -134,7 +130,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Persisted
     @DescSynced
     @Getter
-    protected final PipeCoverHolder covers = new PipeCoverHolder(this);
+    protected final PipeCoverHolder coverHolder = new PipeCoverHolder(this);
     @Getter
     private final Object2ObjectOpenHashMap<Capability<?>, IPipeCapabilityObject> capabilities = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectOpenCustomHashMap<WorldPipeNetNode, PipeCapabilityWrapper> netCapabilities = WorldPipeNet
@@ -497,15 +493,13 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             this.netLogicDatas.clear();
             this.capabilities.clear();
             this.netCapabilities.clear();
-            this.listeners.forEach(NetLogicData.LogicDataListener::invalidate);
-            this.listeners.clear();
             boolean firstNode = true;
             for (WorldPipeNetNode node : PipeBlock.getNodesForTile(this)) {
                 this.addCapabilities(node.getNet().getNewCapabilityObjects(node));
                 this.netCapabilities.put(node, new PipeCapabilityWrapper(this, node));
                 int networkID = node.getNet().getNetworkID();
                 netLogicDatas.put(networkID, node.getData());
-                var listener = node.getData().createListener(
+                node.getData().addListener(
                         (e, r, f) -> writeCustomData(UPDATE_PIPE_LOGIC, buf -> {
                             buf.writeVarInt(networkID);
                             buf.writeUtf(e.getType().id());
@@ -515,8 +509,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                                 e.encode(buf, f);
                             }
                         }));
-                this.listeners.add(listener);
-                node.getData().addListener(listener);
                 // Manually resync the data, as it's loaded & the listeners are queried for the first time *before*
                 // we call `addListener` on the line above.
                 for (var entry : node.getData().getEntries()) {
@@ -528,7 +520,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 }
             }
             this.netLogicDatas.trim();
-            this.listeners.trim();
             this.capabilities.trim();
             this.netCapabilities.trim();
             updateActiveStatus(null, false);
@@ -787,7 +778,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER) || (itemStack.isEmpty() && playerIn.isShiftKeyDown())) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             }

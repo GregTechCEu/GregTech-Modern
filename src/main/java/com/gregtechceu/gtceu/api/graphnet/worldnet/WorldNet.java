@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
 import com.gregtechceu.gtceu.api.graphnet.path.GenericGraphNetPath;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -54,24 +53,10 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
         return backer.getPaths(node, 0, GenericGraphNetPath.MAPPER, testObject, simulator, queryTick);
     }
 
-    @NotNull
-    public WorldNetNode getOrCreateNode(@NotNull BlockPos pos) {
-        WorldNetNode node = getNode(pos);
-        if (node != null) return node;
-        node = getNewNode();
-        node.setPos(pos);
-        addNode(node);
-        return node;
-    }
-
     @Override
     public void addNode(@NotNull NetNode node) {
         nodeClassCheck(node);
         this.backer.addNode(node);
-    }
-
-    public @Nullable WorldNetNode getNode(@NotNull BlockPos equivalencyData) {
-        return (WorldNetNode) getNode((Object) equivalencyData);
     }
 
     @Override
@@ -135,15 +120,5 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
     @Override
     public GraphNetBacker getBacker() {
         return backer;
-    }
-
-    @Override
-    public Class<? extends NetNode> getNodeClass() {
-        return WorldNetNode.class;
-    }
-
-    @Override
-    public @NotNull WorldNetNode getNewNode() {
-        return new WorldNetNode(this);
     }
 }

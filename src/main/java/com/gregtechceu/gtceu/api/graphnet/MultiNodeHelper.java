@@ -86,7 +86,6 @@ public class MultiNodeHelper implements INetLogicEntryListener {
     public void removeNode(@NotNull NetNode node) {
         LogicDataHandler removed = handledDatas.remove(node.getNet());
         if (removed != null) {
-            removed.invalidate();
             for (NetLogicEntry<?, ?> entry : this.mergedData.getEntries()) {
                 node.getData().removeLogicEntry(entry);
                 entry.unmerge(node);
@@ -103,17 +102,12 @@ public class MultiNodeHelper implements INetLogicEntryListener {
     protected class LogicDataHandler implements NetLogicData.ILogicDataListener {
 
         public final WeakReference<NetNode> nodeRef;
-        public final @NotNull NetLogicData.LogicDataListener listener;
         public final @NotNull NetLogicData data;
 
         public LogicDataHandler(@NotNull NetNode node) {
             this.data = node.getData();
-            this.listener = data.createListener(this);
+            data.addListener(this);
             this.nodeRef = new WeakReference<>(node);
-        }
-
-        public void invalidate() {
-            this.listener.invalidate();
         }
 
         @Override

@@ -271,17 +271,18 @@ public class FluidRegulatorCover extends PumpCover {
         }
 
         @Override
-        protected void compute(@NotNull WorldPipeNetNode destination) {
-            this.destCount = 0;
-            this.maxMinFlow = 0;
-            for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
-                if (destination.getEquivalencyData().equals(sourcePos) &&
+        public long finalizeAtDestination(@NotNull WorldPipeNetNode node, long flowReachingNode,
+                                          int expectedDestinations) {
+            long availableFlow = flowReachingNode;
+            long flowPerDestination = flowReachingNode / expectedDestinations;
+            if (flowPerDestination == 0) return 0;
+            for (var capability : node.getBlockEntity().getTargetsWithCapabilities(node).entrySet()) {
+                if (node.getEquivalencyData().equals(sourcePos) &&
                         capability.getKey() == inputFacing)
                     continue; // anti insert-to-our-source logic
 
-                IFluidHandler containerCap = capability.getValue()
-                        .getCapability(ForgeCapabilities.FLUID_HANDLER,
-                                capability.getKey().getOpposite())
+                var containerCap = capability.getValue()
+                        .getCapability(ForgeCapabilities.FLUID_HANDLER, capability.getKey().getOpposite())
                         .resolve().orElse(null);
                 if (containerCap != null) {
                     IFluidTransfer container = FluidTransferHelperImpl.toFluidTransfer(containerCap);
@@ -289,15 +290,12 @@ public class FluidRegulatorCover extends PumpCover {
                     assert getFilterHandler().isFilterPresent();
                     int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
                     if (contained >= kept) continue;
-                    if (destCount == 0) maxMinFlow = Integer.MAX_VALUE;
-                    destCount += 1;
-                    maxMinFlow = Math.min(maxMinFlow,
-                            IFluidTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
-                                    .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
-                                            kept - contained,
-                                            container, false));
+                    availableFlow -= IFluidTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
+                            .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                            (int) Math.min(kept - contained, flowPerDestination), container, !simulating());
                 }
             }
+            return flowReachingNode - availableFlow;
         }
 
         @Override

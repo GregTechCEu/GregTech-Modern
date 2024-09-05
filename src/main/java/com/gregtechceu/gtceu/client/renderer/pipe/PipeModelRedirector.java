@@ -101,7 +101,7 @@ public class PipeModelRedirector implements BakedModel {
     }
 
     @FunctionalInterface
-    public interface Supplier {
+    public interface ModelRedirectorSupplier {
 
         PipeModelRedirector create(ModelResourceLocation loc, MaterialModelSupplier supplier,
                                    Function<ItemStack, Material> stackMaterialFunction);

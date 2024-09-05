@@ -10,9 +10,12 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.IEqualizableTraverseData;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidEQTraverseData extends FluidTraverseData
@@ -62,5 +65,27 @@ public class FluidEQTraverseData extends FluidTraverseData
     @Override
     public long getMaxFlowToLeastDestination(@NotNull WorldPipeNetNode destination) {
         return maxMinFlow;
+    }
+
+    @Override
+    public long finalizeAtDestination(@NotNull WorldPipeNetNode node, long flowReachingNode, int expectedDestinations) {
+        long availableFlow = flowReachingNode;
+        long flowPerDestination = flowReachingNode / expectedDestinations;
+        if (flowPerDestination == 0) return 0;
+        for (var capability : node.getBlockEntity().getTargetsWithCapabilities(node).entrySet()) {
+            if (node.getEquivalencyData().equals(sourcePos) &&
+                    capability.getKey() == inputFacing)
+                continue; // anti insert-to-our-source logic
+
+            var containerCap = capability.getValue()
+                    .getCapability(ForgeCapabilities.FLUID_HANDLER, capability.getKey().getOpposite()).resolve().orElse(null);
+            if (containerCap != null) {
+                IFluidTransfer container = FluidTransferHelperImpl.toFluidTransfer(containerCap);
+                availableFlow -= IFluidTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
+                        .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                        (int) Math.min(Integer.MAX_VALUE, flowPerDestination), container, !simulating());
+            }
+        }
+        return flowReachingNode - availableFlow;
     }
 }

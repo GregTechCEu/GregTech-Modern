@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.MultiNodeHelper;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.IWorldPipeNetTile;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldNetNode;
+import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldPosNetNode;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
-public final class WorldPipeNetNode extends WorldNetNode {
+public final class WorldPipeNetNode extends WorldPosNetNode {
 
     private static final PipeBlockEntity FALLBACK = new PipeBlockEntity(GTBlockEntities.PIPE.get(), BlockPos.ZERO,
             GTBlocks.MATERIAL_PIPE_BLOCKS.get(TagPrefix.pipeNormal, GTMaterials.Aluminium).getDefaultState());

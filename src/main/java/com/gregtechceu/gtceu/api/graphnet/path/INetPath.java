@@ -29,11 +29,6 @@ public interface INetPath<N extends NetNode, T extends NetEdge> {
 
     double getWeight();
 
-    default boolean matches(@NotNull INetPath<?, ?> other) {
-        return WEIGHT_COMPARATOR.compare(getWeight(), other.getWeight()) == 0 &&
-                getOrderedNodes().equals(other.getOrderedNodes()) && getOrderedEdges().equals(other.getOrderedEdges());
-    }
-
     NetLogicData getUnifiedNodeData();
 
     @Nullable

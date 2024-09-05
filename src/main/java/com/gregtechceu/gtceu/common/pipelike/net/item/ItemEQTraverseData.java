@@ -67,4 +67,26 @@ public class ItemEQTraverseData extends ItemTraverseData
     public long getMaxFlowToLeastDestination(@NotNull WorldPipeNetNode destination) {
         return maxMinFlow;
     }
+
+    @Override
+    public long finalizeAtDestination(@NotNull WorldPipeNetNode node, long flowReachingNode, int expectedDestinations) {
+        long availableFlow = flowReachingNode;
+        long flowPerDestination = flowReachingNode / expectedDestinations;
+        if (flowPerDestination == 0) return 0;
+        for (var capability : node.getBlockEntity().getTargetsWithCapabilities(node).entrySet()) {
+            if (node.getEquivalencyData().equals(sourcePos) &&
+                    capability.getKey() == inputFacing)
+                continue; // anti insert-to-our-source logic
+
+            IItemHandler containerCap = capability.getValue()
+                    .getCapability(ForgeCapabilities.ITEM_HANDLER, capability.getKey().getOpposite()).resolve().orElse(null);
+            if (containerCap != null) {
+                IItemTransfer container = ItemTransferHelperImpl.toItemTransfer(containerCap);
+                availableFlow = IItemTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
+                        .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                        (int) Math.min(Integer.MAX_VALUE, flowPerDestination), container, simulating());
+            }
+        }
+        return flowReachingNode - availableFlow;
+    }
 }

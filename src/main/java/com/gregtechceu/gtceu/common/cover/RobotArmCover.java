@@ -334,11 +334,13 @@ public class RobotArmCover extends ConveyorCover {
         }
 
         @Override
-        protected void compute(@NotNull WorldPipeNetNode destination) {
-            this.destCount = 0;
-            this.maxMinFlow = 0;
-            for (var capability : destination.getBlockEntity().getTargetsWithCapabilities(destination).entrySet()) {
-                if (destination.getEquivalencyData().equals(sourcePos) &&
+        public long finalizeAtDestination(@NotNull WorldPipeNetNode node, long flowReachingNode,
+                                          int expectedDestinations) {
+            long availableFlow = flowReachingNode;
+            long flowPerDestination = flowReachingNode / expectedDestinations;
+            if (flowPerDestination == 0) return 0;
+            for (var capability : node.getBlockEntity().getTargetsWithCapabilities(node).entrySet()) {
+                if (node.getEquivalencyData().equals(sourcePos) &&
                         capability.getKey() == inputFacing)
                     continue; // anti insert-to-our-source logic
 
@@ -352,15 +354,12 @@ public class RobotArmCover extends ConveyorCover {
                     assert getFilterHandler().isFilterPresent();
                     int kept = getFilterHandler().getFilter().getTransferLimit(getTestObject().recombine());
                     if (contained >= kept) continue;
-                    if (destCount == 0) maxMinFlow = Integer.MAX_VALUE;
-                    destCount += 1;
-                    int test = kept - contained;
-                    maxMinFlow = Math.min(maxMinFlow, test -
-                            IItemTransferController.CONTROL.get(destination.getBlockEntity().getCoverHolder()
-                                    .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(), test,
-                                            container, true));
+                    availableFlow = IItemTransferController.CONTROL.get(node.getBlockEntity().getCoverHolder()
+                            .getCoverAtSide(capability.getKey())).insertToHandler(getTestObject(),
+                            (int) Math.min(kept - contained, flowPerDestination), container, simulating());
                 }
             }
+            return flowReachingNode - availableFlow;
         }
 
         @Override

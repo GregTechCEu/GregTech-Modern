@@ -134,6 +134,7 @@ public class NetGroup {
             NetNode temp;
             while (i.hasNext()) {
                 temp = i.next();
+                if (temp == source) continue;
                 targetGroup.add(temp);
                 // if we find a target node in our search, remove it from the list
                 targets.remove(temp);

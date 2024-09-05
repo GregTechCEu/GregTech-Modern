@@ -17,11 +17,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public final class PipeModelRegistry {
@@ -131,7 +133,7 @@ public final class PipeModelRegistry {
 
     public static PipeModelRedirector materialModel(@NotNull ResourceLocation loc, MaterialModelSupplier supplier,
                                                     @NotNull String variant,
-                                                    PipeModelRedirector.@NotNull Supplier redirectorSupplier) {
+                                                    PipeModelRedirector.@NotNull ModelRedirectorSupplier redirectorSupplier) {
         return redirectorSupplier.create(new ModelResourceLocation(loc, variant), supplier,
                 stack -> {
                     PipeMaterialBlock pipe = PipeMaterialBlock.getBlockFromItem(stack);
@@ -174,13 +176,13 @@ public final class PipeModelRegistry {
         array[4] = new PipeModel(pipeHuge, pipeSide, false);
         array[5] = new PipeModel(pipeQuadruple, pipeSide, false);
         array[6] = new PipeModel(pipeNonuple, pipeSide, false);
-        PIPE_OVERRIDES.add(new MaterialModelOverride.StandardOverride<>(array, m -> true));
+        PIPE_OVERRIDES.addAndMoveToLast(new MaterialModelOverride.StandardOverride<>(array, m -> true));
 
         array = new PipeModel[PIPE_MODEL_COUNT];
         array[1] = new PipeModel(pipeSmallWood, pipeSideWood, false);
         array[2] = new PipeModel(pipeNormalWood, pipeSideWood, false);
         array[3] = new PipeModel(pipeLargeWood, pipeSideWood, false);
-        registerPipeOverride(new MaterialModelOverride.StandardOverride<>(array, m -> m.hasProperty(PropertyKey.WOOD)));
+        registerPipeOverride(new MaterialModelOverride.StandardOverride<>(array, m -> m != null && m.hasProperty(PropertyKey.WOOD)));
 
         array = new PipeModel[PIPE_MODEL_COUNT];
         array[0] = new PipeModel(pipeTiny, pipeSide, true);
@@ -190,7 +192,7 @@ public final class PipeModelRegistry {
         array[4] = new PipeModel(pipeHuge, pipeSide, true);
         array[5] = new PipeModel(pipeQuadruple, pipeSide, true);
         array[6] = new PipeModel(pipeNonuple, pipeSide, true);
-        PIPE_RESTRICTIVE_OVERRIDES.add(new MaterialModelOverride.StandardOverride<>(array, m -> true));
+        PIPE_RESTRICTIVE_OVERRIDES.addAndMoveToLast(new MaterialModelOverride.StandardOverride<>(array, m -> true));
 
         ResourceLocation loc = GTCEu.id("block/pipe_material");
         for (int i = 0; i < PIPE_MODEL_COUNT; i++) {
@@ -201,7 +203,7 @@ public final class PipeModelRegistry {
         }
     }
 
-    private static PipeModel getOrCachePipeModel(Material m, int i) {
+    private static PipeModel getOrCachePipeModel(@Nullable Material m, int i) {
         if (m == null) return PIPE_OVERRIDES.last().getModel(null, i);
         PipeModel[] cached = PIPE.computeIfAbsent(m, k -> new PipeModel[PIPE_MODEL_COUNT]);
         PipeModel selected = cached[i];
@@ -230,13 +232,13 @@ public final class PipeModelRegistry {
     }
 
     private static void initCables() {
-        CABLE_OVERRIDES.add(new MaterialModelOverride.PerMaterialOverride<>(
+        CABLE_OVERRIDES.addAndMoveToLast(new MaterialModelOverride.PerMaterialOverride<>(
                 Tables.newCustomTable(new IdentityHashMap<>(), Int2ObjectOpenHashMap::new), (material, insulation) -> {
                     if (insulation == 0) {
                         return new CableModel(material);
                     }
                     return new CableModel(material, CableModel.INSULATION[insulation - 1], CableModel.INSULATION_FULL);
-                }, m -> true));
+                }, Objects::nonNull));
 
         ResourceLocation loc = GTCEu.id("block/cable");
         for (int i = 0; i < CABLE_MODEL_COUNT; i++) {
@@ -245,7 +247,7 @@ public final class PipeModelRegistry {
         }
     }
 
-    private static CableModel getOrCacheCableModel(Material m, int i) {
+    private static CableModel getOrCacheCableModel(@Nullable Material m, int i) {
         if (m == null) return CABLE_OVERRIDES.last().getModel(null, i);
         CableModel[] cached = CABLE.computeIfAbsent(m, k -> new CableModel[CABLE_MODEL_COUNT]);
         CableModel selected = cached[i];

@@ -16,7 +16,7 @@ public interface MaterialModelOverride<T extends AbstractPipeModel<?>> {
     T getModel(Material material, int i);
 
     record StandardOverride<T extends AbstractPipeModel<?>>(@NotNull T[] models,
-                                                            @NotNull Predicate<Material> predicate)
+                                                            @NotNull Predicate<@Nullable Material> predicate)
             implements MaterialModelOverride<T> {
 
         @Override
@@ -28,7 +28,7 @@ public interface MaterialModelOverride<T extends AbstractPipeModel<?>> {
 
     record PerMaterialOverride<T extends AbstractPipeModel<?>>(@NotNull Table<Material, Integer, T> models,
                                                                @NotNull BiFunction<Material, Integer, @NotNull T> createFunction,
-                                                               @NotNull Predicate<Material> predicate)
+                                                               @NotNull Predicate<@Nullable Material> predicate)
             implements MaterialModelOverride<T> {
 
         @Override

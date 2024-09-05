@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 public final class FluidTestObject implements IPredicateTestObject, Predicate<FluidStack> {
 
     public final Fluid fluid;
-    public final CompoundTag tag;
+    public final @Nullable CompoundTag tag;
 
     private final int hash;
 

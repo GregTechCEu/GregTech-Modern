@@ -44,11 +44,11 @@ public interface IPipeStructure extends StringRepresentable {
     default VoxelShape getPipeBoxes(@NotNull PipeBlockEntity tileContext) {
         VoxelShape pipeBoxes = Shapes.empty();
         float thickness = getRenderThickness();
-        if ((tileContext.getConnectionMask() & 63) < 63) {
+        if ((tileContext.getCoverAdjustedConnectionMask() & 63) < 63) {
             pipeBoxes = Shapes.or(pipeBoxes, getSideBox(null, thickness));
         }
         for (Direction facing : GTUtil.DIRECTIONS) {
-            if (tileContext.isConnected(facing)) pipeBoxes = Shapes.or(pipeBoxes, getSideBox(facing, thickness));
+            if (tileContext.isConnectedCoverAdjusted(facing)) pipeBoxes = Shapes.or(pipeBoxes, getSideBox(facing, thickness));
         }
         return pipeBoxes;
     }

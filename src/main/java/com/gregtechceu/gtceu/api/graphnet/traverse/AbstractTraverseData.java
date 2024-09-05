@@ -38,6 +38,10 @@ public abstract class AbstractTraverseData<N extends NetNode, P extends INetPath
         return simulator;
     }
 
+    public boolean simulating() {
+        return simulator != null;
+    }
+
     @Override
     public long getQueryTick() {
         return queryTick;

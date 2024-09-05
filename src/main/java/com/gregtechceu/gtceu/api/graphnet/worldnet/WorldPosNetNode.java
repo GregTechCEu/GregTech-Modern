@@ -7,11 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 
 import org.jetbrains.annotations.NotNull;
 
-public class WorldNetNode extends NetNode {
+public class WorldPosNetNode extends NetNode {
 
     private BlockPos pos;
 
-    public WorldNetNode(WorldNet net) {
+    public WorldPosNetNode(WorldNet net) {
         super(net);
     }
 
@@ -20,7 +20,7 @@ public class WorldNetNode extends NetNode {
         return (WorldNet) super.getNet();
     }
 
-    public WorldNetNode setPos(BlockPos pos) {
+    public WorldPosNetNode setPos(BlockPos pos) {
         this.pos = pos;
         return this;
     }

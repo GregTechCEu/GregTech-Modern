@@ -25,16 +25,16 @@ public final class QuadHelper {
 
     private QuadHelper() {}
 
-    public static RecolorableBakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
-                                                 UVMapper uv, SpriteInformation targetSprite) {
+    public static @NotNull RecolorableBakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
+                                                 @NotNull UVMapper uv, @NotNull SpriteInformation targetSprite) {
         BlockElementFace face = new BlockElementFace(null, -1, targetSprite.sprite().contents().name().toString(),
                 uv.map(normal, box), ForgeFaceData.DEFAULT);
         return StaticFaceBakery.bakeRecolorableQuad(box.getLeft(), box.getRight(), face, targetSprite, normal,
                 BlockModelRotation.X0_Y0, null, true, 0);
     }
 
-    public static BakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
-                                      UVMapper uv, TextureAtlasSprite targetSprite) {
+    public static @NotNull BakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
+                                               @NotNull UVMapper uv, @NotNull TextureAtlasSprite targetSprite) {
         BlockElementFace face = new BlockElementFace(null, -1, targetSprite.contents().name().toString(),
                 uv.map(normal, box));
         return StaticFaceBakery.bakeQuad(box.getLeft(), box.getRight(), face, targetSprite, normal,

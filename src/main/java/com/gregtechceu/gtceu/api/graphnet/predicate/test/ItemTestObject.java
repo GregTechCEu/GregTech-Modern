@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -13,7 +14,7 @@ import java.util.function.Predicate;
 public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack> {
 
     public final Item item;
-    public final CompoundTag tag;
+    public final @Nullable CompoundTag tag;
 
     public final int stackLimit;
 
@@ -29,13 +30,17 @@ public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack
     @Override
     @Contract(" -> new")
     public ItemStack recombine() {
-        return new ItemStack(item, 1, tag);
+        ItemStack stack = new ItemStack(item, 1);
+        stack.setTag(tag.copy());
+        return stack;
     }
 
     @Contract("_ -> new")
     public ItemStack recombine(int amount) {
         assert amount <= getStackLimit() && amount > 0;
-        return new ItemStack(item, amount, tag);
+        ItemStack stack = new ItemStack(item, amount);
+        stack.setTag(tag.copy());
+        return stack;
     }
 
     @Override

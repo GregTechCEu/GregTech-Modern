@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.gregtechceu.gtceu.utils.reference.WeakHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -53,8 +54,21 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
     public static final ModelProperty<Material> MATERIAL_PROPERTY = new ModelProperty<>();
 
     protected final Object2ObjectOpenHashMap<ResourceLocation, ColorQuadCache> frameCache = new Object2ObjectOpenHashMap<>();
-    protected final Object2ObjectOpenHashMap<K, StructureQuadCache> pipeCache = new Object2ObjectOpenHashMap<>();
+    protected final Object2ObjectOpenHashMap<K, StructureQuadCache> pipeCache;
 
+    protected static final WeakHashSet<Object2ObjectOpenHashMap<? extends CacheKey, StructureQuadCache>> PIPE_CACHES = new WeakHashSet<>();
+
+    public static void invalidateCaches() {
+        for (var cache : PIPE_CACHES) {
+            cache.clear();
+            cache.trim(16);
+        }
+    }
+
+    public AbstractPipeModel() {
+        pipeCache = new Object2ObjectOpenHashMap<>();
+        PIPE_CACHES.add(pipeCache);
+    }
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {
@@ -105,11 +119,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
                                              @Nullable Material frameMaterial, byte frameMask, byte coverMask) {
         List<BakedQuad> quads = new ObjectArrayList<>();
 
-        StructureQuadCache cache = pipeCache.get(key);
-        if (cache == null) {
-            cache = constructForKey(key);
-            pipeCache.put(key, cache);
-        }
+        StructureQuadCache cache = pipeCache.computeIfAbsent(key, this::constructForKey);
         cache.addToList(quads, connectionMask, closedMask,
                 blockedMask, data, coverMask);
 

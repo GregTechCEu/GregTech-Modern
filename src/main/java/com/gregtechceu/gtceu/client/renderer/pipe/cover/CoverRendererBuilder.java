@@ -75,19 +75,18 @@ public class CoverRendererBuilder {
 
     public static ColorQuadCache buildPlates(SpriteInformation sprite) {
         List<RecolorableBakedQuad> quads = new ObjectArrayList<>();
-        UVMapper mapper = UVMapper.standard(0);
         for (Direction facing : GTUtil.DIRECTIONS) {
-            PLATE_COORDS.put(facing, buildPlates(quads, facing, mapper, sprite));
+            PLATE_COORDS.put(facing, buildPlates(quads, facing, sprite));
         }
         return new ColorQuadCache(quads);
     }
 
     protected static SubListAddress buildPlates(List<RecolorableBakedQuad> quads, Direction facing,
-                                                UVMapper mapper, SpriteInformation sprite) {
+                                                SpriteInformation sprite) {
         int start = quads.size();
         Pair<Vector3f, Vector3f> box = PLATE_BOXES.get(facing);
         for (Direction dir : Direction.values()) {
-            quads.add(QuadHelper.buildQuad(dir, box, mapper, sprite));
+            quads.add(QuadHelper.buildQuad(dir, box, CoverRendererBuilder.defaultMapper, sprite));
         }
         return new SubListAddress(start, quads.size());
     }

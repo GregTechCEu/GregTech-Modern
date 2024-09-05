@@ -144,8 +144,10 @@ public class GTBlocks {
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .addLayer(() -> RenderType::cutoutMipped)
+            .color(() -> () -> (state, level, pos, color) -> color)
             .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
+            .color(() -> () -> (stack, color) -> color)
             .build()
             .register();
     public static final BlockEntry<OpticalPipeBlock> OPTICAL_PIPE = REGISTRATE
@@ -155,9 +157,11 @@ public class GTBlocks {
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
+            .color(() -> () -> (state, level, pos, color) -> color)
             .addLayer(() -> RenderType::cutoutMipped)
             .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
+            .color(() -> () -> (stack, color) -> color)
             .build()
             .register();
 
@@ -327,8 +331,10 @@ public class GTBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
+                .color(() -> () -> (state, level, pos, color) -> color)
                 .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
+                .color(() -> () -> (stack, color) -> color)
                 .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();
@@ -374,8 +380,10 @@ public class GTBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
+                .color(() -> () -> (state, level, pos, color) -> color)
                 .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
+                .color(() -> () -> (stack, color) -> color)
                 .build()
                 .register();
         MATERIAL_PIPE_BLOCKS_BUILDER.put(pipeType.prefix(), material, entry);

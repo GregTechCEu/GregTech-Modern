@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
+import com.jozufozu.flywheel.util.WeakHashSet;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
@@ -35,7 +36,7 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
     // TODO caching logic on simple logics to reduce amount of reduntant creation?
     private final Object2ObjectOpenHashMap<NetLogicEntryType<?>, NetLogicEntry<?, ?>> logicEntrySet;
 
-    private final Set<LogicDataListener> listeners = new ObjectOpenHashSet<>();
+    private final WeakHashSet<ILogicDataListener> listeners = new WeakHashSet<>();
 
     public NetLogicData() {
         logicEntrySet = new Object2ObjectOpenHashMap<>(4);
@@ -167,10 +168,6 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
         return new NetLogicData(newLogic);
     }
 
-    public void addListener(LogicDataListener listener) {
-        this.listeners.add(listener);
-    }
-
     @Override
     public ListTag serializeNBT() {
         ListTag list = new ListTag();
@@ -223,26 +220,15 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
         this.logicEntrySet.trim();
     }
 
-    public LogicDataListener createListener(ILogicDataListener listener) {
-        return new LogicDataListener(listener);
-    }
-
-    public final class LogicDataListener {
-
-        private final ILogicDataListener listener;
-
-        private LogicDataListener(ILogicDataListener listener) {
-            this.listener = listener;
-        }
-
-        private void markChanged(NetLogicEntry<?, ?> updatedEntry, boolean removed, boolean fullChange) {
-            this.listener.markChanged(updatedEntry, removed, fullChange);
-        }
-
-        // TODO would a weak set be better?
-        public void invalidate() {
-            listeners.remove(this);
-        }
+    /**
+     * Adds a listener to a weak set which is then notified for as long as it is not collected by the garbage collector.
+     *
+     * @param listener the listener.
+     * @return the listener, for convenience when working with lambdas.
+     */
+    public ILogicDataListener addListener(ILogicDataListener listener) {
+        this.listeners.add(listener);
+        return listener;
     }
 
     @FunctionalInterface
