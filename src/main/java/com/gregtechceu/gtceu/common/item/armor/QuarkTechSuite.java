@@ -210,7 +210,6 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     }
                 }
             }
-            updateStepHeight(player);
 
             if (boostedJumpTimer > 0) boostedJumpTimer--;
 

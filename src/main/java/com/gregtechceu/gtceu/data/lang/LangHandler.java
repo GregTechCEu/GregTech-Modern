@@ -1084,6 +1084,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.muffler_obstructed", "Muffler Hatch is Obstructed!");
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
+        provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
         provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
         provider.add("gtceu.multiblock.universal.distinct.no", "No");
         provider.add("gtceu.multiblock.universal.distinct.yes", "Yes");

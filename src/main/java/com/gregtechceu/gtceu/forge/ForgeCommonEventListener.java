@@ -229,6 +229,19 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
+        float MAGIC_STEP_HEIGHT = 1.0023f;
+        if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+            if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
+                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+            }
+        } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
+            player.setMaxUpStep(0.6f);
+        }
+    }
+
+    @SubscribeEvent
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
