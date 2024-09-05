@@ -483,9 +483,9 @@ public class LangHandler {
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
         replace(provider, GTMaterials.Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
-        replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        replace(provider, GTMaterials.HeavyOil.getUnlocalizedName(), "Heavy Oil");
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
+        replace(provider, GTMaterials.LightOil.getUnlocalizedName(), "Light Oil");
         replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
         replace(provider, "block.gtceu.oil_medium", "Raw Oil");

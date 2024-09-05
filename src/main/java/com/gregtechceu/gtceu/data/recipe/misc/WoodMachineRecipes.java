@@ -929,7 +929,7 @@ public class WoodMachineRecipes {
         PYROLYSE_RECIPES.recipeBuilder("log_to_heavy_oil").circuitMeta(3)
                 .inputItems(ItemTags.LOGS_THAT_BURN, 16)
                 .outputItems(dust, Ash, 4)
-                .outputFluids(OilHeavy.getFluid(200))
+                .outputFluids(HeavyOil.getFluid(200))
                 .duration(320).EUt(192)
                 .save(provider);
 

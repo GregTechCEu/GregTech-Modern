@@ -1158,8 +1158,8 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-                .inputItems(rock, GraniteRed)
-                .outputItems(dust, GraniteRed)
+                .inputItems(rock, RedGranite)
+                .outputItems(dust, RedGranite)
                 .chancedOutput(dust, Uranium238, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);

@@ -30,7 +30,7 @@ public class GTBedrockFluids {
     // ******** OVERWORLD ********//
     //////////////////////////////////////
     public static BedrockFluidDefinition HEAVY_OIL = create(GTCEu.id("heavy_oil_deposit"), builder -> builder
-            .fluid(GTMaterials.OilHeavy::getFluid)
+            .fluid(GTMaterials.HeavyOil::getFluid)
             .weight(15)
             .yield(100, 200)
             .depletionAmount(1)
@@ -41,7 +41,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition LIGHT_OIL = create(GTCEu.id("light_oil_deposit"), builder -> builder
-            .fluid(GTMaterials.OilLight::getFluid)
+            .fluid(GTMaterials.LightOil::getFluid)
             .weight(25)
             .yield(175, 300)
             .depletionAmount(1)

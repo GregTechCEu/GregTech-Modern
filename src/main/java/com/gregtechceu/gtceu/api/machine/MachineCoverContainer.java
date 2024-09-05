@@ -271,7 +271,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             return definition.createCoverBehavior(this, side);
         }
         GTCEu.LOGGER.error("couldn't find cover definition {}", definitionId);
-        throw new RuntimeException();
+        throw new RuntimeException("couldn't find cover definition " + definitionId);
     }
 
     @Override

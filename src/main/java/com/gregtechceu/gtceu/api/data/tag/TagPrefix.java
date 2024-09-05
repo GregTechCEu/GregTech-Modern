@@ -113,7 +113,7 @@ public class TagPrefix {
 
     public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
-            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed,
+            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.RedGranite,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
                     GTCEu.id("block/red_granite"));
