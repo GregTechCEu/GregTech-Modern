@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -15,6 +12,8 @@ import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static com.gregtechceu.gtceu.client.renderer.machine.OverlayEnergyIORenderer.ENERGY_OUT_1A;
 
 /**
  * @author KilaBash
@@ -33,8 +32,7 @@ public class SimpleGeneratorMachineRenderer extends WorkableTieredHullMachineRen
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(TransformerRenderer.ENERGY_OUT),
-                    modelState, 2));
+            ENERGY_OUT_1A.renderOverlay(quads, modelFacing, modelState, 2);
         }
     }
 }

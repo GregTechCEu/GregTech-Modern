@@ -956,7 +956,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.SUBSTATION_INPUT_ENERGY)
                     .tooltips(Component.translatable("gtceu.machine.substation_hatch.input.tooltip"))
-                    .overlayTieredHullRenderer("energy_hatch.input_16a")
+                    .overlayTieredHullRenderer("energy_hatch.input_64a")
                     .compassNode("energy_hatch")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -969,7 +969,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY)
                     .tooltips(Component.translatable("gtceu.machine.substation_hatch.output.tooltip"))
-                    .overlayTieredHullRenderer("energy_hatch.output_16a")
+                    .overlayTieredHullRenderer("energy_hatch.output_64a")
                     .compassNode("energy_hatch")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1185,7 +1185,7 @@ public class GTMachines {
                     .langValue("%s Diode".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .overlayTieredHullRenderer("diode")
+                    .renderer(() -> new DiodeRenderer(tier))
                     .tooltips(Component.translatable("gtceu.machine.diode.tooltip_general"),
                             Component.translatable("gtceu.machine.diode.tooltip_starts_at"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in_out",
@@ -2707,7 +2707,7 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
-                        .renderer(() -> new ConverterRenderer(tier))
+                        .renderer(() -> new ConverterRenderer(tier, amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",

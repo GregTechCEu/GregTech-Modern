@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -55,6 +57,14 @@ public class ConverterMachine extends TieredMachine implements IExplosionMachine
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public int tintColor(int index) {
+        if (index == 2) {
+            return GTValues.VC[getTier()];
+        }
+        return super.tintColor(index);
     }
 
     //////////////////////////////////////
