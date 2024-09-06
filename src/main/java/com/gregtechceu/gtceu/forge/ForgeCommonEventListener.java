@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -24,6 +26,7 @@ import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
@@ -80,6 +83,9 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author KilaBash
@@ -453,8 +459,36 @@ public class ForgeCommonEventListener {
             }
         });
 
-        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
-        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
-        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(MissingMappingsEvent.Mapping::ignore);
+        // remap pipe blocks (uses the datafixer in 1.21)
+        final Pattern itemPipe = Pattern.compile("(.+?)_(.+?)_item_pipe");
+        final Pattern fluidPipe = Pattern.compile("(.+?)_(.+?)_fluid_pipe");
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            String namespace = registry.getModid();
+            event.getMappings(Registries.BLOCK, namespace).forEach(mapping -> {
+                remapPipe(itemPipe, mapping);
+                remapPipe(fluidPipe, mapping);
+            });
+            event.getMappings(Registries.ITEM, namespace).forEach(mapping -> {
+                remapPipe(itemPipe, mapping);
+                remapPipe(fluidPipe, mapping);
+            });
+        }
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "cable", "fluid_pipe", "item_pipe" -> mapping.remap(GTBlockEntities.MATERIAL_PIPE.get());
+                case "laser_pipe", "optical_pipe" -> mapping.remap(GTBlockEntities.ACTIVABLE_PIPE.get());
+                case "duct_pipe" -> mapping.remap(GTBlockEntities.PIPE.get());
+            }
+        });
+    }
+
+    private static <T> void remapPipe(Pattern pattern, MissingMappingsEvent.Mapping<T> mapping) {
+        String namespace = mapping.getKey().getNamespace();
+        String path = mapping.getKey().getPath();
+        Matcher match = pattern.matcher(path);
+        if (match.matches()) {
+            ResourceLocation newBlock = new ResourceLocation(namespace, match.replaceAll("$2_$1_pipe"));
+            mapping.remap(mapping.getRegistry().getValue(newBlock));
+        }
     }
 }

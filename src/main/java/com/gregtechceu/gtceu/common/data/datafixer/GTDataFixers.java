@@ -74,7 +74,6 @@ public class GTDataFixers {
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:cable"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:fluid_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
-        builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:duct_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:laser_pipe"));
         builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));

@@ -357,9 +357,9 @@ public class GTBlocks {
         GTCEu.LOGGER.debug("Generating GTCEu Material Pipe Blocks... Complete!");
     }
 
-    private static boolean allowMaterialPipeBlock(Material material, MaterialPipeStructure fluidPipeType) {
+    private static boolean allowMaterialPipeBlock(Material material, MaterialPipeStructure pipeType) {
         return material.hasProperty(PropertyKey.PIPENET_PROPERTIES) &&
-                material.getProperty(PropertyKey.PIPENET_PROPERTIES).generatesStructure(fluidPipeType);
+                material.getProperty(PropertyKey.PIPENET_PROPERTIES).generatesStructure(pipeType);
     }
 
     private static void registerMaterialPipeBlock(Material material, MaterialPipeStructure pipeType,
