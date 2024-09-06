@@ -198,7 +198,8 @@ public class GTResearchMachines {
             .multiblock("high_performance_computation_array", HPCAMachine::new)
             .langValue("High Performance Computation Array (HPCA)")
             .rotationState(RotationState.NON_Y_AXIS)
-            //TODO : Make a controllerAppearanceBlock() so the controller CTM's to the correct casings - Also just a good API addition for packdevs
+            // TODO : Make a controllerAppearanceBlock() so the controller CTM's to the correct casings - Also just a
+            // good API addition for packdevs
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip")
