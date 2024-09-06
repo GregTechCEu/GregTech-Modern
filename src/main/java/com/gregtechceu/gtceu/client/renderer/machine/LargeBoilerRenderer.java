@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -55,7 +56,8 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
                     quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.side()), modelState));
                     if (machine instanceof IRecipeLogicMachine recipeLogicMachine &&
                             recipeLogicMachine.getRecipeLogic().isWorking()) {
-                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState,
+                        quads.add(FaceQuad.bakeFace(CTMModelRenderer.SLIGHTLY_OVER_BLOCK,
+                                modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState,
                                 -101, 15, true, false));
                     }
                 }
