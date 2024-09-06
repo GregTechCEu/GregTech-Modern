@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,7 +45,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static final int MAX_PARALLELS = 8;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    private static final double CONVERSION_RATE = FluidHelper.getBucket() * 2 / 1000.0D;
+    private static final double CONVERSION_RATE = 0.5D;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
