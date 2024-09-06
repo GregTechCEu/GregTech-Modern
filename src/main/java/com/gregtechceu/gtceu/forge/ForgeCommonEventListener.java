@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
+import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
@@ -269,21 +270,22 @@ public class ForgeCommonEventListener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack jet = player.getItemBySlot(EquipmentSlot.CHEST);
-
             if (player.fallDistance < 3.2f)
                 return;
 
-            if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
-                valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);
-            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem &&
-                    jet.getOrCreateTag().contains("flyMode")) {
-                        valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
-                                (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() instanceof IJetpack jetpack &&
+                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+                    player.fallDistance >= player.getHealth() + 3.2f) {
+                        IJetpack.performEHover(chest, player);
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }
