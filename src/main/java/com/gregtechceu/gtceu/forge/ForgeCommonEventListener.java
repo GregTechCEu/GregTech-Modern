@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
@@ -473,6 +474,18 @@ public class ForgeCommonEventListener {
                 remapPipe(fluidPipe, mapping);
             });
         }
+        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.get());
+                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.get());
+            }
+        });
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.get().asItem());
+                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.get().asItem());
+            }
+        });
         event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
                 case "cable", "fluid_pipe", "item_pipe" -> mapping.remap(GTBlockEntities.MATERIAL_PIPE.get());
