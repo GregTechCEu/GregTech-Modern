@@ -79,35 +79,25 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         boolean hoverMode = data.hover();
         boolean jetpackEnabled = data.enabled();
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hoverMode = !hoverMode;
-            toggleTimer = 5;
-            final boolean finalHover = hoverMode;
-            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
+        String messageKey = null;
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+                jetpackEnabled = !jetpackEnabled;
+                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                final boolean finalEnabled = jetpackEnabled;
+                stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalEnabled));
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+                hoverMode = !hoverMode;
+                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                final boolean finalHover = hoverMode;
+                stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
+            }
+
+            if (messageKey != null) {
+                toggleTimer = 5;
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
-
-        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-            jetpackEnabled = !jetpackEnabled;
-            toggleTimer = 5;
-            final boolean finalEnabled = jetpackEnabled;
-            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalEnabled));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
-                        true);
-            }
-        }
-
-        // This causes a caching issue. currentRecipe is only set to null in findNewRecipe, so the fuel is never updated
-        // Rewrite in Armor Rework
-        if (currentRecipe == null)
-            findNewRecipe(stack);
-
-        performFlying(player, jetpackEnabled, hoverMode, stack);
 
         if (toggleTimer > 0)
             toggleTimer--;
@@ -120,6 +110,13 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                         .setBurnTimer((short) burnTimer)
                         .setToggleTimer(finalToggleTimer)
                         .setEnabled(finalEnabled));
+
+        // This causes a caching issue. currentRecipe is only set to null in findNewRecipe, so the fuel is never updated
+        // Rewrite in Armor Rework
+        if (currentRecipe == null)
+            findNewRecipe(stack);
+
+        performFlying(player, jetpackEnabled, hoverMode, stack);
     }
 
     @Override
@@ -274,7 +271,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     /*
      * @Override
      * public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor,
-     * 
+     *
      * @NotNull DamageSource source, double damage,
      * EntityEquipmentSlot equipmentSlot) {
      * int damageLimit = (int) Math.min(Integer.MAX_VALUE, burnTimer * 1.0 / 32 * 25.0);
@@ -284,7 +281,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
      */
 
     public static class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation,
-                                  IInteractionItem, IComponentCapability {
+            IInteractionItem, IComponentCapability {
 
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables

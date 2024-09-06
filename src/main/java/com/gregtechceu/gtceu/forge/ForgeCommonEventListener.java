@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.commands.ServerCommands;
+import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
@@ -29,7 +29,7 @@ import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.server.level.ServerLevel;
@@ -37,6 +37,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +52,7 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -207,37 +210,41 @@ public class ForgeCommonEventListener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack jet = player.getItemBySlot(EquipmentSlot.CHEST);
-
             if (player.fallDistance < 3.2f)
                 return;
 
-            if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
-                valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f));
                 player.fallDistance = 0;
                 event.setCanceled(true);
-            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem &&
-                    jet.has(GTDataComponents.FLY_MODE)) {
-                        valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
-                                (int) (player.fallDistance - 1.2f));
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() instanceof IJetpack jetpack &&
+                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+                    player.fallDistance >= player.getHealth() + 3.2f) {
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 
+    private static final AttributeModifier STEP_HEIGHT_MODIFIER = new AttributeModifier(GTCEu.id("step_height_boost"),
+            0.4023f, AttributeModifier.Operation.ADD_VALUE);
+
     @SubscribeEvent
-    public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
+    public static void stepAssistHandler(PlayerTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
-        if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
+        Player player = event.getEntity();
         if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
-            if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
-                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+            if (player.maxUpStep() < MAGIC_STEP_HEIGHT) {
+                player.getAttribute(Attributes.STEP_HEIGHT).addTransientModifier(STEP_HEIGHT_MODIFIER);
             }
-        } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
-            player.setMaxUpStep(0.6f);
+        } else if (player.maxUpStep() == MAGIC_STEP_HEIGHT) {
+            player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(STEP_HEIGHT_MODIFIER);
         }
     }
 
