@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.client.renderer.pipe.CableModel;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowData;
 import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowLogic;
@@ -19,11 +20,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -38,6 +41,14 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
             v.put(structure, this);
             return v;
         });
+    }
+
+    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
+                      @Nullable BlockPos blockPos, int index) {
+        if (getStructure().isInsulated() && index == 0) {
+            return CableModel.DEFAULT_INSULATION_COLOR;
+        }
+        return index == 0 ? material.getMaterialRGB() : -1;
     }
 
     @Override

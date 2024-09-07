@@ -379,10 +379,10 @@ public class GTBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> () -> (state, level, pos, color) -> color)
+                .color(() -> MaterialPipeBlock::tintedColor)
                 .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
-                .color(() -> () -> (stack, color) -> color)
+                .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
         MATERIAL_PIPE_BLOCKS_BUILDER.put(pipeType.prefix(), material, entry);

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
-import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -136,8 +134,7 @@ public class StaticFaceBakery {
         return quad;
     }
 
-    public static RecolorableBakedQuad bakeRecolorableQuad(
-                                                           Vector3f posFrom,
+    public static BakedQuad bakeRecolorableQuad(Vector3f posFrom,
                                                            Vector3f posTo,
                                                            BlockElementFace face,
                                                            SpriteInformation sprite,
@@ -171,9 +168,7 @@ public class StaticFaceBakery {
 
         ForgeHooksClient.fillNormal(aint, direction);
         ForgeFaceData data = face.getFaceData();
-        RecolorableBakedQuad quad = new RecolorableBakedQuad(
-                new BakedQuad(aint, face.tintIndex, direction, sprite.sprite(), shade, data.ambientOcclusion()),
-                sprite);
+        BakedQuad quad = new BakedQuad(aint, sprite.colorID(), direction, sprite.sprite(), shade, data.ambientOcclusion());
         if (!ForgeFaceData.DEFAULT.equals(data)) {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
@@ -89,20 +90,20 @@ public final class PipeQuadHelper {
         this.targetSprite = sprite;
     }
 
-    public @NotNull RecolorableBakedQuad visitCore(Direction facing) {
+    public @NotNull BakedQuad visitCore(Direction facing) {
         return visitCore(facing, 0);
     }
 
-    public @NotNull RecolorableBakedQuad visitCore(Direction facing, int overlayLayer) {
+    public @NotNull BakedQuad visitCore(Direction facing, int overlayLayer) {
         return visitQuad(facing, coreBoxList.get(overlayLayer), UVMapper.standard(0));
     }
 
-    public @NotNull List<RecolorableBakedQuad> visitTube(Direction facing) {
+    public @NotNull List<BakedQuad> visitTube(Direction facing) {
         return visitTube(facing, 0);
     }
 
-    public @NotNull List<RecolorableBakedQuad> visitTube(Direction facing, int overlayLayer) {
-        List<RecolorableBakedQuad> list = new ObjectArrayList<>();
+    public @NotNull List<BakedQuad> visitTube(Direction facing, int overlayLayer) {
+        List<BakedQuad> list = new ObjectArrayList<>();
         Pair<Vector3f, Vector3f> box = sideBoxesList.get(overlayLayer).get(facing);
         switch (facing.getAxis()) {
             case X -> {
@@ -127,22 +128,22 @@ public final class PipeQuadHelper {
         return list;
     }
 
-    public @NotNull RecolorableBakedQuad visitCapper(Direction facing) {
+    public @NotNull BakedQuad visitCapper(Direction facing) {
         return visitCapper(facing, 0);
     }
 
-    public @NotNull RecolorableBakedQuad visitCapper(Direction facing, int overlayLayer) {
+    public @NotNull BakedQuad visitCapper(Direction facing, int overlayLayer) {
         return visitQuad(facing, sideBoxesList.get(overlayLayer).get(facing), UVMapper.standard(0));
     }
 
-    public @NotNull RecolorableBakedQuad visitQuad(Direction normal, Pair<Vector3f, Vector3f> box, UVMapper uv) {
+    public @NotNull BakedQuad visitQuad(Direction normal, Pair<Vector3f, Vector3f> box, UVMapper uv) {
         return QuadHelper.buildQuad(normal, box, uv, targetSprite);
     }
 
-    public static @NotNull List<RecolorableBakedQuad> createFrame(TextureAtlasSprite sprite) {
+    public static @NotNull List<BakedQuad> createFrame(TextureAtlasSprite sprite) {
         PipeQuadHelper helper = PipeQuadHelper.create(0.998f).initialize();
         helper.setTargetSprite(new SpriteInformation(sprite, 0));
-        List<RecolorableBakedQuad> list = new ObjectArrayList<>();
+        List<BakedQuad> list = new ObjectArrayList<>();
         for (Direction facing : GTUtil.DIRECTIONS) {
             list.add(helper.visitCore(facing));
         }

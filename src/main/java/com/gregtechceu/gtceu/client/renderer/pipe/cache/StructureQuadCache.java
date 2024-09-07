@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.pipe.cache;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -55,8 +54,8 @@ public class StructureQuadCache {
         this.cache = new ColorQuadCache(this.buildPrototypeInternal());
     }
 
-    protected List<RecolorableBakedQuad> buildPrototypeInternal() {
-        List<RecolorableBakedQuad> quads = new ObjectArrayList<>();
+    protected List<BakedQuad> buildPrototypeInternal() {
+        List<BakedQuad> quads = new ObjectArrayList<>();
         buildTube(quads);
         buildCore(quads);
         buildCapper(quads);
@@ -64,7 +63,7 @@ public class StructureQuadCache {
         return quads;
     }
 
-    protected void buildTube(List<RecolorableBakedQuad> list) {
+    protected void buildTube(List<BakedQuad> list) {
         helper.setTargetSprite(sideTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();
@@ -73,7 +72,7 @@ public class StructureQuadCache {
         }
     }
 
-    protected void buildCore(List<RecolorableBakedQuad> list) {
+    protected void buildCore(List<BakedQuad> list) {
         helper.setTargetSprite(sideTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();
@@ -82,7 +81,7 @@ public class StructureQuadCache {
         }
     }
 
-    protected void buildCapper(List<RecolorableBakedQuad> list) {
+    protected void buildCapper(List<BakedQuad> list) {
         helper.setTargetSprite(endTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();
@@ -91,7 +90,7 @@ public class StructureQuadCache {
         }
     }
 
-    protected void buildCapperClosed(List<RecolorableBakedQuad> list) {
+    protected void buildCapperClosed(List<BakedQuad> list) {
         helper.setTargetSprite(sideTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();

@@ -51,9 +51,7 @@ public final class NetLogicRegistry {
         }
 
         @Override
-        public void deserializeNBT(Tag arg) {
-            throw new RuntimeException("Can't deserialize empty logic entry!");
-        }
+        public void deserializeNBT(Tag arg) {}
 
         @Override
         public void encode(FriendlyByteBuf buf, boolean fullChange) {
@@ -61,8 +59,6 @@ public final class NetLogicRegistry {
         }
 
         @Override
-        public void decode(FriendlyByteBuf buf, boolean fullChange) {
-            throw new RuntimeException("Can't deserialize empty logic entry!");
-        }
+        public void decode(FriendlyByteBuf buf, boolean fullChange) {}
     }
 }

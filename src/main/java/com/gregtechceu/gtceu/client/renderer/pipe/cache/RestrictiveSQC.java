@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.pipe.cache;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.QuadHelper;
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -43,13 +42,13 @@ public class RestrictiveSQC extends BlockableSQC {
     }
 
     @Override
-    protected List<RecolorableBakedQuad> buildPrototypeInternal() {
-        List<RecolorableBakedQuad> quads = super.buildPrototypeInternal();
+    protected List<BakedQuad> buildPrototypeInternal() {
+        List<BakedQuad> quads = super.buildPrototypeInternal();
         buildRestrictive(quads);
         return quads;
     }
 
-    protected void buildRestrictive(List<RecolorableBakedQuad> list) {
+    protected void buildRestrictive(List<BakedQuad> list) {
         helper.setTargetSprite(restrictiveTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();

@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -32,6 +33,11 @@ public abstract class PipeMaterialBlock extends PipeBlock {
                              Material material) {
         super(properties, structure);
         this.material = material;
+    }
+
+    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
+                      @Nullable BlockPos blockPos, int index) {
+        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
     }
 
     @Nullable

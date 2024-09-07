@@ -25,7 +25,7 @@ public final class QuadHelper {
 
     private QuadHelper() {}
 
-    public static @NotNull RecolorableBakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
+    public static @NotNull BakedQuad buildQuad(Direction normal, Pair<Vector3f, Vector3f> box,
                                                           @NotNull UVMapper uv,
                                                           @NotNull SpriteInformation targetSprite) {
         BlockElementFace face = new BlockElementFace(null, -1, targetSprite.sprite().contents().name().toString(),

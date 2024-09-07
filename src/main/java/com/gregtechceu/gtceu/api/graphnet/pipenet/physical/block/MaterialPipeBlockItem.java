@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class MaterialPipeBlockItem extends PipeBlockItem {
@@ -38,5 +41,16 @@ public class MaterialPipeBlockItem extends PipeBlockItem {
         Material material = getBlock().material;
         return material == null ? "unnamed" :
                 getBlock().getStructure().getPrefix().getUnlocalizedName(material);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static ItemColor tintColor() {
+        return (itemStack, index) -> {
+            if (itemStack.getItem() instanceof MaterialPipeBlockItem materialBlockItem) {
+                return materialBlockItem.getBlock().tinted(materialBlockItem.getBlock().defaultBlockState(), null, null,
+                        index);
+            }
+            return -1;
+        };
     }
 }

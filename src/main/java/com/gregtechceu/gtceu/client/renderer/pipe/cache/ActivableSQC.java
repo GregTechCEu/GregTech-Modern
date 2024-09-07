@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.pipe.cache;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.QuadHelper;
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -46,14 +45,14 @@ public class ActivableSQC extends StructureQuadCache {
     }
 
     @Override
-    protected List<RecolorableBakedQuad> buildPrototypeInternal() {
-        List<RecolorableBakedQuad> quads = super.buildPrototypeInternal();
+    protected List<BakedQuad> buildPrototypeInternal() {
+        List<BakedQuad> quads = super.buildPrototypeInternal();
         buildOverlay(quads);
         buildOverlayActive(quads);
         return quads;
     }
 
-    protected void buildOverlay(List<RecolorableBakedQuad> list) {
+    protected void buildOverlay(List<BakedQuad> list) {
         helper.setTargetSprite(overlayTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();
@@ -62,7 +61,7 @@ public class ActivableSQC extends StructureQuadCache {
         }
     }
 
-    protected void buildOverlayActive(List<RecolorableBakedQuad> list) {
+    protected void buildOverlayActive(List<BakedQuad> list) {
         helper.setTargetSprite(overlayActiveTex);
         for (Direction facing : GTUtil.DIRECTIONS) {
             int start = list.size();

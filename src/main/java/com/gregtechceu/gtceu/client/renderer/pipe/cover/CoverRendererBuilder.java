@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.ColorQuadCache;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.SubListAddress;
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.QuadHelper;
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.RecolorableBakedQuad;
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.UVMapper;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
@@ -74,14 +73,14 @@ public class CoverRendererBuilder {
     }
 
     public static ColorQuadCache buildPlates(SpriteInformation sprite) {
-        List<RecolorableBakedQuad> quads = new ObjectArrayList<>();
+        List<BakedQuad> quads = new ObjectArrayList<>();
         for (Direction facing : GTUtil.DIRECTIONS) {
             PLATE_COORDS.put(facing, buildPlates(quads, facing, sprite));
         }
         return new ColorQuadCache(quads);
     }
 
-    protected static SubListAddress buildPlates(List<RecolorableBakedQuad> quads, Direction facing,
+    protected static SubListAddress buildPlates(List<BakedQuad> quads, Direction facing,
                                                 SpriteInformation sprite) {
         int start = quads.size();
         Pair<Vector3f, Vector3f> box = PLATE_BOXES.get(facing);
