@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -80,11 +81,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
+import net.minecraftforge.registries.RegistryManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -461,30 +465,48 @@ public class ForgeCommonEventListener {
         });
 
         // remap pipe blocks (uses the datafixer in 1.21)
-        final Pattern itemPipe = Pattern.compile("(.+?)_(.+?)_item_pipe");
-        final Pattern fluidPipe = Pattern.compile("(.+?)_(.+?)_fluid_pipe");
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
             String namespace = registry.getModid();
             event.getMappings(Registries.BLOCK, namespace).forEach(mapping -> {
-                remapPipe(itemPipe, mapping);
-                remapPipe(fluidPipe, mapping);
+                remapPipe(mapping);
             });
             event.getMappings(Registries.ITEM, namespace).forEach(mapping -> {
-                remapPipe(itemPipe, mapping);
-                remapPipe(fluidPipe, mapping);
+                remapPipe(mapping);
             });
         }
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
                 case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.get());
                 case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.get());
+                default -> {
+                    remapMaterial(Pattern.compile("uranium"), "uranium_238", mapping);
+                    remapMaterial(Pattern.compile("plutonium"), "plutonium_239", mapping);
+                    remapMaterial(Pattern.compile("granite_red"), "red_granite", mapping);
+                    remapMaterial(OilVariantsRenameFix.RENAMED_BLOCK_IDS, mapping);
+                }
             }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
-                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.get().asItem());
-                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.get().asItem());
+                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.asItem());
+                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.asItem());
+                case "avanced_nanomuscle_chestplate" -> mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
+                default -> {
+                    remapMaterial(Pattern.compile("uranium"), "uranium_238", mapping);
+                    remapMaterial(Pattern.compile("plutonium"), "plutonium_239", mapping);
+                    remapMaterial(Pattern.compile("granite_red"), "red_granite", mapping);
+                    remapMaterial(OilVariantsRenameFix.RENAMED_ITEM_IDS, mapping);
+                }
             }
+        });
+        event.getMappings(Registries.FLUID, GTCEu.MOD_ID).forEach(mapping -> {
+            remapMaterial(OilVariantsRenameFix.RENAMED_FLUID_IDS, mapping);
+            remapMaterial(Map.of(
+                    "gtceu:uranium", "gtceu:uranium_238",
+                    "gtceu:flowing_uranium", "gtceu:flowing_uranium_238",
+                    "gtceu:plutonium", "gtceu:plutonium_238",
+                    "gtceu:flowing_plutonium", "gtceu:flowing_plutonium_238"
+                    ), mapping);
         });
         event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
@@ -495,13 +517,51 @@ public class ForgeCommonEventListener {
         });
     }
 
-    private static <T> void remapPipe(Pattern pattern, MissingMappingsEvent.Mapping<T> mapping) {
+    private static <T> void remapPipe(MissingMappingsEvent.Mapping<T> mapping) {
+        String namespace = mapping.getKey().getNamespace();
+        String path = mapping.getKey().getPath();
+        if (path.contains("_pipe")) {
+            StringBuilder result;
+            boolean restrictive = path.contains("restrictive");
+            boolean fluid = path.contains("fluid");
+            String[] split = path.substring(0, path.length() - (fluid ? 11 : 10)).split("_");
+            if (restrictive) {
+                result = new StringBuilder(split[split.length - 2] + "_" + split[split.length - 1]);
+                for (int i = 0; i < split.length - 2; ++i) {
+                    result.append("_").append(split[i]);
+                }
+            } else {
+                result = new StringBuilder(split[split.length - 1]);
+                for (int i = 0; i < split.length - 1; ++i) {
+                    result.append("_").append(split[i]);
+                }
+            }
+            result.append("_pipe");
+
+            ResourceLocation newBlock = new ResourceLocation(namespace, result.toString());
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
+        }
+    }
+
+    private static <T> void remapMaterial(Pattern pattern, String replacement, MissingMappingsEvent.Mapping<T> mapping) {
         String namespace = mapping.getKey().getNamespace();
         String path = mapping.getKey().getPath();
         Matcher match = pattern.matcher(path);
-        if (match.matches()) {
-            ResourceLocation newBlock = new ResourceLocation(namespace, match.replaceAll("$2_$1_pipe"));
-            mapping.remap(mapping.getRegistry().getValue(newBlock));
+        String replaced = match.replaceAll(replacement);
+        if (!path.equals(replaced)) {
+            ResourceLocation newBlock = new ResourceLocation(namespace, replaced);
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
+        }
+    }
+
+    private static <T> void remapMaterial(Map<String, String> renameMap, MissingMappingsEvent.Mapping<T> mapping) {
+        String newName = renameMap.get(mapping.getKey().toString());
+        if (newName != null) {
+            ResourceLocation newBlock = new ResourceLocation(newName);
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
         }
     }
 }

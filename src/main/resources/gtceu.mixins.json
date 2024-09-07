@@ -22,6 +22,7 @@
     "mixins": [
         "AbstractRegistrateAccessor",
         "BlockBehaviourAccessor",
+        "BlockEntityMixin",
         "BlockMixin",
         "BlockPropertiesAccessor",
         "ChunkGeneratorMixin",
@@ -41,6 +42,7 @@
         "LivingEntityMixin",
         "LootDataManagerMixin",
         "LootPoolAccessor",
+        "NbtUtilsMixin",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PartialNBTIngredientAccessor",

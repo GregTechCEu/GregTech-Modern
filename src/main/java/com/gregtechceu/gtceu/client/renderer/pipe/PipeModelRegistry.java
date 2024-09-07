@@ -55,7 +55,7 @@ public final class PipeModelRegistry {
     static {
         initPipes();
         initCables();
-        ResourceLocation loc = GTCEu.id("block/pipe_activable");
+        ResourceLocation loc = GTCEu.id("pipe_activable");
         OPTICAL = new ActivablePipeModel(
                 new TextureInformation(GTCEu.id("block/pipe/pipe_optical_in"), -1),
                 new TextureInformation(GTCEu.id("block/pipe/pipe_optical_side"), -1),
@@ -71,7 +71,7 @@ public final class PipeModelRegistry {
                 true);
         LASER_MODEL = new PipeModelRedirector(new ModelResourceLocation(loc, "laser"), m -> LASER, s -> null);
         DUCT = new DuctPipeModel();
-        DUCT_MODEL = new PipeModelRedirector(new ModelResourceLocation(GTCEu.id("block/pipe_duct"), ""), m -> DUCT,
+        DUCT_MODEL = new PipeModelRedirector(new ModelResourceLocation(GTCEu.id("pipe_duct"), ""), m -> DUCT,
                 s -> null);
     }
 
@@ -195,7 +195,7 @@ public final class PipeModelRegistry {
         array[6] = new PipeModel(pipeNonuple, pipeSide, true);
         PIPE_RESTRICTIVE_OVERRIDES.addAndMoveToLast(new MaterialModelOverride.StandardOverride<>(array, m -> true));
 
-        ResourceLocation loc = GTCEu.id("block/pipe_material");
+        ResourceLocation loc = GTCEu.id("pipe_material");
         for (int i = 0; i < PIPE_MODEL_COUNT; i++) {
             int finalI = i;
             PIPE_MODELS[i] = materialModel(loc, m -> getOrCachePipeModel(m, finalI), String.valueOf(i));
@@ -241,7 +241,7 @@ public final class PipeModelRegistry {
                     return new CableModel(material, CableModel.INSULATION[insulation - 1], CableModel.INSULATION_FULL);
                 }, m -> true));
 
-        ResourceLocation loc = GTCEu.id("block/cable");
+        ResourceLocation loc = GTCEu.id("cable");
         for (int i = 0; i < CABLE_MODEL_COUNT; i++) {
             int finalI = i;
             CABLE_MODELS[i] = materialModel(loc, m -> getOrCacheCableModel(m, finalI), String.valueOf(i));

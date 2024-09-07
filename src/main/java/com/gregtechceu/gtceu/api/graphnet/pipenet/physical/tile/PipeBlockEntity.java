@@ -33,9 +33,11 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.editor.runtime.PersistedParser;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.ManagedFieldUtils;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
@@ -46,6 +48,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.TickTask;
@@ -81,10 +84,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class PipeBlockEntity extends NeighborCacheBlockEntity
@@ -348,6 +348,16 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         super.clearRemoved();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::initialize));
+        }
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        if (tag.contains("connections")) this.connectionMask = tag.getByte("connections");
+        if (tag.contains("blockedConnections")) this.blockedMask = tag.getByte("blockedConnections");
+        if (tag.contains("cover")) {
+            PersistedParser.deserializeNBT(tag.getCompound("cover"), new HashMap<>(),
+                    PipeCoverHolder.class, this.coverHolder);
         }
     }
 

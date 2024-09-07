@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.MaterialModelSupplier;
 
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -67,7 +68,16 @@ public class PipeModelRedirector implements BakedModel {
                                              @NotNull RandomSource rand, @NotNull ModelData data,
                                              @Nullable RenderType renderType) {
         Material mat = data.get(AbstractPipeModel.MATERIAL_PROPERTY);
-        return supplier.getModel(mat).getQuads(state, side, rand, data, renderType);
+        if (mat == null && state != null && state.getBlock() instanceof MaterialPipeBlock block) {
+            mat = block.material;
+        }
+        AbstractPipeModel<?> model = supplier.getModel(mat);
+        // this can happen when transferring old data, apparently.
+        //noinspection ConstantValue
+        if (model == null) {
+            return List.of();
+        }
+        return model.getQuads(state, side, rand, data, renderType);
     }
 
     @Override

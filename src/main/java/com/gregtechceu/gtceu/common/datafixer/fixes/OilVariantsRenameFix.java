@@ -14,6 +14,12 @@ public class OilVariantsRenameFix {
 
     public static final Map<String, String> RENAMED_BLOCK_IDS = ImmutableMap.<String, String>builder()
             .put("gtceu:oil_heavy", "gtceu:heavy_oil")
+            .put("gtceu:oil_light", "gtceu:light_oil")
+            .put("gtceu:oil_medium", "gtceu:raw_oil")
+            .build();
+
+    public static final Map<String, String> RENAMED_FLUID_IDS = ImmutableMap.<String, String>builder()
+            .put("gtceu:oil_heavy", "gtceu:heavy_oil")
             .put("gtceu:flowing_oil_heavy", "gtceu:flowing_heavy_oil")
             .put("gtceu:oil_light", "gtceu:light_oil")
             .put("gtceu:flowing_oil_light", "gtceu:flowing_light_oil")

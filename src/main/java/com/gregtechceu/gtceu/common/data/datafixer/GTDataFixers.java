@@ -58,12 +58,18 @@ public class GTDataFixers {
         builder.addFixer(ItemRenameFix.create(schemaV1, "advanced_nanomuscle_chestplate rename fix",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
-        builder.addFixer(ItemRenameFix.create(schemaV1, "U238 rename fix",
-                createRenamer(Pattern.compile("gtceu:uranium_"), "gtceu:uranium_238_")));
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 rename fix",
-                createRenamer(Pattern.compile("gtceu:plutonium_"), "gtceu:plutonium_239_")));
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Red granite rename fix",
-                createRenamer(Pattern.compile("gtceu:granite_red"), "gtceu:red_granite")));
+        UnaryOperator<String> renamer = createRenamer(Pattern.compile("gtceu:uranium_"),
+                "gtceu:uranium_238_");
+        builder.addFixer(ItemRenameFix.create(schemaV1, "U238 item rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "U238 block rename fix", renamer));
+
+        renamer = createRenamer(Pattern.compile("gtceu:plutonium_"), "gtceu:plutonium_239_");
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Pu239 block rename fix", renamer));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 item rename fix", renamer));
+
+        renamer = createRenamer(Pattern.compile("gtceu:granite_red"), "gtceu:red_granite");
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Red granite item rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Red granite block rename fix", renamer));
 
         builder.addFixer(ItemRenameFix.create(schemaV1, "Raw oil bucket rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS)));
@@ -76,20 +82,25 @@ public class GTDataFixers {
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:item_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:duct_pipe"));
         builder.addFixer(new PipeConnectionFix(schemaV2, false, "gtceu:laser_pipe"));
-        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Item pipe rename fix",
-                createRenamer(Pattern.compile("(.+?)_(.+?)_item_pipe"), "$2_$1_pipe")));
-        builder.addFixer(ItemRenameFix.create(schemaV2, "Fluid pipe rename fix",
-                createRenamer(Pattern.compile("(.+?)_(.+?)_fluid_pipe"), "$2_$1_pipe")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Item pipe rename fix",
-                createRenamer(Pattern.compile("(.+?)_(.+?)_item_pipe"), "$2_$1_pipe")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Fluid pipe rename fix",
-                createRenamer(Pattern.compile("(.+?)_(.+?)_fluid_pipe"), "$2_$1_pipe")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Optical cable rename fix",
-                createRenamer("gtceu:normal_optical_pipe", "gtceu:optical_fiber_cable")));
-        builder.addFixer(BlockRenameFix.create(schemaV2, "Laser cable rename fix",
-                createRenamer("gtceu:normal_laser_pipe", "gtceu:laser_pipe")));
         builder.addFixer(new ActivablePipeConnectionFix(schemaV2, false, "gtceu:optical_pipe"));
+        builder.addFixer(new AddNewChoices(schemaV2, "Added generic pipe block entities", References.BLOCK_ENTITY));
+
+        renamer = createRenamer(Pattern.compile("([a-z]+_*[a-z]*)_([_\\w]+?)_item_pipe"), "$2_$1_pipe");
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Item pipe rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Item pipe rename fix", renamer));
+
+        renamer = createRenamer(Pattern.compile("([a-z]+_*[a-z]*)_([_\\w]+?)_fluid_pipe"), "$2_$1_pipe");
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Fluid pipe rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Fluid pipe rename fix", renamer));
+
+        renamer = createRenamer("gtceu:normal_optical_pipe", "gtceu:optical_fiber_cable");
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Optical cable rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Optical cable rename fix", renamer));
+
+        renamer = createRenamer("gtceu:normal_laser_pipe", "gtceu:laser_pipe");
+        builder.addFixer(ItemRenameFix.create(schemaV2, "Laser cable rename fix", renamer));
+        builder.addFixer(BlockRenameFix.create(schemaV2, "Laser cable rename fix", renamer));
+
         builder.addFixer(BlockEntityRenameFix.create(schemaV2, "Pipe block entity rename fix",
                 createRenamer(Map.of(
                         "gtceu:cable", "gtceu:material_pipe",
