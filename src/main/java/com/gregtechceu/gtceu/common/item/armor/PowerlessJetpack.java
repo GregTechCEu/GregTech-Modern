@@ -72,33 +72,38 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return;
 
         CompoundTag data = stack.getOrCreateTag();
-        byte toggleTimer = 0;
 
         if (data.contains("burnTimer")) burnTimer = data.getShort("burnTimer");
-        if (data.contains("toggleTimer")) toggleTimer = data.getByte("toggleTimer");
-        boolean hoverMode = data.contains("hover") && data.getBoolean("hover");
-        boolean jetpackEnabled = !data.contains("enabled") || data.getBoolean("enabled");
+        if (!data.contains("enabled")) {
+            data.putBoolean("enabled", true);
+            data.putBoolean("hover", false);
+            data.putByte("toggleTimer", (byte) 0);
+        }
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hoverMode = !hoverMode;
-            toggleTimer = 5;
-            data.putBoolean("hover", hoverMode);
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
+        boolean jetpackEnabled = data.getBoolean("enabled");
+        boolean hoverMode = data.getBoolean("hover");
+        byte toggleTimer = data.getByte("toggleTimer");
+
+        String messageKey = null;
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+                jetpackEnabled = !jetpackEnabled;
+                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                data.putBoolean("enabled", jetpackEnabled);
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+                hoverMode = !hoverMode;
+                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                data.putBoolean("hover", hoverMode);
+            }
+
+            if (messageKey != null) {
+                toggleTimer = 5;
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
 
-        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-            jetpackEnabled = !jetpackEnabled;
-            toggleTimer = 5;
-            data.putBoolean("enabled", jetpackEnabled);
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
-                        true);
-            }
-        }
+        if (toggleTimer > 0) toggleTimer--;
+        data.putByte("toggleTimer", toggleTimer);
 
         // This causes a caching issue. currentRecipe is only set to null in findNewRecipe, so the fuel is never updated
         // Rewrite in Armor Rework
@@ -106,14 +111,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
-
-        if (toggleTimer > 0)
-            toggleTimer--;
-
-        data.putBoolean("hover", hoverMode);
-        data.putBoolean("enabled", jetpackEnabled);
         data.putShort("burnTimer", (short) burnTimer);
-        data.putByte("toggleTimer", toggleTimer);
     }
 
     @Override
