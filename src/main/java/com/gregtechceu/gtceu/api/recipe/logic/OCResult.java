@@ -18,7 +18,7 @@ public final class OCResult {
     }
 
     public void init(long eut, int duration, int parallel, int ocLevel) {
-        init(eut, duration, parallel, parallel == 0 ? eut : eut * parallel,  ocLevel);
+        init(eut, duration, parallel, parallel == 0 ? eut : eut * parallel, ocLevel);
     }
 
     public void init(long eut, int duration, int parallel, long parallelEUt, int ocLevel) {

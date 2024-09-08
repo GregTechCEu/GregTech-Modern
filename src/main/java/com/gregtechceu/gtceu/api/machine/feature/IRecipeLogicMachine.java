@@ -24,10 +24,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
 
     @Override
     default int getChanceTier() {
-        if(self() instanceof IOverclockMachine ocMachine) {
+        if (self() instanceof IOverclockMachine ocMachine) {
             return ocMachine.getOverclockTier();
-        }
-        else if(self() instanceof ITieredMachine tieredMachine) {
+        } else if (self() instanceof ITieredMachine tieredMachine) {
             return tieredMachine.getTier();
         }
 

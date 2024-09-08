@@ -120,7 +120,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                     long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
                     result.init(-eut, recipe.duration, parallelResult.getSecond(), params.getOcAmount());
                 } else {
-                    result.init(-RecipeHelper.getOutputEUt(recipe), recipe.duration, parallelResult.getSecond(), params.getOcAmount());
+                    result.init(-RecipeHelper.getOutputEUt(recipe), recipe.duration, parallelResult.getSecond(),
+                            params.getOcAmount());
                 }
 
                 return recipe;

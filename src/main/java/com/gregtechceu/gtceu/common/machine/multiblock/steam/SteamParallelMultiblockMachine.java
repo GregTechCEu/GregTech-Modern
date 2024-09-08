@@ -81,7 +81,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
         // also set the duration to just 1.5x the original, instead of fully multiplied
-        result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(), params.getOcAmount());
+        result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(),
+                params.getOcAmount());
         return recipe;
     }
 
