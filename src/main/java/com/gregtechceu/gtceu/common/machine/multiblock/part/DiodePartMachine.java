@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -17,6 +18,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,6 +35,8 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @Persisted
     protected NotifiableEnergyContainer energyContainer;
 
+    @Getter
+    @DescSynced
     @Persisted(key = "amp_mode")
     private int amps;
 
@@ -77,6 +82,14 @@ public class DiodePartMachine extends TieredIOPartMachine {
     }
 
     @Override
+    public int tintColor(int index) {
+        if (index == 2) {
+            return GTValues.VC[getTier()];
+        }
+        return super.tintColor(index);
+    }
+
+    @Override
     public boolean isFacingValid(Direction facing) {
         return true;
     }
@@ -84,11 +97,11 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
+        cycleAmpMode();
         if (getLevel().isClientSide) {
             scheduleRenderUpdate();
             return InteractionResult.CONSUME;
         }
-        cycleAmpMode();
         playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
         return InteractionResult.CONSUME;
     }
