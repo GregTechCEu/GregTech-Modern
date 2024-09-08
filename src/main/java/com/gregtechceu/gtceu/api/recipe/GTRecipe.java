@@ -58,6 +58,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public CompoundTag data;
     public int duration;
     public int parallels = 0;
+    public int ocTier = 0;
     @Getter
     public boolean isFuel;
 

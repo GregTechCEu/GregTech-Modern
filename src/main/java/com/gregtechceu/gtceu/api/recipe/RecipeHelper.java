@@ -59,6 +59,10 @@ public class RecipeHelper {
         return GTUtil.getTierByVoltage(EUt);
     }
 
+    public static int getPreOCRecipeEuTier(GTRecipe recipe) {
+        return getRecipeEUtTier(recipe) - recipe.ocTier;
+    }
+
     /**
      * Calculates the overclocked Recipe's final duration and EU/t
      *
@@ -101,7 +105,7 @@ public class RecipeHelper {
         params.initialize(EUt, recipe.duration, numberOfOCs);
         if (params.getOcAmount() <= 0) {
             // number of OCs is <=0, so do not overclock
-            result.init(params.getEut(), params.getDuration());
+            result.init(params.getEut(), params.getDuration(), numberOfOCs);
         } else {
             logic.getLogic().runOverclockingLogic(params, result, maxOverclockVoltage);
         }

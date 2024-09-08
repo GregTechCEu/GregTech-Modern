@@ -103,7 +103,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
                         GTValues.V[generator.getOverclockTier()]) / EUt);
                 var paraRecipe = GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false);
                 result.init(-RecipeHelper.getOutputEUt(paraRecipe.getFirst()), paraRecipe.getFirst().duration,
-                        paraRecipe.getSecond());
+                        paraRecipe.getSecond(), params.getOcAmount());
                 return paraRecipe.getFirst();
             }
         }
