@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.reference.WeakHashSet;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,8 +40,6 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     protected IO handlerIO;
     @Getter
     protected boolean transmitter;
-
-    private final WeakHashSet<DataQueryObject> recentQueries = new WeakHashSet<>();
 
     protected long lastTimeStamp;
     private long currentOutputCwu = 0, lastOutputCwu = 0;

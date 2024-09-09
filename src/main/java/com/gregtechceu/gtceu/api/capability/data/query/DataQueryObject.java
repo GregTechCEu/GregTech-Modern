@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.data.query;
 
 import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
+
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;

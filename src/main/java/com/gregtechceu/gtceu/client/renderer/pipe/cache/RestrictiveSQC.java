@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.pipe.cache;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
-import com.gregtechceu.gtceu.client.renderer.pipe.quad.QuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 import com.gregtechceu.gtceu.utils.GTUtil;
