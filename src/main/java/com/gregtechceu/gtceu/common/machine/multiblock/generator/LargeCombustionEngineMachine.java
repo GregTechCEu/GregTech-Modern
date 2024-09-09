@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.ChatFormatting;
@@ -45,10 +44,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
-    private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(20 * FluidHelper.getBucket() / 1000);
-    private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID,
-            80 * FluidHelper.getBucket() / 1000);
-    private static final FluidStack LUBRICANT_STACK = GTMaterials.Lubricant.getFluid(FluidHelper.getBucket() / 1000);
+    private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(20);
+    private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 80);
+    private static final FluidStack LUBRICANT_STACK = GTMaterials.Lubricant.getFluid(1);
 
     @Getter
     private final int tier;
