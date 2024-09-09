@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -95,10 +94,12 @@ public class GTRecipeModifiers {
         public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
                               @NotNull OCResult result) {
             if (machine instanceof IOverclockMachine overclockMachine) {
-                if (GTUtil.getTierByVoltage(result.getEut()) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return null;
                 }
-                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage(),
+
+                return RecipeHelper.applyOverclock(overclockingLogic, recipe,
+                        overclockMachine.getOverclockVoltage(),
                         params, result);
             }
             if (machine instanceof ITieredMachine tieredMachine &&
@@ -160,7 +161,9 @@ public class GTRecipeModifiers {
                 var recipeEU = RecipeHelper.getInputEUt(recipe);
                 var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, hatch.getCurrentParallel(),
                         modifyDuration);
-                result.init(recipeEU, recipe.duration, parallelRecipe.getSecond());
+                if (parallelRecipe.getSecond() == 0)
+                    return null;
+                result.init(recipeEU, recipe.duration, parallelRecipe.getSecond(), params.getOcAmount());
                 return parallelRecipe.getFirst();
             }
         }
@@ -224,9 +227,9 @@ public class GTRecipeModifiers {
 
             if (coilMachine.getCoilTier() == 0) {
                 // 75% speed with cupro coils
-                result.setDuration(Math.max(1, (int) recipe.duration * 4 / 3));
+                result.setDuration(Math.max(1, (int) result.getDuration() * 4 / 3));
             } else {
-                result.setDuration(Math.max(1, (int) (recipe.duration * 2.0 / (tier + 1))));
+                result.setDuration(Math.max(1, (int) (result.getDuration() * 2.0 / (tier + 1))));
             }
             return re;
         }
@@ -247,7 +250,7 @@ public class GTRecipeModifiers {
 
             int parallelValue = parallel.getSecond();
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
-            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue);
+            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue, params.getOcAmount());
             /*
              * recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
              * recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,

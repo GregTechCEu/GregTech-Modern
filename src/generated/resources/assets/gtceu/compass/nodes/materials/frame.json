@@ -4,8 +4,8 @@
     "res": "gtceu:aluminium_frame"
   },
   "items": [
-    "#minecraft:climbable",
-    "#forge:frames"
+    "#forge:frames",
+    "#minecraft:climbable"
   ],
   "page": "gtceu:materials/frame",
   "position": [

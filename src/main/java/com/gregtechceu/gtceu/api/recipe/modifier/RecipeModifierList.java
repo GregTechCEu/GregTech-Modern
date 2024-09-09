@@ -38,15 +38,21 @@ public class RecipeModifierList implements RecipeModifier {
             }
         }
 
-        if (modifiedRecipe != null) {
+        if (modifiedRecipe != null && result.getDuration() != 0) {
             modifiedRecipe.duration = result.getDuration();
-            modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
-                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+            if (result.getEut() > 0) {
+                modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
+                        ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+            } else if (result.getEut() < 0) {
+                modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(-result.getEut(),
+                        ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+            }
 
             if (result.getParallel() > 1) {
                 modifiedRecipe = ParallelLogic.applyParallel(machine, modifiedRecipe, result.getParallel(), false)
                         .getFirst();
             }
+            modifiedRecipe.ocTier = result.getOcLevel();
         }
         result.reset();
 

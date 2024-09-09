@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -487,7 +487,7 @@ public class SeparationRecipes {
 
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
                 .duration(32).EUt(2)
-                .inputItems(CustomTags.SEEDS)
+                .inputItems(Tags.Items.SEEDS)
                 .outputFluids(SeedOil.getFluid(10))
                 .save(provider);
 
