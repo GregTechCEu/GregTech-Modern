@@ -32,7 +32,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
 
     public static final Gson GSON_INSTANCE = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient()
             .create();
-    private static final String FOLDER = "gtceu/ore_veins";
+    public static final String FOLDER = "gtceu/ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public GTOreLoader() {

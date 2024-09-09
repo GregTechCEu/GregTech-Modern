@@ -15,7 +15,9 @@ import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
-import com.gregtechceu.gtceu.common.commands.ServerCommands;
+import com.gregtechceu.gtceu.common.commands.GTCommands;
+import com.gregtechceu.gtceu.common.commands.HazardCommands;
+import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
@@ -141,7 +143,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
+        GTCommands.register(event.getDispatcher(), event.getBuildContext());
+        MedicalConditionCommands.register(event.getDispatcher(), event.getBuildContext());
+        HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent

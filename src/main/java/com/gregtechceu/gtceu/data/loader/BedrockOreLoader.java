@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
     public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setLenient().create();
-    private static final String FOLDER = "gtceu/bedrock_ore_veins";
+    public static final String FOLDER = "gtceu/bedrock_ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public BedrockOreLoader() {
