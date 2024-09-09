@@ -33,7 +33,7 @@ import java.util.Map;
 public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
 
     public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
-    private static final String FOLDER = "gtceu/fluid_veins";
+    public static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public BedrockFluidLoader() {

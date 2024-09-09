@@ -39,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
 
-    private record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {
+    public record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {
 
         public RandomSource newRandom() {
             return new XoroshiroRandomSource(random.nextLong());
@@ -96,7 +96,7 @@ public class OreGenerator {
                 .toList();
     }
 
-    private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
+    public Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         GTOreDefinition definition = config.data.definition();
         Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
                 .generate(level, config.newRandom(), definition, config.data.center());
@@ -162,7 +162,7 @@ public class OreGenerator {
 
     private static VeinConfiguration logVeinGeneration(VeinConfiguration config) {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            GTCEu.LOGGER.debug("Generating vein " + config.data.id() + " at " + config.data.center());
+            GTCEu.LOGGER.debug("Generating vein {} at {}", config.data.id(), config.data.center());
         }
 
         return config;
@@ -170,7 +170,7 @@ public class OreGenerator {
 
     private static void logEmptyVein(VeinConfiguration config) {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            GTCEu.LOGGER.debug("No blocks generated for vein " + config.data.id() + " at " + config.data.center());
+            GTCEu.LOGGER.debug("No blocks generated for vein {} at {}", config.data.id(), config.data.center());
         }
     }
 }

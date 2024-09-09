@@ -23,7 +23,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.common.commands.ServerCommands;
+import com.gregtechceu.gtceu.common.commands.GTCommands;
+import com.gregtechceu.gtceu.common.commands.HazardCommands;
+import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -208,7 +210,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
+        GTCommands.register(event.getDispatcher(), event.getBuildContext());
+        MedicalConditionCommands.register(event.getDispatcher(), event.getBuildContext());
+        HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent
