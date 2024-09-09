@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -87,7 +86,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected Function<IMachineBlockEntity, MetaMachine> metaMachine; // non-final for KJS
     @Nullable
     @Setter
-    private Supplier<IRenderer> renderer;
+    private Supplier<MachineRenderer> renderer;
     @Setter
     private VoxelShape shape = Shapes.block();
     @Setter
@@ -426,7 +425,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             definition.setEditableUI(editableUI);
         }
         definition.setAppearance(appearance);
-        definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);
+        definition.setRenderer(LDLib.isClient() ? renderer.get() : null);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
         GTRegistries.MACHINES.register(definition.getId(), definition);

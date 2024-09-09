@@ -9,20 +9,21 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MinerRenderer extends WorkableTieredHullMachineRenderer {
 
@@ -52,19 +53,12 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction side, RandomSource rand,
-                              @Nullable Direction modelFacing, ModelState modelState) {
-        super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
+                              @Nullable Direction modelFacing, ModelState modelState,
+                              @NotNull ModelData modelData, RenderType renderType) {
+        super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState, modelData,
+                renderType);
         if (side == Direction.DOWN) quads.add(
                 StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY),
                         modelState));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        super.onPrepareTextureAtlas(atlasName, register);
-        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            register.accept(PIPE_IN_OVERLAY);
-        }
     }
 }

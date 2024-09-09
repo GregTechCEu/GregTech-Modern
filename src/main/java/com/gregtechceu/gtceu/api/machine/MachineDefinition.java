@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.renderer.machine.MachineRenderer;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
 import net.minecraft.core.Direction;
@@ -88,7 +88,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Getter
     @Setter
-    private IRenderer renderer;
+    @Nullable
+    private MachineRenderer renderer;
     @Setter
     private VoxelShape shape;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);

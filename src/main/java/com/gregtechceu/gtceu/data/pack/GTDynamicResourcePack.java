@@ -71,7 +71,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
-        ResourceLocation l = getModelLocation(loc);
+        ResourceLocation l = getBlockModelLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
             writeJson(l, null, parent, obj);
@@ -206,8 +206,9 @@ public class GTDynamicResourcePack implements PackResources {
                 String.join("", "blockstates/", blockId.getPath(), ".json"));
     }
 
-    public static ResourceLocation getModelLocation(ResourceLocation blockId) {
-        return new ResourceLocation(blockId.getNamespace(), String.join("", "models/", blockId.getPath(), ".json"));
+    public static ResourceLocation getBlockModelLocation(ResourceLocation blockId) {
+        return new ResourceLocation(blockId.getNamespace(),
+                String.join("", "models/block/", blockId.getPath(), ".json"));
     }
 
     public static ResourceLocation getItemModelLocation(ResourceLocation itemId) {

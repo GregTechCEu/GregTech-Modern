@@ -13,10 +13,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.client.renderer.machine.MachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -81,7 +80,7 @@ public class MachineFunctionPresets {
         return new MachineBuilder<D>(GTRegistration.REGISTRATE, name, definitionFactory, holder -> null, blockFactory,
                 MetaMachineItem::new, blockEntityFactory) {
 
-            public MachineBuilder<D> renderer(@Nullable Supplier<IRenderer> renderer) {
+            public MachineBuilder<D> renderer(@Nullable Supplier<MachineRenderer> renderer) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.renderer(renderer);

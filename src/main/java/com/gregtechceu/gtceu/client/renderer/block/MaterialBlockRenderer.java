@@ -39,7 +39,7 @@ public class MaterialBlockRenderer {
         for (MaterialBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
-            GTDynamicResourcePack.addBlockModel(modelId,
+            GTDynamicResourcePack.addBlockModel(blockId,
                     new DelegatedModel(model.type.getBlockModelPath(model.iconSet, true)));
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             // ModelTemplates.CUBE_ALL.create(model.block,

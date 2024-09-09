@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -99,12 +98,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     @Nullable
     public MetaMachine getMachine(BlockGetter level, BlockPos pos) {
         return MetaMachine.getMachine(level, pos);
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(BlockState state) {
-        return definition.getRenderer();
     }
 
     @Override

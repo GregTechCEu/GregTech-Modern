@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
@@ -23,6 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,9 +31,8 @@ import java.util.List;
  * @date 2023/2/24
  * @implNote IMachineRenderer
  */
-public interface ICoverableRenderer extends IRenderer {
+public interface ICoverableRenderer {
 
-    @Override
     @OnlyIn(Dist.CLIENT)
     default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side,
                                         RandomSource rand) {
@@ -48,7 +47,7 @@ public interface ICoverableRenderer extends IRenderer {
                 return quads;
             }
         }
-        return IRenderer.super.renderModel(level, pos, state, side, rand);
+        return Collections.emptyList();
     }
 
     @OnlyIn(Dist.CLIENT)

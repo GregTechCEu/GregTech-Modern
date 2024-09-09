@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.BaseBakedModel;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,6 +54,13 @@ public class ForgeClientEventListener {
             MultiblockInWorldPreviewRenderer.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
             GTValues.CLIENT_TIME++;
+        }
+    }
+
+    @SubscribeEvent
+    public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        for (BaseBakedModel renderer : BaseBakedModel.LISTENERS) {
+            renderer.onAdditionalModel(event::register);
         }
     }
 }

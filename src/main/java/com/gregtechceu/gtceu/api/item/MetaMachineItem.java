@@ -5,20 +5,14 @@ import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachineItem extends BlockItem implements IItemRendererProvider {
+public class MetaMachineItem extends BlockItem {
 
     public MetaMachineItem(IMachineBlock block, Properties properties) {
         super(block.self(), properties);
@@ -37,12 +31,6 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
 
     public MachineDefinition getDefinition() {
         return ((IMachineBlock) getBlock()).getDefinition();
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        return ((IMachineBlock) getBlock()).getDefinition().getRenderer();
     }
 
     @Override

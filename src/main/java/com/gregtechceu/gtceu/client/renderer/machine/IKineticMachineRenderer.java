@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +22,7 @@ import com.simibubi.create.foundation.render.SuperByteBuffer;
  * @date 2023/3/31
  * @implNote KineticMachineRenderer
  */
-public interface IKineticMachineRenderer extends IRenderer {
+public interface IKineticMachineRenderer {
 
     default boolean isInvalid(BlockEntity te) {
         return !te.hasLevel() || te.getBlockState().getBlock() == Blocks.AIR;
@@ -34,21 +32,21 @@ public interface IKineticMachineRenderer extends IRenderer {
         return te.getBlockState();
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    default boolean hasTESR(BlockEntity blockEntity) {
-        return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    default void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
-                        int combinedLight, int combinedOverlay) {
-        if (isInvalid(blockEntity)) return;
-        if (blockEntity instanceof KineticMachineBlockEntity kineticMachineBlockEntity) {
-            renderSafe(kineticMachineBlockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
-        }
-    }
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // default boolean hasTESR(BlockEntity blockEntity) {
+    // return true;
+    // }
+    //
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // default void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
+    // int combinedLight, int combinedOverlay) {
+    // if (isInvalid(blockEntity)) return;
+    // if (blockEntity instanceof KineticMachineBlockEntity kineticMachineBlockEntity) {
+    // renderSafe(kineticMachineBlockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
+    // }
+    // }
 
     @OnlyIn(Dist.CLIENT)
     default void renderSafe(KineticMachineBlockEntity te, float partialTicks, PoseStack ms,

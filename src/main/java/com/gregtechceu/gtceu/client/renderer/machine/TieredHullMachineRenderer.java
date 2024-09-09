@@ -33,9 +33,8 @@ public class TieredHullMachineRenderer extends MachineRenderer {
     }
 
     @NotNull
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(override.get("side"));
     }
 }

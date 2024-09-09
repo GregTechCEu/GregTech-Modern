@@ -45,6 +45,7 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
             var state = level().getBlockState(pos);
             if (level().isClientSide) {
                 level().sendBlockUpdated(pos, state, state, 1 << 3);
+                self().requestModelDataUpdate();
             } else {
                 level().blockEvent(pos, state.getBlock(), 1, 0);
             }

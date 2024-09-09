@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
@@ -17,12 +15,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,40 +40,40 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         super(tier, modelLocation);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean hasTESR(BlockEntity blockEntity) {
-        return true;
-    }
-
-    @Override
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
-                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
-        model = getItemBakedModel();
-        if (model != null && stack.hasTag()) {
-            poseStack.pushPose();
-            model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
-            poseStack.translate(-0.5D, -0.5D, -0.5D);
-
-            FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
-            // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.empty());
-
-            poseStack.popPose();
-        }
-        super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
-                       int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-                machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(),
-                    machine.getCache().getLockedFluid().getFluid());
-        }
-    }
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // public boolean hasTESR(BlockEntity blockEntity) {
+    // return true;
+    // }
+    //
+    // @Override
+    // public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
+    // MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    // model = getItemBakedModel();
+    // if (model != null && stack.hasTag()) {
+    // poseStack.pushPose();
+    // model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
+    // poseStack.translate(-0.5D, -0.5D, -0.5D);
+    //
+    // FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
+    // // Don't need to handle locked fluids here since they don't get saved to the item
+    // renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.empty());
+    //
+    // poseStack.popPose();
+    // }
+    // super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
+    // }
+    //
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
+    // int combinedLight, int combinedOverlay) {
+    // if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
+    // machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
+    // renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(),
+    // machine.getCache().getLockedFluid().getFluid());
+    // }
+    // }
 
     @OnlyIn(Dist.CLIENT)
     public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored,

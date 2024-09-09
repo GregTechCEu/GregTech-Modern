@@ -48,7 +48,7 @@ public class OreBlockRenderer {
         for (OreBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
-            OreBlockRenderer.cloneBlockModel(modelId, model.block.tagPrefix, model.block.material);
+            OreBlockRenderer.cloneBlockModel(blockId, model.block.tagPrefix, model.block.material);
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
                     new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));

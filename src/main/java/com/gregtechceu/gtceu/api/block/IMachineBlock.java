@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -26,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * @date 2023/3/31
  * @implNote IMachineBlock
  */
-public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
+public interface IMachineBlock extends EntityBlock {
 
     DirectionProperty UPWARDS_FACING_PROPERTY = DirectionProperty.create("upwards_facing", Direction.Plane.HORIZONTAL);
 

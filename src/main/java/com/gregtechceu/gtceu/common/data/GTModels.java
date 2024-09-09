@@ -2,22 +2,27 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
-import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.block.IFilterType;
-import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.block.*;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
@@ -357,6 +362,49 @@ public class GTModels {
                     GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()), newJson);
                 }
             }
+        }
+    }
+
+    public static void registerMachineModels() {
+        for (MachineDefinition definition : GTRegistries.MACHINES) {
+            IMachineBlock block = definition.get();
+            ResourceLocation blockId = definition.getId();
+            ResourceLocation modelId = blockId.withPrefix("block/");
+            JsonObject json = new JsonObject();
+            json.addProperty("machine", blockId.toString());
+            json.addProperty("is_item", false);
+            json.addProperty("loader", "gtceu:machine");
+            GTDynamicResourcePack.addBlockModel(blockId, json);
+
+            JsonObject itemJson = json.deepCopy();
+            itemJson.addProperty("is_item", true);
+            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(definition.getItem()), itemJson);
+
+            MultiVariantGenerator generator = MultiVariantGenerator.multiVariant(block.self());
+            if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+                PropertyDispatch dispatch = PropertyDispatch
+                        .properties(block.getRotationState().property, IMachineBlock.UPWARDS_FACING_PROPERTY,
+                                BlockProperties.SERVER_TICK)
+                        .generate((front, up, tick) -> {
+                            return Variant.variant().with(VariantProperties.MODEL, modelId);
+                        });
+                generator.with(dispatch);
+            } else if (block.getRotationState() != RotationState.NONE) {
+                PropertyDispatch dispatch = PropertyDispatch
+                        .properties(block.getRotationState().property, BlockProperties.SERVER_TICK)
+                        .generate((front, tick) -> {
+                            return Variant.variant().with(VariantProperties.MODEL, modelId);
+                        });
+                generator.with(dispatch);
+            } else {
+                PropertyDispatch dispatch = PropertyDispatch
+                        .property(BlockProperties.SERVER_TICK)
+                        .generate((tick) -> {
+                            return Variant.variant().with(VariantProperties.MODEL, modelId);
+                        });
+                generator.with(dispatch);
+            }
+            GTDynamicResourcePack.addBlockState(blockId, generator);
         }
     }
 }

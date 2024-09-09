@@ -161,6 +161,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         holder.notifyBlockUpdate();
     }
 
+    @Override
     public void scheduleRenderUpdate() {
         holder.scheduleRenderUpdate();
     }

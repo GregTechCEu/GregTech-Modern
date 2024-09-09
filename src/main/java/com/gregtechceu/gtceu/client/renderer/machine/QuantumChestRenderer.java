@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -19,7 +17,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,46 +40,46 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
         super(tier, modelLocation);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean hasTESR(BlockEntity blockEntity) {
-        return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
-                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
-        model = getItemBakedModel();
-        if (model != null && stack.hasTag()) {
-            poseStack.pushPose();
-            model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
-            poseStack.translate(-0.5D, -0.5D, -0.5D);
-
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
-            // Don't need to handle locked items here since they don't get saved to the item
-            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
-
-            poseStack.popPose();
-        }
-        super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
-                       int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-                machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
-            var level = machine.getLevel();
-            var frontFacing = machine.getFrontFacing();
-            float tick = level.getGameTime() + partialTicks;
-            renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
-                    machine.getLockedItem().getStackInSlot(0));
-        }
-    }
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // public boolean hasTESR(BlockEntity blockEntity) {
+    // return true;
+    // }
+    //
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
+    // MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    // model = getItemBakedModel();
+    // if (model != null && stack.hasTag()) {
+    // poseStack.pushPose();
+    // model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
+    // poseStack.translate(-0.5D, -0.5D, -0.5D);
+    //
+    // ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+    // int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
+    // float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+    // // Don't need to handle locked items here since they don't get saved to the item
+    // renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
+    //
+    // poseStack.popPose();
+    // }
+    // super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
+    // }
+    //
+    // @Override
+    // @OnlyIn(Dist.CLIENT)
+    // public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
+    // int combinedLight, int combinedOverlay) {
+    // if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
+    // machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
+    // var level = machine.getLevel();
+    // var frontFacing = machine.getFrontFacing();
+    // float tick = level.getGameTime() + partialTicks;
+    // renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
+    // machine.getLockedItem().getStackInSlot(0));
+    // }
+    // }
 
     @OnlyIn(Dist.CLIENT)
     public void renderChest(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, ItemStack stored,

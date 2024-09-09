@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -14,7 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,7 +38,8 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
     @OnlyIn(Dist.CLIENT)
     public boolean renderReplacedPartMachine(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
                                              @Nullable Direction side, RandomSource rand, Direction modelFacing,
-                                             ModelState modelState) {
+                                             ModelState modelState, @NotNull ModelData modelData,
+                                             RenderType renderType) {
         var controllers = part.getControllers();
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
@@ -56,11 +60,10 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
                     controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side, rand, modelFacing,
                             modelState);
                     return true;
-                } else if (renderer instanceof MachineRenderer machineRenderer) {
-                    machineRenderer.renderBaseModel(quads, block.definition, controller.self(), frontFacing, side,
-                            rand);
-                    return true;
                 }
+                renderer.renderBaseModel(quads, block.definition, controller.self(), frontFacing, side,
+                        rand, modelData, renderType);
+                return true;
             }
         }
         return false;

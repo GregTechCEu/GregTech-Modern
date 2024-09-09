@@ -33,7 +33,7 @@ public class SurfaceRockRenderer {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
 
-            GTDynamicResourcePack.addBlockModel(modelId, new DelegatedModel(GTCEu.id("block/surface_rock")));
+            GTDynamicResourcePack.addBlockModel(blockId, new DelegatedModel(GTCEu.id("block/surface_rock")));
             GTDynamicResourcePack.addBlockState(blockId, MultiVariantGenerator
                     .multiVariant(model.block, Variant.variant().with(VariantProperties.MODEL, modelId))
                     .with(BlockModelGenerators.createFacingDispatch()));

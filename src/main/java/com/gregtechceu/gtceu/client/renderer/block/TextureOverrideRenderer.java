@@ -5,15 +5,9 @@ import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -30,15 +24,18 @@ import java.util.function.Supplier;
  * @implNote CoilRenderer
  */
 @Getter
-public class TextureOverrideRenderer extends CTMModelRenderer {
+public abstract class TextureOverrideRenderer extends BaseBakedModel {
 
+    protected ResourceLocation modelLocation;
+    @Nullable
+    private BakedModel baseModel;
     @NotNull
     protected Map<String, ResourceLocation> override;
     @Nullable
     protected Supplier<Map<String, ResourceLocation>> overrideSupplier;
 
     public TextureOverrideRenderer(ResourceLocation model, @NotNull Map<String, ResourceLocation> override) {
-        super(model);
+        this.modelLocation = model;
         this.override = override;
         if (LDLib.isClient()) {
             registerEvent();
@@ -47,7 +44,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
 
     public TextureOverrideRenderer(ResourceLocation model,
                                    @NotNull Supplier<Map<String, ResourceLocation>> overrideSupplier) {
-        super(model);
+        this.modelLocation = model;
         this.override = Collections.emptyMap();
         this.overrideSupplier = overrideSupplier;
         if (LDLib.isClient()) {
@@ -56,7 +53,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     }
 
     public TextureOverrideRenderer(ResourceLocation model) {
-        super(model);
+        this.modelLocation = model;
         this.override = Collections.emptyMap();
         if (LDLib.isClient()) {
             registerEvent();
@@ -67,42 +64,25 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         this.override = override;
     }
 
-    @Nullable
-    @OnlyIn(Dist.CLIENT)
-    protected BakedModel getItemBakedModel() {
-        if (itemModel == null) {
-            var model = getModel();
-            if (model instanceof BlockModel blockModel && blockModel.getRootModel() == ModelBakery.GENERATION_MARKER) {
-                // fabric doesn't help us to fix vanilla bakery, so we have to do it ourselves
-                model = ModelFactory.ITEM_MODEL_GENERATOR.generateBlockModel(new SpriteOverrider(override), blockModel);
-            }
-            itemModel = model.bake(
-                    ModelFactory.getModeBaker(),
-                    new SpriteOverrider(override),
-                    BlockModelRotation.X0_Y0,
-                    modelLocation);
+    public Map<String, ResourceLocation> getTextureOverride() {
+        if (override.isEmpty() && overrideSupplier != null) {
+            override = overrideSupplier.get();
         }
-        return itemModel;
+        return override;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public BakedModel getRotatedModel(Direction frontFacing) {
-        return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBaker(),
-                new SpriteOverrider(override),
-                ModelFactory.getRotation(facing),
-                modelLocation));
+    public BakedModel getBaseModel() {
+        if (this.baseModel == null) {
+            this.baseModel = ModelFactory.getModeBakery()
+                    .getModel(modelLocation)
+                    .bake(ModelFactory.getModeBaker(), new SpriteOverrider(getTextureOverride()),
+                            BlockModelRotation.X0_Y0, modelLocation);
+        }
+        return this.baseModel;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        super.onPrepareTextureAtlas(atlasName, register);
-        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
-            if (overrideSupplier != null) override = overrideSupplier.get();
-            for (ResourceLocation value : override.values()) {
-                register.accept(value);
-            }
-        }
+    public void onAdditionalModel(Consumer<ResourceLocation> consumer) {
+        super.onAdditionalModel(consumer);
     }
 }
