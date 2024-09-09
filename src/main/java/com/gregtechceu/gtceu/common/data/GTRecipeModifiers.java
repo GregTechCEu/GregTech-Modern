@@ -163,7 +163,7 @@ public class GTRecipeModifiers {
                         modifyDuration);
                 if (parallelRecipe.getSecond() == 0)
                     return null;
-                result.init(recipeEU, recipe.duration, parallelRecipe.getSecond());
+                result.init(recipeEU, recipe.duration, parallelRecipe.getSecond(), params.getOcAmount());
                 return parallelRecipe.getFirst();
             }
         }
@@ -250,7 +250,7 @@ public class GTRecipeModifiers {
 
             int parallelValue = parallel.getSecond();
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
-            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue);
+            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue, params.getOcAmount());
             /*
              * recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
              * recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
