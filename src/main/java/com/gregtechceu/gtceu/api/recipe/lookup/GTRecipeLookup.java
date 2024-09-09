@@ -373,15 +373,6 @@ public class GTRecipeLookup {
             } else {
                 cache.put(mappedIngredient, new WeakReference<>(mappedIngredient));
             }
-
-            // hardcode a tree specialization for the intersection ingredient
-            if (mappedIngredient instanceof MapIntersectionIngredient intersection) {
-                for (Ingredient inner : intersection.ingredients) {
-                    List<AbstractMapIngredient> converted = ItemRecipeCapability.CAP.convertToMapIngredient(inner);
-                    retrieveCachedIngredient(list, converted, cache);
-                }
-                added = true;
-            }
         }
         if (!added) {
             list.add(ingredients);
