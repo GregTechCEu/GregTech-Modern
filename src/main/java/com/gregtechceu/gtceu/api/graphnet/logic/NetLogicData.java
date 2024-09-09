@@ -126,9 +126,9 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
     public <T extends NetLogicEntry<T, ?>> T getLogicEntryDefaultable(@NotNull NetLogicEntryType<T> key) {
         try {
             T returnable = (T) logicEntrySet.get(key);
-            return returnable == null ? key.supplier().get() : returnable;
+            return returnable == null ? key.getNew() : returnable;
         } catch (ClassCastException ignored) {
-            return key.supplier().get();
+            return key.getNew();
         }
     }
 
@@ -184,8 +184,13 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
             CompoundTag tag = nbt.getCompound(i);
             String key = tag.getString("Name");
             NetLogicEntry<?, ?> entry = this.logicEntrySet.get(key);
-            if (entry == null) entry = NetLogicRegistry.getTypeNotNull(key).getNew();
-            if (entry == null) continue;
+            if (entry == null) {
+                NetLogicEntryType<?> type = NetLogicRegistry.getTypeNullable(key);
+                if (type == null) {
+                    continue;
+                }
+                entry = type.getNew();
+            }
             entry.deserializeNBTNaive(tag.get("Tag"));
         }
     }
@@ -209,7 +214,7 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
             String name = buf.readUtf(255);
             if (name.isEmpty()) continue;
             NetLogicEntryType<?> type = NetLogicRegistry.getTypeErroring(name);
-            NetLogicEntry<?, ?> existing = type.supplier().get();
+            NetLogicEntry<?, ?> existing = type.getNew();
             existing.registerToNetLogicData(this);
             existing.decode(buf);
             this.logicEntrySet.put(type, existing);

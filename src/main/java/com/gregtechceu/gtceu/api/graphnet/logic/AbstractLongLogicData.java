@@ -15,7 +15,7 @@ public abstract class AbstractLongLogicData<T extends AbstractLongLogicData<T>> 
     }
 
     public T getWith(long value) {
-        return getType().supplier().get().setValue(value);
+        return getType().getNew().setValue(value);
     }
 
     @Contract("_ -> this")

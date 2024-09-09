@@ -64,7 +64,7 @@ public class EnergyTraverseData extends AbstractTraverseData<WorldPipeNetNode, F
         if (!node.getData().getLogicEntryDefaultable(SuperconductorLogic.TYPE)
                 .canSuperconduct(temperatureLogic == null ? TemperatureLogic.DEFAULT_TEMPERATURE :
                         temperatureLogic.getTemperature(getQueryTick()))) {
-            pathVoltage -= node.getData().getLogicEntryDefaultable(VoltageLossLogic.INSTANCE).getValue();
+            pathVoltage -= node.getData().getLogicEntryDefaultable(VoltageLossLogic.TYPE).getValue();
         }
 
         NodeLossCache.Key key = NodeLossCache.key(node, this);

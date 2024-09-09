@@ -15,7 +15,7 @@ public abstract class AbstractDoubleLogicData<T extends AbstractDoubleLogicData<
     }
 
     public T getWith(double value) {
-        return getType().supplier().get().setValue(value);
+        return getType().getNew().setValue(value);
     }
 
     protected T setValue(double value) {

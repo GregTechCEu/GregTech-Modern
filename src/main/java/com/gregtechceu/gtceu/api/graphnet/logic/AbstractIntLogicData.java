@@ -14,7 +14,7 @@ public abstract class AbstractIntLogicData<T extends AbstractIntLogicData<T>> ex
     }
 
     public T getWith(int value) {
-        return getType().supplier().get().setValue(value);
+        return getType().getNew().setValue(value);
     }
 
     protected T setValue(int value) {

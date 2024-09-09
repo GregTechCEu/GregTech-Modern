@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.NetLogicEntryTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -12,6 +16,11 @@ import java.util.Map;
 public final class NetLogicRegistry {
 
     private static final Map<String, NetLogicEntryType<?>> REGISTRY = new Object2ObjectOpenHashMap<>();
+
+    static {
+        NetLogicEntryTypes.init();
+        AddonFinder.getAddons().forEach(IGTAddon::loadNetLogicTypes);
+    }
 
     static void register(NetLogicEntryType<?> entry) {
         REGISTRY.putIfAbsent(entry.getSerializedName(), entry);
@@ -36,7 +45,7 @@ public final class NetLogicRegistry {
                 "This suggests that the server and client have different GT versions or modifications.");
     }
 
-    private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, CompoundTag> {
+    private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, Tag> {
 
         private static final NetLogicEntryType<EmptyLogicEntry> TYPE = new NetLogicEntryType<>("Empty",
                 EmptyLogicEntry::new);
@@ -46,12 +55,12 @@ public final class NetLogicRegistry {
         }
 
         @Override
-        public @Nullable CompoundTag serializeNBT() {
+        public @Nullable Tag serializeNBT() {
             return new CompoundTag();
         }
 
         @Override
-        public void deserializeNBT(CompoundTag arg) {}
+        public void deserializeNBT(Tag arg) {}
 
         @Override
         public void encode(FriendlyByteBuf buf, boolean fullChange) {}

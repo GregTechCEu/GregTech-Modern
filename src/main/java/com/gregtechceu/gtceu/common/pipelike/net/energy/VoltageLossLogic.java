@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
 
 public final class VoltageLossLogic extends AbstractLongLogicData<VoltageLossLogic> {
 
-    public static final NetLogicEntryType<VoltageLossLogic> INSTANCE = new NetLogicEntryType<>("VoltageLoss",
+    public static final NetLogicEntryType<VoltageLossLogic> TYPE = new NetLogicEntryType<>("VoltageLoss",
             () -> new VoltageLossLogic().setValue(0));
 
     private VoltageLossLogic() {
-        super(INSTANCE);
+        super(TYPE);
     }
 
     @Override

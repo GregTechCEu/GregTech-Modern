@@ -172,7 +172,7 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
             boolean insulated = cable.partialBurnStructure() != null;
             // insulated cables cool down half as fast
             float coolingFactor = (float) (Math.sqrt(cable.material()) / (insulated ? 8 : 4));
-            data.setLogicEntry(VoltageLossLogic.INSTANCE.supplier().get().getWith(loss))
+            data.setLogicEntry(VoltageLossLogic.TYPE.getNew().getWith(loss))
                     .setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(loss + 0.001 / amperage))
                     .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(amperage))
                     .setLogicEntry(VoltageLimitLogic.TYPE.getNew().getWith(voltageLimit))
@@ -188,7 +188,7 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
             if (amperage == 0) return; // skip pipes that are too small
             long loss = getLoss(structure);
             float coolingFactor = (float) Math.sqrt((double) pipe.material() / (4 + pipe.channelCount()));
-            data.setLogicEntry(VoltageLossLogic.INSTANCE.supplier().get().getWith(loss))
+            data.setLogicEntry(VoltageLossLogic.TYPE.getNew().getWith(loss))
                     .setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(loss + 0.001 / amperage))
                     .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(amperage))
                     .setLogicEntry(VoltageLimitLogic.TYPE.getNew().getWith(voltageLimit))
