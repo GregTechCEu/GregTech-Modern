@@ -429,12 +429,6 @@ public abstract class PipeBlock extends Block implements EntityBlock {
         return shape;
     }
 
-    @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
-                                  BlockPos pos, BlockPos neighborPos) {
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
     public boolean hasPipeCollisionChangingItem(BlockGetter world, BlockPos pos, Player player) {
         return hasPipeCollisionChangingItem(world, pos, player.getMainHandItem()) ||
                 hasPipeCollisionChangingItem(world, pos, player.getOffhandItem()) ||

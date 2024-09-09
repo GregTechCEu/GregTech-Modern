@@ -126,6 +126,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     private int paintingColor = -1;
 
     @Getter
+    @Persisted
     @DescSynced
     private @Nullable Material frameMaterial;
 

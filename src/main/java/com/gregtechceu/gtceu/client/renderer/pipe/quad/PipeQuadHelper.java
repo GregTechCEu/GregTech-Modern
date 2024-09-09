@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 
 import net.minecraft.client.renderer.RenderType;
@@ -156,6 +157,16 @@ public final class PipeQuadHelper {
                             q.getDirection(), q.getSprite(), q.isShade(), q.hasAmbientOcclusion());
                 })
                 .toList());
+        for (Direction facing : GTUtil.DIRECTIONS) {
+            list.addAll(frameModel.getQuads(null, facing, randomSource, modelData, renderType)
+                    .stream()
+                    .map(quad -> {
+                        BakedQuad q = Quad.from(quad, -0.002f).rebake();
+                        return new BakedQuad(q.getVertices(), q.getTintIndex() + 3,
+                                q.getDirection(), q.getSprite(), q.isShade(), q.hasAmbientOcclusion());
+                    })
+                    .toList());
+        }
         return list;
     }
 }

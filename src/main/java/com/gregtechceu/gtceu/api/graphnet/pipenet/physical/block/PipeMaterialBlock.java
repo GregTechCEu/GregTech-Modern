@@ -61,7 +61,10 @@ public abstract class PipeMaterialBlock extends PipeBlock {
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
                       @Nullable BlockPos blockPos, int index) {
-        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
+        if (index == 0) {
+            return material.getMaterialRGB();
+        }
+        return index == 1 ? material.getMaterialSecondaryRGB() : -1;
     }
 
     @Nullable

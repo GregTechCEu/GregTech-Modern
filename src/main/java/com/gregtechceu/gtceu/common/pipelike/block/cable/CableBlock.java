@@ -45,7 +45,7 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
                       @Nullable BlockPos blockPos, int index) {
-        if (getStructure().isInsulated() && index == 0) {
+        if (getStructure().isInsulated() && index == 1) {
             return CableModel.DEFAULT_INSULATION_COLOR;
         }
         return index == 0 ? material.getMaterialRGB() : -1;
