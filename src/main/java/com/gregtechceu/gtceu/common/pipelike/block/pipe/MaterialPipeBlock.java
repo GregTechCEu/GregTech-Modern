@@ -17,5 +17,4 @@ public class MaterialPipeBlock extends PipeMaterialBlock implements IBurnable, I
     public MaterialPipeStructure getStructure() {
         return (MaterialPipeStructure) super.getStructure();
     }
-
 }

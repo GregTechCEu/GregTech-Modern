@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 import com.gregtechceu.gtceu.common.pipelike.block.optical.IOpticalTransferController;
 import com.gregtechceu.gtceu.common.pipelike.net.SlowActiveWalker;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
 
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.Set;
 
 public class DataCapabilityObject implements IPipeCapabilityObject, IDataAccess {
 
