@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -36,7 +36,7 @@ public final class NetLogicRegistry {
                 "This suggests that the server and client have different GT versions or modifications.");
     }
 
-    private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, Tag> {
+    private static class EmptyLogicEntry extends NetLogicEntry<EmptyLogicEntry, CompoundTag> {
 
         private static final NetLogicEntryType<EmptyLogicEntry> TYPE = new NetLogicEntryType<>("Empty",
                 EmptyLogicEntry::new);
@@ -46,17 +46,15 @@ public final class NetLogicRegistry {
         }
 
         @Override
-        public @Nullable Tag serializeNBT() {
-            throw new RuntimeException("Can't serialize empty logic entry!");
+        public @Nullable CompoundTag serializeNBT() {
+            return new CompoundTag();
         }
 
         @Override
-        public void deserializeNBT(Tag arg) {}
+        public void deserializeNBT(CompoundTag arg) {}
 
         @Override
-        public void encode(FriendlyByteBuf buf, boolean fullChange) {
-            throw new RuntimeException("Can't serialize empty logic entry!");
-        }
+        public void encode(FriendlyByteBuf buf, boolean fullChange) {}
 
         @Override
         public void decode(FriendlyByteBuf buf, boolean fullChange) {}

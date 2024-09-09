@@ -16,14 +16,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpticalComputationHatchMachine extends MultiblockPartMachine {
+public class ComputationHatchMachine extends MultiblockPartMachine {
 
     @Getter
     private final boolean transmitter;
 
     protected NotifiableComputationContainer computationContainer;
 
-    public OpticalComputationHatchMachine(IMachineBlockEntity holder, boolean transmitter) {
+    public ComputationHatchMachine(IMachineBlockEntity holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
         this.computationContainer = createComputationContainer(transmitter);

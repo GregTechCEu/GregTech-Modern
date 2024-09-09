@@ -55,7 +55,7 @@ public class WeakHashSet<E> extends AbstractSet<E> {
 
     @Override
     public boolean add(E e) {
-        return m.put(e, null) == null;
+        return m.put(e, Boolean.TRUE) == null;
     }
 
     @Override

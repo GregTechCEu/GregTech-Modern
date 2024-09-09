@@ -54,7 +54,8 @@ public class ShutterCover extends CoverBehavior implements IControllable {
 
     @Override
     public boolean canPipePassThrough() {
-        return !workingEnabled;
+        // isWorkingAllowed restriction is applied during edge predication
+        return true;
     }
 
     @Override

@@ -65,6 +65,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -99,6 +101,10 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     public static final int UPDATE_PIPE_LOGIC = 0;
 
     private final Int2ObjectOpenHashMap<NetLogicData> netLogicDatas = new Int2ObjectOpenHashMap<>();
+
+    // this tile was loaded from datafixed NBT and needs to initialize its connections
+    @Persisted
+    private boolean legacy;
 
     // information that is only required for determining graph topology should be stored on the tile entity level,
     // while information interacted with during graph traversal should be stored on the NetLogicData level.
@@ -352,9 +358,16 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     @Override
     public void loadCustomPersistedData(CompoundTag tag) {
-        if (tag.contains("connections")) this.connectionMask = tag.getByte("connections");
-        if (tag.contains("blockedConnections")) this.blockedMask = tag.getByte("blockedConnections");
+        if (tag.contains("connections")) {
+            legacy = true;
+            this.connectionMask = tag.getByte("connections");
+        }
+        if (tag.contains("blockedConnections")) {
+            legacy = true;
+            this.blockedMask = tag.getByte("blockedConnections");
+        }
         if (tag.contains("cover")) {
+            legacy = true;
             PersistedParser.deserializeNBT(tag.getCompound("cover"), new HashMap<>(),
                     PipeCoverHolder.class, this.coverHolder);
         }
@@ -536,6 +549,21 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 if (firstNode) {
                     firstNode = false;
                     this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
+                }
+            }
+            if (this.legacy) {
+                for (Direction facing : GTUtil.DIRECTIONS) {
+                    if (this.isConnected(facing)) {
+                        PipeBlock.connectTile(this, this.getPipeNeighbor(facing, false), facing);
+                        BlockPos pos = this.getBlockPos().relative(facing);
+                        ChunkAccess chunk = getLevel().getChunk(pos);
+                        if (chunk instanceof LevelChunk levelChunk) {
+                            BlockEntity candidate = levelChunk
+                                    .getBlockEntity(pos, LevelChunk.EntityCreationType.CHECK);
+                            if (candidate instanceof PipeBlockEntity pipe)
+                                PipeBlock.connectTile(this, pipe, facing);
+                        }
+                    }
                 }
             }
             this.netLogicDatas.trim();

@@ -184,7 +184,7 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
             CompoundTag tag = nbt.getCompound(i);
             String key = tag.getString("Name");
             NetLogicEntry<?, ?> entry = this.logicEntrySet.get(key);
-            if (entry == null) entry = NetLogicRegistry.getTypeNotNull(key).supplier().get();
+            if (entry == null) entry = NetLogicRegistry.getTypeNotNull(key).getNew();
             if (entry == null) continue;
             entry.deserializeNBTNaive(tag.get("Tag"));
         }

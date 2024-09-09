@@ -19,7 +19,7 @@ public class BlockEntityMixin {
         switch (s) {
             case "gtceu:cable", "gtceu:fluid_pipe", "gtceu:item_pipe" -> s = GTBlockEntities.MATERIAL_PIPE.getId()
                     .toString();
-            case "gtceu:laser_pipe", "gtceu:optical_pipe" -> s = GTBlockEntities.ACTIVABLE_PIPE.getId().toString();
+            case "gtceu:laser_pipe", "gtceu:optical_pipe" -> s = GTBlockEntities.ACTIVATABLE_PIPE.getId().toString();
             case "gtceu:duct_pipe" -> s = GTBlockEntities.PIPE.getId().toString();
         }
         return s;

@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
+import com.gregtechceu.gtceu.api.capability.data.IDataAccess;
+import com.gregtechceu.gtceu.api.capability.data.query.DataAccessFormat;
+import com.gregtechceu.gtceu.api.capability.data.query.DataQueryObject;
+import com.gregtechceu.gtceu.api.capability.data.query.RecipeDataQuery;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -46,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider {
+                                    implements IMachineLife, IDataAccess, IDataInfoProvider {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
@@ -137,9 +140,19 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
-        seen.add(this);
-        return recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance) || recipes.contains(recipe);
+    public boolean accessData(@NotNull DataQueryObject queryObject) {
+        if (queryObject instanceof RecipeDataQuery query) {
+            if (isCreative || recipes.contains(query.getRecipe())) {
+                query.setFound();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public @NotNull DataAccessFormat getFormat() {
+        return DataAccessFormat.STANDARD;
     }
 
     @NotNull
@@ -180,7 +193,16 @@ public class DataAccessHatchMachine extends TieredPartMachine
 
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
-        return IDataAccessHatch.super.modifyRecipe(recipe);
+        // creative hatches do not need to check, they always have the recipe
+        if (this.isCreative()) return recipe;
+        if (recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance)) return recipe;
+
+        // hatches need to have the recipe available
+        RecipeDataQuery query = new RecipeDataQuery(recipe);
+        if (query.traverseTo(this) && this.accessData(query)) {
+            return recipe;
+        }
+        return null;
     }
 
     @Override

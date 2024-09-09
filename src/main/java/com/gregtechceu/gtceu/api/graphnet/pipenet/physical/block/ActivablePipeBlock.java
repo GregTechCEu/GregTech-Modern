@@ -24,7 +24,7 @@ public abstract class ActivablePipeBlock extends PipeBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ActivablePipeBlockEntity(GTBlockEntities.ACTIVABLE_PIPE.get(), pos, state);
+        return new ActivablePipeBlockEntity(GTBlockEntities.ACTIVATABLE_PIPE.get(), pos, state);
     }
 
     @Override

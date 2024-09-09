@@ -32,10 +32,10 @@ public class RestrictiveSQC extends BlockableSQC {
                                                  SpriteInformation sideTex,
                                                  SpriteInformation blockedTex, SpriteInformation restrictiveTex) {
         helper.initialize(
-                (facing, x1, y1, z1, x2, y2, z2) -> QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, y2, z2,
-                        OVERLAY_DIST_2),
-                (facing, x1, y1, z1, x2, y2, z2) -> QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, y2, z2,
-                        OVERLAY_DIST_1));
+                (facing, x1, y1, z1, x2, y2, z2) -> minLengthTube(facing, x1, y1, z1, x2, y2, z2,
+                        OVERLAY_DIST_2, 4),
+                (facing, x1, y1, z1, x2, y2, z2) -> minLengthTube(facing, x1, y1, z1, x2, y2, z2,
+                        OVERLAY_DIST_1, 2));
         RestrictiveSQC sqc = new RestrictiveSQC(helper, endTex, sideTex, blockedTex, restrictiveTex);
         sqc.buildPrototype();
         return sqc;

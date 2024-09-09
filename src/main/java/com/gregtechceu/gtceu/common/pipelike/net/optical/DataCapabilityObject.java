@@ -34,8 +34,6 @@ public class DataCapabilityObject implements IPipeCapabilityObject, IDataAccess 
     @Setter
     private @Nullable PipeBlockEntity tile;
 
-    private final Set<DataQueryObject> recentQueries = GTUtil.createWeakHashSet();
-
     public <N extends WorldPipeNet & BasicWorldPipeNetPath.Provider> DataCapabilityObject(@NotNull N net) {
         this.net = net;
     }
@@ -47,8 +45,6 @@ public class DataCapabilityObject implements IPipeCapabilityObject, IDataAccess 
     @Override
     public boolean accessData(@NotNull DataQueryObject queryObject) {
         if (tile == null) return false;
-        // if the add call fails (because the object already exists in the set) then do not recurse
-        if (!recentQueries.add(queryObject)) return false;
 
         for (Iterator<BasicWorldPipeNetPath> it = getPaths(); it.hasNext();) {
             BasicWorldPipeNetPath path = it.next();

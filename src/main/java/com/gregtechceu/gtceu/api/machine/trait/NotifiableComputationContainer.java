@@ -57,8 +57,6 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
 
     @Override
     public boolean accessData(@NotNull DataQueryObject queryObject) {
-        if (!supportsQuery(queryObject) || !recentQueries.add(queryObject)) return false;
-
         if (isTransmitter()) {
             MetaMachine machine = getMachine();
             if (machine instanceof IWorkable workable && !workable.isActive()) return false;
@@ -95,9 +93,9 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             Direction front = machine.getFrontFacing();
             IDataAccess access = GTCapabilityHelper.getDataAccess(machine.getLevel(), machine.getPos().relative(front),
                     front.getOpposite());
-            if (access == null) return false;
-            return access.accessData(queryObject);
+            if (queryObject.traverseTo(access)) return access.accessData(queryObject);
         }
+        return false;
     }
 
     @Override

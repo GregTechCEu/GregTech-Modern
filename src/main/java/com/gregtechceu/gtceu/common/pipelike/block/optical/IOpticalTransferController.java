@@ -39,6 +39,7 @@ public interface IOpticalTransferController {
      * @return whether the request should be cancelled
      */
     default boolean queryHandler(DataQueryObject query, IDataAccess handler) {
-        return handler.accessData(query);
+        if (query.traverseTo(handler)) return handler.accessData(query);
+        else return false;
     }
 }

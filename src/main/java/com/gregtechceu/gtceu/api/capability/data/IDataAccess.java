@@ -9,10 +9,8 @@ public interface IDataAccess {
 
     /**
      * Queries this {@link IDataAccess} with the specified query.
-     * 
-     * @param queryObject the object representing the query. Can be cached in a weak set created by
-     *                    {@link com.gregtechceu.gtceu.utils.GTUtil#createWeakHashSet()} in order to prevent endless
-     *                    recursion.
+     *
+     * @param queryObject the object representing the query.
      * @return if the query has been cancelled
      */
     boolean accessData(@NotNull DataQueryObject queryObject);
@@ -33,7 +31,7 @@ public interface IDataAccess {
 
     /**
      * Provides standardized logic for querying a collection of {@link IDataAccess}es.
-     * 
+     *
      * @param accesses the {@link IDataAccess}es to query.
      * @param query    the object representing the query.
      * @return if the query has been cancelled
@@ -43,10 +41,12 @@ public interface IDataAccess {
         boolean walk = false;
         boolean cancelled = false;
         for (IDataAccess access : accesses) {
-            query.setShouldTriggerWalker(false);
-            cancelled = access.accessData(query);
-            if (!walk) walk = query.isShouldTriggerWalker();
-            if (cancelled) break;
+            if (query.traverseTo(access)) {
+                query.setShouldTriggerWalker(false);
+                cancelled = access.accessData(query);
+                if (!walk) walk = query.isShouldTriggerWalker();
+                if (cancelled) break;
+            }
         }
         query.setShouldTriggerWalker(walk);
         return cancelled;

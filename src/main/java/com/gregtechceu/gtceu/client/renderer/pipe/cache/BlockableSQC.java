@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -30,11 +33,26 @@ public class BlockableSQC extends StructureQuadCache {
 
     public static @NotNull BlockableSQC create(PipeQuadHelper helper, SpriteInformation endTex,
                                                SpriteInformation sideTex, SpriteInformation blockedTex) {
-        helper.initialize((facing, x1, y1, z1, x2, y2, z2) -> QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, y2, z2,
-                OVERLAY_DIST_1));
+        helper.initialize((facing, x1, y1, z1, x2, y2, z2) -> minLengthTube(facing, x1, y1, z1, x2, y2, z2,
+                OVERLAY_DIST_1, 4));
         BlockableSQC cache = new BlockableSQC(helper, endTex, sideTex, blockedTex);
         cache.buildPrototype();
         return cache;
+    }
+
+
+    public static ImmutablePair<Vector3f, Vector3f> minLengthTube(@Nullable Direction facing, float x1, float y1,
+                                                                  float z1, float x2,
+                                                                  float y2, float z2, float g, float minLength) {
+        if (facing == null) return QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, y2, z2, g);
+        return switch (facing) {
+            case UP -> QuadHelper.tubeOverlay(facing, x1, Math.min(y1, y2 - minLength), z1, x2, y2, z2, g);
+            case DOWN -> QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, Math.max(y2, y1 + minLength), z2, g);
+            case EAST -> QuadHelper.tubeOverlay(facing, Math.min(x1, x2 - minLength), y1, z1, x2, y2, z2, g);
+            case WEST -> QuadHelper.tubeOverlay(facing, x1, y1, z1, Math.max(x2, x1 + minLength), y2, z2, g);
+            case SOUTH -> QuadHelper.tubeOverlay(facing, x1, y1, Math.min(z1, z2 - minLength), x2, y2, z2, g);
+            case NORTH -> QuadHelper.tubeOverlay(facing, x1, y1, z1, x2, y2, Math.max(z2, z1 + minLength), g);
+        };
     }
 
     @Override

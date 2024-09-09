@@ -27,8 +27,8 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.DUCT_PIPE_BLOCKS.values().toArray(NonNullSupplier[]::new))
             .register();
 
-    public static final BlockEntityEntry<ActivablePipeBlockEntity> ACTIVABLE_PIPE = REGISTRATE
-            .blockEntity("activable_pipe", ActivablePipeBlockEntity::new)
+    public static final BlockEntityEntry<ActivablePipeBlockEntity> ACTIVATABLE_PIPE = REGISTRATE
+            .blockEntity("activatable_pipe", ActivablePipeBlockEntity::new)
             .validBlocks(Stream.of(GTBlocks.OPTICAL_PIPE, GTBlocks.LASER_PIPE).toArray(NonNullSupplier[]::new))
             .register();
 

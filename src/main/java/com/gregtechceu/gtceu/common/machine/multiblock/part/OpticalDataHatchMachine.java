@@ -46,7 +46,6 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IS
 
     @Override
     public boolean accessData(@NotNull DataQueryObject queryObject) {
-        if (!supportsQuery(queryObject) || !recentQueries.add(queryObject)) return false;
         if (!getControllers().isEmpty()) {
             if (isTransmitter()) {
                 IMultiController controller = getControllers().get(0);
@@ -78,7 +77,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IS
                 if (tileEntity == null) return false;
                 IDataAccess cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
                         getFrontFacing().getOpposite()).resolve().orElse(null);
-                return cap != null && cap.accessData(queryObject);
+                if (queryObject.traverseTo(cap)) return cap.accessData(queryObject);
             }
         }
         return false;

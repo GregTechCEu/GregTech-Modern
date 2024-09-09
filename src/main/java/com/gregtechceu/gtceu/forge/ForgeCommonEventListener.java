@@ -510,7 +510,7 @@ public class ForgeCommonEventListener {
         event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
                 case "cable", "fluid_pipe", "item_pipe" -> mapping.remap(GTBlockEntities.MATERIAL_PIPE.get());
-                case "laser_pipe", "optical_pipe" -> mapping.remap(GTBlockEntities.ACTIVABLE_PIPE.get());
+                case "laser_pipe", "optical_pipe" -> mapping.remap(GTBlockEntities.ACTIVATABLE_PIPE.get());
                 case "duct_pipe" -> mapping.remap(GTBlockEntities.PIPE.get());
             }
         });

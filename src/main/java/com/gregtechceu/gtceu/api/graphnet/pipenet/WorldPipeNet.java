@@ -10,8 +10,10 @@ import com.gregtechceu.gtceu.api.graphnet.edge.NetEdge;
 import com.gregtechceu.gtceu.api.graphnet.graph.INetGraph;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.BlockedPredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
 import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldPosNet;
+import com.gregtechceu.gtceu.common.cover.ShutterCover;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -129,7 +131,12 @@ public abstract class WorldPipeNet extends WorldPosNet {
      * @param a    the cover on the source of the edge
      * @param b    the cover on the sink of the edge
      */
-    protected void coverPredication(@NotNull NetEdge edge, @Nullable CoverBehavior a, @Nullable CoverBehavior b) {}
+    protected void coverPredication(@NotNull NetEdge edge, @Nullable CoverBehavior a, @Nullable CoverBehavior b) {
+        if (a instanceof ShutterCover aS && aS.isWorkingEnabled() ||
+                b instanceof ShutterCover bS && bS.isWorkingEnabled()) {
+            edge.getPredicateHandler().setPredicate(BlockedPredicate.INSTANCE);
+        }
+    }
 
     public abstract Capability<?>[] getTargetCapabilities();
 
