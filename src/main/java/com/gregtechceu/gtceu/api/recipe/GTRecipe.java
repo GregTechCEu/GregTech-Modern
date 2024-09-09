@@ -63,6 +63,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     public CompoundTag data;
     public int duration;
     public int parallels = 0;
+    public int ocTier = 0;
     @Getter
     public boolean isFuel;
 

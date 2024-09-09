@@ -107,7 +107,7 @@ class RecipeRunner {
                 chancedContents.add(cont);
             }
         }
-        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe);
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         chancedContents = logic.roll(chancedContents, function,
                 recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
         if (chancedContents != null) {
