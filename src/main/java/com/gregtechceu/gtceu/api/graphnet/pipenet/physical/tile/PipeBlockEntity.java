@@ -724,10 +724,11 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         for (Direction facing : GTUtil.DIRECTIONS) {
             CoverBehavior cover = getCoverHolder().getCoverAtSide(facing);
             if (cover != null) {
-                frameMask |= (byte) (1 << facing.ordinal());
+                frameMask |= 1 << facing.ordinal();
                 if (cover.forcePipeRenderConnection()) this.connectionMask |= (byte) (1 << facing.ordinal());
             }
         }
+        frameMask = (byte) ~frameMask;
         return ModelData.builder()
                 .with(AbstractPipeModel.THICKNESS_PROPERTY, this.getStructure().getRenderThickness())
                 .with(AbstractPipeModel.CONNECTED_MASK_PROPERTY, connectionMask)

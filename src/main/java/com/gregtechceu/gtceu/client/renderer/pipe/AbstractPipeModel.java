@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.pipe;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.ColorQuadCache;
 import com.gregtechceu.gtceu.client.renderer.pipe.cache.StructureQuadCache;
 import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererPackage;
@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.quad.PipeQuadHelper;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.CacheKey;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.reference.WeakHashSet;
 
@@ -19,7 +20,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +53,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
     public static ModelProperty<Integer> COLOR_PROPERTY = new ModelProperty<>();
     public static final ModelProperty<Material> MATERIAL_PROPERTY = new ModelProperty<>();
 
-    protected final Object2ObjectOpenHashMap<ResourceLocation, ColorQuadCache> frameCache = new Object2ObjectOpenHashMap<>();
+    protected final Object2ObjectOpenHashMap<BlockState, ColorQuadCache> frameCache = new Object2ObjectOpenHashMap<>();
     protected final Object2ObjectOpenHashMap<K, StructureQuadCache> pipeCache;
 
     protected static final WeakHashSet<Object2ObjectOpenHashMap<? extends CacheKey, StructureQuadCache>> PIPE_CACHES = new WeakHashSet<>();
@@ -127,20 +127,19 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
                 blockedMask, data, coverMask);
 
         if (frameMaterial != null) {
-            ResourceLocation rl = MaterialIconType.frameGt.getBlockModelPath(frameMaterial.getMaterialIconSet(),
-                    true);
-            ColorQuadCache frame = frameCache.get(rl);
+            BlockState state = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).getDefaultState();
+            ColorQuadCache frame = frameCache.get(state);
             if (frame == null) {
-                BakedModel model = Minecraft.getInstance().getModelManager().getModel(rl);
+                BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
                 frame = new ColorQuadCache(PipeQuadHelper
                         .createFrame(model, randomSource, modelData, renderType));
-                frameCache.put(rl, frame);
+                frameCache.put(state, frame);
             }
             List<BakedQuad> frameQuads = frame
                     .getQuads(new ColorData(GTUtil.convertRGBtoARGB(frameMaterial.getMaterialRGB())));
-            for (int i = 0; i < 6; i++) {
-                if ((frameMask & (1 << i)) > 0) {
-                    quads.add(frameQuads.get(i));
+            for (Direction dir : GTUtil.DIRECTIONS) {
+                if ((frameMask & (1 << dir.ordinal())) > 0) {
+                    quads.addAll(frameQuads.stream().filter(quad -> quad.getDirection() == dir).toList());
                 }
             }
         }
