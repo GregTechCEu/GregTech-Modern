@@ -83,8 +83,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.MissingMappingsEvent;
-
 import net.minecraftforge.registries.RegistryManager;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -505,8 +505,7 @@ public class ForgeCommonEventListener {
                     "gtceu:uranium", "gtceu:uranium_238",
                     "gtceu:flowing_uranium", "gtceu:flowing_uranium_238",
                     "gtceu:plutonium", "gtceu:plutonium_238",
-                    "gtceu:flowing_plutonium", "gtceu:flowing_plutonium_238"
-                    ), mapping);
+                    "gtceu:flowing_plutonium", "gtceu:flowing_plutonium_238"), mapping);
         });
         event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
             switch (mapping.getKey().getPath()) {
@@ -544,7 +543,8 @@ public class ForgeCommonEventListener {
         }
     }
 
-    private static <T> void remapMaterial(Pattern pattern, String replacement, MissingMappingsEvent.Mapping<T> mapping) {
+    private static <T> void remapMaterial(Pattern pattern, String replacement,
+                                          MissingMappingsEvent.Mapping<T> mapping) {
         String namespace = mapping.getKey().getNamespace();
         String path = mapping.getKey().getPath();
         Matcher match = pattern.matcher(path);

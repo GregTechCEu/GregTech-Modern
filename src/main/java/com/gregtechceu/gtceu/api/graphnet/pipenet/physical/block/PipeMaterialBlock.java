@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +36,27 @@ public abstract class PipeMaterialBlock extends PipeBlock {
                              Material material) {
         super(properties, structure);
         this.material = material;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static BlockColor tintedColor() {
+        return (blockState, level, blockPos, index) -> {
+            if (blockState.getBlock() instanceof PipeMaterialBlock block) {
+                if (blockPos != null && level != null &&
+                        level.getBlockEntity(blockPos) instanceof PipeBlockEntity pipe) {
+                    if (pipe.getFrameMaterial() != null) {
+                        if (index >= 3) {
+                            return pipe.getFrameMaterial().getMaterialRGB(index - 3);
+                        }
+                    }
+                    if (index == 0 && pipe.isPainted()) {
+                        return pipe.getPaintingColor();
+                    }
+                }
+                return block.tinted(blockState, level, blockPos, index);
+            }
+            return -1;
+        };
     }
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,

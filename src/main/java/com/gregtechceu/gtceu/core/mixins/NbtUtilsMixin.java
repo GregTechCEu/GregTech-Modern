@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -14,5 +16,4 @@ public class NbtUtilsMixin {
     private static CompoundTag gtceu$addModDataVersion(CompoundTag tag) {
         return DataFixesInternals.get().addModDataVersions(tag);
     }
-
 }

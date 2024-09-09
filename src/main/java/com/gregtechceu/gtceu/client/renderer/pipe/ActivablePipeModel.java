@@ -16,7 +16,9 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -59,11 +61,13 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(ActivableCacheKey key, byte connectionMask, byte closedMask,
-                                             byte blockedMask, ColorData data, @Nullable Material frameMaterial,
-                                             byte frameMask, byte coverMask) {
+    public @NotNull List<BakedQuad> getQuads(ActivableCacheKey key,
+                                             byte connectionMask, byte closedMask, byte blockedMask,
+                                             ColorData data, @Nullable Material frameMaterial,
+                                             byte frameMask, byte coverMask,
+                                             RandomSource randomSource, ModelData modelData, RenderType renderType) {
         List<BakedQuad> quads = super.getQuads(key, connectionMask, closedMask, blockedMask, data, frameMaterial,
-                frameMask, coverMask);
+                frameMask, coverMask, randomSource, modelData, renderType);
 
         if (key.isActive() && allowActive()) {
             if (emissiveActive) {

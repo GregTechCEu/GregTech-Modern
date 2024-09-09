@@ -135,14 +135,14 @@ public class StaticFaceBakery {
     }
 
     public static BakedQuad bakeRecolorableQuad(Vector3f posFrom,
-                                                           Vector3f posTo,
-                                                           BlockElementFace face,
-                                                           SpriteInformation sprite,
-                                                           Direction facing,
-                                                           ModelState transform,
-                                                           @Nullable BlockElementRotation partRotation,
-                                                           boolean shade,
-                                                           int emissivity) {
+                                                Vector3f posTo,
+                                                BlockElementFace face,
+                                                SpriteInformation sprite,
+                                                Direction facing,
+                                                ModelState transform,
+                                                @Nullable BlockElementRotation partRotation,
+                                                boolean shade,
+                                                int emissivity) {
         BlockFaceUV blockfaceuv = face.uv;
         if (transform.isUvLocked()) {
             blockfaceuv = recomputeUVs(face.uv, facing, transform.getRotation());
@@ -168,7 +168,8 @@ public class StaticFaceBakery {
 
         ForgeHooksClient.fillNormal(aint, direction);
         ForgeFaceData data = face.getFaceData();
-        BakedQuad quad = new BakedQuad(aint, sprite.colorID(), direction, sprite.sprite(), shade, data.ambientOcclusion());
+        BakedQuad quad = new BakedQuad(aint, sprite.colorID(), direction, sprite.sprite(), shade,
+                data.ambientOcclusion());
         if (!ForgeFaceData.DEFAULT.equals(data)) {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);

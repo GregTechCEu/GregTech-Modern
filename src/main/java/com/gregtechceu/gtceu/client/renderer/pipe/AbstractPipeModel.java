@@ -17,11 +17,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -80,7 +80,8 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
             List<BakedQuad> quads = getQuads(toKey(modelData), safeByte(modelData.get(CONNECTED_MASK_PROPERTY)),
                     safeByte(modelData.get(CLOSED_MASK_PROPERTY)), safeByte(modelData.get(BLOCKED_MASK_PROPERTY)),
                     data, modelData.get(FRAME_MATERIAL_PROPERTY),
-                    safeByte(modelData.get(FRAME_MASK_PROPERTY)), coverMask);
+                    safeByte(modelData.get(FRAME_MASK_PROPERTY)), coverMask,
+                    rand, modelData, renderType);
             if (rendererPackage != null) renderCovers(quads, rendererPackage, rand, modelData, renderType);
             return quads;
         }
@@ -117,7 +118,8 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
 
     public @NotNull List<BakedQuad> getQuads(K key, byte connectionMask, byte closedMask, byte blockedMask,
                                              ColorData data,
-                                             @Nullable Material frameMaterial, byte frameMask, byte coverMask) {
+                                             @Nullable Material frameMaterial, byte frameMask, byte coverMask,
+                                             RandomSource randomSource, ModelData modelData, RenderType renderType) {
         List<BakedQuad> quads = new ObjectArrayList<>();
 
         StructureQuadCache cache = pipeCache.computeIfAbsent(key, this::constructForKey);
@@ -125,12 +127,13 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
                 blockedMask, data, coverMask);
 
         if (frameMaterial != null) {
-            ResourceLocation rl = MaterialIconType.frameGt.getBlockTexturePath(frameMaterial.getMaterialIconSet(),
+            ResourceLocation rl = MaterialIconType.frameGt.getBlockModelPath(frameMaterial.getMaterialIconSet(),
                     true);
             ColorQuadCache frame = frameCache.get(rl);
             if (frame == null) {
+                BakedModel model = Minecraft.getInstance().getModelManager().getModel(rl);
                 frame = new ColorQuadCache(PipeQuadHelper
-                        .createFrame(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(rl)));
+                        .createFrame(model, randomSource, modelData, renderType));
                 frameCache.put(rl, frame);
             }
             List<BakedQuad> frameQuads = frame

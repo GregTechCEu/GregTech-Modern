@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
 import com.gregtechceu.gtceu.common.datafixer.fixes.ActivablePipeConnectionFix;
-import com.gregtechceu.gtceu.common.datafixer.fixes.PipeConnectionFix;
 import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
+import com.gregtechceu.gtceu.common.datafixer.fixes.PipeConnectionFix;
 import com.gregtechceu.gtceu.common.datafixer.schemas.V2;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -108,8 +108,7 @@ public class GTDataFixers {
                         "gtceu:item_pipe", "gtceu:material_pipe",
                         "gtceu:laser_pipe", "gtceu:activable_pipe",
                         "gtceu:optical_pipe", "gtceu:activable_pipe",
-                        "gtceu:duct_pipe", "gtceu:pipe"
-                ))));
+                        "gtceu:duct_pipe", "gtceu:pipe"))));
     }
 
     private static UnaryOperator<String> createRenamer(String pOldName, String pNewName) {

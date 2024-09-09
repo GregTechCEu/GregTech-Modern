@@ -68,7 +68,7 @@ public class PipeItemModel<K extends CacheKey> implements IDynamicBakedModel {
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {
         byte z = 0;
-        return basis.getQuads(key, (byte) 0b1100, z, z, data, null, z, z);
+        return basis.getQuads(key, (byte) 0b1100, z, z, data, null, z, z, rand, modelData, renderType);
     }
 
     @Override

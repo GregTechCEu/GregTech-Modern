@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
+
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.tuple.Pair;
@@ -140,13 +144,18 @@ public final class PipeQuadHelper {
         return QuadHelper.buildQuad(normal, box, uv, targetSprite);
     }
 
-    public static @NotNull List<BakedQuad> createFrame(TextureAtlasSprite sprite) {
-        PipeQuadHelper helper = PipeQuadHelper.create(0.998f).initialize();
-        helper.setTargetSprite(new SpriteInformation(sprite, 0));
+    public static @NotNull List<BakedQuad> createFrame(BakedModel frameModel, RandomSource randomSource,
+                                                       ModelData modelData, RenderType renderType) {
         List<BakedQuad> list = new ObjectArrayList<>();
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            list.add(helper.visitCore(facing));
-        }
+        // should always work
+        list.addAll(frameModel.getQuads(null, null, randomSource, modelData, renderType)
+                .stream()
+                .map(quad -> {
+                    BakedQuad q = Quad.from(quad, -0.002f).rebake();
+                    return new BakedQuad(q.getVertices(), q.getTintIndex() + 3,
+                            q.getDirection(), q.getSprite(), q.isShade(), q.hasAmbientOcclusion());
+                })
+                .toList());
         return list;
     }
 }

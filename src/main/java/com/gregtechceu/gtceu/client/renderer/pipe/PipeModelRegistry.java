@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Range;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public final class PipeModelRegistry {

@@ -227,8 +227,7 @@ public class V0 extends BaseGTSchema {
                         "blockedConnections", DSL.intType().template(),
                         "cover", covers.get(),
                         "paintingColor", DSL.intType().template(),
-                        "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)
-                ));
+                        "frameMaterial", GTReferences.MATERIAL_NAME.in(schema)));
 
         schema.register(map, "gtceu:cable", () -> DSL.and(
                 DSL.optionalFields("temperature", DSL.intType().template()),

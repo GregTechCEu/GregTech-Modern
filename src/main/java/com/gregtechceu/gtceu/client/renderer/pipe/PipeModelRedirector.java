@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.pipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.client.renderer.pipe.util.MaterialModelSupplier;
-
 import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeBlock;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -73,7 +73,7 @@ public class PipeModelRedirector implements BakedModel {
         }
         AbstractPipeModel<?> model = supplier.getModel(mat);
         // this can happen when transferring old data, apparently.
-        //noinspection ConstantValue
+        // noinspection ConstantValue
         if (model == null) {
             return List.of();
         }
