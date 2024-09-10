@@ -314,18 +314,18 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 RecipeLogic recipeLogic = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC,
                         tileEntity.getBlockPos(), null);
                 if (recipeLogic != null) {
-                    RecipeHolder<GTRecipe> recipe = recipeLogic.getLastRecipe();
+                    GTRecipe recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("gtceu.multiblock.waiting"));
                         list.addAll(recipeLogic.getFancyTooltip());
                     } else if (recipe != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
-                        var EUt = RecipeHelper.getInputEUt(recipe.value());
+                        var EUt = RecipeHelper.getInputEUt(recipe);
                         var isInput = true;
                         if (EUt == 0) {
                             isInput = false;
-                            EUt = RecipeHelper.getOutputEUt(recipe.value());
+                            EUt = RecipeHelper.getOutputEUt(recipe);
                         }
 
                         list.add(Component.translatable(

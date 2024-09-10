@@ -101,6 +101,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     @NotNull
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
+        ResourceLocation id = buf.readResourceLocation();
         int duration = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
@@ -132,7 +133,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         boolean isFuel = buf.readBoolean();
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
-        GTRecipe recipe = new GTRecipe(type,
+        GTRecipe recipe =new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, isFuel);
@@ -151,6 +152,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
         buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeResourceLocation(recipe.id);
         buf.writeVarInt(recipe.duration);
         GTRecipeSerializer.writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         GTRecipeSerializer.writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);

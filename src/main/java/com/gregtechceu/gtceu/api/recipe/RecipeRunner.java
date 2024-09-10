@@ -34,7 +34,7 @@ class RecipeRunner {
 
     // --------------------------------------------------------------------------------------------------------
 
-    private final RecipeHolder<GTRecipe> recipe;
+    private final GTRecipe recipe;
     private final IO io;
     private final boolean isTick;
     private final IRecipeCapabilityHolder holder;
@@ -48,7 +48,7 @@ class RecipeRunner {
     private ContentSlots content;
     private ContentSlots search;
 
-    public RecipeRunner(RecipeHolder<GTRecipe> recipe, IO io, boolean isTick,
+    public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                         boolean simulated) {
         this.recipe = recipe;
@@ -85,8 +85,8 @@ class RecipeRunner {
 
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         RecipeCapability<?> cap = entry.getKey();
-        ChanceBoostFunction function = recipe.value().getType().getChanceFunction();
-        ChanceLogic logic = recipe.value().getChanceLogicForCapability(cap, this.io, this.isTick);
+        ChanceBoostFunction function = recipe.getType().getChanceFunction();
+        ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
         List<Content> chancedContents = new ArrayList<>();
         for (Content cont : entry.getValue()) {
             // For simulated handling, search/content are the same instance, so there's no need to switch between them
@@ -109,7 +109,7 @@ class RecipeRunner {
                 chancedContents.add(cont);
             }
         }
-        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe.value());
+        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe);
         chancedContents = logic.roll(chancedContents, function,
                 recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
         if (chancedContents != null) {

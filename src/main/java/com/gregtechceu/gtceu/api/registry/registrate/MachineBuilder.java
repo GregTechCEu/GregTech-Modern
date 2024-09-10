@@ -128,7 +128,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, RecipeHolder<GTRecipe>> beforeWorking = (machine, recipe) -> true;
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
     @NotNull
     @Getter
     @Setter

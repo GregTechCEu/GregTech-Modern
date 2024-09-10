@@ -965,15 +965,13 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public RecipeHolder<GTRecipe> build() {
-        return new RecipeHolder<>(
-                id,
-                new GTRecipe(this.recipeType,
-                        this.input, this.output, this.tickInput, this.tickOutput,
-                        this.inputChanceLogic, this.outputChanceLogic,
-                        this.tickInputChanceLogic, this.tickOutputChanceLogic,
-                        this.conditions,
-                        List.of(), this.data, this.duration, this.isFuel));
+    public GTRecipe build() {
+        return new GTRecipe(this.recipeType, this.id,
+                this.input, this.output, this.tickInput, this.tickOutput,
+                this.inputChanceLogic, this.outputChanceLogic,
+                this.tickInputChanceLogic, this.tickOutputChanceLogic,
+                this.conditions,
+                List.of(), this.data, this.duration, this.isFuel);
     }
 
     public void save(RecipeOutput consumer) {
@@ -984,11 +982,11 @@ public class GTRecipeBuilder {
                 .map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), build().value());
+                this.recipeType.addDataStickEntry(entry.getResearchId(), build());
             }
         }
-        RecipeHolder<GTRecipe> built = build();
-        consumer.accept(built.id(), built.value(), null);
+        GTRecipe built = build();
+        consumer.accept(built.id.withPrefix(recipeType.registryName.getPath() + "/"), built, null);
     }
 
     //////////////////////////////////////

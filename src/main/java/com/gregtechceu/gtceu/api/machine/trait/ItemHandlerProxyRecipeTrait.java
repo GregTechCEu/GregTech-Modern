@@ -48,7 +48,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
         for (IRecipeHandler<SizedIngredient> handler : handlers) {

@@ -90,7 +90,7 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
                                                         List<SizedFluidIngredient> left,
                                                         @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());

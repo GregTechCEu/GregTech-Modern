@@ -50,11 +50,11 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
             // }
             var recipe = capability.getLastRecipe();
             if (recipe != null) {
-                var EUt = RecipeHelper.getInputEUt(recipe.value());
+                var EUt = RecipeHelper.getInputEUt(recipe);
                 var isInput = true;
                 if (EUt == 0) {
                     isInput = false;
-                    EUt = RecipeHelper.getOutputEUt(recipe.value());
+                    EUt = RecipeHelper.getOutputEUt(recipe);
                 }
                 long absEUt = Math.abs(EUt);
                 String text = null;

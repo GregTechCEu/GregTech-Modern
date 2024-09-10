@@ -86,13 +86,13 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Nullable
-    public static List<SizedIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe,
+    public static List<SizedIngredient> handleIngredient(IO io, GTRecipe recipe,
                                                          List<SizedIngredient> left,
                                                          boolean simulate, IO handlerIO,
                                                          CustomItemStackHandler storage) {
@@ -116,7 +116,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                 if (GTCEu.isKubeJSLoaded()) {
                                     // noinspection unchecked must be List<?> to be able to load without KJS.
                                     ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                            (List<IngredientActionHolder>) recipe.value().ingredientActions);
+                                            (List<IngredientActionHolder>) recipe.ingredientActions);
                                     if (!actioned.isEmpty()) {
                                         extracted = actioned;
                                         didRunIngredientAction = true;
@@ -160,7 +160,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                         if (GTCEu.isKubeJSLoaded()) {
                             // noinspection unchecked must be List<?> to be able to load without KJS.
                             ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
-                                    (List<IngredientActionHolder>) recipe.value().ingredientActions);
+                                    (List<IngredientActionHolder>) recipe.ingredientActions);
                             if (!actioned.isEmpty()) {
                                 leftStack = actioned;
                                 didRunIngredientAction = true;

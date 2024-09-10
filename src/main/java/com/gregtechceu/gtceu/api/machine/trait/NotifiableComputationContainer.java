@@ -183,7 +183,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Integer> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Integer> left,
+    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
                                            @Nullable String slotName,
                                            boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
@@ -193,7 +193,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         if (io == IO.IN) {
             int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= sum) {
-                if (recipe.value().data.getBoolean("duration_is_total_cwu")) {
+                if (recipe.data.getBoolean("duration_is_total_cwu")) {
                     int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
                         if (machine instanceof IRecipeLogicMachine rlm) {

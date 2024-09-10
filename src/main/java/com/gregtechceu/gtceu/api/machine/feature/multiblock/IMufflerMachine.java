@@ -70,7 +70,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    default GTRecipe modifyRecipe(GTRecipe recipe) {
         if (!isFrontFaceFree()) {
             return null;
         }

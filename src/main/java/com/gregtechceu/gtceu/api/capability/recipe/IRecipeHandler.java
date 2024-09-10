@@ -43,7 +43,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      *         <br>
      *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
-    List<K> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<K> left, @Nullable String slotName,
+    List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, @Nullable String slotName,
                               boolean simulate);
 
     /**
@@ -83,7 +83,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return getCapability().copyInner((K) content);
     }
 
-    default List<K> handleRecipe(IO io, RecipeHolder<GTRecipe> recipe, List<?> left, @Nullable String slotName,
+    default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName,
                                  boolean simulate) {
         List<K> contents = new ObjectArrayList<>(left.size());
         for (Object leftObj : left) {
@@ -92,7 +92,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return handleRecipeInner(io, recipe, contents, slotName, simulate);
     }
 
-    default void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {}
+    default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 
-    default void postWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {}
+    default void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 }

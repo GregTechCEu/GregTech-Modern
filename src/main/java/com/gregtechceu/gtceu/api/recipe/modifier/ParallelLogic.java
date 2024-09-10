@@ -26,8 +26,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ParallelLogic {
 
     @NotNull
-    public static Pair<RecipeHolder<GTRecipe>, Integer> applyParallel(MetaMachine machine,
-                                                                      @NotNull RecipeHolder<GTRecipe> recipe,
+    public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine,
+                                                                      @NotNull GTRecipe recipe,
                                                                       int parallelLimit, boolean modifyDuration) {
         if (machine instanceof IRecipeLogicMachine rlm) {
             return doParallelRecipes(recipe, rlm, parallelLimit, modifyDuration);
@@ -41,24 +41,24 @@ public class ParallelLogic {
      * @param parallelAmount hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int getMaxRecipeMultiplier(@NotNull RecipeHolder<GTRecipe> recipe,
+    public static int getMaxRecipeMultiplier(@NotNull GTRecipe recipe,
                                              @NotNull IRecipeCapabilityHolder holder,
                                              int parallelAmount) {
         IntSet multipliers = new IntOpenHashSet();
 
         // non-tick inputs.
-        for (RecipeCapability<?> cap : recipe.value().inputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             if (cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                multipliers.add(cap.getMaxParallelRatio(holder, recipe.value(), parallelAmount));
+                multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelAmount));
             }
         }
 
         // tick inputs.
-        for (RecipeCapability<?> cap : recipe.value().tickInputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                multipliers.add(cap.getMaxParallelRatio(holder, recipe.value(), parallelAmount));
+                multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelAmount));
             }
         }
         if (multipliers.intStream().allMatch(value -> value == Integer.MAX_VALUE)) {
@@ -185,7 +185,7 @@ public class ParallelLogic {
     // At this point, the recipe is already trimmed according to the item and fluid output limit, so we just need to
     // take care of voiding
     @NotNull
-    public static Pair<RecipeHolder<GTRecipe>, Integer> doParallelRecipes(@NotNull RecipeHolder<GTRecipe> currentRecipe,
+    public static Pair<GTRecipe, Integer> doParallelRecipes(@NotNull GTRecipe currentRecipe,
                                                                           @NotNull IRecipeLogicMachine machine,
                                                                           int parallelAmount, boolean modifyDuration) {
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
@@ -196,14 +196,13 @@ public class ParallelLogic {
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        int limitByOutput = ParallelLogic.limitByOutputMerging(currentRecipe.value(), machine, multiplierByInputs,
+        int limitByOutput = ParallelLogic.limitByOutputMerging(currentRecipe, machine, multiplierByInputs,
                 machine::canVoidRecipeOutputs);
         GTRecipe multiRecipe;
         if (limitByOutput > 0) {
-            multiRecipe = currentRecipe.value().copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
+            multiRecipe = currentRecipe.copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
             multiRecipe.parallels = limitByOutput;
-            currentRecipe = new RecipeHolder<>(currentRecipe.id(), multiRecipe);
-            return Pair.of(currentRecipe, limitByOutput);
+            return Pair.of(multiRecipe, limitByOutput);
         }
 
         return Pair.of(currentRecipe, limitByOutput);

@@ -60,18 +60,17 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
-                match = new RecipeHolder<>(match.id(), copied);
-                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
-                        GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
-                    setupRecipe(match);
+                var copied = match.copy(new ContentModifier(match.duration, 0));
+                if (copied.matchRecipe(this.machine).isSuccess() &&
+                        copied.matchTickRecipe(this.machine).isSuccess()) {
+                    setupRecipe(copied);
                 }
             }
         }
     }
 
     @Nullable
-    private RecipeHolder<GTRecipe> getFluidDrillRecipe() {
+    private GTRecipe getFluidDrillRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             var recipe = GTRecipeBuilder.ofRaw()
@@ -80,8 +79,8 @@ public class FluidDrillLogic extends RecipeLogic {
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .build();
-            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() &&
-                    GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
+            if (recipe.matchRecipe(getMachine()).isSuccess() &&
+                    recipe.matchTickRecipe(getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -120,18 +119,17 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            GTRecipe.postWorking(lastRecipe, this.machine);
-            GTRecipe.handleRecipeIO(lastRecipe, IO.OUT, this.machine, this.chanceCaches);
+            lastRecipe.postWorking(this.machine);
+            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
-            match = new RecipeHolder<>(match.id(), copied);
-            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
-                    GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
-                setupRecipe(match);
+            var copied = match.copy(new ContentModifier(match.duration, 0));
+            if (copied.matchRecipe(this.machine).isSuccess() &&
+                    copied.matchTickRecipe(this.machine).isSuccess()) {
+                setupRecipe(copied);
                 return;
             }
         }

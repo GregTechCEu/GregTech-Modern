@@ -52,8 +52,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @NotNull
     RecipeLogic getRecipeLogic();
 
-    default RecipeHolder<GTRecipe> fullModifyRecipe(RecipeHolder<GTRecipe> recipe) {
-        return doModifyRecipe(GTRecipe.trimRecipeOutputs(recipe, this.getOutputLimits()));
+    default GTRecipe fullModifyRecipe(GTRecipe recipe) {
+        return doModifyRecipe(recipe.trimRecipeOutputs(this.getOutputLimits()));
     }
 
     /**
@@ -64,7 +64,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default RecipeHolder<GTRecipe> doModifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    default GTRecipe doModifyRecipe(GTRecipe recipe) {
         return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
@@ -85,9 +85,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Called in {@link RecipeLogic#setupRecipe(RecipeHolder)} ()}
+     * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default boolean beforeWorking(@Nullable RecipeHolder<GTRecipe> recipe) {
+    default boolean beforeWorking(@Nullable GTRecipe recipe) {
         return self().getDefinition().getBeforeWorking().test(this, recipe);
     }
 
@@ -120,7 +120,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(RecipeHolder)} before setting up recipe.
+     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
      * 
      * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
      *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.

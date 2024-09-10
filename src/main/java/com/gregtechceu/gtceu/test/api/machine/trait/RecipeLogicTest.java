@@ -18,6 +18,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,7 +59,7 @@ public class RecipeLogicTest {
             return;
         }
 
-        RecipeHolder<GTRecipe> recipe = GTRecipeBuilder.ofRaw()
+        GTRecipe recipe = GTRecipeBuilder.ofRaw()
                 .id(GTCEu.id("test"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -68,7 +69,7 @@ public class RecipeLogicTest {
 
         if (!hasInjectedRecipe) {
             ((RecipeManagerAccessor) helper.getLevel().getRecipeManager()).getRawRecipes()
-                    .get(GTRecipeTypes.CHEMICAL_RECIPES).add(recipe);
+                    .get(GTRecipeTypes.CHEMICAL_RECIPES).add(new RecipeHolder<>(recipe.id, recipe));
             hasInjectedRecipe = true;
         }
 
@@ -95,7 +96,7 @@ public class RecipeLogicTest {
         helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s".formatted(stackCount));
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        RecipeHolder<GTRecipe> prev = arl.getLastRecipe();
+        GTRecipe prev = arl.getLastRecipe();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         arl.serverTick();

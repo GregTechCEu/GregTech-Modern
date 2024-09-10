@@ -100,14 +100,14 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
                                                         List<SizedFluidIngredient> left,
                                                         @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storages);
     }
 
     @Nullable
-    public static List<SizedFluidIngredient> handleIngredient(IO io, RecipeHolder<GTRecipe> recipe,
+    public static List<SizedFluidIngredient> handleIngredient(IO io, GTRecipe recipe,
                                                               List<SizedFluidIngredient> left,
                                                               boolean simulate, IO handlerIO,
                                                               CustomFluidTank[] storages) {

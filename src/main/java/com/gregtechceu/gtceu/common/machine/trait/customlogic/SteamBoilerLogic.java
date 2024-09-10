@@ -30,7 +30,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.STEAM_BOILER_RECIP
 public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
@@ -55,8 +55,8 @@ public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     @Override
-    public @Nullable List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
-        List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
+    public @Nullable List<GTRecipe> getRepresentativeRecipes() {
+        List<GTRecipe> recipes = new ArrayList<>();
         for (Item item : BuiltInRegistries.ITEM) {
             if (!FluidTransferHelper.getFluidContained(item.getDefaultInstance()).isEmpty()) {
                 continue;
@@ -64,7 +64,7 @@ public class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
             var burnTime = GTUtil.getItemBurnTime(item.getDefaultInstance());
             if (burnTime > 0) {
                 ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                RecipeHolder<GTRecipe> recipe = STEAM_BOILER_RECIPES.recipeBuilder(id)
+                GTRecipe recipe = STEAM_BOILER_RECIPES.recipeBuilder(id)
                         .inputItems(item)
                         .duration(burnTime * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                         .build();

@@ -196,11 +196,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
             if (largeBoilerMachine.throttle < 100) {
-                var copied = new RecipeHolder<>(recipe.id(), recipe.value().copy());
-                copied.value().duration = recipe.value().duration * 100 / largeBoilerMachine.throttle;
+                var copied = recipe.copy();
+                copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
                 return copied;
             }
             return recipe;

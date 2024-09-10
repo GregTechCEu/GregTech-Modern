@@ -75,11 +75,11 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
                                     .map(GTRecipeWrapper::new)
                                     .collect(Collectors.toList()));
 
-                    List<RecipeHolder<GTRecipe>> extraRecipes = gtRecipeType.getRepresentativeRecipes();
+                    List<GTRecipe> extraRecipes = gtRecipeType.getRepresentativeRecipes();
                     if (!extraRecipes.isEmpty()) {
                         registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
                                 extraRecipes.stream()
-                                        .map(GTRecipeWrapper::new)
+                                        .map(recipe ->new GTRecipeWrapper(new RecipeHolder<>(recipe.id, recipe)))
                                         .collect(Collectors.toList()));
                     }
                 }

@@ -163,14 +163,14 @@ public final class ResearchManager {
         private static final int DURATION = 100;
 
         @Override
-        public RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+        public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
             var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream()
                     .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
                     .toArray(IItemHandlerModifiable[]::new);
             var inputs = new ItemTransferList(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
-                RecipeHolder<GTRecipe> recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
+                GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
                 if (recipe != null) return recipe;
 
                 return createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
@@ -178,7 +178,7 @@ public final class ResearchManager {
             return null;
         }
 
-        private RecipeHolder<GTRecipe> createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
+        private GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
             DataComponentPatch components = second.getComponentsPatch();
 
             // Both must be data items
@@ -196,7 +196,7 @@ public final class ResearchManager {
 
         @Nullable
         @Override
-        public List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
+        public List<GTRecipe> getRepresentativeRecipes() {
             ItemStack copiedStick = GTItems.TOOL_DATA_STICK.asStack();
             copiedStick.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.scanner.copy_stick_from"));
             ItemStack emptyStick = GTItems.TOOL_DATA_STICK.asStack();

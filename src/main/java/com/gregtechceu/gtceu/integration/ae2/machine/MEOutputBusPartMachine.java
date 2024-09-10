@@ -132,7 +132,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         }
 
         @Override
-        public @Nullable List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe,
+        public @Nullable List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe,
                                                                  List<SizedIngredient> left,
                                                                  @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, handlerIO, getTransfer());

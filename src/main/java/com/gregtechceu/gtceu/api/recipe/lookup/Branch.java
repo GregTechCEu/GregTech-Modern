@@ -14,25 +14,25 @@ import java.util.stream.Stream;
 public class Branch {
 
     // Keys on this have *(should)* have unique hashcodes.
-    private Map<AbstractMapIngredient, Either<RecipeHolder<GTRecipe>, Branch>> nodes;
+    private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> nodes;
     // Keys on this have collisions, and must be differentiated by equality.
-    private Map<AbstractMapIngredient, Either<RecipeHolder<GTRecipe>, Branch>> specialNodes;
+    private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> specialNodes;
 
     public Stream<GTRecipe> getRecipes(boolean filterHidden) {
         Stream<GTRecipe> stream = null;
         if (nodes != null) {
             stream = nodes.values().stream()
-                    .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                    .flatMap(either -> either.map(recipe -> Stream.of(recipe),
                             right -> right.getRecipes(filterHidden)));
         }
         if (specialNodes != null) {
             if (stream == null) {
                 stream = specialNodes.values().stream()
-                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                        .flatMap(either -> either.map(recipe -> Stream.of(recipe),
                                 right -> right.getRecipes(filterHidden)));
             } else {
                 stream = Stream.concat(stream, specialNodes.values().stream()
-                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                        .flatMap(either -> either.map(recipe -> Stream.of(recipe),
                                 right -> right.getRecipes(filterHidden))));
             }
         }
@@ -50,7 +50,7 @@ public class Branch {
     }
 
     @NotNull
-    public Map<AbstractMapIngredient, Either<RecipeHolder<GTRecipe>, Branch>> getNodes() {
+    public Map<AbstractMapIngredient, Either<GTRecipe, Branch>> getNodes() {
         if (nodes == null) {
             nodes = new Object2ObjectOpenHashMap<>(2);
         }
@@ -58,7 +58,7 @@ public class Branch {
     }
 
     @NotNull
-    public Map<AbstractMapIngredient, Either<RecipeHolder<GTRecipe>, Branch>> getSpecialNodes() {
+    public Map<AbstractMapIngredient, Either<GTRecipe, Branch>> getSpecialNodes() {
         if (specialNodes == null) {
             specialNodes = new Object2ObjectOpenHashMap<>(2);
         }

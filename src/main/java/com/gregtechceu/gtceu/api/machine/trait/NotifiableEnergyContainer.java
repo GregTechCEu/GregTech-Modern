@@ -304,7 +304,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<Long> left,
+    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left,
                                         @Nullable String slotName,
                                         boolean simulate) {
         IEnergyContainer capability = this;

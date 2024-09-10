@@ -123,7 +123,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * @return modified recipe.
      *         null -- this recipe is unavailable
      */
-    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
     }
 

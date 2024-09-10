@@ -27,7 +27,7 @@ import java.util.Objects;
 public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)

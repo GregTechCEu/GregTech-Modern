@@ -15,5 +15,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface RecipeModifier {
 
     @Nullable
-    RecipeHolder<GTRecipe> apply(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe);
+    GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe);
 }

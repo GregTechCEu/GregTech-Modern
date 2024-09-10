@@ -452,14 +452,17 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                     }
                 }
 
-                // noinspection unchecked
                 Stream.concat(
                         recipesByName.values().stream()
                                 .filter(recipeHolder -> recipeHolder.value().getType() == gtRecipeType),
                         proxyRecipes.entrySet().stream()
                                 .flatMap(entry -> entry.getValue().stream()))
                         .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipe));
+                        .forEach(holder -> {
+                            GTRecipe recipe = (GTRecipe) holder.value();
+                            recipe.setId(holder.id());
+                            gtRecipeType.getLookup().addRecipe(recipe);
+                        });
             }
         }
     }

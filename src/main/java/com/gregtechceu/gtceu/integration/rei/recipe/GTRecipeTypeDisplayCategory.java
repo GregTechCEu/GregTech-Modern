@@ -79,10 +79,10 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
                     registry.registerRecipeFiller(GTRecipe.class, gtRecipeType, GTRecipeDisplay::new);
 
                     if (gtRecipeType.isScanner()) {
-                        List<RecipeHolder<GTRecipe>> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
-                        if (!scannerRecipes.isEmpty()) {
-                            scannerRecipes.stream()
-                                    .map(GTRecipeDisplay::new)
+                        List<GTRecipe> extraRecipes = gtRecipeType.getRepresentativeRecipes();
+                        if (!extraRecipes.isEmpty()) {
+                            extraRecipes.stream()
+                                    .map(recipe -> new GTRecipeDisplay(new RecipeHolder<>(recipe.id, recipe)))
                                     .forEach(registry::add);
                         }
                     }

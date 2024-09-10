@@ -190,7 +190,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final RecipeHolder<GTRecipe> doModifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
@@ -199,7 +199,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Nullable
-    protected RecipeHolder<GTRecipe> getRealRecipe(RecipeHolder<GTRecipe> recipe) {
+    protected GTRecipe getRealRecipe(GTRecipe recipe) {
         return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
@@ -245,7 +245,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking(@Nullable RecipeHolder<GTRecipe> recipe) {
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;

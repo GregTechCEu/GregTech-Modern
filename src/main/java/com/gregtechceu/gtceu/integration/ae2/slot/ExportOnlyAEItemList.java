@@ -93,7 +93,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, getTransfer());
     }

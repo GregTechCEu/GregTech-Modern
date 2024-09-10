@@ -60,7 +60,7 @@ public interface IMaintenanceMachine extends IMultiPart {
     void setTimeActive(int time);
 
     /**
-     * Duration modifier for recipe. {@link IMaintenanceMachine#modifyRecipe(RecipeHolder)}
+     * Duration modifier for recipe. {@link IMaintenanceMachine#modifyRecipe(GTRecipe)}
      * It's configurable in the Configurable Maintenance Part.
      */
     default float getDurationMultiplier() {
@@ -142,15 +142,15 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    default GTRecipe modifyRecipe(GTRecipe recipe) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (hasMaintenanceProblems()) {
                 return null;
             }
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
-                recipe = new RecipeHolder<>(recipe.id(), recipe.value().copy());
-                recipe.value().duration = (int) (recipe.value().duration * durationMultiplier);
+                recipe = recipe.copy();
+                recipe.duration = (int) (recipe.duration * durationMultiplier);
             }
         }
         return recipe;

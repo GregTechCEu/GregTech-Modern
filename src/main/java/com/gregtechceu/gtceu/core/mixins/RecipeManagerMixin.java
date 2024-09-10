@@ -59,17 +59,19 @@ public abstract class RecipeManagerMixin {
                 }
 
                 if (this.byType.containsKey(gtRecipeType)) {
-                    // noinspection unchecked
                     Stream.concat(
                             this.byType.get(gtRecipeType).stream(),
                             proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream()))
                             .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                            .forEach(gtRecipeHolder -> gtRecipeType.getLookup()
-                                    .addRecipe((RecipeHolder<GTRecipe>) gtRecipeHolder));
+                            .forEach(holder -> {
+                                GTRecipe recipe = (GTRecipe) holder.value();
+                                recipe.setId(holder.id());
+                                gtRecipeType.getLookup().addRecipe(recipe);
+                            });
                 } else if (!proxyRecipes.isEmpty()) {
                     proxyRecipes.values().stream()
                             .flatMap(List::stream)
-                            .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+                            .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe.value()));
                 }
             }
         }

@@ -10,10 +10,12 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -41,6 +43,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class GTRecipe implements Recipe<RecipeInput> {
 
     public final GTRecipeType recipeType;
+    @Getter
+    @Setter
+    public ResourceLocation id;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
@@ -76,7 +81,28 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     @NotNull CompoundTag data,
                     int duration,
                     boolean isFuel) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, isFuel);
+    }
+
+    public GTRecipe(GTRecipeType recipeType,
+                    ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    boolean isFuel) {
         this.recipeType = recipeType;
+        this.id = id;
 
         this.inputs = inputs;
         this.outputs = outputs;
@@ -113,7 +139,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType,
+        return new GTRecipe(recipeType, id,
                 copyContents(inputs, null), copyContents(outputs, null),
                 copyContents(tickInputs, null), copyContents(tickOutputs, null),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
@@ -126,7 +152,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType,
+        var copied = new GTRecipe(recipeType, id,
                 copyContents(inputs, modifier), copyContents(outputs, modifier),
                 copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
@@ -189,33 +215,33 @@ public class GTRecipe implements Recipe<RecipeInput> {
         return tickOutputs.getOrDefault(capability, Collections.emptyList());
     }
 
-    public static ActionResult matchRecipe(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
-        return matchRecipe(recipe, holder, false);
+    public ActionResult matchRecipe(IRecipeCapabilityHolder holder) {
+        return matchRecipe(holder, false);
     }
 
-    public static ActionResult matchTickRecipe(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
-        return recipe.value().hasTick() ? matchRecipe(recipe, holder, true) : ActionResult.SUCCESS;
+    public ActionResult matchTickRecipe(IRecipeCapabilityHolder holder) {
+        return this.hasTick() ? matchRecipe(holder, true) : ActionResult.SUCCESS;
     }
 
-    private static ActionResult matchRecipe(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder,
+    private ActionResult matchRecipe(IRecipeCapabilityHolder holder,
                                             boolean tick) {
         if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
 
-        var result = matchRecipeContents(recipe, IO.IN, holder,
-                tick ? recipe.value().tickInputs : recipe.value().inputs, tick);
+        var result = matchRecipeContents(IO.IN, holder,
+                tick ? this.tickInputs : this.inputs, tick);
         if (!result.isSuccess()) return result;
 
-        result = matchRecipeContents(recipe, IO.OUT, holder, tick ? recipe.value().tickOutputs : recipe.value().outputs,
+        result = matchRecipeContents(IO.OUT, holder, tick ? this.tickOutputs : this.outputs,
                 tick);
         if (!result.isSuccess()) return result;
 
         return ActionResult.SUCCESS;
     }
 
-    public static ActionResult matchRecipeContents(RecipeHolder<GTRecipe> recipe, IO io, IRecipeCapabilityHolder holder,
+    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
                                                    Map<RecipeCapability<?>, List<Content>> contents,
                                                    boolean isTick) {
-        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, Collections.emptyMap(), true);
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, Collections.emptyMap(), true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
             if (result == null)
@@ -236,32 +262,30 @@ public class GTRecipe implements Recipe<RecipeInput> {
         return ActionResult.SUCCESS;
     }
 
-    public static boolean handleTickRecipeIO(RecipeHolder<GTRecipe> recipe, IO io, IRecipeCapabilityHolder holder,
+    public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder,
                                              Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(recipe, io, holder, true,
-                io == IO.IN ? recipe.value().tickInputs : recipe.value().tickOutputs, chanceCaches);
+        return handleRecipe(io, holder, true, io == IO.IN ? this.tickInputs : this.tickOutputs, chanceCaches);
     }
 
-    public static boolean handleRecipeIO(RecipeHolder<GTRecipe> recipe, IO io, IRecipeCapabilityHolder holder,
+    public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder,
                                          Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        return handleRecipe(recipe, io, holder, false, io == IO.IN ? recipe.value().inputs : recipe.value().outputs,
-                chanceCaches);
+        return handleRecipe(io, holder, false, io == IO.IN ? this.inputs : this.outputs, chanceCaches);
     }
 
-    public static boolean handleRecipe(RecipeHolder<GTRecipe> recipe, IO io, IRecipeCapabilityHolder holder,
-                                       boolean isTick,
-                                       Map<RecipeCapability<?>, List<Content>> contents,
-                                       Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, false);
+    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder,
+                                boolean isTick,
+                                Map<RecipeCapability<?>, List<Content>> contents,
+                                Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, chanceCaches, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handled = runner.handle(entry);
             if (handled == null)
                 continue;
 
             if (handled.result().content != null || !handled.result().slots.isEmpty()) {
-                GTCEu.LOGGER.warn("io error while handling recipe {} outputs. holder: {}", recipe, holder);
+                GTCEu.LOGGER.warn("io error while handling recipe {} outputs. holder: {}", this.id, holder);
                 return false;
             }
         }
@@ -272,60 +296,60 @@ public class GTRecipe implements Recipe<RecipeInput> {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
     }
 
-    public static void preWorking(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
-        handlePre(recipe, recipe.value().inputs, holder, IO.IN);
-        handlePre(recipe, recipe.value().outputs, holder, IO.OUT);
+    public void preWorking(IRecipeCapabilityHolder holder) {
+        handlePre(this.inputs, holder, IO.IN);
+        handlePre(this.outputs, holder, IO.OUT);
     }
 
-    public static void postWorking(RecipeHolder<GTRecipe> recipe, IRecipeCapabilityHolder holder) {
-        handlePost(recipe, recipe.value().inputs, holder, IO.IN);
-        handlePost(recipe, recipe.value().outputs, holder, IO.OUT);
+    public void postWorking(IRecipeCapabilityHolder holder) {
+        handlePost(this.inputs, holder, IO.IN);
+        handlePost(this.outputs, holder, IO.OUT);
     }
 
-    public static void handlePre(RecipeHolder<GTRecipe> recipe, Map<RecipeCapability<?>, List<Content>> contents,
+    public void handlePre(Map<RecipeCapability<?>, List<Content>> contents,
                                  IRecipeCapabilityHolder holder, IO io) {
         contents.forEach(((capability, tuples) -> {
             if (holder.getCapabilitiesProxy().contains(io, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(io, capability)) {
-                    capabilityProxy.preWorking(holder, io, recipe);
+                    capabilityProxy.preWorking(holder, io, this);
                 }
             } else if (holder.getCapabilitiesProxy().contains(IO.BOTH, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(IO.BOTH, capability)) {
-                    capabilityProxy.preWorking(holder, io, recipe);
+                    capabilityProxy.preWorking(holder, io, this);
                 }
             }
         }));
     }
 
-    public static void handlePost(RecipeHolder<GTRecipe> recipe, Map<RecipeCapability<?>, List<Content>> contents,
+    public void handlePost(Map<RecipeCapability<?>, List<Content>> contents,
                                   IRecipeCapabilityHolder holder, IO io) {
         contents.forEach(((capability, tuples) -> {
             if (holder.getCapabilitiesProxy().contains(io, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(io, capability)) {
-                    capabilityProxy.postWorking(holder, io, recipe);
+                    capabilityProxy.postWorking(holder, io, this);
                 }
             } else if (holder.getCapabilitiesProxy().contains(IO.BOTH, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(IO.BOTH, capability)) {
-                    capabilityProxy.postWorking(holder, io, recipe);
+                    capabilityProxy.postWorking(holder, io, this);
                 }
             }
         }));
     }
 
-    public static ActionResult checkConditions(RecipeHolder<GTRecipe> recipe, @NotNull RecipeLogic recipeLogic) {
-        if (recipe.value().conditions.isEmpty()) return ActionResult.SUCCESS;
+    public ActionResult checkConditions(@NotNull RecipeLogic recipeLogic) {
+        if (this.conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<RecipeConditionType<?>, List<RecipeCondition>> or = new HashMap<>();
-        for (RecipeCondition condition : recipe.value().conditions) {
+        for (RecipeCondition condition : this.conditions) {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
-            } else if (condition.test(recipe.value(), recipeLogic) == condition.isReverse()) {
+            } else if (condition.test(this, recipeLogic) == condition.isReverse()) {
                 return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails").append(": ")
                         .append(condition.getTooltips()));
             }
         }
         for (List<RecipeCondition> conditions : or.values()) {
             if (conditions.stream()
-                    .allMatch(condition -> condition.test(recipe.value(), recipeLogic) == condition.isReverse())) {
+                    .allMatch(condition -> condition.test(this, recipeLogic) == condition.isReverse())) {
                 return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails"));
             }
         }
@@ -335,16 +359,15 @@ public class GTRecipe implements Recipe<RecipeInput> {
     /**
      * Trims the recipe outputs, chanced outputs, and fluid outputs based on the performing Machine's trim limit.
      */
-    public static RecipeHolder<GTRecipe> trimRecipeOutputs(RecipeHolder<GTRecipe> recipe,
-                                                           Map<RecipeCapability<?>, Integer> trimLimits) {
+    public GTRecipe trimRecipeOutputs(Map<RecipeCapability<?>, Integer> trimLimits) {
         // Fast return early if no trimming desired
         if (trimLimits.isEmpty() || trimLimits.values().stream().allMatch(integer -> integer == -1)) {
-            return recipe;
+            return this;
         }
 
-        GTRecipe current = recipe.value().copy();
+        GTRecipe current = this.copy();
 
-        GTRecipeBuilder builder = new GTRecipeBuilder(current, recipe.value().recipeType);
+        GTRecipeBuilder builder = new GTRecipeBuilder(current, this.recipeType);
 
         builder.output.clear();
         builder.tickOutput.clear();
@@ -366,8 +389,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
      * @param trimLimits The limit(s) on the number of outputs, -1 for disabled.
      * @return All recipe outputs, limited by some factor(s)
      */
-    public static Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
-                                                                 Map<RecipeCapability<?>, Integer> trimLimits) {
+    public Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
+                                                          Map<RecipeCapability<?>, Integer> trimLimits) {
         Map<RecipeCapability<?>, List<Content>> outputs = new HashMap<>();
 
         Set<RecipeCapability<?>> trimmed = new HashSet<>();
