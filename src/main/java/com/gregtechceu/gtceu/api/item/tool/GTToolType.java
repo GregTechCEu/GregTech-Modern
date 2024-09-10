@@ -45,7 +45,7 @@ public class GTToolType {
             .toolTag(ItemTags.SWORDS)
             .toolStats(b -> b
                     .tool(new Tool(List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/sword"), 1.5F),
-                            Tool.Rule.overrideSpeed(BlockTags.SWORD_EFFICIENT, 1.5F)), -2.4F, 1))
+                            Tool.Rule.overrideSpeed(BlockTags.SWORD_EFFICIENT, 1.5F)), 1.0F, 1))
                     .attacking().attackDamage(3.0F))
             .toolClassNames("sword")
             .build();
@@ -53,21 +53,21 @@ public class GTToolType {
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .toolStats(b -> b
-                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), -2.8F, 1))
+                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), 1.0F, 1))
                     .blockBreaking().attackDamage(1.0F)/* .behaviors(TorchPlaceBehavior.INSTANCE) */)
             .toolClassNames("pickaxe")
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(ItemTags.SHOVELS)
             .toolStats(b -> b
-                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)), -3.0F, 1))
+                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)), 1.0F, 1))
                     .blockBreaking().attackDamage(1.5F).behaviors(GrassPathBehavior.INSTANCE))
             .toolClassNames("shovel")
             .build();
     public static final GTToolType AXE = GTToolType.builder("axe")
             .toolTag(ItemTags.AXES)
             .toolStats(
-                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_AXE, 1.5F)), -3.2F, 1))
+                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_AXE, 1.5F)), 1.0F, 1))
                             .blockBreaking()
                             .attackDamage(5.0F).baseEfficiency(2.0F)
                             .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE,
@@ -77,7 +77,7 @@ public class GTToolType {
     public static final GTToolType HOE = GTToolType.builder("hoe")
             .toolTag(TagUtil.createItemTag("hoes", true))
             .toolStats(
-                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_HOE, 1.5F)), -1.0F, 1))
+                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_HOE, 1.5F)), 1.0F, 1))
                             .cannotAttack().behaviors(HoeGroundBehavior.INSTANCE))
             .toolClassNames("hoe")
             .build();
@@ -85,7 +85,7 @@ public class GTToolType {
     public static final GTToolType MINING_HAMMER = GTToolType.builder("mining_hammer")
             .toolTag(TagUtil.createItemTag("tools/mining_hammers", false))
             .toolStats(b -> b
-                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), -3.2F, 1))
+                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)), 1.0F, 1))
                     .blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F)
                     .durabilityMultiplier(3.0F)
@@ -95,7 +95,7 @@ public class GTToolType {
     public static final GTToolType SPADE = GTToolType.builder("spade")
             .toolTag(TagUtil.createItemTag("tools/spades", false))
             .toolStats(b -> b
-                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)), -3.2F, 1))
+                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)), 1.0F, 1))
                     .blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F)
                     .durabilityMultiplier(3.0F)
@@ -105,7 +105,7 @@ public class GTToolType {
     public static final GTToolType SCYTHE = GTToolType.builder("scythe")
             .toolTag(TagUtil.createItemTag("tools/scythes", false))
             .toolStats(
-                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_HOE, 1.5F)), -3.0F, 1))
+                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_HOE, 1.5F)), 1.0F, 1))
                             .blockBreaking().attacking()
                             .attackDamage(5.0F).durabilityMultiplier(3.0F)
                             .aoe(2, 2, 2)
@@ -120,7 +120,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(
                             List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/saw", false), 1.5F)),
-                            -2.6F, 1))
+                            1.0F, 1))
                     .crafting().damagePerCraftingAction(2)
                     .attackDamage(-1.0F)
                     .behaviors(HarvestIceBehavior.INSTANCE))
@@ -133,7 +133,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/hammer", false), 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F)),
-                    -2.8F, 1))
+                    1.0F, 1))
                     .blockBreaking().crafting().damagePerCraftingAction(2)
                     .attackDamage(1.0F)
                     .behaviors(new EntityDamageBehavior(2.0F, CustomTags.IRON_GOLEMS)))
@@ -143,7 +143,7 @@ public class GTToolType {
             .build();
     public static final GTToolType SOFT_MALLET = GTToolType.builder("mallet")
             .toolTag(TagUtil.createItemTag("tools/mallets", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -2.4F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .crafting().cannotAttack())
             .sound(GTSoundEntries.SOFT_MALLET_TOOL)
             .symbol('r')
@@ -152,7 +152,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/wrenches", false))
             .toolTag(TagUtil.createItemTag("tools/wrench", false))
             .toolStats(b -> b
-                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(CustomTags.MINEABLE_WITH_WRENCH, 1.5F)), -2.8F, 1))
+                    .tool(new Tool(List.of(Tool.Rule.minesAndDrops(CustomTags.MINEABLE_WITH_WRENCH, 1.5F)), 1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F)
                     .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
@@ -162,7 +162,7 @@ public class GTToolType {
             .build();
     public static final GTToolType FILE = GTToolType.builder("file")
             .toolTag(TagUtil.createItemTag("tools/files", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -2.4F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .crafting().damagePerCraftingAction(4)
                     .cannotAttack())
             .sound(GTSoundEntries.FILE_TOOL)
@@ -173,7 +173,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(
                             List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/crowbar", false), 1.5F)),
-                            -2.4F, 1))
+                            1.0F, 1))
                     .blockBreaking().crafting()
                     .attackDamage(2.0F)
                     .sneakBypassUse().behaviors(RotateRailBehavior.INSTANCE))
@@ -191,7 +191,7 @@ public class GTToolType {
             .build();
     public static final GTToolType MORTAR = GTToolType.builder("mortar")
             .toolTag(TagUtil.createItemTag("tools/mortars", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -2.4F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .crafting().damagePerCraftingAction(2).cannotAttack())
             .sound(GTSoundEntries.MORTAR_TOOL)
             .symbol('m')
@@ -201,7 +201,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(List
                             .of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                            -2.4F, 1))
+                            1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F))
             .sound(GTSoundEntries.WIRECUTTER_TOOL)
@@ -219,14 +219,14 @@ public class GTToolType {
             .build();
     public static final GTToolType BUTCHERY_KNIFE = GTToolType.builder("butchery_knife")
             .toolTag(TagUtil.createItemTag("tools/butchery_knives", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -1.3F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .attacking().attackDamage(1.5F).defaultEnchantment(Enchantments.LOOTING, 3))
             .build();
     // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
     // GTCEu.id("item/tools/hammer"));
     public static final GTToolType PLUNGER = GTToolType.builder("plunger")
             .toolTag(TagUtil.createItemTag("tools/plungers", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -2.4F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .cannotAttack().sneakBypassUse()
                     .behaviors(PlungerBehavior.INSTANCE))
             .sound(GTSoundEntries.PLUNGER_TOOL)
@@ -235,7 +235,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/shears", false))
             .toolStats(b -> b.tool(
                     new Tool(List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/shears", false), 1.5F)),
-                            -1.3F, 1)))
+                            1.0F, 1)))
             .build();
     public static final GTToolType DRILL_LV = GTToolType.builder("lv_drill")
             .idFormat("lv_%s_drill")
@@ -247,7 +247,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)),
-                    -3.2F, 1))
+                    1.0F, 1))
                     .blockBreaking().aoe(1, 1, 0)
                     .attackDamage(1.0F).durabilityMultiplier(3.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
@@ -266,7 +266,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)),
-                    -3.2F, 1))
+                    1.0F, 1))
                     .blockBreaking().aoe(1, 1, 2)
                     .attackDamage(1.0F).durabilityMultiplier(4.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV)
@@ -285,7 +285,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)),
-                    -3.2F, 1))
+                    1.0F, 1))
                     .blockBreaking().aoe(2, 2, 4)
                     .attackDamage(1.0F).durabilityMultiplier(5.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
@@ -304,7 +304,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)),
-                    -3.2F, 1))
+                    1.0F, 1))
                     .blockBreaking().aoe(3, 3, 6)
                     .attackDamage(1.0F).durabilityMultiplier(6.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_EV)
@@ -323,7 +323,7 @@ public class GTToolType {
                     List.of(
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_PICKAXE, 1.5F),
                             Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_SHOVEL, 1.5F)),
-                    -3.2F, 1))
+                    1.0F, 1))
                     .blockBreaking().aoe(4, 4, 8)
                     .attackDamage(1.0F).durabilityMultiplier(7.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
@@ -337,7 +337,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("axes", true))
             .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
             .toolStats(
-                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_AXE, 1.5F)), -3.2F, 1))
+                    b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(BlockTags.MINEABLE_WITH_AXE, 1.5F)), 1.0F, 1))
                             .blockBreaking()
                             .efficiencyMultiplier(2.0F)
                             .attackDamage(5.0F)
@@ -355,7 +355,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(
                             List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wrench", false), 1.5F)),
-                            -2.8F, 1))
+                            1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(2.0F)
                     .attackDamage(1.0F)
@@ -373,7 +373,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(
                             List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wrench", false), 1.5F)),
-                            -2.8F, 1))
+                            1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(3.0F)
                     .attackDamage(1.0F)
@@ -391,7 +391,7 @@ public class GTToolType {
             .toolStats(b -> b
                     .tool(new Tool(
                             List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wrench", false), 1.5F)),
-                            -2.8F, 1))
+                            1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F)
                     .attackDamage(1.0F)
@@ -407,7 +407,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
                     List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    1.0F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -420,7 +420,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
                     List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    1.0F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -433,7 +433,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
             .toolStats(b -> b.tool(new Tool(
                     List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wire_cutter", false), 1.5F)),
-                    -2.4F, 1)).blockBreaking().crafting().sneakBypassUse()
+                    1.0F, 1)).blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -444,7 +444,7 @@ public class GTToolType {
             .idFormat("lv_%s_buzzsaw")
             .toolTag(TagUtil.createItemTag("tools/saws", false))
             .toolTag(TagUtil.createItemTag("tools/buzzsaws", false))
-            .toolStats(b -> b.tool(new Tool(List.of(), -3.2F, 1))
+            .toolStats(b -> b.tool(new Tool(List.of(), 1.0F, 1))
                     .crafting().attackDamage(1.5F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.CHAINSAW_TOOL, true)
