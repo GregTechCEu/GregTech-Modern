@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -831,6 +832,7 @@ public class TagPrefix {
                           Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation,
                           boolean isDoubleDrops, boolean isSand, boolean shouldDropAsItem) {}
 
+    @HideFromJS
     public record BlockProperties(Supplier<Supplier<RenderType>> renderType,
                                   UnaryOperator<BlockBehaviour.Properties> properties) {}
 
@@ -992,6 +994,7 @@ public class TagPrefix {
         return this;
     }
 
+    @HideFromJS
     public TagPrefix blockProperties(Supplier<Supplier<RenderType>> renderType,
                                      UnaryOperator<BlockBehaviour.Properties> properties) {
         return this.blockProperties(new BlockProperties(renderType, properties));

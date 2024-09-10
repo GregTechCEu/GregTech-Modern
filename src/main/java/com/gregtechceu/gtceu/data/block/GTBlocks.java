@@ -50,6 +50,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -844,11 +845,13 @@ public class GTBlocks {
                 () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
 
+    @HideFromJS
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture,
                                                             Supplier<Supplier<RenderType>> type) {
         return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
+    @HideFromJS
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier,
                                                       ResourceLocation texture,
@@ -862,6 +865,7 @@ public class GTBlocks {
                 properties, type);
     }
 
+    @HideFromJS
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier,
                                                       NonNullSupplier<? extends Block> properties,
