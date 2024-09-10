@@ -34,7 +34,7 @@ public class GTRegistryEventJS<K, V> implements KubeStartupEvent {
         return b;
     }
 
-    public BuilderBase<? extends V> create(String id, String type, Object[] args) {
+    public BuilderBase<? extends V> create(String id, String type, Object... args) {
         var t = registry.types.get(type);
 
         if (t == null) {
@@ -74,7 +74,7 @@ public class GTRegistryEventJS<K, V> implements KubeStartupEvent {
         return b;
     }
 
-    public BuilderBase<? extends V> create(String id, Object[] args) {
+    public BuilderBase<? extends V> create(String id, Object... args) {
         var t = registry.getDefaultType();
 
         if (t == null) {
