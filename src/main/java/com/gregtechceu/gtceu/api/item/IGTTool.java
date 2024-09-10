@@ -30,17 +30,20 @@ import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -117,7 +120,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         ItemStack instance = new ItemStack(asItem());
 
         ToolProperty toolStats = getMaterial().getProperty(PropertyKey.TOOL);
-        HolderLookup<Enchantment> lookup = GTRegistries.builtinRegistry().lookup(Registries.ENCHANTMENT).orElse(null);
+        RegistryAccess access = GTRegistries.builtinRegistry();
+        if (LDLib.isRemote()) {
+            if (Minecraft.getInstance().getConnection() != null) {
+                access = Minecraft.getInstance().getConnection().registryAccess();
+            }
+        }
+        HolderLookup<Enchantment> lookup = access.lookup(Registries.ENCHANTMENT).orElse(null);
         if (lookup == null) {
             return instance;
         }
