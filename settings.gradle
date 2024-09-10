@@ -48,11 +48,10 @@ dependencyResolutionManagement {
         def configurationVersion = "5616143"
         def ldLibVersion = "1.0.26.c"
         def shimmerVersion = "0.2.2"
-        def neogradleVersion = "7.0.158"
+        def modDevGradleVersion = "2.0.28-beta"
         def lombokPluginVersion = "8.7.1"
 
         forge {
-            version("forgeShortVersion", neoForgeVersion)
             def neoForge = version("neoForge", "${neoForgeVersion}")
             library("neoForge", "net.neoforged", "neoforge").versionRef(neoForge)
 
@@ -125,8 +124,8 @@ dependencyResolutionManagement {
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)
 
-            def neogradle = version("neogradle", neogradleVersion)
-            plugin("neogradle", "net.neoforged.gradle.userdev").versionRef(neogradle)
+            def modDevGradle = version("modDevGradle", modDevGradleVersion)
+            plugin("modDevGradle", "net.neoforged.moddev").versionRef(modDevGradle)
 
             def lombok = version("lombok", lombokPluginVersion)
             plugin("lombok", "io.freefair.lombok").versionRef(lombok)

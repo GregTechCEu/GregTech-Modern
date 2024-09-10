@@ -11,8 +11,10 @@ def mod_url = getConfig("mod_url")
 def mod_issue_tracker = getConfig("mod_issue_tracker")
 def loader_version = getConfig("loader_version")
 
-tasks.withType(ProcessResources).configureEach {
-    var forgeVers = forge.versions.forgeShortVersion.get().split("\\.")
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var forgeVers = forge.versions.neoForge.get().split("\\.")
     var replaceProperties = [
             version             : version,
             mod_id              : mod_id,
@@ -33,8 +35,12 @@ tasks.withType(ProcessResources).configureEach {
             mod_issue_tracker   : mod_issue_tracker
     ]
     inputs.properties replaceProperties
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties + [project: project]
-    }
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
 }
+// Include the output of "generateModMetadata" as an input directory for the build
+// this works with both building through Gradle and the IDE.
+sourceSets.main.resources.srcDir generateModMetadata
+// To avoid having to run "generateModMetadata" manually, make it run on every project reload
+neoForge.ideSyncTask generateModMetadata

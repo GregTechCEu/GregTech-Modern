@@ -1,9 +1,7 @@
-tasks.jar {
-    archiveClassifier = "slim"
-}
 
-tasks.jarJar {
-    archiveClassifier.convention(null)
+tasks.register('slimJar', Jar) {
+    archiveClassifier = "slim"
+    from sourceSets.main.output
 }
 
 tasks.register('sourcesJar', Jar) {
@@ -12,4 +10,6 @@ tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
 }
 
-archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
+base {
+    archivesName = "${project.name}-${libs.versions.minecraft.get()}"
+}
