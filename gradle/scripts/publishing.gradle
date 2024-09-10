@@ -1,6 +1,6 @@
 artifacts {
-    archives tasks.jar
-    archives tasks.slimJar
+    archives tasks.reobfJar
+    archives tasks.reobfSlimJar
     archives tasks.sourcesJar
 }
 

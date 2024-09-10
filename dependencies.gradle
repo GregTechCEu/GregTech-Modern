@@ -23,7 +23,7 @@ dependencies {
     modCompileOnly forge.rei.forge
 
     // EMI
-    modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
+    //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
     modImplementation forge.emi
 
     // TOP
@@ -43,11 +43,14 @@ dependencies {
     modCompileOnly(forge.almostUnified.forge)
 
     // KJS
-    modImplementation forge.kubejs
+    modImplementation(forge.kubejs) { transitive = false }
+    modImplementation(forge.architectury)
+    modImplementation(forge.rhino)
 
-    // Mixin Extras
+    // Mixin (& Extras)
     api(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
     jarJar("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}")
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 
     // Configuration
     modApi(forge.configuration)

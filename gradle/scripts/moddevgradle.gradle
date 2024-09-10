@@ -2,6 +2,11 @@ static def isJetBrainsRuntime() {
     return System.getProperty('java.vm.vendor').contains('JetBrains')
 }
 
+mixin {
+    add sourceSets.main, "gtceu.refmap.json"
+    config 'gtceu.mixins.json'
+}
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = forge.versions.minecraftForge.get()
@@ -60,7 +65,7 @@ neoForge {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            logLevel = org.slf4j.event.Level.DEBUG
+            logLevel = org.slf4j.event.Level.INFO
         }
     }
 

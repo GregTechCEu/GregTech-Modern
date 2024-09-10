@@ -30,6 +30,8 @@ dependencyResolutionManagement {
         def emiVersion = "1.1.13"
         def ae2Version = "15.0.18"
         def kjsVersion = "2001.6.4-build.120"
+        def architecturyVersion = "9.2.14"
+        def rhinoVersion = "2001.2.3-build.6"
         def auVersion = "1.20.1-0.6.0"
 
         // Forge
@@ -101,6 +103,10 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+            def architectury = version("architectury", architecturyVersion)
+            library("architectury", "dev.architectury", "architectury-forge").versionRef(architectury)
+            def rhino = version("rhino", rhinoVersion)
+            library("rhino", "dev.latvian.mods", "rhino-forge").versionRef(rhino)
 
             def mixinextras = version("mixinextras", mixinextrasVersion)
             library("mixinextras-forge", "io.github.llamalad7", "mixinextras-forge").versionRef(mixinextras)

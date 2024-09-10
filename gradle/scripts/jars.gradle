@@ -1,6 +1,12 @@
 tasks.register('slimJar', Jar) {
-    archiveClassifier = "slim"
+    archiveClassifier = "dev-slim"
     from sourceSets.main.output
+}
+
+obfuscation {
+    reobfuscate(tasks.named('slimJar'), sourceSets.main) {
+        archiveClassifier = "slim"
+    }
 }
 
 tasks.register('sourcesJar', Jar) {
