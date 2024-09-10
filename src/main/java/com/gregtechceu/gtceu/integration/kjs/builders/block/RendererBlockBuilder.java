@@ -37,10 +37,7 @@ public class RendererBlockBuilder extends BlockBuilder {
     }
 
     @Override
-    protected void generateItemModelJson(ModelGenerator m) {}
-
-    @Override
-    protected void generateBlockModelJsons(KubeAssetGenerator generator) {}
+    public void generateAssets(KubeAssetGenerator generator) {}
 
     public RendererBlockBuilder textureOverrideRenderer(ResourceLocation modelPath,
                                                         Map<String, ResourceLocation> textures) {
