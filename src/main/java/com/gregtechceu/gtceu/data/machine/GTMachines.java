@@ -1135,9 +1135,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue("%s Dual Input Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            ConfigHolder.INSTANCE.machines.enableMoreDualHatchAbility ? DUAL_INPUT_HATCH_ABILITIES :
-                                    new PartAbility[] { PartAbility.IMPORT_ITEMS })
+                    .abilities(DUAL_INPUT_HATCH_ABILITIES)
                     .overlayTieredHullRenderer("dual_hatch.import")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
@@ -1160,9 +1158,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue("%s Dual Output Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            ConfigHolder.INSTANCE.machines.enableMoreDualHatchAbility ? DUAL_OUTPUT_HATCH_ABILITIES :
-                                    new PartAbility[] { PartAbility.EXPORT_ITEMS })
+                    .abilities(DUAL_OUTPUT_HATCH_ABILITIES)
                     .overlayTieredHullRenderer("dual_hatch.export")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
@@ -1711,7 +1707,8 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('F', blocks(CASING_STEEL_SOLID.get())
                             .or(!ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids ?
-                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS) :
+                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X,
+                                            PartAbility.IMPORT_FLUIDS_4X, PartAbility.IMPORT_FLUIDS_9X) :
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
