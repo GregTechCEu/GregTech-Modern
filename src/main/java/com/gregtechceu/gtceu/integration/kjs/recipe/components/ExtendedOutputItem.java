@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 
+import dev.latvian.mods.kubejs.core.IngredientKJS;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +26,7 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
     public SizedIngredient ingredient;
 
     public ExtendedOutputItem(Ingredient ingredient, int count) {
-        super(ingredient.kjs$getFirst().kjs$withCount(count), Double.NaN, null);
+        super(((IngredientKJS) ingredient).kjs$getFirst().copyWithCount(count), Double.NaN, null);
         // reset the ingredient if it's an int provider.
         if (ingredient instanceof IntProviderIngredient intProvider) {
             intProvider.setItemStacks(null);

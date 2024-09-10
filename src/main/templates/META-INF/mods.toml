@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_version},)"
-issueTrackerURL = "https://github.com/GregTechCEu/GregTech-Modern/issues"
+issueTrackerURL = "${mod_issue_tracker}"
 license = "${mod_license}"
 
 [[mods]]
@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "${mod_name}"
 authors = "KilaBash, screret, serenibyss, Tech22"
 description = "${mod_description}"
-logoFile = "icon.png"
+logoFile = "../../resources/icon.png"
 displayURL = "${mod_url}"
 credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
 
