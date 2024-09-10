@@ -18,9 +18,9 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "15.8.0.11"
+        def jeiVersion = "15.12.1.46"
         def reiVersion = "12.1.725"
-        def emiVersion = "1.0.30"
+        def emiVersion = "1.1.12"
         def ae2Version = "15.0.18"
         def kjsVersion = "2001.6.4-build.120"
         def auVersion = "1.20.1-0.6.0"
@@ -28,11 +28,13 @@ dependencyResolutionManagement {
         // Forge
         def forgeVersion = "47.1.47"
         def registrateForgeVersion = "MC1.20-1.3.3"
-        def createForgeVersion = "0.5.1.d-9"
-        def flywheelForgeVersion = "0.6.9-5"
+        def createForgeVersion = "0.5.1.f-33"
+        def flywheelForgeVersion = "0.6.10-10"
         def topForgeVersion = "1.20.1-10.0.1-3"
         def jadeForgeVersion = "11.6.3"
+        def curiosForgeVersion = "5.9.1"
         def worldStripperForgeFile = "4578579"
+        def javdVersion = "4803995"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"
         def argonautsForgeFile = "5263580"
@@ -48,10 +50,11 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"
-        def ldLibVersion = "1.0.26"
+        def ldLibVersion = "1.0.27.b"
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.4"
-        
+        def lombokPluginVersion = "8.7.1"
+
         forge {
             version("forgeShortVersion", forgeVersion)
             def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")
@@ -88,6 +91,9 @@ dependencyResolutionManagement {
             def theoneprobe = version("theoneprobe", topForgeVersion)
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
 
+            def curios = version("curios", curiosForgeVersion + "+" + minecraftVersion)
+            library("curios", "top.theillusivec4.curios", "curios-forge").versionRef(curios)
+
             def jade = version("jade", jadeForgeVersion)
             library("jade", "maven.modrinth", "jade").versionRef(jade)
 
@@ -108,6 +114,9 @@ dependencyResolutionManagement {
 
             def au = version("au", auVersion)
             library("almostUnified-forge", "com.almostreliable.mods", "almostunified-forge").versionRef(au)
+
+            def javd = version("javd", javdVersion)
+            library("javd", "curse.maven", "javd-370890").versionRef(javd)
 
             def ftbteams = version("ftbteams", ftbteamsForgeFile)
             library("ftbteams", "curse.maven", "ftb-teams-forge-404468").versionRef(ftbteams)
@@ -146,6 +155,9 @@ dependencyResolutionManagement {
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)
+
+            def lombok = version("lombok", lombokPluginVersion)
+            plugin("lombok", "io.freefair.lombok").versionRef(lombok)
         }
     }
 }

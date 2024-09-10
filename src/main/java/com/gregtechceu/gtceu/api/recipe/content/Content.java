@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -75,9 +73,7 @@ public class Content {
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height);
                 drawRangeAmount(graphics, x, y, width, height);
-                if (LDLib.isEmiLoaded()) {
-                    drawEmiAmount(graphics, x, y, width, height);
-                }
+                drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
@@ -87,7 +83,7 @@ public class Content {
 
     @OnlyIn(Dist.CLIENT)
     public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof SizedIngredient sized && sized.getInner() instanceof IntProviderIngredient ingredient) {
+        if (content instanceof IntProviderIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
@@ -108,18 +104,24 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
         if (content instanceof FluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.getAmount();
+            double amount = ingredient.getAmount();
             String s;
-            if (amount >= 1000) {
-                amount /= 1000;
-                s = amount + "B";
+            if (amount >= 1_000_000_000) {
+                amount /= (double) 1_000_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
+            } else if (amount >= 1_000_000) {
+                amount /= (double) 1_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
+            } else if (amount >= 1000) {
+                amount /= (double) 1000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
             } else {
-                s = amount + "mB";
+                s = (int) amount + "mB";
             }
             Font fontRenderer = Minecraft.getInstance().font;
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),

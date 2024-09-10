@@ -27,14 +27,6 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
                 .forEach(registry::addRecipe);
     }
 
-    public static void registerWorkStations(EmiRegistry registry) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registry.addWorkstation(CATEGORY, EmiStack.of(multiblockDefinition.asStack()));
-            }
-        }
-    }
-
     @Override
     public Component getName() {
         return Component.translatable("gtceu.jei.multiblock_info");

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
@@ -29,6 +30,7 @@ import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Either;
@@ -155,34 +157,35 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         .map(IFluidTransfer.class::cast)
                         .toList()));
 
+        List<FluidStack> recipeOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP)
+                .stream()
+                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .filter(ingredient -> !ingredient.isEmpty())
+                .map(ingredient -> ingredient.getStacks()[0])
+                .toList();
+
         while (minMultiplier != maxMultiplier) {
             overlayedFluidHandler.reset();
 
-            long amountLeft = 0;
+            long returnedAmount = 0;
+            long amountToInsert = 0;
 
-            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP)
-                    .stream()
-                    .map(FluidRecipeCapability.CAP::of)
-                    .filter(ingredient -> !ingredient.isEmpty())
-                    .map(ingredient -> ingredient.getStacks()[0])
-                    .toList()) {
+            for (FluidStack fluidStack : recipeOutputs) {
                 if (fluidStack.getAmount() <= 0) continue;
+                if (fluidStack.isEmpty()) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
-                    amountLeft = Integer.MAX_VALUE;
+                    amountToInsert = Integer.MAX_VALUE;
                 } else {
-                    amountLeft = fluidStack.getAmount() * multiplier;
+                    amountToInsert = fluidStack.getAmount() * multiplier;
                 }
-                long inserted = overlayedFluidHandler.insertFluid(fluidStack, amountLeft);
-                if (inserted > 0) {
-                    amountLeft -= inserted;
-                }
-                if (amountLeft > 0) {
+                returnedAmount = amountToInsert - overlayedFluidHandler.insertFluid(fluidStack, amountToInsert);
+                if (returnedAmount > 0) {
                     break;
                 }
             }
 
-            int[] bin = ParallelLogic.adjustMultiplier(amountLeft == 0, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(returnedAmount == 0, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];
@@ -334,10 +337,19 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
             tank.setAllowClickFilled(!isXEI);
-            tank.setAllowClickDrained(!isXEI);
+            tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (content != null) {
                 tank.setXEIChance((float) content.chance / content.maxChance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
+                    FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
+                    if (!isXEI && ingredient.getStacks().length > 0) {
+                        FluidStack stack = ingredient.getStacks()[0];
+                        TooltipsHandler.appendFluidTooltips(stack.getFluid(),
+                                stack.getAmount(),
+                                tooltips::add,
+                                TooltipFlag.NORMAL);
+                    }
+
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
                     if (isTickSlot(index, io, recipe)) {

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -104,19 +105,25 @@ class RecipeRunner {
                     this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
             } else {
-                chancedContents.add(cont);
+                // unparallel the chanced contents - bandaid fix
+                chancedContents.add(cont.copy(cap, ContentModifier.multiplier(1.0 / recipe.parallels)));
             }
         }
-        int recipeTier = RecipeHelper.getRecipeEUtTier(recipe);
-        chancedContents = logic.roll(chancedContents, function,
-                recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
-        if (chancedContents != null) {
-            for (Content cont : chancedContents) {
-                if (cont.slotName == null) {
-                    this.content.content.add(cont.content);
-                } else {
-                    this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
-                }
+
+        // Roll the dice for every parallel
+        List<Content> rolls = new ArrayList<>();
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        for (int parallels = recipe.parallels; parallels > 0; parallels--) {
+            List<Content> roll = logic.roll(chancedContents, function,
+                    recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
+            if (roll != null) rolls.addAll(roll);
+        }
+
+        for (Content cont : rolls) {
+            if (cont.slotName == null) {
+                this.content.content.add(cont.content);
+            } else {
+                this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
             }
         }
     }

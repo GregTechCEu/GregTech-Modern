@@ -205,6 +205,7 @@ public class TagPrefix {
     public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
             .idPattern("raw_%s_block")
             .defaultTagPath("storage_blocks/raw_%s")
+            .unformattedTagPath("storage_blocks")
             .langValue("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -637,7 +638,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.toolHeadChainsaw)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)));
 
     // made of 4 Ingots.

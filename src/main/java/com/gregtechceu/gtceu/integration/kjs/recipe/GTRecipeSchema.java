@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
+import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -256,7 +257,7 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
-        public GTRecipeJS itemOutputs(InputItem... outputs) {
+        public GTRecipeJS itemOutputs(ExtendedOutputItem... outputs) {
             return outputItems(outputs);
         }
 
@@ -268,8 +269,8 @@ public interface GTRecipeSchema {
             return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
         }
 
-        public GTRecipeJS outputItems(InputItem... outputs) {
-            for (InputItem itemStack : outputs) {
+        public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
+            for (ExtendedOutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
                 }
@@ -278,11 +279,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(Item input, int amount) {
-            return outputItems(InputItem.of(new ItemStack(input, amount)));
+            return outputItems(ExtendedOutputItem.of(new ItemStack(input, amount)));
         }
 
         public GTRecipeJS outputItems(Item input) {
-            return outputItems(InputItem.of(new ItemStack(input)));
+            return outputItems(ExtendedOutputItem.of(new ItemStack(input)));
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material) {
@@ -290,7 +291,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(TagPrefix orePrefix, Material material, int count) {
-            return outputItems(InputItem.of(ChemicalHelper.get(orePrefix, material, count)));
+            return outputItems(ExtendedOutputItem.of(ChemicalHelper.get(orePrefix, material, count)));
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine) {
@@ -298,12 +299,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(InputItem.of(machine.asStack(count)));
+            return outputItems(new ExtendedOutputItem(machine.asStack(count)));
         }
 
-        public GTRecipeJS itemOutputsRanged(InputItem ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(ingredient.ingredient, UniformInt.of(min, max)));
+        public GTRecipeJS itemOutputsRanged(ExtendedOutputItem ingredient, int min, int max) {
+            return outputItemsRanged(ingredient.ingredient.getInner(), min, max);
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
@@ -311,12 +311,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {
-            return output(ItemRecipeCapability.CAP,
-                    new IntProviderIngredient(SizedIngredient.create(stack), UniformInt.of(min, max)));
+            return outputItemsRanged(Ingredient.of(stack), min, max);
         }
 
         public GTRecipeJS outputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
-            return outputItemsRanged(ChemicalHelper.get(orePrefix, material, 1), min, max);
+            return outputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
@@ -380,7 +379,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(InputItem stack, int chance, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                         ChanceLogic.getMaxChancedValue(), chance, new Throwable());
@@ -397,14 +396,14 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
+            return chancedOutput(ExtendedOutputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
+            return chancedOutput(ExtendedOutputItem.of(ChemicalHelper.get(tag, mat, count)), chance, tierChanceBoost);
         }
 
-        public GTRecipeJS chancedOutput(InputItem stack, String fraction, int tierChanceBoost) {
+        public GTRecipeJS chancedOutput(ExtendedOutputItem stack, String fraction, int tierChanceBoost) {
             if (stack.isEmpty()) {
                 return this;
             }
@@ -472,7 +471,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
-            return chancedOutput(InputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
+            return chancedOutput(ExtendedOutputItem.of(ChemicalHelper.get(prefix, material, count)), fraction,
                     tierChanceBoost);
         }
 
@@ -494,10 +493,6 @@ public interface GTRecipeSchema {
             this.chance = lastChance;
             this.tierChanceBoost = lastTierChanceBoost;
             return this;
-        }
-
-        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, double chance, double tierChanceBoost) {
-            return chancedFluidOutput(stack, (int) chance, (int) tierChanceBoost);
         }
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
@@ -637,6 +632,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS addData(String key, int data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putInt(key, data);
@@ -644,6 +640,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        @HideFromJS
         public GTRecipeJS addData(String key, long data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putLong(key, data);
@@ -651,21 +648,29 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS addData(String key, String data) {
+        public GTRecipeJS addDataString(String key, String data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putString(key, data);
             save();
             return this;
         }
 
-        public GTRecipeJS addData(String key, Float data) {
+        @HideFromJS
+        public GTRecipeJS addData(String key, float data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putFloat(key, data);
             save();
             return this;
         }
 
-        public GTRecipeJS addData(String key, boolean data) {
+        public GTRecipeJS addDataNumber(String key, double data) {
+            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
+            getValue(DATA).putDouble(key, data);
+            save();
+            return this;
+        }
+
+        public GTRecipeJS addDataBool(String key, boolean data) {
             if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
             getValue(DATA).putBoolean(key, data);
             save();
@@ -689,7 +694,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS disableDistilleryRecipes(boolean flag) {
-            return addData("disable_distillery", flag);
+            return addDataBool("disable_distillery", flag);
         }
 
         public GTRecipeJS fusionStartEU(long eu) {
@@ -697,15 +702,15 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS researchScan(boolean isScan) {
-            return addData("scan_for_research", isScan);
+            return addDataBool("scan_for_research", isScan);
         }
 
         public GTRecipeJS durationIsTotalCWU(boolean durationIsTotalCWU) {
-            return addData("duration_is_total_cwu", durationIsTotalCWU);
+            return addDataBool("duration_is_total_cwu", durationIsTotalCWU);
         }
 
         public GTRecipeJS hideDuration(boolean hideDuration) {
-            return addData("hide_duration", hideDuration);
+            return addDataBool("hide_duration", hideDuration);
         }
 
         //////////////////////////////////////
@@ -888,8 +893,17 @@ public interface GTRecipeSchema {
 
         @Override
         public OutputItem readOutputItem(Object from) {
-            if (from instanceof SizedIngredient ingredient) {
+            if (from instanceof ExtendedOutputItem outputItem) {
+                return outputItem;
+            } else if (from instanceof OutputItem outputItem) {
+                return outputItem;
+            } else if (from instanceof SizedIngredient ingredient) {
+                if (ingredient.getInner() instanceof IntProviderIngredient intProvider) {
+                    return new ExtendedOutputItem(intProvider, 1);
+                }
                 return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
+            } else if (from instanceof IntProviderIngredient ingredient) {
+                return new ExtendedOutputItem(ingredient, 1);
             } else if (from instanceof JsonObject jsonObject) {
                 float chance = 1.0f;
                 if (jsonObject.has("chance")) {
@@ -906,6 +920,12 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
+            if (value instanceof ExtendedOutputItem extended) {
+                if (extended.ingredient.getInner() instanceof IntProviderIngredient intProvider) {
+                    return intProvider.toJson();
+                }
+                return extended.ingredient.toJson();
+            }
             return SizedIngredient.create(value.item).toJson();
         }
 

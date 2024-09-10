@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -14,9 +13,8 @@ public interface IMachineModifyDrops extends IMachineFeature {
 
     /**
      * Modify or append drops.
-     * 
-     * @param drops  existing drops.
-     * @param entity who destroyed it.
+     *
+     * @param drops existing drops.
      */
-    void onDrops(List<ItemStack> drops, Player entity);
+    void onDrops(List<ItemStack> drops);
 }

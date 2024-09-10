@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -29,7 +30,7 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
-                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B',
+                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
                 'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
 
@@ -281,7 +282,7 @@ public class MiscRecipeLoader {
         /*
          * ASSEMBLER_RECIPES.recipeBuilder("monitor_screen").duration(80).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
-         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(1))
+         * .inputItems(CraftingComponent.HULL.getIngredient(1))
          * .inputItems(wireFine, AnnealedCopper, 8)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(GTMachines.MONITOR_SCREEN)
@@ -289,7 +290,7 @@ public class MiscRecipeLoader {
          * 
          * ASSEMBLER_RECIPES.recipeBuilder("central_monitor").duration(100).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
-         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(3))
+         * .inputItems(CraftingComponent.HULL.getIngredient(3))
          * .inputItems(circuit, Tier.HV, 2)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(GTMachines.CENTRAL_MONITOR)
@@ -387,12 +388,6 @@ public class MiscRecipeLoader {
                     .outputItems(dustSmall, Glass, 3)
                     .save(provider);
         }
-
-        // Glass Fluid Extraction
-        EXTRACTOR_RECIPES.recipeBuilder("extract_glass_block")
-                .inputItems(new ItemStack(Blocks.GLASS))
-                .outputFluids(Glass.getFluid(L))
-                .duration(20).EUt(30).save(provider);
 
         // Glass Plate in Alloy Smelter
         ALLOY_SMELTER_RECIPES.recipeBuilder("glass_plate")
