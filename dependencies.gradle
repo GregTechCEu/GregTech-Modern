@@ -9,7 +9,7 @@ dependencies {
     modImplementation(jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
 
     // Create and its dependencies
-    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
     modImplementation forge.flywheel
 
     // JEI
@@ -24,7 +24,6 @@ dependencies {
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-
     modImplementation forge.emi
 
     // TOP
