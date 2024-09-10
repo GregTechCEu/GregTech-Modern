@@ -23,15 +23,15 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "19.8.5.118"
-        def reiVersion = "16.0.744"
-        def emiVersion = "1.1.11"
+        def jeiVersion = "19.17.0.193"
+        def reiVersion = "16.0.762"
+        def emiVersion = "1.1.13"
         def ae2Version = "19.0.4-alpha"
-        def kjsVersion = "2100.7.0-build.120"
+        def kjsVersion = "2101.7.0-build.171"
 
         // NeoForge
-        def neoForgeVersion = "21.1.4"
-        def registrateForgeVersion = "MC1.21-1.3.0+16"
+        def neoForgeVersion = "21.1.47"
+        def registrateForgeVersion = "MC1.21-1.3.0+53"
         def createForgeVersion = "0.5.1.d-9"
         def flywheelForgeVersion = "0.6.9-5"
         def topForgeVersion = "1.20.4_neo-11.0.0-1"
@@ -45,14 +45,13 @@ dependencyResolutionManagement {
         def spotlessVersion = "6.25.0"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def configurationVersion = "5573796"
+        def configurationVersion = "5616143"
         def ldLibVersion = "1.0.26.c"
         def shimmerVersion = "0.2.2"
-        def neogradleVersion = "7.0.158"
+        def modDevGradleVersion = "2.0.28-beta"
         def lombokPluginVersion = "8.7.1"
 
         forge {
-            version("forgeShortVersion", neoForgeVersion)
             def neoForge = version("neoForge", "${neoForgeVersion}")
             library("neoForge", "net.neoforged", "neoforge").versionRef(neoForge)
 
@@ -81,7 +80,7 @@ dependencyResolutionManagement {
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-neoforge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-neoforge").versionRef(rei)
 
-            def emi = version("emi", emiVersion + "+" + minecraftVersionOld)
+            def emi = version("emi", emiVersion + "+" + minecraftVersion)
             library("emi", "dev.emi", "emi-neoforge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
@@ -125,8 +124,8 @@ dependencyResolutionManagement {
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)
 
-            def neogradle = version("neogradle", neogradleVersion)
-            plugin("neogradle", "net.neoforged.gradle.userdev").versionRef(neogradle)
+            def modDevGradle = version("modDevGradle", modDevGradleVersion)
+            plugin("modDevGradle", "net.neoforged.moddev").versionRef(modDevGradle)
 
             def lombok = version("lombok", lombokPluginVersion)
             plugin("lombok", "io.freefair.lombok").versionRef(lombok)

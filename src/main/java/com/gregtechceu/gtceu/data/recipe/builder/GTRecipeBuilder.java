@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -34,7 +34,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
@@ -965,15 +964,13 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public RecipeHolder<GTRecipe> build() {
-        return new RecipeHolder<>(
-                id,
-                new GTRecipe(this.recipeType,
-                        this.input, this.output, this.tickInput, this.tickOutput,
-                        this.inputChanceLogic, this.outputChanceLogic,
-                        this.tickInputChanceLogic, this.tickOutputChanceLogic,
-                        this.conditions,
-                        List.of(), this.data, this.duration, this.isFuel));
+    public GTRecipe build() {
+        return new GTRecipe(this.recipeType, this.id,
+                this.input, this.output, this.tickInput, this.tickOutput,
+                this.inputChanceLogic, this.outputChanceLogic,
+                this.tickInputChanceLogic, this.tickOutputChanceLogic,
+                this.conditions,
+                List.of(), this.data, this.duration, this.isFuel);
     }
 
     public void save(RecipeOutput consumer) {
@@ -984,11 +981,11 @@ public class GTRecipeBuilder {
                 .map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), build().value());
+                this.recipeType.addDataStickEntry(entry.getResearchId(), build());
             }
         }
-        RecipeHolder<GTRecipe> built = build();
-        consumer.accept(built.id(), built.value(), null);
+        GTRecipe built = build();
+        consumer.accept(built.id.withPrefix(recipeType.registryName.getPath() + "/"), built, null);
     }
 
     //////////////////////////////////////

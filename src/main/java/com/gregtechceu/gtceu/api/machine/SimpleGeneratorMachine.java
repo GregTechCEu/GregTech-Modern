@@ -93,9 +93,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Nullable
-    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SimpleGeneratorMachine generator) {
-            var EUt = RecipeHelper.getOutputEUt(recipe.value());
+            var EUt = RecipeHelper.getOutputEUt(recipe);
             if (EUt > 0) {
                 var maxParallel = (int) (Math.min(generator.getOverclockVoltage(),
                         GTValues.V[generator.getOverclockTier()]) / EUt);

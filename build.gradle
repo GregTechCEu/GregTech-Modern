@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    alias libs.plugins.neogradle
+    alias libs.plugins.modDevGradle
     alias libs.plugins.machete // automatic jar compressing on build
     // alias libs.plugins.shadow
     alias libs.plugins.spotless
@@ -13,10 +13,6 @@ plugins {
 version = mod_version
 group = maven_group
 
-base {
-    archivesName = mod_id
-}
-
 // Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
@@ -25,7 +21,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 boolean isSnapshot = System.getenv("SNAPSHOT")
 version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
 
-apply from: "$rootDir/gradle/scripts/neogradle.gradle"
+apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
 apply from: "$rootDir/gradle/scripts/jars.gradle"
 apply from: "$rootDir/gradle/scripts/publishing.gradle"

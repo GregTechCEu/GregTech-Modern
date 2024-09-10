@@ -14,7 +14,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.NoArgsConstructor;
@@ -30,7 +29,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.LARGE_BOILER_RECIP
 public class LargeBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
@@ -55,8 +54,8 @@ public class LargeBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     @Override
-    public @Nullable List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
-        List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
+    public @Nullable List<GTRecipe> getRepresentativeRecipes() {
+        List<GTRecipe> recipes = new ArrayList<>();
         for (Item item : BuiltInRegistries.ITEM) {
             if (!FluidTransferHelper.getFluidContained(item.getDefaultInstance()).isEmpty()) {
                 continue;
@@ -64,7 +63,7 @@ public class LargeBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
             var burnTime = GTUtil.getItemBurnTime(item.getDefaultInstance());
             if (burnTime > 0) {
                 ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                RecipeHolder<GTRecipe> recipe = LARGE_BOILER_RECIPES.recipeBuilder(id)
+                GTRecipe recipe = LARGE_BOILER_RECIPES.recipeBuilder(id)
                         .inputItems(item)
                         .duration(burnTime / 80)
                         .build();

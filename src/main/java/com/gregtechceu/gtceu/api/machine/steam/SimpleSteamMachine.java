@@ -31,7 +31,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.google.common.collect.Tables;
 import lombok.Setter;
@@ -129,18 +128,18 @@ public class SimpleSteamMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Nullable
-    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SimpleSteamMachine steamMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe.value()) > GTValues.LV || !steamMachine.checkVenting()) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
                 return null;
             }
 
-            var modified = new RecipeHolder<>(recipe.id(), recipe.value().copy());
-            modified.value().conditions.add(VentCondition.INSTANCE);
+            var modified = recipe.copy();
+            modified.conditions.add(VentCondition.INSTANCE);
 
             if (!steamMachine.isHighPressure) {
-                modified.value().duration *= 2;
-                RecipeHelper.setInputEUt(modified.value(), RecipeHelper.getInputEUt(recipe.value()) / 2);
+                modified.duration *= 2;
+                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
             }
 
             return modified;

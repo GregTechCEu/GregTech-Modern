@@ -1,8 +1,6 @@
 dependencies {
-    implementation forge.neoForge
-
     // LDLib
-    api(forge.ldlib.neoforge)
+    api(forge.ldlib.neoforge) { transitive = false }
     jarJar(forge.ldlib.neoforge)
 
     // Registrate

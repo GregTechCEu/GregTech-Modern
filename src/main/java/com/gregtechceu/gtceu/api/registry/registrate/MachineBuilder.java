@@ -35,7 +35,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -128,7 +127,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, RecipeHolder<GTRecipe>> beforeWorking = (machine, recipe) -> true;
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
     @NotNull
     @Getter
     @Setter

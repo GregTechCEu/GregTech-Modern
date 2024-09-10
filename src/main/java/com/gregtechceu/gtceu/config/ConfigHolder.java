@@ -22,7 +22,7 @@ public class ConfigHolder {
     public static void init() {
         synchronized (LOCK) {
             if (INSTANCE == null) {
-                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.YAML).getConfigInstance();
             }
         }
     }

@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
@@ -27,6 +25,8 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
@@ -452,14 +452,17 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                     }
                 }
 
-                // noinspection unchecked
                 Stream.concat(
                         recipesByName.values().stream()
                                 .filter(recipeHolder -> recipeHolder.value().getType() == gtRecipeType),
                         proxyRecipes.entrySet().stream()
                                 .flatMap(entry -> entry.getValue().stream()))
                         .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipe));
+                        .forEach(holder -> {
+                            GTRecipe recipe = (GTRecipe) holder.value();
+                            recipe.setId(holder.id());
+                            gtRecipeType.getLookup().addRecipe(recipe);
+                        });
             }
         }
     }

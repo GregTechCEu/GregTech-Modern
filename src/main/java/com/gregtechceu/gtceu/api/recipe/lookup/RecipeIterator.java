@@ -3,25 +3,23 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import net.minecraft.world.item.crafting.RecipeHolder;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class RecipeIterator implements Iterator<RecipeHolder<GTRecipe>> {
+public class RecipeIterator implements Iterator<GTRecipe> {
 
     int index;
     List<List<AbstractMapIngredient>> ingredients;
     @NotNull
     GTRecipeType recipeMap;
     @NotNull
-    Predicate<RecipeHolder<GTRecipe>> canHandle;
+    Predicate<GTRecipe> canHandle;
 
     RecipeIterator(@NotNull GTRecipeType recipeMap, List<List<AbstractMapIngredient>> ingredients,
-                   @NotNull Predicate<RecipeHolder<GTRecipe>> canHandle) {
+                   @NotNull Predicate<GTRecipe> canHandle) {
         this.ingredients = ingredients;
         this.recipeMap = recipeMap;
         this.canHandle = canHandle;
@@ -34,11 +32,11 @@ public class RecipeIterator implements Iterator<RecipeHolder<GTRecipe>> {
     }
 
     @Override
-    public RecipeHolder<GTRecipe> next() {
+    public GTRecipe next() {
         // couldn't build any inputs to use for search, so no recipe could be found
         if (ingredients == null) return null;
         // Try each ingredient as a starting point, save current index
-        RecipeHolder<GTRecipe> r = null;
+        GTRecipe r = null;
         while (index < ingredients.size()) {
             r = recipeMap.getLookup().recurseIngredientTreeFindRecipe(ingredients,
                     recipeMap.getLookup().getLookup(), canHandle,

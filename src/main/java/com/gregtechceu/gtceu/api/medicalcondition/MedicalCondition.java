@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.medicalcondition;
+package com.gregtechceu.gtceu.api.medicalcondition;
 
 import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;

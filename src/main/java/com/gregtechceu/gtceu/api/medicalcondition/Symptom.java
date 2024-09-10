@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.medicalcondition;
+package com.gregtechceu.gtceu.api.medicalcondition;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class Symptom {

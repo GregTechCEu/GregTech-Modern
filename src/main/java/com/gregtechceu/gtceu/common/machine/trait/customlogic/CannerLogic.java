@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -27,7 +26,7 @@ import java.util.Objects;
 public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)

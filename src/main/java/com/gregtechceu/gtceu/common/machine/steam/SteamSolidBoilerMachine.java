@@ -99,7 +99,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     public void afterWorking() {
         super.afterWorking();
         if (recipeLogic.getLastRecipe() != null) {
-            var inputs = recipeLogic.getLastRecipe().value().inputs.getOrDefault(ItemRecipeCapability.CAP,
+            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.getFirst().content).getItems();

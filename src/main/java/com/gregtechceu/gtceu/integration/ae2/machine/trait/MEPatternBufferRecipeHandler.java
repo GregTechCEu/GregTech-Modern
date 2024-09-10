@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -61,14 +60,14 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     }
 
     public List<SizedIngredient> handleItemInner(
-                                                 RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+                                                 GTRecipe recipe, List<SizedIngredient> left,
                                                  boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
-        if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
+        if (recipe.id.equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleItemInternal(left, simulate);
         }
 
-        this.lockedRecipeId = recipe.id();
+        this.lockedRecipeId = recipe.id;
         List<SizedIngredient> contents = left;
         for (int i = 0; i < internalInv.length; i++) {
             if (internalInv[i].isItemEmpty()) continue;
@@ -84,14 +83,14 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
     }
 
     public List<SizedFluidIngredient> handleFluidInner(
-                                                       RecipeHolder<GTRecipe> recipe, List<SizedFluidIngredient> left,
+                                                       GTRecipe recipe, List<SizedFluidIngredient> left,
                                                        boolean simulate) {
         var internalInv = getMachine().getInternalInventory();
-        if (recipe.id().equals(lockedRecipeId) && lockedSlot >= 0) {
+        if (recipe.id.equals(lockedRecipeId) && lockedSlot >= 0) {
             return internalInv[lockedSlot].handleFluidInternal(left, simulate);
         }
 
-        this.lockedRecipeId = recipe.id();
+        this.lockedRecipeId = recipe.id;
         List<SizedFluidIngredient> contents = left;
         for (int i = 0; i < internalInv.length; i++) {
             if (internalInv[i].isFluidEmpty()) continue;
@@ -139,7 +138,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public List<SizedIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<SizedIngredient> left,
+        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
                                                        @Nullable String slotName, boolean simulate) {
             if (io != IO.IN) return left;
             var machine = getMachine();
@@ -181,7 +180,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
+        public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
             super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }
@@ -210,7 +209,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
 
         @Override
         public List<SizedFluidIngredient> handleRecipeInner(IO io,
-                                                            RecipeHolder<GTRecipe> recipe,
+                                                            GTRecipe recipe,
                                                             List<SizedFluidIngredient> left,
                                                             @Nullable String slotName,
                                                             boolean simulate) {
@@ -252,7 +251,7 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         @Override
-        public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
+        public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
             super.preWorking(holder, io, recipe);
             lockedRecipeId = null;
         }

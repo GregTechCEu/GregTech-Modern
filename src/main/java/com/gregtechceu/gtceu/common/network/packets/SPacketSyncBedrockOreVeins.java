@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
@@ -27,7 +25,7 @@ import java.util.stream.Stream;
 public class SPacketSyncBedrockOreVeins implements CustomPacketPayload {
 
     public static final Type<SPacketSyncBedrockOreVeins> TYPE = new Type<>(GTCEu.id("sync_bedrock_ore_veins"));
-    public static final StreamCodec<FriendlyByteBuf, SPacketSyncBedrockOreVeins> CODEC = StreamCodec
+    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncBedrockOreVeins> CODEC = StreamCodec
             .ofMember(SPacketSyncBedrockOreVeins::encode, SPacketSyncBedrockOreVeins::decode);
 
     private final Map<ResourceLocation, BedrockOreDefinition> veins;
@@ -36,8 +34,8 @@ public class SPacketSyncBedrockOreVeins implements CustomPacketPayload {
         this.veins = new HashMap<>();
     }
 
-    public void encode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
+    public void encode(RegistryFriendlyByteBuf buf) {
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
         int size = veins.size();
         buf.writeVarInt(size);
         for (var entry : veins.entrySet()) {
@@ -48,8 +46,8 @@ public class SPacketSyncBedrockOreVeins implements CustomPacketPayload {
         }
     }
 
-    public static SPacketSyncBedrockOreVeins decode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
+    public static SPacketSyncBedrockOreVeins decode(RegistryFriendlyByteBuf buf) {
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
         var veins = Stream.generate(() -> {
             ResourceLocation id = buf.readResourceLocation();
             CompoundTag tag = buf.readNbt();

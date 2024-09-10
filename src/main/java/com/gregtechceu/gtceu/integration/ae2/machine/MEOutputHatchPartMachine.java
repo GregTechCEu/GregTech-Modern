@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -129,7 +128,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public @Nullable List<SizedFluidIngredient> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe,
+        public @Nullable List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
                                                                       List<SizedFluidIngredient> left,
                                                                       @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());

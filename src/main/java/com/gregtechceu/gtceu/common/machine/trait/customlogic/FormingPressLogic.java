@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,7 @@ import java.util.Objects;
 public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
-    public @Nullable RecipeHolder<GTRecipe> createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)

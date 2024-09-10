@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -65,18 +64,17 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
-                match = new RecipeHolder<>(match.id(), copied);
-                if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
-                        GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
-                    setupRecipe(match);
+                var copied = match.copy(new ContentModifier(match.duration, 0));
+                if (copied.matchRecipe(this.machine).isSuccess() &&
+                        copied.matchTickRecipe(this.machine).isSuccess()) {
+                    setupRecipe(copied);
                 }
             }
         }
     }
 
     @Nullable
-    private RecipeHolder<GTRecipe> getOreMinerRecipe() {
+    private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
             Material material = veinMaterials
                     .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
@@ -98,8 +96,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
                     .build();
-            if (GTRecipe.matchRecipe(recipe, getMachine()).isSuccess() &&
-                    GTRecipe.matchTickRecipe(recipe, getMachine()).isSuccess()) {
+            if (recipe.matchRecipe(getMachine()).isSuccess() &&
+                    recipe.matchTickRecipe(getMachine()).isSuccess()) {
                 return recipe;
             }
         }
@@ -138,18 +136,17 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            GTRecipe.postWorking(lastRecipe, this.machine);
-            GTRecipe.handleRecipeIO(lastRecipe, IO.OUT, this.machine, this.chanceCaches);
+            lastRecipe.postWorking(this.machine);
+            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            var copied = match.value().copy(new ContentModifier(match.value().duration, 0));
-            match = new RecipeHolder<>(match.id(), copied);
-            if (GTRecipe.matchRecipe(match, this.machine).isSuccess() &&
-                    GTRecipe.matchTickRecipe(match, this.machine).isSuccess()) {
-                setupRecipe(match);
+            var copied = match.copy(new ContentModifier(match.duration, 0));
+            if (copied.matchRecipe(this.machine).isSuccess() &&
+                    copied.matchTickRecipe(this.machine).isSuccess()) {
+                setupRecipe(copied);
                 return;
             }
         }

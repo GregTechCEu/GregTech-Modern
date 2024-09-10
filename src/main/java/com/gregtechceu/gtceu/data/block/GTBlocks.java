@@ -92,6 +92,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -844,11 +845,13 @@ public class GTBlocks {
                 () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
     }
 
+    @HideFromJS
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture,
                                                             Supplier<Supplier<RenderType>> type) {
         return createCasingBlock(name, RendererGlassBlock::new, texture, () -> Blocks.GLASS, type);
     }
 
+    @HideFromJS
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier,
                                                       ResourceLocation texture,
@@ -862,6 +865,7 @@ public class GTBlocks {
                 properties, type);
     }
 
+    @HideFromJS
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier,
                                                       NonNullSupplier<? extends Block> properties,

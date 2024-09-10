@@ -27,7 +27,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -145,16 +144,16 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Nullable
-    public static RecipeHolder<GTRecipe> recipeModifier(MetaMachine machine, @NotNull RecipeHolder<GTRecipe> recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe.value()) > fusionReactorMachine.getTier() ||
-                    !recipe.value().data.contains("eu_to_start") ||
-                    recipe.value().data.getLong("eu_to_start") >
+            if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
+                    !recipe.data.contains("eu_to_start") ||
+                    recipe.data.getLong("eu_to_start") >
                             fusionReactorMachine.energyContainer.getEnergyCapacity()) {
                 return null;
             }
 
-            long heatDiff = recipe.value().data.getLong("eu_to_start") - fusionReactorMachine.heat;
+            long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
 
             // if the stored heat is >= required energy, recipe is okay to run
             if (heatDiff <= 0) {
@@ -183,7 +182,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     @Override
     public boolean onWorking() {
-        GTRecipe recipe = recipeLogic.getLastRecipe().value();
+        GTRecipe recipe = recipeLogic.getLastRecipe();
         if (recipe.data.contains("eu_to_start")) {
             long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
             // if the remaining energy needed is more than stored, do not run

@@ -47,6 +47,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -831,6 +832,7 @@ public class TagPrefix {
                           Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation,
                           boolean isDoubleDrops, boolean isSand, boolean shouldDropAsItem) {}
 
+    @HideFromJS
     public record BlockProperties(Supplier<Supplier<RenderType>> renderType,
                                   UnaryOperator<BlockBehaviour.Properties> properties) {}
 
@@ -992,6 +994,7 @@ public class TagPrefix {
         return this;
     }
 
+    @HideFromJS
     public TagPrefix blockProperties(Supplier<Supplier<RenderType>> renderType,
                                      UnaryOperator<BlockBehaviour.Properties> properties) {
         return this.blockProperties(new BlockProperties(renderType, properties));

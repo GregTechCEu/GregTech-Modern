@@ -29,7 +29,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -53,8 +52,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     public static final int tankCapacity = 16000;
 
-    private RecipeHolder<GTRecipe> previousRecipe = null;
-    private RecipeHolder<GTRecipe> currentRecipe = null;
+    private GTRecipe previousRecipe = null;
+    private GTRecipe currentRecipe = null;
     private int burnTimer = 0;
 
     @OnlyIn(Dist.CLIENT)
@@ -202,7 +201,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             FluidStack fuel = getFuel();
             if (fuel == null) return;
             getIFluidHandlerItem(stack).drain(fuel, IFluidHandler.FluidAction.EXECUTE);
-            burnTimer = currentRecipe.value().duration;
+            burnTimer = currentRecipe.duration;
         }
         this.burnTimer--;
     }
@@ -222,7 +221,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             FluidStack fluidStack = internalTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
             if (previousRecipe != null && !fluidStack.isEmpty() &&
                     FluidRecipeCapability.CAP
-                            .of(previousRecipe.value().getInputContents(FluidRecipeCapability.CAP).get(0))
+                            .of(previousRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
                             .test(fluidStack) &&
                     fluidStack.getAmount() > 0) {
                 currentRecipe = previousRecipe;
@@ -241,10 +240,10 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                         return table;
                     }
                 };
-                Iterator<RecipeHolder<GTRecipe>> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS
+                Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS
                         .searchRecipe(holder);
                 if (iterator.hasNext()) {
-                    RecipeHolder<GTRecipe> nextRecipe = iterator.next();
+                    GTRecipe nextRecipe = iterator.next();
                     if (nextRecipe == null) {
                         return;
                     }
@@ -264,7 +263,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     public FluidStack getFuel() {
         if (currentRecipe != null) {
-            var recipeInputs = currentRecipe.value().inputs.get(FluidRecipeCapability.CAP);
+            var recipeInputs = currentRecipe.inputs.get(FluidRecipeCapability.CAP);
             SizedFluidIngredient fluid = FluidRecipeCapability.CAP.of(recipeInputs.getFirst().content);
             return fluid.getFluids()[0];
         }
@@ -301,7 +300,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                     return table;
                 }
             };
-            Iterator<RecipeHolder<GTRecipe>> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
+            Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
             return iterator.hasNext() && iterator.next() != null;
         };
 

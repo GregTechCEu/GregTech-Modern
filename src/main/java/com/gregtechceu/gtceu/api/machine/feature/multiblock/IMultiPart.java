@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -123,7 +122,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * @return modified recipe.
      *         null -- this recipe is unavailable
      */
-    default RecipeHolder<GTRecipe> modifyRecipe(RecipeHolder<GTRecipe> recipe) {
+    default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
     }
 

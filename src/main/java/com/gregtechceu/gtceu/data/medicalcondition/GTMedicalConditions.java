@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.medicalcondition;
 
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.Symptom;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;

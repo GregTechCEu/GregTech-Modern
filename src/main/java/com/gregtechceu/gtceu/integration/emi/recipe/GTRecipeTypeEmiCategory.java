@@ -42,10 +42,11 @@ public class GTRecipeTypeEmiCategory extends EmiRecipeCategory {
                             .forEach(registry::addRecipe);
 
                     if (gtRecipeType.isScanner()) {
-                        List<RecipeHolder<GTRecipe>> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
+                        List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
                         if (!scannerRecipes.isEmpty()) {
                             scannerRecipes.stream()
-                                    .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(gtRecipeType), recipe))
+                                    .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(gtRecipeType),
+                                            new RecipeHolder<>(recipe.id, recipe)))
                                     .forEach(registry::addRecipe);
                         }
                     }

@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.client.ClientProxy;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
@@ -28,7 +26,7 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<SPacketSyncFluidVeins> TYPE = new CustomPacketPayload.Type<>(
             GTCEu.id("sync_bedrock_fluid_veins"));
-    public static final StreamCodec<FriendlyByteBuf, SPacketSyncFluidVeins> CODEC = StreamCodec
+    public static final StreamCodec<RegistryFriendlyByteBuf, SPacketSyncFluidVeins> CODEC = StreamCodec
             .ofMember(SPacketSyncFluidVeins::encode, SPacketSyncFluidVeins::decode);
 
     private final Map<ResourceLocation, BedrockFluidDefinition> veins;
@@ -37,8 +35,8 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
         this.veins = new HashMap<>();
     }
 
-    public void encode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
+    public void encode(RegistryFriendlyByteBuf buf) {
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
         int size = veins.size();
         buf.writeVarInt(size);
         for (var entry : veins.entrySet()) {
@@ -49,8 +47,8 @@ public class SPacketSyncFluidVeins implements CustomPacketPayload {
         }
     }
 
-    public static SPacketSyncFluidVeins decode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, Platform.getFrozenRegistry());
+    public static SPacketSyncFluidVeins decode(RegistryFriendlyByteBuf buf) {
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, buf.registryAccess());
         var veins = Stream.generate(() -> {
             ResourceLocation id = buf.readResourceLocation();
             CompoundTag tag = buf.readNbt();

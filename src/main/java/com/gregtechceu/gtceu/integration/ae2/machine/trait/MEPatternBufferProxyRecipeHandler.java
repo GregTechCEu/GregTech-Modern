@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import net.minecraft.world.item.crafting.RecipeHolder;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +31,7 @@ public class MEPatternBufferProxyRecipeHandler<T> extends NotifiableRecipeHandle
     }
 
     @Override
-    public List<T> handleRecipeInner(IO io, RecipeHolder<GTRecipe> recipe, List<T> left, @Nullable String slotName,
+    public List<T> handleRecipeInner(IO io, GTRecipe recipe, List<T> left, @Nullable String slotName,
                                      boolean simulate) {
         for (IRecipeHandler<T> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
@@ -84,12 +82,12 @@ public class MEPatternBufferProxyRecipeHandler<T> extends NotifiableRecipeHandle
     }
 
     @Override
-    public void preWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
+    public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
         handlers.forEach(handler -> handler.preWorking(holder, io, recipe));
     }
 
     @Override
-    public void postWorking(IRecipeCapabilityHolder holder, IO io, RecipeHolder<GTRecipe> recipe) {
+    public void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
         handlers.forEach(handler -> handler.postWorking(holder, io, recipe));
     }
 
