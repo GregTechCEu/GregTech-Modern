@@ -133,7 +133,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         boolean isFuel = buf.readBoolean();
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
-        GTRecipe recipe =new GTRecipe(type, id,
+        GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, isFuel);

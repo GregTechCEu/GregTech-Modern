@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import lombok.Setter;

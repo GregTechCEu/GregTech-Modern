@@ -4,13 +4,13 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -27,7 +27,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import com.mojang.datafixers.util.Pair;
@@ -126,9 +125,9 @@ public class GTRecipeModifiers {
      * @return modified recipe and parallel amount
      */
     public static Pair<GTRecipe, Integer> fastParallel(MetaMachine machine,
-                                                                     @NotNull GTRecipe recipe,
-                                                                     int maxParallel,
-                                                                     boolean modifyDuration) {
+                                                       @NotNull GTRecipe recipe,
+                                                       int maxParallel,
+                                                       boolean modifyDuration) {
         if (machine instanceof IRecipeCapabilityHolder holder) {
             while (maxParallel > 0) {
                 var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
@@ -152,8 +151,8 @@ public class GTRecipeModifiers {
      * @return modified recipe and parallel amount
      */
     public static Pair<GTRecipe, Integer> accurateParallel(MetaMachine machine,
-                                                                         @NotNull GTRecipe recipe,
-                                                                         int maxParallel, boolean modifyDuration) {
+                                                           @NotNull GTRecipe recipe,
+                                                           int maxParallel, boolean modifyDuration) {
         if (maxParallel == 1) {
             return Pair.of(recipe, 1);
         }
@@ -161,8 +160,8 @@ public class GTRecipeModifiers {
     }
 
     public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine,
-                                                                      @NotNull GTRecipe recipe,
-                                                                      boolean modifyDuration) {
+                                                        @NotNull GTRecipe recipe,
+                                                        boolean modifyDuration) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance)
                     .map(IParallelHatch.class::cast).findAny();
@@ -221,7 +220,7 @@ public class GTRecipeModifiers {
     }
 
     public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine,
-                                                               @NotNull GTRecipe recipe) {
+                                                 @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
@@ -243,7 +242,7 @@ public class GTRecipeModifiers {
     }
 
     public static GTRecipe multiSmelterParallel(MetaMachine machine,
-                                                              @NotNull GTRecipe recipe) {
+                                                @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
 
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
@@ -262,7 +261,7 @@ public class GTRecipeModifiers {
     }
 
     public static GTRecipe subtickParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                         boolean modifyDuration) {
+                                           boolean modifyDuration) {
         if (machine instanceof WorkableElectricMultiblockMachine electricMachine) {
             final Pair<GTRecipe, Integer>[] result = new Pair[] { null };
             RecipeHelper.applyOverclock(

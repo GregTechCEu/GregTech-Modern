@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.longs.LongIntPair;
@@ -64,7 +63,7 @@ public class RecipeHelper {
      * @return a new recipe
      */
     public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe,
-                                                        long maxOverclockVoltage) {
+                                          long maxOverclockVoltage) {
         GTRecipe value = recipe;
         long EUt = getInputEUt(value);
         if (EUt > 0) {

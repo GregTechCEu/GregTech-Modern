@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -27,8 +26,8 @@ public class ParallelLogic {
 
     @NotNull
     public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine,
-                                                                      @NotNull GTRecipe recipe,
-                                                                      int parallelLimit, boolean modifyDuration) {
+                                                        @NotNull GTRecipe recipe,
+                                                        int parallelLimit, boolean modifyDuration) {
         if (machine instanceof IRecipeLogicMachine rlm) {
             return doParallelRecipes(recipe, rlm, parallelLimit, modifyDuration);
         }
@@ -186,8 +185,8 @@ public class ParallelLogic {
     // take care of voiding
     @NotNull
     public static Pair<GTRecipe, Integer> doParallelRecipes(@NotNull GTRecipe currentRecipe,
-                                                                          @NotNull IRecipeLogicMachine machine,
-                                                                          int parallelAmount, boolean modifyDuration) {
+                                                            @NotNull IRecipeLogicMachine machine,
+                                                            int parallelAmount, boolean modifyDuration) {
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
         int multiplierByInputs = getMaxRecipeMultiplier(currentRecipe, machine, parallelAmount);
         if (multiplierByInputs == 0) {

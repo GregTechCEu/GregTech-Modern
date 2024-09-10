@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import com.mojang.datafixers.util.Either;
@@ -193,9 +192,9 @@ public class GTRecipeLookup {
      */
     @Nullable
     public GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                                  @NotNull Branch branchMap,
-                                                                  @NotNull Predicate<GTRecipe> canHandle,
-                                                                  int index, int count, long skip) {
+                                                    @NotNull Branch branchMap,
+                                                    @NotNull Predicate<GTRecipe> canHandle,
+                                                    int index, int count, long skip) {
         // exhausted all the ingredients, and didn't find anything
         if (count == ingredients.size()) return null;
 
@@ -235,10 +234,10 @@ public class GTRecipeLookup {
      */
     @Nullable
     private GTRecipe diveIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                                @NotNull Branch map,
-                                                                @NotNull Predicate<GTRecipe> canHandle,
-                                                                int currentIndex, int count,
-                                                                long skip) {
+                                                  @NotNull Branch map,
+                                                  @NotNull Predicate<GTRecipe> canHandle,
+                                                  int currentIndex, int count,
+                                                  long skip) {
         // We loop around ingredients.size() if we reach the end.
         // only end when all ingredients are exhausted, or a recipe is found
         int i = (currentIndex + 1) % ingredients.size();
@@ -302,9 +301,9 @@ public class GTRecipeLookup {
      */
     @Nullable
     private GTRecipe recurseIngredientTreeFindRecipeCollisions(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                                             @NotNull Branch branchMap, int index,
-                                                                             int count, long skip,
-                                                                             @NotNull Set<GTRecipe> collidingRecipes) {
+                                                               @NotNull Branch branchMap, int index,
+                                                               int count, long skip,
+                                                               @NotNull Set<GTRecipe> collidingRecipes) {
         // exhausted all the ingredients, and didn't find anything
         if (count == ingredients.size()) return null;
 
@@ -343,9 +342,9 @@ public class GTRecipeLookup {
      */
     @Nullable
     private GTRecipe diveIngredientTreeFindRecipeCollisions(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                                          @NotNull Branch map, int currentIndex,
-                                                                          int count, long skip,
-                                                                          @NotNull Set<GTRecipe> collidingRecipes) {
+                                                            @NotNull Branch map, int currentIndex,
+                                                            int count, long skip,
+                                                            @NotNull Set<GTRecipe> collidingRecipes) {
         // We loop around ingredients.size() if we reach the end.
         // only end when all ingredients are exhausted, or a recipe is found
         int i = (currentIndex + 1) % ingredients.size();
@@ -616,7 +615,7 @@ public class GTRecipeLookup {
      */
     @NotNull
     protected static Map<AbstractMapIngredient, Either<GTRecipe, Branch>> determineRootNodes(@NotNull AbstractMapIngredient ingredient,
-                                                                                                           @NotNull Branch branchMap) {
+                                                                                             @NotNull Branch branchMap) {
         return ingredient.isSpecialIngredient() ? branchMap.getSpecialNodes() : branchMap.getNodes();
     }
 }

@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.Nullable;

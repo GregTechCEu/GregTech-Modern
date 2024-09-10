@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

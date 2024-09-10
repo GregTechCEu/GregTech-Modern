@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,13 +17,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -224,7 +223,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     private ActionResult matchRecipe(IRecipeCapabilityHolder holder,
-                                            boolean tick) {
+                                     boolean tick) {
         if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
 
         var result = matchRecipeContents(IO.IN, holder,
@@ -239,8 +238,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
-                                                   Map<RecipeCapability<?>, List<Content>> contents,
-                                                   boolean isTick) {
+                                            Map<RecipeCapability<?>, List<Content>> contents,
+                                            boolean isTick) {
         RecipeRunner runner = new RecipeRunner(this, io, isTick, holder, Collections.emptyMap(), true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
@@ -263,13 +262,13 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder,
-                                             Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+                                      Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
         return handleRecipe(io, holder, true, io == IO.IN ? this.tickInputs : this.tickOutputs, chanceCaches);
     }
 
     public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder,
-                                         Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
         return handleRecipe(io, holder, false, io == IO.IN ? this.inputs : this.outputs, chanceCaches);
     }
@@ -307,7 +306,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public void handlePre(Map<RecipeCapability<?>, List<Content>> contents,
-                                 IRecipeCapabilityHolder holder, IO io) {
+                          IRecipeCapabilityHolder holder, IO io) {
         contents.forEach(((capability, tuples) -> {
             if (holder.getCapabilitiesProxy().contains(io, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(io, capability)) {
@@ -322,7 +321,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     public void handlePost(Map<RecipeCapability<?>, List<Content>> contents,
-                                  IRecipeCapabilityHolder holder, IO io) {
+                           IRecipeCapabilityHolder holder, IO io) {
         contents.forEach(((capability, tuples) -> {
             if (holder.getCapabilitiesProxy().contains(io, capability)) {
                 for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesProxy().get(io, capability)) {

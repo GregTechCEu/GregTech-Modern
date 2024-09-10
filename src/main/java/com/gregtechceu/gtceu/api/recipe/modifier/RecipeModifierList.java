@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import org.jetbrains.annotations.NotNull;
 

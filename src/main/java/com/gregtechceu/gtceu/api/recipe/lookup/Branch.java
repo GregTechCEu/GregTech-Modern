@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import net.minecraft.world.item.crafting.RecipeHolder;
-
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;

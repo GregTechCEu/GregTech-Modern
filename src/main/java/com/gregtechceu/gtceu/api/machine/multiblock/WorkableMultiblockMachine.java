@@ -22,7 +22,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;

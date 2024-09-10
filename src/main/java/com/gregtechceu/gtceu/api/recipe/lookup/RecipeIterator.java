@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import net.minecraft.world.item.crafting.RecipeHolder;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

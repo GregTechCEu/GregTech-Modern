@@ -31,7 +31,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 

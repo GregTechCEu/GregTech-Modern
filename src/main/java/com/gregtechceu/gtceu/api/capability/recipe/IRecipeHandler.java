@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import net.minecraft.world.item.crafting.RecipeHolder;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 

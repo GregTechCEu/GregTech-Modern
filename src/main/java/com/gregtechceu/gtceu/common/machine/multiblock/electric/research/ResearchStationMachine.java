@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
