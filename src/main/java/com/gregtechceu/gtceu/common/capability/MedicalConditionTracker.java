@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.Symptom;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

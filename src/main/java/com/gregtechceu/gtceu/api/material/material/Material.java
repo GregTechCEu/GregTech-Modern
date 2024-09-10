@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.material.material;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
