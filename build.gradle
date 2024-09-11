@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
     alias libs.plugins.modDevGradle
     alias libs.plugins.machete // automatic jar compressing on build
-    alias libs.plugins.shadow
+    //alias libs.plugins.shadow
     alias libs.plugins.spotless
     alias libs.plugins.lombok
 }
