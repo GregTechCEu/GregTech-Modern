@@ -66,5 +66,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-  }
+    }
 }

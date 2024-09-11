@@ -30,9 +30,7 @@ jobs:
         run: ./gradlew build --build-cache
 
       - name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish --build-cache
 
       - name: Get Version
         id: var
