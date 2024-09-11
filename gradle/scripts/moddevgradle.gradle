@@ -4,6 +4,18 @@ mixin {
     config 'gtceu.mixins.json'
 }
 
+jar {
+    manifest.attributes([
+            'MixinConfigs': 'gtceu.mixins.json',
+            'Specification-Title': mod_name,
+            'Specification-Version': mod_version,
+            'Specification-Vendor': 'GregTechCEu Team',
+            'Implementation-Title': "${project.name}-${libs.versions.minecraft.get()}",
+            'Implementation-Version': version,
+            'Implementation-Vendor': 'GregTechCEu Team',
+    ])
+}
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = forge.versions.minecraftForge.get()
