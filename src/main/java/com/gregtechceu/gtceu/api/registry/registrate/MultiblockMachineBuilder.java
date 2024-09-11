@@ -133,10 +133,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder shape(VoxelShape shape) {
         return (MultiblockMachineBuilder) super.shape(shape);
     }
+
     @Override
-    public MultiblockMachineBuilder multiblockPreviewRenderer(boolean multiBlockWorldPreview, boolean multiBlockXEIPreview){
+    public MultiblockMachineBuilder multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                              boolean multiBlockXEIPreview) {
         return (MultiblockMachineBuilder) super.multiblockPreviewRenderer(multiBlockWorldPreview, multiBlockXEIPreview);
     }
+
     @Override
     public MultiblockMachineBuilder rotationState(RotationState rotationState) {
         return (MultiblockMachineBuilder) super.rotationState(rotationState);

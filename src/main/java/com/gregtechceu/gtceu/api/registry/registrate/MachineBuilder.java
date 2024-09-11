@@ -296,11 +296,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.recipeOutputLimits.put(capability, limit);
         return this;
     }
-    public MachineBuilder<DEFINITION> multiblockPreviewRenderer(boolean multiBlockWorldPreview, boolean multiBlockXEIPreview){
+
+    public MachineBuilder<DEFINITION> multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                                boolean multiBlockXEIPreview) {
         this.renderMultiblockWorldPreview = multiBlockWorldPreview;
         this.renderMultiblockXEIPreview = multiBlockXEIPreview;
         return this;
     }
+
     public MachineBuilder<DEFINITION> compassSections(CompassSection... sections) {
         this.compassSections.addAll(Arrays.stream(sections).toList());
         return this;
