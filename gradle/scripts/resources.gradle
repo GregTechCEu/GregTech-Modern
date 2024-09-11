@@ -8,29 +8,38 @@ def mod_license = getConfig("mod_license")
 def mod_name = getConfig("mod_name")
 def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
+def mod_issue_tracker = getConfig("mod_issue_tracker")
 
-processResources {
-    // set up properties for filling into metadata
-    var properties = [
-            "version": version,
-            "mod_id": mod_id,
-            "minecraft_version": libs.versions.minecraft.get(),
-            "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
-            "configuration_version": forge.versions.configuration.get(),
-            "kjs_version": forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
-            "ldlib_version": forge.versions.ldlib.get(),
-            "jei_version": forge.versions.jei.get(),
-            "emi_version": forge.versions.emi.get(),
-            "top_version": forge.versions.theoneprobe.get(),
-            "jade_version": forge.versions.jade.get(),
-            "mod_license": mod_license,
-            "mod_name": mod_name,
-            "mod_description": mod_description,
-            "mod_url": mod_url
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var forgeVers = forge.versions.forgeShortVersion.get().split("\\.")[0]
+    var replaceProperties = [
+            version             : version,
+            mod_id              : mod_id,
+            minecraft_version   : libs.versions.minecraft.get(),
+            loader_version      : forgeVers,
+            forge_version       : forgeVers, // only specify major version of forge
+            configuration_version: forge.versions.configuration.get(),
+            kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
+            ldlib_version       : forge.versions.ldlib.get(),
+            jei_version         : forge.versions.jei.get(),
+            emi_version         : forge.versions.emi.get(),
+            top_version         : forge.versions.theoneprobe.get(),
+            jade_version        : forge.versions.jade.get(),
+            mod_license         : mod_license,
+            mod_name            : mod_name,
+            mod_description     : mod_description,
+            mod_url             : mod_url,
+            mod_issue_tracker   : mod_issue_tracker
     ]
-    inputs.properties(properties)
-
-    filesMatching("META-INF/mods.toml") {
-        expand properties
-    }
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
 }
+// Include the output of "generateModMetadata" as an input directory for the build
+// this works with both building through Gradle and the IDE.
+sourceSets.main.resources.srcDir generateModMetadata
+// To avoid having to run "generateModMetadata" manually, make it run on every project reload
+neoForge.ideSyncTask generateModMetadata
