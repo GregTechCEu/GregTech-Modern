@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -10,6 +9,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

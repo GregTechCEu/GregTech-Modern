@@ -18,8 +18,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -37,6 +35,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTes
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
@@ -66,7 +66,8 @@ public class GTCommands {
                                 .executes(context -> {
                                     for (RecipeHolder<?> recipe : context.getSource().getServer().getRecipeManager()
                                             .getRecipes()) {
-                                        if (recipe.value() instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
+                                        if (recipe.value() instanceof GTRecipe gtRecipe &&
+                                                !gtRecipe.checkRecipeValid()) {
                                             context.getSource().sendSuccess(
                                                     () -> Component
                                                             .literal("recipe %s is invalid".formatted(gtRecipe.id)),
@@ -120,7 +121,8 @@ public class GTCommands {
         return result;
     }
 
-    private static int placeVein(CommandContext<CommandSourceStack> context, BlockPos sourcePos) throws CommandSyntaxException {
+    private static int placeVein(CommandContext<CommandSourceStack> context,
+                                 BlockPos sourcePos) throws CommandSyntaxException {
         GTOreDefinition vein = context.getArgument("vein", GTOreDefinition.class);
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(vein);
 

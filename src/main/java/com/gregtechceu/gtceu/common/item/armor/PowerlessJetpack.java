@@ -281,7 +281,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
      */
 
     public static class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation,
-            IInteractionItem, IComponentCapability {
+                                  IInteractionItem, IComponentCapability {
 
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables

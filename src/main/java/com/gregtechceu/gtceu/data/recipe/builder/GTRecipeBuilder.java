@@ -273,6 +273,8 @@ public class GTRecipeBuilder {
             return inputItems(item.asItem());
         } else if (input instanceof ItemStack stack) {
             return inputItems(stack);
+        } else if (input instanceof SizedIngredient ingredient) {
+            return inputItems(ingredient);
         } else if (input instanceof Ingredient ingredient) {
             return inputItems(ingredient);
         } else if (input instanceof UnificationEntry entry) {
@@ -283,7 +285,7 @@ public class GTRecipeBuilder {
             return inputItems(machine);
         } else {
             GTCEu.LOGGER.error(
-                    "gt recipe {} input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition",
+                    "gt recipe {} input item is not one of: Item, Supplier<Item>, ItemStack, SizedIngredient, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition",
                     id);
             return this;
         }
@@ -296,8 +298,10 @@ public class GTRecipeBuilder {
             return inputItems(item.asItem(), count);
         } else if (input instanceof ItemStack stack) {
             return inputItems(stack.copyWithCount(count));
+        } else if (input instanceof SizedIngredient ingredient) {
+            return inputItems(ingredient);
         } else if (input instanceof Ingredient ingredient) {
-            return inputItems(ingredient, count);
+            return inputItems(ingredient);
         } else if (input instanceof UnificationEntry entry) {
             return inputItems(entry, count);
         } else if (input instanceof TagKey<?> tag) {
@@ -306,7 +310,7 @@ public class GTRecipeBuilder {
             return inputItems(machine, count);
         } else {
             GTCEu.LOGGER.error(
-                    "gt recipe {} input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition",
+                    "gt recipe {} input item is not one of: Item, Supplier<Item>, ItemStack, SizedIngredient, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition",
                     id);
             return this;
         }
@@ -314,6 +318,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(SizedIngredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
+    }
+
+    public GTRecipeBuilder inputItems(SizedIngredient input) {
+        return input(ItemRecipeCapability.CAP, input);
     }
 
     public GTRecipeBuilder inputItems(Ingredient input) {

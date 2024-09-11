@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FireChargeItem;
 import net.minecraft.world.item.FlintAndSteelItem;
@@ -346,7 +347,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     boolean shouldActivate = false;
                     ItemStack stack = player.getItemInHand(hand);
                     if (stack.getItem() instanceof FlintAndSteelItem) {
-                        stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+                        stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                         getLevel().playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
                         shouldActivate = true;

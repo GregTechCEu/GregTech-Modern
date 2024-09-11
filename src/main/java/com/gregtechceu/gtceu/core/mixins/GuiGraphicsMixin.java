@@ -77,7 +77,7 @@ public class GuiGraphicsMixin {
                     ItemStack output = ItemRecipeCapability.CAP
                             .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
 
-                    if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, stack)) {
+                    if (!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, stack)) {
                         gtceu$renderInstead(livingEntity, level, output, x, y, seed, z);
                         ci.cancel();
                         return;

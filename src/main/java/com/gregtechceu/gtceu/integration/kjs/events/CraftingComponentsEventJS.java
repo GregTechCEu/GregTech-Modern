@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
 import net.minecraft.core.registries.Registries;
@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
-import dev.latvian.mods.kubejs.event.StartupEventJS;
+import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings({ "unused", "unchecked" })
 @NoArgsConstructor
-public class CraftingComponentsEventJS extends StartupEventJS {
+public class CraftingComponentsEventJS implements KubeStartupEvent {
 
     public void modify(CraftingComponent.Component component, int tier, Object value) {
         component.appendIngredients(Map.of(tier, value));

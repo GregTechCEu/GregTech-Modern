@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.commands.arguments.MedicalConditionArgument;
 
 import net.minecraft.commands.CommandBuildContext;

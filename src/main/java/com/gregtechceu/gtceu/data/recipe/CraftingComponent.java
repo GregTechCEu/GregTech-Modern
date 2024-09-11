@@ -11,8 +11,12 @@ import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -921,7 +925,7 @@ public class CraftingComponent {
                 { FALLBACK, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
+        NeoForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
         if (GTCEu.isKubeJSLoaded()) {
             KJSCallWrapper.craftingComponentModification();
         }

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.common.Tags;
 public class CustomTags {
 
     // Added Vanilla tags
-    public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");

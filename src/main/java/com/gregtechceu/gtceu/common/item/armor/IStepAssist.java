@@ -19,14 +19,4 @@ public interface IStepAssist {
             AttributeModifier.Operation.ADD_VALUE);
 
     float MAGIC_STEP_HEIGHT = 1.0023f;
-
-    default void updateStepHeight(@NotNull Player player) {
-        if (!player.isShiftKeyDown()) {
-            if (player.maxUpStep() < MAGIC_STEP_HEIGHT) {
-                player.getAttribute(Attributes.STEP_HEIGHT).addOrUpdateTransientModifier(STEP_ASSIST_MODIFIER);
-            }
-        } else if (player.maxUpStep() == MAGIC_STEP_HEIGHT) {
-            player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(STEP_ASSIST_MODIFIER);
-        }
-    }
 }

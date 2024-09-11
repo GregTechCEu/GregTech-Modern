@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.item.armor.IStepAssist;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
@@ -54,7 +55,6 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -229,26 +229,22 @@ public class ForgeCommonEventListener {
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                IJetpack.performEHover(chest, player);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            }
+                        IJetpack.performEHover(chest, player);
+                        player.fallDistance = 0;
+                        event.setCanceled(true);
+                    }
         }
     }
 
-    private static final AttributeModifier STEP_HEIGHT_MODIFIER = new AttributeModifier(GTCEu.id("step_height_boost"),
-            0.4023f, AttributeModifier.Operation.ADD_VALUE);
-
     @SubscribeEvent
-    public static void stepAssistHandler(PlayerTickEvent event) {
-        float MAGIC_STEP_HEIGHT = 1.0023f;
+    public static void stepAssistHandler(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
-            if (player.maxUpStep() < MAGIC_STEP_HEIGHT) {
-                player.getAttribute(Attributes.STEP_HEIGHT).addTransientModifier(STEP_HEIGHT_MODIFIER);
+            if (player.maxUpStep() < IStepAssist.MAGIC_STEP_HEIGHT) {
+                player.getAttribute(Attributes.STEP_HEIGHT).addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
             }
-        } else if (player.maxUpStep() == MAGIC_STEP_HEIGHT) {
-            player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(STEP_HEIGHT_MODIFIER);
+        } else if (player.maxUpStep() == IStepAssist.MAGIC_STEP_HEIGHT) {
+            player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
         }
     }
 

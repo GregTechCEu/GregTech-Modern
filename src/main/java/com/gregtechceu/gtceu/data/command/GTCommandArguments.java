@@ -33,7 +33,7 @@ public class GTCommandArguments {
                             SingletonArgumentInfo.contextFree(MedicalConditionArgument::medicalCondition)));
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static final RegistryObject<GTRegistryArgument.Info<?, ? extends GTRegistry<?, ?>>> GT_REGISTRY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
+    private static final DeferredHolder<ArgumentTypeInfo<?, ?>, GTRegistryArgument.Info<?, ? extends GTRegistry<?, ?>>> GT_REGISTRY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register("gt_registry",
                     () -> ArgumentTypeInfos.<GTRegistryArgument, GTRegistryArgument.Info.Template, GTRegistryArgument.Info>registerByClass(
                             fixClassType(GTRegistryArgument.class),

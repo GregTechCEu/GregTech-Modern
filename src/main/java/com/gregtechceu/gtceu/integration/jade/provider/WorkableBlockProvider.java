@@ -81,7 +81,8 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                             text,
                             IElementHelper.get().progressStyle().color(0xFF006D6A).textColor(-1),
                             Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX,
-                                    style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555 }),
+                                    style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555,
+                                            0xFF555555 }),
                             true));
             return;
         }
