@@ -1,6 +1,7 @@
 {
     "required": true,
     "minVersion": "0.8",
+    "refmap": "gtceu.refmap.json",
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
@@ -66,5 +67,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-  }
+    }
 }

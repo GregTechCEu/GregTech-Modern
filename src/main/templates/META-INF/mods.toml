@@ -1,13 +1,13 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_version},)"
-issueTrackerURL = "https://github.com/GregTechCEu/GregTech-Modern/issues"
+issueTrackerURL = "${mod_issue_tracker}"
 license = "${mod_license}"
 
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
-authors = "KilaBash, screret, serenibyss, Tech22"
+authors = "KilaBash, screret, serenibyss, Tech22, YoungOnion, Mikerooni, Ghostipedia"
 description = "${mod_description}"
 logoFile = "icon.png"
 displayURL = "${mod_url}"

@@ -5,6 +5,10 @@ on:
     branches:
       - '1.20.1'
 
+concurrency:
+  group: auto-build-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,33 +27,27 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build --build-cache
 
       - name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish --build-cache
 
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep dev.jar -v | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
           echo "version=$MESSAGE-build_${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
-          name: ${{ steps.var.outputs.version }}
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            build/libs/!(*-@(dev|sources|javadoc)).jar
+            build/libs/!(*-@(dev|dev-all|dev-slim|javadoc)).jar
 
       - name: Print Output
         run: |

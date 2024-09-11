@@ -31,6 +31,7 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
+        gradle-home-cache-cleanup: true
         cache-write-only: ${{ inputs.update-cache }}
         generate-job-summary: false
         gradle-home-cache-includes: |

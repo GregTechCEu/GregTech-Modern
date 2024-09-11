@@ -1,9 +1,16 @@
 pluginManagement {
     repositories {
-        maven { url = "https://maven.fabricmc.net/" }
-        maven { url = "https://maven.architectury.dev/" }
         maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://maven.quiltmc.org/repository/release" }
+        maven {
+            name 'Maven for PR #118' // https://github.com/neoforged/ModDevGradle/pull/118
+            url 'https://prmaven.neoforged.net/ModDevGradle/pr118'
+            content {
+                includeModule('net.neoforged.moddev.legacy', 'net.neoforged.moddev.legacy.gradle.plugin')
+                includeModule('net.neoforged.moddev', 'net.neoforged.moddev.gradle.plugin')
+                includeModule('net.neoforged.moddev.repositories', 'net.neoforged.moddev.repositories.gradle.plugin')
+                includeModule('net.neoforged', 'moddev-gradle')
+            }
+        }
         gradlePluginPortal()
     }
 }
@@ -20,9 +27,11 @@ dependencyResolutionManagement {
         // Common
         def jeiVersion = "15.12.1.46"
         def reiVersion = "12.1.725"
-        def emiVersion = "1.1.12"
+        def emiVersion = "1.1.13"
         def ae2Version = "15.0.18"
         def kjsVersion = "2001.6.4-build.120"
+        def architecturyVersion = "9.2.14"
+        def rhinoVersion = "2001.2.3-build.6"
         def auVersion = "1.20.1-0.6.0"
 
         // Forge
@@ -41,8 +50,7 @@ dependencyResolutionManagement {
         def parchmentVersion = "2023.09.03" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def spotlessVersion = "6.25.0"
-        def architecturyPluginVersion = "3.4-SNAPSHOT"
-        def architecturyLoomVersion = "1.3-SNAPSHOT"
+        def modDevGradleVersion = "2.0.61-beta-pr-118-legacy"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"
@@ -53,7 +61,7 @@ dependencyResolutionManagement {
         
         forge {
             version("forgeShortVersion", forgeVersion)
-            def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")
+            def minecraftForge = version("minecraftForge", "${minecraftVersion}-${forgeVersion}")
             library("minecraftForge", "net.minecraftforge", "forge").versionRef(minecraftForge)
 
             def ldLib = version("ldlib", ldLibVersion)
@@ -95,6 +103,10 @@ dependencyResolutionManagement {
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+            def architectury = version("architectury", architecturyVersion)
+            library("architectury", "dev.architectury", "architectury-forge").versionRef(architectury)
+            def rhino = version("rhino", rhinoVersion)
+            library("rhino", "dev.latvian.mods", "rhino-forge").versionRef(rhino)
 
             def mixinextras = version("mixinextras", mixinextrasVersion)
             library("mixinextras-forge", "io.github.llamalad7", "mixinextras-forge").versionRef(mixinextras)
@@ -128,14 +140,8 @@ dependencyResolutionManagement {
             def spotless = version("spotless", spotlessVersion)
             plugin("spotless", "com.diffplug.spotless").versionRef(spotless)
 
-            def architecturyPlugin = version("architectury", architecturyPluginVersion)
-            plugin("architectury", "architectury-plugin").versionRef(architecturyPlugin)
-
-            def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
-            plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
-
-            def vineFlower = version("vineFlower", vineFlowerVersion)
-            plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
+            def modDevGradle = version("modDevGradleLegacy", modDevGradleVersion)
+            plugin("modDevGradle", "net.neoforged.moddev.legacy").versionRef(modDevGradle)
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)

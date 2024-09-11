@@ -36,30 +36,21 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
       - name: Setup Build
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build --build-cache
 
       - if: ${{ inputs.publishMaven }}
         name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish --build-cache
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep dev.jar -v | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
@@ -80,7 +71,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
+            build/libs/!(*-@(dev|dev-all|dev-slim|sources|javadoc|dev-shadow|slim)).jar
             build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
 
           name: GregTechCEu ${{ steps.var.outputs.version }}

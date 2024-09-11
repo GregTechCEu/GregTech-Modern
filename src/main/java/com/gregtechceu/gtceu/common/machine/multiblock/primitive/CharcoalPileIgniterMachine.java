@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,6 +58,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         WALL_BLOCKS.add(Blocks.RED_SAND);
 
     }
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            CharcoalPileIgniterMachine.class,
+            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
     private static final int MIN_RADIUS = 1;
@@ -96,6 +102,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
         resetState();
@@ -119,6 +130,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public boolean isActive() {
         return isActive;
+    }
+
+    @Override
+    public boolean isWorkingEnabled() {
+        return true;
     }
 
     @Override
@@ -273,15 +289,28 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        if (recipeLogic.isWorking()) {
+        if (isActive) {
             var pos = this.getPos();
             var facing = Direction.UP;
-            float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.5F;
+            float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.25F + GTValues.RNG.nextFloat() / 2.0F;
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
-            float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
+            float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.25F + GTValues.RNG.nextFloat() / 2.0F;
 
-            float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
+            float ySpd = facing.getStepY() * 0.1F + 0.01F * GTValues.RNG.nextFloat();
+            float horSpd = 0.03F * GTValues.RNG.nextFloat();
+            float horSpd2 = 0.03F * GTValues.RNG.nextFloat();
+
+            if (GTValues.RNG.nextFloat() < 0.1F) {
+                getLevel().playLocalSound(xPos, yPos, zPos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F,
+                        1.0F, false);
+            }
+            for (float xi = xPos - 1; xi <= xPos + 1; xi++) {
+                for (float zi = zPos - 1; zi <= zPos + 1; zi++) {
+                    if (GTValues.RNG.nextFloat() < .9F)
+                        continue;
+                    getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xi, yPos, zi, horSpd, ySpd, horSpd2);
+                }
+            }
         }
     }
 

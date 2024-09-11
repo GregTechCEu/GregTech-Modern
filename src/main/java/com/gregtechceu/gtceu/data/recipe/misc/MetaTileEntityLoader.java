@@ -546,7 +546,8 @@ public class MetaTileEntityLoader {
                 "PIP", 'P', GTBlocks.CASING_COKE_BRICKS.asStack(), 'I',
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_hatch", GTMachines.COKE_OVEN_HATCH.asStack(),
-                "CD", 'C', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D', GTMachines.WOODEN_DRUM.asStack());
+                "CBD", 'C', Tags.Items.CHESTS_WOODEN, 'B', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D',
+                GTMachines.WOODEN_DRUM.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
                 GTMachines.CHARCOAL_PILE_IGNITER.asStack(),
                 "ERE", "EHE", "FFF",
