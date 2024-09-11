@@ -81,7 +81,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.fml.ModLoader;
 
 import appeng.api.networking.pathing.ChannelMode;
