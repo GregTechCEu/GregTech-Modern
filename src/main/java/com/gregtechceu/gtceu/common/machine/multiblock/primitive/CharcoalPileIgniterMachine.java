@@ -14,11 +14,10 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -60,7 +59,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     }
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CharcoalPileIgniterMachine.class,
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            CharcoalPileIgniterMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
@@ -300,12 +300,13 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             float horSpd = 0.03F * GTValues.RNG.nextFloat();
             float horSpd2 = 0.03F * GTValues.RNG.nextFloat();
 
-            if(GTValues.RNG.nextFloat() < 0.1F) {
-                getLevel().playLocalSound(xPos, yPos, zPos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+            if (GTValues.RNG.nextFloat() < 0.1F) {
+                getLevel().playLocalSound(xPos, yPos, zPos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F,
+                        1.0F, false);
             }
-            for(float xi = xPos - 1; xi <= xPos + 1; xi++) {
+            for (float xi = xPos - 1; xi <= xPos + 1; xi++) {
                 for (float zi = zPos - 1; zi <= zPos + 1; zi++) {
-                    if(GTValues.RNG.nextFloat() < .9F)
+                    if (GTValues.RNG.nextFloat() < .9F)
                         continue;
                     getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xi, yPos, zi, horSpd, ySpd, horSpd2);
                 }
