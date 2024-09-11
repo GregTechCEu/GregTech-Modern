@@ -95,6 +95,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean hasTESR;
     @Setter
+    private boolean renderMultiblockWorldPreview = true;
+    @Setter
+    private boolean renderMultiblockXEIPreview = true;
+    @Setter
     private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
     @Setter
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
@@ -293,6 +297,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                                boolean multiBlockXEIPreview) {
+        this.renderMultiblockWorldPreview = multiBlockWorldPreview;
+        this.renderMultiblockXEIPreview = multiBlockXEIPreview;
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> compassSections(CompassSection... sections) {
         this.compassSections.addAll(Arrays.stream(sections).toList());
         return this;
@@ -429,6 +440,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
+        definition.setRenderXEIPreview(renderMultiblockXEIPreview);
+        definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
         return definition;
     }
