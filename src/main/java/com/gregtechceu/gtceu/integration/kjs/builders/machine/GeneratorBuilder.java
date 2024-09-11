@@ -71,7 +71,7 @@ public class GeneratorBuilder extends SimpleMachineBuilder {
 
     public static MachineBuilder<MachineDefinition> createAll(String name, Object... args) {
         GeneratorBuilder[] builders = tieredMachines(name, GeneratorBuilder::simple,
-                args.length < 2 ? 1 : (int) args[0],
+                args.length < 2 ? 1 : Double.valueOf(args[0].toString()).intValue(),
                 MachineFunctionPresets.mapTierArray(Arrays.copyOfRange(args, args.length < 2 ? 0 : 1, args.length)));
         return MachineFunctionPresets.builder(name, builders, GeneratorBuilder.class,
                 MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);

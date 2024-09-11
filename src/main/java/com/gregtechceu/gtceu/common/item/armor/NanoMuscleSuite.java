@@ -87,8 +87,6 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             final boolean finalNightvision = nightVision;
             itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
                     data1 -> data1.setNightVision(finalNightvision));
-        } else if (type == ArmorItem.Type.BOOTS) {
-            updateStepHeight(player);
         }
 
         if (nightVisionTimer > 0) nightVisionTimer--;

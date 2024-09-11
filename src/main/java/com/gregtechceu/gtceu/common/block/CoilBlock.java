@@ -4,12 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,10 +16,8 @@ import net.minecraft.world.item.TooltipFlag;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -37,22 +31,8 @@ public class CoilBlock extends ActiveBlock {
 
     public ICoilType coilType;
 
-    //@formatter:off
     public CoilBlock(Properties properties, ICoilType coilType) {
-        this(properties, coilType, Platform.isClient() ? new TextureOverrideRenderer(
-                        ResourceLocation.withDefaultNamespace("block/cube_all"),
-                        Map.of("all", coilType.getTexture())) : null,
-                Platform.isClient() ? new TextureOverrideRenderer(GTCEu.id("block/cube_2_layer/all"),
-                        Map.of("bot_all", coilType.getTexture(),
-                                "top_all", ResourceLocation.parse(coilType.getTexture() + "_bloom"))) :
-                        null);
-    }
-    //@formatter:on
-
-    @SuppressWarnings("DataFlowIssue")
-    public CoilBlock(Properties properties, ICoilType coilType,
-                     @Nullable IRenderer renderer, @Nullable IRenderer activeRenderer) {
-        super(properties, renderer, activeRenderer);
+        super(properties);
         this.coilType = coilType;
     }
 

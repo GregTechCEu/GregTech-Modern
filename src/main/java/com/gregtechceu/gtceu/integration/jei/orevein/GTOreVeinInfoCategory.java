@@ -34,7 +34,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.background = guiHelper.createBlankDrawable(GTOreVeinWidget.width, 120);
         this.icon = helpers.getGuiHelper()
-                .createDrawableItemStack(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Iron));
+                .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {

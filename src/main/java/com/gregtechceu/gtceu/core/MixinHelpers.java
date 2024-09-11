@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.FluidProperty;
@@ -137,16 +138,30 @@ public class MixinHelpers {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                        ResourceLocation fluidKeyTag = TagUtil.createFluidTag(key.getTagKey()).location();
                         Fluid fluid = property.getStorage().get(key);
                         if (fluid != null) {
                             ChemicalHelper.FLUID_MATERIAL.put(fluid, material);
 
                             ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
+                            TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
+                                    GTValues.CUSTOM_TAG_SOURCE);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
                                     path -> new ArrayList<>())
-                                    .add(new TagLoader.EntryWithSource(TagEntry.element(fluidId),
-                                            GTValues.CUSTOM_TAG_SOURCE));
+                                    .add(entry);
+                            tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
+                                    .add(entry);
                         }
+                    }
+                }
+                if (material.hasProperty(PropertyKey.ALLOY_BLAST)) {
+                    Fluid fluid = material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
+                    if (fluid != null) {
+                        ResourceLocation moltenID = BuiltInRegistries.FLUID.getKey(fluid);
+                        tagMap.computeIfAbsent(CustomTags.MOLTEN_FLUIDS.location(),
+                                path -> new ArrayList<>())
+                                .add(new TagLoader.EntryWithSource(TagEntry.element(moltenID),
+                                        GTValues.CUSTOM_TAG_SOURCE));
                     }
                 }
             }

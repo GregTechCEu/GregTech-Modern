@@ -54,30 +54,27 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         boolean hoverMode = data.hover();
         boolean jetpackEnabled = data.enabled();
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hoverMode = !hoverMode;
-            toggleTimer = 5;
-            final boolean finalHover = hoverMode;
-            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
+        String messageKey = null;
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+                jetpackEnabled = !jetpackEnabled;
+                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                final boolean finalEnabled = jetpackEnabled;
+                stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalEnabled));
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+                hoverMode = !hoverMode;
+                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                final boolean finalHover = hoverMode;
+                stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
+            }
+
+            if (messageKey != null) {
+                toggleTimer = 5;
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
 
-        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-            jetpackEnabled = !jetpackEnabled;
-            toggleTimer = 5;
-            final boolean finalEnabled = jetpackEnabled;
-            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalEnabled));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
-                        true);
-            }
-        }
-
-        performFlying(player, jetpackEnabled, hoverMode, stack);
+        if (toggleTimer > 0) toggleTimer--;
 
         if (toggleTimer > 0) toggleTimer--;
 
@@ -88,6 +85,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
                 data1 -> data1.setHover(finalHover)
                         .setToggleTimer(finalToggleTimer)
                         .setEnabled(finalEnabled));
+
+        performFlying(player, jetpackEnabled, hoverMode, stack);
     }
 
     @Override

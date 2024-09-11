@@ -5,16 +5,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.MapFluidIntersectionIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.MapItemIntersectionIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -377,7 +373,6 @@ public class GTRecipeLookup {
     protected static void retrieveCachedIngredient(@NotNull List<List<AbstractMapIngredient>> list,
                                                    @NotNull List<AbstractMapIngredient> ingredients,
                                                    @NotNull WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> cache) {
-        boolean added = false;
         for (int i = 0; i < ingredients.size(); i++) {
             AbstractMapIngredient mappedIngredient = ingredients.get(i);
             // attempt to use the cached value if possible, otherwise cache for the next time
@@ -387,25 +382,8 @@ public class GTRecipeLookup {
             } else {
                 cache.put(mappedIngredient, new WeakReference<>(mappedIngredient));
             }
-
-            // hardcode a tree specialization for the intersection ingredients
-            if (mappedIngredient instanceof MapItemIntersectionIngredient intersection) {
-                for (Ingredient inner : intersection.getIngredients()) {
-                    List<AbstractMapIngredient> converted = ItemRecipeCapability.CAP.convertToMapIngredient(inner);
-                    retrieveCachedIngredient(list, converted, cache);
-                }
-                added = true;
-            } else if (mappedIngredient instanceof MapFluidIntersectionIngredient intersection) {
-                for (FluidIngredient inner : intersection.getIngredients()) {
-                    List<AbstractMapIngredient> converted = FluidRecipeCapability.CAP.convertToMapIngredient(inner);
-                    retrieveCachedIngredient(list, converted, cache);
-                }
-                added = true;
-            }
         }
-        if (!added) {
-            list.add(ingredients);
-        }
+        list.add(ingredients);
     }
 
     /**
@@ -466,7 +444,7 @@ public class GTRecipeLookup {
                     }
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
-                        retrieveCachedIngredient(list, cap.convertToMapIngredient(content), ingredientRoot);
+                        list.add(cap.convertToMapIngredient(content));
                     }
                 }
             }

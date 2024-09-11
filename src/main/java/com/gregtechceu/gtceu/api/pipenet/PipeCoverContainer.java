@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
-import com.gregtechceu.gtceu.api.transfer.item.NoOpItemTransfer;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -25,8 +23,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -118,7 +118,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     @Override
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
-        return true;
+        return getCoverAtSide(side) == null;
     }
 
     @Override
@@ -157,9 +157,10 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @Override
     public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof ItemPipeBlockEntity itemPipe) {
-            return itemPipe.getHandler(side, useCoverCapability);
+            return getLevel() instanceof ServerLevel ? itemPipe.getHandler(side, useCoverCapability) :
+                    new EmptyItemHandler();
         } else {
-            return NoOpItemTransfer.INSTANCE;
+            return null;
         }
     }
 
@@ -168,7 +169,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
         if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
             return fluidPipe.getTankList(side);
         } else {
-            return NoOpFluidTransfer.INSTANCE;
+            return null;
         }
     }
 

@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -60,22 +60,33 @@ public class BlockHighLightRenderer {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
 
-            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) :
-                    null;
+            Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight
-            if (toolType != null && blockEntity instanceof IToolGridHighLight gridHighLight) {
+            if (!toolType.isEmpty()) {
+                IToolGridHighLight gridHighLight = null;
+                if (blockEntity instanceof IToolGridHighLight highLight) {
+                    gridHighLight = highLight;
+                } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighLight highLight) {
+                    gridHighLight = highLight;
+                }
+                if (gridHighLight == null) {
+                    return;
+                }
+                var state = level.getBlockState(blockPos);
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
-                if (gridHighLight.shouldRenderGrid(player, held, toolType)) {
+                if (gridHighLight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     var buffer = multiBufferSource.getBuffer(RenderType.lines());
                     RenderSystem.lineWidth(3);
-                    drawGridOverlays(poseStack, buffer, target, side -> gridHighLight.sideTips(player, toolType, side));
+                    final IToolGridHighLight finalGridHighLight = gridHighLight;
+                    drawGridOverlays(poseStack, buffer, target,
+                            side -> finalGridHighLight.sideTips(player, blockPos, state, toolType, side));
                 } else {
                     var facing = target.getDirection();
-                    var texture = gridHighLight.sideTips(player, toolType, facing);
+                    var texture = gridHighLight.sideTips(player, blockPos, state, toolType, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();

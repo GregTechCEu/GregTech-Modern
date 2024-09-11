@@ -28,6 +28,6 @@ public class GTBedrockFluid extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
+        return ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid).withPrefix("/bedrock_fluid_diagram/");
     }
 }

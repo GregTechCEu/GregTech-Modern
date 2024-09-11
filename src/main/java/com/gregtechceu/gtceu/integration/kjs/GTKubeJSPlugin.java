@@ -50,6 +50,7 @@ import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTElements;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -57,8 +58,6 @@ import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererBlockBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererGlassBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
@@ -149,8 +148,6 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.of(Registries.BLOCK, reg -> {
             reg.add("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
-            reg.add("gtceu:renderer", RendererBlockBuilder.class, RendererBlockBuilder::new);
-            reg.add("gtceu:renderer_glass", RendererGlassBlockBuilder.class, RendererGlassBlockBuilder::new);
         });
     }
 
@@ -218,6 +215,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("Symptom", Symptom.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
+        event.add("CraftingComponent", CraftingComponent.class);
 
         event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);

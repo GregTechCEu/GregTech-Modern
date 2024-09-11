@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCategory;
+import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockOreDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
 
@@ -50,6 +51,8 @@ public class GTREIPlugin implements REIClientPlugin {
             registry.add(new GTOreProcessingDisplayCategory());
         registry.add(new GTOreVeinDisplayCategory());
         registry.add(new GTBedrockFluidDisplayCategory());
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres)
+            registry.add(new GTBedrockOreDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
@@ -58,12 +61,13 @@ public class GTREIPlugin implements REIClientPlugin {
             }
         }
         // workstations
-        MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingDisplayCategory.registerWorkstations(registry);
         GTOreVeinDisplayCategory.registerWorkstations(registry);
         GTBedrockFluidDisplayCategory.registerWorkstations(registry);
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres)
+            GTBedrockOreDisplayCategory.registerWorkstations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
             if (definition != null) {
                 registry.addWorkstations(SMELTING, EntryStacks.of(definition.asStack()));
@@ -83,6 +87,8 @@ public class GTREIPlugin implements REIClientPlugin {
             GTOreProcessingDisplayCategory.registerDisplays(registry);
         GTOreVeinDisplayCategory.registerDisplays(registry);
         GTBedrockFluidDisplayCategory.registerDisplays(registry);
+        if (ConfigHolder.INSTANCE.machines.doBedrockOres)
+            GTBedrockOreDisplayCategory.registerDisplays(registry);
     }
 
     @Override

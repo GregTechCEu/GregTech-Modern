@@ -4,11 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +14,6 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModLoader;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
@@ -33,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
     public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setLenient().create();
-    private static final String FOLDER = "gtceu/bedrock_ore_veins";
+    public static final String FOLDER = "gtceu/bedrock_ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
     public BedrockOreLoader() {
@@ -71,11 +67,6 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
         if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
-        }
-
-        if (Platform.getMinecraftServer() != null) {
-            PacketDistributor
-                    .sendToAllPlayers(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
         }
     }
 

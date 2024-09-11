@@ -95,6 +95,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean hasTESR;
     @Setter
+    private boolean renderMultiblockWorldPreview = true;
+    @Setter
+    private boolean renderMultiblockXEIPreview = true;
+    @Setter
     private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
     @Setter
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
@@ -119,9 +123,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    @Setter
-    private RecipeModifier recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK
-            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
+    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.ELECTRIC_OVERCLOCK
+            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK));
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
@@ -262,14 +265,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
-        this.recipeModifier = recipeModifier;
-        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier) {
+        this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
+                new RecipeModifierList(recipeModifier);
         return this;
     }
 
+    public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
+        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this.recipeModifier(recipeModifier);
+    }
+
     public MachineBuilder<DEFINITION> recipeModifiers(RecipeModifier... recipeModifiers) {
-        return this.recipeModifier(new RecipeModifierList(recipeModifiers));
+        this.recipeModifier = new RecipeModifierList(recipeModifiers);
+        return this;
     }
 
     public MachineBuilder<DEFINITION> recipeModifiers(boolean alwaysTryModifyRecipe,
@@ -278,13 +287,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> noRecipeModifier() {
-        this.recipeModifier = ((machine, recipe) -> recipe);
+        this.recipeModifier = new RecipeModifierList(((machine, recipe, params, result) -> recipe));
         this.alwaysTryModifyRecipe = false;
         return this;
     }
 
     public MachineBuilder<DEFINITION> addOutputLimit(RecipeCapability<?> capability, int limit) {
         this.recipeOutputLimits.put(capability, limit);
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                                boolean multiBlockXEIPreview) {
+        this.renderMultiblockWorldPreview = multiBlockWorldPreview;
+        this.renderMultiblockXEIPreview = multiBlockXEIPreview;
         return this;
     }
 
@@ -425,6 +441,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderer(LDLib.isClient() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
+        definition.setRenderXEIPreview(renderMultiblockXEIPreview);
+        definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
         return definition;
     }

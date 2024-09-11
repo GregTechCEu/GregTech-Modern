@@ -9,6 +9,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class OverlayedFluidHandler {
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
             if (overlayedTank.fluid != null && FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
-                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+                int inserted = Ints.saturatedCast(overlayedTank.tryInsert(fluid, amountToInsert));
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;

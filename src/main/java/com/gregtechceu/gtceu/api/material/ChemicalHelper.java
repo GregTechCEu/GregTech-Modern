@@ -118,6 +118,20 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    public static MaterialStack getMaterial(Object object) {
+        if (object instanceof MaterialStack materialStack) {
+            return materialStack;
+        } else if (object instanceof UnificationEntry entry) {
+            return getMaterial(entry);
+        } else if (object instanceof ItemStack itemStack) {
+            return getMaterial(itemStack);
+        } else if (object instanceof ItemLike item) {
+            return getMaterial(item);
+        }
+        return null;
+    }
+
+    @Nullable
     public static MaterialStack getMaterial(ItemStack itemStack) {
         if (itemStack.isEmpty()) return null;
         return getMaterial(itemStack.getItem());

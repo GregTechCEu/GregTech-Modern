@@ -47,6 +47,9 @@ java {
     registerFeature("jade") {
         usingSourceSet(sourceSets.main)
     }
+    registerFeature("curios") {
+        usingSourceSet(sourceSets.main)
+    }
     registerFeature("ae2") {
         usingSourceSet(sourceSets.main)
     }

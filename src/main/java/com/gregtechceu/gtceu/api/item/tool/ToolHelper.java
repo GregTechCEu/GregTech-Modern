@@ -544,6 +544,7 @@ public class ToolHelper {
         player.swing(hand);
     }
 
+    @NotNull
     public static Set<GTToolType> getToolTypes(ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {

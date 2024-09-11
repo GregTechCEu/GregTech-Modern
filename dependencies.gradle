@@ -35,6 +35,10 @@ dependencies {
     // Jade
     jadeCompileOnlyApi(forge.jade)
 
+    // Curios
+    curiosCompileOnlyApi("top.theillusivec4.curios:curios-neoforge:${forge.versions.curios.get()}:api")
+    curiosRuntimeOnly(forge.curios)
+
     // AE2
     ae2CompileOnlyApi(forge.ae2) { transitive = false }
     compileOnly("curse.maven:ae2wtlib-459929:5217955")

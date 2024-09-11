@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -17,6 +14,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static com.gregtechceu.gtceu.client.renderer.machine.OverlayEnergyIORenderer.*;
 
 /**
  * @author KilaBash
@@ -39,10 +38,10 @@ public class BatteryBufferRenderer extends TieredHullMachineRenderer {
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (side == frontFacing && modelFacing != null) {
-            var texture = inventorySize <= 4 ? TransformerRenderer.ENERGY_OUT :
-                    inventorySize <= 8 ? TransformerRenderer.ENERGY_OUT_MULTI :
-                            TransformerRenderer.ENERGY_OUT_ULTRA;
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState, 2));
+            var texture = inventorySize <= 4 ? ENERGY_OUT_4A :
+                    inventorySize <= 8 ? ENERGY_OUT_8A :
+                            ENERGY_OUT_16A;
+            texture.renderOverlay(quads, modelFacing, modelState, 2);
         }
     }
 }

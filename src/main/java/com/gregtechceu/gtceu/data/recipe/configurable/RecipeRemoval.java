@@ -303,6 +303,10 @@ public class RecipeRemoval {
             if (colorMaterial != MarkerMaterials.Color.White) {
                 registry.accept(
                         ResourceLocation.withDefaultNamespace(String.format("%s_wool", colorMaterial.getName())));
+                registry.accept(
+                        ResourceLocation.withDefaultNamespace(String.format("%s_carpet", colorMaterial.getName())));
+                registry.accept(
+                        ResourceLocation.withDefaultNamespace(String.format("%s_bed", colorMaterial.getName())));
             }
         }
         registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));
@@ -347,6 +351,7 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_bookshelf"));
         registry.accept(ResourceLocation.withDefaultNamespace("quartz_pillar"));
         registry.accept(ResourceLocation.withDefaultNamespace("sea_lantern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("white_wool_from_string"));
         // TODO Add extruder/laser engraver recipes for all vanilla stones to keep parity with GT stones
         registry.accept(ResourceLocation.withDefaultNamespace("cracked_stone_bricks"));
         registry.accept(ResourceLocation.withDefaultNamespace("mossy_cobblestone_from_moss_block"));

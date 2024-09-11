@@ -17,7 +17,7 @@ import net.neoforged.neoforge.common.Tags;
 public class CustomTags {
 
     // Added Vanilla tags
-    public static final TagKey<Item> TAG_PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
@@ -26,6 +26,7 @@ public class CustomTags {
     public static final TagKey<Item> DIODES = TagUtil.createModItemTag("diodes");
     public static final TagKey<Item> INDUCTORS = TagUtil.createModItemTag("inductors");
 
+    public static final TagKey<Item> CIRCUITS = TagUtil.createModItemTag("circuits");
     public static final TagKey<Item> ULV_CIRCUITS = TagUtil.createModItemTag("circuits/ulv");
     public static final TagKey<Item> LV_CIRCUITS = TagUtil.createModItemTag("circuits/lv");
     public static final TagKey<Item> MV_CIRCUITS = TagUtil.createModItemTag("circuits/mv");
@@ -43,7 +44,7 @@ public class CustomTags {
     public static final TagKey<Item> MAX_CIRCUITS = TagUtil.createModItemTag("circuits/max");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] CIRCUITS = new TagKey[] {
+    public static final TagKey<Item>[] CIRCUITS_ARRAY = new TagKey[] {
             ULV_CIRCUITS,
             LV_CIRCUITS,
             MV_CIRCUITS,
@@ -61,6 +62,7 @@ public class CustomTags {
             MAX_CIRCUITS
     };
 
+    public static final TagKey<Item> BATTERIES = TagUtil.createModItemTag("batteries");
     public static final TagKey<Item> ULV_BATTERIES = TagUtil.createModItemTag("batteries/ulv");
     public static final TagKey<Item> LV_BATTERIES = TagUtil.createModItemTag("batteries/lv");
     public static final TagKey<Item> MV_BATTERIES = TagUtil.createModItemTag("batteries/mv");
@@ -73,7 +75,7 @@ public class CustomTags {
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] BATTERIES = new TagKey[] {
+    public static final TagKey<Item>[] BATTERIES_ARRAY = new TagKey[] {
             ULV_BATTERIES,
             LV_BATTERIES,
             MV_BATTERIES,
@@ -87,6 +89,7 @@ public class CustomTags {
     };
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
+    public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
 
     public static final TagKey<Block> NEEDS_WOOD_TOOL = Tags.Blocks.NEEDS_WOOD_TOOL;
     public static final TagKey<Block> NEEDS_GOLD_TOOL = Tags.Blocks.NEEDS_GOLD_TOOL;
@@ -124,6 +127,7 @@ public class CustomTags {
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
+    public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");
     public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powders");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK,
             ResourceLocation.fromNamespaceAndPath(GTValues.MODID_CREATE, "seats"));
@@ -138,4 +142,5 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createModTag(Registries.ENTITY_TYPE, "spiders");
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluids");
+    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
 }

@@ -3,12 +3,11 @@ package com.gregtechceu.gtceu.core.mixins.emi;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 
-import com.google.common.collect.Lists;
+import com.llamalad7.mixinextras.sugar.Local;
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.FluidEmiStack;
 import org.spongepowered.asm.mixin.Final;
@@ -19,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Map;
 
 @Mixin(value = FluidEmiStack.class, remap = false)
 public class FluidEmiStackMixin {
@@ -28,17 +26,15 @@ public class FluidEmiStackMixin {
     @Final
     private Fluid fluid;
 
-    @Inject(method = "getTooltip", at = @At("TAIL"), remap = false, require = 0)
-    private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir) {
-        List<Component> tooltips = Lists.newArrayList(Component.empty(), Component.empty());
-        TooltipsHandler.appendFluidTooltips(this.fluid, ((EmiStack) (Object) this).getAmount(), tooltips::add,
+    @Inject(method = "getTooltip",
+            at = @At(value = "INVOKE", target = "Ldev/emi/emi/EmiPort;getFluidRegistry()Lnet/minecraft/core/Registry;"),
+            remap = false,
+            require = 0)
+    private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir,
+                                       @Local List<ClientTooltipComponent> list) {
+        TooltipsHandler.appendFluidTooltips(this.fluid,
+                ((EmiStack) (Object) this).getAmount(),
+                text -> list.add(EmiTooltipComponents.of(text)),
                 TooltipFlag.NORMAL);
-
-        List<ClientTooltipComponent> list = cir.getReturnValue();
-        tooltips.stream()
-                .filter(component -> component.getContents() != PlainTextContents.EMPTY)
-                .map(component -> Map.entry(tooltips.indexOf(component),
-                        ClientTooltipComponent.create(component.getVisualOrderText())))
-                .forEach(component -> list.add(component.getKey(), component.getValue()));
     }
 }

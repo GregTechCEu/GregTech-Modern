@@ -1,24 +1,9 @@
 {
   "values": [
-    {
-      "id": "gtceu:oil",
-      "required": false
-    },
-    {
-      "id": "gtceu:light_oil",
-      "required": false
-    },
-    {
-      "id": "gtceu:heavy_oil",
-      "required": false
-    },
-    {
-      "id": "gtceu:raw_oil",
-      "required": false
-    },
-    {
-      "id": "gtceu:natural_gas",
-      "required": false
-    }
+    "gtceu:oil",
+    "gtceu:light_oil",
+    "gtceu:heavy_oil",
+    "gtceu:raw_oil",
+    "gtceu:natural_gas"
   ]
 }

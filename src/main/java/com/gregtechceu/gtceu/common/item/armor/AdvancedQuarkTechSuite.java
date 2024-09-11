@@ -55,47 +55,47 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         boolean canShare = data.canShare();
         boolean jetpackEnabled = data.enabled();
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
-            hoverMode = !hoverMode;
-            toggleTimer = 5;
-            final boolean finalHoverMode = hoverMode;
-            item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHoverMode));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable")), true);
+        String messageKey = null;
+        if (toggleTimer == 0) {
+            if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
+                jetpackEnabled = !jetpackEnabled;
+                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                final boolean finalJetpackEnabled = jetpackEnabled;
+                item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setEnabled(finalJetpackEnabled));
+            } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+                hoverMode = !hoverMode;
+                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                final boolean finalHoverMode = hoverMode;
+                item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHoverMode));
+            } else if (KeyBind.ARMOR_CHARGING.isKeyDown(player)) {
+                canShare = !canShare;
+                if (canShare && cont.getCharge() == 0) { // Only allow for charging to be enabled if charge is nonzero
+                    messageKey = "metaarmor.qts.share.error";
+                    canShare = false;
+                } else {
+                    messageKey = "metaarmor.qts.share." + (canShare ? "enable" : "disable");
+                }
+                final boolean finalCanShare = canShare;
+                item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setCanShare(finalCanShare));
+            }
+
+            if (messageKey != null) {
+                toggleTimer = 5;
+                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
             }
         }
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_CHARGING.isKeyDown(player)) {
-            canShare = !canShare;
-            toggleTimer = 5;
-            if (!world.isClientSide) {
-                if (canShare && cont.getCharge() == 0)
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.share.error"), true);
-                else if (canShare)
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.share.enable"), true);
-                else
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.share.disable"), true);
-            }
+        if (toggleTimer > 0) toggleTimer--;
 
-            // Only allow for charging to be enabled if charge is nonzero
-            canShare = canShare && (cont.getCharge() != 0);
-            final boolean finalCanShare = canShare;
-            item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setCanShare(finalCanShare));
-        }
-
-        if (toggleTimer == 0 && KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
-            jetpackEnabled = !jetpackEnabled;
-            toggleTimer = 5;
-            final boolean finalJetpackEnabled = jetpackEnabled;
-            item.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                    data1 -> data1.setEnabled(finalJetpackEnabled));
-            if (!world.isClientSide) {
-                player.displayClientMessage(
-                        Component.translatable("metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable")),
-                        true);
-            }
-        }
+        final boolean finalCanShare = canShare;
+        final boolean finalHoverMode = hoverMode;
+        final byte finalToggleTimer = toggleTimer;
+        final boolean finalJetpackEnabled = jetpackEnabled;
+        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                data1 -> data1.setCanShare(finalCanShare)
+                        .setHover(finalHoverMode)
+                        .setToggleTimer(finalToggleTimer)
+                        .setEnabled(finalJetpackEnabled));
 
         performFlying(player, jetpackEnabled, hoverMode, item);
 
@@ -144,18 +144,6 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
                 }
             }
         }
-
-        if (toggleTimer > 0) toggleTimer--;
-
-        final boolean finalCanShare = canShare;
-        final boolean finalHoverMode = hoverMode;
-        final byte finalToggleTimer = toggleTimer;
-        final boolean finalJetpackEnabled = jetpackEnabled;
-        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
-                data1 -> data1.setCanShare(finalCanShare)
-                        .setHover(finalHoverMode)
-                        .setToggleTimer(finalToggleTimer)
-                        .setEnabled(finalJetpackEnabled));
 
         timer++;
         if (timer == Long.MAX_VALUE)

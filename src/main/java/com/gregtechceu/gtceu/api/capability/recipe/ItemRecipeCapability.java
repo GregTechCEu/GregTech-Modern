@@ -265,7 +265,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         Object2IntMap<ItemStack> recipeOutputs = GTHashMaps
                 .fromItemStackCollection(recipe.getOutputContents(ItemRecipeCapability.CAP)
                         .stream()
-                        .map(ItemRecipeCapability.CAP::of)
+                        .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
                         .filter(ingredient -> !ingredient.ingredient().isEmpty())
                         .map(ingredient -> ingredient.getItems()[0])
                         .toList());
