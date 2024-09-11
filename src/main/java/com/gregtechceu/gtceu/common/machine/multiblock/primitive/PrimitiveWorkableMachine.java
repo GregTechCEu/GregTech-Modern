@@ -57,11 +57,13 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.NONE);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
+                IO.NONE);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT, IO.NONE);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
+                IO.NONE);
     }
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
