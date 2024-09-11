@@ -25,9 +25,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -157,7 +159,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof ItemPipeBlockEntity itemPipe) {
             return getLevel() instanceof ServerLevel ? itemPipe.getHandler(side, useCoverCapability) :
-                    IItemTransfer.EMPTY;
+                    new EmptyItemHandler();
         } else {
             return null;
         }

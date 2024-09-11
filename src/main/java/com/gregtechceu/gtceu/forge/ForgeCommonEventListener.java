@@ -40,7 +40,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
@@ -241,7 +240,8 @@ public class ForgeCommonEventListener {
         Player player = event.getEntity();
         if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
             if (player.maxUpStep() < IStepAssist.MAGIC_STEP_HEIGHT) {
-                player.getAttribute(Attributes.STEP_HEIGHT).addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+                player.getAttribute(Attributes.STEP_HEIGHT)
+                        .addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
             }
         } else if (player.maxUpStep() == IStepAssist.MAGIC_STEP_HEIGHT) {
             player.getAttribute(Attributes.STEP_HEIGHT).removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);

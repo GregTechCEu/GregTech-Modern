@@ -347,7 +347,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     boolean shouldActivate = false;
                     ItemStack stack = player.getItemInHand(hand);
                     if (stack.getItem() instanceof FlintAndSteelItem) {
-                        stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                        stack.hurtAndBreak(1, player,
+                                hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                         getLevel().playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
                         shouldActivate = true;
