@@ -2072,46 +2072,6 @@ public class GTMachines {
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
-    @SuppressWarnings("removal")
-    public static final MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ?
-            registerTieredMultis("processing_array", ProcessingArrayMachine::new,
-                    (tier, builder) -> builder
-                            .langValue(VNF[tier] + " Processing Array")
-                            .rotationState(RotationState.ALL)
-                            .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
-                            .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
-                            .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
-                            .recipeType(DUMMY_RECIPES)
-                            // .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
-                            .pattern(definition -> FactoryBlockPattern.start()
-                                    .aisle("XXX", "CCC", "XXX")
-                                    .aisle("XXX", "C#C", "XXX")
-                                    .aisle("XSX", "CCC", "XXX")
-                                    .where('S', Predicates.controller(blocks(definition.getBlock())))
-                                    .where('X', blocks(ProcessingArrayMachine.getCasingState(tier))
-                                            .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                                    .setMaxGlobalLimited(4).setPreviewCount(1))
-                                            .or(Predicates.autoAbilities(true, false, false)))
-                                    .where('C', blocks(CLEANROOM_GLASS.get()))
-                                    .where('#', Predicates.air())
-                                    .build())
-                            .tooltips(Component.translatable("gtceu.universal.tooltip.parallel",
-                                    ProcessingArrayMachine.getMachineLimit(tier)))
-                            .workableCasingRenderer(tier == IV ?
-                                    GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
-                                    GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
-                                    GTCEu.id("block/multiblock/processing_array"))
-                            .compassSections(GTCompassSections.TIER[IV])
-                            .compassNode("processing_array")
-                            .tooltips(Component.translatable("gtceu.universal.tooltip.deprecated"))
-                            .register(),
-                    IV, LuV) :
-            null;
-
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE
             .multiblock("active_transformer", ActiveTransformerMachine::new)
             .rotationState(RotationState.ALL)
