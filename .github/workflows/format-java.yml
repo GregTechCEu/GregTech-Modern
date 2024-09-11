@@ -4,7 +4,7 @@ name: Java Formatting
 on:
   push:
     branches:
-      - 1.20.1
+      - '1.20.1'
     paths: ['src/main/java/**', 'src/test/**']
   pull_request:
     paths: ['**']

@@ -1,32 +1,15 @@
 dependencies {
-    minecraft "com.mojang:minecraft:${libs.versions.minecraft.get()}"
-    mappings loom.layered {
-        it.mappings("org.quiltmc:quilt-mappings:${libs.versions.minecraft.get()}+build.${libs.versions.quiltMappings.get()}:intermediary-v2")
-        it.parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-        it.officialMojangMappings { nameSyntheticMembers = false }
-    }
-
-    forge forge.minecraftForge
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-    // tests
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-    testImplementation 'io.javalin:javalin:5.4.2'
-    testImplementation 'org.mockito:mockito-core:5.2.0'
-
-
-    // From Forge
+    compileOnly 'org.jetbrains:annotations:24.1.0'
 
     // LDLib
     modApi(forge.ldlib.forge) { transitive = false }
-    include(forge.ldlib.forge)
+    jarJar(forge.ldlib.forge)
 
     // Registrate
-    modApi(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
+    modImplementation(jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
 
     // Create and its dependencies
-    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim") { transitive = false }
     modImplementation forge.flywheel
 
     // JEI
@@ -40,8 +23,7 @@ dependencies {
     modCompileOnly forge.rei.forge
 
     // EMI
-    modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-
+    //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
     modImplementation forge.emi
 
     // TOP
@@ -61,15 +43,18 @@ dependencies {
     modCompileOnly(forge.almostUnified.forge)
 
     // KJS
-    modImplementation forge.kubejs
+    modImplementation(forge.kubejs) { transitive = false }
+    modImplementation(forge.architectury)
+    modImplementation(forge.rhino)
 
-    // Mixin Extras
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
-    api(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
+    // Mixin (& Extras)
+    api(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
+    jarJar("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}")
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 
     // Configuration
     modApi(forge.configuration)
-    include(forge.configuration)
+    jarJar(forge.configuration)
 
     // Shimmer
     modCompileOnly(forge.shimmer.forge) { transitive = false }

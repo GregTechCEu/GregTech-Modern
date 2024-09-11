@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_version},)"
-issueTrackerURL = "https://github.com/GregTechCEu/GregTech-Modern/issues"
+issueTrackerURL = "${mod_issue_tracker}"
 license = "${mod_license}"
 
 [[mods]]

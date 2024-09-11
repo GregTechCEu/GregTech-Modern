@@ -1,18 +1,17 @@
+artifacts {
+    archives tasks.reobfJar
+    archives tasks.reobfSlimJar
+    archives tasks.sourcesJar
+}
+
 publishing {
     publications {
-        mavenForge(MavenPublication) {
-            artifact(remapJar) {
-                artifactId = archivesBaseName
-                builtBy remapJar
-            }
-            artifact(remapSourcesJar) {
-                artifactId = archivesBaseName
-                builtBy remapSourcesJar
-            }
-            artifact(remapSlimJar) {
-                artifactId = archivesBaseName
-                builtBy remapSlimJar
-            }
+        mavenJava(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = project.archivesBaseName
+            version = project.mod_version
+
+            from components.java
         }
     }
 
