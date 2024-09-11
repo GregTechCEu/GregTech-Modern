@@ -1,6 +1,3 @@
-static def isJetBrainsRuntime() {
-    return System.getProperty('java.vm.vendor').contains('JetBrains')
-}
 
 mixin {
     add sourceSets.main, "gtceu.refmap.json"
