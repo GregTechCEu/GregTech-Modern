@@ -35,7 +35,7 @@ jobs:
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep dev.jar -v | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
           mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
