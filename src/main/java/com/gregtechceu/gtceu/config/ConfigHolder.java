@@ -412,7 +412,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({
-                "Let Dual Hatch has more ability.",
+                "Let Dual Hatch has more ability. (DEPRECATED: does nothing now)",
                 "When enabled it, Dual Hatch will can used to assemble line and so on.",
                 "Need restart Minecraft to apply."
         })
