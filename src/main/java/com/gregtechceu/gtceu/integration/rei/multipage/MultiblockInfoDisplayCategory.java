@@ -29,6 +29,7 @@ public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<Mult
         GTRegistries.MACHINES.values().stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
+                .filter(MultiblockMachineDefinition::isRenderXEIPreview)
                 .map(MultiblockInfoDisplay::new)
                 .forEach(registry::add);
     }

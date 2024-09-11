@@ -33,6 +33,7 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
         registry.addRecipes(RECIPE_TYPE, GTRegistries.MACHINES.values().stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
+                .filter(MultiblockMachineDefinition::isRenderXEIPreview)
                 .map(MultiblockInfoWrapper::new)
                 .toList());
     }

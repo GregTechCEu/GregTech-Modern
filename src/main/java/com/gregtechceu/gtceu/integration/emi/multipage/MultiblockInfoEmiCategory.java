@@ -23,6 +23,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         GTRegistries.MACHINES.values().stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
+                .filter(MultiblockMachineDefinition::isRenderXEIPreview)
                 .map(MultiblockInfoEmiRecipe::new)
                 .forEach(registry::addRecipe);
     }
