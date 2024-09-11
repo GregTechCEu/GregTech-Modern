@@ -56,22 +56,47 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
         return MANAGED_FIELD_HOLDER;
     }
 
+    // Anonymous classes used to disable input/output from the controller block
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN) {
+
+            @Override
+            public boolean canCapInput() {
+                return false;
+            }
+        };
     }
 
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT) {
+
+            @Override
+            public boolean canCapOutput() {
+                return false;
+            }
+        };
     }
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                32 * FluidHelper.getBucket(), IO.IN);
+                32 * FluidHelper.getBucket(), IO.IN) {
+
+            @Override
+            public boolean canCapInput() {
+                return false;
+            }
+        };
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                32 * FluidHelper.getBucket(), IO.OUT);
+                32 * FluidHelper.getBucket(), IO.OUT) {
+
+            @Override
+            public boolean canCapOutput() {
+                return false;
+            }
+        };
     }
 
     @Override
