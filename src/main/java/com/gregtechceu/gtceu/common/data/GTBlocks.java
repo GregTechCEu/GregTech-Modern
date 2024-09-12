@@ -1073,9 +1073,10 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
             .lang("Stripped Rubber Log")
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
             .tag(ItemTags.LOGS_THAT_BURN)
+            .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
             .block("rubber_wood", RotatedPillarBlock::new)
@@ -1083,9 +1084,10 @@ public class GTBlocks {
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
             .tag(ItemTags.LOGS_THAT_BURN)
+            .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
             .block("stripped_rubber_wood", RotatedPillarBlock::new)
@@ -1093,9 +1095,10 @@ public class GTBlocks {
             .lang("Stripped Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()),
                     provider.blockTexture(ctx.get())))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
             .tag(ItemTags.LOGS_THAT_BURN)
+            .build()
             .register();
 
     public static final BlockEntry<Block> RUBBER_PLANK = REGISTRATE
