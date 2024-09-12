@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.graphnet.predicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import org.jetbrains.annotations.NotNull;

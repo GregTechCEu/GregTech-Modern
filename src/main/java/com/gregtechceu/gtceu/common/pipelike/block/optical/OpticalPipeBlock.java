@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.pipelike.handlers.DuctNetHandler;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.jetbrains.annotations.NotNull;

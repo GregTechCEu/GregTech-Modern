@@ -55,11 +55,6 @@ public final class FilterPredicate extends EdgePredicate<FilterPredicate, Compou
     }
 
     @Override
-    public @NotNull FilterPredicate getNew() {
-        return new FilterPredicate();
-    }
-
-    @Override
     public boolean test(IPredicateTestObject object) {
         Object test = object.recombine();
         if (sourceFilter != null && !sourceFilter.testGeneric(test)) return false;

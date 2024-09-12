@@ -12,20 +12,19 @@ import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidFlowLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.item.ItemFlowLogic;
 import com.gregtechceu.gtceu.integration.top.element.FluidStackElement;
 import com.gregtechceu.gtceu.integration.top.element.FluidStyle;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import mcjty.theoneprobe.api.*;
-import mcjty.theoneprobe.apiimpl.styles.TextStyle;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import mcjty.theoneprobe.api.*;
 
 public class PipeTileInfoProvider implements IProbeInfoProvider {
 
@@ -102,7 +101,8 @@ public class PipeTileInfoProvider implements IProbeInfoProvider {
             FluidStack stack = entry.getKey().recombine();
             iProbeInfo.horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
                     .element(new FluidStackElement(logic.getLast(), new FluidStyle().bounds(14, 14)))
-                    .text(entry.getLongValue() * 20 / FluidFlowLogic.MEMORY_TICKS + " mB/S " + stack.getDisplayName().getString());
+                    .text(entry.getLongValue() * 20 / FluidFlowLogic.MEMORY_TICKS + " mB/S " +
+                            stack.getDisplayName().getString());
         }
     }
 

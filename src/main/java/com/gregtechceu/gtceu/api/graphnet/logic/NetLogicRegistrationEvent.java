@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
-import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.event.IModBusEvent;
+
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 import java.util.Comparator;
 

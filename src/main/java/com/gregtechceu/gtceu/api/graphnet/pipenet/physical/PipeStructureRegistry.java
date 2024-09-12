@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical;
 
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraftforge.common.MinecraftForge;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 

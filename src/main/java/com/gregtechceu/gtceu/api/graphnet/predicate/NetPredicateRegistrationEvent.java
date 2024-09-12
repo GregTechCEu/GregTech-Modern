@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate;
 
-import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.event.IModBusEvent;
+
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 import java.util.Comparator;
 

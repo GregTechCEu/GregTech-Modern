@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.graphnet.logic.AbstractIntLogicData;
-import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class SuperconductorLogic extends AbstractIntLogicData<SuperconductorLogic> {

@@ -11,20 +11,18 @@ import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidFlowLogic;
 import com.gregtechceu.gtceu.common.pipelike.net.item.ItemFlowLogic;
 import com.gregtechceu.gtceu.integration.jade.element.FluidStackElement;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import mcjty.theoneprobe.api.CompoundText;
-import mcjty.theoneprobe.api.ElementAlignment;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -54,7 +52,8 @@ public class PipeTileInfoProvider implements IBlockComponentProvider, IServerDat
             CompoundTag fluid = serverData.getCompound("Fluid");
 
             FluidStack stack = FluidStack.loadFromTag(fluid.getCompound("LastFluid"));
-            iTooltip.add(IElementHelper.get().text("gtceu.top.pipe.fluid_last").align(IElement.Align.LEFT));
+            iTooltip.add(IElementHelper.get().text(Component.translatable("gtceu.top.pipe.fluid_last"))
+                    .align(IElement.Align.LEFT));
             iTooltip.append(new FluidStackElement(stack, 14, 14));
             iTooltip.append(stack.getDisplayName());
 
@@ -72,7 +71,8 @@ public class PipeTileInfoProvider implements IBlockComponentProvider, IServerDat
             CompoundTag item = serverData.getCompound("Item");
 
             ItemStack stack = ItemStack.of(item.getCompound("LastItem"));
-            iTooltip.add(IElementHelper.get().text("gtceu.top.pipe.item_last").align(IElement.Align.LEFT));
+            iTooltip.add(IElementHelper.get().text(Component.translatable("gtceu.top.pipe.item_last"))
+                    .align(IElement.Align.LEFT));
             iTooltip.append(IElementHelper.get().item(stack));
             iTooltip.append(stack.getDisplayName());
 

@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id 'java-library'
     id 'eclipse'
@@ -5,7 +7,7 @@ plugins {
     id 'maven-publish'
     alias libs.plugins.modDevGradle
     alias libs.plugins.machete // automatic jar compressing on build
-    //alias libs.plugins.shadow
+    alias libs.plugins.shadow
     alias libs.plugins.spotless
     alias libs.plugins.lombok
 }
@@ -17,6 +19,20 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 // Formats the mod version to include the loader, Minecraft version, build number (if present), and '-SNAPSHOT-<timestamp>' if enabled.
 boolean isSnapshot = System.getenv("SNAPSHOT")
 version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
+
+tasks.register('slimJar', ShadowJar) {
+    from sourceSets.main.output
+}
+
+afterEvaluate {
+    tasks.withType(ShadowJar).configureEach {
+        dependsOn shadowJar.configurations
+        minimize()
+        relocate("org.jgrapht", "${maven_group}.repack.org.jgrapht")
+        relocate("org.jheaps", "${maven_group}.repack.org.jheaps")
+        relocate("org.apfloat", "${maven_group}.repack.org.apfloat")
+    }
+}
 
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"

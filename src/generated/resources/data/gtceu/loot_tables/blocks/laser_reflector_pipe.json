@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:large_duct_pipe"
+          "name": "gtceu:laser_reflector_pipe"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/large_duct_pipe"
+  "random_sequence": "gtceu:blocks/laser_reflector_pipe"
 }

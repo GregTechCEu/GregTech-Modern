@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.pipe.quad;
 
 import com.gregtechceu.gtceu.client.renderer.pipe.util.SpriteInformation;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 
 import net.minecraft.client.renderer.RenderType;

@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.lowdragmc.lowdraglib.LDLib;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import net.minecraft.client.Minecraft;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

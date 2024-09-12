@@ -23,15 +23,15 @@ public final class ColorQuadCache {
     }
 
     public List<BakedQuad> getQuads(ColorData data) {
-        //List<BakedQuad> existing = cache.get(data);
-        //if (existing == null) {
-        //    existing = new ObjectArrayList<>();
-        //    for (BakedQuad quad : prototypes) {
-        //        existing.add(quad);
-        //    }
-        //    cache.put(data, existing);
-        //    // if (cache.size() > 20) cache.removeLast();
-        //}
+        // List<BakedQuad> existing = cache.get(data);
+        // if (existing == null) {
+        // existing = new ObjectArrayList<>();
+        // for (BakedQuad quad : prototypes) {
+        // existing.add(quad);
+        // }
+        // cache.put(data, existing);
+        // // if (cache.size() > 20) cache.removeLast();
+        // }
         return prototypes;
     }
 }

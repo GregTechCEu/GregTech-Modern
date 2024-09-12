@@ -88,7 +88,7 @@ public class FluidCapabilityObject implements IPipeCapabilityObject, IFluidTrans
     public <T> LazyOptional<T> getCapabilityForSide(Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) {
             if (facing == null) return LazyOptional.empty(); // hard override to prevent TOP from displaying a tank.
-            //noinspection ConstantValue
+            // noinspection ConstantValue
             return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, facing == null ?
                     LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(this)) :
                     LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(wrappers.get(facing))));

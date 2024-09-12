@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.handlers.DuctNetHandler;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,8 @@ public class DuctPipeBlock extends PipeBlock {
     }
 
     @Override
-    protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
+    @NotNull
+    public IPipeNetNodeHandler getHandler(PipeBlockEntity blockEntityContext) {
         return DuctNetHandler.INSTANCE;
     }
 

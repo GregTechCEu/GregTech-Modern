@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeCapabilityObject
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.BlockedPredicate;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
+import com.gregtechceu.gtceu.api.graphnet.predicate.NetPredicateType;
 import com.gregtechceu.gtceu.api.graphnet.worldnet.WorldPosNet;
 import com.gregtechceu.gtceu.common.cover.ShutterCover;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -134,7 +135,7 @@ public abstract class WorldPipeNet extends WorldPosNet {
     protected void coverPredication(@NotNull NetEdge edge, @Nullable CoverBehavior a, @Nullable CoverBehavior b) {
         if (a instanceof ShutterCover aS && aS.isWorkingEnabled() ||
                 b instanceof ShutterCover bS && bS.isWorkingEnabled()) {
-            edge.getPredicateHandler().setPredicate(BlockedPredicate.INSTANCE);
+            edge.getPredicateHandler().setPredicate(BlockedPredicate.TYPE.getNew());
         }
     }
 

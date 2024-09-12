@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 

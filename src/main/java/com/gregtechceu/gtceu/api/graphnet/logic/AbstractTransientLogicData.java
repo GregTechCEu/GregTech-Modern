@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractTransientLogicData<T extends AbstractTransientLogicData<T>>

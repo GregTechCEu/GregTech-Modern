@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:dielectric_laser_mirror"
+  },
+  "items": [
+    "gtceu:dielectric_laser_mirror"
+  ],
+  "page": "gtceu:misc/dielectric_laser_mirror",
+  "position": [
+    -200,
+    300
+  ],
+  "section": "gtceu:misc"
+}

@@ -101,7 +101,6 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
 
-
         provider.add("gregtech.top.pipe.voltage", "Average Voltage / s:");
         provider.add("gregtech.top.pipe.amperage", "Average Amperage / s:");
         provider.add("gregtech.top.pipe.fluid_last", "Last Fluid:");

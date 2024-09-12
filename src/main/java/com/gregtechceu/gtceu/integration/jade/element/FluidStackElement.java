@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.integration.jade.element;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.phys.Vec2;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import snownee.jade.api.ui.Element;
 
 public class FluidStackElement extends Element {
@@ -45,6 +47,5 @@ public class FluidStackElement extends Element {
         }
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1, 1, 1, 1);
-
     }
 }

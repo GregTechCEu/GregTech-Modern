@@ -179,10 +179,10 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
                     .setLogicEntry(WeightFactorLogic.TYPE.getWith(loss + 0.001 / amperage))
                     .setLogicEntry(ThroughputLogic.TYPE.getWith(amperage))
                     .setLogicEntry(VoltageLimitLogic.TYPE.getWith(voltageLimit))
-                    .setLogicEntry(TemperatureLogic.TYPE.getNew()
-                            .getWith(TemperatureLossFunction.getOrCreateCable(coolingFactor), materialMeltTemperature,
-                                    1,
-                                    100 * cable.material(), cable.partialBurnThreshold()));
+                    .setLogicEntry(
+                            TemperatureLogic.TYPE.getWith(TemperatureLossFunction.getOrCreateCable(coolingFactor),
+                                    materialMeltTemperature, 1, 100 * cable.material(),
+                                    cable.partialBurnThreshold()));
             if (superconductorCriticalTemperature > 0) {
                 data.setLogicEntry(SuperconductorLogic.TYPE.getWith(superconductorCriticalTemperature));
             }
@@ -195,9 +195,8 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
                     .setLogicEntry(WeightFactorLogic.TYPE.getWith(loss + 0.001 / amperage))
                     .setLogicEntry(ThroughputLogic.TYPE.getWith(amperage))
                     .setLogicEntry(VoltageLimitLogic.TYPE.getWith(voltageLimit))
-                    .setLogicEntry(TemperatureLogic.TYPE.getNew()
-                            .getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor), materialMeltTemperature, 1,
-                                    50 * pipe.material(), null));
+                    .setLogicEntry(TemperatureLogic.TYPE.getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor),
+                            materialMeltTemperature, 1, 50 * pipe.material(), null));
             if (superconductorCriticalTemperature > 0) {
                 data.setLogicEntry(SuperconductorLogic.TYPE.getWith(superconductorCriticalTemperature));
             }

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

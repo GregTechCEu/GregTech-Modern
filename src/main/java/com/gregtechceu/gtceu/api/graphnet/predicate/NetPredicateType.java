@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.graphnet.predicate;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;

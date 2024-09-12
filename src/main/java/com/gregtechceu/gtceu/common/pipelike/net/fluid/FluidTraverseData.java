@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.pipelike.net.fluid;
 
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -30,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

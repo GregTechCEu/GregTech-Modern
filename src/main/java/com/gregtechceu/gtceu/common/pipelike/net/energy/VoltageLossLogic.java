@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.net.energy;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.graphnet.logic.AbstractLongLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class VoltageLossLogic extends AbstractLongLogicData<VoltageLossLogic> {

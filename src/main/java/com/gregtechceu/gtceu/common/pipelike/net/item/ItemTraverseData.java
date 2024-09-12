@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.pipelike.net.item;
 
-import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
 import com.gregtechceu.gtceu.api.graphnet.edge.AbstractNetFlowEdge;
@@ -19,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemTraverseData extends AbstractTraverseData<WorldPipeNetNode, FlowWorldPipeNetPath> {
@@ -85,5 +85,4 @@ public class ItemTraverseData extends AbstractTraverseData<WorldPipeNetNode, Flo
         }
         logic.recordFlow(getQueryTick(), getTestObject().recombine(Ints.saturatedCast(flow)));
     }
-
 }

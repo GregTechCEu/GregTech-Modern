@@ -200,7 +200,8 @@ public final class NetLogicData implements ITagSerializable<ListTag>, IContentCh
         this.logicEntrySet.trim();
     }
 
-    public static void writeEntry(@NotNull FriendlyByteBuf buf, @NotNull NetLogicEntry<?, ?> entry, boolean fullChange) {
+    public static void writeEntry(@NotNull FriendlyByteBuf buf, @NotNull NetLogicEntry<?, ?> entry,
+                                  boolean fullChange) {
         buf.writeVarInt(NetLogicRegistry.getNetworkID(entry));
         buf.writeBoolean(fullChange);
         entry.encode(buf, fullChange);

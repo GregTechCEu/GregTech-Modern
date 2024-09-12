@@ -6,7 +6,6 @@ import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.util.StringRepresentable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;

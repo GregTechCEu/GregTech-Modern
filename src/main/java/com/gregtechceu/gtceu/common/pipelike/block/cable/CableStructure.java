@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IInsulatable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeMaterialStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
-import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;

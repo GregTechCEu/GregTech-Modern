@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;

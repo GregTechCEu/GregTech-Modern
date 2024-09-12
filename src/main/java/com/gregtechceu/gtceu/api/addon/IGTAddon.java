@@ -127,6 +127,7 @@ public interface IGTAddon {
 
     /**
      * Initialize custom {@link NetLogicType} instances here.
+     * 
      * @see NetLogicEntryTypes
      */
     default void loadNetLogicTypes() {}

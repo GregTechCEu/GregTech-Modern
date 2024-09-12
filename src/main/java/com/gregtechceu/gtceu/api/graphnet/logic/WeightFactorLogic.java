@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import org.jetbrains.annotations.NotNull;
 
 public final class WeightFactorLogic extends AbstractDoubleLogicData<WeightFactorLogic> {

@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.api.graphnet.logic;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
 public class NetLogicType<T extends NetLogicEntry<T, ?>> implements StringRepresentable {
+
     private final @NotNull String name;
     private final @NotNull Supplier<@NotNull T> supplier;
     private final @NotNull T defaultable;
