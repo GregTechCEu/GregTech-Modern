@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
@@ -290,5 +289,28 @@ public class ComputerRecipes {
                 .outputItems(LASER_PIPE)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(100).EUt(VA[IV]).save(provider);
+
+        FORMING_PRESS_RECIPES.recipeBuilder("laser_reflector")
+                .inputItems(plate, BorosilicateGlass)
+                .inputItems(foil, Titanium, 12)
+                .inputItems(foil, Silicon, 12)
+                .inputItems(foil, Tantalum, 12)
+                .inputItems(foil, Zinc, 12)
+                .inputItems(foil, Beryllium, 12)
+                .outputItems(LASER_REFLECTOR)
+                .cleanroom(CleanroomType.CLEANROOM)
+                .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("laser_reflector_pipe")
+                .inputItems(frameGt, Trinium)
+                .inputItems(LASER_PIPE, 2)
+                .inputItems(LASER_REFLECTOR)
+                .inputItems(lens, NetherStar, 2)
+                .inputItems(foil, Osmiridium, 20)
+                .inputFluids(Polybenzimidazole.getFluid(L))
+                .outputItems(LASER_REFLECTOR_PIPE)
+                .scannerResearch(b -> b.researchStack(LASER_PIPE.asStack())
+                        .EUt(VA[IV]))
+                .duration(200).EUt(VA[LuV]).save(provider);
     }
 }

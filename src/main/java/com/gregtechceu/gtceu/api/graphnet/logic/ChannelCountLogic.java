@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
+import com.gregtechceu.gtceu.GTCEu;
+import org.jetbrains.annotations.NotNull;
+
 public final class ChannelCountLogic extends AbstractIntLogicData<ChannelCountLogic> {
 
-    public static final NetLogicEntryType<ChannelCountLogic> TYPE = new NetLogicEntryType<>("ChannelCount",
-            () -> new ChannelCountLogic().setValue(1));
+    public static final IntLogicType<ChannelCountLogic> TYPE = new IntLogicType<>(GTCEu.MOD_ID, "ChannelCount",
+            ChannelCountLogic::new, new ChannelCountLogic().setValue(1));
 
-    public ChannelCountLogic() {
-        super(TYPE);
+    @Override
+    public @NotNull IntLogicType<ChannelCountLogic> getType() {
+        return TYPE;
     }
 
     @Override

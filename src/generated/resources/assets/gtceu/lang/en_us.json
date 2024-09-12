@@ -2841,7 +2841,7 @@
   "gtceu.item_filter.empty_item": "Empty (No Item)",
   "gtceu.item_filter.footer": "§eClick with item to override",
   "gtceu.item_list.item_stored": "§7Stored: %d",
-  "gtceu.item_pipe.priority": "§9Priority: §f%d",
+  "gtceu.pipe.priority": "§9Priority: §f%d",
   "gtceu.jade.cleaned_this_second": "Cleaned hazard: %s/s",
   "gtceu.jade.energy_stored": "%d / %d EU",
   "gtceu.jade.progress_computation": "%s / %s CWU",

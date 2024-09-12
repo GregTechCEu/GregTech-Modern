@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.block.pipe;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeChanneledStructure;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeMaterialStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
@@ -47,10 +48,6 @@ public record MaterialPipeStructure(String name, int material, int channelCount,
             "nonuple_restrictive", 18, 9, true, TagPrefix.pipeNonupleRestrictive, 0.95f,
             PipeModelRegistry.getPipeRestrictiveModel(6));
 
-    public MaterialPipeStructure {
-        PipeStructureRegistry.register(this);
-    }
-
     @Override
     public @NotNull String getSerializedName() {
         return name;
@@ -79,5 +76,22 @@ public record MaterialPipeStructure(String name, int material, int channelCount,
     @Override
     public boolean isPaintable() {
         return true;
+    }
+
+    public static void register(@NotNull PipeStructureRegistrationEvent event) {
+        event.register(TINY);
+        event.register(SMALL);
+        event.register(NORMAL);
+        event.register(LARGE);
+        event.register(HUGE);
+        event.register(QUADRUPLE);
+        event.register(NONUPLE);
+        event.register(TINY_RESTRICTIVE);
+        event.register(SMALL_RESTRICTIVE);
+        event.register(NORMAL_RESTRICTIVE);
+        event.register(LARGE_RESTRICTIVE);
+        event.register(HUGE_RESTRICTIVE);
+        event.register(QUADRUPLE_RESTRICTIVE);
+        event.register(NONUPLE_RESTRICTIVE);
     }
 }

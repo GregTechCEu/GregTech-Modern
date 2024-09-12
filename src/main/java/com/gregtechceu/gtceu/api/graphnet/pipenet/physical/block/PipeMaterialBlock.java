@@ -41,18 +41,18 @@ public abstract class PipeMaterialBlock extends PipeBlock {
     @OnlyIn(Dist.CLIENT)
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
-            if (blockState.getBlock() instanceof PipeMaterialBlock block) {
-                if (blockPos != null && level != null &&
-                        level.getBlockEntity(blockPos) instanceof PipeBlockEntity pipe) {
-                    if (pipe.getFrameMaterial() != null) {
-                        if (index >= 3) {
-                            return pipe.getFrameMaterial().getMaterialRGB(index - 3);
-                        }
-                    }
-                    if (index == 0 && pipe.isPainted()) {
-                        return pipe.getPaintingColor();
+            if (blockPos != null && level != null &&
+                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity pipe) {
+                if (pipe.getFrameMaterial() != null) {
+                    if (index >= 3) {
+                        return pipe.getFrameMaterial().getMaterialRGB(index - 3);
                     }
                 }
+                if (index == 0 && pipe.isPainted()) {
+                    return pipe.getPaintingColor();
+                }
+            }
+            if (blockState.getBlock() instanceof PipeMaterialBlock block) {
                 return block.tinted(blockState, level, blockPos, index);
             }
             return -1;
@@ -85,7 +85,8 @@ public abstract class PipeMaterialBlock extends PipeBlock {
     }
 
     @Override
-    protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
+    @NotNull
+    public IPipeNetNodeHandler getHandler(PipeBlockEntity tile) {
         return material.getProperty(PropertyKey.PIPENET_PROPERTIES);
     }
 

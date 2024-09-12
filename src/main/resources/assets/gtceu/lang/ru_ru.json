@@ -2252,7 +2252,7 @@
     "gtceu.item_filter.empty_item": "Пусто (нет предмета)",
     "gtceu.item_filter.footer": "§eНажмите с предметом, чтобы переопределить",
     "gtceu.item_list.item_stored": "§7Хранится: %d",
-    "gtceu.item_pipe.priority": "§9Приоритет: §f%d",
+    "gtceu.pipe.priority": "§9Приоритет: §f%d",
     "gtceu.jei.bedrock_fluid.heavy_oil_deposit": "Залежь тяжелой нефти",
     "gtceu.jei.bedrock_fluid.lava_deposit": "Залежь лавы",
     "gtceu.jei.bedrock_fluid.light_oil_deposit": "Залежь легкой нефти",

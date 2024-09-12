@@ -144,10 +144,24 @@ public class GTBlocks {
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .addLayer(() -> RenderType::cutoutMipped)
-            .color(() -> () -> (state, level, pos, color) -> color)
+            .color(() -> PipeMaterialBlock::tintedColor)
             .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
-            .color(() -> () -> (stack, color) -> color)
+            .color(() -> () -> (stack, color) -> -1)
+            .build()
+            .register();
+    public static final BlockEntry<LaserPipeBlock> LASER_REFLECTOR_PIPE = REGISTRATE
+            .block("laser_reflector_pipe", (p) -> new LaserPipeBlock(p, LaserStructure.MIRROR))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
+            .blockstate(NonNullBiConsumer.noop())
+            .defaultLoot()
+            .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .color(() -> PipeMaterialBlock::tintedColor)
+            .item(PipeBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .color(() -> () -> (stack, color) -> -1)
             .build()
             .register();
     public static final BlockEntry<OpticalPipeBlock> OPTICAL_PIPE = REGISTRATE
@@ -157,11 +171,11 @@ public class GTBlocks {
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
-            .color(() -> () -> (state, level, pos, color) -> color)
+            .color(() -> PipeMaterialBlock::tintedColor)
             .addLayer(() -> RenderType::cutoutMipped)
             .item(PipeBlockItem::new)
             .model(NonNullBiConsumer.noop())
-            .color(() -> () -> (stack, color) -> color)
+            .color(() -> () -> (stack, color) -> -1)
             .build()
             .register();
 

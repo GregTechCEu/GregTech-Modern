@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.pipelike.block.laser;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.ActivablePipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.pipelike.handlers.LaserNetHandler;
 
@@ -34,7 +36,8 @@ public class LaserPipeBlock extends ActivablePipeBlock {
     }
 
     @Override
-    protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
+    @NotNull
+    public IPipeNetNodeHandler getHandler(PipeBlockEntity tileContext) {
         return LaserNetHandler.INSTANCE;
     }
 

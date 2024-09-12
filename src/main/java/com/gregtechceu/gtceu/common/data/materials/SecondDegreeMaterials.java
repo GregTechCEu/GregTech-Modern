@@ -321,7 +321,7 @@ public class SecondDegreeMaterials {
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(1921))
                 .color(0xFAFAFA).secondaryColor(0xfaf5c0).iconSet(SHINY)
-                .flags(GENERATE_FINE_WIRE, GENERATE_PLATE)
+                .flags(GENERATE_FINE_WIRE, GENERATE_PLATE, NO_SMASHING)
                 .components(Boron, 1, SiliconDioxide, 7)
                 .buildAndRegister();
 

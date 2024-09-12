@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.block.optical;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.IPipeNetNodeHandler;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.ActivablePipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.pipelike.handlers.DuctNetHandler;
 
@@ -34,7 +35,7 @@ public class OpticalPipeBlock extends ActivablePipeBlock {
     }
 
     @Override
-    protected @NotNull IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos) {
+    public IPipeNetNodeHandler getHandler(PipeBlockEntity tileContext) {
         return DuctNetHandler.INSTANCE;
     }
 

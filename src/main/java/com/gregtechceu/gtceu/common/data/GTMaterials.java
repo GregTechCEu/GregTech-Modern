@@ -219,7 +219,6 @@ public class GTMaterials {
         plateDouble.setIgnored(BorosilicateGlass);
         plateDouble.setIgnored(Wood);
         plateDouble.setIgnored(TreatedWood);
-        plate.setIgnored(BorosilicateGlass);
         foil.setIgnored(BorosilicateGlass);
 
         dustSmall.setIgnored(Lapotron);

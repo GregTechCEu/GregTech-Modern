@@ -690,7 +690,7 @@ public class GTMachines {
                 if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
                     MaterialFluidProperties pipeprops = material.getProperty(PropertyKey.PIPENET_PROPERTIES)
                             .getProperty(MaterialFluidProperties.KEY);
-                    pipeprops.appendTooltips(list, true, true);
+                    pipeprops.appendTooltips(list);
                 }
             }
         };

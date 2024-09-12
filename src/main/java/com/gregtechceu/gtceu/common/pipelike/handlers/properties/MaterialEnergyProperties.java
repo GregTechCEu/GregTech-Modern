@@ -111,9 +111,12 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
             tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
         tooltip.add(Component.translatable("gtceu.cable.voltage", voltageLimit, GTValues.VNF[tier]));
         tooltip.add(Component.translatable("gtceu.cable.amperage", getAmperage(structure)));
-        tooltip.add(Component.translatable("gtceu.cable.loss_per_block", getLoss(structure)));
-        if (isSuperconductor())
+        long loss = isSuperconductor() && superconductorCriticalTemperature == Integer.MAX_VALUE ? 0 :
+                getLoss(structure);
+        tooltip.add(Component.translatable("gtceu.cable.loss_per_block", loss));
+        if (isSuperconductor() && superconductorCriticalTemperature != Integer.MAX_VALUE) {
             tooltip.add(Component.translatable("gtceu.cable.superconductor_loss", superconductorCriticalTemperature));
+        }
     }
 
     @Override
@@ -172,31 +175,31 @@ public final class MaterialEnergyProperties implements PipeNetProperties.IPipeNe
             boolean insulated = cable.partialBurnStructure() != null;
             // insulated cables cool down half as fast
             float coolingFactor = (float) (Math.sqrt(cable.material()) / (insulated ? 8 : 4));
-            data.setLogicEntry(VoltageLossLogic.TYPE.getNew().getWith(loss))
-                    .setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(loss + 0.001 / amperage))
-                    .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(amperage))
-                    .setLogicEntry(VoltageLimitLogic.TYPE.getNew().getWith(voltageLimit))
+            data.setLogicEntry(VoltageLossLogic.TYPE.getWith(loss))
+                    .setLogicEntry(WeightFactorLogic.TYPE.getWith(loss + 0.001 / amperage))
+                    .setLogicEntry(ThroughputLogic.TYPE.getWith(amperage))
+                    .setLogicEntry(VoltageLimitLogic.TYPE.getWith(voltageLimit))
                     .setLogicEntry(TemperatureLogic.TYPE.getNew()
                             .getWith(TemperatureLossFunction.getOrCreateCable(coolingFactor), materialMeltTemperature,
                                     1,
                                     100 * cable.material(), cable.partialBurnThreshold()));
             if (superconductorCriticalTemperature > 0) {
-                data.setLogicEntry(SuperconductorLogic.TYPE.getNew().getWith(superconductorCriticalTemperature));
+                data.setLogicEntry(SuperconductorLogic.TYPE.getWith(superconductorCriticalTemperature));
             }
         } else if (structure instanceof MaterialPipeStructure pipe) {
             long amperage = getAmperage(structure);
             if (amperage == 0) return; // skip pipes that are too small
             long loss = getLoss(structure);
             float coolingFactor = (float) Math.sqrt((double) pipe.material() / (4 + pipe.channelCount()));
-            data.setLogicEntry(VoltageLossLogic.TYPE.getNew().getWith(loss))
-                    .setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(loss + 0.001 / amperage))
-                    .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(amperage))
-                    .setLogicEntry(VoltageLimitLogic.TYPE.getNew().getWith(voltageLimit))
+            data.setLogicEntry(VoltageLossLogic.TYPE.getWith(loss))
+                    .setLogicEntry(WeightFactorLogic.TYPE.getWith(loss + 0.001 / amperage))
+                    .setLogicEntry(ThroughputLogic.TYPE.getWith(amperage))
+                    .setLogicEntry(VoltageLimitLogic.TYPE.getWith(voltageLimit))
                     .setLogicEntry(TemperatureLogic.TYPE.getNew()
                             .getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor), materialMeltTemperature, 1,
                                     50 * pipe.material(), null));
             if (superconductorCriticalTemperature > 0) {
-                data.setLogicEntry(SuperconductorLogic.TYPE.getNew().getWith(superconductorCriticalTemperature));
+                data.setLogicEntry(SuperconductorLogic.TYPE.getWith(superconductorCriticalTemperature));
             }
         }
     }

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicRegistry;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNet;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
@@ -100,6 +100,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
 
     public static final int UPDATE_PIPE_LOGIC = 0;
 
+    @Getter
     private final Int2ObjectOpenHashMap<NetLogicData> netLogicDatas = new Int2ObjectOpenHashMap<>();
 
     // this tile was loaded from datafixed NBT and needs to initialize its connections
@@ -189,6 +190,8 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
+        if (!level.isClientSide) getBlockType().getHandler(this)
+                .removeFromNets((ServerLevel) this.level, this.getBlockPos(), this.getStructure());
         // TODO I hate this so much can someone please make it so that covers go through getDrops()?
         getCoverHolder().dropAllCovers();
     }
@@ -533,15 +536,7 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 int networkID = node.getNet().getNetworkID();
                 netLogicDatas.put(networkID, node.getData());
                 node.getData().addListener(
-                        (e, r, f) -> writeCustomData(UPDATE_PIPE_LOGIC, buf -> {
-                            buf.writeVarInt(networkID);
-                            buf.writeUtf(e.getType().id());
-                            buf.writeBoolean(r);
-                            buf.writeBoolean(f);
-                            if (!r) {
-                                e.encode(buf, f);
-                            }
-                        }));
+                        (e, r, f) -> writeLogicData(networkID, e, r, f));
                 // Manually resync the data, as it's loaded & the listeners are queried for the first time *before*
                 // we call `addListener` on the line above.
                 for (var entry : node.getData().getEntries()) {
@@ -574,31 +569,14 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
         }
     }
 
-    /*
-     * @Override
-     * public void writeInitialSyncData(@NotNull FriendlyByteBuf buf) {
-     * buf.writeVarInt(netLogicDatas.size());
-     * for (var entry : netLogicDatas.int2ObjectEntrySet()) {
-     * buf.writeVarInt(entry.getIntKey());
-     * entry.getValue().encode(buf);
-     * }
-     * }
-     * 
-     * @Override
-     * public void receiveInitialSyncData(@NotNull FriendlyByteBuf buf) {
-     * if (level.isClientSide) {
-     * netLogicDatas.clear();
-     * int count = buf.readVarInt();
-     * for (int i = 0; i < count; i++) {
-     * int networkID = buf.readVarInt();
-     * NetLogicData data = new NetLogicData();
-     * data.decode(buf);
-     * netLogicDatas.put(networkID, data);
-     * }
-     * }
-     * scheduleRenderUpdate();
-     * }
-     */
+    private void writeLogicData(int networkID, NetLogicEntry<?, ?> entry, boolean removed, boolean fullChange) {
+        writeCustomData(UPDATE_PIPE_LOGIC, buf -> {
+            buf.writeVarInt(networkID);
+            buf.writeBoolean(removed);
+            if (removed) buf.writeVarInt(NetLogicRegistry.getNetworkID(entry.getType()));
+            else NetLogicData.writeEntry(buf, entry, fullChange);
+        });
+    }
 
     @Override
     public void receiveCustomData(int discriminator, @NotNull FriendlyByteBuf buf) {
@@ -606,34 +584,16 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             // extra check just to make sure we don't affect actual net data with our writes
             if (level.isClientSide) {
                 int networkID = buf.readVarInt();
-                String identifier = buf.readUtf(255);
                 boolean removed = buf.readBoolean();
-                boolean fullChange = buf.readBoolean();
                 if (removed) {
-                    NetLogicEntryType<?> logic = NetLogicRegistry.getTypeErroring(identifier);
-                    this.netLogicDatas.computeIfPresent(networkID, (k, v) -> v.removeLogicEntry(logic));
+                    NetLogicType<?> type = NetLogicRegistry.getType(buf.readVarInt());
+                    NetLogicData data = this.netLogicDatas.get(networkID);
+                    if (data != null) data.removeLogicEntry(type);
                 } else {
-                    if (fullChange) {
-                        NetLogicEntry<?, ?> logic = NetLogicRegistry.getTypeErroring(identifier).getNew();
-                        logic.decode(buf, true);
-                        this.netLogicDatas.compute(networkID, (k, v) -> {
-                            if (v == null) v = new NetLogicData();
-                            v.setLogicEntry(logic);
-                            return v;
-                        });
-                    } else {
-                        NetLogicData data = this.netLogicDatas.get(networkID);
-                        if (data != null) {
-                            NetLogicEntryType<?> logic = NetLogicRegistry.getTypeErroring(identifier);
-                            NetLogicEntry<?, ?> entry = data.getLogicEntryNullable(logic);
-                            if (entry != null) entry.decode(buf, false);
-                            data.markLogicEntryAsUpdated(entry, false);
-                        } else return;
-                    }
-                    if (identifier.equals(TemperatureLogic.TYPE.getSerializedName())) {
-                        TemperatureLogic tempLogic = this.netLogicDatas.get(networkID)
-                                .getLogicEntryNullable(TemperatureLogic.TYPE);
-                        if (tempLogic != null) updateTemperatureLogic(tempLogic);
+                    NetLogicData data = this.netLogicDatas.computeIfAbsent(networkID, i -> new NetLogicData());
+                    NetLogicEntry<?, ?> read = data.readEntry(buf);
+                    if (read instanceof TemperatureLogic tempLogic) {
+                        updateTemperatureLogic(tempLogic);
                     }
                 }
             }

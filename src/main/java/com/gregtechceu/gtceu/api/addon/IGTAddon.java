@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.addon;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.NetLogicEntryTypes;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
@@ -125,7 +126,7 @@ public interface IGTAddon {
     default void registerBedrockOreVeins() {}
 
     /**
-     * Initialize custom {@link com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType} instances here.
+     * Initialize custom {@link NetLogicType} instances here.
      * @see NetLogicEntryTypes
      */
     default void loadNetLogicTypes() {}

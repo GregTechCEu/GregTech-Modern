@@ -101,7 +101,7 @@ public abstract class WorldPipeNet extends WorldPosNet {
     protected boolean predicateEdge(@NotNull NetEdge edge, @NotNull WorldPipeNetNode source,
                                     @Nullable CoverBehavior coverSource,
                                     @NotNull WorldPipeNetNode target, @Nullable CoverBehavior coverTarget) {
-        Map<String, EdgePredicate<?, ?>> prevValue = new Object2ObjectOpenHashMap<>(
+        Map<NetPredicateType<?>, EdgePredicate<?, ?>> prevValue = new Object2ObjectOpenHashMap<>(
                 edge.getPredicateHandler().getPredicateSet());
         edge.getPredicateHandler().clearPredicates();
         coverPredication(edge, coverSource, coverTarget);

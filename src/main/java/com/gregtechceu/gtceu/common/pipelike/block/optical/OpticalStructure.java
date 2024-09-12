@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.block.optical;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
@@ -18,10 +19,6 @@ public record OpticalStructure(String name, float renderThickness, PipeModelRedi
 
     public static final OpticalStructure INSTANCE = new OpticalStructure("optical_pipe_normal", 0.375f,
             PipeModelRegistry.getOpticalModel());
-
-    public OpticalStructure {
-        PipeStructureRegistry.register(this);
-    }
 
     @Override
     public ResourceTexture getPipeTexture(boolean isBlock) {
@@ -59,5 +56,9 @@ public record OpticalStructure(String name, float renderThickness, PipeModelRedi
     @Override
     public PipeModelRedirector getModel() {
         return model;
+    }
+
+    public static void register(@NotNull PipeStructureRegistrationEvent event) {
+        event.register(INSTANCE);
     }
 }

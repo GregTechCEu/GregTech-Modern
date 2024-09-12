@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.net.fluid;
 
+import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -167,14 +168,26 @@ public class FluidTraverseData extends AbstractTraverseData<WorldPipeNetNode, Fl
     public void consumeFlowLimit(@NotNull AbstractNetFlowEdge edge, NetNode targetNode,
                                  long consumption) {
         super.consumeFlowLimit(edge, targetNode, consumption);
-        TemperatureLogic temperatureLogic = targetNode.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
-        if (temperatureLogic != null) {
-            FluidContainmentLogic containmentLogic = targetNode.getData()
-                    .getLogicEntryDefaultable(FluidContainmentLogic.TYPE);
-            boolean overMax = fluidTemp > containmentLogic.getMaximumTemperature() &&
-                    !(state == FluidState.PLASMA && containmentLogic.contains(FluidState.PLASMA));
-            temperatureLogic.moveTowardsTemperature(fluidTemp,
-                    getQueryTick(), consumption * TEMPERATURE_EFFECT, !overMax);
+        if (consumption > 0 && !simulating()) {
+            recordFlow(targetNode, consumption);
+            TemperatureLogic temperatureLogic = targetNode.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
+            if (temperatureLogic != null) {
+                FluidContainmentLogic containmentLogic = targetNode.getData()
+                        .getLogicEntryDefaultable(FluidContainmentLogic.TYPE);
+                boolean overMax = fluidTemp > containmentLogic.getMaximumTemperature() &&
+                        !(state == FluidState.PLASMA && containmentLogic.contains(FluidState.PLASMA));
+                temperatureLogic.moveTowardsTemperature(fluidTemp,
+                        getQueryTick(), consumption * TEMPERATURE_EFFECT, !overMax);
+            }
         }
+    }
+
+    private void recordFlow(@NotNull NetNode node, long flow) {
+        FluidFlowLogic logic = node.getData().getLogicEntryNullable(FluidFlowLogic.TYPE);
+        if (logic == null) {
+            logic = FluidFlowLogic.TYPE.getNew();
+            node.getData().setLogicEntry(logic);
+        }
+        logic.recordFlow(getQueryTick(), getTestObject().recombine(Ints.saturatedCast(flow)));
     }
 }

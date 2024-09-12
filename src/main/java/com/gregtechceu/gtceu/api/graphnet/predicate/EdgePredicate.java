@@ -14,19 +14,9 @@ import org.jetbrains.annotations.Nullable;
  * {@link #union(EdgePredicate)} behavior.
  */
 public abstract class EdgePredicate<T extends EdgePredicate<T, N>, N extends Tag>
-                                   implements INBTSerializable<N>, StringRepresentable {
+                                   implements INBTSerializable<N> {
 
-    private final @NotNull String name;
-
-    public EdgePredicate(@NotNull String name) {
-        this.name = name;
-        NetPredicateRegistry.register(this);
-    }
-
-    @Override
-    public final @NotNull String getSerializedName() {
-        return name;
-    }
+    public abstract @NotNull NetPredicateType<T> getType();
 
     public void deserializeNBTNaive(Tag nbt) {
         deserializeNBT((N) nbt);
@@ -40,9 +30,6 @@ public abstract class EdgePredicate<T extends EdgePredicate<T, N>, N extends Tag
      * (andy1) && (andy2) && (ory1 || ory2 || ory3)
      */
     public abstract boolean andy();
-
-    @NotNull
-    public abstract T getNew();
 
     public abstract boolean test(IPredicateTestObject object);
 

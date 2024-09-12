@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.MaterialPrope
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PipeNetProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
+import com.gregtechceu.gtceu.api.graphnet.logic.ChannelCountLogic;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.ThroughputLogic;
 import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
@@ -57,7 +58,7 @@ public final class MaterialItemProperties implements PipeNetProperties.IPipeNetM
             tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks",
                     baseItemsPer5Ticks / 16));
         }
-        tooltip.add(Component.translatable("gtceu.item_pipe.priority",
+        tooltip.add(Component.translatable("gtceu.pipe.priority",
                 FormattingUtil.formatNumbers(getFlowPriority(structure))));
     }
 
@@ -83,8 +84,11 @@ public final class MaterialItemProperties implements PipeNetProperties.IPipeNetM
     public void mutateData(NetLogicData data, IPipeStructure structure) {
         if (structure instanceof MaterialPipeStructure pipe) {
             long throughput = baseItemsPer5Ticks * pipe.material();
-            data.setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(getFlowPriority(structure)))
-                    .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(throughput));
+            data.setLogicEntry(WeightFactorLogic.TYPE.getWith(getFlowPriority(structure)))
+                    .setLogicEntry(ThroughputLogic.TYPE.getWith(throughput));
+            if (pipe.channelCount() > 1) {
+                data.setLogicEntry(ChannelCountLogic.TYPE.getWith(pipe.channelCount()));
+            }
         }
     }
 

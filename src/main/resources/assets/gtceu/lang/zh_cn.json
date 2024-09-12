@@ -2832,7 +2832,7 @@
     "gtceu.item_filter.empty_item":"空（无物品）",
     "gtceu.item_filter.footer":"§e手持物品右键覆盖设置",
     "gtceu.item_list.item_stored":"§7储量：%d",
-    "gtceu.item_pipe.priority":"§9优先级：§f%d",
+    "gtceu.pipe.priority":"§9优先级：§f%d",
     "gtceu.jade.cleaned_this_second":"污染清理速率：%s/s",
     "gtceu.jade.energy_stored":"%d / %d EU",
     "gtceu.jade.progress_computation":"%s / %s CWU",

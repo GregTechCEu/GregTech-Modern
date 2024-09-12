@@ -299,20 +299,12 @@ public abstract class PipeBlock extends Block implements EntityBlock {
 
     public static Collection<WorldPipeNetNode> getNodesForTile(PipeBlockEntity tile) {
         assert tile.getLevel() instanceof ServerLevel;
-        return tile.getBlockType().getHandler(tile.getLevel(), tile.getBlockPos())
+        return tile.getBlockType().getHandler(tile)
                 .getOrCreateFromNets((ServerLevel) tile.getLevel(), tile.getBlockPos(), tile.getStructure());
     }
 
-    @Override
-    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
-        super.destroy(level, pos, state);
-        if (level instanceof ServerLevel serverLevel) {
-            getHandler(level, pos).removeFromNets(serverLevel, pos, getStructure());
-        }
-    }
-
     @NotNull
-    protected abstract IPipeNetNodeHandler getHandler(BlockGetter world, BlockPos pos);
+    public abstract IPipeNetNodeHandler getHandler(PipeBlockEntity tileContext);
 
     @NotNull
     protected abstract IPipeNetNodeHandler getHandler(@NotNull ItemStack stack);
@@ -322,11 +314,11 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
+        getHandler(stack).addInformation(stack, level, tooltip, flag, getStructure());
         if (getStructure() instanceof IPipeChanneledStructure channeledStructure) {
             if (channeledStructure.getChannelCount() > 1)
                 tooltip.add(Component.translatable("gtceu.pipe.channels", channeledStructure.getChannelCount()));
         }
-        getHandler(stack).addInformation(stack, level, tooltip, flag, getStructure());
         if (GTUtil.isShiftDown()) {
             tooltip.add(Component.translatable(getConnectLangKey()));
             tooltip.add(Component.translatable("gtceu.tool_action.screwdriver.access_covers"));

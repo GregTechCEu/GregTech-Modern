@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.graphnet.NetNode;
+import com.gregtechceu.gtceu.api.graphnet.logic.ChannelCountLogic;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.ThroughputLogic;
 import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
@@ -148,10 +149,9 @@ public final class MaterialFluidProperties implements PipeNetProperties.IPipeNet
     public void addInformation(@NotNull ItemStack stack, BlockGetter worldIn, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flagIn, IPipeMaterialStructure structure) {
         tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", getThroughput(structure)));
-        tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
-        tooltip.add(Component.translatable("gtceu.fluid_pipe.min_temperature", getMinFluidTemperature()));
-        tooltip.add(Component.translatable("gtceu.fluid_pipe.priority",
+        tooltip.add(Component.translatable("gtceu.pipe.priority",
                 FormattingUtil.formatNumbers(getFlowPriority(structure))));
+        appendTooltips(tooltip);
     }
 
     @Override
@@ -178,13 +178,15 @@ public final class MaterialFluidProperties implements PipeNetProperties.IPipeNet
         if (structure instanceof MaterialPipeStructure pipe) {
             long throughput = getThroughput(structure);
             float coolingFactor = (float) Math.sqrt((double) pipe.material() / (4 + pipe.channelCount()));
-            data.setLogicEntry(WeightFactorLogic.TYPE.getNew().getWith(getFlowPriority(structure)))
-                    .setLogicEntry(ThroughputLogic.TYPE.getNew().getWith(throughput))
-                    .setLogicEntry(FluidContainmentLogic.TYPE.getNew().getWith(containableStates, containedAttributes,
+            data.setLogicEntry(WeightFactorLogic.TYPE.getWith(getFlowPriority(structure)))
+                    .setLogicEntry(ThroughputLogic.TYPE.getWith(throughput))
+                    .setLogicEntry(FluidContainmentLogic.TYPE.getWith(containableStates, containedAttributes,
                             maxFluidTemperature))
-                    .setLogicEntry(TemperatureLogic.TYPE.getNew()
-                            .getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor), materialMeltTemperature,
-                                    minFluidTemperature, 50 * pipe.material(), null));
+                    .setLogicEntry(TemperatureLogic.TYPE.getWith(TemperatureLossFunction.getOrCreatePipe(coolingFactor),
+                            materialMeltTemperature, minFluidTemperature, 50 * pipe.material(), null));
+            if (pipe.channelCount() > 1) {
+                data.setLogicEntry(ChannelCountLogic.TYPE.getWith(pipe.channelCount()));
+            }
         }
     }
 

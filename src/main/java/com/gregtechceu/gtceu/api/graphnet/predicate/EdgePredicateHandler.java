@@ -14,14 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.function.Predicate;
 
-/**
- * Note - since the internal map representation encodes keys using {@link StringRepresentable#getSerializedName()} on
- * predicates,
- * making a predicate class return two different names is a valid way to register multiple instances.
- */
 public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Predicate<IPredicateTestObject> {
 
-    private final Map<String, EdgePredicate<?, ?>> predicateSet;
+    private final Map<NetPredicateType<?>, EdgePredicate<?, ?>> predicateSet;
 
     public EdgePredicateHandler() {
         predicateSet = new Object2ObjectOpenHashMap<>();
@@ -32,7 +27,7 @@ public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Pr
      * nothing happens if a predicate is already present.
      */
     public EdgePredicateHandler mergePredicate(@NotNull EdgePredicate<?, ?> predicate) {
-        EdgePredicate<?, ?> current = predicateSet.get(predicate.getSerializedName());
+        EdgePredicate<?, ?> current = predicateSet.get(predicate.getType());
         if (current == null) return setPredicate(predicate);
 
         if (predicate.getClass().isInstance(current)) {
@@ -45,30 +40,30 @@ public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Pr
     /**
      * Do not modify the returned value
      */
-    public Map<String, EdgePredicate<?, ?>> getPredicateSet() {
+    public Map<NetPredicateType<?>, EdgePredicate<?, ?>> getPredicateSet() {
         return predicateSet;
     }
 
     public EdgePredicateHandler setPredicate(@NotNull EdgePredicate<?, ?> predicate) {
-        predicateSet.put(predicate.getSerializedName(), predicate);
+        predicateSet.put(predicate.getType(), predicate);
         return this;
     }
 
     public EdgePredicateHandler removePredicate(@NotNull EdgePredicate<?, ?> predicate) {
-        return removePredicate(predicate.getSerializedName());
+        return removePredicate(predicate.getType());
     }
 
-    public EdgePredicateHandler removePredicate(String key) {
-        predicateSet.remove(key);
+    public EdgePredicateHandler removePredicate(@NotNull NetPredicateType<?> type) {
+        predicateSet.remove(type);
         return this;
     }
 
     public boolean hasPredicate(@NotNull EdgePredicate<?, ?> predicate) {
-        return predicateSet.containsKey(predicate.getSerializedName());
+        return hasPredicate(predicate.getType());
     }
 
-    public boolean hasPredicate(String key) {
-        return predicateSet.containsKey(key);
+    public boolean hasPredicate(@NotNull NetPredicateType<?> type) {
+        return predicateSet.containsKey(type);
     }
 
     public void clearPredicates() {
@@ -99,7 +94,7 @@ public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Pr
         for (EdgePredicate<?, ?> entry : predicateSet.values()) {
             CompoundTag tag = new CompoundTag();
             tag.put("Tag", entry.serializeNBT());
-            tag.putString("Name", entry.getSerializedName());
+            tag.putString("Type", entry.getType().getSerializedName());
             list.add(tag);
         }
         return list;
@@ -109,10 +104,11 @@ public final class EdgePredicateHandler implements ITagSerializable<ListTag>, Pr
     public void deserializeNBT(ListTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag tag = nbt.getCompound(i);
-            String key = tag.getString("Name");
-            EdgePredicate<?, ?> entry = this.predicateSet.get(key);
-            if (entry == null) entry = NetPredicateRegistry.getSupplierNotNull(key).get();
-            if (entry == null) continue;
+            NetPredicateType<?> type = NetPredicateRegistry.getType(tag.getString("Type"));
+            EdgePredicate<?, ?> entry = this.predicateSet.get(type);
+            if (entry == null) {
+                entry = type.getNew();
+            }
             entry.deserializeNBTNaive(tag.get("Tag"));
         }
     }

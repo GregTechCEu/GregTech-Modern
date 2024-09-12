@@ -1,36 +1,89 @@
 package com.gregtechceu.gtceu.api.graphnet.predicate;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.lowdragmc.lowdraglib.LDLib;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.Set;
 
 public final class NetPredicateRegistry {
 
-    private static final Map<String, Supplier<EdgePredicate<?, ?>>> REGISTRY = new Object2ObjectOpenHashMap<>();
+    private static final Int2ObjectArrayMap<NetPredicateType<?>> REGISTRY;
 
-    static void register(@NotNull EdgePredicate<?, ?> predicate) {
-        REGISTRY.putIfAbsent(predicate.getSerializedName(), predicate::getNew);
+    private static final BiMap<Integer, String> NAMES_TO_NETWORK_IDS;
+
+    static {
+        NetPredicateRegistrationEvent event = new NetPredicateRegistrationEvent();
+        MinecraftForge.EVENT_BUS.post(event);
+        Set<NetPredicateType<?>> gather = event.getGather();
+        NAMES_TO_NETWORK_IDS = HashBiMap.create(gather.size());
+        REGISTRY = new Int2ObjectArrayMap<>(gather.size());
+        int id = 1;
+        for (NetPredicateType<?> type : gather) {
+            NAMES_TO_NETWORK_IDS.put(id, type.getSerializedName());
+            REGISTRY.put(id, type);
+            id++;
+        }
     }
 
-    public static @Nullable Supplier<@NotNull EdgePredicate<?, ?>> getSupplierNullable(String name) {
-        return REGISTRY.get(name);
+    public static String getName(int networkID) {
+        return NAMES_TO_NETWORK_IDS.get(networkID);
     }
 
-    public static @NotNull Supplier<@Nullable EdgePredicate<?, ?>> getSupplierNotNull(String name) {
-        return REGISTRY.getOrDefault(name, () -> null);
+    public static int getNetworkID(@NotNull String name) {
+        return NAMES_TO_NETWORK_IDS.inverse().get(name);
     }
 
-    public static @NotNull Supplier<EdgePredicate<?, ?>> getSupplierErroring(String name) {
-        Supplier<EdgePredicate<?, ?>> supplier = REGISTRY.get(name);
-        if (supplier == null) throwNonexistenceError();
-        return supplier;
+    public static int getNetworkID(@NotNull NetPredicateType<?> type) {
+        return getNetworkID(type.getSerializedName());
+    }
+
+    public static int getNetworkID(@NotNull EdgePredicate<?, ?> entry) {
+        return getNetworkID(entry.getType());
+    }
+
+    public static @Nullable NetPredicateType<?> getTypeNullable(int networkID) {
+        return REGISTRY.get(networkID);
+    }
+
+    public static @Nullable NetPredicateType<?> getTypeNullable(@NotNull String name) {
+        return getTypeNullable(getNetworkID(name));
+    }
+
+    public static @NotNull NetPredicateType<?> getType(int networkID) {
+        NetPredicateType<?> type = REGISTRY.get(networkID);
+        if (type == null) throwNonexistenceError();
+        assert type != null;
+        return type;
+    }
+
+    public static @NotNull NetPredicateType<?> getType(@NotNull String name) {
+        return getType(getNetworkID(name));
     }
 
     public static void throwNonexistenceError() {
-        throw new RuntimeException("Could not find a matching supplier for an encoded EdgePredicate. " +
+        if (LDLib.isRemote()) disconnect();
+        throw new RuntimeException("Could not find the type of an encoded EdgePredicate. " +
                 "This suggests that the server and client have different GT versions or modifications.");
     }
+
+    public static void throwDecodingError() {
+        if (LDLib.isRemote()) disconnect();
+        throw new RuntimeException("Failed to decode an encoded EdgePredicate. " +
+                "This suggests that the server and client have different GT versions or modifications.");
+    }
+
+    private static void disconnect() {
+        if (Minecraft.getInstance().getConnection() != null)
+            Minecraft.getInstance().getConnection()
+                    .onDisconnect(Component.translatable("gtceu.universal.net_predicate_disconnect"));
+    }
+
+    private NetPredicateRegistry() {}
 }

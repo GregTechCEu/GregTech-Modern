@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.graphnet.logic;
 
+import com.gregtechceu.gtceu.GTCEu;
+import org.jetbrains.annotations.NotNull;
+
 public final class ThroughputLogic extends AbstractLongLogicData<ThroughputLogic> {
 
-    public static final NetLogicEntryType<ThroughputLogic> TYPE = new NetLogicEntryType<>("Throughput",
-            () -> new ThroughputLogic().setValue(0));
+    public static final LongLogicType<ThroughputLogic> TYPE = new LongLogicType<>(GTCEu.MOD_ID, "Throughput",
+            ThroughputLogic::new, new ThroughputLogic());
 
-    private ThroughputLogic() {
-        super(TYPE);
+    @Override
+    public @NotNull LongLogicType<ThroughputLogic> getType() {
+        return TYPE;
     }
 
     @Override

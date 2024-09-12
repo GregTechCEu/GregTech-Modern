@@ -77,29 +77,15 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * Append tooltips about containment info
      *
-     * @param tooltip             the tooltip to append to
-     * @param showToolsInfo       if the "hold shift" line should mention tool info
-     * @param showTemperatureInfo if the temperature information should be displayed
+     * @param tooltip the tooltip to append to
      */
-    default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
-        if (GTUtil.isShiftDown()) {
-            if (showTemperatureInfo) {
-                tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                        FormattingUtil.formatNumbers(getMaxFluidTemperature())));
-                tooltip.add(Component.translatable("gtceu.fluid_pipe.min_temperature",
-                        FormattingUtil.formatNumbers(getMinFluidTemperature())));
-            }
-            if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
-            else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
-            if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
-            getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
-        } else if (isGasProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
-            if (showToolsInfo) {
-                tooltip.add(Component.translatable("gtceu.tooltip.tool_fluid_hold_shift"));
-            } else {
-                tooltip.add(Component.translatable("gtceu.tooltip.fluid_pipe_hold_shift"));
-            }
-        }
+    default void appendTooltips(@NotNull List<Component> tooltip) {
+        tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
+        tooltip.add(Component.translatable("gtceu.fluid_pipe.min_temperature", getMinFluidTemperature()));
+        if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
+        else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
+        if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
     }
 
     /**

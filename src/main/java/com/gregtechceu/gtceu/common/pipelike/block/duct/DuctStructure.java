@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.block.duct;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
@@ -13,10 +14,6 @@ public record DuctStructure(String name, float renderThickness, float rateMultip
     public static final DuctStructure NORMAL = new DuctStructure("normal", 0.5f, 4f);
     public static final DuctStructure LARGE = new DuctStructure("large", 0.75f, 8f);
     public static final DuctStructure HUGE = new DuctStructure("huge", 0.75f, 16f);
-
-    public DuctStructure {
-        PipeStructureRegistry.register(this);
-    }
 
     @Override
     public @NotNull String getSerializedName() {
@@ -36,5 +33,12 @@ public record DuctStructure(String name, float renderThickness, float rateMultip
     @Override
     public PipeModelRedirector getModel() {
         return PipeModelRegistry.getDuctModel();
+    }
+
+    public static void register(@NotNull PipeStructureRegistrationEvent event) {
+        event.register(SMALL);
+        event.register(NORMAL);
+        event.register(LARGE);
+        event.register(HUGE);
     }
 }

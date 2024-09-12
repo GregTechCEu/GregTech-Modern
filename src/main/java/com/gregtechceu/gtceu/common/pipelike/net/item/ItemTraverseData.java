@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.common.pipelike.net.item;
 
+import com.google.common.primitives.Ints;
 import com.gregtechceu.gtceu.api.graphnet.IGraphNet;
+import com.gregtechceu.gtceu.api.graphnet.NetNode;
+import com.gregtechceu.gtceu.api.graphnet.edge.AbstractNetFlowEdge;
 import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.FlowWorldPipeNetPath;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
@@ -65,4 +68,22 @@ public class ItemTraverseData extends AbstractTraverseData<WorldPipeNetNode, Flo
         }
         return flowReachingDestination - availableFlow;
     }
+
+    @Override
+    public void consumeFlowLimit(@NotNull AbstractNetFlowEdge edge, NetNode targetNode, long consumption) {
+        super.consumeFlowLimit(edge, targetNode, consumption);
+        if (consumption > 0 && !simulating()) {
+            recordFlow(targetNode, consumption);
+        }
+    }
+
+    private void recordFlow(@NotNull NetNode node, long flow) {
+        ItemFlowLogic logic = node.getData().getLogicEntryNullable(ItemFlowLogic.TYPE);
+        if (logic == null) {
+            logic = ItemFlowLogic.TYPE.getNew();
+            node.getData().setLogicEntry(logic);
+        }
+        logic.recordFlow(getQueryTick(), getTestObject().recombine(Ints.saturatedCast(flow)));
+    }
+
 }

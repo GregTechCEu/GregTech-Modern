@@ -44,7 +44,7 @@ public class WorldFluidNet extends WorldPipeNet implements FlowWorldPipeNetPath.
     }
 
     public WorldFluidNet() {
-        super(false, DynamicWeightsShortestPathsAlgorithm::new);
+        super(true, DynamicWeightsShortestPathsAlgorithm::new);
     }
 
     @Override
@@ -55,27 +55,27 @@ public class WorldFluidNet extends WorldPipeNet implements FlowWorldPipeNetPath.
     @Override
     protected void coverPredication(@NotNull NetEdge edge, @Nullable CoverBehavior a, @Nullable CoverBehavior b) {
         super.coverPredication(edge, a, b);
-        if (edge.getPredicateHandler().hasPredicate(BlockedPredicate.INSTANCE)) return;
+        if (edge.getPredicateHandler().hasPredicate(BlockedPredicate.TYPE)) return;
         FilterPredicate predicate = null;
         if (a instanceof PumpCover filter) {
             if (filter.getManualIOMode() == ManualIOMode.DISABLED) {
                 edge.getPredicateHandler().clearPredicates();
-                edge.getPredicateHandler().setPredicate(BlockedPredicate.INSTANCE);
+                edge.getPredicateHandler().setPredicate(BlockedPredicate.TYPE.getNew());
                 return;
             } else if (filter.getManualIOMode() == ManualIOMode.FILTERED &&
                     filter.getIo() != IO.IN) {
-                        predicate = FilterPredicate.INSTANCE.getNew();
+                        predicate = FilterPredicate.TYPE.getNew();
                         predicate.setSourceFilter(filter.getFilterHandler().getFilter());
                     }
         }
         if (b instanceof PumpCover filter) {
             if (filter.getManualIOMode() == ManualIOMode.DISABLED) {
                 edge.getPredicateHandler().clearPredicates();
-                edge.getPredicateHandler().setPredicate(BlockedPredicate.INSTANCE);
+                edge.getPredicateHandler().setPredicate(BlockedPredicate.TYPE.getNew());
                 return;
             } else if (filter.getManualIOMode() == ManualIOMode.FILTERED &&
                     filter.getIo() != IO.OUT) {
-                        if (predicate == null) predicate = FilterPredicate.INSTANCE.getNew();
+                        if (predicate == null) predicate = FilterPredicate.TYPE.getNew();
                         predicate.setTargetFilter(filter.getFilterHandler().getFilter());
                     }
         }

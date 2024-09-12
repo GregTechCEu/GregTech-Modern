@@ -2708,6 +2708,10 @@ public class GTItems {
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
+    public static ItemEntry<Item> LASER_REFLECTOR = REGISTRATE
+            .item("dielectric_laser_mirror", Item::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
+
     public static ItemEntry<GTBoatItem> RUBBER_BOAT = REGISTRATE
             .item("rubber_boat", p -> new GTBoatItem(false, GTBoat.BoatType.RUBBER, new Item.Properties()))
             .lang("Rubber Boat")

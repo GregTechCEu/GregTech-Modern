@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.block.cable;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IInsulatable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeMaterialStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
@@ -42,10 +43,6 @@ public record CableStructure(String name, int material, int costFactor, TagPrefi
     public static final CableStructure CABLE_HEX = new CableStructure("hex_cable", 16, 1, TagPrefix.cableGtHex,
             WIRE_HEX, INSULATION_BURN_TEMP, 1f, PipeModelRegistry.getCableModel(5));
 
-    public CableStructure {
-        PipeStructureRegistry.register(this);
-    }
-
     @Override
     public @NotNull String getSerializedName() {
         return name;
@@ -79,5 +76,18 @@ public record CableStructure(String name, int material, int costFactor, TagPrefi
     @Override
     public PipeModelRedirector getModel() {
         return model;
+    }
+
+    public static void register(@NotNull PipeStructureRegistrationEvent event) {
+        event.register(WIRE_SINGLE);
+        event.register(WIRE_DOUBLE);
+        event.register(WIRE_QUADRUPLE);
+        event.register(WIRE_OCTAL);
+        event.register(WIRE_HEX);
+        event.register(CABLE_SINGLE);
+        event.register(CABLE_DOUBLE);
+        event.register(CABLE_QUADRUPLE);
+        event.register(CABLE_OCTAL);
+        event.register(CABLE_HEX);
     }
 }

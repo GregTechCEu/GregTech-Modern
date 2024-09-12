@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.pipelike.net.energy;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.graphnet.logic.AbstractTransientLogicData;
 import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntry;
-import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicEntryType;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicType;
 
+import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -15,25 +18,31 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
+public class EnergyFlowLogic extends AbstractTransientLogicData<EnergyFlowLogic> {
 
-    public static final NetLogicEntryType<EnergyFlowLogic> TYPE = new NetLogicEntryType<>("EnergyFlow",
-            EnergyFlowLogic::new);
+    public static final NetLogicType<EnergyFlowLogic> TYPE = new NetLogicType<>(GTCEu.MOD_ID, "EnergyFlow",
+            EnergyFlowLogic::new, new EnergyFlowLogic());
 
     private final AveragingPerTickCounter averageVoltageCounter = new AveragingPerTickCounter();
     private final AveragingPerTickCounter averageAmperageCounter = new AveragingPerTickCounter();
 
-    private static final int MEMORY_TICKS = 10;
+    public static final int MEMORY_TICKS = 10;
 
-    @Getter
     @NotNull
     private final Long2ObjectOpenHashMap<List<EnergyFlowData>> memory = new Long2ObjectOpenHashMap<>();
 
-    protected EnergyFlowLogic() {
-        super(TYPE);
+    @Override
+    public @NotNull NetLogicType<EnergyFlowLogic> getType() {
+        return TYPE;
+    }
+
+    public @NotNull Long2ObjectOpenHashMap<List<EnergyFlowData>> getMemory() {
+        updateMemory(Platform.getMinecraftServer().getTickCount());
+        return memory;
     }
 
     public @NotNull List<EnergyFlowData> getFlow(long tick) {
+        updateMemory(tick);
         return memory.getOrDefault(tick, Collections.emptyList());
     }
 
@@ -42,11 +51,7 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
         averageAmperageCounter.increment(tick, flow.amperage());
 
         updateMemory(tick);
-        memory.compute(tick, (k, v) -> {
-            if (v == null) v = new ObjectArrayList<>();
-            v.add(flow);
-            return v;
-        });
+        memory.computeIfAbsent(tick, k -> new ObjectArrayList<>()).add(flow);
     }
 
     private void updateMemory(long tick) {
@@ -66,23 +71,4 @@ public class EnergyFlowLogic extends NetLogicEntry<EnergyFlowLogic, ByteTag> {
     public double getAverageVoltage(long currentTick) {
         return averageVoltageCounter.getAverage(currentTick);
     }
-
-    @Override
-    public ByteTag serializeNBT() {
-        return ByteTag.valueOf((byte) 0);
-    }
-
-    @Override
-    public void deserializeNBT(ByteTag nbt) {}
-
-    @Override
-    public boolean shouldEncode() {
-        return false;
-    }
-
-    @Override
-    public void encode(FriendlyByteBuf buf, boolean fullChange) {}
-
-    @Override
-    public void decode(FriendlyByteBuf buf, boolean fullChange) {}
 }

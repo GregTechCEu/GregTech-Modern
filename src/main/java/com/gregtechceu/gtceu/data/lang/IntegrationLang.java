@@ -15,7 +15,9 @@ public class IntegrationLang {
         initWailaLikeLang(provider);
     }
 
-    /** JEI, REI, EMI */
+    /**
+     * JEI, REI, EMI
+     */
     private static void initRecipeViewerLang(RegistrateLangProvider provider) {
         provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
         provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
@@ -40,7 +42,9 @@ public class IntegrationLang {
         }
     }
 
-    /** Jade, TheOneProbe, WTHIT */
+    /**
+     * Jade, TheOneProbe, WTHIT
+     */
     private static void initWailaLikeLang(RegistrateLangProvider provider) {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
@@ -96,5 +100,11 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_computation", " / %s CWU");
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
+
+
+        provider.add("gregtech.top.pipe.voltage", "Average Voltage / s:");
+        provider.add("gregtech.top.pipe.amperage", "Average Amperage / s:");
+        provider.add("gregtech.top.pipe.fluid_last", "Last Fluid:");
+        provider.add("gregtech.top.pipe.item_last", "Last Item:");
     }
 }

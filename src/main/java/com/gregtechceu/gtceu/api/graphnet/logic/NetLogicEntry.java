@@ -21,12 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag>
                                    implements INBTSerializable<N>, IPacket {
 
-    @Getter
-    private final @NotNull NetLogicEntryType<T> type;
-
-    protected NetLogicEntry(@NotNull NetLogicEntryType<T> type) {
-        this.type = type;
-    }
+    public abstract @NotNull NetLogicType<T> getType();
 
     public void deserializeNBTNaive(@Nullable Tag nbt) {
         if (nbt != null) deserializeNBT((N) nbt);
@@ -93,8 +88,6 @@ public abstract class NetLogicEntry<T extends NetLogicEntry<T, N>, N extends Tag
 
     /**
      * Controls whether this {@link NetLogicEntry} will be synced to the client or not.
-     * 
-     * @return
      */
     public boolean shouldEncode() {
         return true;

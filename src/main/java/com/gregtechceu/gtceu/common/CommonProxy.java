@@ -16,6 +16,15 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.graphnet.logic.ChannelCountLogic;
+import com.gregtechceu.gtceu.api.graphnet.logic.NetLogicRegistrationEvent;
+import com.gregtechceu.gtceu.api.graphnet.logic.ThroughputLogic;
+import com.gregtechceu.gtceu.api.graphnet.logic.WeightFactorLogic;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.BlockedPredicate;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.predicate.FilterPredicate;
+import com.gregtechceu.gtceu.api.graphnet.predicate.NetPredicateRegistrationEvent;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
@@ -29,6 +38,18 @@ import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.pipelike.block.cable.CableStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.duct.DuctStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.laser.LaserStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.optical.OpticalStructure;
+import com.gregtechceu.gtceu.common.pipelike.block.pipe.MaterialPipeStructure;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.EnergyFlowLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.SuperconductorLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.VoltageLimitLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.energy.VoltageLossLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidContainmentLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.fluid.FluidFlowLogic;
+import com.gregtechceu.gtceu.common.pipelike.net.item.ItemFlowLogic;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -223,6 +244,36 @@ public class CommonProxy {
     public void modConstruct(FMLConstructModEvent event) {
         // this is done to delay initialization of content to be after KJS has set up.
         event.enqueueWork(CommonProxy::init);
+    }
+
+    @SubscribeEvent
+    public static void registerPipeStructures(PipeStructureRegistrationEvent event) {
+        CableStructure.register(event);
+        MaterialPipeStructure.register(event);
+        LaserStructure.register(event);
+        OpticalStructure.register(event);
+        DuctStructure.register(event);
+    }
+
+    @SubscribeEvent
+    public static void registerNetLogics(NetLogicRegistrationEvent event) {
+        event.accept(ChannelCountLogic.TYPE);
+        event.accept(EnergyFlowLogic.TYPE);
+        event.accept(FluidFlowLogic.TYPE);
+        event.accept(ItemFlowLogic.TYPE);
+        event.accept(FluidContainmentLogic.TYPE);
+        event.accept(SuperconductorLogic.TYPE);
+        event.accept(TemperatureLogic.TYPE);
+        event.accept(ThroughputLogic.TYPE);
+        event.accept(WeightFactorLogic.TYPE);
+        event.accept(VoltageLimitLogic.TYPE);
+        event.accept(VoltageLossLogic.TYPE);
+    }
+
+    @SubscribeEvent
+    public static void registerNetPredicates(NetPredicateRegistrationEvent event) {
+        event.accept(BlockedPredicate.TYPE);
+        event.accept(FilterPredicate.TYPE);
     }
 
     @SubscribeEvent

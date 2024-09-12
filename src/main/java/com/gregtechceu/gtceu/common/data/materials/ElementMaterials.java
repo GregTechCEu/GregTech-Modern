@@ -98,7 +98,7 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(1560))
                 .ore()
                 .color(0x73d73d).secondaryColor(0x184537).iconSet(METALLIC)
-                .appendFlags(STD_METAL)
+                .appendFlags(STD_METAL, GENERATE_FOIL)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.BERYLLIOSIS, false)
                 .element(GTElements.Be)
                 .buildAndRegister();
@@ -840,7 +840,8 @@ public class ElementMaterials {
         Titanium = new Material.Builder(GTCEu.id("titanium")) // todo Ore? Look at EBF recipe here if we do Ti ores
                 .ingot(3).fluid()
                 .color(0xed8eea).secondaryColor(0xff64bc).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME)
+                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME,
+                        GENERATE_FOIL)
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
@@ -996,7 +997,7 @@ public class ElementMaterials {
         Trinium = new Material.Builder(GTCEu.id("trinium"))
                 .ingot(7).fluid()
                 .color(0x81808a).secondaryColor(0x351d4b).iconSet(SHINY)
-                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR)
+                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ke)
                 .cableProperties(GTValues.V[7], 6, 4)
                 .blastTemp(7200, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1500)

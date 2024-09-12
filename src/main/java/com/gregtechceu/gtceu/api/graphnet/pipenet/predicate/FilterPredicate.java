@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.predicate;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.graphnet.predicate.EdgePredicate;
+import com.gregtechceu.gtceu.api.graphnet.predicate.NetPredicateType;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,15 +16,17 @@ import java.util.Objects;
 
 public final class FilterPredicate extends EdgePredicate<FilterPredicate, CompoundTag> {
 
-    public static final FilterPredicate INSTANCE = new FilterPredicate();
+    public static final NetPredicateType<FilterPredicate> TYPE = new NetPredicateType<>(GTCEu.MOD_ID, "Filter",
+            FilterPredicate::new, new FilterPredicate());
 
     @Setter
     private @Nullable Filter<?, ?> sourceFilter;
     @Setter
     private @Nullable Filter<?, ?> targetFilter;
 
-    private FilterPredicate() {
-        super("FluidFilter");
+    @Override
+    public @NotNull NetPredicateType<FilterPredicate> getType() {
+        return TYPE;
     }
 
     @Override

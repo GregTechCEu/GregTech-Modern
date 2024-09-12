@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
 import java.util.Map;
@@ -13,19 +15,15 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public final class PipeStructureRegistry {
 
-    private static final Map<Class<? extends IPipeStructure>, Set<? extends IPipeStructure>> REGISTRY = new Object2ObjectLinkedOpenHashMap<>();
+    private static final Map<Class<? extends IPipeStructure>, Set<? extends IPipeStructure>> REGISTRY = fireEvent();
 
-    public static <T extends IPipeStructure> void register(@NotNull T structure) {
-        Set<T> structures = (Set<T>) REGISTRY.computeIfAbsent(structure.getClass(),
-                k -> new ObjectLinkedOpenHashSet<>());
-        structures.add(structure);
+    public static <T extends IPipeStructure> @NotNull @UnmodifiableView Set<T> getStructures(Class<T> structureClass) {
+        return (Set<T>) REGISTRY.getOrDefault(structureClass, Collections.emptySet());
     }
 
-    /**
-     * Do not modify the returned set.
-     */
-    public static <T extends IPipeStructure> @NotNull Set<T> getStructures(Class<T> structureClass) {
-        GTUtil.forceInitialization(structureClass);
-        return (Set<T>) REGISTRY.getOrDefault(structureClass, Collections.emptySet());
+    private static Map<Class<? extends IPipeStructure>, Set<? extends IPipeStructure>> fireEvent() {
+        PipeStructureRegistrationEvent event = new PipeStructureRegistrationEvent();
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getRegistry();
     }
 }

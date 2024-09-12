@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.block.laser;
 
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IPipeStructure;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistrationEvent;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistry;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
@@ -20,10 +21,6 @@ public record LaserStructure(String name, float renderThickness, boolean mirror,
             false, PipeModelRegistry.getLaserModel());
     public static final LaserStructure MIRROR = new LaserStructure("laser_pipe_mirror", 0.5f,
             true, PipeModelRegistry.getLaserModel());
-
-    public LaserStructure {
-        PipeStructureRegistry.register(this);
-    }
 
     @Override
     public ResourceTexture getPipeTexture(boolean isBlock) {
@@ -71,5 +68,10 @@ public record LaserStructure(String name, float renderThickness, boolean mirror,
     @Override
     public PipeModelRedirector getModel() {
         return model;
+    }
+
+    public static void register(@NotNull PipeStructureRegistrationEvent event) {
+        event.register(NORMAL);
+        event.register(MIRROR);
     }
 }
