@@ -12,6 +12,8 @@ publishing {
             version = project.mod_version
 
             from components.java
+
+            artifact sourcesJar
         }
     }
 
