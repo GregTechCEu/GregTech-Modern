@@ -448,6 +448,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+            if (side == getOutputFacingItems()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
+            }
         }
         return super.sideTips(player, pos, state, toolTypes, side);
     }

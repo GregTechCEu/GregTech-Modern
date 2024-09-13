@@ -505,8 +505,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
-        if (toolTypes.contains(GTToolType.WRENCH) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+        if (toolTypes.contains(GTToolType.WRENCH)) return true;
         if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
+        if (toolTypes.contains(GTToolType.SCREWDRIVER) &&
+                (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid))
+            return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
