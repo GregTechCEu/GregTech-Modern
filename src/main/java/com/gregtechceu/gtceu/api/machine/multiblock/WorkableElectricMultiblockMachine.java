@@ -26,6 +26,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +47,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     // runtime
     protected EnergyContainerList energyContainer;
+    @Getter
+    protected int tier;
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -57,18 +61,21 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     public void onStructureInvalid() {
         super.onStructureInvalid();
         this.energyContainer = null;
+        this.tier = 0;
     }
 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
         this.energyContainer = getEnergyContainer();
+        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
 
     @Override
     public void onPartUnload() {
         super.onPartUnload();
         this.energyContainer = null;
+        this.tier = 0;
     }
 
     //////////////////////////////////////
@@ -87,7 +94,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addEnergyUsageLine(energyContainer)
-                .addEnergyTierLine(GTUtil.getTierByVoltage(getMaxVoltage()))
+                .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType())
                 .addParallelsLine(numParallels)
                 .addWorkingStatusLine()
@@ -178,14 +185,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
-
-    /**
-     * Get energy tier.
-     */
-    @Override
-    public int getTier() {
-        return GTUtil.getFloorTierByVoltage(getMaxVoltage());
-    }
 
     public EnergyContainerList getEnergyContainer() {
         List<IEnergyContainer> containers = new ArrayList<>();
