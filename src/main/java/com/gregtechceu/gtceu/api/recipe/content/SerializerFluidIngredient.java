@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
@@ -48,5 +49,10 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     @Override
     public FluidIngredient defaultValue() {
         return FluidIngredient.EMPTY;
+    }
+
+    @Override
+    public Codec<FluidIngredient> codec() {
+        return FluidIngredient.CODEC;
     }
 }

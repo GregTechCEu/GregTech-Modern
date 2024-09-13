@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
@@ -47,5 +48,10 @@ public class SerializerDouble implements IContentSerializer<Double> {
     @Override
     public Double defaultValue() {
         return 0d;
+    }
+
+    @Override
+    public Codec<Double> codec() {
+        return Codec.DOUBLE;
     }
 }

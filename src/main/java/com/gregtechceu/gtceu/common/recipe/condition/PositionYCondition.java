@@ -1,9 +1,13 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
@@ -20,6 +24,13 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class PositionYCondition extends RecipeCondition {
 
+    public static final Codec<PositionYCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition
+            .isReverse(instance)
+            .and(instance.group(
+                    Codec.INT.fieldOf("min").forGetter(val -> val.min),
+                    Codec.INT.fieldOf("max").forGetter(val -> val.max)))
+            .apply(instance, PositionYCondition::new));
+
     public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;
     private int max;
@@ -29,9 +40,15 @@ public class PositionYCondition extends RecipeCondition {
         this.max = max;
     }
 
+    public PositionYCondition(boolean isReverse, int min, int max) {
+        super(isReverse);
+        this.min = min;
+        this.max = max;
+    }
+
     @Override
-    public String getType() {
-        return "pos_y";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.POSITION_Y;
     }
 
     @Override

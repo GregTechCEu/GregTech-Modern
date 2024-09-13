@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.Block;
@@ -85,5 +86,10 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
     @Override
     public BlockState defaultValue() {
         return Blocks.AIR.defaultBlockState();
+    }
+
+    @Override
+    public Codec<BlockState> codec() {
+        return BlockState.CODEC;
     }
 }

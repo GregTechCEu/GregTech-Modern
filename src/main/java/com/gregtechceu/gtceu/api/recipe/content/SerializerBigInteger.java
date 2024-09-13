@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
@@ -13,6 +16,14 @@ import java.math.BigInteger;
  * @implNote SerializerBigInteger
  */
 public class SerializerBigInteger implements IContentSerializer<BigInteger> {
+
+    public static final Codec<BigInteger> CODEC = Codec.STRING.comapFlatMap(str -> {
+        try {
+            return DataResult.success(new BigInteger(str), Lifecycle.stable());
+        } catch (Exception e) {
+            return DataResult.error(e::getMessage, Lifecycle.stable());
+        }
+    }, BigInteger::toString);
 
     public static SerializerBigInteger INSTANCE = new SerializerBigInteger();
 
@@ -53,5 +64,10 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
     @Override
     public BigInteger defaultValue() {
         return BigInteger.ZERO;
+    }
+
+    @Override
+    public Codec<BigInteger> codec() {
+        return CODEC;
     }
 }

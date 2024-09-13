@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 
 import com.lowdragmc.lowdraglib.LDLib;
 
+import com.lowdragmc.lowdraglib.Platform;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,15 +15,18 @@ import net.minecraft.network.FriendlyByteBuf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.resources.RegistryOps;
 
 public interface IContentSerializer<T> {
 
     default void toNetwork(FriendlyByteBuf buf, T content) {
-        buf.writeUtf(LDLib.GSON.toJson(toJson(content)));
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, Platform.getFrozenRegistry());
+        buf.writeUtf(codec().encodeStart(ops, content).getOrThrow(false, GTCEu.LOGGER::error).toString());
     }
 
     default T fromNetwork(FriendlyByteBuf buf) {
-        return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class));
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, Platform.getFrozenRegistry());
+        return codec().parse(ops, LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class)).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     T fromJson(JsonElement json);
@@ -61,6 +68,18 @@ public interface IContentSerializer<T> {
             uiName = buf.readUtf();
         }
         return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
+    }
+
+    Codec<T> codec();
+
+    default T fromJson(JsonElement json, HolderLookup.Provider provider) {
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, provider);
+        return codec().parse(ops, json).getOrThrow(false, GTCEu.LOGGER::error);
+    }
+
+    default JsonElement toJson(T content, HolderLookup.Provider provider) {
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, provider);
+        return codec().encodeStart(ops, content).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @SuppressWarnings("unchecked")

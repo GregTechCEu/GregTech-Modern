@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
@@ -52,5 +53,10 @@ public class SerializerLong implements IContentSerializer<Long> {
     @Override
     public Long defaultValue() {
         return 0L;
+    }
+
+    @Override
+    public Codec<Long> codec() {
+        return Codec.LONG;
     }
 }

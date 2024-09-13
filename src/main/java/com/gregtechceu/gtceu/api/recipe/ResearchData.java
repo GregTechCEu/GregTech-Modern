@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,14 +15,16 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 @AllArgsConstructor
 public final class ResearchData implements Iterable<ResearchData.ResearchEntry> {
 
-    private final Collection<ResearchEntry> entries;
+    public static final Codec<ResearchData> CODEC = ResearchEntry.CODEC.listOf().xmap(ResearchData::new,
+            data -> data.entries);
+
+    private final List<ResearchEntry> entries;
 
     public ResearchData() {
         entries = new ArrayList<>();
@@ -73,6 +77,11 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
      * Used for internal research storage and JEI integration.
      */
     public static final class ResearchEntry {
+
+        public static final Codec<ResearchEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
+                        ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
+                .apply(instance, ResearchEntry::new));
 
         @NotNull
         @Getter

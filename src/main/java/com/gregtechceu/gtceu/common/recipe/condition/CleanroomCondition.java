@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -8,8 +8,12 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
@@ -24,14 +28,23 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class CleanroomCondition extends RecipeCondition {
 
+    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder
+            .create(instance -> RecipeCondition.isReverse(instance)
+                    .and(CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom))
+                    .apply(instance, CleanroomCondition::new));
     public final static CleanroomCondition INSTANCE = new CleanroomCondition();
 
     @Getter
     private CleanroomType cleanroom = CleanroomType.CLEANROOM;
 
+    public CleanroomCondition(boolean isReverse, CleanroomType cleanroom) {
+        super(isReverse);
+        this.cleanroom = cleanroom;
+    }
+
     @Override
-    public String getType() {
-        return "cleanroom";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.CLEANROOM;
     }
 
     @Override

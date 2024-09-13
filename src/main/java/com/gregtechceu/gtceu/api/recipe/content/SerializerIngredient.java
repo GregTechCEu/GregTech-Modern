@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +15,10 @@ import net.minecraft.world.level.ItemLike;
 import com.google.gson.JsonElement;
 
 public class SerializerIngredient implements IContentSerializer<Ingredient> {
+
+    public static final Codec<Ingredient> CODEC = Codec.PASSTHROUGH.xmap(
+            dynamic -> Ingredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
+            ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
 
     public static SerializerIngredient INSTANCE = new SerializerIngredient();
 
@@ -54,5 +62,10 @@ public class SerializerIngredient implements IContentSerializer<Ingredient> {
     @Override
     public Ingredient defaultValue() {
         return Ingredient.EMPTY;
+    }
+
+    @Override
+    public Codec<Ingredient> codec() {
+        return CODEC;
     }
 }

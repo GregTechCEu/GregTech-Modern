@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
@@ -47,5 +48,10 @@ public class SerializerInteger implements IContentSerializer<Integer> {
     @Override
     public Integer defaultValue() {
         return 0;
+    }
+
+    @Override
+    public Codec<Integer> codec() {
+        return Codec.INT;
     }
 }
