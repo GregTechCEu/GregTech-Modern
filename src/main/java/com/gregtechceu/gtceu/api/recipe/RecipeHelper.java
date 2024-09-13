@@ -60,7 +60,11 @@ public class RecipeHelper {
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        return getRecipeEUtTier(recipe) - recipe.ocTier;
+        long EUt = getInputEUt(recipe);
+        if (EUt == 0) EUt = getOutputEUt(recipe);
+        if (recipe.parallels > 1) EUt /= recipe.parallels;
+        EUt >>= (recipe.ocTier * 2);
+        return GTUtil.getTierByVoltage(EUt);
     }
 
     /**
