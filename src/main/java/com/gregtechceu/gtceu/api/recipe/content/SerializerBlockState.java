@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.util.Map;

@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -79,8 +79,8 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
     public static final class ResearchEntry {
 
         public static final Codec<ResearchEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
-                        ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
+                Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
+                ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
                 .apply(instance, ResearchEntry::new));
 
         @NotNull

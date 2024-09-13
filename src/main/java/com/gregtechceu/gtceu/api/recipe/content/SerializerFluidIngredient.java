@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 

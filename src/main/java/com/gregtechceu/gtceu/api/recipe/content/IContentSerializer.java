@@ -4,18 +4,18 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 
 import com.lowdragmc.lowdraglib.LDLib;
-
 import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.serialization.Codec;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.RegistryOps;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.resources.RegistryOps;
 
 public interface IContentSerializer<T> {
 
@@ -26,7 +26,8 @@ public interface IContentSerializer<T> {
 
     default T fromNetwork(FriendlyByteBuf buf) {
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, Platform.getFrozenRegistry());
-        return codec().parse(ops, LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class)).getOrThrow(false, GTCEu.LOGGER::error);
+        return codec().parse(ops, LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class)).getOrThrow(false,
+                GTCEu.LOGGER::error);
     }
 
     T fromJson(JsonElement json);

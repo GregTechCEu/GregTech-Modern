@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonNull;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -8,10 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,7 +17,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import org.jetbrains.annotations.NotNull;
 
@@ -246,8 +246,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     JsonElement json = dynamic.convert(JsonOps.INSTANCE).getValue();
                     return IngredientAction.parseList(json);
                 },
-                list -> new Dynamic<>(JsonOps.INSTANCE, JsonNull.INSTANCE)
-        );
+                list -> new Dynamic<>(JsonOps.INSTANCE, JsonNull.INSTANCE));
 
         public static List<?> getIngredientActions(JsonObject json) {
             return IngredientAction.parseList(json.get("kubejs:actions"));

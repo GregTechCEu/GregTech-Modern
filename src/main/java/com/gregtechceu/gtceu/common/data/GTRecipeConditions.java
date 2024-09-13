@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.common.recipe.condition.*;
+
 import net.minecraftforge.fml.ModLoader;
 
 /**
@@ -59,8 +59,9 @@ public final class GTRecipeConditions {
     }
 
     public static void init() {
-        //noinspection unchecked
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
+        // noinspection unchecked
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
+                (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }
