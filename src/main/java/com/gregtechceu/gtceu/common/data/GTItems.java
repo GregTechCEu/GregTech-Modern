@@ -2076,6 +2076,11 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
+    public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE
+            .item("crafting_table_cover", ComponentItem::create)
+            .lang("Crafting Table Cover")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
             .item("shutter_module_cover", ComponentItem::create)
             .lang("Shutter Module")
@@ -2095,6 +2100,14 @@ public class GTItems {
             .item("ender_fluid_link_cover", ComponentItem::create)
             .lang("Ender Fluid Link")
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE
+            .item("digital_interface_cover", ComponentItem::create)
+            .lang("Digital Interface")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE
+            .item("wireless_digital_interface_cover", ComponentItem::create)
+            .lang("Wireless Digital Interface")
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
             .item("fluid_voiding_cover", ComponentItem::create)
