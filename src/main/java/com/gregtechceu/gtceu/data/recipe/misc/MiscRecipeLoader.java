@@ -296,7 +296,7 @@ public class MiscRecipeLoader {
          * .outputItems(GTMachines.CENTRAL_MONITOR)
          * .save(provider);
          */
-
+        /*
         ASSEMBLER_RECIPES.recipeBuilder("cover_digital_interface").duration(100).EUt(VA[HV])
                 .inputItems(COVER_SCREEN)
                 .inputItems(plate, Aluminium)
@@ -305,7 +305,9 @@ public class MiscRecipeLoader {
                 .inputFluids(Polyethylene.getFluid(L))
                 .outputItems(COVER_DIGITAL_INTERFACE)
                 .save(provider);
+*\
 
+         */
         // todo digital interface cover
         /*
          * ASSEMBLER_RECIPES.recipeBuilder("cover_wireless_digital_interface").duration(100).EUt(VA[HV])
