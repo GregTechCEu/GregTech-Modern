@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,9 +32,14 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
 
     @Override
     public void deserializeNBT(Tag tag) {
+        RecipeManager recipeManager = Platform.getMinecraftServer().getRecipeManager();
         if (tag instanceof StringTag stringTag) {
-            RecipeManager recipeManager = Platform.getMinecraftServer().getRecipeManager();
             payload = (GTRecipe) recipeManager.byKey(new ResourceLocation(stringTag.getAsString())).orElse(null);
+        } else if (tag instanceof ByteArrayTag byteArray) {
+            ByteBuf copiedDataBuffer = Unpooled.copiedBuffer(byteArray.getAsByteArray());
+            FriendlyByteBuf buf = new FriendlyByteBuf(copiedDataBuffer);
+            payload = (GTRecipe) recipeManager.byKey(buf.readResourceLocation()).orElse(null);
+            buf.release();
         }
     }
 
