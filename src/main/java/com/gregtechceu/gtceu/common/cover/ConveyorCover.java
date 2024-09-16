@@ -198,7 +198,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
-        if (timer % 5 == 0) {
+        if (timer % 5 == 0 && isWorkingEnabled) {
             if (itemsLeftToTransferLastSecond > 0) {
                 var adjacentItemTransfer = getAdjacentItemTransfer();
                 var myItemHandler = getOwnItemTransfer();

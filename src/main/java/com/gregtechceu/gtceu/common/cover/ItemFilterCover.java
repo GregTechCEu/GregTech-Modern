@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -20,6 +22,9 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -40,6 +45,8 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @DescSynced
     @Getter
     protected ItemFilterMode filterMode = ItemFilterMode.FILTER_INSERT;
+    @Getter
+    protected ItemHandlerFiltered itemHandler;
 
     public ItemFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -75,5 +82,53 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public @Nullable IItemTransfer getItemTransferCap(@Nullable IItemTransfer defaultValue) {
+        if(defaultValue == null)
+            return null;
+
+        if (itemHandler == null || itemHandler.delegate != defaultValue) {
+            this.itemHandler = new ItemFilterCover.ItemHandlerFiltered(defaultValue);
+        }
+        return itemHandler;
+    }
+
+    private class ItemHandlerFiltered extends ItemTransferDelegate {
+
+        public ItemHandlerFiltered(IItemTransfer delegate) {
+            super(delegate);
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+            if(getFilterMode() == ItemFilterMode.FILTER_EXTRACT || !itemFilter.test(stack)) {
+                if(notifyChanges)
+                    markAsDirty();
+                return stack;
+            }
+            if(notifyChanges)
+                markAsDirty();
+            return super.insertItem(slot, stack, simulate, notifyChanges);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+            if(getFilterMode() != ItemFilterMode.FILTER_INSERT) {
+                ItemStack result = super.extractItem(slot, amount, true, notifyChanges);
+                if(result.isEmpty() || !itemFilter.test(result)) {
+                    if(notifyChanges)
+                        markAsDirty();
+                    return ItemStack.EMPTY;
+                }
+                if(notifyChanges)
+                    markAsDirty();
+                return simulate ? result : super.extractItem(slot, amount, false, notifyChanges);
+            }
+            if(notifyChanges)
+                markAsDirty();
+            return super.extractItem(slot, amount, simulate, notifyChanges);
+        }
     }
 }
