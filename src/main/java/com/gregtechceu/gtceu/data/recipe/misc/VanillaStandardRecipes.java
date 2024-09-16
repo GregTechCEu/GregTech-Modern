@@ -1210,6 +1210,11 @@ public class VanillaStandardRecipes {
                 .outputItems(Items.CLAY)
                 .duration(40).EUt(VA[LV]).save(provider);
 
+        COMPRESSOR_RECIPES.recipeBuilder("snowballs_to_snow")
+                .inputItems(Items.SNOWBALL, 4)
+                .outputItems(Items.SNOW_BLOCK)
+                .duration(40).EUt(2).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4)
                 .inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE))
                 .outputItems(new ItemStack(Blocks.ENDER_CHEST)).save(provider);
