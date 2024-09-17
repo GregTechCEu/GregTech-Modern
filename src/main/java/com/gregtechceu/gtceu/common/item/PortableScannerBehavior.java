@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
@@ -27,7 +26,6 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import dev.ftb.mods.ftbteams.api.Team;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -202,16 +200,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
-                if(machineBlockEntity.getOwnerUUID() != null) {
+                if (machineBlockEntity.getOwnerUUID() != null) {
                     list.add(Component.translatable("behavior.portable_scanner.machine_ownership",
                             machineBlockEntity.getOwnerName(),
                             machineBlockEntity.ownerOnline()));
-
-                    if (GTCEu.isFTBTeamsLoaded()) {
-                        if (Team.class.isAssignableFrom(machineBlockEntity.getOwnerType())) {
-                            list.add(Component.literal("FTB Teams"));
-                        }
-                    }
                 }
 
                 if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&

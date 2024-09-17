@@ -41,7 +41,6 @@ import com.simibubi.create.foundation.utility.Lang;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -93,7 +93,10 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
     default String getOwnerName() {
         return null;
     }
-    default Class<?> getOwnerType() { return Object.class; }
+
+    default Class<?> getOwnerType() {
+        return Object.class;
+    }
 
     default boolean ownerOnline() {
         return false;

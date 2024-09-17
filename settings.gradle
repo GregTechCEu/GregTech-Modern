@@ -46,6 +46,8 @@ dependencyResolutionManagement {
         def javdVersion = "4803995"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"
+        def argonautsForgeFile = "5263580"
+        def resourcefulForgeFile = "5659871"
 
         // Libs
         def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
@@ -133,6 +135,12 @@ dependencyResolutionManagement {
 
             def ftblibrary = version("ftblibrary", ftblibraryForgeFile)
             library("ftblibrary", "curse.maven", "ftb-library-forge-404465").versionRef(ftblibrary)
+
+            def argonautslib = version("argonauts", argonautsForgeFile)
+            library("argonauts", "curse.maven", "argonauts-845833").versionRef(argonautslib)
+
+            def resourceful = version("resourceful", resourcefulForgeFile)
+            library("resourceful", "curse.maven", "resourceful-lib-570073").versionRef(resourceful)
         }
 
         libs {

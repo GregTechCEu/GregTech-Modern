@@ -17,10 +17,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
-import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
-import dev.ftb.mods.ftbteams.api.Team;
-import dev.ftb.mods.ftbteams.api.TeamManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,6 +47,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
+import dev.ftb.mods.ftbteams.api.Team;
+import earth.terrarium.argonauts.api.guild.Guild;
+import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -152,12 +152,19 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     public void setMachineOwner(MetaMachine machine, ServerPlayer player) {
-        if(GTCEu.isFTBTeamsLoaded()) {
+        if (GTCEu.isFTBTeamsLoaded()) {
             Optional<Team> team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(player.getUUID());
-            if(team.isPresent()) {
+            if (team.isPresent()) {
                 UUID teamUUID = team.get().getTeamId();
                 String name = team.get().getShortName();
                 machine.holder.setOwner(teamUUID, Team.class, name);
+            }
+        } else if (GTCEu.isArgonautsLoaded()) {
+            Guild guild = GuildHandler.read(player.server).get(player);
+            if (guild != null) {
+                UUID guildUUID = guild.id();
+                String name = guild.displayName().getString();
+                machine.holder.setOwner(guildUUID, Guild.class, name);
             }
         } else {
             machine.holder.setOwner(player.getUUID(), ServerPlayer.class, player.getName().getString());
@@ -306,6 +313,10 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var machine = getMachine(world, pos);
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
+
+        if (machine != null && machine.holder.getOwnerUUID() == null && player instanceof ServerPlayer) {
+            setMachineOwner(machine, (ServerPlayer) player);
+        }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {

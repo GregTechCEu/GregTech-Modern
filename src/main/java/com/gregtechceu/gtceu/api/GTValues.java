@@ -116,7 +116,8 @@ public class GTValues {
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
             MODID_JAVD = "javd",
-            MODID_FTBTEAMS = "ftbteams";
+            MODID_FTBTEAMS = "ftbteams",
+            MODID_ARGONAUTS = "argonauts";
 
     /**
      * Spray painting compat modids

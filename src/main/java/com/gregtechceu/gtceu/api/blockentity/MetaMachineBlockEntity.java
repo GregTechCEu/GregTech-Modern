@@ -48,7 +48,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
