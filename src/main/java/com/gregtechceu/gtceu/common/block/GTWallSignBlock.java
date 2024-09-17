@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.common.blockentity.GTSignBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ public class GTWallSignBlock extends WallSignBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SignBlockEntity(GTBlockEntities.GT_SIGN.get(), pos, state);
+        return new GTSignBlockEntity(GTBlockEntities.GT_SIGN.get(), pos, state);
     }
 
     @Nullable

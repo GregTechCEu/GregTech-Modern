@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.blockentity.*;
 
+import net.minecraft.world.level.block.entity.HangingSignBlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
@@ -54,8 +55,8 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.DUCT_PIPES)
             .register();
 
-    public static final BlockEntityEntry<SignBlockEntity> GT_SIGN = REGISTRATE
-            .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
+    public static final BlockEntityEntry<GTSignBlockEntity> GT_SIGN = REGISTRATE
+            .blockEntity("sign", GTSignBlockEntity::new)
             .validBlocks(GTBlocks.RUBBER_SIGN,
                     GTBlocks.RUBBER_WALL_SIGN,
                     GTBlocks.TREATED_WOOD_SIGN,

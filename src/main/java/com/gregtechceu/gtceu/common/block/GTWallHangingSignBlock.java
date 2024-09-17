@@ -23,7 +23,7 @@ public class GTWallHangingSignBlock extends WallHangingSignBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GTHangingSignBlockEntity(GTBlockEntities.GT_HANGING_SIGN.get(), pos, state);
+        return new GTHangingSignBlockEntity(pos, state);
     }
 
     @Nullable
