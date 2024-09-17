@@ -33,7 +33,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
             return Collections.emptyList();
         } else {
             final Rect2i rectangle = getRectangleBox();
-            return Lists.newArrayList(new Target[] { new Target() {
+            return Lists.newArrayList(new Target[]{new Target() {
 
                 @NotNull
                 public Rect2i getArea() {
@@ -47,7 +47,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
                         acceptItem(stack);
                     }
                 }
-            } });
+            }});
         }
     }
 
@@ -61,7 +61,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
         }
 
         if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
-            return itemJeiStack.getItemStack().orElse(null);
+            return itemJeiStack.getItemStack().orElse(ItemStack.EMPTY);
         }
         return ingredient;
     }
