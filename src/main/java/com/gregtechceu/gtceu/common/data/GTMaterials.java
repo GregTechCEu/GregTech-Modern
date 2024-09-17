@@ -100,7 +100,7 @@ public class GTMaterials {
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
-        gem.setIgnored(Echo, Items.ECHO_SHARD);
+        gem.setIgnored(EchoShard, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -174,7 +174,7 @@ public class GTMaterials {
         rock.setIgnored(Endstone, Blocks.END_STONE);
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
-        rock.setIgnored(Sculk, Blocks.SCULK);
+        block.setIgnored(Sculk, Blocks.SCULK);
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
 
@@ -251,7 +251,7 @@ public class GTMaterials {
         rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
         block.modifyMaterialAmount(Amethyst, 4);
-        block.modifyMaterialAmount(Echo, 4);
+        block.modifyMaterialAmount(EchoShard, 4);
         block.modifyMaterialAmount(Glowstone, 4);
         block.modifyMaterialAmount(NetherQuartz, 4);
         block.modifyMaterialAmount(CertusQuartz, 4);
@@ -893,7 +893,7 @@ public class GTMaterials {
     public static Material Olivine;
     public static Material Opal;
     public static Material Amethyst;
-    public static Material Echo;
+    public static Material EchoShard;
     public static Material Lapis;
     public static Material Blaze;
     public static Material Apatite;
