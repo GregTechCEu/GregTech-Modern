@@ -4,7 +4,6 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 
-import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
             return Collections.emptyList();
         } else {
             final Rect2i rectangle = getRectangleBox();
-            return Lists.newArrayList(new Target[]{new Target() {
+            return Lists.newArrayList(new Target[] { new Target() {
 
                 @NotNull
                 public Rect2i getArea() {
@@ -47,7 +47,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
                         acceptItem(stack);
                     }
                 }
-            }});
+            } });
         }
     }
 
