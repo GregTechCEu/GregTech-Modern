@@ -584,10 +584,7 @@ public class MachineLang {
                 "Biome Coefficient:\n  Ocean, River: 1000 mB/s\n  Swamp: 800 mB/s\n  Jungle: 350 mB/s\n  Snowy: 300 mB/s\n  Plains, Forest: 250 mB/s\n  Taiga: 175 mB/s\n  Beach: 170 mB/s\n  Other: 100 mB/s");
         multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2",
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
-        provider.add("gtceu.multiblock.processing_array.description",
-                "The Processing Array combines up to 16 single block machine(s) in a single multiblock, effectively easing automation.");
-        provider.add("gtceu.multiblock.advanced_processing_array.description",
-                "The Processing Array combines up to 64 single block machine(s) in a single multiblock, effectively easing automation.");
+
         // Parallel
         provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
 

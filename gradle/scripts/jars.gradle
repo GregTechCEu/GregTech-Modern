@@ -1,26 +1,12 @@
-apply plugin: "dev.architectury.loom"
-
-shadowJar {
-    exclude "fabric.mod.json"
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadow]
-    archiveClassifier = "dev-shadow"
+tasks.register('slimJar', Jar) {
+    archiveClassifier = "dev-slim"
+    from sourceSets.main.output
 }
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveClassifier = null
-}
-
-jar {
-    archiveClassifier = "dev"
-}
-
-remapSlimJar {
-    addNestedDependencies = false
-    archiveClassifier = "slim"
+obfuscation {
+    reobfuscate(tasks.named('slimJar'), sourceSets.main) {
+        archiveClassifier = "slim"
+    }
 }
 
 tasks.register('sourcesJar', Jar) {
@@ -29,7 +15,20 @@ tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
 }
 
-tasks.remapJar.dependsOn('remapSlimJar')
+base {
+    archivesName = "${project.name}-${libs.versions.minecraft.get()}"
+}
 
-
-archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
+afterEvaluate {
+    tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+        manifest.attributes([
+                'MixinConfigs': 'gtceu.mixins.json',
+                'Specification-Title': project.name,
+                'Specification-Version': mod_version,
+                'Specification-Vendor': 'GregTechCEu Team',
+                'Implementation-Title': base.archivesName,
+                'Implementation-Version': version,
+                'Implementation-Vendor': 'GregTechCEu Team',
+        ])
+    }
+}

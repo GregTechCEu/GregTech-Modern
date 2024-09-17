@@ -81,7 +81,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.fml.ModLoader;
 
 import appeng.api.networking.pathing.ChannelMode;
@@ -1110,9 +1109,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue("%s Dual Input Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            ConfigHolder.INSTANCE.machines.enableMoreDualHatchAbility ? DUAL_INPUT_HATCH_ABILITIES :
-                                    new PartAbility[] { PartAbility.IMPORT_ITEMS })
+                    .abilities(DUAL_INPUT_HATCH_ABILITIES)
                     .overlayTieredHullRenderer("dual_hatch.import")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
@@ -1135,9 +1132,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue("%s Dual Output Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            ConfigHolder.INSTANCE.machines.enableMoreDualHatchAbility ? DUAL_OUTPUT_HATCH_ABILITIES :
-                                    new PartAbility[] { PartAbility.EXPORT_ITEMS })
+                    .abilities(DUAL_OUTPUT_HATCH_ABILITIES)
                     .overlayTieredHullRenderer("dual_hatch.export")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
@@ -1686,7 +1681,8 @@ public class GTMachines {
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('F', blocks(CASING_STEEL_SOLID.get())
                             .or(!ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids ?
-                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS) :
+                                    Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X,
+                                            PartAbility.IMPORT_FLUIDS_4X, PartAbility.IMPORT_FLUIDS_9X) :
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
@@ -2074,46 +2070,6 @@ public class GTMachines {
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
-
-    @SuppressWarnings("removal")
-    public static final MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ?
-            registerTieredMultis("processing_array", ProcessingArrayMachine::new,
-                    (tier, builder) -> builder
-                            .langValue(VNF[tier] + " Processing Array")
-                            .rotationState(RotationState.ALL)
-                            .blockProp(p -> p.noOcclusion().isViewBlocking((state, level, pos) -> false))
-                            .shape(Shapes.box(0.001, 0.001, 0.001, 0.999, 0.999, 0.999))
-                            .appearanceBlock(() -> ProcessingArrayMachine.getCasingState(tier))
-                            .recipeType(DUMMY_RECIPES)
-                            // .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
-                            .pattern(definition -> FactoryBlockPattern.start()
-                                    .aisle("XXX", "CCC", "XXX")
-                                    .aisle("XXX", "C#C", "XXX")
-                                    .aisle("XSX", "CCC", "XXX")
-                                    .where('S', Predicates.controller(blocks(definition.getBlock())))
-                                    .where('X', blocks(ProcessingArrayMachine.getCasingState(tier))
-                                            .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
-                                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                                    .setMaxGlobalLimited(4).setPreviewCount(1))
-                                            .or(Predicates.autoAbilities(true, false, false)))
-                                    .where('C', blocks(CLEANROOM_GLASS.get()))
-                                    .where('#', Predicates.air())
-                                    .build())
-                            .tooltips(Component.translatable("gtceu.universal.tooltip.parallel",
-                                    ProcessingArrayMachine.getMachineLimit(tier)))
-                            .workableCasingRenderer(tier == IV ?
-                                    GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
-                                    GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
-                                    GTCEu.id("block/multiblock/processing_array"))
-                            .compassSections(GTCompassSections.TIER[IV])
-                            .compassNode("processing_array")
-                            .tooltips(Component.translatable("gtceu.universal.tooltip.deprecated"))
-                            .register(),
-                    IV, LuV) :
-            null;
 
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE
             .multiblock("active_transformer", ActiveTransformerMachine::new)

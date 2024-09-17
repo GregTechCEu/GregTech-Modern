@@ -4,7 +4,7 @@ name: Update Gradle Cache
 on:
   push:
     branches:
-      - 1.20.1
+      - '1.20.1'
     paths: ['gradle/**', '**.gradle', 'gradle.properties', 'gradlew**', 'src/main/resources/accesstransformer.cfg']
   workflow_dispatch:
 
