@@ -49,10 +49,12 @@ public class GuiTextures {
     public static final ResourceTexture TOOL_DISABLE_AUTO_OUTPUT = new ResourceTexture(
             "gtceu:textures/gui/overlay/tool_disable_auto_output.png");
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_NATIVE = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_block.png"); // todo switch to tool_switch_converter_native once that gets
+            "gtceu:textures/gui/overlay/tool_wire_block.png"); // todo switch to tool_switch_converter_native once that
+                                                               // gets
                                                                // made
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_EU = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // todo switch to tool_switch_converter_eu once that gets
+            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // todo switch to tool_switch_converter_eu once that
+                                                                 // gets
                                                                  // made
 
     // BASE TEXTURES
