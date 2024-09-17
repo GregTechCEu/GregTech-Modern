@@ -35,7 +35,7 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
             return Collections.emptyList();
         } else {
             final Rect2i rectangle = getRectangleBox();
-            return Lists.newArrayList(new Target[] { new Target() {
+            return Lists.newArrayList(new Target[]{new Target() {
 
                 @NotNull
                 public Rect2i getArea() {
@@ -56,7 +56,7 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
                         acceptFluid(ingredientStack);
                     }
                 }
-            } });
+            }});
         }
     }
 
@@ -72,7 +72,7 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
         }
 
         if (LDLib.isJeiLoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
-            ingredient = com.lowdragmc.lowdraglib.side.fluid.FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
+            ingredient = FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
         }
         return ingredient;
     }
