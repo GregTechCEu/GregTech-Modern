@@ -1295,8 +1295,8 @@ public class RecipeAddition {
 
             ASSEMBLER_RECIPES.recipeBuilder("recovery_compass")
                     .inputItems(new ItemStack(Items.COMPASS))
-                    .inputItems(plate, Echo, 8)
-                    .inputItems(rod, Echo)
+                    .inputItems(plate, EchoShard, 8)
+                    .inputItems(rod, EchoShard)
                     .outputItems(new ItemStack(Items.RECOVERY_COMPASS))
                     .duration(400).EUt(30).save(provider);
 
