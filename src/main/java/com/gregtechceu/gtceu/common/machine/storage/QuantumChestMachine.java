@@ -301,7 +301,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             if (!stored.isEmpty()) { // pull
                 var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
-                    if (player.addItem(drained)) {
+                    if (!player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);
                     }
                 }
