@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +73,7 @@ public class FluidDrillLogic extends RecipeLogic {
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
-                    .outputFluids(FluidStack.create(veinFluid,
+                    .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .buildRawRecipe();
             if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
@@ -84,7 +83,7 @@ public class FluidDrillLogic extends RecipeLogic {
         return null;
     }
 
-    public long getFluidToProduce() {
+    public int getFluidToProduce() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             return getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()));
@@ -92,7 +91,7 @@ public class FluidDrillLogic extends RecipeLogic {
         return 0;
     }
 
-    private long getFluidToProduce(FluidVeinWorldEntry entry) {
+    private int getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
             int depletedYield = definition.getDepletedYield();
@@ -107,7 +106,7 @@ public class FluidDrillLogic extends RecipeLogic {
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced * FluidHelper.getBucket() / 1000;
+            return produced * FluidType.BUCKET_VOLUME / 1000;
         }
         return 0;
     }

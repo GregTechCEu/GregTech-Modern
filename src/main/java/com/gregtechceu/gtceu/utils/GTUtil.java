@@ -11,10 +11,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -38,8 +34,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
@@ -54,6 +56,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -342,28 +347,28 @@ public class GTUtil {
         return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
     }
 
-    public static long getPumpBiomeModifier(Holder<Biome> biome) {
+    public static int getPumpBiomeModifier(Holder<Biome> biome) {
         if (biome.is(BiomeTags.IS_NETHER)) {
             return -1;
         }
 
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
-            return FluidHelper.getBucket();
+            return FluidType.BUCKET_VOLUME;
         } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidHelper.getBucket() * 4 / 5;
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
-            return FluidHelper.getBucket() * 35 / 100;
+            return FluidType.BUCKET_VOLUME * 35 / 100;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
-            return FluidHelper.getBucket() * 3 / 10;
+            return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
-            return FluidHelper.getBucket() / 4;
+            return FluidType.BUCKET_VOLUME / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
-            return FluidHelper.getBucket() * 175 / 1000;
+            return FluidType.BUCKET_VOLUME * 175 / 1000;
         } else if (biome.is(CustomTags.IS_SANDY)) {
-            return FluidHelper.getBucket() * 170 / 1000;
+            return FluidType.BUCKET_VOLUME * 170 / 1000;
         }
-        return FluidHelper.getBucket() / 10;
+        return FluidType.BUCKET_VOLUME / 10;
     }
 
     /**
@@ -420,11 +425,62 @@ public class GTUtil {
         if (ingredient instanceof FluidStack) {
             return (FluidStack) ingredient;
         } else if (ingredient instanceof ItemStack itemStack) {
-            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
-            if (fluidHandler != null)
-                return fluidHandler.drain(Integer.MAX_VALUE, false);
+            return FluidUtil.getFluidHandler(itemStack)
+                    .map(h -> h.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE)).orElse(null);
         }
         return null;
+    }
+
+    /**
+     * Gets the FluidHandler from the adjacent block on the side connected to the caller
+     * @param level Level
+     * @param pos BlockPos of the machine which is calling
+     * @param facing Direction to get the FluidHandler from
+     * @return LazyOpt of the IFluidHandler described above
+     */
+    public static LazyOptional<IFluidHandler> getAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return FluidUtil.getFluidHandler(level, pos.relative(facing), facing.getOpposite());
+    }
+
+    // Same as above, but returns the presence
+    public static boolean isAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return getAdjacentFluidHandler(level, pos, facing).isPresent();
+    }
+
+    public static int getFluidColor(FluidStack fluid) {
+        return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+    }
+
+    // TODO: Clean this up to use FluidUtil and move it back to caller
+    public static int transferFiltered(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler,
+                                       int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+        int fluidLeftToTransfer = transferLimit;
+        for (int i = 0; i < sourceHandler.getTanks(); i++) {
+            FluidStack currentFluid = sourceHandler.getFluidInTank(i).copy();
+            if (currentFluid.isEmpty() || !fluidFilter.test(currentFluid)) {
+                continue;
+            }
+
+            currentFluid.setAmount(fluidLeftToTransfer);
+            var drained = sourceHandler.drain(currentFluid, IFluidHandler.FluidAction.SIMULATE);
+            if (drained.isEmpty()) {
+                continue;
+            }
+
+            var canInsertAmount = destHandler.fill(drained.copy(), IFluidHandler.FluidAction.SIMULATE);
+            if (canInsertAmount > 0) {
+                drained.setAmount(canInsertAmount);
+                drained = sourceHandler.drain(drained, IFluidHandler.FluidAction.EXECUTE);
+                if (!drained.isEmpty()) {
+                    destHandler.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+                    fluidLeftToTransfer -= drained.getAmount();
+                    if (fluidLeftToTransfer == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return transferLimit - fluidLeftToTransfer;
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {

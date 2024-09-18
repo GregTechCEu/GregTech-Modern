@@ -4,13 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Collections;
 
@@ -22,7 +21,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
     protected InfiniteWaterTank waterTank;
 
-    public static final long FLUID_AMOUNT = 2_000_000_000L;
+    public static final int FLUID_AMOUNT = 2_000_000_000;
 
     public ReservoirHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, GTValues.EV, IO.IN, FLUID_AMOUNT, 1, args);
@@ -33,7 +32,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     //////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.waterTank = new InfiniteWaterTank(initialCapacity);
         // allow both importing and exporting from the tank
         return new NotifiableFluidTank(this, Collections.singletonList(waterTank), io, IO.BOTH);
@@ -62,20 +61,20 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
         }
     }
 
-    protected static class InfiniteWaterTank extends FluidStorage {
+    protected static class InfiniteWaterTank extends CustomFluidTank {
 
         private static final CompoundTag EMPTY = new CompoundTag();
-        private static final FluidStack WATER = FluidStack.create(Fluids.WATER, Long.MAX_VALUE);
+        private static final FluidStack WATER = new FluidStack(Fluids.WATER, Integer.MAX_VALUE);
 
-        public InfiniteWaterTank(long capacity) {
+        public InfiniteWaterTank(int capacity) {
             super(capacity);
             // start with the full amount
-            setFluid(FluidStack.create(Fluids.WATER, capacity));
+            setFluid(new FluidStack(Fluids.WATER, capacity));
         }
 
         public void refillWater() {
             // call super since our overrides don't allow any kind of filling
-            super.fill(0, WATER, false, true);
+            super.fill(WATER, FluidAction.EXECUTE);
         }
 
         public boolean isFull() {
@@ -89,7 +88,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChange) {
+        public int fill(FluidStack resource, FluidAction action) {
             // don't allow external filling
             return 0;
         }
@@ -104,7 +103,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
         public void deserializeNBT(CompoundTag nbt) {}
 
         @Override
-        public FluidStorage copy() {
+        public CustomFluidTank copy() {
             var storage = new InfiniteWaterTank(capacity);
             storage.setFluid(fluid.copy());
             return storage;

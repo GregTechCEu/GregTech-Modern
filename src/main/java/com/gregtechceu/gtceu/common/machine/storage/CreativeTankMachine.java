@@ -5,20 +5,22 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.misc.lib.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     @Nullable
     @Override
-    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
             return super.getFluidTransferCap(side, useCoverCapability);
 
@@ -58,8 +60,8 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null && FluidTransferHelper
-                .getFluidTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
+        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
+                GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -115,16 +117,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
                 cache.getStorages()[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
             return;
 
-        IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(getLevel(),
-                getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
-        if (transfer != null) {
-            FluidStack stack = cache.getStorages()[0].getFluid().copy();
+        GTUtil.getAdjacentFluidHandler(getLevel(), getPos(), getOutputFacingFluids()).ifPresent(h -> {
+            FluidStack stack = cache.getFluidInTank(0).copy();
             stack.setAmount(mBPerCycle);
-            long canInsertAmount = transfer.fill(stack, true);
-            stack.setAmount(Math.min(mBPerCycle, canInsertAmount));
-
-            transfer.fill(stack, false);
-        }
+            int insertable = h.fill(stack, FluidAction.SIMULATE);
+            stack.setAmount(Math.min(mBPerCycle, insertable));
+            h.fill(stack, FluidAction.EXECUTE);
+        });
     }
 
     @Override

@@ -7,10 +7,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
+import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +26,13 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     public final IO handlerIO;
     @Persisted
     @Getter
-    private final FluidStorage[] storages;
+    private final CustomFluidTank[] storages;
 
-    public FluidRecipeHandler(IO handlerIO, int slots, long capacity) {
+    public FluidRecipeHandler(IO handlerIO, int slots, int capacity) {
         this.handlerIO = handlerIO;
-        this.storages = new FluidStorage[slots];
+        this.storages = new CustomFluidTank[slots];
         for (int i = 0; i < this.storages.length; i++) {
-            this.storages[i] = new FluidStorage(capacity);
+            this.storages[i] = new CustomFluidTank(capacity);
         }
     }
 
@@ -44,7 +45,7 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     @Override
     public List<Object> getContents() {
         List<FluidStack> ingredients = new ArrayList<>();
-        for (FluidStorage storage : getStorages()) {
+        for (CustomFluidTank storage : getStorages()) {
             FluidStack stack = storage.getFluid();
             if (!stack.isEmpty()) {
                 ingredients.add(stack);
@@ -56,7 +57,7 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (FluidStorage storage : getStorages()) {
+        for (CustomFluidTank storage : getStorages()) {
             FluidStack stack = storage.getFluid();
             if (!stack.isEmpty()) {
                 amount += stack.getAmount();

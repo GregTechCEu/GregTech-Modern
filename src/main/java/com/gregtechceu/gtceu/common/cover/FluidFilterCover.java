@@ -9,10 +9,10 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,7 +33,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
     }
 
     public FluidFilter getFluidFilter() {

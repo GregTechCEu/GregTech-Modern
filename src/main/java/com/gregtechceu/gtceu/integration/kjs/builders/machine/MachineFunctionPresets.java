@@ -449,11 +449,11 @@ public class MachineFunctionPresets {
 
             @SuppressWarnings("unchecked")
             @Nullable
-            public Function<Integer, Long> getTankScalingFunction(B builder) {
+            public Function<Integer, Integer> getTankScalingFunction(B builder) {
                 try {
                     Field field = builderClass.getField("tankScalingFunction");
 
-                    return (Function<Integer, Long>) field.get(builder);
+                    return (Function<Integer, Integer>) field.get(builder);
                 } catch (NoSuchFieldException | IllegalAccessException exception) {
                     return null;
                 }
@@ -463,7 +463,7 @@ public class MachineFunctionPresets {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     int tier = builder.tier();
-                    Function<Integer, Long> tankScalingFunction = getTankScalingFunction(builder);
+                    Function<Integer, Integer> tankScalingFunction = getTankScalingFunction(builder);
                     builder.tooltips(GTMachines.workableTiered(
                             tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction != null ?
                                     tankScalingFunction.apply(tier) : GTMachines.defaultTankSizeFunction.apply(tier),

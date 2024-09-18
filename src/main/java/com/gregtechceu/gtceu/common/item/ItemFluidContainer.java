@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
 
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidType;
 
 /**
  * @author KilaBash
@@ -20,9 +20,9 @@ public class ItemFluidContainer implements IRecipeRemainder {
         var storage = new ItemStackTransfer(itemStack);
         var transfer = FluidTransferHelper.getFluidTransfer(storage, 0);
         if (transfer != null) {
-            var drained = transfer.drain(FluidHelper.getBucket(), true);
-            if (drained.getAmount() != FluidHelper.getBucket()) return ItemStack.EMPTY;
-            transfer.drain(FluidHelper.getBucket(), false);
+            var drained = transfer.drain(FluidType.BUCKET_VOLUME, true);
+            if (drained.getAmount() != FluidType.BUCKET_VOLUME) return ItemStack.EMPTY;
+            transfer.drain(FluidType.BUCKET_VOLUME, false);
             var copied = storage.getStackInSlot(0);
             copied.setTag(null);
             return copied;

@@ -4,13 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.theoneprobe.api.IElement;
@@ -27,9 +28,9 @@ public class FluidStackElement implements IElement {
 
     public FluidStackElement(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
-            this.fluidStack = FluidStack.readFromBuf(buf);
+            this.fluidStack = FluidStack.readFromPacket(buf);
         } else {
-            this.fluidStack = FluidStack.empty();
+            this.fluidStack = FluidStack.EMPTY;
         }
 
         this.style = new FluidStyle().width(buf.readInt()).height(buf.readInt());
@@ -43,7 +44,8 @@ public class FluidStackElement implements IElement {
             y += 2;
             int width = style.getWidth() - 4;
             int height = style.getHeight() - 4;
-            DrawerHelper.drawFluidForGui(guiGraphics, fluidStack, fluidStack.getAmount(), x, y, width, height);
+            DrawerHelper.drawFluidForGui(guiGraphics, FluidHelperImpl.toFluidStack(fluidStack), fluidStack.getAmount(),
+                    x, y, width, height);
 
             guiGraphics.pose().pushPose();
             guiGraphics.pose().scale(0.5F, 0.5F, 1);
@@ -71,7 +73,7 @@ public class FluidStackElement implements IElement {
     public void toBytes(FriendlyByteBuf friendlyByteBuf) {
         if (!fluidStack.isEmpty()) {
             friendlyByteBuf.writeBoolean(true);
-            fluidStack.writeToBuf(friendlyByteBuf);
+            fluidStack.writeToPacket(friendlyByteBuf);
         } else {
             friendlyByteBuf.writeBoolean(false);
         }
