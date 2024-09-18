@@ -433,8 +433,9 @@ public class GTUtil {
 
     /**
      * Gets the FluidHandler from the adjacent block on the side connected to the caller
-     * @param level Level
-     * @param pos BlockPos of the machine which is calling
+     * 
+     * @param level  Level
+     * @param pos    BlockPos of the machine which is calling
      * @param facing Direction to get the FluidHandler from
      * @return LazyOpt of the IFluidHandler described above
      */
