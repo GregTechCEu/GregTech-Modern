@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class NoOpFluidTransfer implements IFluidTransfer {
+public class NoOpFluidTransfer implements IFluidHandlerModifiable {
 
     public static final NoOpFluidTransfer INSTANCE = new NoOpFluidTransfer();
 
@@ -25,14 +23,14 @@ public class NoOpFluidTransfer implements IFluidTransfer {
     @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     @Override
     public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
 
     @Override
-    public long getTankCapacity(int tank) {
+    public int getTankCapacity(int tank) {
         return 0;
     }
 
@@ -42,32 +40,17 @@ public class NoOpFluidTransfer implements IFluidTransfer {
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public int fill(FluidStack resource, FluidAction action) {
         return 0;
     }
 
     @Override
-    public boolean supportsFill(int tank) {
-        return false;
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        return FluidStack.empty();
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        return FluidStack.EMPTY;
     }
 
     @Override
-    public boolean supportsDrain(int tank) {
-        return false;
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        return FluidStack.EMPTY;
     }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {}
 }

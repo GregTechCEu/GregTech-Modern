@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -17,54 +18,44 @@ import java.util.function.Predicate;
  * @date 2023/3/14
  * @implNote IOFluidTransferList
  */
-public class IOFluidTransferList extends FluidTransferList {
+public class IOFluidTransferList extends FluidTransferList implements IFluidHandlerModifiable {
 
     @Getter
     private final IO io;
 
-    public IOFluidTransferList(List<IFluidTransfer> transfers, IO io, Predicate<FluidStack> filter) {
+    public IOFluidTransferList(List<IFluidHandler> transfers, IO io, Predicate<FluidStack> filter) {
         super(transfers);
         this.io = io;
         setFilter(filter);
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public int fill(FluidStack resource, FluidAction action) {
         if (io != IO.IN && io != IO.BOTH) return 0;
-        return super.fill(tank, resource, simulate, notifyChanges);
+        return super.fill(resource, action);
     }
 
     @Override
-    public long fill(FluidStack resource, boolean simulate, boolean notifyChanged) {
-        if (io != IO.IN && io != IO.BOTH) return 0;
-        return super.fill(resource, simulate, notifyChanged);
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        if (io != IO.OUT && io != IO.BOTH) return FluidStack.EMPTY;
+        return super.drain(resource, action);
     }
 
     @Override
-    public @NotNull FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
-        return super.drain(tank, resource, simulate, notifyChanges);
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        if (io != IO.OUT && io != IO.BOTH) return FluidStack.EMPTY;
+        return super.drain(maxDrain, action);
     }
 
     @Override
-    public @NotNull FluidStack drain(FluidStack resource, boolean simulate, boolean notifyChanged) {
-        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
-        return super.drain(resource, simulate, notifyChanged);
-    }
-
-    @Override
-    public @NotNull FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanged) {
-        if (io != IO.OUT && io != IO.BOTH) return FluidStack.empty();
-        return super.drain(maxDrain, simulate, notifyChanged);
-    }
-
-    @Override
-    public boolean supportsFill(int tank) {
-        return io == IO.IN || io == IO.BOTH;
-    }
-
-    @Override
-    public boolean supportsDrain(int tank) {
-        return io == IO.OUT || io == IO.BOTH;
+    public void setFluidInTank(int tank, FluidStack stack) {
+        int index = 0;
+        for (IFluidHandler handler : transfers) {
+            if (handler instanceof IFluidHandlerModifiable modifiable) {
+                if (tank - index < handler.getTanks()) modifiable.setFluidInTank(tank - index, stack);
+                return;
+            }
+            index += handler.getTanks();
+        }
     }
 }
