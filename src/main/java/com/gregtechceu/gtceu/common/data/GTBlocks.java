@@ -980,7 +980,7 @@ public class GTBlocks {
             .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
-                    prov.blockTexture(ctx.get()).withSuffix("_side"),
+                    GTCEu.id("block/misc/industrial_tnt_side"),
                     new ResourceLocation("minecraft", "block/tnt_bottom"),
                     new ResourceLocation("minecraft", "block/tnt_top"))))
             .simpleItem()

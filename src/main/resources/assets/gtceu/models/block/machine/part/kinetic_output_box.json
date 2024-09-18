@@ -3,7 +3,7 @@
 	"parent": "block/block",
 	"textures": {
 		"overlay": "gtceu:block/overlay/machine/overlay_pipe_out",
-		"gearbox": "gtceu:block/gearbox",
+		"gearbox": "gtceu:block/machines/gearbox",
 		"bottom": "gtceu:block/casings/voltage/lv/bottom",
 		"top": "gtceu:block/casings/voltage/lv/top",
 		"particle": "gtceu:block/casings/voltage/lv/side",
