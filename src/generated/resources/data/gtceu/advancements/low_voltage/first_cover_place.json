@@ -1,0 +1,21 @@
+{
+  "criteria": {},
+  "display": {
+    "announce_to_chat": true,
+    "background": "gtceu:textures/gui/advancements/background.png",
+    "description": {
+      "translate": "gtceu.advancement.low_voltage.88_first_cover_place.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "gtceu:item_detector_cover"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "gtceu.advancement.low_voltage.88_first_cover_place.title"
+    }
+  },
+  "requirements": [],
+  "sends_telemetry_event": true
+}
