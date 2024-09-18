@@ -12,15 +12,14 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.FluidBlockTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -32,9 +31,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +63,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     public static final int BASE_PUMP_RANGE = 32;
     public static final int EXTRA_PUMP_RANGE = 8;
     public static final int PUMP_SPEED_BASE = 80;
+    private final ItemStack ghostBucket = new ItemStack(Items.BUCKET, 1);
     private final Deque<BlockPos> fluidSourceBlocks = new ArrayDeque<>();
     private final Deque<BlockPos> blocksToCheck = new ArrayDeque<>();
     private boolean initializedQueue = false;
@@ -89,7 +94,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket() * Math.max(1, getTier()), IO.NONE, IO.OUT);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
     }
 
     @Override
@@ -195,16 +200,13 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     private void checkFluidBlockAt(BlockPos pumpHeadPos, BlockPos checkPos) {
-        var blockHere = getLevel().getBlockState(checkPos);
+        var state = getLevel().getBlockState(checkPos);
         boolean shouldCheckNeighbours = isStraightInPumpRange(checkPos);
 
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
-                liquidBlock.getFluidState(blockHere).isSource()) {
-            var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), checkPos);
-            FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, true);
-            if (!drainStack.isEmpty()) {
-                this.fluidSourceBlocks.add(checkPos);
-            }
+        if (state.getBlock() instanceof LiquidBlock liquid && liquid.getFluidState(state).isSource()) {
+            var handler = new BucketPickupHandlerWrapper(liquid, getLevel(), checkPos);
+            FluidStack drained = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            if (!drained.isEmpty()) this.fluidSourceBlocks.add(checkPos);
             shouldCheckNeighbours = true;
         }
 
@@ -225,16 +227,13 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     private void tryPumpFirstBlock() {
         BlockPos fluidBlockPos = fluidSourceBlocks.poll();
         if (fluidBlockPos == null) return;
-        var blockHere = getLevel().getBlockState(fluidBlockPos);
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
-                liquidBlock.getFluidState(blockHere).isSource()) {
-            var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), fluidBlockPos);
-            FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, true);
-            if (!drainStack.isEmpty() && cache.fillInternal(drainStack, true) == drainStack.getAmount()) {
-                cache.fillInternal(drainStack, false);
-                fluidHandler.drain(drainStack, false);
-                getLevel().setBlockAndUpdate(fluidBlockPos, Blocks.AIR.defaultBlockState());
-                this.fluidSourceBlocks.remove(fluidBlockPos);
+        BlockState state = getLevel().getBlockState(fluidBlockPos);
+        if (state.getBlock() instanceof LiquidBlock liquid && liquid.getFluidState(state).isSource()) {
+            var handler = new BucketPickupHandlerWrapper(liquid, getLevel(), fluidBlockPos);
+            FluidStack drained = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            if (!drained.isEmpty() && cache.fillInternal(drained, FluidAction.SIMULATE) == drained.getAmount()) {
+                cache.fillInternal(drained, FluidAction.EXECUTE);
+                handler.drain(drained, FluidAction.EXECUTE);
                 energyContainer.changeEnergy(-GTValues.V[getTier()] * 2);
             }
         }
