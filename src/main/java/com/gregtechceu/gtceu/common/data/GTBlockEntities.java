@@ -55,8 +55,8 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.DUCT_PIPES)
             .register();
 
-    public static final BlockEntityEntry<GTSignBlockEntity> GT_SIGN = REGISTRATE
-            .blockEntity("sign", GTSignBlockEntity::new)
+    public static final BlockEntityEntry<SignBlockEntity> GT_SIGN = REGISTRATE
+            .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
             .validBlocks(GTBlocks.RUBBER_SIGN,
                     GTBlocks.RUBBER_WALL_SIGN,
                     GTBlocks.TREATED_WOOD_SIGN,
