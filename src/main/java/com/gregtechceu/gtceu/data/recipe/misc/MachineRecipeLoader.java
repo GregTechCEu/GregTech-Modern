@@ -620,15 +620,15 @@ public class MachineRecipeLoader {
                 .EUt(VA[HV]).duration(320)
                 .save(provider);
 
-         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
-         .inputItems(Tags.Blocks.CHESTS_WOODEN)
-         .inputItems(ELECTRIC_PISTON_LV)
-         .inputItems(plate, Iron)
-         .inputFluids(SolderingAlloy.getFluid(72))
-         .outputItems(COVER_STORAGE)
-         .EUt(16)
-         .duration(100)
-         .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
+                .inputItems(Tags.Blocks.CHESTS_WOODEN)
+                .inputItems(ELECTRIC_PISTON_LV)
+                .inputItems(plate, Iron)
+                .inputFluids(SolderingAlloy.getFluid(72))
+                .outputItems(COVER_STORAGE)
+                .EUt(16)
+                .duration(100)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ULV.asStack()).circuitMeta(8).duration(25).save(provider);

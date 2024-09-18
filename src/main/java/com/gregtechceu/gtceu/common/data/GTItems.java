@@ -2077,7 +2077,7 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
     public static ItemEntry<ComponentItem> COVER_STORAGE = REGISTRATE
-            .item("storage_cover",ComponentItem::create)
+            .item("storage_cover", ComponentItem::create)
             .lang("Storage Cover")
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COVER_STORAGE)))
