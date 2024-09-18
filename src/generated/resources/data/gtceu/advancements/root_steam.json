@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "join": {
+      "conditions": {},
+      "trigger": "minecraft:slept_in_bed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "gtceu:textures/gui/advancements/background.png",
+    "description": {
+      "translate": "gtceu.advancement.root_steam.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "gtceu:lp_steam_solid_boiler"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "gtceu.advancement.root_steam.title"
+    }
+  },
+  "requirements": [
+    [
+      "join"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
