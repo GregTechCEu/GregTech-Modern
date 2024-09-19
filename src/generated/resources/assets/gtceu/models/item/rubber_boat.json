@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/crafting_table_cover"
+    "layer0": "gtceu:item/rubber_boat"
   }
 }
