@@ -48,8 +48,8 @@ public class GTChestBoat extends ChestBoat {
     @Override
     public Item getDropItem() {
         return switch (GTBoat.BoatType.byId(this.entityData.get(DATA_ID_TYPE))) {
-            case RUBBER -> GTItems.RUBBER_BOAT.get();
-            case TREATED_WOOD -> GTItems.TREATED_WOOD_BOAT.get();
+            case RUBBER -> GTItems.RUBBER_CHEST_BOAT.get();
+            case TREATED_WOOD -> GTItems.TREATED_WOOD_CHEST_BOAT.get();
         };
     }
 
