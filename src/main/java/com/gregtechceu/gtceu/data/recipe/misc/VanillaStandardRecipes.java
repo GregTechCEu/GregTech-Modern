@@ -82,6 +82,11 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.CLAY))
                 .save(provider);
 
+        COMPRESSOR_RECIPES.recipeBuilder("snowballs_to_snow").duration(200).EUt(2)
+                .inputItems(new ItemStack(Items.SNOWBALL, 4))
+                .outputItems(new ItemStack(Items.SNOW_BLOCK))
+                .save(provider);
+
         COMPRESSOR_RECIPES.recipeBuilder("glowstone").duration(300).EUt(2)
                 .inputItems(new ItemStack(Items.GLOWSTONE_DUST, 4))
                 .outputItems(new ItemStack(Blocks.GLOWSTONE))
@@ -1209,11 +1214,6 @@ public class VanillaStandardRecipes {
                 .inputItems(Items.MUD)
                 .outputItems(Items.CLAY)
                 .duration(40).EUt(VA[LV]).save(provider);
-
-        COMPRESSOR_RECIPES.recipeBuilder("snowballs_to_snow")
-                .inputItems(Items.SNOWBALL, 4)
-                .outputItems(Items.SNOW_BLOCK)
-                .duration(40).EUt(2).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4)
                 .inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE))
