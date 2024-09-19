@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
@@ -1997,6 +1994,11 @@ public class GTItems {
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> SMART_FILTER = REGISTRATE
+            .item("smart_item_filter", ComponentItem::create)
+            .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
