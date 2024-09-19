@@ -460,7 +460,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                             .append(" " + "mB"));
                 }
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",
-                        lastFluidInTank.getFluid().getFluidType().getTemperature()));
+                        lastFluidInTank.getFluid().getFluidType().getTemperature(lastFluidInTank)));
                 tooltips.add(Component.translatable(lastFluidInTank.getFluid().getFluidType().isLighterThanAir() ?
                         "ldlib.fluid.state_gas" : "ldlib.fluid.state_liquid"));
             } else {
@@ -591,7 +591,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                 }
             }
             if (performedFill) {
-                SoundEvent soundevent = initialFluid.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL);
+                SoundEvent soundevent = initialFluid.getFluid().getFluidType().getSound(initialFluid,
+                        SoundActions.BUCKET_FILL);
                 if (soundevent != null) {
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -618,7 +619,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             }
             var filledFluid = fluidTank.getFluidInTank(tank);
             if (performedEmptying) {
-                SoundEvent soundevent = filledFluid.getFluid().getFluidType().getSound(SoundActions.BUCKET_EMPTY);
+                SoundEvent soundevent = filledFluid.getFluid().getFluidType().getSound(filledFluid,
+                        SoundActions.BUCKET_EMPTY);
                 if (soundevent != null) {
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);

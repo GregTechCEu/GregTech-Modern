@@ -270,7 +270,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         boolean burning = prop.getMaxFluidTemperature() < fluid.getFluidType().getTemperature(stack);
         boolean leaking = !prop.isGasProof() && fluid.getFluidType().getDensity(stack) < 0;
         boolean shattering = !prop.isCryoProof() &&
-                fluid.getFluidType().getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
+                fluid.getFluidType().getTemperature(stack) < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
         boolean corroding = false;
         boolean melting = false;
 
