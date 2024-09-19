@@ -123,6 +123,7 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
+        ingot.setIgnored(Brick, Items.BRICK);
         ingot.setIgnored(Wax, Items.HONEYCOMB);
 
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);

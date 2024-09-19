@@ -1310,6 +1310,7 @@ public class GTBlocks {
             .tag(ItemTags.WOODEN_FENCES)
             .build()
             .register();
+
     public static final BlockEntry<GTStandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
             .block("treated_wood_sign", (p) -> new GTStandingSignBlock(TREATED_WOOD_TYPE, p))
             .initialProperties(() -> Blocks.SPRUCE_SIGN)
