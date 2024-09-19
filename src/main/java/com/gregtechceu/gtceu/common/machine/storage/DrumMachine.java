@@ -199,10 +199,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        var currentStack = player.getMainHandItem();
-        if (!currentStack.isEmpty()) {
-            if (!isRemote()) {
-                FluidUtil.interactWithFluidHandler(player, hand, cache);
+        if (!isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
                 return InteractionResult.SUCCESS;
             }
         }

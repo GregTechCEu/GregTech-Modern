@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.misc.lib.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -198,8 +199,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null && FluidUtil
-                .getFluidHandler(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()).isPresent()) {
+        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
+                GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -229,10 +230,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        var currentStack = player.getMainHandItem();
-        if (hit.getDirection() == getFrontFacing() && !currentStack.isEmpty()) {
-            if (!isRemote()) {
-                FluidUtil.interactWithFluidHandler(player, hand, cache);
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
                 return InteractionResult.SUCCESS;
             }
         }
