@@ -8,16 +8,16 @@
     "announce_to_chat": true,
     "background": "gtceu:textures/gui/advancements/background.png",
     "description": {
-      "translate": "gtceu.advancement.steam.85_steam_vent_death.desc"
+      "translate": "gtceu.advancement.low_voltage.electrocution_death.desc"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "gtceu:item_detector_cover"
+      "item": "gtceu:terminal"
     },
     "show_toast": true,
     "title": {
-      "translate": "gtceu.advancement.steam.85_steam_vent_death.title"
+      "translate": "gtceu.advancement.low_voltage.electrocution_death.title"
     }
   },
   "requirements": [

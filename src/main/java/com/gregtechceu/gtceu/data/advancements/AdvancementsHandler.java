@@ -5,8 +5,10 @@ import com.tterrag.registrate.providers.RegistrateAdvancementProvider;
 public class AdvancementsHandler {
 
     public static void init(RegistrateAdvancementProvider provider) {
-        MiscAdvancements.init(provider);
-        LVAdvancements.init(provider);
+        RootAdvancements.init(provider);
         SteamAdvancements.init(provider);
+        LVAdvancements.init(provider);
+        MiscAdvancements.init(provider);
+
     }
 }

@@ -1,21 +1,29 @@
 {
-  "criteria": {},
+  "criteria": {
+    "gt_placeholder_criteria": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
     "announce_to_chat": true,
     "background": "gtceu:textures/gui/advancements/background.png",
     "description": {
-      "translate": "gtceu.advancement.low_voltage.88_first_cover_place.desc"
+      "translate": "gtceu.advancement.low_voltage.first_cover_place.desc"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "gtceu:item_detector_cover"
+      "item": "gtceu:item_filter"
     },
     "show_toast": true,
     "title": {
-      "translate": "gtceu.advancement.low_voltage.88_first_cover_place.title"
+      "translate": "gtceu.advancement.low_voltage.first_cover_place.title"
     }
   },
-  "requirements": [],
+  "requirements": [
+    [
+      "gt_placeholder_criteria"
+    ]
+  ],
   "sends_telemetry_event": true
 }
