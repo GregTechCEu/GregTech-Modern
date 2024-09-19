@@ -648,7 +648,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     // ****** Capability ********//
     //////////////////////////////////////
 
-    protected Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
+    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
             if (cover instanceof ItemFilterCover filterCover) {
@@ -658,7 +658,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return item -> true;
     }
 
-    protected Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
+    public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
             if (cover instanceof FluidFilterCover filterCover) {
