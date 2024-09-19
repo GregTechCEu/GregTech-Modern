@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -32,6 +33,7 @@ public class GTBoatItem extends Item {
         super(properties);
         this.hasChest = hasChest;
         this.type = type;
+        DispenserBlock.registerBehavior(this, new GTBoatItemDispenseBehaviour(type, hasChest));
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
