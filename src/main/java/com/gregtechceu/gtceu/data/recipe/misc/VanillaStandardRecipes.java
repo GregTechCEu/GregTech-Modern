@@ -82,6 +82,11 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.CLAY))
                 .save(provider);
 
+        COMPRESSOR_RECIPES.recipeBuilder("snowballs_to_snow").duration(200).EUt(2)
+                .inputItems(new ItemStack(Items.SNOWBALL, 4))
+                .outputItems(new ItemStack(Items.SNOW_BLOCK))
+                .save(provider);
+
         COMPRESSOR_RECIPES.recipeBuilder("glowstone").duration(300).EUt(2)
                 .inputItems(new ItemStack(Items.GLOWSTONE_DUST, 4))
                 .outputItems(new ItemStack(Blocks.GLOWSTONE))
