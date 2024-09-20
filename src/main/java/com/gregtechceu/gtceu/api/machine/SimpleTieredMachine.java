@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -249,7 +249,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems),
                         outputFacingItems.getOpposite()) != null ||
                 (isAutoOutputFluids() && !exportFluids.isEmpty()) && outputFacingFluids != null &&
-                        GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids)) {
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();

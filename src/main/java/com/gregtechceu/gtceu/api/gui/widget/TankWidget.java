@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.api.misc.lib;
+package com.gregtechceu.gtceu.api.gui.widget;
+
+import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -45,7 +47,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -206,7 +207,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
             if (this.fluidTank instanceof CycleFluidTransfer cycleItemStackHandler) {
                 return getXEIIngredientsFromCycleTransferClickable(cycleItemStackHandler, tank).get(0);
-            } else if (this.fluidTank instanceof TagOrCycleFluidTransfer transfer) {
+            } else if (this.fluidTank instanceof TagOrCycleFluidHandler transfer) {
                 return getXEIIngredientsFromTagOrCycleTransferClickable(transfer, tank).get(0);
             }
 
@@ -232,7 +233,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
         if (this.fluidTank instanceof CycleFluidTransfer cycleItemStackHandler) {
             return getXEIIngredientsFromCycleTransfer(cycleItemStackHandler, tank);
-        } else if (this.fluidTank instanceof TagOrCycleFluidTransfer transfer) {
+        } else if (this.fluidTank instanceof TagOrCycleFluidHandler transfer) {
             return getXEIIngredientsFromTagOrCycleTransfer(transfer, tank);
         }
 
@@ -280,7 +281,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleTransfer(TagOrCycleFluidTransfer transfer, int index) {
+    private List<Object> getXEIIngredientsFromTagOrCycleTransfer(TagOrCycleFluidHandler transfer, int index) {
         Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = transfer
                 .getStacks()
                 .get(index);
@@ -317,7 +318,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return ref.returnValue;
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleTransferClickable(TagOrCycleFluidTransfer transfer, int index) {
+    private List<Object> getXEIIngredientsFromTagOrCycleTransferClickable(TagOrCycleFluidHandler transfer, int index) {
         Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = transfer
                 .getStacks()
                 .get(index);
@@ -452,12 +453,11 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             if (lastFluidInTank != null && !lastFluidInTank.isEmpty()) {
                 tooltips.add(lastFluidInTank.getDisplayName());
                 tooltips.add(Component.translatable("ldlib.fluid.amount", lastFluidInTank.getAmount(), lastTankCapacity)
-                        .append(" " + FluidHelper.getUnit()));
+                        .append(" mB"));
                 if (!Platform.isForge()) {
                     tooltips.add(Component.literal(
-                            "§6mB:§r %d/%d".formatted(lastFluidInTank.getAmount() * 1000 / FluidType.BUCKET_VOLUME,
-                                    lastTankCapacity * 1000 / FluidType.BUCKET_VOLUME))
-                            .append(" " + "mB"));
+                            "§6mB:§r %d/%d mB".formatted(lastFluidInTank.getAmount(),
+                                    lastTankCapacity)));
                 }
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",
                         lastFluidInTank.getFluid().getFluidType().getTemperature(lastFluidInTank)));
@@ -466,11 +466,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             } else {
                 tooltips.add(Component.translatable("ldlib.fluid.empty"));
                 tooltips.add(Component.translatable("ldlib.fluid.amount", 0, lastTankCapacity)
-                        .append(" " + FluidHelper.getUnit()));
+                        .append(" mB"));
                 if (!Platform.isForge()) {
                     tooltips.add(Component
-                            .literal("§6mB:§r %d/%d".formatted(0, lastTankCapacity * 1000 / FluidType.BUCKET_VOLUME))
-                            .append(" " + "mB"));
+                            .literal("§6mB:§r %d/%d mB".formatted(0, lastTankCapacity)));
                 }
             }
             if (gui != null) {

@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
 
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 /**
  * @author KilaBash
@@ -17,16 +16,13 @@ public class ItemFluidContainer implements IRecipeRemainder {
 
     @Override
     public ItemStack getRecipeRemained(ItemStack itemStack) {
-        var storage = new ItemStackTransfer(itemStack);
-        var transfer = FluidTransferHelper.getFluidTransfer(storage, 0);
-        if (transfer != null) {
-            var drained = transfer.drain(FluidType.BUCKET_VOLUME, true);
+        return FluidUtil.getFluidHandler(itemStack).map(handler -> {
+            var drained = handler.drain(FluidType.BUCKET_VOLUME, FluidAction.SIMULATE);
             if (drained.getAmount() != FluidType.BUCKET_VOLUME) return ItemStack.EMPTY;
-            transfer.drain(FluidType.BUCKET_VOLUME, false);
-            var copied = storage.getStackInSlot(0);
-            copied.setTag(null);
-            return copied;
-        }
-        return storage.getStackInSlot(0);
+            handler.drain(FluidType.BUCKET_VOLUME, FluidAction.EXECUTE);
+            var copy = handler.getContainer();
+            copy.setTag(null);
+            return copy;
+        }).orElse(itemStack);
     }
 }

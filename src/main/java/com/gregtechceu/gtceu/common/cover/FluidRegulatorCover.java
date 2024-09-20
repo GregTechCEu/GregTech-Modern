@@ -74,7 +74,7 @@ public class FluidRegulatorCover extends PumpCover {
                 break;
 
             FluidStack sourceFluid = source.getFluidInTank(slot).copy();
-            int supplyAmount = getFilteredFluidAmount(sourceFluid) * MILLIBUCKET_SIZE;
+            int supplyAmount = getFilteredFluidAmount(sourceFluid);
 
             // If the remaining transferrable amount in this operation is not enough to transfer the full stack size,
             // the remaining amount for this operation will be buffered and added to the next operation's maximum.
@@ -123,7 +123,7 @@ public class FluidRegulatorCover extends PumpCover {
             if (fluidLeftToTransfer <= 0)
                 break;
 
-            int amountToKeep = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
+            int amountToKeep = getFilteredFluidAmount(fluidStack);
             int amountInDest = destinationAmounts.getOrDefault(fluidStack, 0);
             if (amountInDest >= amountToKeep)
                 continue;
@@ -190,8 +190,7 @@ public class FluidRegulatorCover extends PumpCover {
             return globalTransferSizeMillibuckets;
 
         FluidFilter filter = filterHandler.getFilter();
-        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets) *
-                MILLIBUCKET_SIZE;
+        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets);
     }
 
     ///////////////////////////

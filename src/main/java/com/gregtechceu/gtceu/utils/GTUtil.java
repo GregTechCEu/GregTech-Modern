@@ -37,7 +37,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
@@ -56,9 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -431,57 +427,8 @@ public class GTUtil {
         return null;
     }
 
-    /**
-     * Gets the FluidHandler from the adjacent block on the side connected to the caller
-     * 
-     * @param level  Level
-     * @param pos    BlockPos of the machine which is calling
-     * @param facing Direction to get the FluidHandler from
-     * @return LazyOpt of the IFluidHandler described above
-     */
-    public static LazyOptional<IFluidHandler> getAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
-        return FluidUtil.getFluidHandler(level, pos.relative(facing), facing.getOpposite());
-    }
-
-    // Same as above, but returns the presence
-    public static boolean isAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
-        return getAdjacentFluidHandler(level, pos, facing).isPresent();
-    }
-
     public static int getFluidColor(FluidStack fluid) {
         return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
-    }
-
-    // TODO: Clean this up to use FluidUtil and move it back to caller
-    public static int transferFiltered(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler,
-                                       int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
-        int fluidLeftToTransfer = transferLimit;
-        for (int i = 0; i < sourceHandler.getTanks(); i++) {
-            FluidStack currentFluid = sourceHandler.getFluidInTank(i).copy();
-            if (currentFluid.isEmpty() || !fluidFilter.test(currentFluid)) {
-                continue;
-            }
-
-            currentFluid.setAmount(fluidLeftToTransfer);
-            var drained = sourceHandler.drain(currentFluid, IFluidHandler.FluidAction.SIMULATE);
-            if (drained.isEmpty()) {
-                continue;
-            }
-
-            var canInsertAmount = destHandler.fill(drained.copy(), IFluidHandler.FluidAction.SIMULATE);
-            if (canInsertAmount > 0) {
-                drained.setAmount(canInsertAmount);
-                drained = sourceHandler.drain(drained, IFluidHandler.FluidAction.EXECUTE);
-                if (!drained.isEmpty()) {
-                    destHandler.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-                    fluidLeftToTransfer -= drained.getAmount();
-                    if (fluidLeftToTransfer == 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        return transferLimit - fluidLeftToTransfer;
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {

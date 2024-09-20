@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 
-import net.minecraftforge.fluids.FluidType;
-
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
@@ -101,10 +99,6 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
                 ", plasmaProof=" + plasmaProof +
                 ", channels=" + channels +
                 '}';
-    }
-
-    public int getPlatformThroughput() {
-        return getThroughput() * FluidType.BUCKET_VOLUME / 1000;
     }
 
     @Override

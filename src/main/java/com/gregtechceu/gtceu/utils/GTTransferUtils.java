@@ -2,14 +2,19 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
@@ -21,7 +26,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
 public class GTTransferUtils {
+
+    /**
+     * Gets the FluidHandler from the adjacent block on the side connected to the caller
+     *
+     * @param level  Level
+     * @param pos    BlockPos of the machine which is calling
+     * @param facing Direction to get the FluidHandler from
+     * @return LazyOpt of the IFluidHandler described above
+     */
+    public static LazyOptional<IFluidHandler> getAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return FluidUtil.getFluidHandler(level, pos.relative(facing), facing.getOpposite());
+    }
+
+    // Same as above, but returns the presence
+    public static boolean hasAdjacentFluidHandler(Level level, BlockPos pos, Direction facing) {
+        return getAdjacentFluidHandler(level, pos, facing).isPresent();
+    }
 
     public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler) {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
@@ -82,6 +106,38 @@ public class GTTransferUtils {
             }
         }
         return false;
+    }
+
+    // TODO: Clean this up to use FluidUtil and move it back to caller
+    public static int transferFiltered(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler,
+                                       int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+        int fluidLeftToTransfer = transferLimit;
+        for (int i = 0; i < sourceHandler.getTanks(); i++) {
+            FluidStack currentFluid = sourceHandler.getFluidInTank(i).copy();
+            if (currentFluid.isEmpty() || !fluidFilter.test(currentFluid)) {
+                continue;
+            }
+
+            currentFluid.setAmount(fluidLeftToTransfer);
+            var drained = sourceHandler.drain(currentFluid, FluidAction.SIMULATE);
+            if (drained.isEmpty()) {
+                continue;
+            }
+
+            var canInsertAmount = destHandler.fill(drained.copy(), FluidAction.SIMULATE);
+            if (canInsertAmount > 0) {
+                drained.setAmount(canInsertAmount);
+                drained = sourceHandler.drain(drained, FluidAction.EXECUTE);
+                if (!drained.isEmpty()) {
+                    destHandler.fill(drained, FluidAction.EXECUTE);
+                    fluidLeftToTransfer -= drained.getAmount();
+                    if (fluidLeftToTransfer == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return transferLimit - fluidLeftToTransfer;
     }
 
     public static void moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory) {
@@ -150,7 +206,7 @@ public class GTTransferUtils {
      * @param fluidStacks  the items to insert into {@code fluidHandler}.
      * @return {@code true} if the insertion succeeded, {@code false} otherwise.
      */
-    public static boolean addFluidsToFluidHandler(FluidTransferList fluidHandler,
+    public static boolean addFluidsToFluidHandler(FluidHandlerList fluidHandler,
                                                   boolean simulate,
                                                   List<FluidStack> fluidStacks) {
         if (simulate) {
@@ -172,9 +228,9 @@ public class GTTransferUtils {
 
     public static int fillFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack, FluidAction action) {
         if (stack.isEmpty()) return 0;
-        if (handler instanceof FluidTransferList handlerList) {
+        if (handler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : handlerList.transfers) {
+            for (var transfer : handlerList.handlers) {
                 var candidate = copied.copy();
                 if (transfer instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.fillInternal(candidate, action));
@@ -191,9 +247,9 @@ public class GTTransferUtils {
     public static FluidStack drainFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
                                                              FluidAction action) {
         if (stack.isEmpty()) return FluidStack.EMPTY;
-        if (handler instanceof FluidTransferList handlerList) {
+        if (handler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : handlerList.transfers) {
+            for (var transfer : handlerList.handlers) {
                 var candidate = copied.copy();
                 if (transfer instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.drainInternal(candidate, action).getAmount());

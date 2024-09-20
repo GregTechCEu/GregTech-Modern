@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.misc.lib.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -8,7 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +16,6 @@ import java.util.function.Supplier;
 public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
 
     private static final int SCROLL_ACTION_ID = 0x0001_0001;
-    private static final int MILLIBUCKETS = FluidType.BUCKET_VOLUME / 1000;
 
     public ScrollablePhantomFluidWidget(@Nullable IFluidHandlerModifiable fluidTank, int tank, int x, int y, int width,
                                         int height, Supplier<FluidStack> phantomFluidGetter,
@@ -32,7 +29,7 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
         if (!isMouseOverElement(mouseX, mouseY))
             return false;
 
-        var delta = getModifiedChangeAmount((wheelDelta > 0) ? 1 : -1) * MILLIBUCKETS;
+        var delta = getModifiedChangeAmount((wheelDelta > 0) ? 1 : -1);
         writeClientAction(SCROLL_ACTION_ID, buf -> buf.writeInt(delta));
 
         return true;

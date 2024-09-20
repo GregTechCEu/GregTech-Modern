@@ -14,13 +14,13 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -38,7 +38,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
@@ -63,8 +62,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
-
-    protected static final int MILLIBUCKET_SIZE = FluidType.BUCKET_VOLUME / 1000;
 
     public final int tier;
     public final int maxMilliBucketsPerTick;
@@ -128,7 +125,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected @Nullable IFluidHandler getAdjacentFluidTransfer() {
-        return GTUtil.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).resolve()
+        return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+                .resolve()
                 .orElse(null);
     }
 
@@ -223,8 +221,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             return;
 
         if (milliBucketsLeftToTransferLastSecond > 0) {
-            int platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond * MILLIBUCKET_SIZE);
-            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid / MILLIBUCKET_SIZE;
+            int platformTransferredFluid = doTransferFluids(milliBucketsLeftToTransferLastSecond);
+            this.milliBucketsLeftToTransferLastSecond -= platformTransferredFluid;
         }
 
         if (timer % 20 == 0) {
@@ -257,7 +255,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
                               int platformTransferLimit) {
-        return GTUtil.transferFiltered(source, destination, platformTransferLimit, filterHandler.getFilter());
+        return GTTransferUtils.transferFiltered(source, destination, platformTransferLimit, filterHandler.getFilter());
     }
 
     protected enum TransferDirection {
@@ -357,7 +355,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
-    private CoverableFluidTransferWrapper fluidTransferWrapper;
+    private CoverableFluidHandlerWrapper fluidTransferWrapper;
 
     @Nullable
     @Override
@@ -366,14 +364,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             return null;
         }
         if (fluidTransferWrapper == null || fluidTransferWrapper.delegate != defaultValue) {
-            this.fluidTransferWrapper = new CoverableFluidTransferWrapper(defaultValue);
+            this.fluidTransferWrapper = new CoverableFluidHandlerWrapper(defaultValue);
         }
         return fluidTransferWrapper;
     }
 
-    private class CoverableFluidTransferWrapper extends FluidTransferDelegate {
+    private class CoverableFluidHandlerWrapper extends FluidHandlerDelegate {
 
-        public CoverableFluidTransferWrapper(IFluidHandlerModifiable delegate) {
+        public CoverableFluidHandlerWrapper(IFluidHandlerModifiable delegate) {
             super(delegate);
         }
 

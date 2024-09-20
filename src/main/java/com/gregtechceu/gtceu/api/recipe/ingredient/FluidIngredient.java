@@ -12,7 +12,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -64,7 +63,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.amount * FluidType.BUCKET_VOLUME / 1000);
+        jsonObject.addProperty("amount", this.amount);
         if (this.nbt != null) {
             jsonObject.addProperty("nbt", this.nbt.getAsString());
         }

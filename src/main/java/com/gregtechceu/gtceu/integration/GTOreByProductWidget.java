@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.misc.lib.TagOrCycleFluidTransfer;
-import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -160,7 +160,7 @@ public class GTOreByProductWidget extends WidgetGroup {
         }
 
         List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
-        TagOrCycleFluidTransfer fluidInputsHandler = new TagOrCycleFluidTransfer(fluidInputs);
+        TagOrCycleFluidHandler fluidInputsHandler = new TagOrCycleFluidHandler(fluidInputs);
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;

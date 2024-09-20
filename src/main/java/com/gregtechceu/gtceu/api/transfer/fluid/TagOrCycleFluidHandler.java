@@ -1,6 +1,4 @@
-package com.gregtechceu.gtceu.api.misc.lib;
-
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -18,14 +16,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TagOrCycleFluidTransfer implements IFluidHandlerModifiable {
+public class TagOrCycleFluidHandler implements IFluidHandlerModifiable {
 
     @Getter
     private List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks;
 
     private List<List<FluidStack>> unwrapped = null;
 
-    public TagOrCycleFluidTransfer(List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks) {
+    public TagOrCycleFluidHandler(List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks) {
         updateStacks(stacks);
     }
 

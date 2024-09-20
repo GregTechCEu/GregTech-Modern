@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 
-public class FluidStackLoad extends ObjectTypedPayload<FluidStack> {
+public class FluidStackPayload extends ObjectTypedPayload<FluidStack> {
 
     @Override
     public void writePayload(FriendlyByteBuf buf) {

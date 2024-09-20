@@ -2,20 +2,19 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -23,15 +22,14 @@ import org.jetbrains.annotations.Nullable;
  * @implNote FluidTankProxyTrait
  */
 @Accessors(chain = true)
-public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, ICapabilityTrait {
+public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidTankProxyTrait.class);
     @Getter
     public final IO capabilityIO;
     @Setter
     @Getter
-    @Nullable
-    public IFluidHandler proxy;
+    public IFluidHandlerModifiable proxy;
 
     public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
@@ -58,9 +56,10 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, 
         return proxy == null ? FluidStack.EMPTY : proxy.getFluidInTank(tank);
     }
 
+    @Override
     public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
         if (proxy != null) {
-            // proxy.setFluidInTank(tank, fluidStack);
+            proxy.setFluidInTank(tank, fluidStack);
         }
     }
 
@@ -137,7 +136,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandler, 
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            GTUtil.getAdjacentFluidHandler(level, pos, facing).ifPresent(
+            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing).ifPresent(
                     h -> FluidUtil.tryFluidTransfer(h, this, Integer.MAX_VALUE, true));
         }
     }

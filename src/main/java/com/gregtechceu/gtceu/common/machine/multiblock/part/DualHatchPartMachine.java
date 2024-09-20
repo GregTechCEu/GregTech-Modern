@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -88,7 +88,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         if (level != null) {
             this.hasItemTransfer = ItemTransferHelper.getItemTransfer(
                     level, getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null;
-            this.hasFluidTransfer = GTUtil.isAdjacentFluidHandler(level, getPos(), getFrontFacing());
+            this.hasFluidTransfer = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
         } else {
             this.hasItemTransfer = false;
             this.hasFluidTransfer = false;

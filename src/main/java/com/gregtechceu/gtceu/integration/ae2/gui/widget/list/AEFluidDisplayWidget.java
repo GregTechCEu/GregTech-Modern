@@ -15,7 +15,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -75,10 +74,10 @@ public class AEFluidDisplayWidget extends Widget {
                         new FluidStack(key.getFluid(), (int) fluid.amount(), key.getTag()) : FluidStack.EMPTY;
                 List<Component> tooltips = new ArrayList<>();
                 tooltips.add(fluidStack.getDisplayName());
-                tooltips.add(Component.literal(String.format("%,d ", fluid.amount())).append("mB"));
+                tooltips.add(Component.literal(String.format("%,d mB", fluid.amount())));
                 if (!Platform.isForge()) {
                     tooltips.add(Component.literal(
-                            "§6mB:§r %d mB".formatted(fluidStack.getAmount() * 1000 / FluidType.BUCKET_VOLUME)));
+                            "§6mB:§r %d mB".formatted(fluidStack.getAmount())));
                 }
                 TooltipsHandler.appendFluidTooltips(fluidStack.getFluid(), fluidStack.getAmount(), tooltips::add,
                         TooltipFlag.NORMAL);

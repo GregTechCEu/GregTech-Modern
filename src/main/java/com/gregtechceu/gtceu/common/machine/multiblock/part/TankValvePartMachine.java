@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
@@ -91,7 +91,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
 
     @Nullable
     private IFluidHandler getTargetTank() {
-        return GTUtil.getAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()).resolve().orElse(null);
+        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()).resolve().orElse(null);
     }
 
     private void autoIO() {

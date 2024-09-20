@@ -75,7 +75,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             int presentAmount = fluidAmounts.get(fluidStack);
-            int targetAmount = getFilteredFluidAmount(fluidStack) * MILLIBUCKET_SIZE;
+            int targetAmount = getFilteredFluidAmount(fluidStack);
             if (targetAmount <= 0L || targetAmount > presentAmount)
                 continue;
 

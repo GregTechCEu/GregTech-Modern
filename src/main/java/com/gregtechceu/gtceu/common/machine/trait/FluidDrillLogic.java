@@ -14,7 +14,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -106,7 +105,7 @@ public class FluidDrillLogic extends RecipeLogic {
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced * FluidType.BUCKET_VOLUME / 1000;
+            return produced;
         }
         return 0;
     }

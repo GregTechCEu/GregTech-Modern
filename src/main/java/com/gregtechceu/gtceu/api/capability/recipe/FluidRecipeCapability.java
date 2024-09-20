@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
-import com.gregtechceu.gtceu.api.misc.lib.TagOrCycleFluidTransfer;
-import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -14,7 +12,9 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
@@ -150,7 +150,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidTransferList(
+        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidHandlerList(
                 Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
                         Collections::emptyList)
                         .stream()
@@ -302,7 +302,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
-        return new TagOrCycleFluidTransfer(
+        return new TagOrCycleFluidHandler(
                 (List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>>) contents);
     }
 
@@ -332,7 +332,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @Nullable Content content,
                                 @Nullable Object storage) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof TagOrCycleFluidTransfer fluidHandler) {
+            if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
                 tank.setFluidTank(fluidHandler, index);
             } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
                 tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));

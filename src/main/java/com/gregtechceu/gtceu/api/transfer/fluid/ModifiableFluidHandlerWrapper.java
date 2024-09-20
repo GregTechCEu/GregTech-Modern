@@ -12,9 +12,13 @@ public class ModifiableFluidHandlerWrapper implements IFluidHandlerModifiable {
     private IFluidHandler handler;
 
     @Override
-    public void setFluidInTank(int i, FluidStack fluidStack) {
-        drain(handler.getFluidInTank(i), FluidAction.EXECUTE);
-        fill(fluidStack, FluidAction.EXECUTE);
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
+        var fluid = handler.getFluidInTank(tank);
+        var canDrain = handler.drain(fluid, FluidAction.SIMULATE);
+        if (!canDrain.isEmpty()) {
+            drain(canDrain, FluidAction.EXECUTE);
+            fill(fluidStack, FluidAction.EXECUTE);
+        }
     }
 
     @Override

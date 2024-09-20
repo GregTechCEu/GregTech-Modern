@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.misc.lib.PhantomFluidWidget.drainFrom;
+import static com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget.drainFrom;
 
 public interface IGhostFluidTarget extends IGhostIngredientTarget {
 

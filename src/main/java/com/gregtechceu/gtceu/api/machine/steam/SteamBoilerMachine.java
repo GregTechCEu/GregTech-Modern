@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -146,7 +146,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected void updateAutoOutputSubscription() {
         if (Direction.stream().filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .anyMatch(direction -> GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), direction))) {
+                .anyMatch(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), direction))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -158,7 +158,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (getOffsetTimer() % 5 == 0) {
             steamTank.exportToNearby(Direction.stream()
                     .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                    .filter(direction -> GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), direction))
+                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), direction))
                     .toArray(Direction[]::new));
             updateAutoOutputSubscription();
         }
@@ -198,12 +198,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
             if (currentTemperature >= 100) {
                 int fillAmount = (int) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) /
                         2);
-                boolean hasDrainedWater = !waterTank.drainInternal(FluidType.BUCKET_VOLUME / 1000, FluidAction.EXECUTE)
+                boolean hasDrainedWater = !waterTank.drainInternal(1, FluidAction.EXECUTE)
                         .isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
                     filledSteam = steamTank.fillInternal(
-                            GTMaterials.Steam.getFluid(fillAmount * FluidType.BUCKET_VOLUME / 1000),
+                            GTMaterials.Steam.getFluid(fillAmount),
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {

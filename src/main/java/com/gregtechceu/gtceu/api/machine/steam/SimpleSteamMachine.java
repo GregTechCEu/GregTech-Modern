@@ -89,7 +89,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super.onLoad();
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
-                List.of(new SteamEnergyRecipeHandler(steamTank, FluidType.BUCKET_VOLUME / 1000d)));
+                List.of(new SteamEnergyRecipeHandler(steamTank, 1d)));
     }
 
     @Override

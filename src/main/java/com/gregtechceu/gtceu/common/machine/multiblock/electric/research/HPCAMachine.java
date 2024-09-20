@@ -17,8 +17,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -124,7 +124,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
-        this.coolantHandler = new FluidTransferList(coolantContainers);
+        this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentHatches);
 
         if (getLevel() instanceof ServerLevel serverLevel) {

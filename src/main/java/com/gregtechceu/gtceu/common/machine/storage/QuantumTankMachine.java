@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -14,9 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.misc.lib.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.misc.lib.TankWidget;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
@@ -200,7 +199,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
         if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
-                GTUtil.isAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -300,7 +299,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
                 .addWidget(new LabelWidget(8, 18,
-                        () -> String.valueOf(cache.getFluidInTank(0).getAmount() / (FluidType.BUCKET_VOLUME / 1000)))
+                        () -> String.valueOf(cache.getFluidInTank(0).getAmount()))
                         .setTextColor(-1).setDropShadow(true))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))

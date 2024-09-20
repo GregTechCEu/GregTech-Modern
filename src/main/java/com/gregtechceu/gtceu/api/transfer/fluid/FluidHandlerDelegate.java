@@ -11,12 +11,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class FluidTransferDelegate implements IFluidHandlerModifiable {
+public abstract class FluidHandlerDelegate implements IFluidHandlerModifiable {
 
     @Setter
     public IFluidHandlerModifiable delegate;
 
-    public FluidTransferDelegate(IFluidHandlerModifiable delegate) {
+    public FluidHandlerDelegate(IFluidHandlerModifiable delegate) {
         this.delegate = delegate;
     }
 

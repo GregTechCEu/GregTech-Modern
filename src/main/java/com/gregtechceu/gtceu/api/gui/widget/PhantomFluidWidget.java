@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.misc.lib;
+package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;

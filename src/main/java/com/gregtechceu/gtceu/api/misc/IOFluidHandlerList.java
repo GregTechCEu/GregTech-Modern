@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -18,13 +18,13 @@ import java.util.function.Predicate;
  * @date 2023/3/14
  * @implNote IOFluidTransferList
  */
-public class IOFluidTransferList extends FluidTransferList implements IFluidHandlerModifiable {
+public class IOFluidHandlerList extends FluidHandlerList implements IFluidHandlerModifiable {
 
     @Getter
     private final IO io;
 
-    public IOFluidTransferList(List<IFluidHandler> transfers, IO io, Predicate<FluidStack> filter) {
-        super(transfers);
+    public IOFluidHandlerList(List<IFluidHandler> handlers, IO io, Predicate<FluidStack> filter) {
+        super(handlers);
         this.io = io;
         setFilter(filter);
     }
@@ -50,7 +50,7 @@ public class IOFluidTransferList extends FluidTransferList implements IFluidHand
     @Override
     public void setFluidInTank(int tank, FluidStack stack) {
         int index = 0;
-        for (IFluidHandler handler : transfers) {
+        for (IFluidHandler handler : handlers) {
             if (handler instanceof IFluidHandlerModifiable modifiable) {
                 if (tank - index < handler.getTanks()) modifiable.setFluidInTank(tank - index, stack);
                 return;

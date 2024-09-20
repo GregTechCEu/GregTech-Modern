@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -314,7 +314,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            GTUtil.getAdjacentFluidHandler(level, pos, facing)
+            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                     .ifPresent(h -> FluidUtil.tryFluidTransfer(h, this, Integer.MAX_VALUE, true));
         }
     }
@@ -323,7 +323,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            GTUtil.getAdjacentFluidHandler(level, pos, facing)
+            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                     .ifPresent(h -> FluidUtil.tryFluidTransfer(this, h, Integer.MAX_VALUE, true));
         }
     }

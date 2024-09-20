@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.misc.lib.FluidTransferList;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -19,7 +19,7 @@ public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
+    public OverlayedFluidHandler(@NotNull FluidHandlerList tank) {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
                 .toArray(FluidStack[]::new);

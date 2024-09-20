@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
+import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
@@ -705,7 +705,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOFluidTransferList transferList = new IOFluidTransferList(list, io, getFluidCapFilter(side));
+        IOFluidHandlerList transferList = new IOFluidHandlerList(list, io, getFluidCapFilter(side));
         if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);

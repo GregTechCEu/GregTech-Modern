@@ -9,12 +9,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class InfiniteFluidTransferProxy extends FluidTransferDelegate {
+public class InfiniteFluidHandlerProxy extends FluidHandlerDelegate {
 
     private final boolean infiniteSource;
     private final boolean infiniteSink;
 
-    public InfiniteFluidTransferProxy(IFluidHandlerModifiable delegate, boolean infiniteSource, boolean infiniteSink) {
+    public InfiniteFluidHandlerProxy(IFluidHandlerModifiable delegate, boolean infiniteSource, boolean infiniteSink) {
         super(delegate);
 
         this.infiniteSource = infiniteSource;
