@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -20,6 +23,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -48,6 +53,10 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     public ItemFilter getItemFilter() {
         if (itemFilter == null) {
             itemFilter = ItemFilter.loadFilter(attachItem);
+            if(itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                if(machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
+            }
         }
         return itemFilter;
     }
@@ -60,6 +69,11 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Override
     public boolean canAttach() {
         return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+    }
+
+    @Override
+    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+        super.onAttached(itemStack, player);
     }
 
     @Override

@@ -1994,8 +1994,9 @@ public class GTItems {
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> SMART_FILTER = REGISTRATE
+    public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("smart_item_filter", ComponentItem::create)
+            .lang("Smart Item Filter")
             .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();

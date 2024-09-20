@@ -64,10 +64,10 @@ public class CraftingRecipeLoader {
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Amethyst));
 
         // TODO smart filter
-         VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_olivine", SMART_FILTER.asStack(), "XEX",
+         VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_olivine", SMART_ITEM_FILTER.asStack(), "XEX",
          "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E', new
          UnificationEntry(plate, Olivine));
-         VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_emerald", SMART_FILTER.asStack(), "XEX",
+         VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_emerald", SMART_ITEM_FILTER.asStack(), "XEX",
          "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E', new
          UnificationEntry(plate, Emerald));
 
