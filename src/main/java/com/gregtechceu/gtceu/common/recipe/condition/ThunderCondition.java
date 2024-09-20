@@ -1,8 +1,10 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -10,6 +12,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,23 +23,33 @@ import org.jetbrains.annotations.NotNull;
  * @implNote WhetherCondition, specific whether
  */
 @NoArgsConstructor
-public class RainingCondition extends RecipeCondition {
+public class ThunderCondition extends RecipeCondition {
 
-    public final static RainingCondition INSTANCE = new RainingCondition();
+    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder
+            .create(instance -> RecipeCondition.isReverse(instance)
+                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
+                    .apply(instance, ThunderCondition::new));
+
+    public final static ThunderCondition INSTANCE = new ThunderCondition();
     private float level;
 
-    public RainingCondition(float level) {
+    public ThunderCondition(boolean isReverse, float level) {
+        super(isReverse);
+        this.level = level;
+    }
+
+    public ThunderCondition(float level) {
         this.level = level;
     }
 
     @Override
-    public String getType() {
-        return "rain";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.THUNDER;
     }
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.rain.tooltip", level);
+        return Component.translatable("recipe.condition.thunder.tooltip", level);
     }
 
     public float getLevel() {
@@ -45,12 +59,12 @@ public class RainingCondition extends RecipeCondition {
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
-        return level != null && level.getRainLevel(1) >= this.level;
+        return level != null && level.getThunderLevel(1) >= this.level;
     }
 
     @Override
     public RecipeCondition createTemplate() {
-        return new RainingCondition();
+        return new ThunderCondition();
     }
 
     @NotNull
