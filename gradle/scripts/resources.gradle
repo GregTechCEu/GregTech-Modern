@@ -10,6 +10,12 @@ def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
 def mod_issue_tracker = getConfig("mod_issue_tracker")
 
+task printVersion {
+    doLast {
+        println libs.versions.minecraft.get() + "-" + mod_version
+    }
+}
+
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -53,10 +54,15 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
     default Object convertIngredient(Object ingredient) {
         if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack itemEmiStack) {
             Item item = itemEmiStack.getKeyOfType(Item.class);
-            ingredient = item == null ? null : new ItemStack(item, (int) itemEmiStack.getAmount());
-            if (ingredient instanceof ItemStack itemStack) {
+            ItemStack itemStack = item == null ? ItemStack.EMPTY : new ItemStack(item, (int) itemEmiStack.getAmount());
+            if (!itemStack.isEmpty()) {
                 itemStack.setTag(itemEmiStack.getNbt());
             }
+            ingredient = itemStack;
+        }
+
+        if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
+            return itemJeiStack.getItemStack().orElse(ItemStack.EMPTY);
         }
         return ingredient;
     }

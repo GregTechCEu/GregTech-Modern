@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +41,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public final GTRecipeType recipeType;
     @Getter
-    public final ResourceLocation id;
+    @Setter
+    public ResourceLocation id;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
@@ -63,7 +66,26 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public boolean isFuel;
 
     public GTRecipe(GTRecipeType recipeType,
-                    ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    boolean isFuel) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, isFuel);
+    }
+
+    public GTRecipe(GTRecipeType recipeType,
+                    @Nullable ResourceLocation id,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
                     Map<RecipeCapability<?>, List<Content>> tickInputs,
@@ -308,7 +330,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult checkConditions(@NotNull RecipeLogic recipeLogic) {
         if (conditions.isEmpty()) return ActionResult.SUCCESS;
-        Map<String, List<RecipeCondition>> or = new HashMap<>();
+        Map<RecipeConditionType<?>, List<RecipeCondition>> or = new HashMap<>();
         for (RecipeCondition condition : conditions) {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);

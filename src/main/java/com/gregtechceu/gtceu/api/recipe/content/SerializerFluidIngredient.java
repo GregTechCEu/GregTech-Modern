@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 
@@ -48,5 +49,10 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     @Override
     public FluidIngredient defaultValue() {
         return FluidIngredient.EMPTY;
+    }
+
+    @Override
+    public Codec<FluidIngredient> codec() {
+        return FluidIngredient.CODEC;
     }
 }
