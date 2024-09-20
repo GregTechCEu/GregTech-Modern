@@ -9,7 +9,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = project.maven_group
             artifactId = project.archivesBaseName
-            version = project.mod_version
+            version = project.version
 
             from components.java
 

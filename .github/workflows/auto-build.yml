@@ -35,11 +35,10 @@ jobs:
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
-          echo "version=$MESSAGE-build_${{ github.run_number }}" >> $GITHUB_OUTPUT
+          VER=$(./gradlew -q printVersion)
+          BUILD_VER=$VER-build_${{ github.run_number }}
+          for jar in ./build/libs/*; do mv "$jar" "${jar/${VER}-SNAPSHOT/${BUILD_VER}-SNAPSHOT}";done 2>/dev/null
+          echo "version=$BUILD_VER" >> $GITHUB_OUTPUT
 
       - name: Release
         id: release
