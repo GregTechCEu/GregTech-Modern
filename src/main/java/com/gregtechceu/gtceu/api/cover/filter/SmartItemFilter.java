@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -21,6 +23,7 @@ public class SmartItemFilter implements ItemFilter {
     protected Consumer<ItemFilter> itemWriter = filter -> {};
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
+    @Setter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
     protected SmartItemFilter() {}
@@ -54,9 +57,7 @@ public class SmartItemFilter implements ItemFilter {
     @Override
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18*3+25, 18*3);
-        group.addWidget(new CycleButtonWidget(0, 0, 20, 20, 3,
-                i -> SmartFilteringMode.VALUES[i].texture, i -> filterMode = SmartFilteringMode.VALUES[i])
-                .setHoverTooltips(filterMode.name()));
+        group.addWidget(new EnumSelectorWidget<>(0, 0, 20, 20, SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
         return group;
     }
 
@@ -84,20 +85,40 @@ public class SmartItemFilter implements ItemFilter {
         return recipeCount;
     }
 
-    private enum SmartFilteringMode {
-        ELECTROLYZER(GTRecipeTypes.ELECTROLYZER_RECIPES),
-        CENTRIFUGE(GTRecipeTypes.CENTRIFUGE_RECIPES),
-        SIFTER(GTRecipeTypes.SIFTER_RECIPES);
+    public void setModeFromMachine(String machineName) {
+        for(SmartFilteringMode mode : SmartFilteringMode.VALUES) {
+            if(machineName.contains(mode.localeName)) {
+                this.filterMode = mode;
+                return;
+            }
+        }
+    }
+    public static String[] modes() { return Arrays.stream(SmartFilteringMode.VALUES).map(Enum::name).toArray(String[]::new);}
+
+    private enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum {
+        ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
+        CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
+        SIFTER("sifter", GTRecipeTypes.SIFTER_RECIPES);
 
         private static final SmartFilteringMode[] VALUES = values();
         private final GTRecipeLookup lookup;
         private final Object2IntOpenCustomHashMap<ItemStack> cache =
                 new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
-        private final IGuiTexture texture;
+        private String localeName;
 
-        SmartFilteringMode(GTRecipeType type) {
+        SmartFilteringMode(String localeName, GTRecipeType type) {
             lookup = type.getLookup();
-            texture = IGuiTexture.MISSING_TEXTURE;
+            this.localeName = localeName;
+        }
+
+        @Override
+        public String getTooltip() {
+            return localeName;
+        }
+
+        @Override
+        public IGuiTexture getIcon() {
+            return new ResourceTexture("gtceu:textures/block/machines/" + localeName + "/overlay_front.png");
         }
     }
 
