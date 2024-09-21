@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.codec;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
@@ -44,7 +43,7 @@ public record DispatchedMapCodec<K, V>(
                     (result, entry) -> parseEntry(result, ops, entry, entries, failed),
                     (r1, r2) -> r1.apply2stable((u1, u2) -> u1, r2));
 
-            final Pair<Map<K, V>, T> pair = Pair.of(ImmutableMap.copyOf(entries), input);
+            final Pair<Map<K, V>, T> pair = Pair.of(new Object2ObjectArrayMap<>(entries), input);
             final T errors = ops.createMap(failed.build());
 
             return finalResult.map(ignored -> pair).setPartial(pair)
