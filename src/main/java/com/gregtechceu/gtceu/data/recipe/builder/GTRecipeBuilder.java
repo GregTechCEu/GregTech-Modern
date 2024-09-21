@@ -1084,10 +1084,9 @@ public class GTRecipeBuilder {
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();
             for (RecipeCondition condition : conditions) {
-                JsonObject cond = new JsonObject();
-                cond.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
-                cond.add("data", condition.serialize());
-                array.add(cond);
+                var condJson = condition.serialize();
+                condJson.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
+                array.add(condJson);
             }
             json.add("recipeConditions", array);
         }
