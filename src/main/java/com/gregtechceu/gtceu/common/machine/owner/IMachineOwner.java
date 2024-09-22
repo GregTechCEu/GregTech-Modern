@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.function.BooleanSupplier;
 
@@ -37,6 +38,9 @@ public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner 
         owner.save(tag);
         return tag;
     }
+
+    boolean isPlayerInTeam(Player player);
+    boolean isPlayerFriendly(Player player);
 
     enum MachineOwnerType {
 

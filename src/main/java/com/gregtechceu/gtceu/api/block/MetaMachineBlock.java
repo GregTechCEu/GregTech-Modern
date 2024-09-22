@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
 import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.GTOwner;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -345,10 +347,19 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine && canOpenOwnerMachine(player, machine.getHolder())) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
+    }
+
+    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machineBlockEntity) {
+        if(!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
+        if(machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
+            if(mmBE.getOwner() == null) return true;
+            return mmBE.getOwner().isPlayerInTeam(player) || mmBE.getOwner().isPlayerFriendly(player);
+        }
+        return false;
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
