@@ -28,7 +28,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
@@ -127,28 +126,6 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
-    }
-
-    @Override
-    public UUID getOwnerUUID() {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {
-        this.owner = uuid;
-        this.ownerType = ownerType;
-        this.ownerName = ownerName;
-    }
-
-    @Override
-    public boolean ownerOnline() {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
-    }
-
-    @Override
-    public Class<?> getOwnerType() {
-        return ownerType;
     }
 
     @Override

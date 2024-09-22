@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 
@@ -25,7 +26,7 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
@@ -43,11 +44,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,12 +64,9 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
-    @DescSynced
-    private UUID owner;
-    @Getter
-    @DescSynced
-    private String ownerName;
-    private Class<?> ownerType;
+    @Setter
+    @Persisted
+    private IMachineOwner owner;
     private final long offset = GTValues.RNG.nextInt(20);
 
     protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -89,25 +87,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public UUID getOwnerUUID() {
-        return this.owner;
-    }
-
-    @Override
-    public void setOwner(UUID uuid, Class<?> ownerType, String ownerName) {
-        this.owner = uuid;
-        this.ownerType = ownerType;
-        this.ownerName = ownerName;
-    }
-
-    @Override
-    public boolean ownerOnline() {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(owner) != null;
-    }
-
-    @Override
-    public Class<?> getOwnerType() {
-        return ownerType;
+    public IMachineOwner getOwner() {
+        return owner;
     }
 
     @Override
@@ -350,15 +331,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         if (owner != null)
-            tag.putUUID("owner", owner);
-        if (ownerName != null)
-            tag.putString("ownerName", ownerName);
+            owner.save(tag);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (tag.contains("owner")) this.owner = tag.getUUID("owner");
-        if (tag.contains("ownerName")) this.ownerName = tag.getString("ownerName");
+        if (owner != null)
+            owner.load(tag);
     }
 }

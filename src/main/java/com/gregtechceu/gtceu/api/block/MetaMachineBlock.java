@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -12,6 +11,10 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
+import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
+import com.gregtechceu.gtceu.common.machine.owner.GTOwner;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -57,7 +60,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -137,6 +139,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {
                     setMachineOwner(machine, sPlayer);
+                    machine.markDirty();
                 }
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
@@ -151,24 +154,22 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
     }
 
-    public void setMachineOwner(MetaMachine machine, ServerPlayer player) {
-        if (GTCEu.isFTBTeamsLoaded()) {
+    public final void setMachineOwner(MetaMachine machine, ServerPlayer player) {
+        if (IMachineOwner.MachineOwnerType.FTB.isAvailable()) {
             Optional<Team> team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(player.getUUID());
             if (team.isPresent()) {
-                UUID teamUUID = team.get().getTeamId();
-                String name = team.get().getShortName();
-                machine.holder.setOwner(teamUUID, Team.class, name);
+                machine.holder.setOwner(new FTBOwner(team.get(), player.getUUID()));
+                return;
             }
-        } else if (GTCEu.isArgonautsLoaded()) {
+        }
+        if (IMachineOwner.MachineOwnerType.ARGONAUTS.isAvailable()) {
             Guild guild = GuildHandler.read(player.server).get(player);
             if (guild != null) {
-                UUID guildUUID = guild.id();
-                String name = guild.displayName().getString();
-                machine.holder.setOwner(guildUUID, Guild.class, name);
+                machine.holder.setOwner(new ArgonautsOwner(guild, player.getUUID()));
+                return;
             }
-        } else {
-            machine.holder.setOwner(player.getUUID(), ServerPlayer.class, player.getName().getString());
         }
+        machine.holder.setOwner(new GTOwner(player.getUUID()));
     }
 
     @Override
@@ -314,8 +315,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
 
-        if (machine != null && machine.holder.getOwnerUUID() == null && player instanceof ServerPlayer) {
+        if (machine != null && machine.holder.getOwner() == null && player instanceof ServerPlayer) {
             setMachineOwner(machine, (ServerPlayer) player);
+            machine.markDirty();
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);

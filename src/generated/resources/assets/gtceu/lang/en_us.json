@@ -27,7 +27,7 @@
   "behavior.portable_scanner.local_hazard.nothing": "Local Hazard In Area: §6Nothing§r",
   "behavior.portable_scanner.machine_disabled": "Disabled.",
   "behavior.portable_scanner.machine_front_facing": "Front Facing: %s",
-  "behavior.portable_scanner.machine_ownership": "§2Machine Owner: %s§r, §2Online: %s§r",
+  "behavior.portable_scanner.machine_ownership": "§2Machine Owner: %s§r",
   "behavior.portable_scanner.machine_power_loss": "Shut down due to power loss.",
   "behavior.portable_scanner.machine_progress": "Progress/Load: %s / %s",
   "behavior.portable_scanner.machine_upwards_facing": "Upwards Facing: %s",
