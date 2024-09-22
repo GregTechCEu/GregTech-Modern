@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.syncdata.FluidStackPayload;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.syncdata.FluidStackPayload;
 import com.gregtechceu.gtceu.syncdata.GTRecipePayload;
 import com.gregtechceu.gtceu.syncdata.GTRecipeTypeAccessor;
 import com.gregtechceu.gtceu.syncdata.MaterialPayload;
