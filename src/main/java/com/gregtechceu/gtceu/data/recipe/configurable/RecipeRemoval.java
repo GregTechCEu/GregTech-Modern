@@ -128,7 +128,6 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("hopper"));
         registry.accept(ResourceLocation.withDefaultNamespace("iron_bars"));
         registry.accept(ResourceLocation.withDefaultNamespace("bucket"));
-        registry.accept(ResourceLocation.withDefaultNamespace("chain"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
@@ -264,6 +263,7 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("brush"));
         registry.accept(ResourceLocation.withDefaultNamespace("recovery_compass"));
         registry.accept(ResourceLocation.withDefaultNamespace("spyglass"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chain"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
