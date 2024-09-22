@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -65,6 +66,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.OAK_STAIRS, "oak_stairs")
                             .boat(Items.OAK_BOAT, "oak_boat")
                             .chestBoat(Items.OAK_CHEST_BOAT, "oak_chest_boat")
+                            .sign(Items.OAK_SIGN, "oak_sign")
+                            .hangingSign(Items.OAK_HANGING_SIGN, "oak_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "spruce")
@@ -81,6 +84,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.SPRUCE_STAIRS, "spruce_stairs")
                             .boat(Items.SPRUCE_BOAT, "spruce_boat")
                             .chestBoat(Items.SPRUCE_CHEST_BOAT, "spruce_chest_boat")
+                            .sign(Items.SPRUCE_SIGN, "spruce_sign")
+                            .hangingSign(Items.SPRUCE_HANGING_SIGN, "spruce_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "birch")
@@ -97,6 +102,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.BIRCH_STAIRS, "birch_stairs")
                             .boat(Items.BIRCH_BOAT, "birch_boat")
                             .chestBoat(Items.BIRCH_CHEST_BOAT, "birch_chest_boat")
+                            .sign(Items.BIRCH_SIGN, "birch_sign")
+                            .hangingSign(Items.BIRCH_HANGING_SIGN, "birch_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "jungle")
@@ -113,6 +120,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.JUNGLE_STAIRS, "jungle_stairs")
                             .boat(Items.JUNGLE_BOAT, "jungle_boat")
                             .chestBoat(Items.JUNGLE_CHEST_BOAT, "jungle_chest_boat")
+                            .sign(Items.JUNGLE_SIGN, "jungle_sign")
+                            .hangingSign(Items.JUNGLE_HANGING_SIGN, "jungle_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "acacia")
@@ -129,6 +138,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.ACACIA_STAIRS, "acacia_stairs")
                             .boat(Items.ACACIA_BOAT, "acacia_boat")
                             .chestBoat(Items.ACACIA_CHEST_BOAT, "acacia_chest_boat")
+                            .sign(Items.ACACIA_SIGN, "acacia_sign")
+                            .hangingSign(Items.ACACIA_HANGING_SIGN, "acacia_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "dark_oak")
@@ -145,6 +156,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.DARK_OAK_STAIRS, "dark_oak_stairs")
                             .boat(Items.DARK_OAK_BOAT, "dark_oak_boat")
                             .chestBoat(Items.DARK_OAK_CHEST_BOAT, "dark_oak_chest_boat")
+                            .sign(Items.DARK_OAK_SIGN, "dark_oak_sign")
+                            .hangingSign(Items.DARK_OAK_HANGING_SIGN, "dark_oak_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
@@ -160,6 +173,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.BAMBOO_STAIRS, "bamboo_stairs")
                             .boat(Items.BAMBOO_RAFT, "bamboo_raft")
                             .chestBoat(Items.BAMBOO_CHEST_RAFT, "bamboo_chest_raft")
+                            .sign(Items.BAMBOO_SIGN, "bamboo_sign")
+                            .hangingSign(Items.BAMBOO_HANGING_SIGN, "bamboo_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "cherry")
@@ -176,6 +191,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.CHERRY_STAIRS, "cherry_stairs")
                             .boat(Items.CHERRY_BOAT, "cherry_boat")
                             .chestBoat(Items.CHERRY_CHEST_BOAT, "cherry_chest_boat")
+                            .sign(Items.CHERRY_SIGN, "cherry_sign")
+                            .hangingSign(Items.CHERRY_HANGING_SIGN, "cherry_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "mangrove")
@@ -192,6 +209,8 @@ public class WoodMachineRecipes {
                             .stairs(Items.MANGROVE_STAIRS, "mangrove_stairs")
                             .boat(Items.MANGROVE_BOAT, "mangrove_boat")
                             .chestBoat(Items.MANGROVE_CHEST_BOAT, "mangrove_chest_boat")
+                            .sign(Items.MANGROVE_SIGN, "mangrove_sign")
+                            .hangingSign(Items.MANGROVE_HANGING_SIGN, "mangrove_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
@@ -207,6 +226,8 @@ public class WoodMachineRecipes {
                             .fence(Items.CRIMSON_FENCE, "crimson_fence")
                             .fenceGate(Items.CRIMSON_FENCE_GATE, "crimson_fence_gate")
                             .stairs(Items.CRIMSON_STAIRS, "crimson_stairs")
+                            .sign(Items.CRIMSON_SIGN, "crimson_sign")
+                            .hangingSign(Items.CRIMSON_HANGING_SIGN, "crimson_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "warped")
@@ -222,6 +243,8 @@ public class WoodMachineRecipes {
                             .fence(Items.WARPED_FENCE, "warped_fence")
                             .fenceGate(Items.WARPED_FENCE_GATE, "warped_fence_gate")
                             .stairs(Items.WARPED_STAIRS, "warped_stairs")
+                            .sign(Items.WARPED_SIGN, "warped_sign")
+                            .hangingSign(Items.WARPED_HANGING_SIGN, "warped_hanging_sign")
                             .registerAllUnificationInfo()
                             .build(),
                     new WoodTypeEntry.Builder(GTCEu.MOD_ID, "rubber")
@@ -231,12 +254,15 @@ public class WoodMachineRecipes {
                             .wood(GTBlocks.RUBBER_WOOD.asItem())
                             .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
                             .door(GTBlocks.RUBBER_DOOR.asItem(), null)
-                            .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
+                            .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), "rubber_trapdoor")
                             .slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
                             .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
                             .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
                             .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
-                            // .boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                            .boat(GTItems.RUBBER_BOAT.asItem(), null)
+                            .chestBoat(GTItems.RUBBER_CHEST_BOAT.asItem(), null)
+                            .sign(GTBlocks.RUBBER_SIGN.asItem(), null)
+                            .hangingSign(GTBlocks.RUBBER_HANGING_SIGN.asItem(), null)
                             .generateLogToPlankRecipe(false) // rubber log does not have a tag
                             .registerAllTags()
                             .registerAllUnificationInfo()
@@ -249,10 +275,12 @@ public class WoodMachineRecipes {
                             .fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
                             .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
                             .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
-                            // .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                            .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null)
+                            .chestBoat(GTItems.TREATED_WOOD_CHEST_BOAT.asItem(), null)
+                            .sign(GTBlocks.TREATED_WOOD_SIGN.asItem(), null)
+                            .hangingSign(GTBlocks.TREATED_WOOD_HANGING_SIGN.asItem(), null)
                             .material(TreatedWood)
-                            .generateLogToPlankRecipe(false)
-                            .registerAllUnificationInfo()
+                            .registerUnificationInfo(false, true, true, true, true, true, true, true)
                             .build());
         }
         return DEFAULT_ENTRIES;
@@ -458,6 +486,102 @@ public class WoodMachineRecipes {
             }
         }
 
+        // sign
+        if (entry.sign != null && entry.slab != null) {
+            final boolean hasSignRecipe = entry.signRecipeName != null;
+            String recipeName = hasSignRecipe ? entry.signRecipeName : name + "_sign";
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.sign),
+                        "LLL", "rPr", "sSd",
+                        'P', entry.planks,
+                        'r', new UnificationEntry(screw, Iron),
+                        'L', entry.slab,
+                        'S', entry.getStick());
+
+                // plank -> sign assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_iron")
+                        .circuitMeta(4)
+                        .inputItems(new ItemStack(entry.slab, 1))
+                        .inputItems(entry.getStick(), 1)
+                        .inputFluids(Iron.getFluid(GTValues.L / 9))
+                        .outputItems(entry.sign, 3)
+                        .duration(200).EUt(4).save(provider);
+
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.sign, 2),
+                        "LLL", "rPr", "sSd",
+                        'P', entry.planks,
+                        'r', new UnificationEntry(screw, Steel),
+                        'L', entry.slab,
+                        'S', entry.getStick());
+
+                // plank -> sign assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_steel")
+                        .circuitMeta(4)
+                        .inputItems(new ItemStack(entry.slab, 1))
+                        .inputItems(entry.getStick(), 1)
+                        .inputFluids(Steel.getFluid(GTValues.L / 9))
+                        .outputItems(entry.sign, 5)
+                        .duration(200).EUt(4).save(provider);
+            } else {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.sign, 3),
+                        "PPP", "PPP", " s ",
+                        'P', entry.planks,
+                        's', entry.getStick());
+            }
+
+            if (entry.hangingSign != null) {
+                final boolean hasHangingSignRecipe = entry.hangingSignRecipeName != null;
+                String recipeNameHanging = hasHangingSignRecipe ? entry.hangingSignRecipeName : name + "_hanging_sign";
+                ASSEMBLER_RECIPES.recipeBuilder(recipeNameHanging)
+                        .inputItems(entry.sign)
+                        .inputItems(ring, Iron, 2)
+                        .inputItems(Items.CHAIN, 2)
+                        .circuitMeta(5)
+                        .duration(150)
+                        .EUt(4)
+                        .save(provider);
+            }
+        }
+
+        // trapdoor
+        if (entry.trapdoor != null) {
+            final boolean hasTrapdoorRecipe = entry.trapdoorRecipeName != null;
+            String recipeName = hasTrapdoorRecipe ? entry.trapdoorRecipeName : name + "_trapdoor";
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.trapdoor),
+                        "bPS", "PdP", "SPb",
+                        'P', entry.planks,
+                        'b', new UnificationEntry(bolt, Iron),
+                        'S', entry.getStick());
+
+                // plank -> trapdoor assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_iron")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks, 2))
+                        .inputFluids(Iron.getFluid(GTValues.L / 9))
+                        .outputItems(entry.trapdoor)
+                        .duration(200).EUt(4).save(provider);
+
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.trapdoor, 2),
+                        "bPS", "PdP", "SPb",
+                        'P', entry.planks,
+                        'b', new UnificationEntry(bolt, Steel),
+                        'S', entry.getStick());
+
+                // plank -> trapdoor assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_steel")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks, 2))
+                        .inputFluids(Steel.getFluid(GTValues.L / 9))
+                        .outputItems(entry.trapdoor, 2)
+                        .duration(200).EUt(4).save(provider);
+            } else {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.trapdoor, 2),
+                        "PPP", "PPP",
+                        'P', entry.planks);
+            }
+        }
+
         // stairs
         if (entry.stairs != null) {
             final boolean hasStairRecipe = entry.stairsRecipeName != null;
@@ -592,29 +716,24 @@ public class WoodMachineRecipes {
             // chest boat
             if (entry.chestBoat != null) {
                 final boolean hasChestBoatRecipe = entry.chestBoatRecipeName != null;
+                String recipeName = hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat";
                 if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
-                    if (entry.boat != null) {
-
-                        VanillaRecipeHelper.addShapedRecipe(provider,
-                                hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat",
-                                new ItemStack(entry.chestBoat),
-                                " B ", "SCS", " w ",
-                                'B', entry.boat,
-                                'S', new UnificationEntry(bolt, Wood),
-                                'C', Tags.Items.CHESTS_WOODEN);
-                    }
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeName,
+                            new ItemStack(entry.chestBoat),
+                            " B ", "SCS", " w ",
+                            'B', entry.boat,
+                            'S', new UnificationEntry(bolt, Wood),
+                            'C', Tags.Items.CHESTS_WOODEN);
                 } else {
-                    if (!hasChestBoatRecipe) {
-                        VanillaRecipeHelper.addShapelessRecipe(provider, name + "_chest_boat",
-                                new ItemStack(entry.chestBoat),
-                                entry.boat, Tags.Items.CHESTS);
-                    }
+                    VanillaRecipeHelper.addShapelessRecipe(provider, recipeName,
+                            new ItemStack(entry.chestBoat),
+                            entry.boat, Tags.Items.CHESTS_WOODEN);
                 }
 
-                // plank -> boat assembling
+                // boat -> chest boat assembling
                 ASSEMBLER_RECIPES.recipeBuilder(name + "_chest_boat")
                         .inputItems(new ItemStack(entry.boat))
-                        .inputItems(Tags.Items.CHESTS)
+                        .inputItems(Tags.Items.CHESTS_WOODEN)
                         .outputItems(entry.chestBoat)
                         .circuitMeta(16)
                         .duration(100).EUt(4).save(provider);

@@ -256,9 +256,9 @@ public class GTModels {
                                                                                                                                IBatteryData batteryData) {
         return (ctx, prov) -> {
             prov.simpleBlock(ctx.getEntry(), prov.models().cubeBottomTop(name,
+                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/side"),
                     GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
-                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top"),
-                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/side")));
+                    GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/top")));
         };
     }
 

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -113,6 +114,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
+
+        recipe = new GTRecipe(recipe.recipeType, recipe.id,
+                recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.isFuel);
 
         result.init(-eut, recipe.duration, parallelResult.getSecond(), params.getOcAmount());
 
