@@ -330,14 +330,16 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        if (owner != null)
-            owner.save(tag);
+        if (owner != null) {
+            tag.put("owner", IMachineOwner.write(owner));
+        }
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (owner != null)
-            owner.load(tag);
+        if (tag.contains("owner")) {
+            this.owner = IMachineOwner.create(tag.getCompound("owner"));
+        }
     }
 }
