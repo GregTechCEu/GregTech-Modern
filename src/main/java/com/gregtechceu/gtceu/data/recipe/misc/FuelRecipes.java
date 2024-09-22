@@ -38,10 +38,17 @@ public class FuelRecipes {
             var burnTime = GTUtil.getItemBurnTime(item);
             if (burnTime > 0 && !addedItems.contains(item)) {
                 var resLoc = BuiltInRegistries.ITEM.getKey(item);
-                STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
-                        .inputItems(item)
-                        .duration(burnTime * 12)
-                        .save(provider);
+                if (burnTime * 12L > Integer.MAX_VALUE) {
+                    LARGE_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
+                            .inputItems(item)
+                            .duration(burnTime / 80)
+                            .save(provider);
+                } else {
+                    STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
+                            .inputItems(item)
+                            .duration(burnTime * 12)
+                            .save(provider);
+                }
             }
         }
 
