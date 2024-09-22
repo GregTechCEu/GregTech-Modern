@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
       SNAPSHOT: true
     permissions:
