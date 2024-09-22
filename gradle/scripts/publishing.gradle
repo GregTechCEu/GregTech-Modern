@@ -24,7 +24,7 @@ publishing {
             url "https://maven.gtceu.com"
             credentials {
                 username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASS")
+                password System.getenv("MAVEN_PASSWORD")
             }
         }
     }
