@@ -19,8 +19,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.ClickableIngredient;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.utils.CycleFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -253,7 +251,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     private List<Object> getXEIIngredientsFromCycleTransfer(CycleFluidTransfer transfer, int index) {
-        var stream = transfer.getStackList(index).stream().map(FluidHelper::toRealFluidStack)
+        var stream = transfer.getStackList(index).stream().map(FluidHelperImpl::toRealFluidStack)
                 .map(FluidStack.class::cast);
         if (LDLib.isJeiLoaded()) {
             return stream.filter(fluid -> !fluid.isEmpty()).map(JEICallWrapper::getPlatformFluidTypeForJEI).toList();
@@ -266,7 +264,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     private List<Object> getXEIIngredientsFromCycleTransferClickable(CycleFluidTransfer transfer, int index) {
-        var stream = transfer.getStackList(index).stream().map(FluidHelper::toRealFluidStack)
+        var stream = transfer.getStackList(index).stream().map(FluidHelperImpl::toRealFluidStack)
                 .map(FluidStack.class::cast);
         if (LDLib.isJeiLoaded()) {
             return stream
@@ -374,16 +372,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
 
         return list;
-    }
-
-    @Override
-    public void addTooltipCallback(Consumer<List<Component>> callback) {
-        this.tooltipCallback.add(callback);
-    }
-
-    @Override
-    public void clearTooltipCallback() {
-        this.tooltipCallback.clear();
     }
 
     @Override
@@ -570,7 +558,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (fluidTank == null) return -1;
         Player player = gui.entityPlayer;
         ItemStack currentStack = gui.getModularUIContainer().getCarried();
-        var handler = FluidTransferHelper.getFluidTransfer(gui.entityPlayer, gui.getModularUIContainer());
+        var handler = FluidUtil.getFluidHandler(currentStack).resolve().orElse(null);
         if (handler == null) return -1;
         int maxAttempts = isShiftKeyDown ? currentStack.getCount() : 1;
         FluidStack initialFluid = fluidTank.getFluidInTank(tank);
@@ -636,7 +624,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if ((allowClickDrained || allowClickFilled) && isMouseOverElement(mouseX, mouseY)) {
             if (button == 0) {
-                if (FluidTransferHelper.getFluidTransfer(gui.entityPlayer, gui.getModularUIContainer()) != null) {
+                if (FluidUtil.getFluidHandler(gui.getModularUIContainer().getCarried()).isPresent()) {
                     boolean isShiftKeyDown = isShiftDown();
                     writeClientAction(1, writer -> writer.writeBoolean(isShiftKeyDown));
                     playButtonClickSound();

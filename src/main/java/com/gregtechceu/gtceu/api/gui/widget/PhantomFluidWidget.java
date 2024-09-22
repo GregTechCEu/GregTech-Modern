@@ -89,16 +89,6 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
         if (ingredient instanceof ItemStack itemStack) {
             var handler = FluidUtil.getFluidHandler(itemStack);
             return handler.map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE)).orElse(FluidStack.EMPTY);
-            // var stack = new ItemStackHandler(NonNullList.of(ItemStack.EMPTY, itemStack)).getStackInSlot(0);
-            // if(!stack.isEmpty()) {
-            // var h = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
-            // if(h.isPresent()) return h.get().drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-            // }
-            // var handler = FluidTransferHelper.getFluidTransfer(new ItemStackHandler(NonNullList.of(ItemStack.EMPTY,
-            // itemStack)), 0);
-            // if (handler != null) {
-            // return handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-            // }
         }
         return FluidStack.EMPTY;
     }
@@ -208,18 +198,6 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
             var stack = FluidUtil.getFluidHandler(gui.getModularUIContainer().getCarried())
                     .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.EXECUTE)).orElse(FluidStack.EMPTY);
             if (phantomFluidSetter != null) phantomFluidSetter.accept(stack);
-            // var handler = FluidUtil.getFluidHandler(gui.getModularUIContainer().getCarried()).resolve();
-            // if(handler.isPresent()) {
-            // FluidStack result = handler.get().drain(Integer.MAX_VALUE, FluidAction.EXECUTE);
-            // if(phantomFluidSetter != null) phantomFluidSetter.accept(result);
-            // }
-            // var handler = FluidTransferHelper.getFluidTransfer(gui.entityPlayer, gui.getModularUIContainer());
-            // if (handler != null) {
-            // FluidStack resultFluid = handler.drain(Integer.MAX_VALUE, FluidAction.EXECUTE);
-            // if (phantomFluidSetter != null) {
-            // phantomFluidSetter.accept(resultFluid);
-            // }
-            // }
         } else {
             if (phantomFluidSetter != null) {
                 phantomFluidSetter.accept(FluidStack.EMPTY);
