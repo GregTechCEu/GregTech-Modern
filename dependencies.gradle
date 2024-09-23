@@ -68,8 +68,8 @@ dependencies {
     modCompileOnly(forge.ftbteams)
     modCompileOnly(forge.ftblibrary)
 
-    modImplementation(forge.argonauts)
-    modImplementation(forge.resourceful)
+    modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.resourceful)
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)

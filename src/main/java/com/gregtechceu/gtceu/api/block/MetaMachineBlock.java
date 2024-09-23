@@ -347,17 +347,27 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine && canOpenOwnerMachine(player, machine.getHolder())) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
+                canOpenOwnerMachine(player, machine.getHolder())) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
     public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machineBlockEntity) {
-        if(!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
-        if(machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
-            if(mmBE.getOwner() == null) return true;
+        if (!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
+        if (machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
+            if (mmBE.getOwner() == null) return true;
             return mmBE.getOwner().isPlayerInTeam(player) || mmBE.getOwner().isPlayerFriendly(player);
+        }
+        return false;
+    }
+
+    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machineBlockEntity) {
+        if (!ConfigHolder.INSTANCE.machines.machineOwnerBreak) return true;
+        if (machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
+            if (mmBE.getOwner() == null) return true;
+            return mmBE.getOwner().isPlayerInTeam(player);
         }
         return false;
     }

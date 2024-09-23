@@ -390,10 +390,10 @@ public class ConfigHolder {
         public int ldFluidPipeMinDistance = 50;
 
         @Configurable
-        @Configurable.Comment({"Whether non owners can open a machine gui", "Default: false"})
+        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
         public boolean machineOwnerGUI = true;
         @Configurable
-        @Configurable.Comment({"Whether non owners can break a machine", "Default: false"})
+        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
         public boolean machineOwnerBreak = true;
 
         /**

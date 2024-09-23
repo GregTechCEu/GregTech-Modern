@@ -1,31 +1,34 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import lombok.Getter;
-import net.minecraft.world.entity.player.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 public final class GTOwner implements IMachineOwner {
 
     @Getter
-    private UUID player;
+    private UUID playerUUID;
 
     public GTOwner() {}
 
     public GTOwner(UUID player) {
-        this.player = player;
+        this.playerUUID = player;
     }
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putUUID("UUID", player);
+        tag.putUUID("UUID", playerUUID);
     }
 
     @Override
     public void load(CompoundTag tag) {
-        this.player = tag.getUUID("UUID");
+        this.playerUUID = tag.getUUID("UUID");
     }
 
     @Override
@@ -36,6 +39,22 @@ public final class GTOwner implements IMachineOwner {
     @Override
     public boolean isPlayerFriendly(Player player) {
         return true;
+    }
+
+    @Override
+    public void displayInfo(List<Component> compList) {
+        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
+        var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
+        String playerName;
+        boolean isOnline;
+        if (serverPlayer != null) {
+            playerName = serverPlayer.getDisplayName().getString();
+            isOnline = true;
+        } else {
+            playerName = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(playerUUID).get().getName();
+            isOnline = false;
+        }
+        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName, isOnline));
     }
 
     @Override

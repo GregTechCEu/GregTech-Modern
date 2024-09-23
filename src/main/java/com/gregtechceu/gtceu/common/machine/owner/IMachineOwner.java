@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.common.machine.owner;
 import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.nbt.CompoundTag;
-
-import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
+import lombok.Getter;
+
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner {
@@ -16,6 +18,8 @@ public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner 
     void load(CompoundTag tag);
 
     MachineOwnerType type();
+
+    void displayInfo(List<Component> compList);
 
     static IMachineOwner create(CompoundTag tag) {
         MachineOwnerType type = MachineOwnerType.VALUES[tag.getInt("type")];
@@ -40,6 +44,7 @@ public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner 
     }
 
     boolean isPlayerInTeam(Player player);
+
     boolean isPlayerFriendly(Player player);
 
     enum MachineOwnerType {

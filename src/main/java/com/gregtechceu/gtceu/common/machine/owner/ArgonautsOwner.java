@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
-import earth.terrarium.argonauts.common.handlers.base.MemberException;
-import earth.terrarium.argonauts.common.handlers.base.members.MemberState;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -11,6 +10,7 @@ import earth.terrarium.argonauts.api.guild.Guild;
 import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.UUID;
 
 public final class ArgonautsOwner implements IMachineOwner {
@@ -40,26 +40,43 @@ public final class ArgonautsOwner implements IMachineOwner {
         this.playerUUID = tag.getUUID("playerUUID");
         this.server = ServerLifecycleHooks.getCurrentServer();
         var handler = GuildHandler.read(server);
-        this.guild = handler.get(server.getPlayerList().getPlayer(playerUUID));
+        this.guild = GuildHandler.API.get(server, tag.getUUID("guildUUID"));
     }
 
     @Override
     public boolean isPlayerInTeam(Player player) {
-        if(player.getUUID().equals(this.playerUUID)) return true;
+        if (player.getUUID().equals(this.playerUUID)) return true;
         var otherGuild = GuildHandler.read(server).get(server, player.getUUID());
-        if(otherGuild != null && otherGuild.equals(this.guild)) return true;
+        if (otherGuild != null && otherGuild.equals(this.guild)) return true;
 
         return false;
     }
 
     @Override
     public boolean isPlayerFriendly(Player player) {
-        if(guild.isPublic()) return true;
+        if (guild.isPublic()) return true;
 
-        if(guild.members().isMember(player.getUUID())) return true;
-        if(guild.members().isInvited(player.getUUID())) return true;
-        if(guild.members().isAllied(player.getUUID())) return true;
+        if (guild.members().isMember(player.getUUID())) return true;
+        if (guild.members().isInvited(player.getUUID())) return true;
+        if (guild.members().isAllied(player.getUUID())) return true;
         return false;
+    }
+
+    @Override
+    public void displayInfo(List<Component> compList) {
+        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
+        compList.add(Component.translatable("behavior.portable_scanner.guild_name", guild.displayName().getString()));
+        var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
+        String playerName;
+        boolean isOnline;
+        if (serverPlayer != null) {
+            playerName = serverPlayer.getDisplayName().getString();
+            isOnline = true;
+        } else {
+            playerName = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(playerUUID).get().getName();
+            isOnline = false;
+        }
+        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName, isOnline));
     }
 
     @Override
