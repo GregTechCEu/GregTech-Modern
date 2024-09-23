@@ -10,14 +10,14 @@ import lombok.Getter;
 import java.util.List;
 import java.util.UUID;
 
-public final class GTOwner implements IMachineOwner {
+public final class PlayerOwner implements IMachineOwner {
 
     @Getter
     private UUID playerUUID;
 
-    public GTOwner() {}
+    public PlayerOwner() {}
 
-    public GTOwner(UUID player) {
+    public PlayerOwner(UUID player) {
         this.playerUUID = player;
     }
 

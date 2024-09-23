@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -12,10 +11,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
-import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
-import com.gregtechceu.gtceu.common.machine.owner.GTOwner;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -52,15 +47,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
-import dev.ftb.mods.ftbteams.api.Team;
-import earth.terrarium.argonauts.api.guild.Guild;
-import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -154,24 +144,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 machineLife.onMachinePlaced(player, pStack);
             }
         }
-    }
-
-    public final void setMachineOwner(MetaMachine machine, ServerPlayer player) {
-        if (IMachineOwner.MachineOwnerType.FTB.isAvailable()) {
-            Optional<Team> team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(player.getUUID());
-            if (team.isPresent()) {
-                machine.holder.setOwner(new FTBOwner(team.get(), player.getUUID()));
-                return;
-            }
-        }
-        if (IMachineOwner.MachineOwnerType.ARGONAUTS.isAvailable()) {
-            Guild guild = GuildHandler.read(player.server).get(player);
-            if (guild != null) {
-                machine.holder.setOwner(new ArgonautsOwner(guild, player.getUUID()));
-                return;
-            }
-        }
-        machine.holder.setOwner(new GTOwner(player.getUUID()));
     }
 
     @Override
@@ -354,22 +326,16 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
-    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machineBlockEntity) {
+    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
         if (!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
-        if (machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
-            if (mmBE.getOwner() == null) return true;
-            return mmBE.getOwner().isPlayerInTeam(player) || mmBE.getOwner().isPlayerFriendly(player);
-        }
-        return false;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
     }
 
-    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machineBlockEntity) {
+    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
         if (!ConfigHolder.INSTANCE.machines.machineOwnerBreak) return true;
-        if (machineBlockEntity instanceof MetaMachineBlockEntity mmBE) {
-            if (mmBE.getOwner() == null) return true;
-            return mmBE.getOwner().isPlayerInTeam(player);
-        }
-        return false;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player);
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {

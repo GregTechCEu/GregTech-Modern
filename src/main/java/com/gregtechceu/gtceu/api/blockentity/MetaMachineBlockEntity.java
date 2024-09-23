@@ -65,6 +65,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Getter
     public final MetaMachine metaMachine;
     @Setter
+    @Getter
     @Persisted
     private IMachineOwner owner;
     private final long offset = GTValues.RNG.nextInt(20);
@@ -84,11 +85,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
-    }
-
-    @Override
-    public IMachineOwner getOwner() {
-        return owner;
     }
 
     @Override
@@ -331,7 +327,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         if (owner != null) {
-            tag.put("owner", IMachineOwner.write(owner));
+            tag.put("owner", owner.write());
         }
     }
 

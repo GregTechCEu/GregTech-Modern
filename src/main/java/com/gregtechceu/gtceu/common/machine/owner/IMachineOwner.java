@@ -11,7 +11,7 @@ import lombok.Getter;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner {
+public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOwner {
 
     void save(CompoundTag tag);
 
@@ -28,7 +28,7 @@ public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner 
             return null;
         }
         IMachineOwner owner = switch (type) {
-            case GT -> new GTOwner();
+            case GT -> new PlayerOwner();
             case FTB -> new FTBOwner();
             case ARGONAUTS -> new ArgonautsOwner();
         };
@@ -36,10 +36,10 @@ public sealed interface IMachineOwner permits GTOwner, ArgonautsOwner, FTBOwner 
         return owner;
     }
 
-    static CompoundTag write(IMachineOwner owner) {
+    default CompoundTag write() {
         var tag = new CompoundTag();
-        tag.putInt("type", owner.type().ordinal());
-        owner.save(tag);
+        tag.putInt("type", type().ordinal());
+        save(tag);
         return tag;
     }
 
