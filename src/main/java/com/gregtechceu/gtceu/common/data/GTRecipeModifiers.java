@@ -246,7 +246,6 @@ public class GTRecipeModifiers {
             // double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1,
             // maxParallel * 1.0));
 
-            recipe = parallel.getFirst() == recipe ? parallel.getFirst().copy() : parallel.getFirst();
 
             int parallelValue = parallel.getSecond();
             long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
