@@ -67,16 +67,19 @@ public final class ArgonautsOwner implements IMachineOwner {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         compList.add(Component.translatable("behavior.portable_scanner.guild_name", guild.displayName().getString()));
         var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
-        String playerName;
+        final String[] playerName = new String[1];
         boolean isOnline;
         if (serverPlayer != null) {
-            playerName = serverPlayer.getDisplayName().getString();
+            playerName[0] = serverPlayer.getDisplayName().getString();
             isOnline = true;
         } else {
-            playerName = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(playerUUID).get().getName();
+            var cache = ServerLifecycleHooks.getCurrentServer().getProfileCache();
+            if (cache != null) {
+                cache.get(playerUUID).ifPresent(value -> playerName[0] = value.getName());
+            }
             isOnline = false;
         }
-        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName, isOnline));
+        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName[0], isOnline));
     }
 
     @Override
