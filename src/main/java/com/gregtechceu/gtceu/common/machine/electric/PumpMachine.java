@@ -78,6 +78,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     public static final int PUMP_SPEED_BASE = 80;
     private final Deque<BlockPos> fluidSourceBlocks = new ArrayDeque<>();
     private final Deque<BlockPos> blocksToCheck = new ArrayDeque<>();
+    private final Set<BlockPos> forbiddenBlocks = new ObjectOpenHashSet<>();
     private PumpQueue pumpQueue = null;
     private final boolean initializedQueue = false;
     @Getter
@@ -223,7 +224,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             BlockPos pumpY = headPosBelow.atY(check.getY());
 
             // Skip if outside pump range or not loaded or already checked
-            if (check.distSqr(pumpY) > maxPumpRange * maxPumpRange || checked.contains(check) || !level.isLoaded(check)) {
+            if (check.distSqr(pumpY) > maxPumpRange * maxPumpRange || checked.contains(check) || !level.isLoaded(check) || forbiddenBlocks.contains(check)) {
                 continue;
             }
 
@@ -445,8 +446,12 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
         // We try to pump `pumps` amount of source blocks, using multiple paths if necessary
         boolean pumped = false;
+        int iterations = 0;
         // We keep looking at paths as long as we still have pumps to go
-        while (pumps > 0 && pumpQueue != null && !pumpQueue.queue().isEmpty()) {
+        // We put the iterations at max 10 just to be sure
+        while (pumps > 0 && pumpQueue != null && !pumpQueue.queue().isEmpty() && iterations < 10) {
+            iterations++;
+
             Deque<BlockPos> pumpPath = pumpQueue.queue().peek();
             Deque<SourceState> states = new ArrayDeque<>();
 
@@ -482,6 +487,16 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                             this.fluidSourceBlocks.remove(pos);
                             pumped = true;
                             pumps--;
+                        } else if (!drainStack.isEmpty()) {
+                            // In this case we just couldn't fill the internal tank, it's most likely full
+                            // So we add back to the pump path and return
+                            pumpPath.add(pos);
+                            return;
+                        } else {
+                            // drain stack is empty even though it's a fluid source, probably something went wrong
+                            // ignore block for a while
+                            forbiddenBlocks.add(pos);
+                            return;
                         }
                     }
                 }
@@ -524,6 +539,9 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         }
         if (!advanced && getOffsetTimer() % getPumpingCycleLength() == 0) {
             pumpCycle();
+        }
+        if (getOffsetTimer() % (20*60) == 0) {
+            forbiddenBlocks.clear();
         }
     }
 
