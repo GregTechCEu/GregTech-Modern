@@ -28,7 +28,7 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
             return null;
         }
         IMachineOwner owner = switch (type) {
-            case GT -> new PlayerOwner();
+            case PLAYER -> new PlayerOwner();
             case FTB -> new FTBOwner();
             case ARGONAUTS -> new ArgonautsOwner();
         };
@@ -49,7 +49,7 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
 
     enum MachineOwnerType {
 
-        GT,
+        PLAYER,
         FTB(GTCEu::isFTBTeamsLoaded, "FTB Teams"),
         ARGONAUTS(GTCEu::isArgonautsLoaded, "Argonauts Guild");
 
