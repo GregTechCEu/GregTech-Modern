@@ -41,7 +41,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 
-import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -197,14 +196,14 @@ public class GTUtil {
      *         tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
-        if(voltage > Integer.MAX_VALUE) {
+        if (voltage > Integer.MAX_VALUE) {
             return GTValues.MAX;
         }
         return getOCTierByVoltage(voltage);
     }
 
     public static byte getOCTierByVoltage(long voltage) {
-        if(voltage <= GTValues.V[GTValues.ULV]) {
+        if (voltage <= GTValues.V[GTValues.ULV]) {
             return GTValues.ULV;
         }
         return (byte) ((62 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
@@ -217,10 +216,10 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if(voltage < GTValues.V[GTValues.ULV]) {
+        if (voltage < GTValues.V[GTValues.ULV]) {
             return GTValues.ULV;
         }
-        if(voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
+        if (voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
             return GTValues.MAX_TRUE;
         }
 
