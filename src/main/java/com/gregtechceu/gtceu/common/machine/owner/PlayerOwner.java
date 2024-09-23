@@ -62,6 +62,6 @@ public final class PlayerOwner implements IMachineOwner {
 
     @Override
     public MachineOwnerType type() {
-        return MachineOwnerType.GT;
+        return MachineOwnerType.PLAYER;
     }
 }
