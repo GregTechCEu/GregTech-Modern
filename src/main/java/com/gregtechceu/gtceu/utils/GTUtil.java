@@ -197,22 +197,17 @@ public class GTUtil {
      *         tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
-        // Yes, yes we do need UHV+.
-        return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
-    }
-
-    public static int getFakeVoltageTier(long voltage) {
-        long a = voltage;
-        int b = 0;
-        while (a / 4L >= 8L) {
-            b++;
-            a /= 4L;
+        if(voltage > Integer.MAX_VALUE) {
+            return GTValues.MAX;
         }
-        return b;
+        return getOCTierByVoltage(voltage);
     }
 
-    public static long getVoltageFromFakeTier(int tier) {
-        return LongMath.pow(4L, tier + 1) * 2;
+    public static byte getOCTierByVoltage(long voltage) {
+        if(voltage <= GTValues.V[GTValues.ULV]) {
+            return GTValues.ULV;
+        }
+        return (byte) ((62 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
     }
 
     /**
@@ -222,7 +217,14 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
+        if(voltage < GTValues.V[GTValues.ULV]) {
+            return GTValues.ULV;
+        }
+        if(voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
+            return GTValues.MAX_TRUE;
+        }
+
+        return (byte) ((60 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
     }
 
     public static ItemStack copy(ItemStack... stacks) {
