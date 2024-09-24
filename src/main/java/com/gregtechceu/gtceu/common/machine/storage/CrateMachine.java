@@ -130,7 +130,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
             tag.remove("taped");
             this.isTaped = false;
         }
-        stack.setTag(null);
+        stack.set(DataComponents.BLOCK_ENTITY_DATA, null);
     }
 
     @Override

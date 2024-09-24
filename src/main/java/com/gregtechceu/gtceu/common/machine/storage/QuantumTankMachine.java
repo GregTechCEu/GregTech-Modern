@@ -128,7 +128,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
             private int handleVoiding(int filled, FluidStack resource) {
                 if (filled < resource.getAmount() && isVoiding && isFluidValid(0, resource)) {
-                    if (stored.isEmpty() || stored.isFluidEqual(resource)) {
+                    if (stored.isEmpty() || FluidStack.isSameFluidSameComponents(stored, resource)) {
                         return resource.getAmount();
                     }
                 }
