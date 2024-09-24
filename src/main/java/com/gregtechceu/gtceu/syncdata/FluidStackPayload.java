@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.syncdata;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 
