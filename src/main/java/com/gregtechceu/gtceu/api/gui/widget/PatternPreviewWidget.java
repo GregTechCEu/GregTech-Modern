@@ -89,6 +89,8 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
                 .setScrollable(true)
                 .setDraggable(true);
+        // TODO update LDLib
+        // scrollableWidgetGroup.setScrollWheelDirection(DraggableScrollableWidgetGroup.ScrollWheelDirection.HORIZONTAL);
         scrollableWidgetGroup.setScrollYOffset(0);
         addWidget(scrollableWidgetGroup);
 
