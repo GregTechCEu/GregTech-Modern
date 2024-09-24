@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
+import com.gregtechceu.gtceu.data.enumproxy.GTEnumProxies;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.material.GTFoods;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -2756,24 +2757,24 @@ public class GTItems {
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<GTBoatItem> RUBBER_BOAT = REGISTRATE
-            .item("rubber_boat", p -> new GTBoatItem(false, GTBoat.BoatType.RUBBER, new Item.Properties()))
+    public static ItemEntry<BoatItem> RUBBER_BOAT = REGISTRATE
+            .item("rubber_boat", p -> new BoatItem(false, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), new Item.Properties()))
             .lang("Rubber Boat")
             .register();
 
-    public static ItemEntry<GTBoatItem> TREATED_WOOD_BOAT = REGISTRATE
-            .item("treated_wood_boat", p -> new GTBoatItem(false, GTBoat.BoatType.TREATED_WOOD, new Item.Properties()))
+    public static ItemEntry<BoatItem> TREATED_WOOD_BOAT = REGISTRATE
+            .item("treated_wood_boat", p -> new BoatItem(false, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), new Item.Properties()))
             .lang("Treated Wood Boat")
             .register();
 
-    public static ItemEntry<GTBoatItem> RUBBER_CHEST_BOAT = REGISTRATE
-            .item("rubber_chest_boat", p -> new GTBoatItem(true, GTBoat.BoatType.RUBBER, new Item.Properties()))
+    public static ItemEntry<BoatItem> RUBBER_CHEST_BOAT = REGISTRATE
+            .item("rubber_chest_boat", p -> new BoatItem(true, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), new Item.Properties()))
             .lang("Rubber Boat with Chest")
             .register();
 
-    public static ItemEntry<GTBoatItem> TREATED_WOOD_CHEST_BOAT = REGISTRATE
+    public static ItemEntry<BoatItem> TREATED_WOOD_CHEST_BOAT = REGISTRATE
             .item("treated_wood_chest_boat",
-                    p -> new GTBoatItem(true, GTBoat.BoatType.TREATED_WOOD, new Item.Properties()))
+                    p -> new BoatItem(true, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), new Item.Properties()))
             .lang("Treated Wood Boat with Chest")
             .register();
 

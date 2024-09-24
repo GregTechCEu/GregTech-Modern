@@ -30,17 +30,5 @@ public class GTEntityTypes {
             .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
             .register();
 
-    public static final EntityEntry<GTBoat> BOAT = REGISTRATE
-            .<GTBoat>entity("boat", GTBoat::new, MobCategory.MISC)
-            .lang("Boat")
-            .properties(builder -> builder.sized(1.375f, 0.5625f).clientTrackingRange(10))
-            .register();
-
-    public static final EntityEntry<GTChestBoat> CHEST_BOAT = REGISTRATE
-            .<GTChestBoat>entity("chest_boat", GTChestBoat::new, MobCategory.MISC)
-            .lang("Chest Boat")
-            .properties(builder -> builder.sized(1.375f, 0.5625f).clientTrackingRange(10))
-            .register();
-
     public static void init() {}
 }
