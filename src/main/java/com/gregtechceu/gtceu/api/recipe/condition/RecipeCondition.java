@@ -42,7 +42,7 @@ public abstract class RecipeCondition {
 
     public static <
             RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
-        return instance.group(Codec.BOOL.fieldOf("reverse").forGetter(val -> val.isReverse));
+        return instance.group(Codec.BOOL.optionalFieldOf("reverse", false).forGetter(val -> val.isReverse));
     }
 
     protected boolean isReverse;
