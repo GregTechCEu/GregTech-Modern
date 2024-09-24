@@ -207,7 +207,7 @@ public class GTRecipeComponents {
                 if (type != null) {
                     RecipeCondition condition = type.factory.createDefault();
                     if (condition != null) {
-                        return condition.deserialize(GsonHelper.getAsJsonObject(jsonObject, "data", new JsonObject()));
+                        return condition.deserialize(jsonObject);
                     }
                 }
             } else if (from instanceof Tag tag) {
