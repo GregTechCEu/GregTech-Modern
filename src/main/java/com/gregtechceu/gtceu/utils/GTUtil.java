@@ -228,7 +228,7 @@ public class GTUtil {
             return GTValues.MAX_TRUE;
         }
 
-        return (byte) ((60 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
+        return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
     public static ItemStack copy(ItemStack... stacks) {
