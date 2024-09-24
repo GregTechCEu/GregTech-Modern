@@ -7451,5 +7451,16 @@
     "gtceu.machine.me.stocking_item.tooltip.1": "Авто-вытягивание из МЕ сети будет автоматически пополнять первые 16 предметов в МЕ сети, обновляясь раз в 5 сек.",
     "gtceu.machine.me_import_fluid_hatch.configs.tooltip": "Держит 16 жидкостей в наличии",
     "gtceu.machine.me_import_item_hatch.configs.tooltip": "Держит 16 предметов в наличии",
-    "block.gtceu.pattern_buffer.desc.0": "§fПозволяет прямое использование §66AE2 хранилища шаблонов§f в Gregtech структурах."
+    "block.gtceu.pattern_buffer.desc.0": "§fПозволяет прямое использование §66AE2 хранилища шаблонов§f в Gregtech структурах.",
+    "block.gtceu.pattern_buffer_proxy.desc.2": "§fПусть фабрика растет!",
+    "gtceu.jei.bedrock_ore_diagram": "Схема руды коренной породы",
+    "entity.gtceu.chest_boat": "Лодка с сундуком",
+    "gtceu.dummy": "Заглушка",
+    "block.gtceu.pattern_buffer.desc.1": "§6Шаблоны AE2 могут использовать все что хранится в §6общих инвентарях§f.",
+    "block.gtceu.pattern_buffer.desc.2": "§fСоедини §6Прокси-буфер МЕ Шаблонов§f с помощью §bФлешки§f с другими машинами!",
+    "command.gtceu.dump_data.success": "Ресурсы %s скопированы из реестра %s в %s",
+    "command.gtceu.place_vein.failure": "Не удалось разместить жилу %s в позиции %s",
+    "block.gtceu.pattern_buffer_proxy.desc.0": "§fПозволяет соединить множество машин с одним §6Буфером ME Шаблонов§f.",
+    "block.gtceu.pattern_buffer_proxy.desc.1": "§fВсе подключенные прокси будут использовать шаблоны, хранящиеся в §6Исходном буфере§f.",
+    "command.gtceu.place_vein.success": "Жила %s размещена в позиции %s"
 }
