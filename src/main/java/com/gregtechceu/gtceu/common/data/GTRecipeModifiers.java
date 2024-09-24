@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -12,6 +13,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
@@ -30,6 +33,7 @@ import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -243,19 +247,22 @@ public class GTRecipeModifiers {
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
             final int FURNACE_DURATION = 128;
             var parallel = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
-            // double durationForParallel = Math.max(1.0, FURNACE_DURATION * 2 * parallel.getSecond() / Math.max(1,
-            // maxParallel * 1.0));
-
-            recipe = parallel.getFirst() == recipe ? parallel.getFirst().copy() : parallel.getFirst();
 
             int parallelValue = parallel.getSecond();
-            long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
-            result.init(eut, Math.max(1, 256 * parallelValue / maxParallel), parallelValue, params.getOcAmount());
-            /*
-             * recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
-             * recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-             * ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
-             */
+            long eut = 4 * Math.max(1, (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount());
+            int duration = (int) Math.max(1, FURNACE_DURATION * 2 * parallelValue / Math.max(1, maxParallel * 1.0));
+
+            recipe.duration = duration;
+            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
+                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(),
+                    0, null, null)));
+
+            var re = RecipeHelper.applyOverclock(new OverclockingLogic((p, r, maxVoltage) -> {
+                OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
+                        .runOverclockingLogic(params, result, maxVoltage);
+            }), recipe, coilMachine.getOverclockVoltage(), params, result);
+            recipe = recipe.copy(ContentModifier.multiplier(parallelValue), false);
+
             return recipe;
         }
         return null;

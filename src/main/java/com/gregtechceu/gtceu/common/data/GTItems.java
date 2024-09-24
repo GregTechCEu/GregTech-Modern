@@ -31,6 +31,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
@@ -2697,6 +2698,27 @@ public class GTItems {
             .onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
+
+    public static ItemEntry<GTBoatItem> RUBBER_BOAT = REGISTRATE
+            .item("rubber_boat", p -> new GTBoatItem(false, GTBoat.BoatType.RUBBER, new Item.Properties()))
+            .lang("Rubber Boat")
+            .register();
+
+    public static ItemEntry<GTBoatItem> TREATED_WOOD_BOAT = REGISTRATE
+            .item("treated_wood_boat", p -> new GTBoatItem(false, GTBoat.BoatType.TREATED_WOOD, new Item.Properties()))
+            .lang("Treated Wood Boat")
+            .register();
+
+    public static ItemEntry<GTBoatItem> RUBBER_CHEST_BOAT = REGISTRATE
+            .item("rubber_chest_boat", p -> new GTBoatItem(true, GTBoat.BoatType.RUBBER, new Item.Properties()))
+            .lang("Rubber Boat with Chest")
+            .register();
+
+    public static ItemEntry<GTBoatItem> TREATED_WOOD_CHEST_BOAT = REGISTRATE
+            .item("treated_wood_chest_boat",
+                    p -> new GTBoatItem(true, GTBoat.BoatType.TREATED_WOOD, new Item.Properties()))
+            .lang("Treated Wood Boat with Chest")
+            .register();
 
     public static void init() {
         generateMaterialItems();

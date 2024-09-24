@@ -110,17 +110,21 @@ class RecipeRunner {
             }
         }
 
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int holderTier = holder.getChanceTier();
-        var cache = this.chanceCaches.get(cap);
-        chancedContents = logic.roll(chancedContents, function, recipeTier, holderTier, cache, recipe.parallels, cap);
+        // Only roll if there's anything to roll for
+        if (!chancedContents.isEmpty()) {
+            int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+            int holderTier = holder.getChanceTier();
+            var cache = this.chanceCaches.get(cap);
+            chancedContents = logic.roll(chancedContents, function, recipeTier, holderTier, cache, recipe.parallels,
+                    cap);
 
-        if (chancedContents == null) return;
-        for (Content cont : chancedContents) {
-            if (cont.slotName == null) {
-                this.content.content.add(cont.content);
-            } else {
-                this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+            if (chancedContents == null) return;
+            for (Content cont : chancedContents) {
+                if (cont.slotName == null) {
+                    this.content.content.add(cont.content);
+                } else {
+                    this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                }
             }
         }
     }

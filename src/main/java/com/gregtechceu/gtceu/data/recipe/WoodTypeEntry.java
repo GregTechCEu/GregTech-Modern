@@ -80,6 +80,14 @@ public final class WoodTypeEntry {
     public final Item chestBoat;
     @Nullable
     public final String chestBoatRecipeName;
+    @Nullable
+    public final Item sign;
+    @Nullable
+    public final String signRecipeName;
+    @Nullable
+    public final Item hangingSign;
+    @Nullable
+    public final String hangingSignRecipeName;
     public final Material material;
 
     public final boolean addLogOreDict;
@@ -115,6 +123,8 @@ public final class WoodTypeEntry {
                           @Nullable Item stairs, @Nullable String stairsRecipeName, boolean addStairsCraftingRecipe,
                           @Nullable Item boat, @Nullable String boatRecipeName,
                           @Nullable Item chestBoat, @Nullable String chestBoatRecipeName,
+                          @Nullable Item sign, @Nullable String signRecipeName,
+                          @Nullable Item hangingSign, @Nullable String hangingSignRecipeName,
                           @Nullable Material material,
                           boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict,
                           boolean addSlabsOreDict,
@@ -153,6 +163,10 @@ public final class WoodTypeEntry {
         this.boatRecipeName = boatRecipeName;
         this.chestBoat = chestBoat;
         this.chestBoatRecipeName = chestBoatRecipeName;
+        this.sign = sign;
+        this.signRecipeName = signRecipeName;
+        this.hangingSign = hangingSign;
+        this.hangingSignRecipeName = hangingSignRecipeName;
         this.material = material != null ? material : GTMaterials.Wood;
 
         this.addLogOreDict = addLogOreDict;
@@ -219,6 +233,10 @@ public final class WoodTypeEntry {
         private String boatRecipeName;
         private Item chestBoat = null;
         private String chestBoatRecipeName;
+        private Item sign = null;
+        private String signRecipeName;
+        private Item hangingSign = null;
+        private String hangingSignRecipeName;
         @Nullable
         private Material material = null;
 
@@ -463,6 +481,32 @@ public final class WoodTypeEntry {
         }
 
         /**
+         * Add an entry for a sign
+         *
+         * @param sign           the sign to add
+         * @param signRecipeName the recipe name for crafting the sign
+         * @return this
+         */
+        public Builder sign(@NotNull Item sign, @Nullable String signRecipeName) {
+            this.sign = sign;
+            this.signRecipeName = signRecipeName;
+            return this;
+        }
+
+        /**
+         * Add an entry for a sign
+         *
+         * @param hangingSign           the hanging sign to add
+         * @param hangingSignRecipeName the recipe name for crafting the hanging sign
+         * @return this
+         */
+        public Builder hangingSign(@NotNull Item hangingSign, @Nullable String hangingSignRecipeName) {
+            this.hangingSign = hangingSign;
+            this.hangingSignRecipeName = hangingSignRecipeName;
+            return this;
+        }
+
+        /**
          * Specify material for wood entry. If not provided, {@link GTMaterials#Wood} will be used
          *
          * @param material material for wood entry
@@ -573,6 +617,7 @@ public final class WoodTypeEntry {
                     fence, fenceRecipeName, fenceGate, fenceGateRecipeName,
                     stairs, stairsRecipeName, addStairsCraftingRecipe,
                     boat, boatRecipeName, chestBoat, chestBoatRecipeName,
+                    sign, signRecipeName, hangingSign, hangingSignRecipeName,
                     material,
                     addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
                     addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
