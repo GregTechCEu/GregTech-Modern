@@ -37,7 +37,6 @@ public class FluidStackPayload extends ObjectTypedPayload<FluidStack> {
         } catch (ClassCastException exception) {
             // LDLib FluidStack stores amount as Long tag, which will throw an error
             // Loads from tag using LDLib FluidStack, then converts it to a Forge FluidStack
-            GTCEu.LOGGER.warn("Old FluidStack Tag Detected");
             var stack = com.lowdragmc.lowdraglib.side.fluid.FluidStack.loadFromTag((CompoundTag) tag);
             payload = FluidHelperImpl.toFluidStack(stack);
         }
