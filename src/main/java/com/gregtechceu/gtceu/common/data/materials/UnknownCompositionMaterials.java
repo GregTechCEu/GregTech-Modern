@@ -80,7 +80,6 @@ public class UnknownCompositionMaterials {
         ConstructionFoam = new Material.Builder(GTCEu.id("construction_foam"))
                 .fluid().color(0x808080).buildAndRegister();
 
-
         SulfuricHeavyFuel = new Material.Builder(GTCEu.id("sulfuric_heavy_fuel"))
                 .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
 
