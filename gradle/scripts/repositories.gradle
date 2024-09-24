@@ -45,4 +45,12 @@ repositories {
     maven { url "https://maven.architectury.dev/" }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+        }
+    }
 }
