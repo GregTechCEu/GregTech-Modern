@@ -2758,23 +2758,23 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<BoatItem> RUBBER_BOAT = REGISTRATE
-            .item("rubber_boat", p -> new BoatItem(false, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), new Item.Properties()))
+            .item("rubber_boat", p -> new BoatItem(false, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), p))
             .lang("Rubber Boat")
             .register();
 
     public static ItemEntry<BoatItem> TREATED_WOOD_BOAT = REGISTRATE
-            .item("treated_wood_boat", p -> new BoatItem(false, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), new Item.Properties()))
+            .item("treated_wood_boat", p -> new BoatItem(false, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), p))
             .lang("Treated Wood Boat")
             .register();
 
     public static ItemEntry<BoatItem> RUBBER_CHEST_BOAT = REGISTRATE
-            .item("rubber_chest_boat", p -> new BoatItem(true, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), new Item.Properties()))
+            .item("rubber_chest_boat", p -> new BoatItem(true, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), p))
             .lang("Rubber Boat with Chest")
             .register();
 
     public static ItemEntry<BoatItem> TREATED_WOOD_CHEST_BOAT = REGISTRATE
             .item("treated_wood_chest_boat",
-                    p -> new BoatItem(true, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), new Item.Properties()))
+                    p -> new BoatItem(true, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), p))
             .lang("Treated Wood Boat with Chest")
             .register();
 
