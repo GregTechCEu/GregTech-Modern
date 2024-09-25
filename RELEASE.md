@@ -17,6 +17,8 @@
 - Rubber log variants now have the burnable tag ([#1914](https://github.com/GregTechCEu/GregTech-Modern/pull/1914))
 - Fixed solid boilers not being able to burn some vanilla furnace fuels ([#1998](https://github.com/GregTechCEu/GregTech-Modern/pull/1998))
 - Various texture fixes ([#1974](https://github.com/GregTechCEu/GregTech-Modern/pull/1974))
+- Multiblock machines now calculate their tier correctly ([#2019](https://github.com/GregTechCEu/GregTech-Modern/pull/2019))
+- Recipe fixes 🔥 ([#2022](https://github.com/GregTechCEu/GregTech-Modern/pull/2022) and [#2023](https://github.com/GregTechCEu/GregTech-Modern/pull/2023))
 - Other miscellaneous fixes
 
 ### Changed
@@ -31,4 +33,4 @@
 - Covers that have no plan to be implemented have been removed ([#1961](https://github.com/GregTechCEu/GregTech-Modern/pull/1961))
 
 \
-**Full Changelog found [here](https://github.com/GregTechCEu/GregTech-Modern/compare/1.20.1-1.4.1+patch.2...1.20.1-1.4.2)**
+**Full Changelog found [here](https://github.com/GregTechCEu/GregTech-Modern/compare/1.20.1-1.4.2...1.20.1-1.4.4)**
