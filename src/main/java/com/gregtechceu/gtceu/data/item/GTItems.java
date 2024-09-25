@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
+import com.gregtechceu.gtceu.data.enumproxy.GTEnumProxies;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.material.GTFoods;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -2135,11 +2136,8 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
-    public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", ComponentItem::new)
-            .lang("Crafting Table Cover")
-            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-            .register();
-    public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE.item("shutter_module_cover", ComponentItem::new)
+    public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
+            .item("shutter_module_cover", ComponentItem::create)
             .lang("Shutter Module")
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
@@ -2157,14 +2155,6 @@ public class GTItems {
             .item("ender_fluid_link_cover", ComponentItem::new)
             .lang("Ender Fluid Link")
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-            .register();
-    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE
-            .item("digital_interface_cover", ComponentItem::new)
-            .lang("Digital Interface")
-            .register();
-    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE
-            .item("wireless_digital_interface_cover", ComponentItem::new)
-            .lang("Wireless Digital Interface")
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
             .item("fluid_voiding_cover", ComponentItem::new)
@@ -2766,6 +2756,27 @@ public class GTItems {
             .onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
+
+    public static ItemEntry<BoatItem> RUBBER_BOAT = REGISTRATE
+            .item("rubber_boat", p -> new BoatItem(false, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), p))
+            .lang("Rubber Boat")
+            .register();
+
+    public static ItemEntry<BoatItem> TREATED_WOOD_BOAT = REGISTRATE
+            .item("treated_wood_boat", p -> new BoatItem(false, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), p))
+            .lang("Treated Wood Boat")
+            .register();
+
+    public static ItemEntry<BoatItem> RUBBER_CHEST_BOAT = REGISTRATE
+            .item("rubber_chest_boat", p -> new BoatItem(true, GTEnumProxies.RUBBER_BOAT_PROXY.getValue(), p))
+            .lang("Rubber Boat with Chest")
+            .register();
+
+    public static ItemEntry<BoatItem> TREATED_WOOD_CHEST_BOAT = REGISTRATE
+            .item("treated_wood_chest_boat",
+                    p -> new BoatItem(true, GTEnumProxies.TREATED_WOOD_BOAT_PROXY.getValue(), p))
+            .lang("Treated Wood Boat with Chest")
+            .register();
 
     public static void init() {
         generateMaterialItems();

@@ -72,6 +72,11 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
                     new FluidStack(fluid.builtInRegistryHolder(),
                             (int) fluidEmiStack.getAmount(), fluidEmiStack.getComponentChanges());
         }
+
+        if (LDLib.isJeiLoaded() && ingredient instanceof FluidStack fluidStack) {
+            ingredient = new FluidStack(fluidStack.getFluidHolder(), fluidStack.getAmount(),
+                    fluidStack.getComponentsPatch());
+        }
         return ingredient;
     }
 }

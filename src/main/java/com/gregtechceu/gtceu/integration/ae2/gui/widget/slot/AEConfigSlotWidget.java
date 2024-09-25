@@ -49,21 +49,34 @@ public class AEConfigSlotWidget extends Widget {
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
-        if (slot.getConfig() == null && mouseOverConfig(mouseX, mouseY)) {
-            List<Component> hoverStringList = new ArrayList<>();
-            hoverStringList.add(Component.translatable("gtceu.gui.config_slot"));
-            if (parentWidget.isAutoPull()) {
-                hoverStringList.add(Component.translatable("gtceu.gui.config_slot.auto_pull_managed"));
-            } else {
-                if (!parentWidget.isStocking()) {
-                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set"));
-                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.scroll"));
+        if (slot.getConfig() == null) {
+            if (mouseOverConfig(mouseX, mouseY)) {
+                List<Component> hoverStringList = new ArrayList<>();
+                hoverStringList.add(Component.translatable("gtceu.gui.config_slot"));
+                if (parentWidget.isAutoPull()) {
+                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.auto_pull_managed"));
                 } else {
-                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set_only"));
+                    if (!parentWidget.isStocking()) {
+                        hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set"));
+                        hoverStringList.add(Component.translatable("gtceu.gui.config_slot.scroll"));
+                    } else {
+                        hoverStringList.add(Component.translatable("gtceu.gui.config_slot.set_only"));
+                    }
+                    hoverStringList.add(Component.translatable("gtceu.gui.config_slot.remove"));
                 }
-                hoverStringList.add(Component.translatable("gtceu.gui.config_slot.remove"));
+                graphics.renderTooltip(Minecraft.getInstance().font, hoverStringList, Optional.empty(), mouseX, mouseY);
             }
-            graphics.renderTooltip(Minecraft.getInstance().font, hoverStringList, Optional.empty(), mouseX, mouseY);
+        } else {
+            GenericStack item = null;
+            if (mouseOverConfig(mouseX, mouseY)) {
+                item = slot.getConfig();
+            } else if (mouseOverStock(mouseX, mouseY)) {
+                item = slot.getStock();
+            }
+            if (item != null) {
+                graphics.renderTooltip(Minecraft.getInstance().font, GenericStack.wrapInItemStack(item), mouseX,
+                        mouseY);
+            }
         }
     }
 

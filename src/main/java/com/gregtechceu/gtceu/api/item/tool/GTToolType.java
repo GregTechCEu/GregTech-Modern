@@ -157,7 +157,7 @@ public class GTToolType {
                     .attackDamage(1.0F)
                     .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
                             ToolModeSwitchBehavior.INSTANCE))
-            .sound(GTSoundEntries.WRENCH_TOOL)
+            .sound(GTSoundEntries.WRENCH_TOOL, true)
             .symbol('w')
             .build();
     public static final GTToolType FILE = GTToolType.builder("file")
@@ -177,7 +177,7 @@ public class GTToolType {
                     .blockBreaking().crafting()
                     .attackDamage(2.0F)
                     .sneakBypassUse().behaviors(RotateRailBehavior.INSTANCE))
-            .sound(new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS))
+            .sound(new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS), true)
             .symbol('c')
             .build();
     public static final GTToolType SCREWDRIVER = GTToolType.builder("screwdriver")
@@ -204,7 +204,7 @@ public class GTToolType {
                             1.0F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F))
-            .sound(GTSoundEntries.WIRECUTTER_TOOL)
+            .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
             .symbol('x')
             .build();
     public static final GTToolType KNIFE = GTToolType.builder("knife")

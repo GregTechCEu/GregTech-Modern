@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferProxyRecipeHandler;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -49,6 +50,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
 
     @Persisted
     @Getter
+    @DescSynced
     private BlockPos bufferPos;
 
     public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
@@ -114,7 +116,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         var buffer = getBuffer();
-        return buffer != null && super.shouldOpenUI(player, hand, hit);
+        return buffer != null;
     }
 
     @Override

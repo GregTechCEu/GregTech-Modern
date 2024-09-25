@@ -12,6 +12,7 @@ description = "${mod_description}"
 logoFile = "icon.png"
 displayURL = "${mod_url}"
 credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
+enumExtensions="META-INF/enum_extensions.json"
 
 [[mixins]]
 config="${mod_id}.mixins.json"

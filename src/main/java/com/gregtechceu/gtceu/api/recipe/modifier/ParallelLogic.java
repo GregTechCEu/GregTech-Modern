@@ -126,14 +126,14 @@ public class ParallelLogic {
                 // If we are voiding items, reset the item limit to the maximum number of parallels
                 if (voiding) {
                     if (modifiedParallelAmounts.containsKey(cap)) {
-                        modifiedParallelAmounts.put(cap, modifiedParallelAmounts.getInt(cap) + parallelAmount);
+                        modifiedParallelAmounts.put(cap, Math.min(modifiedParallelAmounts.getInt(cap), parallelAmount));
                     } else {
                         modifiedParallelAmounts.put(cap, parallelAmount);
                     }
                 } else {
                     if (modifiedParallelAmounts.containsKey(cap)) {
-                        modifiedParallelAmounts.put(cap, modifiedParallelAmounts.getInt(cap) +
-                                cap.limitParallel(recipe, holder, parallelAmount));
+                        modifiedParallelAmounts.put(cap, Math.min(modifiedParallelAmounts.getInt(cap),
+                                cap.limitParallel(recipe, holder, parallelAmount)));
                     } else {
                         modifiedParallelAmounts.put(cap, cap.limitParallel(recipe, holder, parallelAmount));
                     }

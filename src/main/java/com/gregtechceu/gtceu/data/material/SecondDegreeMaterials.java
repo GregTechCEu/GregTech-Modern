@@ -78,7 +78,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 4, Iron, 1)
                 .buildAndRegister();
 
-        Echo = new Material.Builder(GTCEu.id("echo"))
+        EchoShard = new Material.Builder(GTCEu.id("echo_shard"))
                 .gem(3)
                 .color(0x002b2d).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, GENERATE_ROD)

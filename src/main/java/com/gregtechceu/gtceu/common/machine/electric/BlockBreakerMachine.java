@@ -436,6 +436,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+            if (side == getOutputFacingItems()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
+            }
         }
         return super.sideTips(player, pos, state, toolTypes, side);
     }

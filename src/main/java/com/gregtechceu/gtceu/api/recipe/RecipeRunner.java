@@ -110,20 +110,21 @@ class RecipeRunner {
             }
         }
 
-        // Roll the dice for every parallel
-        List<Content> rolls = new ArrayList<>();
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        for (int parallels = recipe.parallels; parallels > 0; parallels--) {
-            List<Content> roll = logic.roll(chancedContents, function,
-                    recipeTier, holder.getChanceTier(), this.chanceCaches.get(cap));
-            if (roll != null) rolls.addAll(roll);
-        }
+        // Only roll if there's anything to roll for
+        if (!chancedContents.isEmpty()) {
+            int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+            int holderTier = holder.getChanceTier();
+            var cache = this.chanceCaches.get(cap);
+            chancedContents = logic.roll(chancedContents, function, recipeTier, holderTier, cache, recipe.parallels,
+                    cap);
 
-        for (Content cont : rolls) {
-            if (cont.slotName == null) {
-                this.content.content.add(cont.content);
-            } else {
-                this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+            if (chancedContents == null) return;
+            for (Content cont : chancedContents) {
+                if (cont.slotName == null) {
+                    this.content.content.add(cont.content);
+                } else {
+                    this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                }
             }
         }
     }

@@ -271,7 +271,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
+            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, getMachine().getFluidCapFilter(facing), level,
+                    pos.relative(facing),
                     facing.getOpposite());
         }
     }
@@ -280,7 +281,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.importToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
+            FluidTransferHelper.importToTarget(this, Integer.MAX_VALUE, getMachine().getFluidCapFilter(facing), level,
+                    pos.relative(facing),
                     facing.getOpposite());
         }
     }

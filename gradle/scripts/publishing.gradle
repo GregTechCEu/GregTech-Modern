@@ -9,9 +9,11 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = project.maven_group
             artifactId = project.archivesBaseName
-            version = project.mod_version
+            version = project.version
 
             from components.java
+
+            artifact sourcesJar
         }
     }
 
@@ -22,7 +24,7 @@ publishing {
             url "https://maven.firstdarkdev.xyz/snapshots"
             credentials {
                 username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASS")
+                password System.getenv("MAVEN_PASSWORD")
             }
         }
     }
