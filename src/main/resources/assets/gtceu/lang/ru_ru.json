@@ -7490,5 +7490,8 @@
     "item.gtceu.treated_wood_chest_boat": "Обработанная деревянная лодка с сундуком",
     "material.gtceu.echo_shard": "Осколок эха",
     "material.gtceu.sculk": "Скалк",
-    "material.gtceu.hydrogen_iodide": "Йодид водорода"
+    "material.gtceu.hydrogen_iodide": "Йодид водорода",
+    "metaarmor.nms.boosted_jump.enabled": "NanoMuscle™ Suite: Прыгучесть включена",
+    "recipe.condition.adjacent_block.tooltip": "Блоки вокруг",
+    "metaarmor.nms.boosted_jump.disabled": "NanoMuscle™ Suite: Прыгучесть выключена"
 }
