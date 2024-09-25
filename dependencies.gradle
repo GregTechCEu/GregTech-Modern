@@ -13,9 +13,9 @@ dependencies {
     modImplementation forge.flywheel
 
     // JEI
-    modCompileOnly(forge.jei.common.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.impl) { transitive = false }
+    modImplementation(forge.jei.common.api) { transitive = false }
+    modImplementation(forge.jei.forge.api) { transitive = false }
+    modImplementation(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
@@ -24,7 +24,7 @@ dependencies {
 
     // EMI
     //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modImplementation forge.emi
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
@@ -64,6 +64,10 @@ dependencies {
     // JAVD
     modImplementation(forge.javd) { transitive = false }
     modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
+
+    modRuntimeOnly("curse.maven:observable-509575:5643037")
+    modRuntimeOnly ("curse.maven:spark-361579:4738952")
+    modRuntimeOnly ("curse.maven:kotlin-for-forge-351264:4578885")
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)
