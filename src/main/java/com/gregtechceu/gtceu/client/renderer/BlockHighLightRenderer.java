@@ -143,19 +143,19 @@ public class BlockHighLightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeStructure = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
-                    pipeBlockItem.getBlock().getStructure() :
-                    null;
-            if (pipeStructure != null && blockEntity instanceof PipeBlockEntity pipeBlockEntity &&
-                    pipeBlockEntity.getStructure() == pipeStructure) {
+            var pipeBlock = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
+                    pipeBlockItem.getBlock() : null;
+            var pipeStructure = pipeBlock == null ? null : pipeBlock.getStructure();
+            if (pipeStructure != null && pipeBlock.hasPipeCollisionChangingItem(level, blockPos, player) &&
+                    blockEntity instanceof PipeBlockEntity pipeBlockEntity) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ?
-                        pipeStructure.getPipeTexture(true) : null);
+                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) &&
+                        pipeBlockEntity.canConnectTo(side) ? pipeStructure.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }
