@@ -26,7 +26,6 @@ tasks.register('slimJar', ShadowJar) {
 
 afterEvaluate {
     tasks.withType(ShadowJar).configureEach {
-        dependsOn shadowJar.configurations
         minimize()
         relocate("org.jgrapht", "${maven_group}.repack.org.jgrapht")
         relocate("org.jheaps", "${maven_group}.repack.org.jheaps")
