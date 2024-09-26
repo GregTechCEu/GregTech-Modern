@@ -450,6 +450,20 @@ public class GTModels {
         {
             JsonObject json = new JsonObject();
             json.addProperty("loader", "gtceu:pipe");
+            String modelId = LaserStructure.MIRROR.getModel().getLoc().toString();
+            json.addProperty("model_id", modelId);
+
+            LaserPipeBlock block = GTBlocks.LASER_REFLECTOR_PIPE.get();
+            ResourceLocation blockId = GTBlocks.LASER_REFLECTOR_PIPE.getId();
+            ResourceLocation blockModelId = blockId.withPrefix("block/");
+            GTDynamicResourcePack.addBlockModel(blockModelId, json);
+            GTDynamicResourcePack.addItemModel(blockId, json);
+
+            createPipeBlockState(blockId, blockModelId, block);
+        }
+        {
+            JsonObject json = new JsonObject();
+            json.addProperty("loader", "gtceu:pipe");
             String modelId = OpticalStructure.INSTANCE.getModel().getLoc().toString();
             json.addProperty("model_id", modelId);
 
