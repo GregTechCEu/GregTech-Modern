@@ -29,6 +29,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -208,14 +209,16 @@ public class ToolEventHandlers {
                 }
             }
         }
+        GTCEu.LOGGER.info("[Debug] Method onPlayerKilledEntity ran");
         return drops;
     }
 
     @SubscribeEvent
-    public static void onPlayerKilledEntity(LivingDeathEvent event) {
+    public static void onPlayerKilledEntity(LivingDropsEvent event) {
         Entity player = event.getSource().getEntity();
         if (player instanceof Player) {
-            ToolEventHandlers.onPlayerKilledEntity(((Player) player).getMainHandItem(), (Player) player, event.getEntity().captureDrops());
+            ToolEventHandlers.onPlayerKilledEntity(((Player) player).getMainHandItem(), (Player) player, event.getDrops());
+            GTCEu.LOGGER.info("[Debug] ForgeEvent onPlayerKilledEntity ran");
         }
     }
 
