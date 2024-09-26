@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -189,4 +191,32 @@ public class ToolEventHandlers {
             event.setCanceled(true);
         }
     }
+
+    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player, Collection<ItemEntity> drops) {
+        CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
+
+        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
+            Iterator<ItemEntity> dropItr = drops.iterator();
+
+            while (dropItr.hasNext()) {
+                ItemStack dropStack = dropItr.next().getItem();
+                ItemEntity drop = new ItemEntity(EntityType.ITEM, player.level());
+
+                drop.setItem(dropStack);
+                if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
+                    dropItr.remove();
+                }
+            }
+        }
+        return drops;
+    }
+
+    @SubscribeEvent
+    public static void onPlayerKilledEntity(LivingDeathEvent event) {
+        Entity player = event.getSource().getEntity();
+        if (player instanceof Player) {
+            ToolEventHandlers.onPlayerKilledEntity(((Player) player).getMainHandItem(), (Player) player, event.getEntity().captureDrops());
+        }
+    }
+
 }
