@@ -1183,17 +1183,17 @@ public class GTMachines {
             HV, EV, IV, LuV, ZPM, UV);
 
     public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
     public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
     public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
 
     //////////////////////////////////////
     // ******* Multiblock *******//
@@ -2127,9 +2127,9 @@ public class GTMachines {
                                     .setMinGlobalLimited(PowerSubstationMachine.MIN_CASINGS)
                                     .or(autoAbilities(true, false, false))
                                     .or(abilities(PartAbility.INPUT_ENERGY, PartAbility.SUBSTATION_INPUT_ENERGY,
-                                            PartAbility.INPUT_LASER).setMinGlobalLimited(1))
+                                            PartAbility.LASER_RECEPTION).setMinGlobalLimited(1))
                                     .or(abilities(PartAbility.OUTPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY,
-                                            PartAbility.OUTPUT_LASER).setMinGlobalLimited(1)))
+                                            PartAbility.LASER_TRANSMISSION).setMinGlobalLimited(1)))
                     .where('G', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('B', Predicates.powerSubstationBatteries())
                     .build())

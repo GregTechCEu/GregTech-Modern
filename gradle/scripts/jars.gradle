@@ -14,9 +14,6 @@ obfuscation {
         archiveClassifier = "slim"
     }
     reobfuscate(tasks.named('shadowJar'), sourceSets.main) {
-        archiveClassifier = "shadow"
-    }
-    reobfuscate(tasks.named('shadowJar'), sourceSets.main) {
         archiveClassifier = null
         archiveClassifier.convention(null)
     }

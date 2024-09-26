@@ -128,7 +128,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 if (PartAbility.SUBSTATION_OUTPUT_ENERGY.isApplicable(partBlock))
                     return 2;
 
-                if (PartAbility.OUTPUT_LASER.isApplicable(partBlock))
+                if (PartAbility.LASER_TRANSMISSION.isApplicable(partBlock))
                     return 3;
             }
 
@@ -154,8 +154,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .or(abilities(PartAbility.OUTPUT_ENERGY).setPreviewCount(2))
                 .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).setPreviewCount(1))
                 .or(abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY).setPreviewCount(1))
-                .or(abilities(PartAbility.INPUT_LASER).setPreviewCount(1))
-                .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
+                .or(abilities(PartAbility.LASER_RECEPTION).setPreviewCount(1))
+                .or(abilities(PartAbility.LASER_TRANSMISSION).setPreviewCount(1));
     }
 
     @Override
