@@ -9,48 +9,58 @@ import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GTToolWidget extends WidgetGroup {
 
-    protected final static ImmutableList<Integer> SLOT_LOCS = ImmutableList.of(
-            3, 3, // pickaxe
-            21, 3, // shovel
-            39, 3, // axe
-            57, 3, // sword
-            75, 3, // hoe
-            57, 39, // butchery knife
-            39, 57, // buzz saw
-            39, 39, // chainsaw
-            147, 21, // crowbar
-            3, 75, // drill lv
-            21, 75, // drill mv
-            39, 75, // drill hv
-            57, 75, // drill ev
-            75, 75, // drill iv
-            129, 21, // file
-            129, 3, // hard hammer
-            57, 21, // knife
-            147, 3, // mining hammer
-            3, 21, // mortar
-            3, 57, // plunger
-            39, 21, // saw
-            129, 39, // screwdriver
-            147, 39, // screwdriver lv
-            21, 57, // scythe
-            39, 93, // shears
-            3, 93, // soft mallet
-            21, 21, // spade
-            129, 57, // wire cutter
-            147, 57, // wire cutter lv
-            129, 75, // wire cutter hv
-            147, 75, // wire cutter iv
-            129, 93, // wrench
-            147, 93, // wrench lv
-            129, 111, // wrench hv
-            147, 111 // wrench iv
-    );
+    protected static Map<Integer, Pair<Integer, Integer>> SLOT_LOCS = new HashMap<>();
+
+    static {
+        SLOT_LOCS.put( 1, guiPairs(0,0)); // pickaxe
+        SLOT_LOCS.put( 2, guiPairs(1,0)); // shovel
+        SLOT_LOCS.put( 3, guiPairs(2,0)); // axe
+        SLOT_LOCS.put( 4, guiPairs(3,0)); // sword
+        SLOT_LOCS.put( 5, guiPairs(4,0)); // hoe
+        SLOT_LOCS.put( 6, guiPairs(3,2)); // butchery knife
+        SLOT_LOCS.put( 7, guiPairs(2,3)); // buzz saw
+        SLOT_LOCS.put( 8, guiPairs(8,1)); // chainsaw
+        SLOT_LOCS.put( 9, guiPairs(7,5)); // crowbar
+        SLOT_LOCS.put(10, guiPairs(0,3)); // drill lv
+        //SLOT_LOCS.put(11, guiPairs(3,2)); // drill mv
+        //SLOT_LOCS.put(12, guiPairs(4,2)); // drill hv
+        //SLOT_LOCS.put(13, guiPairs(5,2)); // drill ev
+        //SLOT_LOCS.put(14, guiPairs(6,2)); // drill iv
+        SLOT_LOCS.put(15, guiPairs(7,2)); // file
+        SLOT_LOCS.put(16, guiPairs(7,0)); // hard hammer
+        SLOT_LOCS.put(17, guiPairs(3,1)); // knife
+        SLOT_LOCS.put(18, guiPairs(0,1)); // mining hammer
+        SLOT_LOCS.put(19, guiPairs(2,2)); // mortar
+        SLOT_LOCS.put(20, guiPairs(3,2)); // plunger
+        SLOT_LOCS.put(21, guiPairs(7,1)); // saw
+        SLOT_LOCS.put(22, guiPairs(7,3)); // screwdriver
+        SLOT_LOCS.put(23, guiPairs(8,3)); // screwdriver lv
+        SLOT_LOCS.put(24, guiPairs(4,1)); // scythe
+        SLOT_LOCS.put(25, guiPairs(0,3)); // shears
+        SLOT_LOCS.put(26, guiPairs(1,3)); // soft mallet
+        SLOT_LOCS.put(27, guiPairs(1,1)); // spade
+        SLOT_LOCS.put(28, guiPairs(7,4)); // wire cutter
+        SLOT_LOCS.put(29, guiPairs(8,4)); // wire cutter lv
+        //SLOT_LOCS.put(30, guiPairs(6,4)); // wire cutter hv
+        //SLOT_LOCS.put(31, guiPairs(7,4)); // wire cutter iv
+        SLOT_LOCS.put(32, guiPairs(7,6)); // wrench
+        SLOT_LOCS.put(33, guiPairs(8,6)); // wrench lv
+        //SLOT_LOCS.put(34, guiPairs(2,5)); // wrench hv
+        //SLOT_LOCS.put(35, guiPairs(3,5)); // wrench iv
+    }
+
+    private static Pair<Integer, Integer> guiPairs(int x, int y) {
+        return Pair.of(x * 18 + 2, y * 18 + 2);
+    }
 
     public GTToolWidget(Material material) {
         super(0, 0, 176, 166);
@@ -63,11 +73,13 @@ public class GTToolWidget extends WidgetGroup {
 
         NonNullList<ItemStack> items = recipeWrapper.items;
         ItemStackTransfer itemHandler = new ItemStackTransfer(items);
-        for(int i = 0; i < SLOT_LOCS.size(); i+= 2) {
-            final int finalI = i;
-            itemGroup.addWidget(new SlotWidget(itemHandler, i / 2, SLOT_LOCS.get(i), SLOT_LOCS.get(i + 1)).setCanTakeItems(false).setCanPutItems(false)
+        for(int i = 1; i < 81; i++) {
+            if(!SLOT_LOCS.containsKey(i)) continue;
+            if(items.get(i) == ItemStack.EMPTY) continue;
+            int finalI = i;
+            itemGroup.addWidget(new SlotWidget(itemHandler, i, SLOT_LOCS.get(i).left(), SLOT_LOCS.get(i).right()).setCanTakeItems(false).setCanPutItems(false)
                     .setIngredientIO(IngredientIO.INPUT)
-                    .setOnAddedTooltips((slot, tooltip) -> recipeWrapper.getTooltip(finalI / 2, tooltip))
+                    .setOnAddedTooltips((slot, tooltip) -> recipeWrapper.getTooltip(finalI, tooltip))
                     .setBackground(GuiTextures.SLOT));
         }
 
