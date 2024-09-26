@@ -6,6 +6,7 @@ shadowJar {
 
 slimJar {
     from sourceSets.main.output
+    configurations = [project.configurations.shadow]
     archiveClassifier = "dev-slim"
 }
 
