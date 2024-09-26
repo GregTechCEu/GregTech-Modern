@@ -31,13 +31,13 @@ Then, you can add it as a dependency, with `${mc_version}` being your Minecraft 
 ```groovy
 dependencies {
 	// Forge (see below block as well if you use Forge Gradle)
-	compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}")
+	implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}")
 
 	// NeoForge
-	compileOnly "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
+	implementation "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
 
 	// Architectury
-	modCompileOnly "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
+	modImplementation "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
 }
 ```
 
