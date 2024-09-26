@@ -38,3 +38,8 @@ runs:
           notifications
           jdks
           wrapper
+
+      # run gradlew jar to set up necessary files before shadow can break them in the Build step
+    - name: Pre-build
+      shell: bash
+      run: ./gradlew jar --build-cache

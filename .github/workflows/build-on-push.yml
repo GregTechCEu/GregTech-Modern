@@ -30,10 +30,6 @@ jobs:
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
 
-        # run gradlew jar to set up necessary files before shadow can break them in the Build step
-      - name: Setup Build part 2
-        run: ./gradlew jar --build-cache
-
       - name: Build
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew assemble --build-cache
