@@ -207,7 +207,7 @@ public class MaterialFlags {
             .requireProps(PropertyKey.DUST)
             .build();
 
-    // GCyM
+    // GCYM
     /**
      * Use to disable alloy blast recipes from generating
      */

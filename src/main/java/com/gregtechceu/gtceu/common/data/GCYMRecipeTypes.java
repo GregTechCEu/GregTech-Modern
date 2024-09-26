@@ -25,7 +25,7 @@ import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection
  * @author Rundas
  * @implNote Gregicality Multiblocks Recipe Types
  */
-public class GCyMRecipeTypes {
+public class GCYMRecipeTypes {
 
     //////////////////////////////////////
     // ******* Multiblock *******//

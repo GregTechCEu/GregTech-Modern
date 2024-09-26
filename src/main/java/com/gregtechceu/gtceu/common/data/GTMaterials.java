@@ -60,7 +60,7 @@ public class GTMaterials {
         HigherDegreeMaterials.register();
 
         // Gregicality Multiblocks
-        GCyMMaterials.register();
+        GCYMMaterials.register();
 
         /*
          * Register info for cyclical references
@@ -987,7 +987,7 @@ public class GTMaterials {
     public static Material RadAway;
 
     /**
-     * GCyM Materials
+     * GCYM Materials
      */
     public static Material TantalumCarbide;
     public static Material HSLASteel;
