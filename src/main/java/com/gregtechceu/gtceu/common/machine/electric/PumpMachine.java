@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -27,8 +26,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -41,23 +38,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.IFluidBlock;
-import org.apache.commons.lang3.ArrayUtils;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -73,14 +67,11 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-    public static final int BASE_PUMP_RANGE = 32;
-    public static final int EXTRA_PUMP_RANGE = 8;
+    public static final int BASE_PUMP_RADIUS = 16;
+    public static final int EXTRA_PUMP_RADIUS = 4;
     public static final int PUMP_SPEED_BASE = 80;
-    private final Deque<BlockPos> fluidSourceBlocks = new ArrayDeque<>();
-    private final Deque<BlockPos> blocksToCheck = new ArrayDeque<>();
     private final Set<BlockPos> forbiddenBlocks = new ObjectOpenHashSet<>();
     private PumpQueue pumpQueue = null;
-    private final boolean initializedQueue = false;
     @Getter
     @Persisted
     private int pumpHeadY;
@@ -143,8 +134,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
-    private int getMaxPumpRange() {
-        return BASE_PUMP_RANGE + EXTRA_PUMP_RANGE * getTier();
+    public static int getMaxPumpRadius(int tier) {
+        return BASE_PUMP_RADIUS + EXTRA_PUMP_RADIUS * tier;
     }
 
     /**
@@ -188,7 +179,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             } else if (value > 0) {
                 direction = Direction.fromAxisAndDirection(axis, Direction.AxisDirection.POSITIVE);
             } else {
-                direction = Direction.fromAxisAndDirection(axis, Util.getRandom(Direction.AxisDirection.values(), randomSource));
+                direction = Direction.fromAxisAndDirection(axis,
+                        Util.getRandom(Direction.AxisDirection.values(), randomSource));
             }
             searchList.add(direction);
             if (i == 0) {
@@ -203,15 +195,16 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         return searchList;
     }
 
-    private record PumpQueue(Queue<Deque<BlockPos>> queue, FluidType fluidType) {}
+    protected record PumpQueue(Queue<Deque<BlockPos>> queue, FluidType fluidType) {}
 
-    private record SearchResult(BlockPos pos, boolean isSource) {}
+    protected record SearchResult(BlockPos pos, boolean isSource) {}
 
     /**
-     *
+     * Returns the next block to search at.
      */
     @Nullable
-    private SearchResult searchNext(Level level, BlockPos headPosBelow, BlockPos searchHead, FluidType fluidType, int maxPumpRange, boolean goUp, Set<BlockPos> checked) {
+    private SearchResult searchNext(Level level, BlockPos headPosBelow, BlockPos searchHead, FluidType fluidType,
+                                    int maxPumpRange, boolean goUp, Set<BlockPos> checked) {
         // Vector from the pump head to the search head, so points in the direction away from the pump head
         Vec3i subVec = searchHead.subtract(headPosBelow);
 
@@ -224,7 +217,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             BlockPos pumpY = headPosBelow.atY(check.getY());
 
             // Skip if outside pump range or not loaded or already checked
-            if (check.distSqr(pumpY) > maxPumpRange * maxPumpRange || checked.contains(check) || !level.isLoaded(check) || forbiddenBlocks.contains(check)) {
+            if (check.distSqr(pumpY) > maxPumpRange * maxPumpRange || checked.contains(check) ||
+                    !level.isLoaded(check) || forbiddenBlocks.contains(check)) {
                 continue;
             }
 
@@ -235,7 +229,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             FluidState fluidState;
 
             // If it's not a fluid of the right type, we stop
-            if ((fluidState = state.getFluidState()).getFluidType() == fluidType && state.getBlock() instanceof LiquidBlock liquidBlock) {
+            if ((fluidState = state.getFluidState()).getFluidType() == fluidType &&
+                    state.getBlock() instanceof LiquidBlock liquidBlock) {
                 // Remember all the sources we find
                 boolean isSource = fluidState.isSource();
                 if (isSource) {
@@ -254,6 +249,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
     /**
      * Update the pump queue if it is empty.
+     * 
      * @param fluidType Use this if the pump queue must have the same fluid type because it was already decided in the
      *                  pump cycle.
      */
@@ -287,7 +283,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
      * If the path it finds only contains sources at the level below the pump head, it will keep looking until it finds
      * one that has a source at a higher location. If it cannot find one, it will return the original path.
      */
-    private PumpQueue buildPumpQueue(Level level, BlockPos headPos, FluidType fluidType, int queueSourceAmount, boolean upSources) {
+    private PumpQueue buildPumpQueue(Level level, BlockPos headPos, FluidType fluidType, int queueSourceAmount,
+                                     boolean upSources) {
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
 
         BlockPos headPosBelow = headPos.below();
@@ -295,7 +292,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         checked.add(headPos);
         checked.add(headPosBelow);
 
-        int maxPumpRange = getMaxPumpRange();
+        int maxPumpRange = getMaxPumpRadius(getTier());
 
         List<BlockPos> pathStack = new ArrayList<>();
 
@@ -315,7 +312,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             // Peeks at the tail
             BlockPos searchHead = pathStack.get(pathStack.size() - 1);
 
-            SearchResult next = searchNext(level, headPosBelow, searchHead, fluidType, maxPumpRange, upSources, checked);
+            SearchResult next = searchNext(level, headPosBelow, searchHead, fluidType, maxPumpRange, upSources,
+                    checked);
 
             iterations++;
 
@@ -349,7 +347,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                             break;
                         }
                     }
-                // If the last is a source, then nonSources will be empty regardless
+                    // If the last is a source, then nonSources will be empty regardless
                 } else if (!nonSources.isEmpty()) {
                     nonSources.removeLast();
                 }
@@ -400,7 +398,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
-            if((level = getLevel()) != null) {
+            if ((level = getLevel()) != null) {
                 BlockPos downPos = headPos.below(1);
                 var downBlock = level.getBlockState(downPos);
 
@@ -428,7 +426,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         }
     }
 
-    record SourceState(BlockState state, BlockPos pos) {}
+    protected record SourceState(BlockState state, BlockPos pos) {}
 
     /**
      * Does a full pump cycle, trying to do the required number of pumps. It will rebuild the queue if it becomes
@@ -484,7 +482,6 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                             cache.fillInternal(drainStack, false);
                             fluidHandler.drain(drainStack, false);
                             getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                            this.fluidSourceBlocks.remove(pos);
                             pumped = true;
                             pumps--;
                         } else if (!drainStack.isEmpty()) {
@@ -540,13 +537,13 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         if (!advanced && getOffsetTimer() % getPumpingCycleLength() == 0) {
             pumpCycle();
         }
-        if (getOffsetTimer() % (20*60) == 0) {
+        if (getOffsetTimer() % (20 * 60) == 0) {
             forbiddenBlocks.clear();
         }
     }
 
     private int queueSize() {
-        return 5*pumpsPerCycle();
+        return 5 * pumpsPerCycle();
     }
 
     private float ticksPerPump() {
