@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.condition;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -17,7 +16,6 @@ import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -28,17 +26,6 @@ public abstract class RecipeCondition {
 
     public static final Codec<RecipeCondition> CODEC = GTRegistries.RECIPE_CONDITIONS.codec()
             .dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
-
-    @Nullable
-    public static RecipeCondition create(Class<? extends RecipeCondition> clazz) {
-        if (clazz == null) return null;
-        try {
-            return clazz.newInstance();
-        } catch (Exception ignored) {
-            GTCEu.LOGGER.error("condition {} has no NonArgsConstructor", clazz);
-            return null;
-        }
-    }
 
     public static <
             RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {

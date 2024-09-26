@@ -21,8 +21,7 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
         } catch (Exception e) {
             return DataResult.error(e::getMessage, Lifecycle.stable());
         }
-    },
-            BigInteger::toString);
+    }, BigInteger::toString);
 
     public static SerializerBigInteger INSTANCE = new SerializerBigInteger();
 
