@@ -1,0 +1,39 @@
+# Manages labels on PRs before allowing merging
+name: Pull Request Labels
+
+on:
+  pull_request:
+    types:
+      - opened
+      - labeled
+      - unlabeled
+      - synchronize
+
+# if a second commit is pushed quickly after the first, cancel the first one's build
+concurrency:
+  group: pr-labels-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  Labels:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: read # needed to utilize required-labels
+
+    steps:
+      - name: Check for Merge-Blocking Labels # blocks merge if present
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: 'status: do not merge'
+          exit_type: failure
+
+      - name: Check for Required Labels # require at least one of these labels
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: minimum
+          count: 1
+          labels: 'type: feature, type: bug, type: refactor, type: translation, ignore changelog'
+          exit_type: failure
