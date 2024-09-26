@@ -1,12 +1,17 @@
+configurations {
+    includedLibrary {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
 shadowJar {
     from jar.outputs
-    configurations = [project.configurations.shadow]
     archiveClassifier = "dev"
 }
 
 slimJar {
     from sourceSets.main.output
-    configurations = [project.configurations.shadow]
     archiveClassifier = "dev-slim"
 }
 
