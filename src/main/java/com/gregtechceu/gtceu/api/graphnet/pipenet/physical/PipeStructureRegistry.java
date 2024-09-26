@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.graphnet.pipenet.physical;
 
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoader;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -20,7 +20,7 @@ public final class PipeStructureRegistry {
 
     private static Map<Class<? extends IPipeStructure>, Set<? extends IPipeStructure>> fireEvent() {
         PipeStructureRegistrationEvent event = new PipeStructureRegistrationEvent();
-        MinecraftForge.EVENT_BUS.post(event);
+        ModLoader.get().postEvent(event);
         return event.getRegistry();
     }
 }

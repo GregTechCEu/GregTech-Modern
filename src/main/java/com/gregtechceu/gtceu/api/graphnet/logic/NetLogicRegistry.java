@@ -4,7 +4,7 @@ import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -22,7 +22,7 @@ public final class NetLogicRegistry {
 
     static {
         NetLogicRegistrationEvent event = new NetLogicRegistrationEvent();
-        MinecraftForge.EVENT_BUS.post(event);
+        ModLoader.get().postEvent(event);
         Set<NetLogicType<?>> gather = event.getGather();
         NAMES_TO_NETWORK_IDS = HashBiMap.create(gather.size());
         REGISTRY = new Int2ObjectArrayMap<>(gather.size());

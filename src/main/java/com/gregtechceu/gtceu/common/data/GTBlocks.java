@@ -403,7 +403,7 @@ public class GTBlocks {
         MATERIAL_PIPE_BLOCKS_BUILDER.put(pipeType.prefix(), material, entry);
     }
 
-    // Optical Pipe Blocks
+    // Duct Pipe Blocks
     private static void generateDuctPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Duct Pipe Blocks...");
         for (var structure : PipeStructureRegistry.getStructures(DuctStructure.class)) {

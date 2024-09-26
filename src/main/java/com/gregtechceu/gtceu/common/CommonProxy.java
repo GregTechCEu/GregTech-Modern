@@ -247,7 +247,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void registerPipeStructures(PipeStructureRegistrationEvent event) {
+    public void registerPipeStructures(PipeStructureRegistrationEvent event) {
         CableStructure.register(event);
         MaterialPipeStructure.register(event);
         LaserStructure.register(event);
@@ -256,7 +256,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void registerNetLogics(NetLogicRegistrationEvent event) {
+    public void registerNetLogics(NetLogicRegistrationEvent event) {
         event.accept(ChannelCountLogic.TYPE);
         event.accept(EnergyFlowLogic.TYPE);
         event.accept(FluidFlowLogic.TYPE);
