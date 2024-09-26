@@ -29,17 +29,6 @@ public abstract class RecipeCondition {
     public static final Codec<RecipeCondition> CODEC = GTRegistries.RECIPE_CONDITIONS.codec()
             .dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
 
-    @Nullable
-    public static RecipeCondition create(Class<? extends RecipeCondition> clazz) {
-        if (clazz == null) return null;
-        try {
-            return clazz.newInstance();
-        } catch (Exception ignored) {
-            GTCEu.LOGGER.error("condition {} has no NonArgsConstructor", clazz);
-            return null;
-        }
-    }
-
     public static <
             RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
         return instance.group(Codec.BOOL.optionalFieldOf("reverse", false).forGetter(val -> val.isReverse));
