@@ -7,11 +7,13 @@ configurations {
 
 shadowJar {
     from jar.outputs
+    configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev"
 }
 
 slimJar {
     from sourceSets.main.output
+    configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev-slim"
 }
 
