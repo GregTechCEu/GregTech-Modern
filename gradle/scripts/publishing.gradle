@@ -1,4 +1,5 @@
 artifacts {
+    archives tasks.shadowJar
     archives tasks.reobfShadowJar
     archives tasks.reobfSlimJar
     archives tasks.sourcesJar

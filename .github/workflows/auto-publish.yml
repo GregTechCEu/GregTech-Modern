@@ -39,6 +39,10 @@ jobs:
       - name: Setup Build
         uses: ./.github/actions/build_setup
 
+        # run gradlew jar to set up necessary files before shadow can break them in the Build step
+      - name: Setup Build part 2
+        run: ./gradlew jar --build-cache
+
       - name: Build
         run: ./gradlew build --build-cache
 
