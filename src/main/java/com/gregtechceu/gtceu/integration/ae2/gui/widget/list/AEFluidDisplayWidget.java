@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget.list;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
+import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -53,7 +54,6 @@ public class AEFluidDisplayWidget extends Widget {
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (fluid != null) {
-            // TODO fix nbt once AE2 1.20.5 is out
             FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ?
                     key.toStack((int) fluid.amount()) : FluidStack.EMPTY;
             DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 17, 17);
@@ -70,9 +70,7 @@ public class AEFluidDisplayWidget extends Widget {
         if (isMouseOverElement(mouseX, mouseY)) {
             GenericStack fluid = this.gridWidget.getAt(this.index);
             if (fluid != null) {
-                // TODO fix nbt once AE2 1.20.5 is out
-                FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ?
-                        new FluidStack(key.getFluid(), (int) fluid.amount()/* , key.getTag() */) : FluidStack.EMPTY;
+                FluidStack fluidStack = AEUtil.toFluidStack(fluid);
                 List<Component> tooltips = new ArrayList<>();
                 tooltips.add(fluidStack.getHoverName());
                 tooltips.add(Component.literal(String.format("%,d ", fluid.amount())).append(FluidHelper.getUnit()));

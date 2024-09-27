@@ -73,7 +73,6 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 }
             }
         }
-        // TODO fix nbt once AE2 1.20.5 is out
         if (stock != null) {
             var stack = AEUtil.toFluidStack(stock);
             if (!stack.isEmpty()) {
@@ -214,10 +213,10 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
 
                 FluidStack stack = new FluidStack(key.getFluid(), (int) slot.getStock().amount());
 
-                // TODO fix nbt once AE2 1.20.5 is out
-                // if (key.hasTag()) {
-                // stack.setTag(key.getTag().copy());
-                // }
+                // this is inverted for some reason
+                if (!key.hasComponents()) {
+                    stack.applyComponents(key.toStack(1).getComponents());
+                }
                 GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
                         Math.max(0, (slot.getStock().amount() - stack.getAmount())));
                 slot.setStock(stack1.amount() == 0 ? null : stack1);
@@ -257,10 +256,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (slot.getConfig() == null || scrollY == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
             return false;
         }
-        // TODO fix nbt once AE2 1.20.5 is out
-        FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ?
-                new FluidStack(fluidKey.getFluid(), (int) slot.getConfig().amount()/* , fluidKey.getTag() */) :
-                FluidStack.EMPTY;
+        FluidStack fluid = AEUtil.toFluidStack(slot.getConfig());
         long amt;
         if (isCtrlDown()) {
             amt = scrollY > 0 ? fluid.getAmount() * 2L : fluid.getAmount() / 2L;

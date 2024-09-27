@@ -164,10 +164,9 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
                     slot.getStock().what() instanceof AEItemKey key) {
                 ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(),
                         key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
-                // TODO fix nbt once AE2 1.20.5 is out
-                // if (key.hasTag()) {
-                // stack.setTag(key.getTag().copy());
-                // }
+                if (key.getItem().components().isEmpty()) {
+                    stack.applyComponents(key.getItem().components());
+                }
                 this.gui.getModularUIContainer().setCarried(stack);
                 GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
                         Math.max(0, (slot.getStock().amount() - stack.getCount())));
@@ -187,8 +186,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
         }
         if (id == UPDATE_ID) {
             ItemStack item = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
-            // TODO fix nbt once AE2 1.20.5 is out
-            slot.setConfig(new GenericStack(AEItemKey.of(item.getItem()/* , item.getTag() */), item.getCount()));
+            slot.setConfig(new GenericStack(AEItemKey.of(item), item.getCount()));
         }
         if (id == AMOUNT_CHANGE_ID) {
             if (slot.getConfig() != null) {
@@ -200,10 +198,9 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
             if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
                 ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(),
                         key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
-                // TODO fix nbt once AE2 1.20.5 is out
-                // if (key.hasTag()) {
-                // stack.setTag(key.getTag().copy());
-                // }
+                if (key.getItem().components().isEmpty()) {
+                    stack.applyComponents(key.getItem().components());
+                }
                 this.gui.getModularUIContainer().setCarried(stack);
                 GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
                         Math.max(0, (slot.getStock().amount() - stack.getCount())));
