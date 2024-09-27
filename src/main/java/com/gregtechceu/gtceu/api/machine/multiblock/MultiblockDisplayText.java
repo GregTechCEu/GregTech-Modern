@@ -368,7 +368,7 @@ public class MultiblockDisplayText {
                         double countPerSec = (double) stack.getAmount() / maxDurationSec;
                         if (fluid.chance < fluid.maxChance) {
                             double averageDurationforRoll = (double) fluid.maxChance / (double) fluid.chance;
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.1",
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.3",
                                     stack.getDisplayName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
                         } else {
