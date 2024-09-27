@@ -529,7 +529,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
             this.netLogicDatas.clear();
             this.capabilities.clear();
             this.netCapabilities.clear();
-            boolean firstNode = true;
             for (WorldPipeNetNode node : PipeBlock.getNodesForTile(this)) {
                 this.addCapabilities(node.getNet().getNewCapabilityObjects(node));
                 this.netCapabilities.put(node, new PipeCapabilityWrapper(this, node));
@@ -542,9 +541,10 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
                 for (var entry : node.getData().getEntries()) {
                     node.getData().markLogicEntryAsUpdated(entry, true);
                 }
-                if (firstNode) {
-                    firstNode = false;
-                    this.temperatureLogic = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
+                if (this.temperatureLogic == null) {
+                    TemperatureLogic candidate = node.getData().getLogicEntryNullable(TemperatureLogic.TYPE);
+                    if (candidate != null)
+                        updateTemperatureLogic(candidate);
                 }
             }
             if (this.legacy) {
@@ -603,7 +603,9 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     // particle //
 
     public void updateTemperatureLogic(@NotNull TemperatureLogic logic) {
+        this.temperatureLogic = logic;
         if (overheatParticle == null || !overheatParticle.isAlive()) {
+            // TODO figure out if this can crash if playing on a server
             long tick = Platform.getMinecraftServer().getTickCount();
             int temp = logic.getTemperature(tick);
             if (temp > GTOverheatParticle.TEMPERATURE_CUTOFF) {

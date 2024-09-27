@@ -6,7 +6,6 @@ configurations {
 }
 
 shadowJar {
-    from jar.outputs
     configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev"
 }
