@@ -125,6 +125,10 @@ public class LangHandler {
         provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
         provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s seconds");
         provider.add("command.gtceu.medical_condition.get.element.permanent", "Condition %s§r: %s seconds (permanent)");
+        provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
+        provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
+        provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
+
         provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
         provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
@@ -1055,7 +1059,7 @@ public class LangHandler {
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
-        provider.add("gtceu.multiblock.idling", "Idling.");
+        provider.add("gtceu.multiblock.idling", "§6Idling.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
@@ -1094,6 +1098,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.muffler_obstructed", "Muffler Hatch is Obstructed!");
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
+        provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
         provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
         provider.add("gtceu.multiblock.universal.distinct.no", "No");
         provider.add("gtceu.multiblock.universal.distinct.yes", "Yes");

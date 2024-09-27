@@ -129,7 +129,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:hopper"));
         registry.accept(new ResourceLocation("minecraft:iron_bars"));
         registry.accept(new ResourceLocation("minecraft:bucket"));
-        registry.accept(new ResourceLocation("minecraft:chain"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
@@ -265,6 +264,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:brush"));
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
+        registry.accept(new ResourceLocation("minecraft:chain"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -298,9 +298,9 @@ public class RecipeRemoval {
             registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:%s_candle", colorMaterial.getName())));
-            if (colorMaterial != MarkerMaterials.Color.White) {
-                registry.accept(new ResourceLocation(String.format("minecraft:%s_wool", colorMaterial.getName())));
-            }
+            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_wool", colorMaterial.getName())));
+            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_carpet", colorMaterial.getName())));
+            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_bed", colorMaterial.getName())));
         }
         registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
     }
@@ -344,6 +344,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
+        registry.accept(new ResourceLocation("minecraft:white_wool_from_string"));
         // TODO Add extruder/laser engraver recipes for all vanilla stones to keep parity with GT stones
         registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));

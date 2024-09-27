@@ -13,7 +13,9 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.recipe.DimensionCondition;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -34,7 +36,6 @@ import net.minecraft.util.Mth;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -124,13 +125,12 @@ public class GTRecipeWidget extends WidgetGroup {
             capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
         }
 
-        yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
             if (condition instanceof DimensionCondition dimCondition) {
-                addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT + 4,
-                        Component.translatable("recipe.condition.dimension_marker.tooltip")));
-                addWidget(dimCondition.setupDimensionMarkers(53 - xOffset, yOffset - 4)
+                addWidget(dimCondition
+                        .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
+                                recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
@@ -191,7 +191,7 @@ public class GTRecipeWidget extends WidgetGroup {
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
-                int minimumCWUt = Math.min(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
+                int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
                 texts.add(Component.translatable("gtceu.recipe.max_eu",
                         FormattingUtil.formatNumbers(euTotal / minimumCWUt)));
@@ -250,9 +250,11 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > getMinTier() && inputEUt != 0) {
-            LongIntPair pair = RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier]);
-            duration = pair.rightInt();
-            inputEUt = pair.firstLong();
+            OCParams p = new OCParams();
+            OCResult r = new OCResult();
+            RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier], p, r);
+            duration = r.getDuration();
+            inputEUt = r.getEut();
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);

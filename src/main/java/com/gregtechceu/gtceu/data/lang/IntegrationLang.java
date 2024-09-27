@@ -21,6 +21,7 @@ public class IntegrationLang {
         provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
         provider.add("gtceu.jei.ore_vein_diagram", "Ore Vein Diagram");
         provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
+        provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
         provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");
         provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
@@ -86,7 +87,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
-        provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
+        provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");

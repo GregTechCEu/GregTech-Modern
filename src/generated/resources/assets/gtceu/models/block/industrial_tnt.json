@@ -2,7 +2,7 @@
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "bottom": "minecraft:block/tnt_bottom",
-    "side": "gtceu:block/industrial_tnt_side",
+    "side": "gtceu:block/misc/industrial_tnt_side",
     "top": "minecraft:block/tnt_top"
   }
 }

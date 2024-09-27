@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
-import com.gregtechceu.gtceu.common.recipe.RPMCondition;
-import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
+import com.gregtechceu.gtceu.common.recipe.condition.RPMCondition;
+import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -560,7 +560,7 @@ public class GTRecipeTypes {
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration *
-                                OverclockingLogic.STANDARD_OVERCLOCK_DURATION_DIVISOR);
+                                OverclockingLogic.STD_DURATION_FACTOR);
                         boolean shouldDivide = ratio != 1;
 
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&

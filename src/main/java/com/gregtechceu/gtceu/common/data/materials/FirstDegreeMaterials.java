@@ -1571,7 +1571,7 @@ public class FirstDegreeMaterials {
                 .dust()
                 .color(0xebab34).secondaryColor(0xb5570e)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
-                .components(Potassium, 1, Sulfur, 1, Oxygen, 4)
+                .components(Potassium, 2, Sulfur, 1, Oxygen, 4)
                 .buildAndRegister();
 
         PrussianBlue = new Material.Builder(GTCEu.id("prussian_blue"))

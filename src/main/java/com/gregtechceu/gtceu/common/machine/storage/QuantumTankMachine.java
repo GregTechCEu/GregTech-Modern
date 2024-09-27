@@ -132,7 +132,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
             private long handleVoiding(long filled, FluidStack resource) {
                 if (filled < resource.getAmount() && isVoiding && isFluidValid(0, resource)) {
-                    return resource.getAmount();
+                    if (stored.isEmpty() || stored.isFluidEqual(resource)) {
+                        return resource.getAmount();
+                    }
                 }
 
                 return filled;
@@ -372,7 +374,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
@@ -384,6 +387,6 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -13,10 +12,13 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,8 +40,22 @@ public class Content {
         this.chance = chance;
         this.maxChance = maxChance;
         this.tierChanceBoost = fixBoost(tierChanceBoost);
-        this.slotName = slotName;
-        this.uiName = uiName;
+        this.slotName = slotName == null || slotName.isEmpty() ? null : slotName;
+        this.uiName = uiName == null || uiName.isEmpty() ? null : uiName;
+    }
+
+    public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
+                        .forGetter(val -> val.chance),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
+                        .forGetter(val -> val.maxChance),
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("tierChanceBoost", 0)
+                        .forGetter(val -> val.tierChanceBoost),
+                Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
+                Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
+                .apply(instance, Content::new));
     }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
@@ -84,7 +100,7 @@ public class Content {
 
     @OnlyIn(Dist.CLIENT)
     public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof SizedIngredient sized && sized.getInner() instanceof IntProviderIngredient ingredient) {
+        if (content instanceof IntProviderIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
@@ -110,13 +126,19 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            long amount = ingredient.getAmount();
+            double amount = ingredient.getAmount();
             String s;
-            if (amount >= 1000) {
-                amount /= 1000;
-                s = amount + "B";
+            if (amount >= 1_000_000_000) {
+                amount /= (double) 1_000_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
+            } else if (amount >= 1_000_000) {
+                amount /= (double) 1_000_000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
+            } else if (amount >= 1000) {
+                amount /= (double) 1000;
+                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
             } else {
-                s = amount + "mB";
+                s = (int) amount + "mB";
             }
             Font fontRenderer = Minecraft.getInstance().font;
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),

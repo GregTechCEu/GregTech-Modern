@@ -1,8 +1,5 @@
 {
   "values": [
-    {
-      "id": "gtceu:amethyst_lens",
-      "required": false
-    }
+    "gtceu:amethyst_lens"
   ]
 }

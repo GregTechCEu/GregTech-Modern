@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -62,10 +61,10 @@ public class RecipeAddition {
                     GTMachines.STEEL_DRUM.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus",
                     GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.STEEL_HULL.asStack(), 'C',
-                    CustomTags.WOODEN_CHESTS);
+                    Tags.Items.CHESTS_WOODEN);
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus",
                     GTMachines.STEAM_EXPORT_BUS.asStack(), "H", "C", 'H', GTBlocks.STEEL_HULL.asStack(), 'C',
-                    CustomTags.WOODEN_CHESTS);
+                    Tags.Items.CHESTS_WOODEN);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC",
                     "FMF", "CGC", 'F', GTBlocks.FIREBOX_BRONZE.asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack(),
@@ -80,10 +79,10 @@ public class RecipeAddition {
                     GTMachines.BRONZE_DRUM.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus",
                     GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.BRONZE_HULL.asStack(), 'C',
-                    CustomTags.WOODEN_CHESTS);
+                    Tags.Items.CHESTS_WOODEN);
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_output_bus",
                     GTMachines.STEAM_EXPORT_BUS.asStack(), "H", "C", 'H', GTBlocks.BRONZE_HULL.asStack(), 'C',
-                    CustomTags.WOODEN_CHESTS);
+                    Tags.Items.CHESTS_WOODEN);
         }
     }
 
@@ -159,7 +158,7 @@ public class RecipeAddition {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "hopper", new ItemStack(Blocks.HOPPER), "XCX", "XGX", "wXh",
                 'X', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron),
-                'C', CustomTags.WOODEN_CHESTS,
+                'C', Tags.Items.CHESTS_WOODEN,
                 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Iron));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_bars", new ItemStack(Blocks.IRON_BARS, 8), " h ", "XXX",
@@ -1003,7 +1002,7 @@ public class RecipeAddition {
                     'C', ItemTags.WOOL_CARPETS);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "chest_minecart", new ItemStack(Items.CHEST_MINECART), "hIw",
-                    " M ", " d ", 'I', CustomTags.WOODEN_CHESTS, 'M', new ItemStack(Items.MINECART));
+                    " M ", " d ", 'I', Tags.Items.CHESTS_WOODEN, 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "furnace_minecart", new ItemStack(Items.FURNACE_MINECART),
                     "hIw", " M ", " d ", 'I', new ItemStack(Blocks.FURNACE), 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "tnt_minecart", new ItemStack(Items.TNT_MINECART), "hIw",
@@ -1034,7 +1033,7 @@ public class RecipeAddition {
                     'C', new ItemStack(Blocks.CHEST));
 
             ASSEMBLER_RECIPES.recipeBuilder("ender_chest")
-                    .inputItems(CustomTags.WOODEN_CHESTS)
+                    .inputItems(Tags.Items.CHESTS_WOODEN)
                     .inputItems(TagPrefix.plateDense, GTMaterials.Obsidian, 6)
                     .inputItems(TagPrefix.plate, GTMaterials.EnderEye)
                     .outputItems(Blocks.ENDER_CHEST.asItem())
@@ -1308,8 +1307,8 @@ public class RecipeAddition {
 
             ASSEMBLER_RECIPES.recipeBuilder("recovery_compass")
                     .inputItems(new ItemStack(Items.COMPASS))
-                    .inputItems(plate, Echo, 8)
-                    .inputItems(rod, Echo)
+                    .inputItems(plate, EchoShard, 8)
+                    .inputItems(rod, EchoShard)
                     .outputItems(new ItemStack(Items.RECOVERY_COMPASS))
                     .duration(400).EUt(30).save(provider);
 

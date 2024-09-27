@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/titanium_firebox_casing"
+    },
+    "active=true": {
+      "model": "gtceu:block/titanium_firebox_casing_active"
+    }
+  }
+}

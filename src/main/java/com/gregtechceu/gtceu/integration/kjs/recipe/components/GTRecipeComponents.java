@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
@@ -25,12 +26,12 @@ import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
+import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.*;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
-import dev.latvian.mods.kubejs.util.TinyMap;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 
 import java.util.*;
@@ -180,7 +181,7 @@ public class GTRecipeComponents {
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCondition value) {
             JsonObject object = new JsonObject();
-            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getClass()));
+            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
             object.add("data", value.serialize());
             return object;
         }
@@ -189,24 +190,24 @@ public class GTRecipeComponents {
         public RecipeCondition read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             }
             if (from instanceof JsonPrimitive primitive) {
                 var conditionKey = primitive.getAsString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             } else if (from instanceof JsonObject jsonObject) {
                 var conditionKey = GsonHelper.getAsString(jsonObject, "type", "");
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    RecipeCondition condition = RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    RecipeCondition condition = type.factory.createDefault();
                     if (condition != null) {
-                        return condition.deserialize(GsonHelper.getAsJsonObject(jsonObject, "data", new JsonObject()));
+                        return condition.deserialize(jsonObject);
                     }
                 }
             } else if (from instanceof Tag tag) {
@@ -284,11 +285,11 @@ public class GTRecipeComponents {
             return FluidIngredientJS.of(from);
         }
     };
-    public static final RecipeComponent<InputItem> INPUT_ITEM_OUT = new RecipeComponent<>() {
+    public static final RecipeComponent<ExtendedOutputItem> EXTENDED_OUTPUT = new RecipeComponent<>() {
 
         @Override
         public String componentType() {
-            return "input_item_out";
+            return "extended_output_item";
         }
 
         @Override
@@ -298,7 +299,7 @@ public class GTRecipeComponents {
 
         @Override
         public Class<?> componentClass() {
-            return InputItem.class;
+            return OutputItem.class;
         }
 
         @Override
@@ -307,32 +308,37 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, InputItem value) {
-            return recipe.writeInputItem(value);
+        public JsonElement write(RecipeJS recipe, ExtendedOutputItem value) {
+            return recipe.writeOutputItem(value);
         }
 
         @Override
-        public InputItem read(RecipeJS recipe, Object from) {
-            return recipe.readInputItem(from);
+        public ExtendedOutputItem read(RecipeJS recipe, Object from) {
+            if (from instanceof IntProviderIngredient intProvider) {
+                return new ExtendedOutputItem(intProvider, 1);
+            }
+            return ExtendedOutputItem.fromOutputItem(recipe.readOutputItem(from));
         }
 
         @Override
-        public boolean isOutput(RecipeJS recipe, InputItem value, ReplacementMatch match) {
-            return match instanceof ItemMatch m && value.validForMatching() && m.contains(value.ingredient);
+        public boolean isOutput(RecipeJS recipe, ExtendedOutputItem value, ReplacementMatch match) {
+            return match instanceof ItemMatch m && !value.isEmpty() && m.contains(value.ingredient);
         }
 
         @Override
-        public String checkEmpty(RecipeKey<InputItem> key, InputItem value) {
+        public ExtendedOutputItem replaceOutput(RecipeJS recipe, ExtendedOutputItem original, ReplacementMatch match,
+                                                OutputReplacement with) {
+            return isOutput(recipe, original, match) ? read(recipe, with.replaceOutput(recipe, match, original)) :
+                    original;
+        }
+
+        @Override
+        public String checkEmpty(RecipeKey<ExtendedOutputItem> key, ExtendedOutputItem value) {
             if (value.isEmpty()) {
                 return "Ingredient '" + key.name + "' can't be empty!";
             }
 
             return "";
-        }
-
-        @Override
-        public RecipeComponent<TinyMap<Character, InputItem>> asPatternKey() {
-            return MapRecipeComponent.ITEM_PATTERN_KEY;
         }
 
         @Override
@@ -343,7 +349,7 @@ public class GTRecipeComponents {
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
-    public static final ContentJS<InputItem> ITEM_OUT = new ContentJS<>(INPUT_ITEM_OUT,
+    public static final ContentJS<ExtendedOutputItem> ITEM_OUT = new ContentJS<>(EXTENDED_OUTPUT,
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);

@@ -11,8 +11,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -86,7 +87,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine))
             return null;
 
@@ -110,11 +112,18 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-        recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
-        recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
-                ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
+
+        recipe = new GTRecipe(recipe.recipeType, recipe.id,
+                recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.isFuel);
+
+        result.init(-eut, recipe.duration, 1, params.getOcAmount());
 
         return recipe;
     }

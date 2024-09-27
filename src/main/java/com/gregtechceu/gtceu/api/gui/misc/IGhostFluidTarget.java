@@ -70,6 +70,10 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
             ingredient = fluid == null ? FluidStack.empty() :
                     FluidStack.create(fluid, fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
         }
+
+        if (LDLib.isJeiLoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
+            ingredient = FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
+        }
         return ingredient;
     }
 }

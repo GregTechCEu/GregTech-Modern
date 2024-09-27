@@ -12,10 +12,8 @@ import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import net.minecraft.network.chat.Component;
 
 import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.util.EntryStacks;
 
 public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<MultiblockInfoDisplay> {
 
@@ -31,16 +29,9 @@ public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<Mult
         GTRegistries.MACHINES.values().stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
+                .filter(MultiblockMachineDefinition::isRenderXEIPreview)
                 .map(MultiblockInfoDisplay::new)
                 .forEach(registry::add);
-    }
-
-    public static void registerWorkStations(CategoryRegistry registry) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registry.addWorkstations(CATEGORY, EntryStacks.of(multiblockDefinition.asStack()));
-            }
-        }
     }
 
     @Override

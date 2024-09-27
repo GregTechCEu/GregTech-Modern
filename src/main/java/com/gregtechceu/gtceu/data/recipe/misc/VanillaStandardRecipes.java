@@ -82,6 +82,11 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.CLAY))
                 .save(provider);
 
+        COMPRESSOR_RECIPES.recipeBuilder("snowballs_to_snow").duration(200).EUt(2)
+                .inputItems(new ItemStack(Items.SNOWBALL, 4))
+                .outputItems(new ItemStack(Items.SNOW_BLOCK))
+                .save(provider);
+
         COMPRESSOR_RECIPES.recipeBuilder("glowstone").duration(300).EUt(2)
                 .inputItems(new ItemStack(Items.GLOWSTONE_DUST, 4))
                 .outputItems(new ItemStack(Blocks.GLOWSTONE))
@@ -574,7 +579,7 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(CustomTags.WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+                .inputItems(Tags.Items.CHESTS_WOODEN).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
                 .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
@@ -646,11 +651,24 @@ public class VanillaStandardRecipes {
                             BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane"))))
                     .save(provider);
 
+            CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
+                    .inputItems(new ItemStack(Items.CANDLE))
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .outputItems(new ItemStack(
+                            BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_candle"))))
+                    .save(provider);
+
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_wool_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(new ItemStack(Blocks.WHITE_WOOL))
                         .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
                         .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_wool"))))
+                        .save(provider);
+
+                CHEMICAL_BATH_RECIPES.recipeBuilder("dye_bed_to_" + dyeName).duration(20).EUt(VA[ULV])
+                        .inputItems(new ItemStack(Blocks.WHITE_BED))
+                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                        .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_bed"))))
                         .save(provider);
             }
 
@@ -710,6 +728,18 @@ public class VanillaStandardRecipes {
                 .inputFluids(Chlorine.getFluid(10))
                 .outputItems(new ItemStack(Blocks.PISTON))
                 .duration(30).EUt(VA[LV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_candle")
+                .inputItems(ItemTags.CANDLES)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.CANDLE)
+                .duration(400).EUt(2).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_bed")
+                .inputItems(ItemTags.BEDS)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.WHITE_BED)
+                .duration(400).EUt(2).save(provider);
     }
 
     /**
@@ -994,7 +1024,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV])
-                .inputItems(CustomTags.WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
+                .inputItems(Tags.Items.CHESTS_WOODEN).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
                 .outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL)
