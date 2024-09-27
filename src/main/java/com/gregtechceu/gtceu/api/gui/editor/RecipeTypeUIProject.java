@@ -88,8 +88,8 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        super.deserializeNBT(tag, provider);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+        super.deserializeNBT(provider, tag);
         if (tag.contains("recipe_type")) {
             recipeType = GTRegistries.RECIPE_TYPES.get(ResourceLocation.parse(tag.getString("recipe_type")));
         }
