@@ -10,7 +10,6 @@ import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.FriendlyByteBuf;
@@ -86,22 +85,6 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
             GuiTextures.CONFIG_ARROW_DARK.draw(graphics, mouseX, mouseY, x, y, 18, 18);
         }
         GuiTextures.SLOT_DARK.draw(graphics, mouseX, mouseY, x, y + 18, 18, 18);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-        GenericStack item = null;
-        IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
-        if (mouseOverConfig(mouseX, mouseY)) {
-            item = slot.getConfig();
-        } else if (mouseOverStock(mouseX, mouseY)) {
-            item = slot.getStock();
-        }
-        if (item != null) {
-            graphics.renderTooltip(Minecraft.getInstance().font, GenericStack.wrapInItemStack(item), mouseX, mouseY);
-        }
     }
 
     @OnlyIn(Dist.CLIENT)
