@@ -280,6 +280,7 @@ public class WoodMachineRecipes {
                             .sign(GTBlocks.TREATED_WOOD_SIGN.asItem(), null)
                             .hangingSign(GTBlocks.TREATED_WOOD_HANGING_SIGN.asItem(), null)
                             .material(TreatedWood)
+                            .generateLogToPlankRecipe(false)
                             .registerUnificationInfo(false, true, true, true, true, true, true, true)
                             .build());
         }
