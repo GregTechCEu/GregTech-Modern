@@ -491,6 +491,8 @@ public class SeparationRecipes {
                 .outputFluids(SeedOil.getFluid(10))
                 .save(provider);
 
+        // Disabling these because it conflicts with the seed tag recipe
+        /*
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
                 .outputFluids(SeedOil.getFluid(10))
@@ -509,7 +511,7 @@ public class SeparationRecipes {
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
                 .outputFluids(SeedOil.getFluid(8))
-                .save(provider);
+                .save(provider);*/
 
         EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_cod").duration(16).EUt(4)
                 .inputItems(Items.COD)
