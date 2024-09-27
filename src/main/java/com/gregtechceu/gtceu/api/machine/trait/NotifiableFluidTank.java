@@ -262,11 +262,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return isEmpty;
     }
 
-    private long getSpace(int slot) {
+    public long getSpace(int slot) {
         return this.getStorages()[slot].getCapacity() - this.getStorages()[slot].getFluidAmount();
     }
 
-    private long getTotalSpace() {
+    public long getTotalSpace() {
         long total = 0;
         for (FluidStorage storage : this.getStorages()) {
             total += storage.getCapacity() - storage.getFluidAmount();
