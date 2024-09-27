@@ -493,25 +493,26 @@ public class SeparationRecipes {
 
         // Disabling these because it conflicts with the seed tag recipe
         /*
-        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
-                .outputFluids(SeedOil.getFluid(10))
-                .save(provider);
-
-        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_melon").duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.MELON_SEEDS, 1))
-                .outputFluids(SeedOil.getFluid(3))
-                .save(provider);
-
-        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
-                .outputFluids(SeedOil.getFluid(6))
-                .save(provider);
-
-        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
-                .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
-                .outputFluids(SeedOil.getFluid(8))
-                .save(provider);*/
+         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
+         * .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
+         * .outputFluids(SeedOil.getFluid(10))
+         * .save(provider);
+         * 
+         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_melon").duration(32).EUt(2)
+         * .inputItems(new ItemStack(Items.MELON_SEEDS, 1))
+         * .outputFluids(SeedOil.getFluid(3))
+         * .save(provider);
+         * 
+         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
+         * .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
+         * .outputFluids(SeedOil.getFluid(6))
+         * .save(provider);
+         * 
+         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
+         * .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
+         * .outputFluids(SeedOil.getFluid(8))
+         * .save(provider);
+         */
 
         EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_cod").duration(16).EUt(4)
                 .inputItems(Items.COD)
