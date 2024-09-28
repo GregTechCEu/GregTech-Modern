@@ -145,11 +145,6 @@ public class RecipeAddition {
                 "PsP", "PSP",
                 'P', ItemTags.PLANKS,
                 'S', ItemTags.WOODEN_SLABS);
-
-        ASSEMBLER_RECIPES.recipeBuilder("barrel")
-                .inputItems(ItemTags.PLANKS, 7)
-                .outputItems(new ItemStack(Blocks.BARREL))
-                .duration(100).EUt(4).save(provider);
     }
 
     private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {
