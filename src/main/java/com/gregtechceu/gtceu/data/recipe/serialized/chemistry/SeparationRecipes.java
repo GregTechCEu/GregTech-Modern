@@ -494,6 +494,12 @@ public class SeparationRecipes {
          * .save(provider);
          */
 
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_wheat_seeds")
+                .duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.WHEAT_SEEDS))
+                .outputFluids(SeedOil.getFluid(10))
+                .save(provider);
+
         EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
                 .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
                 .outputFluids(SeedOil.getFluid(10))
