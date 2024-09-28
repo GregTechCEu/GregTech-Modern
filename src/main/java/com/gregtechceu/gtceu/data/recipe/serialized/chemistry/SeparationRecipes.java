@@ -6,7 +6,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -485,34 +484,35 @@ public class SeparationRecipes {
                 .outputFluids(Helium.getFluid(200))
                 .duration(64).EUt(64).save(provider);
 
-        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
-                .duration(32).EUt(2)
-                .inputItems(Tags.Items.SEEDS)
+        // Disabling because it conflicts with the below recipes
+        // Pack devs should make their own recipes instead
+        /*
+         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_tag_seeds")
+         * .duration(32).EUt(2)
+         * .inputItems(Tags.Items.SEEDS)
+         * .outputFluids(SeedOil.getFluid(10))
+         * .save(provider);
+         */
+
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
                 .outputFluids(SeedOil.getFluid(10))
                 .save(provider);
 
-        // Disabling these because it conflicts with the seed tag recipe
-        /*
-         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_beetroot").duration(32).EUt(2)
-         * .inputItems(new ItemStack(Items.BEETROOT_SEEDS))
-         * .outputFluids(SeedOil.getFluid(10))
-         * .save(provider);
-         * 
-         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_melon").duration(32).EUt(2)
-         * .inputItems(new ItemStack(Items.MELON_SEEDS, 1))
-         * .outputFluids(SeedOil.getFluid(3))
-         * .save(provider);
-         * 
-         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
-         * .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
-         * .outputFluids(SeedOil.getFluid(6))
-         * .save(provider);
-         * 
-         * EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
-         * .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
-         * .outputFluids(SeedOil.getFluid(8))
-         * .save(provider);
-         */
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_melon").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.MELON_SEEDS, 1))
+                .outputFluids(SeedOil.getFluid(3))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_pumpkin").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.PUMPKIN_SEEDS, 1))
+                .outputFluids(SeedOil.getFluid(6))
+                .save(provider);
+
+        EXTRACTOR_RECIPES.recipeBuilder("seed_oil_from_torchflower").duration(32).EUt(2)
+                .inputItems(new ItemStack(Items.TORCHFLOWER_SEEDS, 1))
+                .outputFluids(SeedOil.getFluid(8))
+                .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("fish_oil_from_cod").duration(16).EUt(4)
                 .inputItems(Items.COD)
