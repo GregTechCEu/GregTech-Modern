@@ -771,6 +771,10 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.amp_per_sec", "Average (last second): %s A");
         provider.add("behavior.portable_scanner.machine_disabled", "Disabled.");
         provider.add("behavior.portable_scanner.machine_front_facing", "Front Facing: %s");
+        provider.add("behavior.portable_scanner.machine_ownership", "§2Machine Owner Type: %s§r");
+        provider.add("behavior.portable_scanner.guild_name", "§2Guild Name: %s§r");
+        provider.add("behavior.portable_scanner.team_name", "§2Team Name: %s§r");
+        provider.add("behavior.portable_scanner.player_name", "§2Player Name: %s§r, §7Player Online: %s§r");
         provider.add("behavior.portable_scanner.machine_power_loss", "Shut down due to power loss.");
         provider.add("behavior.portable_scanner.machine_progress", "Progress/Load: %s / %s");
         provider.add("behavior.portable_scanner.machine_upwards_facing", "Upwards Facing: %s");

@@ -389,6 +389,13 @@ public class ConfigHolder {
         @Configurable.Comment({ "Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50" })
         public int ldFluidPipeMinDistance = 50;
 
+        @Configurable
+        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
+        public boolean machineOwnerGUI = true;
+        @Configurable
+        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
+        public boolean machineOwnerBreak = true;
+
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
          * Use {@link GTCEuAPI#isHighTier()} instead.
