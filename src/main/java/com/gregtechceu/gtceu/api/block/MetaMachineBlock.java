@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -127,6 +128,12 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {
             var machine = getMachine(pLevel, pPos);
+            if (machine != null) {
+                if (player instanceof ServerPlayer sPlayer) {
+                    setMachineOwner(machine, sPlayer);
+                    machine.markDirty();
+                }
+            }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
                 CompoundTag tag = pStack.getTag();
                 if (tag != null) {
@@ -282,6 +289,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
 
+        if (machine != null && machine.holder.getOwner() == null && player instanceof ServerPlayer) {
+            setMachineOwner(machine, (ServerPlayer) player);
+            machine.markDirty();
+        }
+
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
             var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
@@ -307,10 +319,23 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
+                canOpenOwnerMachine(player, machine.getHolder())) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
+    }
+
+    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
+    }
+
+    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.machineOwnerBreak) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player);
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
