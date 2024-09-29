@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -320,18 +322,22 @@ public class MultiblockDisplayText {
             return this;
         }
 
-        public Builder addOutputLines(GTRecipe recipe) {
+        public Builder addOutputLines(GTRecipe recipe, int chanceTier) {
             if (!isStructureFormed || !isActive)
                 return this;
             if (recipe != null) {
+                var function = recipe.getType().getChanceFunction();
+                var logic = recipe.getChanceLogicForCapability(ItemRecipeCapability.CAP, IO.OUT, false);
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
+
                 for (var item : itemOutputs) {
                     var stack = (ItemRecipeCapability.CAP.of(item.content).getItems()[0]);
                     if (stack.getCount() < maxDurationSec) {
                         if (item.chance < item.maxChance) {
-                            double averageDurationforRoll = (double) item.maxChance / (double) item.chance;
+                            double averageDurationforRoll = (double) item.maxChance / (double) function
+                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.2", stack.getHoverName(),
                                     stack.getCount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
@@ -342,7 +348,8 @@ public class MultiblockDisplayText {
                     } else {
                         double countPerSec = (double) stack.getCount() / maxDurationSec;
                         if (item.chance < item.maxChance) {
-                            double averageDurationforRoll = (double) item.maxChance / (double) item.chance;
+                            double averageDurationforRoll = (double) item.maxChance / (double) function
+                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.3",
                                     stack.getHoverName(), stack.getCount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
@@ -356,18 +363,21 @@ public class MultiblockDisplayText {
                     var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
                     if (stack.getAmount() < maxDurationSec) {
                         if (fluid.chance < fluid.maxChance) {
-                            double averageDurationforRoll = (double) fluid.maxChance / (double) fluid.chance;
+                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
+                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.2",
                                     stack.getDisplayName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
                         } else {
                             textList.add(Component.translatable("gtceu.multiblock.output_line.0",
-                                    stack.getDisplayName(), stack.getAmount(), FormattingUtil.formatNumber2Places(maxDurationSec)));
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(maxDurationSec)));
                         }
                     } else {
                         double countPerSec = (double) stack.getAmount() / maxDurationSec;
                         if (fluid.chance < fluid.maxChance) {
-                            double averageDurationforRoll = (double) fluid.maxChance / (double) fluid.chance;
+                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
+                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.3",
                                     stack.getDisplayName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
