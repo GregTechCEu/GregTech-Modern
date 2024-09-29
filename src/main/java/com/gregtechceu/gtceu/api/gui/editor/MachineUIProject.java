@@ -86,8 +86,8 @@ public class MachineUIProject extends UIProject {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        super.deserializeNBT(tag, provider);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+        super.deserializeNBT(provider, tag);
         if (tag.contains("machine")) {
             machineDefinition = GTRegistries.MACHINES.get(ResourceLocation.parse(tag.getString("machine")));
         }
@@ -142,7 +142,7 @@ public class MachineUIProject extends UIProject {
                         m.leaf(new ItemStackTexture(definition.asStack()), definition.getDescriptionId(), () -> {
                             root.clearAllWidgets();
                             if (editableUI.hasCustomUI()) {
-                                deserializeNBT(editableUI.getCustomUI(), Platform.getFrozenRegistry());
+                                deserializeNBT(Platform.getFrozenRegistry(), editableUI.getCustomUI());
                             } else {
                                 var template = editableUI.createDefault();
                                 template.setSelfPosition(
