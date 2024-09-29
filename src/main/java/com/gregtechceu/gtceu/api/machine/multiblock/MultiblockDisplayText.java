@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -304,13 +303,15 @@ public class MultiblockDisplayText {
         }
 
         /**
-         * Adds a simple progress line that displays progress as a percentage.
+         * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
          * <br>
          * Added if structure is formed and the machine is active.
          *
+         * @param currentDuration The current duration of the recipe in ticks
+         * @param maxDuration     The max duration of the recipe in ticks
          * @param progressPercent Progress formatted as a range of [0,1] representing the progress of the recipe.
          */
-        public Builder addProgressLine(double currentDuration, double maxDuration, double progressPercent) { // todo
+        public Builder addProgressLine(double currentDuration, double maxDuration, double progressPercent) {
             if (!isStructureFormed || !isActive)
                 return this;
             int currentProgress = (int) (progressPercent * 100);
@@ -327,7 +328,6 @@ public class MultiblockDisplayText {
                 return this;
             if (recipe != null) {
                 var function = recipe.getType().getChanceFunction();
-                var logic = recipe.getChanceLogicForCapability(ItemRecipeCapability.CAP, IO.OUT, false);
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
