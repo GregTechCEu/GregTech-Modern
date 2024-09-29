@@ -52,6 +52,10 @@ public class ToolRecipeHandler {
     public static Map<Integer, Material> baseMaterials = new HashMap<>();
     public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
     public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
+    private static final Material[] softMaterials = new Material[] {
+            GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
+            GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
+    };
 
     public static void init(Consumer<FinishedRecipe> provider) {
         initializeGTItems();
@@ -232,7 +236,7 @@ public class ToolRecipeHandler {
                             'P', plate,
                             'T', new UnificationEntry(TagPrefix.screw, material),
                             'S', rod);
-                } else {
+                } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
                             .info("Did not find bolt for for " + material.getName() + ", skipping wirecutter recipe");
                 }
@@ -249,7 +253,7 @@ public class ToolRecipeHandler {
             addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod);
-        } else {
+        } else if (!ArrayUtils.contains(softMaterials, material)) {
             GTCEu.LOGGER.info("Did not find rod for for " + material.getName() +
                     ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
         }
@@ -489,11 +493,6 @@ public class ToolRecipeHandler {
     }
 
     private static void registerSoftToolRecipes(Consumer<FinishedRecipe> provider) {
-        final Material[] softMaterials = new Material[] {
-                GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
-                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
-        };
-
         final ItemStack stick = new ItemStack(Items.STICK);
 
         for (int i = 0; i < softMaterials.length; i++) {
