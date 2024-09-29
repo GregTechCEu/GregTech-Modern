@@ -54,7 +54,8 @@ public class ToolRecipeHandler {
     public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
     private static final Material[] softMaterials = new Material[] {
             GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
-            GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
+            GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole,
+            GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
     };
 
     public static void init(Consumer<FinishedRecipe> provider) {
