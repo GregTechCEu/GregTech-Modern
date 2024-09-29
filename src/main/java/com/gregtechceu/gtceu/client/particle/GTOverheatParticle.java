@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;

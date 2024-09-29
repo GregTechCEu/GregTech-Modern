@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +41,8 @@ public record CableStructure(String name, int material, int costFactor, TagPrefi
     public static final CableStructure CABLE_DOUBLE = new CableStructure("double_cable", 2, 1, TagPrefix.cableGtDouble,
             WIRE_DOUBLE, INSULATION_BURN_TEMP, 0.375f, () -> () -> PipeModelRegistry.getCableModel(2));
     public static final CableStructure CABLE_QUADRUPLE = new CableStructure("quadruple_cable", 4, 1,
-            TagPrefix.cableGtQuadruple, WIRE_QUADRUPLE, INSULATION_BURN_TEMP, 0.5f, () -> () -> PipeModelRegistry.getCableModel(3));
+            TagPrefix.cableGtQuadruple, WIRE_QUADRUPLE, INSULATION_BURN_TEMP, 0.5f,
+            () -> () -> PipeModelRegistry.getCableModel(3));
     public static final CableStructure CABLE_OCTAL = new CableStructure("octal_cable", 8, 1, TagPrefix.cableGtOctal,
             WIRE_OCTAL, INSULATION_BURN_TEMP, 0.75f, () -> () -> PipeModelRegistry.getCableModel(4));
     public static final CableStructure CABLE_HEX = new CableStructure("hex_cable", 16, 1, TagPrefix.cableGtHex,

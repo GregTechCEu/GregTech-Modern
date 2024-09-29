@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -38,9 +39,11 @@ public record MaterialPipeStructure(String name, int material, int channelCount,
     public static final MaterialPipeStructure SMALL_RESTRICTIVE = new MaterialPipeStructure("small_restrictive", 2,
             1, true, TagPrefix.pipeSmallRestrictive, 0.375f, () -> () -> PipeModelRegistry.getPipeRestrictiveModel(1));
     public static final MaterialPipeStructure NORMAL_RESTRICTIVE = new MaterialPipeStructure("normal_restrictive",
-            6, 1, true, TagPrefix.pipeNormalRestrictive, 0.5f, () -> () -> PipeModelRegistry.getPipeRestrictiveModel(2));
+            6, 1, true, TagPrefix.pipeNormalRestrictive, 0.5f,
+            () -> () -> PipeModelRegistry.getPipeRestrictiveModel(2));
     public static final MaterialPipeStructure LARGE_RESTRICTIVE = new MaterialPipeStructure("large_restrictive",
-            12, 1, true, TagPrefix.pipeLargeRestrictive, 0.75f, () -> () -> PipeModelRegistry.getPipeRestrictiveModel(3));
+            12, 1, true, TagPrefix.pipeLargeRestrictive, 0.75f,
+            () -> () -> PipeModelRegistry.getPipeRestrictiveModel(3));
     public static final MaterialPipeStructure HUGE_RESTRICTIVE = new MaterialPipeStructure("huge_restrictive", 24,
             1, true, TagPrefix.pipeHugeRestrictive, 0.875f, () -> () -> PipeModelRegistry.getPipeRestrictiveModel(4));
 

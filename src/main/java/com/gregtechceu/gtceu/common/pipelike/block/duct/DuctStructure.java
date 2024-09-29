@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 public record DuctStructure(String name, float renderThickness, float rateMultiplier) implements IPipeStructure {

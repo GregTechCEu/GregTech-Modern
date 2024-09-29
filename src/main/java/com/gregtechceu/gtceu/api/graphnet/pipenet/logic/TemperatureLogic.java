@@ -15,9 +15,6 @@ import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 
-import com.lowdragmc.lowdraglib.Platform;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
