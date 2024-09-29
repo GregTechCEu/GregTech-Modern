@@ -130,7 +130,7 @@ public class MinerMachine extends WorkableTieredMachine
 
     @Override
     public void onMachineRemoved() {
-        //Remove the miner pipes below this miner
+        // Remove the miner pipes below this miner
         getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
         clearInventory(chargerInventory);
