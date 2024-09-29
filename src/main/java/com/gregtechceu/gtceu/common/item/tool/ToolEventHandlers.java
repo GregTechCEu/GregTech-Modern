@@ -200,25 +200,22 @@ public class ToolEventHandlers {
             Iterator<ItemEntity> dropItr = drops.iterator();
 
             while (dropItr.hasNext()) {
-                ItemStack dropStack = dropItr.next().getItem();
-                ItemEntity drop = new ItemEntity(EntityType.ITEM, player.level());
+                ItemEntity drop = dropItr.next();
+                ItemStack dropStack = drop.getItem();
 
-                drop.setItem(dropStack);
                 if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
                     dropItr.remove();
                 }
             }
         }
-        GTCEu.LOGGER.info("[Debug] Method onPlayerKilledEntity ran");
         return drops;
     }
 
     @SubscribeEvent
     public static void onPlayerKilledEntity(LivingDropsEvent event) {
-        Entity player = event.getSource().getEntity();
-        if (player instanceof Player) {
-            ToolEventHandlers.onPlayerKilledEntity(((Player) player).getMainHandItem(), (Player) player, event.getDrops());
-            GTCEu.LOGGER.info("[Debug] ForgeEvent onPlayerKilledEntity ran");
+        Entity entity = event.getSource().getEntity();
+        if (entity instanceof Player player) {
+            ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
         }
     }
 
