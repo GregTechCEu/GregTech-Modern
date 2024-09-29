@@ -1176,7 +1176,7 @@ public class RecipeAddition {
 
             ASSEMBLER_RECIPES.recipeBuilder("composter")
                     .inputItems(ItemTags.PLANKS, 4)
-                    .circuitMeta(1)
+                    .circuitMeta(23)
                     .outputItems(new ItemStack(Blocks.COMPOSTER))
                     .duration(80).EUt(6).save(provider);
 

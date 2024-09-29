@@ -581,7 +581,7 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("barrel")
                 .inputItems(ItemTags.PLANKS, 7)
                 .outputItems(new ItemStack(Blocks.BARREL))
-                .circuitMeta(3)
+                .circuitMeta(24)
                 .duration(100).EUt(4)
                 .save(provider);
     }
