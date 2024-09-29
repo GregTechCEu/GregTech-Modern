@@ -239,10 +239,10 @@ public class ToolRecipeHandler {
                             'S', rod);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
-                            .info("Did not find bolt for for " + material.getName() + ", skipping wirecutter recipe");
+                            .info("Did not find bolt for " + material.getName() + ", skipping wirecutter recipe");
                 }
             } else {
-                GTCEu.LOGGER.info("Did not find plate for for " + material.getName() +
+                GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
                         ", skipping wirecutter, butchery knife recipes");
             }
 
@@ -255,7 +255,7 @@ public class ToolRecipeHandler {
                     "hDS", "DSD", "SDf",
                     'S', rod);
         } else if (!ArrayUtils.contains(softMaterials, material)) {
-            GTCEu.LOGGER.info("Did not find rod for for " + material.getName() +
+            GTCEu.LOGGER.info("Did not find rod for " + material.getName() +
                     ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
         }
     }
@@ -346,12 +346,12 @@ public class ToolRecipeHandler {
                             .EUt(8L * voltageMultiplier)
                             .save(provider);
                 } else {
-                    GTCEu.LOGGER.info("Did not find gear for for " + material.getName() +
+                    GTCEu.LOGGER.info("Did not find gear for " + material.getName() +
                             ", skipping gear -> buzzsaw blade recipe");
                 }
             }
         } else {
-            GTCEu.LOGGER.info("Did not find plate for for " + material.getName() +
+            GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
                     ", skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe");
         }
 
@@ -366,7 +366,7 @@ public class ToolRecipeHandler {
                         "fR", " h",
                         'R', new UnificationEntry(TagPrefix.rodLong, material));
             } else {
-                GTCEu.LOGGER.info("Did not find long rod for for " + material.getName() +
+                GTCEu.LOGGER.info("Did not find long rod for " + material.getName() +
                         ", skipping electric screwdriver recipe");
             }
         }
