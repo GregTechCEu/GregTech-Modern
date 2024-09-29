@@ -59,9 +59,9 @@ public class StorageCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 85);
+        final var group = new WidgetGroup(0, 0, 126, 65);
         for (int slot = 0; slot < inventorysize; slot++) {
-            group.addWidget(new SlotWidget(inventory, slot, xoffset + (slot % 9) * 18, yoffset + (slot / 9) * 18));
+            group.addWidget(new SlotWidget(inventory, slot, xoffset + (slot % 6) * 18, yoffset + (slot / 6) * 18));
         }
 
         return group;
