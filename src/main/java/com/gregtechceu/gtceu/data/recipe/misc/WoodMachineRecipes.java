@@ -643,7 +643,7 @@ public class WoodMachineRecipes {
             ASSEMBLER_RECIPES.recipeBuilder(name + "_fence")
                     .inputItems(entry.planks)
                     .outputItems(entry.fence)
-                    .circuitMeta(1)
+                    .circuitMeta(13)
                     .duration(100).EUt(4)
                     .save(provider);
         }

@@ -145,11 +145,6 @@ public class RecipeAddition {
                 "PsP", "PSP",
                 'P', ItemTags.PLANKS,
                 'S', ItemTags.WOODEN_SLABS);
-
-        ASSEMBLER_RECIPES.recipeBuilder("barrel")
-                .inputItems(ItemTags.PLANKS, 7)
-                .outputItems(new ItemStack(Blocks.BARREL))
-                .duration(100).EUt(4).save(provider);
     }
 
     private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {
@@ -1181,7 +1176,7 @@ public class RecipeAddition {
 
             ASSEMBLER_RECIPES.recipeBuilder("composter")
                     .inputItems(ItemTags.PLANKS, 4)
-                    .circuitMeta(1)
+                    .circuitMeta(23)
                     .outputItems(new ItemStack(Blocks.COMPOSTER))
                     .duration(80).EUt(6).save(provider);
 
@@ -1533,7 +1528,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "polished_deepslate_slab_saw",
                 new ItemStack(Blocks.POLISHED_DEEPSLATE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_DEEPSLATE));
         VanillaRecipeHelper.addShapedRecipe(provider, "deepslate_brick_slab_saw",
-                new ItemStack(Blocks.DEEPSLATE_BRICKS), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB));
+                new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_BRICKS));
         VanillaRecipeHelper.addShapedRecipe(provider, "deepslate_tile_slab_saw",
                 new ItemStack(Blocks.DEEPSLATE_TILE_SLAB), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_TILES));
     }
