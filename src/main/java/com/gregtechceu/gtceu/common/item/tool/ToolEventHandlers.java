@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -193,7 +192,8 @@ public class ToolEventHandlers {
         }
     }
 
-    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player, Collection<ItemEntity> drops) {
+    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
+                                                              Collection<ItemEntity> drops) {
         CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
 
         if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
@@ -218,5 +218,4 @@ public class ToolEventHandlers {
             ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
         }
     }
-
 }
