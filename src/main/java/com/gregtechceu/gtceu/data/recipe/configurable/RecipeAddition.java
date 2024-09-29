@@ -1528,7 +1528,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "polished_deepslate_slab_saw",
                 new ItemStack(Blocks.POLISHED_DEEPSLATE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_DEEPSLATE));
         VanillaRecipeHelper.addShapedRecipe(provider, "deepslate_brick_slab_saw",
-                new ItemStack(Blocks.DEEPSLATE_BRICKS), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB));
+                new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_BRICKS    ));
         VanillaRecipeHelper.addShapedRecipe(provider, "deepslate_tile_slab_saw",
                 new ItemStack(Blocks.DEEPSLATE_TILE_SLAB), "sS", 'S', new ItemStack(Blocks.DEEPSLATE_TILES));
     }
