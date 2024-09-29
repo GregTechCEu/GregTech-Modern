@@ -21,10 +21,10 @@ publishing {
     repositories {
         // Add repositories to publish to here.
         maven {
-            url "https://maven.firstdarkdev.xyz/snapshots"
+            url "https://maven.gtceu.com"
             credentials {
                 username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASS")
+                password System.getenv("MAVEN_PASSWORD")
             }
         }
     }

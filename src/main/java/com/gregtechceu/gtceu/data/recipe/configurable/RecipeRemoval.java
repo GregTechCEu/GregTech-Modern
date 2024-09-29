@@ -129,7 +129,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:hopper"));
         registry.accept(new ResourceLocation("minecraft:iron_bars"));
         registry.accept(new ResourceLocation("minecraft:bucket"));
-        registry.accept(new ResourceLocation("minecraft:chain"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
@@ -265,6 +264,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:brush"));
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
+        registry.accept(new ResourceLocation("minecraft:chain"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {

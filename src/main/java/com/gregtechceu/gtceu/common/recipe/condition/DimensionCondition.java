@@ -103,7 +103,7 @@ public class DimensionCondition extends RecipeCondition {
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
-        config.addProperty("dim", dimension.toString());
+        config.addProperty("dimension", dimension.toString());
         return config;
     }
 
