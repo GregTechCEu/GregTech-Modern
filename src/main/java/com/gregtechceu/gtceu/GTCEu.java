@@ -90,4 +90,12 @@ public class GTCEu {
     public static boolean isJAVDLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_JAVD);
     }
+
+    public static boolean isFTBTeamsLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_FTBTEAMS);
+    }
+
+    public static boolean isArgonautsLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_ARGONAUTS);
+    }
 }
