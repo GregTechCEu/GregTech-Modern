@@ -74,11 +74,12 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
             }
         }
     }
+
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
                                           @NotNull OCResult result) {
-        if (machine instanceof SteamParallelMultiblockMachine){
-            if(RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV){
+        if (machine instanceof SteamParallelMultiblockMachine) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
                 return null;
             }
             int duration = recipe.duration;
