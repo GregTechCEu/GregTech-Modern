@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -23,13 +22,10 @@ public final class CoverDefinition {
     @Getter
     private final ResourceLocation id;
     private final CoverBehaviourProvider behaviorCreator;
-    @Getter
-    private final CoverRenderer coverRenderer;
 
-    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator, CoverRenderer coverRenderer) {
+    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator) {
         this.behaviorCreator = behaviorCreator;
         this.id = id;
-        this.coverRenderer = coverRenderer;
     }
 
     public CoverBehavior createCoverBehavior(ICoverable metaBlockEntity, Direction side) {

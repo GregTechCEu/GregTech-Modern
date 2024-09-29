@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeCoverHolder;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -20,8 +21,10 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -530,10 +533,12 @@ public abstract class PipeBlock extends Block implements EntityBlock {
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         PipeBlockEntity tile = getBlockEntity(level, pos);
-        if (tile != null) {
+        if (tile != null && level instanceof Level level1) {
             TemperatureLogic temperatureLogic = tile.getTemperatureLogic();
             int temp = temperatureLogic == null ? 0 : temperatureLogic
-                    .getTemperature(Platform.getMinecraftServer().getTickCount());
+                    .getTemperature(!level1.isClientSide ?
+                            level1.getServer().getTickCount() :
+                            ClientProxy.getServerTickCount());
             // max light at 5000 K
             // min light at 500 K
             if (temp >= 5000) {

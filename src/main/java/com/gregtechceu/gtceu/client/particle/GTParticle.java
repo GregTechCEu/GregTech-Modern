@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
  * GTParticle instances are managed by {@link GTParticleManager}. GTParticle instances with same {@link IRenderSetup}s
  * will be drawn together as a batch.
  */
-@OnlyIn(Dist.CLIENT)
 public abstract class GTParticle {
 
     public double posX;
@@ -105,6 +104,7 @@ public abstract class GTParticle {
      * @param buffer    buffer builder
      * @param context   render context
      */
+    @OnlyIn(Dist.CLIENT)
     public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
                                @NotNull EffectRenderContext context) {}
 

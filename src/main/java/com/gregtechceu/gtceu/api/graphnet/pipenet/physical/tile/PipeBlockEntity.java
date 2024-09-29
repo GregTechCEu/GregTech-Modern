@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.client.renderer.pipe.AbstractPipeModel;
@@ -44,6 +45,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -145,7 +147,6 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     @Getter
     @Nullable
     private TemperatureLogic temperatureLogic;
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     private GTOverheatParticle overheatParticle;
 
@@ -605,8 +606,9 @@ public class PipeBlockEntity extends NeighborCacheBlockEntity
     public void updateTemperatureLogic(@NotNull TemperatureLogic logic) {
         this.temperatureLogic = logic;
         if (overheatParticle == null || !overheatParticle.isAlive()) {
-            // TODO figure out if this can crash if playing on a server
-            long tick = Platform.getMinecraftServer().getTickCount();
+            long tick = this.level.isClientSide ?
+                    ClientProxy.getServerTickCount() :
+                    Platform.getMinecraftServer().getTickCount();;
             int temp = logic.getTemperature(tick);
             if (temp > GTOverheatParticle.TEMPERATURE_CUTOFF) {
                 IPipeStructure structure = this.getStructure();

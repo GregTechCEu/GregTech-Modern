@@ -6,44 +6,30 @@ import com.gregtechceu.gtceu.api.graphnet.edge.SimulatorKey;
 import com.gregtechceu.gtceu.api.graphnet.path.INetPath;
 import com.gregtechceu.gtceu.api.graphnet.predicate.test.IPredicateTestObject;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractTraverseData<N extends NetNode, P extends INetPath<N, ?>> implements ITraverseData<N, P> {
 
-    private final IGraphNet net;
+    @Getter
+    private final IGraphNet graphNet;
+    @Getter
     private final IPredicateTestObject testObject;
-    private final SimulatorKey simulator;
+    @Nullable
+    @Getter
+    private final SimulatorKey simulatorKey;
+    @Getter
     private final long queryTick;
 
-    public AbstractTraverseData(IGraphNet net, IPredicateTestObject testObject, SimulatorKey simulator,
+    public AbstractTraverseData(IGraphNet graphNet, IPredicateTestObject testObject, SimulatorKey simulatorKey,
                                 long queryTick) {
-        this.net = net;
+        this.graphNet = graphNet;
         this.testObject = testObject;
-        this.simulator = simulator;
+        this.simulatorKey = simulatorKey;
         this.queryTick = queryTick;
     }
 
-    @Override
-    public IGraphNet getGraphNet() {
-        return net;
-    }
-
-    @Override
-    public IPredicateTestObject getTestObject() {
-        return testObject;
-    }
-
-    @Override
-    public @Nullable SimulatorKey getSimulatorKey() {
-        return simulator;
-    }
-
     public boolean simulating() {
-        return simulator != null;
-    }
-
-    @Override
-    public long getQueryTick() {
-        return queryTick;
+        return simulatorKey != null;
     }
 }

@@ -33,7 +33,6 @@ import java.util.*;
 /**
  * Singleton class responsible for managing, updating and rendering {@link GTParticle} instances.
  */
-@OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GTCEu.MOD_ID)
 public class GTParticleManager {
 

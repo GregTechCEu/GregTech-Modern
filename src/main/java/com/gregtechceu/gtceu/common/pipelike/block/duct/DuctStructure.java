@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.PipeStructureRegistra
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRedirector;
 import com.gregtechceu.gtceu.client.renderer.pipe.PipeModelRegistry;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public record DuctStructure(String name, float renderThickness, float rateMultiplier) implements IPipeStructure {
@@ -30,6 +32,7 @@ public record DuctStructure(String name, float renderThickness, float rateMultip
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public PipeModelRedirector getModel() {
         return PipeModelRegistry.getDuctModel();
     }

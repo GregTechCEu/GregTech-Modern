@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@OnlyIn(Dist.CLIENT)
 public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
 
     public static final ModelProperty<Boolean> ACTIVE_PROPERTY = new ModelProperty<>();
@@ -61,6 +60,7 @@ public class ActivablePipeModel extends AbstractPipeModel<ActivableCacheKey> {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public @NotNull List<BakedQuad> getQuads(ActivableCacheKey key,
                                              byte connectionMask, byte closedMask, byte blockedMask,
                                              ColorData data, @Nullable Material frameMaterial,

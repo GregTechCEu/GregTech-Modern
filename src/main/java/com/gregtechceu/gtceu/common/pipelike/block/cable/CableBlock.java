@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.block.cable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.WorldPipeNetNode;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeMaterialBlock;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -17,15 +18,19 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -72,6 +77,22 @@ public class CableBlock extends PipeMaterialBlock implements IBurnable {
         if (structure.partialBurnStructure() != null) {
             BlockState newState = CACHE.get(material).get(structure.partialBurnStructure()).defaultBlockState();
             world.setBlockAndUpdate(pos, newState);
+
+            BlockEntity newBlockEntity = world.getBlockEntity(pos);
+            if (!(newBlockEntity instanceof PipeBlockEntity pipe)) return;
+            for (Direction facing : GTUtil.DIRECTIONS) {
+                if (pipe.isConnected(facing)) {
+                    PipeBlock.connectTile(pipe, pipe.getPipeNeighbor(facing, false), facing);
+                    BlockPos relativePos = pipe.getBlockPos().relative(facing);
+                    ChunkAccess chunk = world.getChunk(relativePos);
+                    if (chunk instanceof LevelChunk levelChunk) {
+                        BlockEntity candidate = levelChunk
+                                .getBlockEntity(relativePos, LevelChunk.EntityCreationType.CHECK);
+                        if (candidate instanceof PipeBlockEntity otherPipe)
+                            PipeBlock.connectTile(pipe, otherPipe, facing);
+                    }
+                }
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.logic.TemperatureLogic;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.BloomUtils;
@@ -171,7 +172,7 @@ public class GTOverheatParticle extends GTParticle {
     }
 
     private int getTemperature() {
-        long tick = Minecraft.getInstance().levelRenderer.getTicks();
+        long tick = ClientProxy.getServerTickCount();
         return temperatureLogic.getTemperature(tick);
     }
 

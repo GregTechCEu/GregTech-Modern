@@ -24,8 +24,7 @@ public class FluidDetectorCover extends DetectorCover {
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_fluid_detector"),
-                GTCEu.id("block/cover/overlay_fluid_detector_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_fluid_detector"), null).build();
     }
 
     @Override

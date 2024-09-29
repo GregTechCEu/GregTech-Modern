@@ -27,7 +27,6 @@ import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@OnlyIn(Dist.CLIENT)
 public class PipeModel extends AbstractPipeModel<CacheKey> {
 
     private final @NotNull TextureInformation inTex;

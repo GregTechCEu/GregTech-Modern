@@ -12,10 +12,12 @@ import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IBurnable;
 import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.IFreezable;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.CompleteLossOperator;
 import com.gregtechceu.gtceu.api.graphnet.traverse.util.MultLossOperator;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -276,7 +278,7 @@ public final class TemperatureLogic extends NetLogicEntry<TemperatureLogic, Comp
 
     @Override
     public void decode(FriendlyByteBuf buf, boolean fullChange) {
-        this.lastRestorationTick = Platform.getMinecraftServer().getTickCount();
+        this.lastRestorationTick = ClientProxy.getServerTickCount();
         this.energy = buf.readFloat();
         if (fullChange) {
             this.temperatureMaximum = buf.readVarInt();

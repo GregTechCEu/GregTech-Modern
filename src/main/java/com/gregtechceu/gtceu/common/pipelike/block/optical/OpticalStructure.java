@@ -11,13 +11,17 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.core.Direction;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-public record OpticalStructure(String name, float renderThickness, PipeModelRedirector model)
+import java.util.function.Supplier;
+
+public record OpticalStructure(String name, float renderThickness, Supplier<Supplier<PipeModelRedirector>> model)
         implements IPipeStructure {
 
     public static final OpticalStructure INSTANCE = new OpticalStructure("optical_pipe_normal", 0.375f,
-            PipeModelRegistry.getOpticalModel());
+            () -> () -> PipeModelRegistry.getOpticalModel());
 
     @Override
     public ResourceTexture getPipeTexture(boolean isBlock) {
@@ -53,8 +57,9 @@ public record OpticalStructure(String name, float renderThickness, PipeModelRedi
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public PipeModelRedirector getModel() {
-        return model;
+        return model.get().get();
     }
 
     public static void register(@NotNull PipeStructureRegistrationEvent event) {

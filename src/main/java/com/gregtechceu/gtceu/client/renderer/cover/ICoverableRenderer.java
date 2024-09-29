@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.client.renderer.pipe.util.ColorData;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib.client.model.forge.LDLRendererModel;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -23,6 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,7 +85,9 @@ public interface ICoverableRenderer extends IRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                // cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, pos, level, modelState);
+                cover.getRenderer().addQuads(quads, face, rand, EnumSet.noneOf(Direction.class), false,
+                        LDLRendererModel.RendererBakedModel.CURRENT_MODEL_DATA.get(), new ColorData(),
+                        LDLRendererModel.RendererBakedModel.CURRENT_RENDER_TYPE.get());
             }
         }
     }

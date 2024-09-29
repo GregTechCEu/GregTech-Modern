@@ -28,8 +28,7 @@ public class ItemDetectorCover extends DetectorCover {
 
     @Override
     protected CoverRenderer buildRenderer() {
-        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_item_detector"),
-                GTCEu.id("block/cover/overlay_item_detector_emissive")).build();
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_item_detector"), null).build();
     }
 
     @Override

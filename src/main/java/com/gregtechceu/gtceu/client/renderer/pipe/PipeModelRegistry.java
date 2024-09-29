@@ -16,6 +16,8 @@ import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -25,6 +27,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+@OnlyIn(Dist.CLIENT)
 public final class PipeModelRegistry {
 
     public static final Map<ModelResourceLocation, PipeModelRedirector> MODELS = new HashMap<>();

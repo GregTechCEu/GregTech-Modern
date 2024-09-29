@@ -38,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class AbstractPipeModel<K extends CacheKey> {
 
     public static ModelProperty<Float> THICKNESS_PROPERTY = new ModelProperty<>();
@@ -70,6 +69,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
         PIPE_CACHES.add(pipeCache);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData modelData,
                                              @Nullable RenderType renderType) {
@@ -88,6 +88,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
         return Collections.emptyList();
     }
 
+    @OnlyIn(Dist.CLIENT)
     protected void renderCovers(List<BakedQuad> quads, @NotNull CoverRendererPackage rendererPackage,
                                 RandomSource rand, @NotNull ModelData data, RenderType renderType) {
         int color = safeInt(data.get(COLOR_PROPERTY));
@@ -116,6 +117,7 @@ public abstract class AbstractPipeModel<K extends CacheKey> {
         return integer == null ? 0 : integer;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public @NotNull List<BakedQuad> getQuads(K key, byte connectionMask, byte closedMask, byte blockedMask,
                                              ColorData data,
                                              @Nullable Material frameMaterial, byte frameMask, byte coverMask,
