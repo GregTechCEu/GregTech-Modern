@@ -1030,22 +1030,22 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "lantern", new ItemStack(Blocks.LANTERN), "hRf",
                     "RFR", " R ",
                     'F', new ItemStack(Blocks.TORCH),
-                    'R', new UnificationEntry(TagPrefix.round, GTMaterials.Iron));
+                    'R', new UnificationEntry(ring, Iron));
 
             ASSEMBLER_RECIPES.recipeBuilder("lantern")
                     .inputItems(new ItemStack(Blocks.TORCH))
-                    .inputItems(round, Iron, 4)
+                    .inputItems(ring, Iron, 4)
                     .outputItems(new ItemStack(Blocks.LANTERN))
                     .duration(100).EUt(1).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "soul_lantern", new ItemStack(Blocks.SOUL_LANTERN), "hRf",
                     "RFR", " R ",
                     'F', new ItemStack(Blocks.SOUL_TORCH),
-                    'R', new UnificationEntry(TagPrefix.round, GTMaterials.Iron));
+                    'R', new UnificationEntry(ring, Iron));
 
             ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
                     .inputItems(new ItemStack(Blocks.SOUL_TORCH))
-                    .inputItems(round, Iron, 4)
+                    .inputItems(ring, Iron, 4)
                     .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
                     .duration(100).EUt(1).save(provider);
 
@@ -1319,10 +1319,10 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "chain", new ItemStack(Items.CHAIN), " R ",
                     "wR ", " R ",
-                    'R', new UnificationEntry(round, Iron));
+                    'R', new UnificationEntry(ring, Iron));
 
             ASSEMBLER_RECIPES.recipeBuilder("chain")
-                    .inputItems(round, Iron, 3)
+                    .inputItems(ring, Iron, 3)
                     .outputItems(new ItemStack(Items.CHAIN))
                     .duration(40).EUt(10).save(provider);
 
