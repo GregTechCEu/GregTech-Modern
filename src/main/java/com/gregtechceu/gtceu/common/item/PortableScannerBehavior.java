@@ -433,7 +433,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             list.add(Component.translatable("behavior.portable_scanner.divider"));
             list.addAll(dataInfoProvider.getDataInfo(mode));
         } else {
-            list.add(Component.translatable(state.getBlock().getDescriptionId()).withStyle(ChatFormatting.BLUE));
+            list.add(state.getBlock().getName().withStyle(ChatFormatting.BLUE));
         }
 
         // Environmental information
