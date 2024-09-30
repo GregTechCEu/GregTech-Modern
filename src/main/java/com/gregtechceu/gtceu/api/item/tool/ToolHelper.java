@@ -124,6 +124,7 @@ public class ToolHelper {
     public static final String TREE_FELLING_KEY = "TreeFelling";
     public static final String DISABLE_SHIELDS_KEY = "DisableShields";
     public static final String RELOCATE_MINED_BLOCKS_KEY = "RelocateMinedBlocks";
+    public static final String RELOCATE_MOB_DROPS_KEY = "RelocateMobDrops";
 
     // Crafting Symbols
     private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
