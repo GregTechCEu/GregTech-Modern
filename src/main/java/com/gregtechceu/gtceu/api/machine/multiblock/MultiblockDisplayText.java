@@ -393,9 +393,7 @@ public class MultiblockDisplayText {
         }
 
         /**
-         * Adds a line indicating how many parallels this multi can potentially perform.
-         * <br>
-         * Added if structure is formed and the number of parallels is greater than one.
+         * Adds a line indicating the current mode of the multi
          */
         public Builder addMachineModeLine(GTRecipeType recipeType, boolean hasMultipleModes) {
             if (!isStructureFormed || !hasMultipleModes)
