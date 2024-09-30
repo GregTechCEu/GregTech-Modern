@@ -12,18 +12,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
@@ -33,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-// TODO this currently voids the used tool as well as a torch. how fix?
 @AllArgsConstructor
 public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
 
@@ -92,31 +84,37 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
     }
 
     private static boolean checkAndPlaceTorch(UseOnContext context, ItemStack slotStack) {
-        if (!slotStack.isEmpty()) {
-            Item slotItem = slotStack.getItem();
-            if (slotItem instanceof BlockItem slotItemBlock) {
-                Block slotBlock = slotItemBlock.getBlock();
-                if (slotBlock == Blocks.TORCH ||
-                        slotStack.is(TagUtil.createItemTag("torches"))) {
-                    BlockPos pos = context.getClickedPos();
-                    BlockState state = context.getLevel().getBlockState(pos);
-                    if (!state.canBeReplaced()) {
-                        pos = pos.relative(context.getClickedFace());
-                    }
-                    if (context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), slotStack)) {
-                        var blockPlaceContext = new BlockPlaceContext(context);
-                        if (slotItemBlock.place(blockPlaceContext).consumesAction()) {
-                            BlockState slotState = context.getLevel().getBlockState(pos);
-                            SoundType soundtype = slotState.getSoundType(context.getLevel(), pos, context.getPlayer());
-                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(),
-                                    SoundSource.BLOCKS,
-                                    (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                            if (!context.getPlayer().isCreative()) slotStack.shrink(1);
-                            return true;
-                        }
-                    }
-                }
-            }
+        if (context.getLevel().isClientSide)
+            return false;
+
+        if (slotStack.isEmpty())
+            return false;
+
+        Item slotItem = slotStack.getItem();
+
+        if (slotItem != Items.TORCH && !slotStack.is(TagUtil.createItemTag("torches")))
+            return false;
+
+        if (context.getPlayer() == null)
+            return false;
+
+        if (!(slotItem instanceof BlockItem slotItemBlock)) {
+            return false;
+        }
+
+        BlockPos pos = context.getClickedPos();
+        BlockState state = context.getLevel().getBlockState(pos);
+
+        if (!state.canBeReplaced()) {
+            pos = pos.relative(context.getClickedFace());
+        }
+
+        if (context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), slotStack)) {
+            var torchContext = new UseOnContext(context.getLevel(), context.getPlayer(), context.getHand(), slotStack,
+                    context.getHitResult());
+            var blockPlaceContext = new BlockPlaceContext(torchContext);
+            InteractionResult placed = slotItemBlock.place(blockPlaceContext);
+            return placed.consumesAction();
         }
         return false;
     }
