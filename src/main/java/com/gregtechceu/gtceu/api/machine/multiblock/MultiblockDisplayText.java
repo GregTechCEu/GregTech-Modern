@@ -360,17 +360,17 @@ public class MultiblockDisplayText {
                     }
                 }
                 for (var fluid : fluidOutputs) {
-                    var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
+                    var stack = (FluidRecipeCapability.CAP.of(fluid.content).getFluids()[0]);
                     if (stack.getAmount() < maxDurationSec) {
                         if (fluid.chance < fluid.maxChance) {
                             double averageDurationforRoll = (double) fluid.maxChance / (double) function
                                     .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.2",
-                                    stack.getDisplayName(), stack.getAmount(),
+                                    stack.getHoverName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
                         } else {
                             textList.add(Component.translatable("gtceu.multiblock.output_line.0",
-                                    stack.getDisplayName(), stack.getAmount(),
+                                    stack.getHoverName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(maxDurationSec)));
                         }
                     } else {
@@ -379,11 +379,11 @@ public class MultiblockDisplayText {
                             double averageDurationforRoll = (double) fluid.maxChance / (double) function
                                     .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
                             textList.add(Component.translatable("gtceu.multiblock.output_line.3",
-                                    stack.getDisplayName(), stack.getAmount(),
+                                    stack.getHoverName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
                         } else {
                             textList.add(Component.translatable("gtceu.multiblock.output_line.1",
-                                    stack.getDisplayName(), stack.getAmount(),
+                                    stack.getHoverName(), stack.getAmount(),
                                     FormattingUtil.formatNumber2Places(countPerSec)));
                         }
                     }
