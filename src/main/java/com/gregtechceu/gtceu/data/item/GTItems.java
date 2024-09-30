@@ -245,6 +245,7 @@ public class GTItems {
                                                 // Set behaviours
                                                 if (toolProperty.isMagnetic()) {
                                                     p.component(GTDataComponents.RELOCATE_MINED_BLOCKS, Unit.INSTANCE);
+                                                    p.component(GTDataComponents.RELOCATE_MOB_DROPS, Unit.INSTANCE);
                                                 }
                                                 return p;
                                             })

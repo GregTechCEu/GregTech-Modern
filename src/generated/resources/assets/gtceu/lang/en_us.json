@@ -4795,7 +4795,7 @@
   "item.gtceu.tool.behavior.ground_tilling": "§eFarmer: §fTills Ground",
   "item.gtceu.tool.behavior.plunger": "§9Plumber: §fDrains Fluids",
   "item.gtceu.tool.behavior.rail_rotation": "§eRailroad Engineer: §fRotates Rails",
-  "item.gtceu.tool.behavior.relocate_mining": "§2Magnetic: §fRelocates Mined Blocks",
+  "item.gtceu.tool.behavior.relocate_mining": "§2Magnetic: §fRelocates Mined Blocks and Mob Drops",
   "item.gtceu.tool.behavior.remove_wax": "§6Cleaner: §fRemoves Wax",
   "item.gtceu.tool.behavior.scrape": "§bPolisher: §fRemoves Oxidation",
   "item.gtceu.tool.behavior.shield_disable": "§cBrute: §fDisables Shields",
