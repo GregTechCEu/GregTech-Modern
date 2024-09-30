@@ -61,7 +61,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
-    IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.

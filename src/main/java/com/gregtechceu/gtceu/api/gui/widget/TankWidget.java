@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.transfer.fluid.CycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -20,7 +21,6 @@ import com.lowdragmc.lowdraglib.jei.ClickableIngredient;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import com.lowdragmc.lowdraglib.utils.CycleFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -203,10 +203,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (self().isMouseOverElement(mouseX, mouseY)) {
             if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
 
-            if (this.fluidTank instanceof CycleFluidTransfer cycleItemStackHandler) {
-                return getXEIIngredientsFromCycleTransferClickable(cycleItemStackHandler, tank).get(0);
-            } else if (this.fluidTank instanceof TagOrCycleFluidHandler transfer) {
-                return getXEIIngredientsFromTagOrCycleTransferClickable(transfer, tank).get(0);
+            if (this.fluidTank instanceof CycleFluidHandler cycleFluidHandler) {
+                return getXEIIngredientsFromCycleHandlerClickable(cycleFluidHandler, tank).get(0);
+            } else if (this.fluidTank instanceof TagOrCycleFluidHandler tagOrCycleFluidHandler) {
+                return getXEIIngredientsFromTagOrCycleHandlerClickable(tagOrCycleFluidHandler, tank).get(0);
             }
 
             if (LDLib.isJeiLoaded()) {
@@ -229,10 +229,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public List<Object> getXEIIngredients() {
         if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return Collections.emptyList();
 
-        if (this.fluidTank instanceof CycleFluidTransfer cycleItemStackHandler) {
-            return getXEIIngredientsFromCycleTransfer(cycleItemStackHandler, tank);
-        } else if (this.fluidTank instanceof TagOrCycleFluidHandler transfer) {
-            return getXEIIngredientsFromTagOrCycleTransfer(transfer, tank);
+        if (this.fluidTank instanceof CycleFluidHandler cycleFluidHandler) {
+            return getXEIIngredientsFromCycleHandler(cycleFluidHandler, tank);
+        } else if (this.fluidTank instanceof TagOrCycleFluidHandler tagOrCycleFluidHandler) {
+            return getXEIIngredientsFromTagOrCycleHandler(tagOrCycleFluidHandler, tank);
         }
 
         if (LDLib.isJeiLoaded()) {
@@ -250,9 +250,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return List.of(lastFluidInTank);
     }
 
-    private List<Object> getXEIIngredientsFromCycleTransfer(CycleFluidTransfer transfer, int index) {
-        var stream = transfer.getStackList(index).stream().map(FluidHelperImpl::toRealFluidStack)
-                .map(FluidStack.class::cast);
+    private List<Object> getXEIIngredientsFromCycleHandler(CycleFluidHandler handler, int index) {
+        var stream = handler.getStackList(index).stream();
         if (LDLib.isJeiLoaded()) {
             return stream.filter(fluid -> !fluid.isEmpty()).map(JEICallWrapper::getPlatformFluidTypeForJEI).toList();
         } else if (LDLib.isReiLoaded()) {
@@ -263,9 +262,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromCycleTransferClickable(CycleFluidTransfer transfer, int index) {
-        var stream = transfer.getStackList(index).stream().map(FluidHelperImpl::toRealFluidStack)
-                .map(FluidStack.class::cast);
+    private List<Object> getXEIIngredientsFromCycleHandlerClickable(CycleFluidHandler handler, int index) {
+        var stream = handler.getStackList(index).stream();
         if (LDLib.isJeiLoaded()) {
             return stream
                     .filter(fluid -> !fluid.isEmpty())
@@ -279,8 +277,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleTransfer(TagOrCycleFluidHandler transfer, int index) {
-        Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = transfer
+    private List<Object> getXEIIngredientsFromTagOrCycleHandler(TagOrCycleFluidHandler handler, int index) {
+        Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = handler
                 .getStacks()
                 .get(index);
         var ref = new Object() {
@@ -316,8 +314,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         return ref.returnValue;
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleTransferClickable(TagOrCycleFluidHandler transfer, int index) {
-        Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = transfer
+    private List<Object> getXEIIngredientsFromTagOrCycleHandlerClickable(TagOrCycleFluidHandler handler, int index) {
+        Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> either = handler
                 .getStacks()
                 .get(index);
         var ref = new Object() {

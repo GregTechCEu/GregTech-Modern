@@ -192,7 +192,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // pipeTank should only be determined by the cover attached to the actual pipe
             if (cover != null) {
-                pipeTank = cover.getFluidTransferCap(pipeTank);
+                pipeTank = cover.getFluidHandlerCap(pipeTank);
                 // Shutter covers return null capability when active, so check here to prevent NPE
                 if (pipeTank == null || checkForPumpCover(cover)) continue;
             } else {

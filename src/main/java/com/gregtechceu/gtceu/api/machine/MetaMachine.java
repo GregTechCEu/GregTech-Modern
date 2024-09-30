@@ -690,7 +690,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
                 .filter(IFluidHandler.class::isInstance)
                 .filter(t -> t.hasCapability(side))
@@ -709,7 +709,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getFluidTransferCap(transferList) : transferList;
+        return cover != null ? cover.getFluidHandlerCap(transferList) : transferList;
     }
 
     //////////////////////////////////////

@@ -164,7 +164,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
             return fluidPipe.getTankList(side);
         } else {

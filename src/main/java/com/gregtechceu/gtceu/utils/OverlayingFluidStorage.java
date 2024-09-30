@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor
 public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTank {
 
-    private final IFluidHandlerModifiable transfer;
+    private final IFluidHandlerModifiable handler;
     private final int tank;
 
     @Override
     public @NotNull FluidStack getFluid() {
-        return transfer.getFluidInTank(tank);
+        return handler.getFluidInTank(tank);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
 
     @Override
     public int getCapacity() {
-        return transfer.getTankCapacity(tank);
+        return handler.getTankCapacity(tank);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
 
     @Override
     public void setFluidInTank(int tank, FluidStack stack) {
-        transfer.setFluidInTank(tank, stack);
+        handler.setFluidInTank(tank, stack);
     }
 
     @Override
@@ -57,31 +57,31 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
 
     @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        return transfer.isFluidValid(tank, stack);
+        return handler.isFluidValid(tank, stack);
     }
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        if (transfer instanceof NotifiableFluidTank notifiable) {
+        if (handler instanceof NotifiableFluidTank notifiable) {
             return notifiable.getStorages()[this.tank].fill(resource, action);
         }
-        return transfer.fill(resource, action);
+        return handler.fill(resource, action);
     }
 
     @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        if (transfer instanceof NotifiableFluidTank notifiable) {
+        if (handler instanceof NotifiableFluidTank notifiable) {
             return notifiable.getStorages()[this.tank].drain(resource, action);
         }
-        return transfer.drain(resource, action);
+        return handler.drain(resource, action);
     }
 
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        if (transfer instanceof NotifiableFluidTank notifiable) {
+        if (handler instanceof NotifiableFluidTank notifiable) {
             return notifiable.getStorages()[this.tank].drain(maxDrain, action);
         }
-        return transfer.drain(maxDrain, action);
+        return handler.drain(maxDrain, action);
     }
 }

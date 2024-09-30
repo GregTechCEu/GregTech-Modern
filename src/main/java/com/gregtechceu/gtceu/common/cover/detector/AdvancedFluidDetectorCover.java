@@ -82,7 +82,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
             return;
 
         FluidFilter filter = filterHandler.getFilter();
-        IFluidHandler fluidHandler = getFluidTransfer();
+        IFluidHandler fluidHandler = getFluidHandler();
         if (fluidHandler == null)
             return;
 

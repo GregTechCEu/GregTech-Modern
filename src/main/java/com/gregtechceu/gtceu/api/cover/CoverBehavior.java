@@ -217,7 +217,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     @Nullable
-    public IFluidHandlerModifiable getFluidTransferCap(IFluidHandlerModifiable defaultValue) {
+    public IFluidHandlerModifiable getFluidHandlerCap(IFluidHandlerModifiable defaultValue) {
         return defaultValue;
     }
 }

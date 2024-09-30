@@ -139,8 +139,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                         handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
                 } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP &&
-                        handler instanceof IFluidHandler fluidTransfer) {
-                            fluidTanks.add(fluidTransfer);
+                        handler instanceof IFluidHandler fluidHandler) {
+                            fluidTanks.add(fluidHandler);
                         }
             }
         }

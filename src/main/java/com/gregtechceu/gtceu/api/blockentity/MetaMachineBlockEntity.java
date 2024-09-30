@@ -223,10 +223,10 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                     return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(h::get));
                 }
             }
-            var transfer = machine.getFluidTransferCap(side, true);
-            if (transfer != null) {
+            var handler = machine.getFluidHandlerCap(side, true);
+            if (handler != null) {
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> transfer));
+                        LazyOptional.of(() -> handler));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
             if (machine instanceof IEnergyStorage energyStorage) {

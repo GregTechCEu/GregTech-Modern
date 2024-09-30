@@ -51,7 +51,7 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
 
         if (context.getLevel()
                 .getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity metaMachineBlockEntity) {
-            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidTransferCap(context.getClickedFace(), false);
+            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
         } else {
             fluidHandler = FluidUtil
                     .getFluidHandler(context.getLevel(), context.getClickedPos(), context.getClickedFace()).resolve()

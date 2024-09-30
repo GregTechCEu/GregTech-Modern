@@ -56,15 +56,15 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     protected void doVoidFluids() {
-        IFluidHandlerModifiable fluidTransfer = getOwnFluidTransfer();
-        if (fluidTransfer == null) {
+        IFluidHandlerModifiable fluidHandler = getOwnFluidHandler();
+        if (fluidHandler == null) {
             return;
         }
-        voidAny(fluidTransfer);
+        voidAny(fluidHandler);
     }
 
-    void voidAny(IFluidHandlerModifiable fluidTransfer) {
-        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+    void voidAny(IFluidHandlerModifiable fluidHandler) {
+        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             if (!filterHandler.test(fluidStack))
@@ -73,7 +73,7 @@ public class FluidVoidingCover extends PumpCover {
             var toDrain = fluidStack.copy();
             toDrain.setAmount(fluidAmounts.get(fluidStack));
 
-            fluidTransfer.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 

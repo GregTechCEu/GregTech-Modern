@@ -117,14 +117,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected boolean isSubscriptionActive() {
-        return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
+        return isWorkingEnabled() && getAdjacentFluidHandler() != null;
     }
 
-    protected @Nullable IFluidHandlerModifiable getOwnFluidTransfer() {
-        return coverHolder.getFluidTransferCap(attachedSide, false);
+    protected @Nullable IFluidHandlerModifiable getOwnFluidHandler() {
+        return coverHolder.getFluidHandlerCap(attachedSide, false);
     }
 
-    protected @Nullable IFluidHandler getAdjacentFluidTransfer() {
+    protected @Nullable IFluidHandler getAdjacentFluidHandler() {
         return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
                 .resolve()
                 .orElse(null);
@@ -140,7 +140,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Override
     public boolean canAttach() {
-        return getOwnFluidTransfer() != null;
+        return getOwnFluidHandler() != null;
     }
 
     public void setIo(IO io) {
@@ -233,15 +233,15 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     private int doTransferFluids(int platformTransferLimit) {
-        var adjacent = getAdjacentFluidTransfer();
+        var adjacent = getAdjacentFluidHandler();
         var adjacentModifiable = adjacent instanceof IFluidHandlerModifiable modifiable ? modifiable :
                 new ModifiableFluidHandlerWrapper(adjacent);
-        var ownFluidTransfer = getOwnFluidTransfer();
+        var ownFluidHandler = getOwnFluidHandler();
 
-        if (adjacent != null && ownFluidTransfer != null) {
+        if (adjacent != null && ownFluidHandler != null) {
             return switch (io) {
-                case IN -> doTransferFluidsInternal(adjacentModifiable, ownFluidTransfer, platformTransferLimit);
-                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentModifiable, platformTransferLimit);
+                case IN -> doTransferFluidsInternal(adjacentModifiable, ownFluidHandler, platformTransferLimit);
+                case OUT -> doTransferFluidsInternal(ownFluidHandler, adjacentModifiable, platformTransferLimit);
                 default -> 0;
             };
         }
@@ -263,16 +263,16 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         EXTRACT
     }
 
-    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer,
+    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidHandler,
                                                                TransferDirection direction) {
         final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(
                 FluidStackHashStrategy.comparingAllButAmount());
 
-        for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
-            if (!canTransfer(fluidTransfer, direction, tank))
+        for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
+            if (!canTransfer(fluidHandler, direction, tank))
                 continue;
 
-            FluidStack fluidStack = fluidTransfer.getFluidInTank(tank);
+            FluidStack fluidStack = fluidHandler.getFluidInTank(tank);
             if (fluidStack.isEmpty())
                 continue;
 
@@ -285,10 +285,10 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return summedFluids;
     }
 
-    private static boolean canTransfer(IFluidHandlerModifiable fluidTransfer, TransferDirection direction, int tank) {
+    private static boolean canTransfer(IFluidHandlerModifiable fluidHandler, TransferDirection direction, int tank) {
         return switch (direction) {
-            case INSERT -> fluidTransfer.supportsFill(tank);
-            case EXTRACT -> fluidTransfer.supportsDrain(tank);
+            case INSERT -> fluidHandler.supportsFill(tank);
+            case EXTRACT -> fluidHandler.supportsDrain(tank);
         };
     }
 
@@ -355,18 +355,18 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
-    private CoverableFluidHandlerWrapper fluidTransferWrapper;
+    private CoverableFluidHandlerWrapper fluidHandlerWrapper;
 
     @Nullable
     @Override
-    public IFluidHandlerModifiable getFluidTransferCap(@Nullable IFluidHandlerModifiable defaultValue) {
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable IFluidHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
-        if (fluidTransferWrapper == null || fluidTransferWrapper.delegate != defaultValue) {
-            this.fluidTransferWrapper = new CoverableFluidHandlerWrapper(defaultValue);
+        if (fluidHandlerWrapper == null || fluidHandlerWrapper.delegate != defaultValue) {
+            this.fluidHandlerWrapper = new CoverableFluidHandlerWrapper(defaultValue);
         }
-        return fluidTransferWrapper;
+        return fluidHandlerWrapper;
     }
 
     private class CoverableFluidHandlerWrapper extends FluidHandlerDelegate {

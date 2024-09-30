@@ -37,7 +37,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
-    private boolean hasFluidTransfer;
+    private boolean hasFluidHandler;
     private boolean hasItemTransfer;
 
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
@@ -88,13 +88,13 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         if (level != null) {
             this.hasItemTransfer = ItemTransferHelper.getItemTransfer(
                     level, getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null;
-            this.hasFluidTransfer = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
+            this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
         } else {
             this.hasItemTransfer = false;
-            this.hasFluidTransfer = false;
+            this.hasFluidHandler = false;
         }
 
-        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemTransfer || hasFluidTransfer)) {
+        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemTransfer || hasFluidHandler)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -110,14 +110,14 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                     if (hasItemTransfer) {
                         getInventory().exportToNearby(getFrontFacing());
                     }
-                    if (hasFluidTransfer) {
+                    if (hasFluidHandler) {
                         tank.exportToNearby(getFrontFacing());
                     }
                 } else if (io == IO.IN) {
                     if (hasItemTransfer) {
                         getInventory().importFromNearby(getFrontFacing());
                     }
-                    if (hasFluidTransfer) {
+                    if (hasFluidHandler) {
                         tank.importFromNearby(getFrontFacing());
                     }
                 }

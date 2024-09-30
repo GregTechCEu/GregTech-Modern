@@ -185,8 +185,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
-        return machine.getFluidTransferCap(side, useCoverCapability);
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        return machine.getFluidHandlerCap(side, useCoverCapability);
     }
 
     @SuppressWarnings("unused")

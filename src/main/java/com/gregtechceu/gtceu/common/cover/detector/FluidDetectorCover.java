@@ -17,7 +17,7 @@ public class FluidDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getFluidTransfer() != null;
+        return getFluidHandler() != null;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class FluidDetectorCover extends DetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        IFluidHandler fluidHandler = getFluidTransfer();
+        IFluidHandler fluidHandler = getFluidHandler();
         if (fluidHandler == null)
             return;
 
@@ -46,7 +46,7 @@ public class FluidDetectorCover extends DetectorCover {
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedFluid, fluidCapacity, isInverted()));
     }
 
-    protected IFluidHandler getFluidTransfer() {
+    protected IFluidHandler getFluidHandler() {
         return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).resolve()
                 .orElse(null);
     }
