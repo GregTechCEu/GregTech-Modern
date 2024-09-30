@@ -2,7 +2,11 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -299,27 +303,100 @@ public class MultiblockDisplayText {
         }
 
         /**
-         * Adds a simple progress line that displays progress as a percentage.
+         * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
          * <br>
          * Added if structure is formed and the machine is active.
          *
+         * @param currentDuration The current duration of the recipe in ticks
+         * @param maxDuration     The max duration of the recipe in ticks
          * @param progressPercent Progress formatted as a range of [0,1] representing the progress of the recipe.
          */
-        public Builder addProgressLine(double progressPercent) { // todo
+        public Builder addProgressLine(double currentDuration, double maxDuration, double progressPercent) {
             if (!isStructureFormed || !isActive)
                 return this;
             int currentProgress = (int) (progressPercent * 100);
-            textList.add(Component.translatable("gtceu.multiblock.progress", currentProgress));
+            double currentInSec = currentDuration / 20.0;
+            double maxInSec = maxDuration / 20.0;
+            textList.add(Component.translatable("gtceu.multiblock.progress",
+                    String.format("%.2f", (float) currentInSec),
+                    String.format("%.2f", (float) maxInSec), currentProgress));
+            return this;
+        }
+
+        public Builder addOutputLines(GTRecipe recipe, int chanceTier) {
+            if (!isStructureFormed || !isActive)
+                return this;
+            if (recipe != null) {
+                var function = recipe.getType().getChanceFunction();
+                double maxDurationSec = (double) recipe.duration / 20.0;
+                var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
+                var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
+
+                for (var item : itemOutputs) {
+                    var stack = (ItemRecipeCapability.CAP.of(item.content).getItems()[0]);
+                    if (stack.getCount() < maxDurationSec) {
+                        if (item.chance < item.maxChance) {
+                            double averageDurationforRoll = (double) item.maxChance / (double) function
+                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.2", stack.getHoverName(),
+                                    stack.getCount(),
+                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
+                        } else {
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.0", stack.getHoverName(),
+                                    stack.getCount(), maxDurationSec));
+                        }
+                    } else {
+                        double countPerSec = (double) stack.getCount() / maxDurationSec;
+                        if (item.chance < item.maxChance) {
+                            double averageDurationforRoll = (double) item.maxChance / (double) function
+                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.3",
+                                    stack.getHoverName(), stack.getCount(),
+                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
+                        } else {
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.1",
+                                    stack.getHoverName(), stack.getCount(), countPerSec));
+                        }
+                    }
+                }
+                for (var fluid : fluidOutputs) {
+                    var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
+                    if (stack.getAmount() < maxDurationSec) {
+                        if (fluid.chance < fluid.maxChance) {
+                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
+                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.2",
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
+                        } else {
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.0",
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(maxDurationSec)));
+                        }
+                    } else {
+                        double countPerSec = (double) stack.getAmount() / maxDurationSec;
+                        if (fluid.chance < fluid.maxChance) {
+                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
+                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.3",
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
+                        } else {
+                            textList.add(Component.translatable("gtceu.multiblock.output_line.1",
+                                    stack.getDisplayName(), stack.getAmount(),
+                                    FormattingUtil.formatNumber2Places(countPerSec)));
+                        }
+                    }
+                }
+            }
             return this;
         }
 
         /**
-         * Adds a line indicating how many parallels this multi can potentially perform.
-         * <br>
-         * Added if structure is formed and the number of parallels is greater than one.
+         * Adds a line indicating the current mode of the multi
          */
-        public Builder addMachineModeLine(GTRecipeType recipeType) {
-            if (!isStructureFormed)
+        public Builder addMachineModeLine(GTRecipeType recipeType, boolean hasMultipleModes) {
+            if (!isStructureFormed || !hasMultipleModes)
                 return this;
             textList.add(Component
                     .translatable("gtceu.gui.machinemode",
