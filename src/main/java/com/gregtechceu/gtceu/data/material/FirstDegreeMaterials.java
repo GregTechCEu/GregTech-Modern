@@ -209,7 +209,8 @@ public class FirstDegreeMaterials {
                 .gem(3).ore()
                 .color(0xC8FFFF).iconSet(DIAMOND)
                 .flags(GENERATE_BOLT_SCREW, GENERATE_LENS, GENERATE_GEAR, NO_SMASHING, NO_SMELTING,
-                        HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
+                        HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                        GENERATE_LONG_ROD)
                 .components(Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.0F, 768, 3)
                         .attackSpeed(0.1F).enchantability(18).build())
@@ -405,7 +406,7 @@ public class FirstDegreeMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1258))
                 .color(0xfaf4dc).secondaryColor(0x484434).iconSet(SHINY)
-                .appendFlags(EXT2_METAL)
+                .appendFlags(EXT2_METAL, GENERATE_GEAR)
                 .components(Copper, 1, Silver, 4)
                 .toolStats(ToolProperty.Builder.of(3.0F, 8.0F, 768, 2)
                         .attackSpeed(0.3F).enchantability(33)
@@ -419,7 +420,7 @@ public class FirstDegreeMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1341))
                 .color(0xecd5b8).secondaryColor(0xd85f2d).iconSet(SHINY)
-                .appendFlags(EXT2_METAL, GENERATE_RING)
+                .appendFlags(EXT2_METAL, GENERATE_RING, GENERATE_GEAR)
                 .components(Copper, 1, Gold, 4)
                 .toolStats(ToolProperty.Builder.of(12.0F, 2.0F, 768, 2)
                         .enchantability(33)
