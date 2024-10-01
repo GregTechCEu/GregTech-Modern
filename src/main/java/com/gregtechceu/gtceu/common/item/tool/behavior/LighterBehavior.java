@@ -89,63 +89,62 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         Block block = state.getBlock();
         BlockPos offset = pos.offset(context.getClickedFace().getNormal());
 
-        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching()) && consumeFuel(player, itemStack)) {
-            player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                    GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-            if (block instanceof TntBlock tnt) {
+        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching())) {
+            if (block instanceof TntBlock tnt && consumeFuel(player, itemStack)) {
                 tnt.onCaughtFire(null, context.getLevel(), pos, null, player);
                 context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.SUCCESS;
             }
-            if (block instanceof GTExplosiveBlock explosive) {
+            if (block instanceof GTExplosiveBlock explosive && consumeFuel(player, itemStack)) {
                 explosive.explode(context.getLevel(), pos, player);
                 context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
                 return InteractionResult.SUCCESS;
             }
             if (block instanceof CandleBlock) {
-                if (CandleBlock.canLight(state)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), 11);
-                }
-                return InteractionResult.SUCCESS;
+                if (CandleBlock.canLight(state) && !CandleBlock.isLit(state) && consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
             }
             if (block instanceof CandleCakeBlock) {
-                if (CandleCakeBlock.canLight(state)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), 11);
-                }
-                return InteractionResult.SUCCESS;
+                if (CandleCakeBlock.canLight(state) && !CandleCakeBlock.isLit(state) && consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
             }
             if (block instanceof CampfireBlock) {
-                if (CampfireBlock.canLight(state)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), 11);
-                }
-                return InteractionResult.SUCCESS;
+                if (CampfireBlock.canLight(state) && !CampfireBlock.isLitCampfire(state) && consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
             }
-            if (block instanceof SoulSandBlock) {
+            if (block instanceof SoulSandBlock && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
                 context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
-                return InteractionResult.SUCCESS;
+                return InteractionResult.PASS;
             }
-            if (block == Blocks.SOUL_SOIL) {
+            if (block == Blocks.SOUL_SOIL && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
                 context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
-                return InteractionResult.SUCCESS;
+                return InteractionResult.PASS;
             }
 
-            if (context.getLevel().isEmptyBlock(offset) && block != Blocks.FIRE && block != Blocks.SOUL_FIRE) {
+            if (context.getLevel().isEmptyBlock(offset) && BaseFireBlock.canBePlacedAt(context.getLevel(), offset, context.getHorizontalDirection()) && block != Blocks.FIRE && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
                 context.getLevel().setBlock(offset, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
+                return InteractionResult.PASS;
             }
-            return InteractionResult.SUCCESS;
         }
-
         return InteractionResult.FAIL;
     }
 
