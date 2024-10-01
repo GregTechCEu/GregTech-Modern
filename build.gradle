@@ -24,6 +24,8 @@ tasks.register('slimJar', ShadowJar) {
     from sourceSets.main.output
 }
 
+final refmapFile = mixin.add sourceSets.main, "gtceu.refmap.json"
+
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
 apply from: "$rootDir/gradle/scripts/jars.gradle"
@@ -34,6 +36,7 @@ apply from: "$rootDir/gradle/scripts/spotless.gradle"
 
 afterEvaluate {
     tasks.withType(ShadowJar).configureEach {
+        from(refmapFile)
         configurations = [project.configurations.includedLibrary]
         minimize()
         relocate("org.jgrapht", "${maven_group}.repack.org.jgrapht")

@@ -1,6 +1,4 @@
-
 mixin {
-    add sourceSets.main, "gtceu.refmap.json"
     config 'gtceu.mixins.json'
 }
 
