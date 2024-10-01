@@ -349,6 +349,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_vine"));
+        // TODO add recipes for ALL of these. sigh where do the nitpicks end
         // registry.accept(new ResourceLocation("minecraft:deepslate_bricks"));
         // registry.accept(new ResourceLocation("minecraft:cracked_nether_bricks"));
         // registry.accept(new ResourceLocation("minecraft:chiseled_nether_bricks"));
