@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -340,8 +341,9 @@ public class FluidBuilder {
                     }
                     case GAS -> ROOM_TEMPERATURE;
                     case PLASMA -> {
-                        if (material.hasFluid() && material.getFluid() != null) {
-                            yield BASE_PLASMA_TEMPERATURE + material.getFluid().getFluidType().getTemperature();
+                        if (material.hasFluid() && material.getFluidBuilder() != null &&
+                                material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
+                            yield BASE_PLASMA_TEMPERATURE + material.getFluidBuilder().temperature;
                         }
                         yield BASE_PLASMA_TEMPERATURE;
                     }
