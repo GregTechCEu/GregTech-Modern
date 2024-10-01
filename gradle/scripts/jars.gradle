@@ -5,13 +5,19 @@ configurations {
     }
 }
 
+// hack to avoid a bug in Shadow: https://github.com/GradleUp/shadow/issues/111
+tasks.register('shadowBugWorkaround', Jar) {
+    dependsOn jarJar
+    from jarJar.outputs
+}
+
 shadowJar {
+    from tasks.shadowBugWorkaround
     configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev"
 }
 
 slimJar {
-    from sourceSets.main.output
     configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev-slim"
 }
