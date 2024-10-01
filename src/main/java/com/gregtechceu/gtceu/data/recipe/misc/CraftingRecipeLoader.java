@@ -88,7 +88,7 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
-        VanillaRecipeHelper.addShapelessRecipe(provider, "iron_nugget_sawing", new ItemStack(Items.IRON_NUGGET), new ItemStack(Items.IRON_INGOT), 's');
+        VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron", new ItemStack(Items.IRON_NUGGET), new ItemStack(Items.IRON_INGOT), 's');
 
         // TODO clipboard
         // VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P',
