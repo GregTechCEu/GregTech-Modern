@@ -30,6 +30,7 @@ import java.util.function.Function;
 
 public abstract class WorldNet extends SavedData implements IGraphNet, GenericGraphNetPath.Provider {
 
+    @Getter
     protected final GraphNetBacker backer;
     @Getter
     @Setter
@@ -118,7 +119,7 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
     }
 
     @Override
-    public GraphNetBacker getBacker() {
-        return backer;
+    public void setDirty() {
+        super.setDirty();
     }
 }
