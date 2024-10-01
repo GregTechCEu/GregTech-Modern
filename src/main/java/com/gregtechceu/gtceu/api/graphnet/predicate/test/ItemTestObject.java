@@ -31,7 +31,7 @@ public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack
     @Contract(" -> new")
     public ItemStack recombine() {
         ItemStack stack = new ItemStack(item, 1);
-        stack.setTag(tag.copy());
+        stack.setTag(tag == null ? null : tag.copy());
         return stack;
     }
 
@@ -39,7 +39,7 @@ public class ItemTestObject implements IPredicateTestObject, Predicate<ItemStack
     public ItemStack recombine(int amount) {
         assert amount <= getStackLimit() && amount > 0;
         ItemStack stack = new ItemStack(item, amount);
-        stack.setTag(tag.copy());
+        stack.setTag(tag == null ? null : tag.copy());
         return stack;
     }
 
