@@ -59,7 +59,7 @@ public final class GraphNetBacker {
         GraphVertex vertex = new GraphVertex(node);
         getGraph().addVertex(vertex);
         this.vertexMap.put(node.getEquivalencyData(), vertex);
-        backedNet.setDirty();
+        backedNet.setNetDirty();
     }
 
     @Nullable
@@ -82,7 +82,7 @@ public final class GraphNetBacker {
             if (group != null) {
                 group.splitNode(node);
             } else this.removeVertex(node.wrapper);
-            backedNet.setDirty();
+            backedNet.setNetDirty();
             return true;
         } else return false;
     }
@@ -92,7 +92,7 @@ public final class GraphNetBacker {
         if (this.getGraph().removeVertex(vertex)) {
             this.vertexMap.remove(vertex.wrapped.getEquivalencyData());
             vertex.wrapped.onRemove();
-            backedNet.setDirty();
+            backedNet.setNetDirty();
         }
     }
 
@@ -103,7 +103,7 @@ public final class GraphNetBacker {
         if (graphEdge != null) {
             getGraph().setEdgeWeight(graphEdge, weight);
             NetGroup.mergeEdge(source, target);
-            backedNet.setDirty();
+            backedNet.setNetDirty();
         }
         return graphEdge == null ? null : graphEdge.wrapped;
     }
@@ -126,7 +126,7 @@ public final class GraphNetBacker {
     public GraphEdge removeEdge(GraphVertex source, GraphVertex target) {
         GraphEdge edge = this.getGraph().removeEdge(source, target);
         if (edge != null) {
-            backedNet.setDirty();
+            backedNet.setNetDirty();
         }
         return edge;
     }
@@ -134,7 +134,7 @@ public final class GraphNetBacker {
     @ApiStatus.Internal
     public boolean removeEdge(GraphEdge edge) {
         if (this.getGraph().removeEdge(edge)) {
-            backedNet.setDirty();
+            backedNet.setNetDirty();
             return true;
         }
         return false;

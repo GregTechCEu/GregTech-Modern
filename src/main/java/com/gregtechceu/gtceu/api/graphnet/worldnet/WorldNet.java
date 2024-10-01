@@ -119,7 +119,7 @@ public abstract class WorldNet extends SavedData implements IGraphNet, GenericGr
     }
 
     @Override
-    public void setDirty() {
+    public void setNetDirty() {
         super.setDirty();
     }
 }
