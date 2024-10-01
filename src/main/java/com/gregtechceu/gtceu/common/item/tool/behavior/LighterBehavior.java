@@ -102,23 +102,31 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 explosive.explode(context.getLevel(), pos, player);
                 context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.SUCCESS;
             }
             if (block instanceof CandleBlock) {
                 if (CandleBlock.canLight(state) && !CandleBlock.isLit(state) && consumeFuel(player, itemStack)) {
                     context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                     return InteractionResult.SUCCESS;
                 } else return InteractionResult.PASS;
             }
             if (block instanceof CandleCakeBlock) {
                 if (CandleCakeBlock.canLight(state) && !CandleCakeBlock.isLit(state) && consumeFuel(player, itemStack)) {
                     context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                     return InteractionResult.SUCCESS;
                 } else return InteractionResult.PASS;
             }
             if (block instanceof CampfireBlock) {
                 if (CampfireBlock.canLight(state) && !CampfireBlock.isLitCampfire(state) && consumeFuel(player, itemStack)) {
                     context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                     return InteractionResult.SUCCESS;
                 } else return InteractionResult.PASS;
             }
@@ -127,6 +135,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.PASS;
             }
             if (block == Blocks.SOUL_SOIL && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
@@ -134,6 +144,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.PASS;
             }
 
@@ -142,7 +154,9 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
-                return InteractionResult.PASS;
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.FAIL;
