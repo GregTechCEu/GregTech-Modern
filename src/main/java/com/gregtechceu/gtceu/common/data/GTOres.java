@@ -457,7 +457,6 @@ public class GTOres {
             .biomes(BiomeTags.IS_OVERWORLD)
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).mat(CassiteriteSand).size(2, 4))
                             .layer(l -> l.weight(2).mat(GarnetSand).size(1, 1))
                             .layer(l -> l.weight(2).mat(Asbestos).size(1, 1))
@@ -535,7 +534,6 @@ public class GTOres {
             .biomes(BiomeTags.IS_OVERWORLD)
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.SAND::defaultBlockState))
                             .layer(l -> l.weight(3).mat(BasalticMineralSand).size(2, 4))
                             .layer(l -> l.weight(2).mat(GraniticMineralSand).size(1, 1))
                             .layer(l -> l.weight(2).mat(FullersEarth).size(1, 1))
