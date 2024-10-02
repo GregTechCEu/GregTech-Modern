@@ -1,0 +1,21 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "gtceu:image",
+    "fragment": "gtceu:bloom_combine",
+    "attributes": [
+    ],
+    "samplers": [
+        { "name": "buffer_a" },
+        { "name": "buffer_b" }
+    ],
+    "uniforms": [
+        { "name": "intensive", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "base", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "threshold_up", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "threshold_down", "type": "float", "count": 1, "values": [ 0.0 ] }
+    ]
+}

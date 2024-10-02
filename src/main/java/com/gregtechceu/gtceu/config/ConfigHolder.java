@@ -622,6 +622,16 @@ public class ConfigHolder {
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
 
+        @Configurable
+        @Configurable.Comment("Config options for Shaders and Post-processing Effects")
+        public ShaderOptions shader = new ShaderOptions();
+
+        @Configurable
+        @Configurable.Comment({
+                "Whether to hook depth texture. Has no effect on performance, but if there is a problem with rendering, try disabling it.",
+                "Default: true" })
+        public boolean hookDepthTexture = true;
+
         public static class ArmorHud {
 
             @Configurable
@@ -637,6 +647,173 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class ShaderOptions {
+
+            @Configurable
+            @Configurable.Comment("Bloom config options for the fusion reactor.")
+            public FusionBloom fusionBloom = new FusionBloom();
+
+            @Configurable
+            @Configurable.Comment("Particle config option for the Assembly Line")
+            public boolean assemblyLineParticles = true;
+
+            @Configurable
+            @Configurable.Comment("Bloom config options for the heat effect (cable burning).")
+            public HeatEffectBloom heatEffectBloom = new HeatEffectBloom();
+
+            @Configurable
+            @Configurable.Comment({ "Whether to use shader programs.", "Default: true" })
+            public boolean useShader = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to enable Emissive Textures with bloom effect.", "Default: true" })
+            public boolean emissiveTexturesBloom = true;
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast)", "1 - Unity Bloom",
+                    "2 - Unreal Bloom", "Default: 2" })
+            @Configurable.Range(min = 0, max = 2)
+            public int bloomStyle = 2;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights " +
+                            "(e.g., daytime).",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*({HT}-LT)))",
+                    "This value should be greater than lowBrightnessThreshold.", "Default: 0.5" })
+            @Configurable.DecimalRange(min = 0)
+            public float highBrightnessThreshold = 0.5f;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts " +
+                            "(e.g., night/caves).",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + {LT} + (1 - BACKGROUND_BRIGHTNESS)*(HT-{LT})))",
+                    "This value should be smaller than highBrightnessThreshold.", "Default: 0.2" })
+            @Configurable.DecimalRange(min = 0)
+            public float lowBrightnessThreshold = 0.2f;
+
+            @Configurable
+            @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
+                    "This value should be smaller than highBrightnessThreshold.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                    "Default: 0.1" })
+            @Configurable.DecimalRange(min = 0)
+            public float baseBrightness = 0.1f;
+
+            @Configurable
+            @Configurable.Comment({ "Mipmap Size.", "Higher values increase quality, but are slower to render.",
+                    "Default: 5" })
+            @Configurable.Range(min = 2, max = 5)
+            public int nMips = 5;
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Strength",
+                    "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                    "Default: 2" })
+            @Configurable.DecimalRange(min = 0)
+            public float strength = 1.5f;
+
+            @Configurable
+            @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
+            @Configurable.DecimalRange(min = 0)
+            public float step = 1;
+
+
+
+            public static class FusionBloom {
+
+                @Configurable
+                @Configurable.Comment({ "Whether to use shader programs.", "Default: true" })
+                public boolean useShader = true;
+
+                @Configurable
+                @Configurable.Comment({ "Bloom Strength",
+                        "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                        "Default: 2" })
+                @Configurable.DecimalRange(min = 0)
+                public double strength = 1.5;
+
+                @Configurable
+                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast)", "1 - Unity Bloom",
+                        "2 - Unreal Bloom", "Default: 2" })
+                @Configurable.Range(min = 0, max = 2)
+                public int bloomStyle = 1;
+
+                @Configurable
+                @Configurable.Comment({
+                        "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights " +
+                                "(e.g., daytime).",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*({HT}-LT)))",
+                        "This value should be greater than lowBrightnessThreshold.", "Default: 0.5" })
+                @Configurable.DecimalRange(min = 0)
+                public double highBrightnessThreshold = 1.3;
+
+                @Configurable
+                @Configurable.Comment({
+                        "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts " +
+                                "(e.g., night/caves).",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * (base + {LT} + (1 - BACKGROUND_BRIGHTNESS)*(HT-{LT})))",
+                        "This value should be smaller than highBrightnessThreshold.", "Default: 0.2" })
+                @Configurable.DecimalRange(min = 0)
+                public double lowBrightnessThreshold = 0.3;
+
+                @Configurable
+                @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
+                        "This value should be smaller than highBrightnessThreshold.",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                        "Default: 0.1" })
+                @Configurable.DecimalRange(min = 0)
+                public double baseBrightness = 0;
+            }
+
+            public static class HeatEffectBloom {
+
+                @Configurable
+                @Configurable.Comment({ "Whether to use shader programs.", "Default: true" })
+                public boolean useShader = true;
+
+                @Configurable
+                @Configurable.Comment({ "Bloom Strength",
+                        "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                        "Default: 2" })
+                @Configurable.DecimalRange(min = 0)
+                public double strength = 1.1;
+
+                @Configurable
+                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast)", "1 - Unity Bloom",
+                        "2 - Unreal Bloom", "Default: 2" })
+                @Configurable.Range(min = 0, max = 2)
+                public int bloomStyle = 2;
+
+                @Configurable
+                @Configurable.Comment({
+                        "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights " +
+                                "(e.g., daytime).",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * (base + LT + (1 - BACKGROUND_BRIGHTNESS)*({HT}-LT)))",
+                        "This value should be greater than lowBrightnessThreshold.", "Default: 0.5" })
+                @Configurable.DecimalRange(min = 0)
+                public double highBrightnessThreshold = 1.4;
+
+                @Configurable
+                @Configurable.Comment({
+                        "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts " +
+                                "(e.g., night/caves).",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * (base + {LT} + (1 - BACKGROUND_BRIGHTNESS)*(HT-{LT})))",
+                        "This value should be smaller than highBrightnessThreshold.", "Default: 0.2" })
+                @Configurable.DecimalRange(min = 0)
+                public double lowBrightnessThreshold = 0.6;
+
+                @Configurable
+                @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
+                        "This value should be smaller than highBrightnessThreshold.",
+                        "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + LT + (1 - BACKGROUND_BRIGHTNESS)*(HT-LT)))",
+                        "Default: 0.1" })
+                @Configurable.DecimalRange(min = 0)
+                public double baseBrightness = 0;
+            }
         }
     }
 

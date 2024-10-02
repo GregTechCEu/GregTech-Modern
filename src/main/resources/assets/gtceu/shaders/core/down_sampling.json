@@ -1,0 +1,18 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "gtceu:image",
+    "fragment": "gtceu:blur",
+    "attributes": [
+    ],
+    "samplers": [
+        { "name": "DiffuseSampler" }
+    ],
+    "uniforms": [
+        { "name": "u_resolution", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
+        { "name": "u_resolution2", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "gtceu:image",
+    "fragment": "gtceu:seperable_blur",
+    "attributes": [
+    ],
+    "samplers": [
+        { "name": "DiffuseSampler" }
+    ],
+    "uniforms": [
+        { "name": "u_texture", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
+        { "name": "texSize", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
+        { "name": "blurDir", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
+        { "name": "kernel_radius", "type": "int", "count": 1, "values": [ 0 ] }
+    ]
+}

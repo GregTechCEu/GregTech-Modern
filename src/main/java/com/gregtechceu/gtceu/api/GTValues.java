@@ -127,7 +127,8 @@ public class GTValues {
             MODID_SHIMMER = "shimmer",
             MODID_JAVD = "javd",
             MODID_FTBTEAMS = "ftbteams",
-            MODID_ARGONAUTS = "argonauts";
+            MODID_ARGONAUTS = "argonauts",
+            MODID_OPTIFINE = "optifine";
 
     /**
      * Spray painting compat modids

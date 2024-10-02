@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
+import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -98,11 +100,22 @@ public abstract class LevelRendererMixin {
         }
     }
 
+    @Inject(method = "renderChunkLayer", at = @At("HEAD"), cancellable = true)
+    private void renderChunkLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix, CallbackInfo ci) {
+        if (renderType != BloomEffectUtil.getBloomLayer() || BloomEffectUtil.isRenderingBloom.get()) return;
+        BloomEffectUtil.renderBloomBlockLayer((LevelRenderer) (Object) this, camX, camY, camZ, poseStack,
+                this.minecraft.gameRenderer.getMainCamera(), this.getFrustum(), renderType,
+                minecraft.getPartialTick(), projectionMatrix, this.minecraft.cameraEntity);
+        ci.cancel();
+    }
+
     @Shadow
-    public static void renderShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y,
-                                   double z, float red, float green, float blue, float alpha) {
+    private static void renderShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y,
+                                    double z, float red, float green, float blue, float alpha) {
         throw new AssertionError();
     }
+
+    @Shadow public abstract Frustum getFrustum();
 
     @Inject(method = "renderHitOutline", at = @At("HEAD"))
     private void renderHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY,

@@ -14,8 +14,17 @@ public class GTRenderTypes extends RenderType {
     private static final RenderType LIGHT_RING = RenderType.create("light_ring",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
             RenderType.CompositeState.builder()
-                    .setCullState(NO_CULL)
+                    .setCullState(RenderStateShard.NO_CULL)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            256, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setShaderState(RenderStateShard.RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER)
+                    .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .createCompositeState(false));
 
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
@@ -25,5 +34,9 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType getLightRing() {
         return LIGHT_RING;
+    }
+
+    public static RenderType getBloom() {
+        return BLOOM;
     }
 }

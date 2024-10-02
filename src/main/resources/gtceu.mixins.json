@@ -16,6 +16,7 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
+        "RenderTypeAccessor",
         "rei.FluidEntryRendererMixin"
     ],
     "mixins": [

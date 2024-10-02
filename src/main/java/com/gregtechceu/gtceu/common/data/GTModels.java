@@ -136,14 +136,16 @@ public class GTModels {
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
                                 if (state.getValue(LampBlock.BLOOM)) {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
+                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive")
+                                            .renderType(GTCEu.id("bloom"));
                                 } else {
                                     model.texture("active_overlay", "block/lamps/" + color.getName());
                                 }
                             } else {
                                 if (state.getValue(LampBlock.BLOOM)) {
                                     model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless_emissive");
+                                            "block/lamps/" + color.getName() + "_borderless_emissive")
+                                            .renderType(GTCEu.id("bloom"));
                                 } else {
                                     model.texture("active",
                                             "block/lamps/" + color.getName() + "_borderless");
@@ -245,7 +247,8 @@ public class GTModels {
             ModelFile inactive = prov.models().cubeAll(name, coilType.getTexture());
             ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/cube_2_layer/all"))
                     .texture("bot_all", coilType.getTexture())
-                    .texture("top_all", coilType.getTexture().withSuffix("_bloom"));
+                    .texture("top_all", coilType.getTexture().withSuffix("_bloom"))
+                    .renderType(GTCEu.id("bloom"));
             prov.getVariantBuilder(block)
                     .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
                     .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
@@ -302,7 +305,8 @@ public class GTModels {
             ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/fire_box_active"))
                     .texture("side", type.side())
                     .texture("bottom", type.bottom())
-                    .texture("top", type.top());
+                    .texture("top", type.top())
+                    .renderType(GTCEu.id("bloom"));
             prov.getVariantBuilder(block)
                     .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
                     .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();

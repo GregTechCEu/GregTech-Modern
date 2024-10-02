@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.util.BloomUtils;
+import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 
@@ -33,12 +33,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-            if (GTCEu.isShimmerLoaded()) {
-                PoseStack finalStack = RenderUtils.copyPoseStack(stack);
-                BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
-            } else {
-                renderLightRing(machine, partialTicks, stack, buffer);
-            }
+            renderLightRing(machine, partialTicks, stack, buffer);
         }
     }
 
@@ -58,7 +53,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         float r = ColorUtils.red(ringColor);
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
-        RenderBufferHelper.renderRing(stack, buffer.getBuffer(GTRenderTypes.getLightRing()),
+        RenderBufferHelper.renderRing(stack, buffer.getBuffer(BloomEffectUtil.getEffectiveBloomLayer()),
                 relativeBack.getStepX() * 7 + 0.5F,
                 relativeBack.getStepY() * 7 + 0.5F,
                 relativeBack.getStepZ() * 7 + 0.5F,
