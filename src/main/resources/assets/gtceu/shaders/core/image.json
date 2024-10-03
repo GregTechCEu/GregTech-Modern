@@ -7,6 +7,7 @@
     "vertex": "gtceu:image",
     "fragment": "gtceu:image",
     "attributes": [
+        "Position"
     ],
     "samplers": [
         { "name": "Sampler0" }

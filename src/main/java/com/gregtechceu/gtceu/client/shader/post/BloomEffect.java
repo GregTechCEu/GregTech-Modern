@@ -168,11 +168,11 @@ public class BloomEffect {
         }
 
         Shaders.renderFullImageInFBO(downSampleFBO[0], Shaders.COMPOSITE, uniformCache -> {
-            uniformCache.setSampler("blurTexture1", downSampleFBO[0]);
-            uniformCache.setSampler("blurTexture2", downSampleFBO[1]);
-            uniformCache.setSampler("blurTexture3", downSampleFBO.length > 2 ? downSampleFBO[2] : null);
-            uniformCache.setSampler("blurTexture4", downSampleFBO.length > 3 ? downSampleFBO[3] : null);
-            uniformCache.setSampler("blurTexture5", downSampleFBO.length > 4 ? downSampleFBO[4] : null);
+            uniformCache.setSampler("blurTexture1", upSampleFBO[0]);
+            uniformCache.setSampler("blurTexture2", upSampleFBO[1]);
+            uniformCache.setSampler("blurTexture3", upSampleFBO.length > 2 ? upSampleFBO[2] : null);
+            uniformCache.setSampler("blurTexture4", upSampleFBO.length > 3 ? upSampleFBO[3] : null);
+            uniformCache.setSampler("blurTexture5", upSampleFBO.length > 4 ? upSampleFBO[4] : null);
             uniformCache.safeGetUniform("bloomStrength").set(strength);
             uniformCache.safeGetUniform("bloomRadius").set(1.0f);
         });

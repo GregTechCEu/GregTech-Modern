@@ -7,14 +7,15 @@
     "vertex": "gtceu:image",
     "fragment": "gtceu:seperable_blur",
     "attributes": [
+        "Position"
     ],
     "samplers": [
-        { "name": "Sampler0" }
+        { "name": "DiffuseSampler" }
     ],
     "uniforms": [
-        { "name": "u_texture", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
-        { "name": "texSize", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
-        { "name": "blurDir", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
-        { "name": "kernel_radius", "type": "int", "count": 1, "values": [ 0 ] }
+        { "name": "u_texture", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "texSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "blurDir", "type": "float", "count": 2, "values": [ 1.0, 0.0 ] },
+        { "name": "kernel_radius", "type": "int", "count": 1, "values": [ 1 ] }
     ]
 }

@@ -7,12 +7,13 @@
     "vertex": "gtceu:image",
     "fragment": "gtceu:blur",
     "attributes": [
+        "Position"
     ],
     "samplers": [
-        { "name": "Sampler0" }
+        { "name": "DiffuseSampler" }
     ],
     "uniforms": [
-        { "name": "u_resolution", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
-        { "name": "blurDir", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] }
+        { "name": "u_resolution", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "blurDir", "type": "float", "count": 2, "values": [ 1.0, 0.0 ] }
     ]
 }

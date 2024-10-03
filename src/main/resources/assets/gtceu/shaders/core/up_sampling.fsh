@@ -1,6 +1,6 @@
-#version 120
+#version 150
 
-varying vec2 texCoord0;
+out vec2 texCoord0;
 
 uniform sampler2D upTexture;
 uniform sampler2D downTexture;
@@ -18,7 +18,9 @@ vec4 up_sampling(vec3 textel, vec2 uv) {
     return vec4(four_k(textel, uv).rgb + texture2D(downTexture, uv).rgb, 1.);
 }
 
-void main(void) {
+out vec4 fragColor;
+
+void main() {
     vec3 textel = vec3(1., -1., 0.) / u_resolution.xyx;
 //    out_colour = up_sampling(textel, texCoord0);
 
@@ -32,5 +34,5 @@ void main(void) {
     out_colour += texture2D(upTexture, texCoord0 + textel.zy) * 2.0;
     out_colour += texture2D(upTexture, texCoord0 + textel.yx);
 
-    gl_FragColor = vec4(out_colour.rgb * 0.8 / 16. + texture2D(downTexture, texCoord0).rgb * 0.8, 1.);
+    fragColor = vec4(out_colour.rgb * 0.8 / 16. + texture2D(downTexture, texCoord0).rgb * 0.8, 1.);
 }

@@ -1,6 +1,6 @@
-#version 120
+#version 150
 
-varying vec2 texCoord0;
+out vec2 texCoord0;
 
 
 uniform sampler2D buffer_a;
@@ -21,11 +21,13 @@ uniform float threshold_down;
 //    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 //}
 
-void main(void){
+out vec4 fragColor;
+
+void main() {
     vec3 bloom = texture2D(buffer_b, texCoord0).rgb * intensive;
     vec3 background = texture2D(buffer_a, texCoord0).rgb;
-//    gl_FragColor = vec4(background + bloom * ((1 - rgb2hsv(background).z) * (threshold_up - threshold_down) + threshold_down + base), 1.);
+//    fragColor = vec4(background + bloom * ((1 - rgb2hsv(background).z) * (threshold_up - threshold_down) + threshold_down + base), 1.);
     float max = max(background.b, max(background.r, background.g));
     float min = min(background.b, min(background.r, background.g));
-    gl_FragColor = vec4(background + bloom * ((1. - (max + min) / 2.) * (threshold_up - threshold_down) + threshold_down + base), 1.);
+    fragColor = vec4(background + bloom * ((1. - (max + min) / 2.) * (threshold_up - threshold_down) + threshold_down + base), 1.);
 }

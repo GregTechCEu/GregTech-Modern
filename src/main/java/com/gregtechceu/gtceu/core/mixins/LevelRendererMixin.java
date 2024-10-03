@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -58,9 +60,10 @@ public abstract class LevelRendererMixin {
     @Inject(
             method = { "renderLevel" },
             at = { @At("HEAD") })
-    private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
-                             Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
-                             Matrix4f projectionMatrix, CallbackInfo ci) {
+    private void gtceu$renderAOEBreakAnimation(PoseStack poseStack,
+                                               float partialTick, long finishNanoTime, boolean renderBlockOutline,
+                                               Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
+                                               Matrix4f projectionMatrix, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
@@ -100,13 +103,18 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Inject(method = "renderChunkLayer", at = @At("HEAD"), cancellable = true)
-    private void renderChunkLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix, CallbackInfo ci) {
-        if (renderType != BloomEffectUtil.getBloomLayer() || BloomEffectUtil.isRenderingBloom.get()) return;
-        BloomEffectUtil.renderBloomBlockLayer((LevelRenderer) (Object) this, camX, camY, camZ, poseStack,
-                this.minecraft.gameRenderer.getMainCamera(), this.getFrustum(), renderType,
-                minecraft.getPartialTick(), projectionMatrix, this.minecraft.cameraEntity);
-        ci.cancel();
+    @WrapOperation(method = "renderLevel",
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/client/renderer/LevelRenderer;renderChunkLayer(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/PoseStack;DDDLorg/joml/Matrix4f;)V")
+    )
+    private void gtceu$renderBloomLayer(LevelRenderer instance, RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix, Operation<Void> original) {
+        if (renderType != RenderType.translucent()) {
+            original.call(instance, renderType, poseStack, camX, camY, camZ, projectionMatrix);
+            return;
+        }
+        BloomEffectUtil.renderBloomChunkLayer(instance, camX, camY, camZ, poseStack,
+                this.getFrustum(), renderType, minecraft.getPartialTick(), projectionMatrix,
+                this.minecraft.cameraEntity);
     }
 
     @Shadow

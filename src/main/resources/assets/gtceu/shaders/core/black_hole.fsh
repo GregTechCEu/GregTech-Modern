@@ -9,7 +9,7 @@ uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec3 eye;
 uniform vec3 target;
-uniform sampler2D texture;
+uniform sampler2D Sampler0;
 
 float hash(float x){ return fract(sin(x)*152754.742);}
 float hash(vec2 x){	return hash(x.x + hash(x.y));}
@@ -34,7 +34,7 @@ vec3 background(vec2 fragCoord, float r)
     vec2 lpos = u_resolution.xy / 2. / u_resolution.x;
     vec2 texC2 = fragCoord.xy / u_resolution.x;
     vec2 texC = mix(uv, lpos, (20. * r / (distance((texC2 * 2.0 - lpos * 2.0) * 5. + lpos, lpos) - r))); //Black hole shader
-    vec3 getColor = texture2D(texture,texC).rgb;
+    vec3 getColor = texture2D(Sampler0,texC).rgb;
     return getColor;
 }
 
@@ -133,9 +133,11 @@ vec3 rayDirection(float fieldOfView, vec2 size, vec2 fragCoord) {
     return normalize(vec3(xy, -z));
 }
 
+out vec4 fragColor;
+
 void main()
 {
-    gl_FragColor = vec4(0.);;
+    fragColor = vec4(0.);
 
     vec2 fragCoordRot;
     fragCoordRot.x = gl_FragCoord.x*1.0;
@@ -210,6 +212,6 @@ void main()
         col = outCol;
         col.rgb =  pow( col.rgb, vec3(0.6) );
 
-        gl_FragColor += col/float(AA*AA);
+        fragColor += col/float(AA*AA);
     }
 }

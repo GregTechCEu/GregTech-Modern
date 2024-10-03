@@ -1,10 +1,18 @@
-#version 120
+#version 150
 
 in vec3 Position;
 
-varying vec2 texCoord0;
+out vec2 texCoord0;
 
 void main(void){
-    gl_Position = vec4(Position, 1.0);
-    texCoord0 = Position.xy * 0.5 + 0.5;
+    float x = -1.0;
+    float y = -1.0;
+    if (Position.x > 0.001){
+        x = 1.0;
+    }
+    if (Position.y > 0.001){
+        y = 1.0;
+    }
+    gl_Position = vec4(x, y, 0.2, 1.0);
+    texCoord0 = Position.xy;
 }

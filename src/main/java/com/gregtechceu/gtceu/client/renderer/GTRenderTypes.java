@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.client.shader.Shaders;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,7 +22,7 @@ public class GTRenderTypes extends RenderType {
             256, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(RenderStateShard.NO_CULL)
-                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> Shaders.BLOOM_COMBINE))
+                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
                     .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .createCompositeState(false));

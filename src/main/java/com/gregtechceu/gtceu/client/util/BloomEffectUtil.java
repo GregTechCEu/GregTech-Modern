@@ -21,11 +21,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
-import net.minecraft.client.Camera;
+import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
+import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
@@ -36,7 +35,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +43,6 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
@@ -298,6 +294,8 @@ public class BloomEffectUtil {
         }
     }
 
+    public static Supplier<Supplier<Material>> EMBEDDIUM_MATERIAL_BLOOM;
+
     public static void init() {
         bloom = GTRenderTypes.getBloom();
         ((RenderTypeAccessor)bloom).setChunkLayerId(RenderType.chunkBufferLayers().size());
@@ -323,24 +321,22 @@ public class BloomEffectUtil {
             DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS.put(bloom, List.of(bloomPass));
             */
             TerrainRenderPass bloomPass = new TerrainRenderPass(bloom, false, true);
-
             DefaultTerrainRenderPassesAccessor.setAll(ArrayUtils.add(DefaultTerrainRenderPasses.ALL, bloomPass));
+
+            Material bloomMaterial = new Material(bloomPass, AlphaCutoffParameter.ZERO, true);
+            EMBEDDIUM_MATERIAL_BLOOM = () -> () -> bloomMaterial;
         }
     }
 
-    public static final ThreadLocal<Boolean> isRenderingBloom = ThreadLocal.withInitial(() -> false);
-
-    public static void renderBloomBlockLayer(LevelRenderer levelRenderer,
+    public static void renderBloomChunkLayer(LevelRenderer levelRenderer,
                                              double camX, double camY, double camZ,
                                              PoseStack poseStack,
-                                             Camera camera,
                                              Frustum frustum,
                                              RenderType blockRenderLayer, // 70% sure it's translucent uh yeah
                                              double partialTicks,
                                              Matrix4f projectionMatrix,
                                              @NotNull Entity entity) {
         Minecraft.getInstance().getProfiler().popPush("BTLayer");
-        isRenderingBloom.set(true);
 
         if (GTCEu.isIrisOculusLoaded()) {
             levelRenderer.renderChunkLayer(blockRenderLayer, poseStack, camX, camY, camZ, projectionMatrix);
@@ -352,7 +348,6 @@ public class BloomEffectUtil {
             renderBloomInternal(levelRenderer, camX, camY, camZ, poseStack, frustum, blockRenderLayer, partialTicks, projectionMatrix, entity);
         } finally {
             BLOOM_RENDER_LOCK.unlock();
-            isRenderingBloom.set(false);
         }
     }
 

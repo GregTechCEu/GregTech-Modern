@@ -9,10 +9,10 @@
     "attributes": [
     ],
     "samplers": [
-        { "name": "Sampler0" }
+        { "name": "DiffuseSampler" }
     ],
     "uniforms": [
-        { "name": "u_resolution", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] },
-        { "name": "u_resolution2", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] }
+        { "name": "u_resolution", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "u_resolution2", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] }
     ]
 }
