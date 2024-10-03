@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
+import appeng.api.util.AECableType;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 import java.util.EnumSet;
@@ -35,6 +36,10 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
      */
     default boolean shouldSyncME() {
         return self().getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
+    }
+
+    default AECableType getCableConnectionType(Direction dir) {
+        return AECableType.SMART;
     }
 
     /**
