@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.client.shader.post.BloomType;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.RenderTypeAccessor;
+import com.gregtechceu.gtceu.core.mixins.embeddium.DefaultTerrainRenderPassesAccessor;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -30,6 +31,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,6 +46,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
@@ -71,7 +74,7 @@ public class BloomEffectUtil {
 
     /**
      * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Optifine. If the actual bloom layer is
+     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
      * disabled, {@link RenderType#cutout()} is returned instead.
      *
      * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
@@ -85,7 +88,7 @@ public class BloomEffectUtil {
 
     /**
      * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Optifine. If the actual bloom layer is
+     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
      * disabled, the fallback layer specified is returned instead.
      *
      * @param fallback Block render layer to be returned when bloom layer is disabled
@@ -95,17 +98,17 @@ public class BloomEffectUtil {
      */
     @Contract("null -> _; !null -> !null")
     public static RenderType getEffectiveBloomLayer(RenderType fallback) {
-        return GTCEu.isOptifineLoaded() ? fallback : bloom;
+        return GTCEu.isIrisOculusLoaded() ? fallback : bloom;
     }
 
     /**
      * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Optifine. If the actual bloom layer is
-     * disabled, {@link RenderType#CUTOUT} is returned instead.
+     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
+     * disabled, {@link RenderType#cutout()} is returned instead.
      *
      * @param isBloomActive Whether bloom layer should be active. If this value is {@code false}, {@code fallback} layer
-     *                      will be returned. Has no effect if Optifine is present.
-     * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#CUTOUT} if bloom
+     *                      will be returned. Has no effect if Iris/Oculus is present.
+     * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
      *         layer is disabled
      * @see #getEffectiveBloomLayer(boolean, RenderType)
      */
@@ -116,18 +119,18 @@ public class BloomEffectUtil {
 
     /**
      * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Optifine. If the actual bloom layer is
+     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
      * disabled, the fallback layer specified is returned instead.
      *
      * @param isBloomActive Whether bloom layer should be active. If this value is {@code false}, {@code fallback} layer
-     *                      will be returned. Has no effect if Optifine is present.
+     *                      will be returned. Has no effect if Iris/Oculus is present.
      * @param fallback      Block render layer to be returned when bloom layer is disabled
      * @return {@link RenderType} instance for the bloom render layer, or {@code fallback} if bloom layer is
      *         disabled
      */
     @Contract("_, null -> _; _, !null -> !null")
     public static RenderType getEffectiveBloomLayer(boolean isBloomActive, RenderType fallback) {
-        return GTCEu.isOptifineLoaded() || !isBloomActive ? fallback : bloom;
+        return GTCEu.isIrisOculusLoaded() || !isBloomActive ? fallback : bloom;
     }
 
     /**
@@ -137,7 +140,7 @@ public class BloomEffectUtil {
      * manually freed by calling {@link BloomRenderTicket#invalidate()}.
      * </p>
      * <p>
-     * This method does not register bloom render ticket when Optifine is present, and an invalid ticket will be
+     * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
      * </p>
      *
@@ -179,7 +182,7 @@ public class BloomEffectUtil {
      * {@link BloomRenderTicket#invalidate()}.
      * </p>
      * <p>
-     * This method does not register bloom render ticket when Optifine is present, and an invalid ticket will be
+     * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
      * </p>
      *
@@ -205,7 +208,7 @@ public class BloomEffectUtil {
      * manually freed by calling {@link BloomRenderTicket#invalidate()}, or invalidated by validity checker.
      * </p>
      * <p>
-     * This method does not register bloom render ticket when Optifine is present, and an invalid ticket will be
+     * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
      * </p>
      *
@@ -234,7 +237,7 @@ public class BloomEffectUtil {
      * manually freed by calling {@link BloomRenderTicket#invalidate()}, or invalidated by validity checker.
      * </p>
      * <p>
-     * This method does not register bloom render ticket when Optifine is present, and an invalid ticket will be
+     * This method does not register bloom render ticket when Iris/Oculus is present, and an invalid ticket will be
      * returned instead.
      * </p>
      *
@@ -257,7 +260,7 @@ public class BloomEffectUtil {
                                                         @NotNull IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
                                                         @Nullable Supplier<Level> worldContext) {
-        if (GTCEu.isOptifineLoaded()) return BloomRenderTicket.INVALID;
+        if (GTCEu.isIrisOculusLoaded()) return BloomRenderTicket.INVALID;
         BloomRenderTicket ticket = new BloomRenderTicket(setup, bloomType, render, validityChecker, worldContext);
         BLOOM_RENDER_LOCK.lock();
         try {
@@ -269,23 +272,23 @@ public class BloomEffectUtil {
     }
 
     /**
-     * Invalidate tickets associated with given world.
+     * Invalidate tickets associated with given level.
      *
-     * @param world Level
+     * @param level the level that was unloaded
      */
-    public static void invalidateLevelTickets(@NotNull Level world) {
-        Objects.requireNonNull(world, "world == null");
+    public static void invalidateLevelTickets(@NotNull LevelAccessor level) {
+        Objects.requireNonNull(level, "level == null");
         BLOOM_RENDER_LOCK.lock();
         try {
             for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
-                if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == world) {
+                if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
                     ticket.invalidate();
                 }
             }
 
             for (Map.Entry<BloomRenderKey, List<BloomRenderTicket>> e : BLOOM_RENDERS.entrySet()) {
                 for (BloomRenderTicket ticket : e.getValue()) {
-                    if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == world) {
+                    if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
                         ticket.invalidate();
                     }
                 }
@@ -304,30 +307,24 @@ public class BloomEffectUtil {
                 .build();
 
         if (GTCEu.isSodiumRubidiumEmbeddiumLoaded()) {
-            try {
-                // Add our render type to embeddium's render passes by force (until an API is added)
+            // Add our render type to embeddium's render passes by force (until an API is added)
 
-                /* FOR UNRELEASED EMBEDDIUM!!!
-                Field field = DefaultTerrainRenderPasses.class.getDeclaredField("RENDER_PASS_MAPPINGS");
-                FieldUtils.removeFinalModifier(field);
-                field.set(null, new HashMap<>(DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS));
+            /* FOR UNRELEASED EMBEDDIUM!!!
+            Field field = DefaultTerrainRenderPasses.class.getDeclaredField("RENDER_PASS_MAPPINGS");
+            FieldUtils.removeFinalModifier(field);
+            field.set(null, new HashMap<>(DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS));
 
-                TerrainRenderPass bloomPass = TerrainRenderPass.builder()
-                        .layer(bloom)
-                        .fragmentDiscard(true)
-                        .useReverseOrder(true)
-                        .useTranslucencySorting(true)
-                        .build();
-                DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS.put(bloom, List.of(bloomPass));
-                */
-                TerrainRenderPass bloomPass = new TerrainRenderPass(bloom, true, true);
+            TerrainRenderPass bloomPass = TerrainRenderPass.builder()
+                    .layer(bloom)
+                    .fragmentDiscard(true)
+                    .useReverseOrder(false)
+                    .useTranslucencySorting(true)
+                    .build();
+            DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS.put(bloom, List.of(bloomPass));
+            */
+            TerrainRenderPass bloomPass = new TerrainRenderPass(bloom, false, true);
 
-                Field field = DefaultTerrainRenderPasses.class.getDeclaredField("ALL");
-                FieldUtils.removeFinalModifier(field);
-                field.set(null, ArrayUtils.add(DefaultTerrainRenderPasses.ALL, bloomPass));
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            }
+            DefaultTerrainRenderPassesAccessor.setAll(ArrayUtils.add(DefaultTerrainRenderPasses.ALL, bloomPass));
         }
     }
 
@@ -345,14 +342,14 @@ public class BloomEffectUtil {
         Minecraft.getInstance().getProfiler().popPush("BTLayer");
         isRenderingBloom.set(true);
 
-        if (GTCEu.isOptifineLoaded()) {
+        if (GTCEu.isIrisOculusLoaded()) {
             levelRenderer.renderChunkLayer(blockRenderLayer, poseStack, camX, camY, camZ, projectionMatrix);
             return;
         }
 
         BLOOM_RENDER_LOCK.lock();
         try {
-            renderBloomInternal(levelRenderer, camX, camY, camZ, poseStack, camera, frustum, blockRenderLayer, partialTicks, projectionMatrix, entity);
+            renderBloomInternal(levelRenderer, camX, camY, camZ, poseStack, frustum, blockRenderLayer, partialTicks, projectionMatrix, entity);
         } finally {
             BLOOM_RENDER_LOCK.unlock();
             isRenderingBloom.set(false);
@@ -362,7 +359,6 @@ public class BloomEffectUtil {
     private static void renderBloomInternal(LevelRenderer levelRenderer,
                                            double camX, double camY, double camZ,
                                            PoseStack poseStack,
-                                           Camera camera,
                                            Frustum frustum,
                                            RenderType blockRenderLayer,
                                            double partialTicks,
@@ -370,7 +366,8 @@ public class BloomEffectUtil {
                                            @NotNull Entity entity) {
         preDraw();
 
-        EffectRenderContext context = EffectRenderContext.getInstance().update(entity, camera, frustum, (float) partialTicks);
+        EffectRenderContext context = EffectRenderContext.getInstance()
+                .update(entity, camX, camY, camZ, frustum, (float) partialTicks);
 
         if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
             RenderSystem.depthMask(true);

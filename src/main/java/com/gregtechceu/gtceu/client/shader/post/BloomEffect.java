@@ -30,8 +30,8 @@ public class BloomEffect {
 
         // blend shader
         Shaders.renderFullImageInFBO(PingPongBuffer.swap(), Shaders.BLOOM_COMBINE, shaderInstance -> {
-            shaderInstance.setSampler("buffer_a", backgroundFBO.getColorTextureId());
-            shaderInstance.setSampler("buffer_b", bloom.getColorTextureId());
+            shaderInstance.setSampler("buffer_a", backgroundFBO);
+            shaderInstance.setSampler("buffer_b", bloom);
             shaderInstance.safeGetUniform("intensive").set(strength);
             shaderInstance.safeGetUniform("base").set(baseBrightness);
             shaderInstance.safeGetUniform("threshold_up").set(highBrightnessThreshold);
@@ -132,8 +132,8 @@ public class BloomEffect {
         RenderSystem.setShaderTexture(1, D.getColorTextureId());
 
         Shaders.renderFullImageInFBO(T, Shaders.UP_SAMPLING, uniformCache -> {
-            uniformCache.setSampler("upTexture", U.getColorTextureId());
-            uniformCache.setSampler("downTexture", D.getColorTextureId());
+            uniformCache.setSampler("upTexture", U);
+            uniformCache.setSampler("downTexture", D);
             uniformCache.safeGetUniform("u_resolution2").set((float) U.width, (float) U.height);
         });
     }
@@ -168,12 +168,11 @@ public class BloomEffect {
         }
 
         Shaders.renderFullImageInFBO(downSampleFBO[0], Shaders.COMPOSITE, uniformCache -> {
-            //noinspection PointlessArithmeticExpression
-            uniformCache.setSampler("blurTexture1", GL13.GL_TEXTURE0 + 0);
-            uniformCache.setSampler("blurTexture2", GL13.GL_TEXTURE0 + 1);
-            uniformCache.setSampler("blurTexture3", GL13.GL_TEXTURE0 + 2);
-            uniformCache.setSampler("blurTexture4", GL13.GL_TEXTURE0 + 3);
-            uniformCache.setSampler("blurTexture5", GL13.GL_TEXTURE0 + 4);
+            uniformCache.setSampler("blurTexture1", downSampleFBO[0]);
+            uniformCache.setSampler("blurTexture2", downSampleFBO[1]);
+            uniformCache.setSampler("blurTexture3", downSampleFBO.length > 2 ? downSampleFBO[2] : null);
+            uniformCache.setSampler("blurTexture4", downSampleFBO.length > 3 ? downSampleFBO[3] : null);
+            uniformCache.setSampler("blurTexture5", downSampleFBO.length > 4 ? downSampleFBO[4] : null);
             uniformCache.safeGetUniform("bloomStrength").set(strength);
             uniformCache.safeGetUniform("bloomRadius").set(1.0f);
         });

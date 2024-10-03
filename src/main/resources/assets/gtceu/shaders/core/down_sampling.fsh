@@ -2,15 +2,15 @@
 
 varying vec2 texCoord0;
 
-uniform sampler2D DiffuseSampler;
+uniform sampler2D Sampler0;
 uniform vec2 u_resolution;
 uniform vec2 u_resolution2;
 
 vec4 four_k(vec3 textel, vec2 uv) {
-    return (texture2D(DiffuseSampler, uv + textel.xx) //1 1
-    + texture2D(DiffuseSampler, uv + textel.xy) // 1 -1
-    + texture2D(DiffuseSampler, uv + textel.yx) // -1 1
-    + texture2D(DiffuseSampler, uv + textel.yy)) * 0.25; // -1 -1
+    return (texture2D(Sampler0, uv + textel.xx) //1 1
+    + texture2D(Sampler0, uv + textel.xy) // 1 -1
+    + texture2D(Sampler0, uv + textel.yx) // -1 1
+    + texture2D(Sampler0, uv + textel.yy)) * 0.25; // -1 -1
 }
 
 void main(void) {

@@ -721,8 +721,6 @@ public class ConfigHolder {
             @Configurable.DecimalRange(min = 0)
             public float step = 1;
 
-
-
             public static class FusionBloom {
 
                 @Configurable
