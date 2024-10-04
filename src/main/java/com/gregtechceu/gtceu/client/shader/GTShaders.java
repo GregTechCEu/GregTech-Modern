@@ -14,14 +14,10 @@ import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public class GTShaders {
 
     public static final Minecraft mc = Minecraft.getInstance();
@@ -34,16 +30,6 @@ public class GTShaders {
 
     public static ShaderInstance getBloomShader() {
         return BLOOM_SHADER;
-    }
-
-    @SubscribeEvent
-    public static void onRenderTickStart(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) {
-            return;
-        }
-        if (BLOOM_CHAIN != null) {
-            BLOOM_CHAIN.process(event.renderTickTime);
-        }
     }
 
     public static void onRegisterShaders(RegisterShadersEvent event) {

@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -109,19 +109,34 @@ public abstract class LevelRendererMixin {
         throw new AssertionError();
     }
 
-    @Inject(method = "renderLevel", at = @At("RETURN"))
-    private void gtceu$renderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
-                                   boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
-                                   LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
+    @Shadow public abstract Frustum getFrustum();
+
+    @Shadow public abstract void renderChunkLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix);
+
+    @Inject(method = "renderLevel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"))
+    private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
+                                         boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
+                                         LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
+        GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+        this.renderChunkLayer(GTRenderTypes.getBloom(), poseStack,
+                camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, projectionMatrix);
         BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
                 poseStack, getFrustum(), partialTick, camera.getEntity());
     }
 
-    @Shadow public abstract Frustum getFrustum();
+    @Inject(method = "resize", at = @At("TAIL"))
+    private void gtceu$resize(int width, int height, CallbackInfo ci) {
+        if (GTShaders.BLOOM_CHAIN != null) {
+            GTShaders.BLOOM_CHAIN.resize(width, height);
+        }
+    }
 
     @Inject(method = "renderHitOutline", at = @At("HEAD"))
-    private void renderHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY,
-                                  double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
+    private void gtceu$renderAOEHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY,
+                                           double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();

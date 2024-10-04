@@ -77,7 +77,7 @@
   "passes": [
     {
       "name": "gtceu:filter_bloom_color",
-      "intarget": "minecraft:main",
+      "intarget": "final",
       "outtarget": "gtceu:filter_temp",
       "auxtargets": [
         {"id": "minecraft:main", "name": "MainSampler"}
@@ -220,6 +220,11 @@
           "values": [1.0]
         }
       ]
+    },
+    {
+      "name": "blit",
+      "intarget": "final",
+      "outtarget": "minecraft:main"
     }
   ]
 }

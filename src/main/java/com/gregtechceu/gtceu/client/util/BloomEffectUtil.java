@@ -36,9 +36,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -52,6 +52,7 @@ public class BloomEffectUtil {
     private static final ReentrantLock BLOOM_RENDER_LOCK = new ReentrantLock();
 
     private static RenderType bloom;
+
     /**
      * @return {@link RenderType} instance for the bloom render layer.
      */
@@ -66,7 +67,7 @@ public class BloomEffectUtil {
      * disabled, {@link RenderType#cutout()} is returned instead.
      *
      * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
-     *         layer is disabled
+     * layer is disabled
      * @see #getEffectiveBloomLayer(RenderType)
      */
     @NotNull
@@ -81,7 +82,7 @@ public class BloomEffectUtil {
      *
      * @param fallback Block render layer to be returned when bloom layer is disabled
      * @return {@link RenderType} instance for the bloom render layer, or {@code fallback} if bloom layer is
-     *         disabled
+     * disabled
      * @see #getEffectiveBloomLayer(boolean, RenderType)
      */
     @Contract("null -> _; !null -> !null")
@@ -97,7 +98,7 @@ public class BloomEffectUtil {
      * @param isBloomActive Whether bloom layer should be active. If this value is {@code false}, {@code fallback} layer
      *                      will be returned. Has no effect if Iris/Oculus is present.
      * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
-     *         layer is disabled
+     * layer is disabled
      * @see #getEffectiveBloomLayer(boolean, RenderType)
      */
     @NotNull
@@ -114,7 +115,7 @@ public class BloomEffectUtil {
      *                      will be returned. Has no effect if Iris/Oculus is present.
      * @param fallback      Block render layer to be returned when bloom layer is disabled
      * @return {@link RenderType} instance for the bloom render layer, or {@code fallback} if bloom layer is
-     *         disabled
+     * disabled
      */
     @Contract("_, null -> _; _, !null -> !null")
     public static RenderType getEffectiveBloomLayer(boolean isBloomActive, RenderType fallback) {
@@ -132,9 +133,9 @@ public class BloomEffectUtil {
      * returned instead.
      * </p>
      *
-     * @param setup          Render setup, if exists
-     * @param bloomType      Type of the bloom
-     * @param render         Rendering callback
+     * @param setup       Render setup, if exists
+     * @param bloomType   Type of the bloom
+     * @param render      Rendering callback
      * @param blockEntity Meta tile entity instance
      * @return Ticket for the registered bloom render callback
      * @throws NullPointerException if {@code bloomType == null || render == null || blockEntity == null}
@@ -290,7 +291,7 @@ public class BloomEffectUtil {
 
     public static void init() {
         bloom = GTRenderTypes.getBloom();
-        ((RenderTypeAccessor)bloom).setChunkLayerId(RenderType.chunkBufferLayers().size());
+        ((RenderTypeAccessor) bloom).setChunkLayerId(RenderType.chunkBufferLayers().size());
         RenderType.CHUNK_BUFFER_LAYERS = ImmutableList.<RenderType>builder()
                 .addAll(RenderType.CHUNK_BUFFER_LAYERS)
                 .add(bloom)
@@ -319,61 +320,69 @@ public class BloomEffectUtil {
         }
     }
 
+    public static final AtomicBoolean isDrawingBlockBloom = new AtomicBoolean(false);
+
     public static void renderBloom(double camX, double camY, double camZ,
                                    PoseStack poseStack,
                                    Frustum frustum,
-                                   double partialTicks,
+                                   float partialTicks,
                                    @NotNull Entity entity) {
-        Minecraft.getInstance().getProfiler().popPush("BTLayer");
+        Minecraft.getInstance().getProfiler().popPush("gtceu_block_bloom");
 
-        preDraw();
+        BLOOM_RENDER_LOCK.lock();
+        try {
+            preDraw();
 
-        EffectRenderContext context = EffectRenderContext.getInstance()
-                .update(entity, camX, camY, camZ, frustum, (float) partialTicks);
+            EffectRenderContext context = EffectRenderContext.getInstance()
+                    .update(entity, camX, camY, camZ, frustum, partialTicks);
 
-        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
+            GTRenderTypes.BLOOM_TARGET.setupRenderState();
+
+            if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
+                RenderSystem.depthMask(true);
+
+                if (!BLOOM_RENDERS.isEmpty()) {
+                    BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                    for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
+                        draw(poseStack, buffer, context, list);
+                    }
+                }
+                postDraw();
+                RenderSystem.depthMask(false);
+
+                render(partialTicks);
+                return;
+            }
+
+            BloomEffect.strength = ConfigHolder.INSTANCE.client.shader.strength;
+            BloomEffect.baseBrightness = ConfigHolder.INSTANCE.client.shader.baseBrightness;
+            BloomEffect.highBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.highBrightnessThreshold;
+            BloomEffect.lowBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.lowBrightnessThreshold;
+            BloomEffect.step = ConfigHolder.INSTANCE.client.shader.step;
+
+            // ********** render custom bloom ************
+
             RenderSystem.depthMask(true);
-
             if (!BLOOM_RENDERS.isEmpty()) {
                 BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-                for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
+                for (var e : BLOOM_RENDERS.entrySet()) {
+                    List<BloomRenderTicket> list = e.getValue();
+
                     draw(poseStack, buffer, context, list);
                 }
+                Tesselator.getInstance().end();
             }
-            postDraw();
             RenderSystem.depthMask(false);
 
-            render();
-            return;
+            isDrawingBlockBloom.set(true);
+            render(partialTicks);
+            isDrawingBlockBloom.set(false);
+
+            postDraw();
+            GTRenderTypes.BLOOM_TARGET.clearRenderState();
+        } finally {
+            BLOOM_RENDER_LOCK.unlock();
         }
-
-        BloomEffect.strength = ConfigHolder.INSTANCE.client.shader.strength;
-        BloomEffect.baseBrightness = ConfigHolder.INSTANCE.client.shader.baseBrightness;
-        BloomEffect.highBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.highBrightnessThreshold;
-        BloomEffect.lowBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.lowBrightnessThreshold;
-        BloomEffect.step = ConfigHolder.INSTANCE.client.shader.step;
-
-        // ********** render custom bloom ************
-
-        if (!BLOOM_RENDERS.isEmpty()) {
-            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-            for (var e : BLOOM_RENDERS.entrySet()) {
-                BloomRenderKey key = e.getKey();
-                List<BloomRenderTicket> list = e.getValue();
-
-                RenderSystem.depthMask(true);
-                draw(poseStack, buffer, context, list);
-                RenderSystem.depthMask(false);
-            }
-        }
-
-        RenderSystem.blendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-        RenderSystem.enableBlend();
-        render();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderSystem.disableBlend();
-
-        postDraw();
     }
 
     private static void preDraw() {
@@ -409,7 +418,7 @@ public class BloomEffectUtil {
     }
 
     private static void postDraw() {
-        for (var it = BLOOM_RENDERS.values().iterator(); it.hasNext();) {
+        for (var it = BLOOM_RENDERS.values().iterator(); it.hasNext(); ) {
             List<BloomRenderTicket> list = it.next();
 
             if (!list.isEmpty()) {
@@ -432,7 +441,7 @@ public class BloomEffectUtil {
     private static final String BLOOM_THRESHOLD_DOWN_UNIFORM = "BloomThresholdDown";
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
-    private static void render() {
+    private static void render(float partialTicks) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(
@@ -442,9 +451,12 @@ public class BloomEffectUtil {
             List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
             for (PostPass pass : passes) {
                 EffectInstance shader = pass.getEffect();
-                int index = passes.indexOf(pass);
+                shader.safeGetUniform("iTime").set(GTShaders.getITime(partialTicks));
+                shader.safeGetUniform("EnableFilter").set(BloomEffectUtil.isDrawingBlockBloom.get() ? 1 : 0);
+
                 if (GTShaders.BLOOM_TYPE == BloomType.UNREAL) {
                     if (shader.getName().equals(SEPERABLE_BLUR_SHADER_NAME)) {
+                        int index = passes.indexOf(pass);
                         switch (index) {
                             case 1, 3, 5, 7 -> shader.safeGetUniform(BLUR_DIR_UNIFORM).set(BloomEffect.step, 0.0f);
                             case 2, 4, 6, 8 -> shader.safeGetUniform(BLUR_DIR_UNIFORM).set(0.0f, BloomEffect.step);
@@ -460,7 +472,7 @@ public class BloomEffectUtil {
                 }
             }
 
-            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.mc.getWindow().getWidth(), GTShaders.mc.getWindow().getHeight(), false);
+            GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
         }
@@ -484,7 +496,8 @@ public class BloomEffectUtil {
         private boolean invalidated;
 
         BloomRenderTicket() {
-            this(null, BloomType.DISABLED, (p, b, c) -> {}, null, null);
+            this(null, BloomType.DISABLED, (p, b, c) -> {
+            }, null, null);
             this.invalidated = true;
         }
 

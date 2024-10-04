@@ -102,7 +102,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-        event.register("bloom", BloomEffectUtil.getBloomLayer(), Sheets.cutoutBlockSheet());
+        event.register("bloom", BloomEffectUtil.getEffectiveBloomLayer(), Sheets.cutoutBlockSheet());
     }
 
     @SubscribeEvent

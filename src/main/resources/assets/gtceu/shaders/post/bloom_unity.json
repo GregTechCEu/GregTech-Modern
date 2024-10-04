@@ -61,7 +61,7 @@
   "passes": [
     {
       "name": "gtceu:down_sampling",
-      "intarget": "minecraft:main",
+      "intarget": "final",
       "outtarget": "swap2a"
     },
     {
@@ -111,6 +111,11 @@
         {"id":"minecraft:main", "name":"DownTexture"},
         {"id":"minecraft:main", "name":"Background"}
       ]
+    },
+    {
+      "name": "blit",
+      "intarget": "final",
+      "outtarget": "minecraft:main"
     }
   ]
 }
