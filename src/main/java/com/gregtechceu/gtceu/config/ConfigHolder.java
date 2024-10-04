@@ -672,7 +672,7 @@ public class ConfigHolder {
             public boolean emissiveTexturesBloom = true;
 
             @Configurable
-            @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast)", "1 - Unity Bloom",
+            @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR", "1 - Unity Bloom",
                     "2 - Unreal Bloom", "Default: 2" })
             @Configurable.Range(min = 0, max = 2)
             public int bloomStyle = 2;
@@ -719,7 +719,7 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
             @Configurable.DecimalRange(min = 0)
-            public float step = 1;
+            public float step = 1.0f;
 
             public static class FusionBloom {
 

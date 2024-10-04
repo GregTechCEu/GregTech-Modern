@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.client.shader.PostTarget;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -11,7 +10,7 @@ import org.lwjgl.opengl.*;
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
 
-    public static boolean updateFBOSize(PostTarget fbo, int width, int height) {
+    public static boolean updateFBOSize(RenderTarget fbo, int width, int height) {
         if (fbo.width != width || fbo.height != height) {
             fbo.createBuffers(width, height, Minecraft.ON_OSX);
             return true;

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -102,5 +103,10 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
         event.register("bloom", BloomEffectUtil.getBloomLayer(), Sheets.cutoutBlockSheet());
+    }
+
+    @SubscribeEvent
+    public void onRegisterShaders(RegisterShadersEvent event) {
+        GTShaders.onRegisterShaders(event);
     }
 }

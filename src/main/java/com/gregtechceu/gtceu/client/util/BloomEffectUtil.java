@@ -5,43 +5,38 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
-import com.gregtechceu.gtceu.client.shader.PostTarget;
-import com.gregtechceu.gtceu.client.shader.Shaders;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.shader.post.BloomEffect;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.PostChainAccessor;
 import com.gregtechceu.gtceu.core.mixins.RenderTypeAccessor;
 import com.gregtechceu.gtceu.core.mixins.embeddium.DefaultTerrainRenderPassesAccessor;
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -57,9 +52,6 @@ public class BloomEffectUtil {
     private static final ReentrantLock BLOOM_RENDER_LOCK = new ReentrantLock();
 
     private static RenderType bloom;
-    @Getter
-    private static PostTarget bloomFBO;
-
     /**
      * @return {@link RenderType} instance for the bloom render layer.
      */
@@ -308,9 +300,6 @@ public class BloomEffectUtil {
             // Add our render type to embeddium's render passes by force (until an API is added)
 
             /* FOR UNRELEASED EMBEDDIUM!!!
-            Field field = DefaultTerrainRenderPasses.class.getDeclaredField("RENDER_PASS_MAPPINGS");
-            FieldUtils.removeFinalModifier(field);
-            field.set(null, new HashMap<>(DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS));
 
             TerrainRenderPass bloomPass = TerrainRenderPass.builder()
                     .layer(bloom)
@@ -318,7 +307,9 @@ public class BloomEffectUtil {
                     .useReverseOrder(false)
                     .useTranslucencySorting(true)
                     .build();
-            DefaultTerrainRenderPasses.RENDER_PASS_MAPPINGS.put(bloom, List.of(bloomPass));
+            var map = new HashMap<>(DefaultTerrainRenderPassesAccessor.getRenderPassMappings());
+            map.put(bloom, List.of(bloomPass));
+            DefaultTerrainRenderPassesAccessor.setRenderPassMappings(map);
             */
             TerrainRenderPass bloomPass = new TerrainRenderPass(bloom, false, true);
             DefaultTerrainRenderPassesAccessor.setAll(ArrayUtils.add(DefaultTerrainRenderPasses.ALL, bloomPass));
@@ -328,37 +319,13 @@ public class BloomEffectUtil {
         }
     }
 
-    public static void renderBloomChunkLayer(LevelRenderer levelRenderer,
-                                             double camX, double camY, double camZ,
-                                             PoseStack poseStack,
-                                             Frustum frustum,
-                                             RenderType blockRenderLayer, // 70% sure it's translucent uh yeah
-                                             double partialTicks,
-                                             Matrix4f projectionMatrix,
-                                             @NotNull Entity entity) {
+    public static void renderBloom(double camX, double camY, double camZ,
+                                   PoseStack poseStack,
+                                   Frustum frustum,
+                                   double partialTicks,
+                                   @NotNull Entity entity) {
         Minecraft.getInstance().getProfiler().popPush("BTLayer");
 
-        if (GTCEu.isIrisOculusLoaded()) {
-            levelRenderer.renderChunkLayer(blockRenderLayer, poseStack, camX, camY, camZ, projectionMatrix);
-            return;
-        }
-
-        BLOOM_RENDER_LOCK.lock();
-        try {
-            renderBloomInternal(levelRenderer, camX, camY, camZ, poseStack, frustum, blockRenderLayer, partialTicks, projectionMatrix, entity);
-        } finally {
-            BLOOM_RENDER_LOCK.unlock();
-        }
-    }
-
-    private static void renderBloomInternal(LevelRenderer levelRenderer,
-                                           double camX, double camY, double camZ,
-                                           PoseStack poseStack,
-                                           Frustum frustum,
-                                           RenderType blockRenderLayer,
-                                           double partialTicks,
-                                           Matrix4f projectionMatrix,
-                                           @NotNull Entity entity) {
         preDraw();
 
         EffectRenderContext context = EffectRenderContext.getInstance()
@@ -366,7 +333,6 @@ public class BloomEffectUtil {
 
         if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
             RenderSystem.depthMask(true);
-            levelRenderer.renderChunkLayer(bloom, poseStack, camX, camY, camZ, projectionMatrix);
 
             if (!BLOOM_RENDERS.isEmpty()) {
                 BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -377,97 +343,15 @@ public class BloomEffectUtil {
             postDraw();
             RenderSystem.depthMask(false);
 
-            levelRenderer.renderChunkLayer(blockRenderLayer, poseStack, camX, camY, camZ, projectionMatrix);
+            render();
             return;
         }
 
-        RenderTarget fbo = Minecraft.getInstance().getMainRenderTarget();
-
-        if (bloomFBO == null ||
-                bloomFBO.width != fbo.width ||
-                bloomFBO.height != fbo.height ||
-                (fbo.isStencilEnabled() && !bloomFBO.isStencilEnabled())) {
-            if (bloomFBO == null) {
-                bloomFBO = new PostTarget(fbo.width, fbo.height, false);
-                bloomFBO.setClearColor(0, 0, 0, 0);
-            } else {
-                bloomFBO.resize(fbo.width, fbo.height, Minecraft.ON_OSX);
-            }
-
-            if (fbo.isStencilEnabled() && !bloomFBO.isStencilEnabled()) {
-                bloomFBO.enableStencil();
-            }
-
-            if (DepthTextureUtil.isLastBind() && DepthTextureUtil.isUseDefaultFBO()) {
-                RenderUtil.hookDepthTexture(bloomFBO, DepthTextureUtil.framebufferDepthTexture);
-            } else {
-                RenderUtil.hookDepthBuffer(bloomFBO, fbo.getDepthTextureId());
-            }
-
-            bloomFBO.setFilterMode(GL11.GL_LINEAR);
-        }
-
-        RenderSystem.depthMask(true);
-        fbo.bindWrite(true);
-
-        if (!BLOOM_RENDERS.isEmpty()) {
-            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-            for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
-                draw(poseStack, buffer, context, list);
-            }
-        }
-
-        // render to BLOOM BUFFER
-        bloomFBO.clear(Minecraft.ON_OSX);
-        bloomFBO.bindWrite(false);
-
-        levelRenderer.renderChunkLayer(bloom, poseStack, camX, camY, camZ, projectionMatrix);
-
-        RenderSystem.depthMask(false);
-
-        // fast render bloom layer to main fbo
-        bloomFBO.bindRead();
-        Shaders.renderFullImageInFBO(fbo, Shaders.IMAGE, null);
-
-        // reset transparent layer render state and render
-        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo.frameBufferId);
-        RenderSystem.enableBlend();
-        Minecraft.getInstance().getTextureManager().bindForSetup(InventoryMenu.BLOCK_ATLAS);
-        //GL11.glShadeModel(GL11.GL_SMOOTH);
-
-        levelRenderer.renderChunkLayer(blockRenderLayer, poseStack, camX, camY, camZ, projectionMatrix);
-
-        Minecraft.getInstance().getProfiler().popPush("bloom");
-
-        // blend bloom + transparent
-        fbo.bindRead();
-        RenderSystem.blendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-        Shaders.renderFullImageInFBO(bloomFBO, Shaders.IMAGE, null);
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        // render bloom effect to fbo
         BloomEffect.strength = ConfigHolder.INSTANCE.client.shader.strength;
         BloomEffect.baseBrightness = ConfigHolder.INSTANCE.client.shader.baseBrightness;
         BloomEffect.highBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.highBrightnessThreshold;
         BloomEffect.lowBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.lowBrightnessThreshold;
         BloomEffect.step = ConfigHolder.INSTANCE.client.shader.step;
-        switch (ConfigHolder.INSTANCE.client.shader.bloomStyle) {
-            case 0 -> BloomEffect.renderLOG(bloomFBO, fbo);
-            case 1 -> BloomEffect.renderUnity(bloomFBO, fbo);
-            case 2 -> BloomEffect.renderUnreal(bloomFBO, fbo);
-            default -> {
-                postDraw();
-                RenderSystem.depthMask(false);
-                RenderSystem.disableBlend();
-                return;
-            }
-        }
-
-        RenderSystem.depthMask(false);
-
-        // render bloom blend result to fbo
-        RenderSystem.disableBlend();
-        Shaders.renderFullImageInFBO(fbo, Shaders.IMAGE, null);
 
         // ********** render custom bloom ************
 
@@ -478,37 +362,18 @@ public class BloomEffectUtil {
                 List<BloomRenderTicket> list = e.getValue();
 
                 RenderSystem.depthMask(true);
-
-                bloomFBO.clear(Minecraft.ON_OSX);
-                bloomFBO.bindWrite(true);
-
                 draw(poseStack, buffer, context, list);
-
                 RenderSystem.depthMask(false);
-
-                // blend bloom + transparent
-                fbo.bindRead();
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
-                Shaders.renderFullImageInFBO(bloomFBO, Shaders.IMAGE, null);
-                RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-                switch (key.bloomType) {
-                    case GAUSSIAN -> BloomEffect.renderLOG(bloomFBO, fbo);
-                    case UNITY -> BloomEffect.renderUnity(bloomFBO, fbo);
-                    case UNREAL -> BloomEffect.renderUnreal(bloomFBO, fbo);
-                    default -> {
-                        RenderSystem.disableBlend();
-                        continue;
-                    }
-                }
-
-                // render bloom blend result to fbo
-                RenderSystem.disableBlend();
-                Shaders.renderFullImageInFBO(fbo, Shaders.IMAGE, null);
             }
-            postDraw();
         }
+
+        RenderSystem.blendFunc(GL11.GL_DST_ALPHA, GL11.GL_ZERO);
+        RenderSystem.enableBlend();
+        render();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.disableBlend();
+
+        postDraw();
     }
 
     private static void preDraw() {
@@ -558,6 +423,49 @@ public class BloomEffectUtil {
         }
     }
 
+    private static final String UNREAL_COMPOSITE_SHADER_NAME = "gtceu:unreal_composite";
+    private static final String UNITY_COMPOSITE_SHADER_NAME = "gtceu:unity_composite";
+    private static final String SEPERABLE_BLUR_SHADER_NAME = "gtceu:seperable_blur";
+    private static final String BLOOM_INTENSIVE_UNIFORM = "BloomIntensive";
+    private static final String BLOOM_BASE_UNIFORM = "BloomBase";
+    private static final String BLOOM_THRESHOLD_UP_UNIFORM = "BloomThresholdUp";
+    private static final String BLOOM_THRESHOLD_DOWN_UNIFORM = "BloomThresholdDown";
+    private static final String BLUR_DIR_UNIFORM = "BlurDir";
+
+    private static void render() {
+        if (GTShaders.allowedShader()) {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(
+                    GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                    GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+            // Forcefully insert config values to shader
+            List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
+            for (PostPass pass : passes) {
+                EffectInstance shader = pass.getEffect();
+                int index = passes.indexOf(pass);
+                if (GTShaders.BLOOM_TYPE == BloomType.UNREAL) {
+                    if (shader.getName().equals(SEPERABLE_BLUR_SHADER_NAME)) {
+                        switch (index) {
+                            case 1, 3, 5, 7 -> shader.safeGetUniform(BLUR_DIR_UNIFORM).set(BloomEffect.step, 0.0f);
+                            case 2, 4, 6, 8 -> shader.safeGetUniform(BLUR_DIR_UNIFORM).set(0.0f, BloomEffect.step);
+                        }
+                    }
+                }
+                if (shader.getName().equals(UNITY_COMPOSITE_SHADER_NAME) ||
+                        shader.getName().equals(UNREAL_COMPOSITE_SHADER_NAME)) {
+                    shader.safeGetUniform(BLOOM_INTENSIVE_UNIFORM).set(BloomEffect.strength);
+                    shader.safeGetUniform(BLOOM_BASE_UNIFORM).set(BloomEffect.baseBrightness);
+                    shader.safeGetUniform(BLOOM_THRESHOLD_UP_UNIFORM).set(BloomEffect.highBrightnessThreshold);
+                    shader.safeGetUniform(BLOOM_THRESHOLD_DOWN_UNIFORM).set(BloomEffect.lowBrightnessThreshold);
+                }
+            }
+
+            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.mc.getWindow().getWidth(), GTShaders.mc.getWindow().getHeight(), false);
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        }
+    }
+
     private record BloomRenderKey(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType) {}
 
     public static final class BloomRenderTicket {
@@ -590,20 +498,6 @@ public class BloomEffectUtil {
             this.worldContext = worldContext;
         }
 
-        @Nullable
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.9")
-        public IRenderSetup getRenderSetup() {
-            return this.renderSetup;
-        }
-
-        @NotNull
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.9")
-        public BloomType getBloomType() {
-            return this.bloomType;
-        }
-
         public boolean isValid() {
             return !this.invalidated;
         }
@@ -617,26 +511,5 @@ public class BloomEffectUtil {
                 invalidate();
             }
         }
-    }
-
-    /**
-     * @deprecated use ticket-based bloom render hooks
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.9")
-    public interface IBloomRenderFast extends IRenderSetup {
-
-        /**
-         * Custom Bloom Style.
-         *
-         * @return 0 - Simple Gaussian Blur Bloom
-         *         <p>
-         *         1 - Unity Bloom
-         *         </p>
-         *         <p>
-         *         2 - Unreal Bloom
-         *         </p>
-         */
-        int customBloomStyle();
     }
 }

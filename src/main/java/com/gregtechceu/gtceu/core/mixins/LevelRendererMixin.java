@@ -103,24 +103,18 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @WrapOperation(method = "renderLevel",
-                   at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/client/renderer/LevelRenderer;renderChunkLayer(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/PoseStack;DDDLorg/joml/Matrix4f;)V")
-    )
-    private void gtceu$renderBloomLayer(LevelRenderer instance, RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix, Operation<Void> original) {
-        if (renderType != RenderType.translucent()) {
-            original.call(instance, renderType, poseStack, camX, camY, camZ, projectionMatrix);
-            return;
-        }
-        BloomEffectUtil.renderBloomChunkLayer(instance, camX, camY, camZ, poseStack,
-                this.getFrustum(), renderType, minecraft.getPartialTick(), projectionMatrix,
-                this.minecraft.cameraEntity);
-    }
-
     @Shadow
     private static void renderShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y,
                                     double z, float red, float green, float blue, float alpha) {
         throw new AssertionError();
+    }
+
+    @Inject(method = "renderLevel", at = @At("RETURN"))
+    private void gtceu$renderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
+                                   boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
+                                   LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
+        BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
+                poseStack, getFrustum(), partialTick, camera.getEntity());
     }
 
     @Shadow public abstract Frustum getFrustum();

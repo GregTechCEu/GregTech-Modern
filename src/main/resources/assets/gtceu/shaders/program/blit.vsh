@@ -1,10 +1,12 @@
 #version 150
 
-in vec3 Position;
+in vec4 Position;
 
-out vec2 texCoord0;
+uniform vec2 OutSize;
 
-void main(void){
+out vec2 texCoord;
+
+void main(){
     float x = -1.0;
     float y = -1.0;
     if (Position.x > 0.001){
@@ -14,5 +16,5 @@ void main(void){
         y = 1.0;
     }
     gl_Position = vec4(x, y, 0.2, 1.0);
-    texCoord0 = Position.xy;
+    texCoord = Position.xy / OutSize;
 }
