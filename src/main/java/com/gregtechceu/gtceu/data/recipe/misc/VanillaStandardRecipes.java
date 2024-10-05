@@ -209,9 +209,6 @@ public class VanillaStandardRecipes {
         // .save(provider);
         // }
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "glass_pane", new ItemStack(Blocks.GLASS_PANE, 2), "sG", 'G',
-                new ItemStack(Blocks.GLASS));
-
         CUTTER_RECIPES.recipeBuilder("cut_glass_block_to_plate").duration(50).EUt(VA[ULV])
                 .inputItems(new ItemStack(Blocks.GLASS, 3))
                 .outputItems(new ItemStack(Blocks.GLASS_PANE, 8))

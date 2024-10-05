@@ -1384,7 +1384,10 @@ public class RecipeAddition {
         );
     }
 
-    private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {}
+    private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "glass_pane", new ItemStack(Blocks.GLASS_PANE, 2), "sG", 'G',
+                new ItemStack(Blocks.GLASS));
+    }
 
     private static void nerfPaperCrafting(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "paper_dust",
