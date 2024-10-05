@@ -84,6 +84,8 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ForgeItemTagsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1543,6 +1545,12 @@ public class GTBlocks {
                                     prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_all"), "all",
                                     prov.modLoc(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() +
                                             "/" + type.id))));
+                }
+                if (type == StoneBlockType.STONE) {
+                    entry.tag(Tags.Blocks.STONE);
+                }
+                if (type == StoneBlockType.COBBLE) {
+                    entry.tag(Tags.Blocks.COBBLESTONE);
                 }
                 builder.put(type, strata, entry.register());
             }
