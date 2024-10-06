@@ -1551,10 +1551,10 @@ public class GTBlocks {
                                             "/" + type.id))));
                 }
                 if (type == StoneBlockType.STONE) {
-                    entry.tag(Tags.Blocks.STONE);
+                    entry.tag(Tags.Blocks.STONES);
                 }
                 if (type == StoneBlockType.COBBLE) {
-                    entry.tag(Tags.Blocks.COBBLESTONE);
+                    entry.tag(Tags.Blocks.COBBLESTONES);
                 }
                 builder.put(type, strata, entry.register());
             }
