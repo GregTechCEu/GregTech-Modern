@@ -45,6 +45,8 @@ public class ItemLang {
     private static void initItemNames(RegistrateLangProvider provider) {}
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
+        // When in doubt, all tooltips should be gray (§7)
+
         provider.add("item.gtceu.copper_credit.tooltip", "§70.125 Credits");
         provider.add("item.gtceu.cupronickel_credit.tooltip", "§71 Credit");
         provider.add("item.gtceu.silver_credit.tooltip", "§78 Credits");
@@ -151,7 +153,6 @@ public class ItemLang {
         provider.add("item.gtceu.data_stick.tooltip", "§7A Low Capacity Data Storage");
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
         provider.add("item.gtceu.programmed_circuit.tooltip", "§7Use to open configuration GUI");
-        provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
         // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
         // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
@@ -342,8 +343,7 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
-        provider.add("item.gtceu.basic_tape.tooltip", "Not strong enough for mechanical issues");
-
-        provider.add("item.gtceu.sus_record.desc", "sussy!");
+        provider.add("item.gtceu.basic_tape.tooltip", "N§7ot strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
+        multilineLang(provider,"item.gtceu.sus_record.desc", "§7Leonz - Among Us Drip\nsussy!");
     }
 }

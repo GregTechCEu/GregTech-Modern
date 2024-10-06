@@ -88,10 +88,10 @@ public class LangHandler {
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU (%s)");
         provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
-        provider.add("metaitem.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
-        provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
-        provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
-        provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+        provider.add("metaitem.electric.discharge_mode.tooltip", "§7Use while sneaking to toggle discharge mode");
+        provider.add("metaitem.dust.tooltip.purify", "§7Right click a Cauldron to get clean Dust");
+        provider.add("metaitem.crushed.tooltip.purify", "§7Right click a Cauldron to get Purified Ore");
+        provider.add("metaitem.int_circuit.configuration", "§aConfigured Value: §r%d");
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
@@ -314,7 +314,6 @@ public class LangHandler {
         provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
         provider.add("metaarmor.energy_share.tooltip.guide",
                 "To change mode shift-right click when holding item");
-        provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
         provider.add("gui.widget.incrementButton.default_tooltip",
