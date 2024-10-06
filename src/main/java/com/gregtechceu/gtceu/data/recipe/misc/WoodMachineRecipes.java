@@ -492,7 +492,7 @@ public class WoodMachineRecipes {
             final boolean hasSignRecipe = entry.signRecipeName != null;
             String recipeName = hasSignRecipe ? entry.signRecipeName : name + "_sign";
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
-                VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.sign),
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.sign),
                         "LLL", "RPR", "sSd",
                         'P', entry.planks,
                         'R', new UnificationEntry(screw, Iron),
