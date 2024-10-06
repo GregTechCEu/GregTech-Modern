@@ -53,7 +53,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         float r = ColorUtils.red(ringColor);
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
-        RenderBufferHelper.renderRing(stack, buffer.getBuffer(BloomEffectUtil.getEffectiveBloomLayer()),
+        RenderBufferHelper.renderRing(stack, buffer.getBuffer(GTRenderTypes.getLightRing()),
                 relativeBack.getStepX() * 7 + 0.5F,
                 relativeBack.getStepY() * 7 + 0.5F,
                 relativeBack.getStepZ() * 7 + 0.5F,

@@ -99,12 +99,12 @@ public class ClientProxy extends CommonProxy {
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
     }
-
+/*
     @SubscribeEvent
     public void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
         event.register("bloom", BloomEffectUtil.getEffectiveBloomLayer(), Sheets.cutoutBlockSheet());
     }
-
+*/
     @SubscribeEvent
     public void onRegisterShaders(RegisterShadersEvent event) {
         GTShaders.onRegisterShaders(event);

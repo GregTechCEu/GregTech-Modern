@@ -136,16 +136,14 @@ public class GTModels {
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
                                 if (state.getValue(LampBlock.BLOOM)) {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive")
-                                            .renderType(GTCEu.id("bloom"));
+                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
                                 } else {
                                     model.texture("active_overlay", "block/lamps/" + color.getName());
                                 }
                             } else {
                                 if (state.getValue(LampBlock.BLOOM)) {
                                     model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless_emissive")
-                                            .renderType(GTCEu.id("bloom"));
+                                            "block/lamps/" + color.getName() + "_borderless_emissive");
                                 } else {
                                     model.texture("active",
                                             "block/lamps/" + color.getName() + "_borderless");

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -11,20 +10,13 @@ import com.gregtechceu.gtceu.client.shader.post.BloomType;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.PostChainAccessor;
-import com.gregtechceu.gtceu.core.mixins.RenderTypeAccessor;
-import com.gregtechceu.gtceu.core.mixins.embeddium.DefaultTerrainRenderPassesAccessor;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.jellysquid.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
-import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
-import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
-import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.PostPass;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -32,8 +24,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,77 +40,6 @@ public class BloomEffectUtil {
     private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
     private static final ReentrantLock BLOOM_RENDER_LOCK = new ReentrantLock();
-
-    private static RenderType bloom;
-
-    /**
-     * @return {@link RenderType} instance for the bloom render layer.
-     */
-    @NotNull
-    public static RenderType getBloomLayer() {
-        return Objects.requireNonNull(bloom, "Bloom effect is not initialized yet");
-    }
-
-    /**
-     * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
-     * disabled, {@link RenderType#cutout()} is returned instead.
-     *
-     * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
-     * layer is disabled
-     * @see #getEffectiveBloomLayer(RenderType)
-     */
-    @NotNull
-    public static RenderType getEffectiveBloomLayer() {
-        return getEffectiveBloomLayer(RenderType.cutout());
-    }
-
-    /**
-     * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
-     * disabled, the fallback layer specified is returned instead.
-     *
-     * @param fallback Block render layer to be returned when bloom layer is disabled
-     * @return {@link RenderType} instance for the bloom render layer, or {@code fallback} if bloom layer is
-     * disabled
-     * @see #getEffectiveBloomLayer(boolean, RenderType)
-     */
-    @Contract("null -> _; !null -> !null")
-    public static RenderType getEffectiveBloomLayer(RenderType fallback) {
-        return GTCEu.isIrisOculusLoaded() ? fallback : bloom;
-    }
-
-    /**
-     * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
-     * disabled, {@link RenderType#cutout()} is returned instead.
-     *
-     * @param isBloomActive Whether bloom layer should be active. If this value is {@code false}, {@code fallback} layer
-     *                      will be returned. Has no effect if Iris/Oculus is present.
-     * @return {@link RenderType} instance for the bloom render layer, or {@link RenderType#cutout()} if bloom
-     * layer is disabled
-     * @see #getEffectiveBloomLayer(boolean, RenderType)
-     */
-    @NotNull
-    public static RenderType getEffectiveBloomLayer(boolean isBloomActive) {
-        return getEffectiveBloomLayer(isBloomActive, RenderType.cutout());
-    }
-
-    /**
-     * Get "effective bloom layer", i.e. the actual render layer that emissive textures get rendered. Effective bloom
-     * layers can be changed depending on external factors, such as presence of Iris/Oculus. If the actual bloom layer is
-     * disabled, the fallback layer specified is returned instead.
-     *
-     * @param isBloomActive Whether bloom layer should be active. If this value is {@code false}, {@code fallback} layer
-     *                      will be returned. Has no effect if Iris/Oculus is present.
-     * @param fallback      Block render layer to be returned when bloom layer is disabled
-     * @return {@link RenderType} instance for the bloom render layer, or {@code fallback} if bloom layer is
-     * disabled
-     */
-    @Contract("_, null -> _; _, !null -> !null")
-    public static RenderType getEffectiveBloomLayer(boolean isBloomActive, RenderType fallback) {
-        return GTCEu.isIrisOculusLoaded() || !isBloomActive ? fallback : bloom;
-    }
 
     /**
      * <p>
@@ -287,38 +206,7 @@ public class BloomEffectUtil {
         }
     }
 
-    public static Supplier<Supplier<Material>> EMBEDDIUM_MATERIAL_BLOOM;
-
-    public static void init() {
-        bloom = GTRenderTypes.getBloom();
-        ((RenderTypeAccessor) bloom).setChunkLayerId(RenderType.chunkBufferLayers().size());
-        RenderType.CHUNK_BUFFER_LAYERS = ImmutableList.<RenderType>builder()
-                .addAll(RenderType.CHUNK_BUFFER_LAYERS)
-                .add(bloom)
-                .build();
-
-        if (GTCEu.isSodiumRubidiumEmbeddiumLoaded()) {
-            // Add our render type to embeddium's render passes by force (until an API is added)
-
-            /* FOR UNRELEASED EMBEDDIUM!!!
-
-            TerrainRenderPass bloomPass = TerrainRenderPass.builder()
-                    .layer(bloom)
-                    .fragmentDiscard(true)
-                    .useReverseOrder(false)
-                    .useTranslucencySorting(true)
-                    .build();
-            var map = new HashMap<>(DefaultTerrainRenderPassesAccessor.getRenderPassMappings());
-            map.put(bloom, List.of(bloomPass));
-            DefaultTerrainRenderPassesAccessor.setRenderPassMappings(map);
-            */
-            TerrainRenderPass bloomPass = new TerrainRenderPass(bloom, false, true);
-            DefaultTerrainRenderPassesAccessor.setAll(ArrayUtils.add(DefaultTerrainRenderPasses.ALL, bloomPass));
-
-            Material bloomMaterial = new Material(bloomPass, AlphaCutoffParameter.ZERO, true);
-            EMBEDDIUM_MATERIAL_BLOOM = () -> () -> bloomMaterial;
-        }
-    }
+    public static void init() {}
 
     public static final AtomicBoolean isDrawingBlockBloom = new AtomicBoolean(false);
 
@@ -342,9 +230,8 @@ public class BloomEffectUtil {
                 RenderSystem.depthMask(true);
 
                 if (!BLOOM_RENDERS.isEmpty()) {
-                    BufferBuilder buffer = Tesselator.getInstance().getBuilder();
                     for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
-                        draw(poseStack, buffer, context, list);
+                        draw(poseStack, GTShaders.BLOOM_BUFFER, context, list);
                     }
                 }
                 postDraw();
@@ -364,11 +251,10 @@ public class BloomEffectUtil {
 
             RenderSystem.depthMask(true);
             if (!BLOOM_RENDERS.isEmpty()) {
-                BufferBuilder buffer = Tesselator.getInstance().getBuilder();
                 for (var e : BLOOM_RENDERS.entrySet()) {
                     List<BloomRenderTicket> list = e.getValue();
 
-                    draw(poseStack, buffer, context, list);
+                    draw(poseStack, GTShaders.BLOOM_BUFFER, context, list);
                 }
                 Tesselator.getInstance().end();
             }
@@ -472,9 +358,14 @@ public class BloomEffectUtil {
                 }
             }
 
+            GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+            GTShaders.BLOOM_TARGET.bindWrite(false);
+            BufferUploader.draw(GTShaders.BLOOM_BUFFER.end());
+
             GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         }
     }
 

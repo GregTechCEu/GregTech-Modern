@@ -2,15 +2,14 @@ package com.gregtechceu.gtceu.client.shader;
 
 import com.google.gson.JsonSyntaxException;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterShadersEvent;
@@ -22,36 +21,21 @@ public class GTShaders {
 
     public static final Minecraft mc = Minecraft.getInstance();
 
-    public static ShaderInstance BLOOM_SHADER;
-
     public static PostChain BLOOM_CHAIN;
     public static BloomType BLOOM_TYPE;
     public static RenderTarget BLOOM_TARGET;
 
-    public static ShaderInstance getBloomShader() {
-        return BLOOM_SHADER;
-    }
+    public static BufferBuilder BLOOM_BUFFER = new BufferBuilder(GTRenderTypes.getBloom().bufferSize());
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
         if (!allowedShader()) {
             return;
         }
 
-        ResourceProvider resourceProvider = event.getResourceProvider();
-
-        try {
-            event.registerShader(
-                    new ShaderInstance(resourceProvider, GTCEu.id("rendertype_bloom"), DefaultVertexFormat.BLOCK),
-                    shader -> BLOOM_SHADER = shader);
-        } catch (IOException ioException) {
-            GTCEu.LOGGER.error("Failed to load shader: gtceu:rendertype_bloom", ioException);
-            BLOOM_SHADER = null;
-        }
-
         initPostShaders();
     }
 
-    public static void initPostShaders() {
+    private static void initPostShaders() {
         if (BLOOM_CHAIN != null) {
             BLOOM_CHAIN.close();
         }

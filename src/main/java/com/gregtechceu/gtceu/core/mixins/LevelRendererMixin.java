@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -23,9 +24,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -111,8 +109,6 @@ public abstract class LevelRendererMixin {
 
     @Shadow public abstract Frustum getFrustum();
 
-    @Shadow public abstract void renderChunkLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix);
-
     @Inject(method = "renderLevel",
             at = @At(
                     value = "INVOKE",
@@ -120,9 +116,6 @@ public abstract class LevelRendererMixin {
     private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
                                          boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                          LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
-        GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-        this.renderChunkLayer(GTRenderTypes.getBloom(), poseStack,
-                camera.getPosition().x, camera.getPosition().y, camera.getPosition().z, projectionMatrix);
         BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
                 poseStack, getFrustum(), partialTick, camera.getEntity());
     }

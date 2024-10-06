@@ -13,7 +13,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 @OnlyIn(Dist.CLIENT)
 public class GTRenderTypes extends RenderType {
 
-    public static final RenderStateShard.ShaderStateShard BLOOM_SHADER = new RenderStateShard.ShaderStateShard(GTShaders::getBloomShader);
     public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard("bloom_target",
             () -> {
                 if (GTShaders.allowedShader()) {
@@ -30,17 +29,17 @@ public class GTRenderTypes extends RenderType {
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(RenderStateShard.NO_CULL)
+                    .setOutputState(BLOOM_TARGET)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
     private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
-            256, false, false,
+            131072, false, false,
             RenderType.CompositeState.builder()
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
                     .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET)
                     .setOutputState(BLOOM_TARGET)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
-                    .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
                     .createCompositeState(false));
 
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
