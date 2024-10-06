@@ -500,12 +500,12 @@ public class WoodMachineRecipes {
                         'S', entry.getStick());
 
                 // plank -> sign assembling
-                ASSEMBLER_RECIPES.recipeBuilder(name + "_sign_iron")
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_iron")
+                        .circuitMeta(4)
                         .inputItems(new ItemStack(entry.slab, 1))
                         .inputItems(entry.getStick(), 1)
                         .inputFluids(Iron.getFluid(GTValues.L / 9))
                         .outputItems(entry.sign, 3)
-                        .circuitMeta(4)
                         .duration(200).EUt(4).save(provider);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.sign, 2),
@@ -516,14 +516,13 @@ public class WoodMachineRecipes {
                         'S', entry.getStick());
 
                 // plank -> sign assembling
-                ASSEMBLER_RECIPES.recipeBuilder(name + "_sign_steel")
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_steel")
+                        .circuitMeta(4)
                         .inputItems(new ItemStack(entry.slab, 1))
                         .inputItems(entry.getStick(), 1)
                         .inputFluids(Steel.getFluid(GTValues.L / 9))
                         .outputItems(entry.sign, 5)
-                        .circuitMeta(4)
                         .duration(200).EUt(4).save(provider);
-
             } else {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_saw", new ItemStack(entry.sign, 3),
                         "PPP", "PPP", " s ",
