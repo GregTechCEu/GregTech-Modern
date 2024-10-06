@@ -327,7 +327,6 @@ public class ItemLang {
                 "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         provider.add("item.gtceu.facade_cover.tooltip", "§7Decorative Outfit §fCover§7.");
         provider.add("item.gtceu.computer_monitor_cover.tooltip", "§7Displays §fData§7 as §fCover§7.");
-        provider.add("item.gtceu.crafting_table_cover.tooltip", "§fAdvanced Workbench§7 on a Machine as §fCover§7.");
         provider.add("item.gtceu.shutter_module_cover.tooltip",
                 "§fBlocks Transfer§7 through attached Side as §fCover§7.");
         multilineLang(provider, "item.gtceu.solar_panel.tooltip",
@@ -342,8 +341,8 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
-        provider.add("item.gtceu.basic_tape.tooltip", "Not strong enough for mechanical issues");
+        provider.add("item.gtceu.basic_tape.tooltip", "N§7ot strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
 
-        provider.add("item.gtceu.sus_record.desc", "sussy!");
+        provider.add("item.gtceu.sus_record.desc", "§7sussy!");
     }
 }
