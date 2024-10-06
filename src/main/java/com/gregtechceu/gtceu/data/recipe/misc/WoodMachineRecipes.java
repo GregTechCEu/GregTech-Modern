@@ -254,7 +254,7 @@ public class WoodMachineRecipes {
                             .wood(GTBlocks.RUBBER_WOOD.asItem())
                             .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
                             .door(GTBlocks.RUBBER_DOOR.asItem(), null)
-                            .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), "rubber_trapdoor")
+                            .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
                             .slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
                             .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
                             .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
@@ -631,9 +631,17 @@ public class WoodMachineRecipes {
                         .outputItems(entry.trapdoor, 2)
                         .duration(200).EUt(4).save(provider);
             } else {
-                VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.trapdoor, 2),
-                        "PPP", "PPP",
-                        'P', entry.planks);
+                if(!hasTrapdoorRecipe) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.trapdoor, 2),
+                            "PPP", "PPP",
+                            'P', entry.planks);
+                }
+
+                ASSEMBLER_RECIPES.recipeBuilder(name + "_trapdoor")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks), 6)
+                        .outputItems(new ItemStack(entry.trapdoor), 2)
+                        .duration(100).EUt(4).save(provider);
             }
         }
 
