@@ -631,7 +631,7 @@ public class WoodMachineRecipes {
                         .outputItems(entry.trapdoor, 2)
                         .duration(200).EUt(4).save(provider);
             } else {
-                if(!hasTrapdoorRecipe) {
+                if (!hasTrapdoorRecipe) {
                     VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.trapdoor, 2),
                             "PPP", "PPP",
                             'P', entry.planks);
