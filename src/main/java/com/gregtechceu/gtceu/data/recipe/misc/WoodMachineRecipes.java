@@ -529,7 +529,7 @@ public class WoodMachineRecipes {
                         "PPP", "PPP", " s ",
                         'P', entry.planks);
 
-                if(!hasSignRecipe) {
+                if (!hasSignRecipe) {
                     VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_stick", new ItemStack(entry.sign, 3),
                             "PPP", "PPP", " S ",
                             'P', entry.planks,
@@ -547,7 +547,7 @@ public class WoodMachineRecipes {
             if (entry.hangingSign != null && entry.strippedLog != null) {
                 final boolean hasHangingSignRecipe = entry.hangingSignRecipeName != null;
                 String recipeNameHanging = hasHangingSignRecipe ? entry.hangingSignRecipeName : name + "_hanging_sign";
-                if(ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                     VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging, new ItemStack(entry.hangingSign),
                             "LLL", "C C", "RSR",
                             'C', Items.CHAIN,
@@ -564,7 +564,8 @@ public class WoodMachineRecipes {
                             .circuitMeta(5)
                             .duration(150).EUt(4).save(provider);
 
-                    VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging + "_steel", new ItemStack(entry.hangingSign, 2),
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging + "_steel",
+                            new ItemStack(entry.hangingSign, 2),
                             "LLL", "C C", "RSR",
                             'C', Items.CHAIN,
                             'R', new UnificationEntry(ring, Steel),
@@ -580,8 +581,9 @@ public class WoodMachineRecipes {
                             .circuitMeta(5)
                             .duration(150).EUt(4).save(provider);
                 } else {
-                    if(!hasHangingSignRecipe) {
-                        VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging, new ItemStack(entry.hangingSign, 6),
+                    if (!hasHangingSignRecipe) {
+                        VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging,
+                                new ItemStack(entry.hangingSign, 6),
                                 "C C", "LLL", "LLL",
                                 'C', Items.CHAIN,
                                 'L', entry.strippedLog);
@@ -899,21 +901,21 @@ public class WoodMachineRecipes {
                     registry.accept(new ResourceLocation(entry.modid, entry.fenceGateRecipeName));
                 }
             }
-            if(entry.trapdoor != null) {
+            if (entry.trapdoor != null) {
                 // hard plank -> trapdoor crafting
-                if(entry.trapdoorRecipeName != null) {
+                if (entry.trapdoorRecipeName != null) {
                     registry.accept(new ResourceLocation(entry.modid, entry.trapdoorRecipeName));
                 }
             }
-            if(entry.sign != null) {
+            if (entry.sign != null) {
                 // hard plank -> sign crafting
-                if(entry.signRecipeName != null) {
+                if (entry.signRecipeName != null) {
                     registry.accept(new ResourceLocation(entry.modid, entry.signRecipeName));
                 }
             }
-            if(entry.hangingSign != null) {
+            if (entry.hangingSign != null) {
                 // hard plank -> hanging sign crafting
-                if(entry.hangingSignRecipeName != null) {
+                if (entry.hangingSignRecipeName != null) {
                     registry.accept(new ResourceLocation(entry.modid, entry.hangingSignRecipeName));
                 }
             }
