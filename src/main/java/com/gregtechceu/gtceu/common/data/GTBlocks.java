@@ -1020,10 +1020,10 @@ public class GTBlocks {
                                                     .hasProperty(RubberLogBlock.NATURAL, true)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
-            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS, TagUtil.createModBlockTag("rubber_logs"))
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN, TagUtil.createModItemTag("rubber_logs"))
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -1073,9 +1073,9 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
             .lang("Stripped Rubber Log")
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
-            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE, TagUtil.createModBlockTag("rubber_logs"))
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN, TagUtil.createModItemTag("rubber_logs"))
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
     public static final BlockEntry<RubberWoodBlock> RUBBER_WOOD = REGISTRATE
@@ -1084,9 +1084,9 @@ public class GTBlocks {
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
-            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE, TagUtil.createModBlockTag("rubber_logs"))
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN, TagUtil.createModItemTag("rubber_logs"))
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1095,9 +1095,9 @@ public class GTBlocks {
             .lang("Stripped Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()),
                     provider.blockTexture(ctx.get())))
-            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE, TagUtil.createModBlockTag("rubber_logs"))
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN, TagUtil.createModItemTag("rubber_logs"))
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
 
