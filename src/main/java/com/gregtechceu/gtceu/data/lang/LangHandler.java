@@ -536,6 +536,7 @@ public class LangHandler {
                 "Severely Steam-Cracked Light Fuel");
         replace(provider, GTMaterials.SeverelySteamCrackedNaphtha.getUnlocalizedName(),
                 "Severely Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.LPG.getUnlocalizedName(), "LPG");
 
         replace(provider, GTMaterials.Zeron100.getUnlocalizedName(), "Zeron-100");
         replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
