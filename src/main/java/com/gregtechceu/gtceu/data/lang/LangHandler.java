@@ -536,6 +536,7 @@ public class LangHandler {
                 "Severely Steam-Cracked Light Fuel");
         replace(provider, GTMaterials.SeverelySteamCrackedNaphtha.getUnlocalizedName(),
                 "Severely Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.LPG.getUnlocalizedName(), "LPG");
 
         replace(provider, GTMaterials.Zeron100.getUnlocalizedName(), "Zeron-100");
         replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
@@ -695,7 +696,8 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.lighter.tooltip", "Can light things on fire");
+        provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
+        provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
         provider.add("behaviour.lighter.uses", "Remaining uses: %d");
         provider.add("behavior.toggle_energy_consumer.tooltip", "Use to toggle mode");
@@ -722,10 +724,10 @@ public class LangHandler {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
         provider.add("enchantment.damage.disjunction", "Disjunction");
-        provider.add("enchantment.gtceu.disjunction.desc",
+        provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
         provider.add("enchantment.hard_hammer", "Hammering");
-        provider.add("enchantment.gtceu.hard_hammer.desc",
+        provider.add("enchantment.gtceu.hard_hammer.description",
                 "Breaks blocks as if they were mined with a GregTech Hammer.");
         provider.add("tile.gtceu.seal.name", "Sealed Block");
         provider.add("tile.gtceu.foam.name", "Foam");

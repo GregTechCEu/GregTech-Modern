@@ -73,6 +73,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.common.Tags;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -1543,6 +1544,12 @@ public class GTBlocks {
                                     prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_all"), "all",
                                     prov.modLoc(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() +
                                             "/" + type.id))));
+                }
+                if (type == StoneBlockType.STONE) {
+                    entry.tag(Tags.Blocks.STONE);
+                }
+                if (type == StoneBlockType.COBBLE) {
+                    entry.tag(Tags.Blocks.COBBLESTONE);
                 }
                 builder.put(type, strata, entry.register());
             }

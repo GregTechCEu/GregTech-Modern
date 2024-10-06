@@ -605,9 +605,9 @@ public class WoodMachineRecipes {
             String recipeName = hasTrapdoorRecipe ? entry.trapdoorRecipeName : name + "_trapdoor";
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.trapdoor),
-                        "bPS", "PdP", "SPb",
+                        "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'b', new UnificationEntry(bolt, Iron),
+                        'B', new UnificationEntry(bolt, Iron),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
@@ -619,9 +619,9 @@ public class WoodMachineRecipes {
                         .duration(200).EUt(4).save(provider);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.trapdoor, 2),
-                        "bPS", "PdP", "SPb",
+                        "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'b', new UnificationEntry(bolt, Steel),
+                        'B', new UnificationEntry(bolt, Steel),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
