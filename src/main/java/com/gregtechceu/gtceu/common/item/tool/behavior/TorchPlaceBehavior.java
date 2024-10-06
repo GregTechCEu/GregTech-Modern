@@ -12,11 +12,15 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
@@ -84,9 +88,6 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
     }
 
     private static boolean checkAndPlaceTorch(UseOnContext context, ItemStack slotStack) {
-        if (context.getLevel().isClientSide)
-            return false;
-
         if (slotStack.isEmpty())
             return false;
 
@@ -114,7 +115,13 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
                     context.getHitResult());
             var blockPlaceContext = new BlockPlaceContext(torchContext);
             InteractionResult placed = slotItemBlock.place(blockPlaceContext);
-            return placed.consumesAction();
+            boolean wasPlaced = placed.consumesAction();
+            if (wasPlaced) {
+                SoundType sound = slotItemBlock.getBlock().getSoundType(slotItemBlock.getBlock().defaultBlockState(), context.getLevel(), pos, context.getPlayer());
+                context.getLevel().playSound(context.getPlayer(), pos, sound.getPlaceSound(), SoundSource.BLOCKS,
+                        (sound.getVolume() + 1.0F) / 2.0F, sound.getPitch() * 0.8F);
+            }
+            return wasPlaced;
         }
         return false;
     }
