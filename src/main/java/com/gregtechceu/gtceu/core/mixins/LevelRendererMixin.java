@@ -3,13 +3,16 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
@@ -29,6 +32,7 @@ import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -53,6 +57,9 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     private @Nullable ClientLevel level;
+
+    @Unique
+    private boolean gtceu$needBloomRecompile;
 
     @Inject(
             method = { "renderLevel" },
@@ -115,6 +122,9 @@ public abstract class LevelRendererMixin {
                                         CallbackInfo ci) {
         GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
         minecraft.getMainRenderTarget().bindWrite(false);
+        if (!GTShaders.BLOOM_BUFFER_BUILDER.building()) {
+            GTShaders.BLOOM_BUFFER_BUILDER.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+        }
     }
 
     @Inject(method = "renderLevel",
@@ -124,8 +134,24 @@ public abstract class LevelRendererMixin {
     private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
                                          boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                          LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
+        if (gtceu$needBloomRecompile) {
+            gtceu$needBloomRecompile = false;
+            BufferBuilder.RenderedBuffer buffer = GTShaders.BLOOM_BUFFER_BUILDER.endOrDiscardIfEmpty();
+            if (buffer != null) {
+                GTShaders.RENDERED_BLOOM_BUFFER = buffer;
+                BloomEffectUtil.uploadBloomBuffer(buffer, GTShaders.BLOOM_BUFFER);
+            }
+        }
         BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
                 poseStack, projectionMatrix, getFrustum(), partialTick, camera.getEntity());
+    }
+
+    @Inject(method = "compileChunks", at = @At("TAIL"))
+    private void gtceu$compileBloomData(Camera camera, CallbackInfo ci,
+                                        @Local List<ChunkRenderDispatcher.RenderChunk> list) {
+        if (!list.isEmpty()) {
+            gtceu$needBloomRecompile = true;
+        }
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

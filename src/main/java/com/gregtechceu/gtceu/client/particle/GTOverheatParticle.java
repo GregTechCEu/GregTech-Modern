@@ -27,6 +27,7 @@ import com.mojang.blaze3d.vertex.*;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -274,7 +275,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         return BloomType.fromValue(heatEffectBloom.useShader ? heatEffectBloom.bloomStyle : -1);
     }
 
-    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
                                   @NotNull EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
@@ -283,7 +284,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         poseStack.pushPose();
         poseStack.translate(posX - context.cameraX(), posY - context.cameraY(), posZ - context.cameraZ());
         for (AABB cuboid : pipeBoxes.toAabbs()) {
-            RenderBufferHelper.renderCubeFace(poseStack, buffer.getBuffer(GTRenderTypes.getBloom()), cuboid, red, green, blue, alpha, true);
+            RenderBufferHelper.renderCubeFace(poseStack, buffer, cuboid, red, green, blue, alpha, true);
         }
         poseStack.popPose();
     }
@@ -292,14 +293,16 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void preDraw(@NotNull MultiBufferSource buffer) {
+        public void preDraw(@NotNull BufferBuilder buffer) {
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void postDraw(@NotNull MultiBufferSource buffer) {
+        public void postDraw(@NotNull BufferBuilder buffer) {
+            Tesselator.getInstance().end();
             RenderSystem.disableBlend();
         }
     };

@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -152,7 +154,7 @@ public class GTParticleManager {
             if (particles.isEmpty()) continue;
 
             boolean initialized = false;
-            MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
             for (GTParticle particle : particles) {
                 if (particle.shouldRender(context)) {
                     try {

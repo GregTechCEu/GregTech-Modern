@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.shader;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -8,9 +7,8 @@ import com.gregtechceu.gtceu.client.shader.post.BloomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexBuffer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,14 +26,9 @@ public class GTShaders {
     public static BloomType BLOOM_TYPE;
     public static RenderTarget BLOOM_TARGET;
 
-    public static MultiBufferSource.BufferSource BLOOM_BUFFER = MultiBufferSource.immediateWithBuffers(ImmutableMap.of(
-            GTRenderTypes.getLightRing(), new BufferBuilder(GTRenderTypes.getLightRing().bufferSize()),
-            GTRenderTypes.getBloom(), new BufferBuilder(GTRenderTypes.getBloom().bufferSize())
-            ), new BufferBuilder(2097152));
-
-    public static VertexConsumer getBloomBuffer() {
-        return BLOOM_BUFFER.getBuffer(GTRenderTypes.getBloom());
-    }
+    public static VertexBuffer BLOOM_BUFFER = new VertexBuffer(VertexBuffer.Usage.STATIC);
+    public static BufferBuilder BLOOM_BUFFER_BUILDER = new BufferBuilder(GTRenderTypes.getBloom().bufferSize());
+    public static BufferBuilder.RenderedBuffer RENDERED_BLOOM_BUFFER = null;
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
         if (!allowedShader()) {

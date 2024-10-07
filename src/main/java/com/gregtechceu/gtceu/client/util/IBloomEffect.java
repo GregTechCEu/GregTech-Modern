@@ -26,12 +26,12 @@ public interface IBloomEffect {
      * @param context render context
      */
     @OnlyIn(Dist.CLIENT)
-    void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context);
+    void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context);
 
     /**
      * @param context render context
      * @return if this effect should be rendered; returning {@code false} skips
-     *         {@link #renderBloomEffect(PoseStack, MultiBufferSource, EffectRenderContext)} call.
+     *         {@link #renderBloomEffect(PoseStack, BufferBuilder, EffectRenderContext)} call.
      */
     @OnlyIn(Dist.CLIENT)
     default boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {

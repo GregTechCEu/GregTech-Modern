@@ -15,10 +15,10 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -53,7 +53,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
     @OnlyIn(Dist.CLIENT)
     private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
-                                 VertexConsumer buffer) {
+                                 VertexConsumer buffer, @NotNull EffectRenderContext context) {
         var color = machine.getColor();
         if (color == -1) return;
         int ringColor = ColorUtils.blendColor(color, -1, Eases.EaseQuadIn.getInterpolation(
@@ -61,6 +61,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         var front = machine.getFrontFacing();
         var upwards = machine.getUpwardsFacing();
         var flipped = machine.isFlipped();
+        BlockPos pos = machine.getPos();
         Direction relativeBack = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
         Direction.Axis axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
         float a = ColorUtils.alpha(ringColor);
@@ -68,9 +69,9 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
         RenderBufferHelper.renderRing(stack, buffer,
-                relativeBack.getStepX() * 7 + 0.5F,
-                relativeBack.getStepY() * 7 + 0.5F,
-                relativeBack.getStepZ() * 7 + 0.5F,
+                 pos.getX() /*- (float) context.cameraX()*/ + relativeBack.getStepX() * 7 + 0.5F,
+                 pos.getY() /*- (float) context.cameraY()*/ + relativeBack.getStepY() * 7 + 0.5F,
+                 pos.getZ() /*- (float) context.cameraZ()*/ + relativeBack.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
                 r, g, b, a, axis);
     }
@@ -98,9 +99,13 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
         private final FusionReactorMachine machine;
 
+        private static final BufferBuilder lightRingBuffer = new BufferBuilder(GTRenderTypes.getLightRing().bufferSize());
+
         @Override
-        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context) {
-            FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, buffer.getBuffer(GTRenderTypes.getLightRing()));
+        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
+            lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
+            FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer, context);
+            BufferUploader.drawWithShader(lightRingBuffer.end());
         }
 
         @Override
@@ -115,7 +120,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         private static final FusionBloomSetup INSTANCE = new FusionBloomSetup();
 
         @Override
-        public void preDraw(@NotNull MultiBufferSource buffer) {
+        public void preDraw(@NotNull BufferBuilder buffer) {
             BloomEffect.strength = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.strength;
             BloomEffect.baseBrightness = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.baseBrightness;
             BloomEffect.highBrightnessThreshold = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.highBrightnessThreshold;
@@ -126,7 +131,8 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         }
 
         @Override
-        public void postDraw(@NotNull MultiBufferSource buffer) {
+        public void postDraw(@NotNull BufferBuilder buffer) {
+
         }
     }
 }

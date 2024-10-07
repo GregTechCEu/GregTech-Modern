@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.PostPass;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -72,7 +72,7 @@ public class BloomEffectUtil {
                 new IBloomEffect() {
 
                     @Override
-                    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context) {
+                    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
                         render.renderBloomEffect(poseStack, buffer, context);
                     }
 
@@ -224,6 +224,9 @@ public class BloomEffectUtil {
         try {
             preDraw();
 
+            //GTShaders.BLOOM_TARGET.setClearColor(1, 0, 0 ,1);
+            GTShaders.BLOOM_TARGET.bindWrite(false);
+
             EffectRenderContext context = EffectRenderContext.getInstance()
                     .update(entity, camX, camY, camZ, frustum, partialTicks);
 
@@ -234,13 +237,14 @@ public class BloomEffectUtil {
 
                 if (!BLOOM_RENDERS.isEmpty()) {
                     for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
-                        draw(poseStack, GTShaders.BLOOM_BUFFER, context, list);
+                        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                        draw(poseStack, buffer, context, list);
                     }
                 }
                 postDraw();
                 RenderSystem.depthMask(false);
 
-                render(partialTicks, poseStack, projectionMatrix);
+                render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
                 return;
             }
 
@@ -256,14 +260,14 @@ public class BloomEffectUtil {
             if (!BLOOM_RENDERS.isEmpty()) {
                 for (var e : BLOOM_RENDERS.entrySet()) {
                     List<BloomRenderTicket> list = e.getValue();
-                    draw(poseStack, GTShaders.BLOOM_BUFFER, context, list);
+                    BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                    draw(poseStack, buffer, context, list);
                 }
-                Tesselator.getInstance().end();
             }
             RenderSystem.depthMask(false);
 
             isDrawingBlockBloom.set(true);
-            render(partialTicks, poseStack, projectionMatrix);
+            render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
             isDrawingBlockBloom.set(false);
 
             postDraw();
@@ -283,7 +287,7 @@ public class BloomEffectUtil {
     }
 
     private static void draw(@NotNull PoseStack poseStack,
-                             @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context,
+                             @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context,
                              @NotNull List<BloomRenderTicket> tickets) {
         boolean initialized = false;
         @Nullable
@@ -320,6 +324,14 @@ public class BloomEffectUtil {
         }
     }
 
+    public static void uploadBloomBuffer(BufferBuilder.RenderedBuffer builder, VertexBuffer buffer) {
+        if (!buffer.isInvalid()) {
+            buffer.bind();
+            buffer.upload(builder);
+            VertexBuffer.unbind();
+        }
+    }
+
     private static final String UNREAL_COMPOSITE_SHADER_NAME = "gtceu:unreal_composite";
     private static final String UNITY_COMPOSITE_SHADER_NAME = "gtceu:unity_composite";
     private static final String SEPERABLE_BLUR_SHADER_NAME = "gtceu:seperable_blur";
@@ -329,10 +341,11 @@ public class BloomEffectUtil {
     private static final String BLOOM_THRESHOLD_DOWN_UNIFORM = "BloomThresholdDown";
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
-    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix) {
+    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix,
+                               double camX, double camY, double camZ) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             // Forcefully insert config values to shader
             List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
             for (PostPass pass : passes) {
@@ -358,30 +371,20 @@ public class BloomEffectUtil {
                 }
             }
 
-            GTShaders.BLOOM_TARGET.setClearColor(1, 0, 0 ,1);
-            GTShaders.BLOOM_TARGET.bindWrite(false);
-
-            ShaderInstance currentShader = RenderSystem.getShader();
-            if (currentShader == null) {
-                GTShaders.BLOOM_CHAIN.process(partialTicks);
-                RenderSystem.disableBlend();
-                RenderSystem.defaultBlendFunc();
-                return;
+            if (GTShaders.RENDERED_BLOOM_BUFFER != null && !GTShaders.BLOOM_BUFFER.isInvalid()) {
+                GTShaders.BLOOM_BUFFER.bind();
+                poseStack.pushPose();
+                poseStack.translate(-camX, -camY, -camZ);
+                GTShaders.BLOOM_BUFFER.drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+                poseStack.popPose();
             }
-
-            if (currentShader.MODEL_VIEW_MATRIX != null) {
-                currentShader.MODEL_VIEW_MATRIX.set(poseStack.last().pose().invert());
-            }
-            if (currentShader.PROJECTION_MATRIX != null) {
-                currentShader.PROJECTION_MATRIX.set(projectionMatrix);
-            }
-
-            GTShaders.BLOOM_BUFFER.endBatch();
-            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.BLOOM_TARGET.width, GTShaders.BLOOM_TARGET.height);
+            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.BLOOM_TARGET.width, GTShaders.BLOOM_TARGET.height, false);
 
             GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
+            VertexBuffer.unbind();
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         }
     }
 

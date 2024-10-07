@@ -12,12 +12,12 @@ public interface IRenderSetup {
      *
      * @param buffer Buffer builder
      */
-    void preDraw(@NotNull MultiBufferSource buffer);
+    void preDraw(@NotNull BufferBuilder buffer);
 
     /**
      * Run any post render gl code here.
      *
      * @param buffer Buffer builder
      */
-    void postDraw(@NotNull MultiBufferSource buffer);
+    void postDraw(@NotNull BufferBuilder buffer);
 }
