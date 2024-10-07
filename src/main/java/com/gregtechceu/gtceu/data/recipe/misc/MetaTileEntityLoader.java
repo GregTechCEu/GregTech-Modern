@@ -555,10 +555,19 @@ public class MetaTileEntityLoader {
                 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
                 'F', Items.FLINT_AND_STEEL);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', CustomTags.LV_CIRCUITS,
-                'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        if (!ConfigHolder.INSTANCE.recipes.hardMultiRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
+                    GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
+                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C',
+                    CustomTags.LV_CIRCUITS,
+                    'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
+                    GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
+                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(), 'C',
+                    CustomTags.LV_CIRCUITS,
+                    'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        }
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMachines.VACUUM_FREEZER.asStack(),
                 "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV,
                 'C', CustomTags.EV_CIRCUITS, 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
@@ -743,8 +752,8 @@ public class MetaTileEntityLoader {
                 CABLE, 'C', COIL_HEATING_DOUBLE);
         registerMachineRecipe(provider, GTMachines.ASSEMBLER, "ACA", "VMV", "WCW", 'M', HULL, 'V', CONVEYOR, 'A',
                 ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.BENDER, "PwP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.BENDER, "PBP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
+                CIRCUIT, 'W', CABLE, 'B', PLATE);
         registerMachineRecipe(provider, GTMachines.CANNER, "WPW", "CMC", "GGG", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W',
                 CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.COMPRESSOR, " C ", "PMP", "WCW", 'M', HULL, 'P', PISTON, 'C',

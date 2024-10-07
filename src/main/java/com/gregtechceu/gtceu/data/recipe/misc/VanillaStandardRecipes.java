@@ -578,16 +578,12 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(4).duration(40).circuitMeta(7)
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(Tags.Items.CHESTS_WOODEN).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
-                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
-                .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
-                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
-                .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("barrel")
+                .inputItems(ItemTags.PLANKS, 7)
+                .outputItems(new ItemStack(Blocks.BARREL))
+                .circuitMeta(24)
+                .duration(100).EUt(4)
+                .save(provider);
     }
 
     /**
@@ -1228,12 +1224,21 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.CANDLE, 2))
                 .duration(20).EUt(1).save(provider);
 
-        // I realise this recipe may genuinely NEVER be used by someone, so feel free to remove them.
-        // At the same time, they don't really change anything by being there? Idk
         FORGE_HAMMER_RECIPES.recipeBuilder("disc_fragment_5")
                 .inputItems(new ItemStack(Items.MUSIC_DISC_5))
                 .outputItems(new ItemStack(Items.DISC_FRAGMENT_5, 9))
                 .duration(100).EUt(6).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
+                .inputItems(Tags.Items.CHESTS_WOODEN).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
+                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
+                .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
+                .inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
+                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
+                .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
     }
 
     /**

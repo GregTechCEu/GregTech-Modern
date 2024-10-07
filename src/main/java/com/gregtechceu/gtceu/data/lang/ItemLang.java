@@ -178,7 +178,7 @@ public class ItemLang {
         provider.add("item.gtceu.multilayer_fiber_reinforced_printed_circuit_board.tooltip",
                 "§7An Elite Circuit Board");
         provider.add("item.gtceu.wetware_printed_circuit_board.tooltip", "§7The Board that keeps life");
-        multilineLang(provider, "item.gtceu.vacuum_tube.tooltip", "§7Technically a Diode\n§cULV-tier");
+        multilineLang(provider, "item.gtceu.vacuum_tube.tooltip", "§7Technically a Diode\n§cULV-Tier");
         provider.add("item.gtceu.diode.tooltip", "§7Basic Electronic Component");
         provider.add("item.gtceu.resistor.tooltip", "§7Basic Electronic Component");
         provider.add("item.gtceu.transistor.tooltip", "§7Basic Electronic Component");
@@ -276,7 +276,7 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.wetware_processor.tooltip",
                 "§7You have a feeling like it's watching you\n§4LuV-Tier Circuit");
         multilineLang(provider, "item.gtceu.wetware_processor_assembly.tooltip",
-                "§7Can run Minecraft\n§4ZPM-tier Circuit");
+                "§7Can run Minecraft\n§4ZPM-Tier Circuit");
         multilineLang(provider, "item.gtceu.wetware_processor_computer.tooltip",
                 "§7Ultimate fusion of Flesh and Machine\n§4UV-Tier Circuit");
         multilineLang(provider, "item.gtceu.wetware_processor_mainframe.tooltip",

@@ -35,5 +35,5 @@ jobs:
         with:
           mode: minimum
           count: 1
-          labels: 'type: feature, type: bug, type: refactor, type: translation, ignore changelog'
+          labels: 'type: feature, type: bugfix, type: refactor, type: translation, ignore changelog'
           exit_type: failure

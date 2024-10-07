@@ -280,6 +280,7 @@ public class WoodMachineRecipes {
                             .sign(GTBlocks.TREATED_WOOD_SIGN.asItem(), null)
                             .hangingSign(GTBlocks.TREATED_WOOD_HANGING_SIGN.asItem(), null)
                             .material(TreatedWood)
+                            .generateLogToPlankRecipe(false)
                             .registerUnificationInfo(false, true, true, true, true, true, true, true)
                             .build());
         }
@@ -492,9 +493,9 @@ public class WoodMachineRecipes {
             String recipeName = hasSignRecipe ? entry.signRecipeName : name + "_sign";
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.sign),
-                        "LLL", "rPr", "sSd",
+                        "LLL", "RPR", "sSd",
                         'P', entry.planks,
-                        'r', new UnificationEntry(screw, Iron),
+                        'R', new UnificationEntry(screw, Iron),
                         'L', entry.slab,
                         'S', entry.getStick());
 
@@ -508,9 +509,9 @@ public class WoodMachineRecipes {
                         .duration(200).EUt(4).save(provider);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.sign, 2),
-                        "LLL", "rPr", "sSd",
+                        "LLL", "RPR", "sSd",
                         'P', entry.planks,
-                        'r', new UnificationEntry(screw, Steel),
+                        'R', new UnificationEntry(screw, Steel),
                         'L', entry.slab,
                         'S', entry.getStick());
 
@@ -549,9 +550,9 @@ public class WoodMachineRecipes {
             String recipeName = hasTrapdoorRecipe ? entry.trapdoorRecipeName : name + "_trapdoor";
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.trapdoor),
-                        "bPS", "PdP", "SPb",
+                        "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'b', new UnificationEntry(bolt, Iron),
+                        'B', new UnificationEntry(bolt, Iron),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
@@ -563,9 +564,9 @@ public class WoodMachineRecipes {
                         .duration(200).EUt(4).save(provider);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.trapdoor, 2),
-                        "bPS", "PdP", "SPb",
+                        "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'b', new UnificationEntry(bolt, Steel),
+                        'B', new UnificationEntry(bolt, Steel),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
@@ -643,7 +644,7 @@ public class WoodMachineRecipes {
             ASSEMBLER_RECIPES.recipeBuilder(name + "_fence")
                     .inputItems(entry.planks)
                     .outputItems(entry.fence)
-                    .circuitMeta(1)
+                    .circuitMeta(13)
                     .duration(100).EUt(4)
                     .save(provider);
         }

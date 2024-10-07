@@ -86,6 +86,14 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_JAVD);
     }
 
+    public static boolean isFTBTeamsLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_FTBTEAMS);
+    }
+
+    public static boolean isArgonautsLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_ARGONAUTS);
+    }
+
     @Deprecated(forRemoval = true, since = "1.0.21")
     public static boolean isHighTier() {
         return GTCEuAPI.isHighTier();

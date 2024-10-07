@@ -95,10 +95,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
-                .addMachineModeLine(getRecipeType())
+                .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
                 .addParallelsLine(numParallels)
                 .addWorkingStatusLine()
-                .addProgressLine(recipeLogic.getProgressPercent());
+                .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
+                        recipeLogic.getProgressPercent())
+                .addOutputLines(recipeLogic.getLastRecipe(), this.getChanceTier());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
     }
@@ -110,7 +112,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                         .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
-                        .setMaxWidthLimit(150)
+                        .setMaxWidthLimit(200)
                         .clickHandler(this::handleDisplayClick)));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;

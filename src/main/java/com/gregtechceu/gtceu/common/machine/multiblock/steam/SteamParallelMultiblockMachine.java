@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -32,6 +33,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,17 +75,24 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
+    @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
                                           @NotNull OCResult result) {
-        int duration = recipe.duration;
-        var eut = RecipeHelper.getInputEUt(recipe);
-        var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false);
+        if (machine instanceof SteamParallelMultiblockMachine) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
+                return null;
+            }
+            int duration = recipe.duration;
+            var eut = RecipeHelper.getInputEUt(recipe);
+            var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false);
 
-        // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
-        // also set the duration to just 1.5x the original, instead of fully multiplied
-        result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(),
-                params.getOcAmount());
-        return recipe;
+            // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
+            // also set the duration to just 1.5x the original, instead of fully multiplied
+            result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(),
+                    params.getOcAmount());
+            return recipe;
+        }
+        return null;
     }
 
     @Override
@@ -105,9 +114,13 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
-                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
                 textList.add(Component.translatable("gtceu.multiblock.parallel", MAX_PARALLELS));
-                textList.add(Component.translatable("gtceu.multiblock.progress", currentProgress));
+                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
+                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
+                double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
+                textList.add(
+                        Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
+                                String.format("%.2f", (float) maxInSec), currentProgress));
             } else {
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }

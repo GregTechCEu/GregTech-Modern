@@ -25,9 +25,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -36,10 +34,11 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import static net.minecraft.world.level.block.AbstractCandleBlock.LIT;
 
 public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddInformation {
 
@@ -88,34 +87,93 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         // ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
         Player player = context.getPlayer();
-        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching()) && consumeFuel(player, itemStack)) {
-            player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                    GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-            BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-            Block block = state.getBlock();
-            if (block instanceof TntBlock tnt) {
-                tnt.onCaughtFire(null, context.getLevel(), context.getClickedPos(), null, player);
-                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(),
+        BlockPos pos = context.getClickedPos();
+        BlockState state = context.getLevel().getBlockState(pos);
+        Block block = state.getBlock();
+        BlockPos offset = pos.offset(context.getClickedFace().getNormal());
+
+        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching())) {
+            if (block instanceof TntBlock tnt && consumeFuel(player, itemStack)) {
+                tnt.onCaughtFire(null, context.getLevel(), pos, null, player);
+                context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
+                        1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.SUCCESS;
             }
-            if (block instanceof GTExplosiveBlock explosive) {
-                explosive.explode(context.getLevel(), context.getClickedPos(), player);
-                context.getLevel().setBlock(context.getClickedPos(), Blocks.AIR.defaultBlockState(),
+            if (block instanceof GTExplosiveBlock explosive && consumeFuel(player, itemStack)) {
+                explosive.explode(context.getLevel(), pos, player);
+                context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
                         Block.UPDATE_ALL_IMMEDIATE);
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
+                        1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
                 return InteractionResult.SUCCESS;
+            }
+            if (block instanceof CandleBlock) {
+                if (CandleBlock.canLight(state) && !CandleBlock.isLit(state) && consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
+                            SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
+            }
+            if (block instanceof CandleCakeBlock) {
+                if (CandleCakeBlock.canLight(state) && !CandleCakeBlock.isLit(state) &&
+                        consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
+                            SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
+            }
+            if (block instanceof CampfireBlock) {
+                if (CampfireBlock.canLight(state) && !CampfireBlock.isLitCampfire(state) &&
+                        consumeFuel(player, itemStack)) {
+                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
+                            SoundSource.PLAYERS, 1.0F,
+                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                    return InteractionResult.SUCCESS;
+                } else return InteractionResult.PASS;
+            }
+            if (block instanceof SoulSandBlock && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
+                context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+                if (!context.getLevel().isClientSide) {
+                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
+                }
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
+                        1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                return InteractionResult.PASS;
+            }
+            if (block == Blocks.SOUL_SOIL && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
+                context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+                if (!context.getLevel().isClientSide) {
+                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
+                }
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
+                        1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                return InteractionResult.PASS;
             }
 
-            BlockPos offset = context.getClickedPos().offset(context.getClickedFace().getNormal());
-            if (context.getLevel().isEmptyBlock(offset)) {
+            if (context.getLevel().isEmptyBlock(offset) &&
+                    BaseFireBlock.canBePlacedAt(context.getLevel(), offset, context.getHorizontalDirection()) &&
+                    block != Blocks.FIRE && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
                 context.getLevel().setBlock(offset, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
                 if (!context.getLevel().isClientSide) {
                     CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
                 }
+                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
+                        1.0F,
+                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
+                return InteractionResult.SUCCESS;
             }
-            return InteractionResult.PASS;
         }
-
         return InteractionResult.FAIL;
     }
 
@@ -216,8 +274,9 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     @Override
     public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level,
                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        tooltipComponents.add(
-                Component.translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip"));
+        tooltipComponents.add(Component
+                .translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip.description"));
+        tooltipComponents.add(Component.translatable("behaviour.lighter.tooltip.usage"));
         if (hasMultipleUses && !usesFluid) {
             tooltipComponents.add(Component.translatable("behaviour.lighter.uses", getUsesLeft(stack)));
         }

@@ -125,6 +125,9 @@ public class ConfigHolder {
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
         @Configurable
+        @Configurable.Comment({ "Whether to nerf machine controller recipes.", "Default: false" })
+        public boolean hardMultiRecipes = false; // default false
+        @Configurable
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: true" })
@@ -388,6 +391,13 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50" })
         public int ldFluidPipeMinDistance = 50;
+
+        @Configurable
+        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
+        public boolean machineOwnerGUI = true;
+        @Configurable
+        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
+        public boolean machineOwnerBreak = true;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
