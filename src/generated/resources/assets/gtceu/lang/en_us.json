@@ -59,10 +59,17 @@
   "behaviour.boor.by": "by %s",
   "behaviour.hammer": "Turns on and off Muffling for Machines (by hitting them)",
   "behaviour.hoe": "Can till dirt",
+<<<<<<< Updated upstream
   "behaviour.lighter.fluid.tooltip": "Can light things on fire with Butane or Propane",
   "behaviour.lighter.tooltip.description": "Can light things on fire",
   "behaviour.lighter.tooltip.usage": "Shift-right click to open/close",
   "behaviour.lighter.uses": "Remaining uses: %d",
+=======
+  "behaviour.lighter.fluid.tooltip": "§7Can light things on fire with Butane or Propane",
+  "behaviour.lighter.tooltip.description": "§7Can light things on fire",
+  "behaviour.lighter.tooltip.usage": "§7Shift-right click to open/close",
+  "behaviour.lighter.uses": "§7Remaining uses: %d",
+>>>>>>> Stashed changes
   "behaviour.paintspray.black.tooltip": "Can paint things in Black",
   "behaviour.paintspray.blue.tooltip": "Can paint things in Blue",
   "behaviour.paintspray.brown.tooltip": "Can paint things in Brown",
@@ -78,7 +85,7 @@
   "behaviour.paintspray.purple.tooltip": "Can paint things in Purple",
   "behaviour.paintspray.red.tooltip": "Can paint things in Red",
   "behaviour.paintspray.solvent.tooltip": "Can remove color from things",
-  "behaviour.paintspray.uses": "Remaining Uses: %d",
+  "behaviour.paintspray.uses": "§7Remaining Uses: %d",
   "behaviour.paintspray.white.tooltip": "Can paint things in White",
   "behaviour.paintspray.yellow.tooltip": "Can paint things in Yellow",
   "behaviour.prospecting": "Usable for Prospecting",

@@ -345,5 +345,7 @@ public class ItemLang {
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
         provider.add("item.gtceu.basic_tape.tooltip", "N§7ot strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
         multilineLang(provider,"item.gtceu.sus_record.desc", "§7Leonz - Among Us Drip\nsussy!");
+        provider.add("item.gtceu.iron_minecart_wheels.tooltip", "§To get things rolling");
+        provider.add("item.gtceu.steel_minecart_wheels.tooltip", "§To get things rolling");
     }
 }
