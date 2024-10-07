@@ -224,6 +224,7 @@ public class BloomEffectUtil {
             EffectRenderContext context = EffectRenderContext.getInstance()
                     .update(entity, camX, camY, camZ, frustum, partialTicks);
 
+            GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
             GTRenderTypes.BLOOM_TARGET.setupRenderState();
 
             if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
@@ -330,9 +331,7 @@ public class BloomEffectUtil {
     private static void render(float partialTicks) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(
-                    GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                    GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             // Forcefully insert config values to shader
             List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
             for (PostPass pass : passes) {
@@ -358,9 +357,11 @@ public class BloomEffectUtil {
                 }
             }
 
-            GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-            GTShaders.BLOOM_TARGET.bindWrite(false);
-            BufferUploader.draw(GTShaders.BLOOM_BUFFER.end());
+            //GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+            //GTShaders.BLOOM_TARGET.bindWrite(false);
+            RenderSystem.setShaderColor(1, 0, 1, 1);
+            BufferUploader.drawWithShader(GTShaders.BLOOM_BUFFER.end());
+            RenderSystem.setShaderColor(1, 1, 1, 1);
 
             GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();

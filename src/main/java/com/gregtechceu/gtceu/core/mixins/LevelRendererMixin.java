@@ -109,6 +109,14 @@ public abstract class LevelRendererMixin {
 
     @Shadow public abstract Frustum getFrustum();
 
+    @Inject(method = "renderLevel", at = @At("HEAD"))
+    private void gtceu$startBloomBuffer(PoseStack poseStack, float partialTick, long finishNanoTime,
+                                        boolean renderBlockOutline, Camera camera,
+                                        GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix,
+                                        CallbackInfo ci) {
+        GTShaders.BLOOM_BUFFER.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+    }
+
     @Inject(method = "renderLevel",
             at = @At(
                     value = "INVOKE",

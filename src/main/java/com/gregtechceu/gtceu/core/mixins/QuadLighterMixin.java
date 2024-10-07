@@ -18,7 +18,7 @@ public class QuadLighterMixin {
                             target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V",
                             remap = true)
     )
-    private void gtceu$swapEmissiveBuffer(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
+    private void gtceu$renderToEmissiveBuffer(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
                                           float[] colorMuls, float red, float green, float blue,
                                           int[] combinedLights, int combinedOverlay, boolean mulColor,
                                           Operation<Void> original) {

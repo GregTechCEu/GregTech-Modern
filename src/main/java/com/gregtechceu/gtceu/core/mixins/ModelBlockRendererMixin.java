@@ -17,10 +17,10 @@ public class ModelBlockRendererMixin {
                    at = @At(value = "INVOKE",
                             target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V")
     )
-    private void gtceu$swapEmissiveBuffer(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
-                                          float[] colorMuls, float red, float green, float blue,
-                                          int[] combinedLights, int combinedOverlay, boolean mulColor,
-                                          Operation<Void> original) {
+    private void gtceu$renderToEmissiveBuffer(VertexConsumer instance, PoseStack.Pose poseEntry, BakedQuad quad,
+                                              float[] colorMuls, float red, float green, float blue,
+                                              int[] combinedLights, int combinedOverlay, boolean mulColor,
+                                              Operation<Void> original) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (GTShaders.allowedShader() && (!quad.isShade() || GTMetadataSection.hasBloom(quad.getSprite()))) {
             original.call(GTShaders.BLOOM_BUFFER, poseEntry, quad,
