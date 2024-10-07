@@ -16,7 +16,9 @@ import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.PostPass;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -26,6 +28,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -69,7 +72,7 @@ public class BloomEffectUtil {
                 new IBloomEffect() {
 
                     @Override
-                    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
+                    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context) {
                         render.renderBloomEffect(poseStack, buffer, context);
                     }
 
@@ -211,7 +214,7 @@ public class BloomEffectUtil {
     public static final AtomicBoolean isDrawingBlockBloom = new AtomicBoolean(false);
 
     public static void renderBloom(double camX, double camY, double camZ,
-                                   PoseStack poseStack,
+                                   PoseStack poseStack, Matrix4f projectionMatrix,
                                    Frustum frustum,
                                    float partialTicks,
                                    @NotNull Entity entity) {
@@ -224,7 +227,6 @@ public class BloomEffectUtil {
             EffectRenderContext context = EffectRenderContext.getInstance()
                     .update(entity, camX, camY, camZ, frustum, partialTicks);
 
-            GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
             GTRenderTypes.BLOOM_TARGET.setupRenderState();
 
             if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
@@ -238,7 +240,7 @@ public class BloomEffectUtil {
                 postDraw();
                 RenderSystem.depthMask(false);
 
-                render(partialTicks);
+                render(partialTicks, poseStack, projectionMatrix);
                 return;
             }
 
@@ -254,7 +256,6 @@ public class BloomEffectUtil {
             if (!BLOOM_RENDERS.isEmpty()) {
                 for (var e : BLOOM_RENDERS.entrySet()) {
                     List<BloomRenderTicket> list = e.getValue();
-
                     draw(poseStack, GTShaders.BLOOM_BUFFER, context, list);
                 }
                 Tesselator.getInstance().end();
@@ -262,7 +263,7 @@ public class BloomEffectUtil {
             RenderSystem.depthMask(false);
 
             isDrawingBlockBloom.set(true);
-            render(partialTicks);
+            render(partialTicks, poseStack, projectionMatrix);
             isDrawingBlockBloom.set(false);
 
             postDraw();
@@ -282,7 +283,7 @@ public class BloomEffectUtil {
     }
 
     private static void draw(@NotNull PoseStack poseStack,
-                             @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context,
+                             @NotNull MultiBufferSource buffer, @NotNull EffectRenderContext context,
                              @NotNull List<BloomRenderTicket> tickets) {
         boolean initialized = false;
         @Nullable
@@ -328,7 +329,7 @@ public class BloomEffectUtil {
     private static final String BLOOM_THRESHOLD_DOWN_UNIFORM = "BloomThresholdDown";
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
-    private static void render(float partialTicks) {
+    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -357,16 +358,30 @@ public class BloomEffectUtil {
                 }
             }
 
-            //GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-            //GTShaders.BLOOM_TARGET.bindWrite(false);
-            RenderSystem.setShaderColor(1, 0, 1, 1);
-            BufferUploader.drawWithShader(GTShaders.BLOOM_BUFFER.end());
-            RenderSystem.setShaderColor(1, 1, 1, 1);
+            GTShaders.BLOOM_TARGET.setClearColor(1, 0, 0 ,1);
+            GTShaders.BLOOM_TARGET.bindWrite(false);
+
+            ShaderInstance currentShader = RenderSystem.getShader();
+            if (currentShader == null) {
+                GTShaders.BLOOM_CHAIN.process(partialTicks);
+                RenderSystem.disableBlend();
+                RenderSystem.defaultBlendFunc();
+                return;
+            }
+
+            if (currentShader.MODEL_VIEW_MATRIX != null) {
+                currentShader.MODEL_VIEW_MATRIX.set(poseStack.last().pose().invert());
+            }
+            if (currentShader.PROJECTION_MATRIX != null) {
+                currentShader.PROJECTION_MATRIX.set(projectionMatrix);
+            }
+
+            GTShaders.BLOOM_BUFFER.endBatch();
+            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.BLOOM_TARGET.width, GTShaders.BLOOM_TARGET.height);
 
             GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
         }
     }
 

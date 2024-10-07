@@ -23,7 +23,7 @@ public class ModelBlockRendererMixin {
                                               Operation<Void> original) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (GTShaders.allowedShader() && (!quad.isShade() || GTMetadataSection.hasBloom(quad.getSprite()))) {
-            original.call(GTShaders.BLOOM_BUFFER, poseEntry, quad,
+            original.call(GTShaders.getBloomBuffer(), poseEntry, quad,
                     colorMuls, red, green, blue,
                     combinedLights, combinedOverlay, mulColor);
         }

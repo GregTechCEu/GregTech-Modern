@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
@@ -273,7 +274,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         return BloomType.fromValue(heatEffectBloom.useShader ? heatEffectBloom.bloomStyle : -1);
     }
 
-    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+    public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
                                   @NotNull EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
@@ -282,7 +283,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         poseStack.pushPose();
         poseStack.translate(posX - context.cameraX(), posY - context.cameraY(), posZ - context.cameraZ());
         for (AABB cuboid : pipeBoxes.toAabbs()) {
-            RenderBufferHelper.renderCubeFace(poseStack, buffer, cuboid, red, green, blue, alpha, true);
+            RenderBufferHelper.renderCubeFace(poseStack, buffer.getBuffer(GTRenderTypes.getBloom()), cuboid, red, green, blue, alpha, true);
         }
         poseStack.popPose();
     }
@@ -291,16 +292,14 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void preDraw(@NotNull BufferBuilder buffer) {
+        public void preDraw(@NotNull MultiBufferSource buffer) {
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.enableBlend();
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void postDraw(@NotNull BufferBuilder buffer) {
-            Tesselator.getInstance().end();
+        public void postDraw(@NotNull MultiBufferSource buffer) {
             RenderSystem.disableBlend();
         }
     };

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.particle;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -97,15 +98,15 @@ public abstract class GTParticle {
 
     /**
      * Render the particle. If this particle has non-null {@link #getRenderSetup()} associated, this method will be
-     * called between a {@link IRenderSetup#preDraw(BufferBuilder)} call and a
-     * {@link IRenderSetup#postDraw(BufferBuilder)} call.
+     * called between a {@link IRenderSetup#preDraw(MultiBufferSource)} call and a
+     * {@link IRenderSetup#postDraw(MultiBufferSource)} call.
      *
      * @param poseStack
      * @param buffer    buffer builder
      * @param context   render context
      */
     @OnlyIn(Dist.CLIENT)
-    public void renderParticle(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+    public void renderParticle(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
                                @NotNull EffectRenderContext context) {}
 
     /**

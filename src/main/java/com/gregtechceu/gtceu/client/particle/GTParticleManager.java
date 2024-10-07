@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -20,9 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -153,7 +152,7 @@ public class GTParticleManager {
             if (particles.isEmpty()) continue;
 
             boolean initialized = false;
-            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+            MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
             for (GTParticle particle : particles) {
                 if (particle.shouldRender(context)) {
                     try {

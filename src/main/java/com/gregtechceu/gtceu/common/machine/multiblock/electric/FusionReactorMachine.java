@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
@@ -68,6 +69,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
+
+    @Getter @Setter
+    protected boolean registeredBloomTicket;
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);

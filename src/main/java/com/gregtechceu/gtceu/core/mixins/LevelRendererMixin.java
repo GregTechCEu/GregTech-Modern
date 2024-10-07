@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.mojang.blaze3d.vertex.*;
@@ -114,7 +113,8 @@ public abstract class LevelRendererMixin {
                                         boolean renderBlockOutline, Camera camera,
                                         GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix,
                                         CallbackInfo ci) {
-        GTShaders.BLOOM_BUFFER.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+        GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+        minecraft.getMainRenderTarget().bindWrite(false);
     }
 
     @Inject(method = "renderLevel",
@@ -125,7 +125,7 @@ public abstract class LevelRendererMixin {
                                          boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                          LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
         BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
-                poseStack, getFrustum(), partialTick, camera.getEntity());
+                poseStack, projectionMatrix, getFrustum(), partialTick, camera.getEntity());
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
