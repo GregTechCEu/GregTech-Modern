@@ -102,7 +102,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:glowstone"));
         registry.accept(new ResourceLocation("minecraft:amethyst_block"));
         registry.accept(new ResourceLocation("minecraft:copper_block"));
-        registry.accept(new ResourceLocation("minecraft:copper"));
+        registry.accept(new ResourceLocation("minecraft:copper_ingot"));
+        registry.accept(new ResourceLocation("minecraft:copper_ingot_from_waxed_copper_block"));
         registry.accept(new ResourceLocation("minecraft:honeycomb_block"));
         registry.accept(new ResourceLocation("minecraft:snow_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_block"));
