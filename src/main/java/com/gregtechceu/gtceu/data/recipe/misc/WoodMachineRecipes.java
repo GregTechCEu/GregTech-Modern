@@ -535,8 +535,8 @@ public class WoodMachineRecipes {
                 String recipeNameHanging = hasHangingSignRecipe ? entry.hangingSignRecipeName : name + "_hanging_sign";
                 ASSEMBLER_RECIPES.recipeBuilder(recipeNameHanging)
                         .inputItems(entry.sign)
-                        .inputItems(ring, Iron, 2)
                         .inputItems(Items.CHAIN, 2)
+                        .outputItems(entry.hangingSign)
                         .circuitMeta(5)
                         .duration(150)
                         .EUt(4)
