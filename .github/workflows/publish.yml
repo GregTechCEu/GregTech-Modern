@@ -109,9 +109,7 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: 890405
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: |
-            ./!(*-@(dev|dev-all|dev-slim|sources|javadoc|dev-shadow|slim)).jar
-            ./*-@(dev|sources|javadoc|dev-shadow|slim).jar
+          files: ./*.jar
           name: 'GregTechCEu ${{ env.VERSION }}-${{ inputs.ver }}'
           version: 'mc${{ env.VERSION }}-${{ inputs.ver }}'
           version-type: beta

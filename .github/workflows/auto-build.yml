@@ -63,6 +63,4 @@ jobs:
             Please report any [issues](https://github.com/GregTechCEu/GregTech-Modern/issues).
             ${{ steps.changelog.outputs.changelog }}
           files: |
-            build/libs/*-SNAPSHOT.jar
-            build/libs/*-SNAPSHOT-slim.jar
-            build/libs/*-SNAPSHOT-sources.jar
+            build/libs/*.jar
