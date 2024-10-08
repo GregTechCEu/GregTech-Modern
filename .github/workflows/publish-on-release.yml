@@ -11,29 +11,22 @@ jobs:
     name: Metadata
     runs-on: ubuntu-latest
     outputs:
-      VERSION: ${{ steps.version.outputs.version }}
       CHANGELOG: ${{ steps.changelog.outputs.changelog }}
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: '.github'
       - name: Generate changelog
         id: changelog
         env:
           GITHUB_TOKEN: ${{ github.token }}
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          configuration: ./.github/config.json
+          configuration: ./.github/json/config.json
           toTag: ${{ github.event.release.tag }}
           ignorePreReleases: true
           fetchViaCommits: true
           failOnError: true
-      - id: version
-        run: echo "version=$(echo ${{ github.event.release.tag_name }} | cut -c2-)" >> $GITHUB_OUTPUT
 
   publish-20:
     name: 1.20.1
@@ -43,7 +36,6 @@ jobs:
     with:
       simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
       branch: '1.20.1'
-      ver: ${{ needs.meta.outputs.VERSION }}
       tag-name: ${{ github.event.release.tag }}
       release-body: ${{ github.event.release.description }}
       changelog-body: ${{ needs.meta.outputs.CHANGELOG }}
@@ -56,5 +48,4 @@ jobs:
     with:
       simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
       branch: '1.21'
-      ver: ${{ needs.meta.outputs.VERSION }}
       tag-name: ${{ github.event.release.tag }}

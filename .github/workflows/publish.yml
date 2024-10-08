@@ -11,12 +11,8 @@ on:
         description: 'Branch to checkout; 1.20.1 or 1.21'
         required: true
         type: string
-      ver:
-        description: 'GTM version; e.g., 1.4.4'
-        required: true
-        type: string
       tag-name:
-        description: 'Tag name; e.g., v1.4.4'
+        description: 'Tag to upload to'
         required: true
         type: string
       release-body:
@@ -34,23 +30,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      ver: ${{ steps.ver.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
-      - name: Get Build Setup
-        uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: '.github/actions'
       - name: Setup Build
         uses: ./.github/actions/build_setup
         with:
           ref: ${{ inputs.branch }}
-      - name: Check Tag
-        run: |
-          VER=$(./gradlew -q printVersion)
-          if [[ "$VER" == "${{ inputs.ver }}" ]]; then exit 0; else exit 1; fi
+      - name: Get Version
+        id: ver
+        run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
       - name: Build
         run: ./gradlew assemble --build-cache
       - name: Upload Build Artifacts
@@ -99,9 +91,8 @@ jobs:
           name: build-artifacts-${{ inputs.branch }}
       - name: Publish Mod
         env:
-          VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
+          MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
           LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
-          MC_VERS: ${{ inputs.branch == '1.21' && '[1.21, 1.21.1]' || '1.20.1' }}
           JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
@@ -110,12 +101,11 @@ jobs:
           curseforge-id: 890405
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ./*.jar
-          name: 'GregTechCEu ${{ env.VERSION }}-${{ inputs.ver }}'
-          version: 'mc${{ env.VERSION }}-${{ inputs.ver }}'
+          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version-type: beta
           changelog: ${{ inputs.release-body }}
           loaders: ${{ env.LOADER }}
-          game-versions: ${{ env.MC_VERS }}
           java: ${{ env.JAVA }}
           fail-mode: fail
 
@@ -137,8 +127,8 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch -C gh/release-${{ inputs.branch }}
-          BUMPED=$(echo ${{ inputs.ver }} | awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
-          sed -i "s/= ${{ inputs.ver }}/= ${BUMPED}/" gradle.properties
+          BUMPED=$(echo ${{ needs.build.outputs.ver }} | awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
+          sed -i "s/= ${{ needs.build.outputs.ver }}/= ${BUMPED}/" gradle.properties
           git commit -am "Bump version to ${BUMPED}"
       - name: Prepend to CHANGELOG
         if: inputs.changelog-body

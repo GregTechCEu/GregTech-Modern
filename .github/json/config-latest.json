@@ -16,7 +16,6 @@
   "sort": "ASC",
   "template": "## Changes\n#{{CHANGELOG}}",
   "pr_template": "- #{{TITLE}} by #{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
-  "empty_template": "- No changes",
   "ignore_labels": ["ignore changelog"],
   "max_pull_requests": 1000,
   "max_back_track_time_days": 90

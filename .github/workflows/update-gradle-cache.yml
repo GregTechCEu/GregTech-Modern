@@ -18,16 +18,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Get Build Setup
-        uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: '.github/actions'
       - name: Setup Build
         uses: ./.github/actions/build_setup
         with:
           update-cache: true
-
       - name: Build Project with Gradle
         run: ./gradlew assemble --warning-mode all --build-cache

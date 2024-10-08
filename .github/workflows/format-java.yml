@@ -29,12 +29,6 @@ jobs:
             code:
               - 'src/main/java/**'
               - 'src/test/**'
-      - name: Get Build Setup
-        if: steps.filter.outputs.code == 'true'
-        uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: .github/actions
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup

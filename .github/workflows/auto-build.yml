@@ -21,11 +21,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Get Build Setup
-        uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: '.github'
       - name: Setup Build
         uses: ./.github/actions/build_setup
       - name: Get Version
@@ -47,7 +42,7 @@ jobs:
         id: changelog
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          configuration: ./.github/config-latest.json
+          configuration: ./.github/json/config-latest.json
           fromTag: latest-${{ github.ref_name }}
           toTag: ${{ github.ref }}
           fetchViaCommits: true
