@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
@@ -11,7 +12,9 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +37,10 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
     public void deserializeNBT(Tag tag) {
         RecipeManager recipeManager = Platform.getMinecraftServer().getRecipeManager();
         if (tag instanceof StringTag stringTag) {
-            payload = (GTRecipe) recipeManager.byKey(new ResourceLocation(stringTag.getAsString())).orElse(null);
+            Recipe<?> recipe = recipeManager.byKey(new ResourceLocation(stringTag.getAsString())).orElse(null);
+            if (recipe instanceof GTRecipe gtRecipe) payload = gtRecipe;
+            else if (recipe instanceof SmeltingRecipe smeltingRecipe) payload = GTRecipeTypes.FURNACE_RECIPES
+                    .toGTrecipe(new ResourceLocation(stringTag.getAsString()), smeltingRecipe);
         } else if (tag instanceof ByteArrayTag byteArray) {
             ByteBuf copiedDataBuffer = Unpooled.copiedBuffer(byteArray.getAsByteArray());
             FriendlyByteBuf buf = new FriendlyByteBuf(copiedDataBuffer);
