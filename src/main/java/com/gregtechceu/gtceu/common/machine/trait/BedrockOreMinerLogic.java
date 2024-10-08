@@ -123,7 +123,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
             int produced = Math.max(depletedYield,
                     regularYield * remainingOperations / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
-            produced *= getMachine().getRigMultiplier();
+            produced *= BedrockOreMinerMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more ore
             if (isOverclocked()) {
@@ -166,7 +166,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     protected void depleteVein() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
-            int chance = getMachine().getDepletionChance();
+            int chance = BedrockOreMinerMachine.getDepletionChance(getMachine().getTier());
             var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
             // chance to deplete based on the rig
             if (chance == 1 || GTValues.RNG.nextInt(chance) == 0) {
