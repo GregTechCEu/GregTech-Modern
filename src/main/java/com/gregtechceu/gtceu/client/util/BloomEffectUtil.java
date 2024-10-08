@@ -380,7 +380,6 @@ public class BloomEffectUtil {
                 GTShaders.BLOOM_BUFFER.drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
                 poseStack.popPose();
             }
-            GTShaders.BLOOM_TARGET.blitToScreen(GTShaders.BLOOM_TARGET.width, GTShaders.BLOOM_TARGET.height, false);
 
             GTShaders.BLOOM_CHAIN.process(partialTicks);
             RenderSystem.disableBlend();
