@@ -13,7 +13,7 @@ def loader_version = getConfig("loader_version")
 
 task printVersion {
     doLast {
-        println libs.versions.minecraft.get() + "-" + mod_version
+        println mod_version
     }
 }
 
