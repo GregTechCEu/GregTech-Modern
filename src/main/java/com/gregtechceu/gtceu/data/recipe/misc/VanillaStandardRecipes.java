@@ -93,20 +93,34 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.GLOWSTONE))
                 .save(provider);
 
-        COMPRESSOR_RECIPES.recipeBuilder("packed_ice").inputItems(new ItemStack(Blocks.ICE, 9))
-                .outputItems(new ItemStack(Blocks.PACKED_ICE)).save(provider);
-        COMPRESSOR_RECIPES.recipeBuilder("blue_ice").inputItems(new ItemStack(Blocks.PACKED_ICE, 9))
-                .outputItems(new ItemStack(Blocks.BLUE_ICE)).save(provider);
-        COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust").inputItems(dust, Ice).outputItems(new ItemStack(Blocks.ICE))
+        COMPRESSOR_RECIPES.recipeBuilder("packed_ice")
+                .inputItems(new ItemStack(Blocks.ICE, 9))
+                .outputItems(new ItemStack(Blocks.PACKED_ICE))
+                .duration(300).EUt(2)
                 .save(provider);
+
+        COMPRESSOR_RECIPES.recipeBuilder("blue_ice")
+                .inputItems(new ItemStack(Blocks.PACKED_ICE, 9))
+                .outputItems(new ItemStack(Blocks.BLUE_ICE))
+                .duration(300).EUt(2)
+                .save(provider);
+
+        COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust")
+                .inputItems(dust, Ice)
+                .outputItems(new ItemStack(Blocks.ICE))
+                .duration(300).EUt(2)
+                .save(provider);
+
         COMPRESSOR_RECIPES.recipeBuilder("dripstone_block_from_pointed_dripstone")
                 .inputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
                 .outputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
+                .duration(300).EUt(2)
                 .save(provider);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("pointed_dripstone_from_dripstone_block")
                 .inputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
                 .outputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
+                .duration(300).EUt(2)
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("hay_block")
