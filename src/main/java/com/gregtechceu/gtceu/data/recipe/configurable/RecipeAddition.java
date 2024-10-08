@@ -1243,8 +1243,8 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lightning_rod", new ItemStack(Blocks.LIGHTNING_ROD), " B ",
                     "fRh", " R ",
-                    'R', rod, Copper,
-                    'B', plateDouble, Copper);
+                    'R', new UnificationEntry(rod, Copper),
+                    'B', new UnificationEntry(plateDouble, Copper));
 
             ASSEMBLER_RECIPES.recipeBuilder("lightning_rod")
                     .inputItems(rod, Copper, 2)
