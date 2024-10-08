@@ -1,0 +1,17 @@
+{
+  "values": [
+    "gtceu:lv_robot_arm",
+    "gtceu:mv_robot_arm",
+    "gtceu:hv_robot_arm",
+    "gtceu:ev_robot_arm",
+    "gtceu:iv_robot_arm",
+    "gtceu:luv_robot_arm",
+    "gtceu:zpm_robot_arm",
+    "gtceu:uv_robot_arm",
+    "gtceu:uhv_robot_arm",
+    "gtceu:uev_robot_arm",
+    "gtceu:uiv_robot_arm",
+    "gtceu:uxv_robot_arm",
+    "gtceu:opv_robot_arm"
+  ]
+}

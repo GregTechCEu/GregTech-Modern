@@ -1,0 +1,17 @@
+{
+  "values": [
+    "gtceu:lv_electric_motor",
+    "gtceu:mv_electric_motor",
+    "gtceu:hv_electric_motor",
+    "gtceu:ev_electric_motor",
+    "gtceu:iv_electric_motor",
+    "gtceu:luv_electric_motor",
+    "gtceu:zpm_electric_motor",
+    "gtceu:uv_electric_motor",
+    "gtceu:uhv_electric_motor",
+    "gtceu:uev_electric_motor",
+    "gtceu:uiv_electric_motor",
+    "gtceu:uxv_electric_motor",
+    "gtceu:opv_electric_motor"
+  ]
+}

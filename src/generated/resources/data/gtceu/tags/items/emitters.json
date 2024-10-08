@@ -1,0 +1,17 @@
+{
+  "values": [
+    "gtceu:lv_emitter",
+    "gtceu:mv_emitter",
+    "gtceu:hv_emitter",
+    "gtceu:ev_emitter",
+    "gtceu:iv_emitter",
+    "gtceu:luv_emitter",
+    "gtceu:zpm_emitter",
+    "gtceu:uv_emitter",
+    "gtceu:uhv_emitter",
+    "gtceu:uev_emitter",
+    "gtceu:uiv_emitter",
+    "gtceu:uxv_emitter",
+    "gtceu:opv_emitter"
+  ]
+}
