@@ -54,7 +54,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         MAX_PARALLELS = parallelAmount;
     }
 
-
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
@@ -116,7 +115,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
-                if(MAX_PARALLELS > 1)
+                if (MAX_PARALLELS > 1)
                     textList.add(Component.translatable("gtceu.multiblock.parallel", MAX_PARALLELS));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
                 double maxInSec = (float) recipeLogic.getDuration() / 20.0f;

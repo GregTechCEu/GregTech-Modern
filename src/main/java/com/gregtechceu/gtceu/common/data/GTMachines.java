@@ -1727,7 +1727,9 @@ public class GTMachines {
             .register();
 
     public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE
-            .multiblock("steam_grinder", (holder) -> new SteamParallelMultiblockMachine(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount))
+            .multiblock("steam_grinder",
+                    (holder) -> new SteamParallelMultiblockMachine(holder,
+                            ConfigHolder.INSTANCE.machines.steamMultiParallelAmount))
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
@@ -1751,7 +1753,9 @@ public class GTMachines {
             .register();
 
     public static final MultiblockMachineDefinition STEAM_OVEN = REGISTRATE
-            .multiblock("steam_oven", (holder) -> new SteamParallelMultiblockMachine(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount))
+            .multiblock("steam_oven",
+                    (holder) -> new SteamParallelMultiblockMachine(holder,
+                            ConfigHolder.INSTANCE.machines.steamMultiParallelAmount))
             .rotationState(RotationState.ALL)
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)

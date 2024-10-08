@@ -55,14 +55,15 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
             case GTValues.EV -> 8;
             default -> 1;
         },
-        switch (tier) {
-            case GTValues.MV -> 1;
-            case GTValues.HV -> 4;
-            case GTValues.EV -> 16;
-            default -> 1;
-        });
+                switch (tier) {
+                    case GTValues.MV -> 1;
+                    case GTValues.HV -> 4;
+                    case GTValues.EV -> 16;
+                    default -> 1;
+                });
     }
-	public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier, int depletionChance, int rigMultiplier){
+
+    public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier, int depletionChance, int rigMultiplier) {
         super(holder);
         this.tier = tier;
         this.depletionChance = depletionChance;

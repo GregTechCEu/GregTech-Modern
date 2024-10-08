@@ -435,7 +435,6 @@ public class ConfigHolder {
         })
         public int steamMultiParallelAmount = 8;
 
-
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
