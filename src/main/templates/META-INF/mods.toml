@@ -35,7 +35,7 @@ versionRange = "[${ldlib_version},)"
 ordering = "AFTER"
 side = "BOTH"
 [dependencies.${mod_id}.mc-publish]
-    ignore = true
+    ignore = false
     modrinth = "ldlib"
     curseforge = "ldlib"
 
@@ -47,7 +47,7 @@ versionRange = "[${configuration_version},)"
 ordering = "AFTER"
 side = "BOTH"
 [dependencies.${mod_id}.mc-publish]
-    ignore = true
+    ignore = false
     modrinth = "configuration"
     curseforge = "configuration"
 
