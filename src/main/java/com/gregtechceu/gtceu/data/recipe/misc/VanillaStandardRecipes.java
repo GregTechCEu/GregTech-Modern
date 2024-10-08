@@ -394,13 +394,6 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
-        // todo trapdoors
-        // ASSEMBLER_RECIPES.recipeBuilder()
-        // .inputItems(ItemTags.PLANKS, 3).circuitMeta(3)
-        // .outputItems(new ItemStack(Blocks.TRAPDOOR, 2))
-        // .duration(100).EUt(4)
-        // .save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("chest")
                 .inputItems(ItemTags.PLANKS, 8)
                 .outputItems(new ItemStack(Blocks.CHEST))
@@ -443,7 +436,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.SOUL_TORCH))
                 .duration(100).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
+        ASSEMBLER_RECIPES.recipeBuilder("soul_lantern_from_lantern")
                 .inputItems(new ItemStack(Blocks.LANTERN))
                 .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
                 .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
@@ -545,6 +538,16 @@ public class VanillaStandardRecipes {
                 'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
         VanillaRecipeHelper.addShapedRecipe(provider, "soul_torch", new ItemStack(Blocks.SOUL_TORCH, 1), "WB",
                 'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.TORCH));
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "soul_lantern", new ItemStack(Blocks.SOUL_LANTERN, 1), "WB",
+                    'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.SOUL_LANTERN));
+
+            ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
+                    .inputItems(new ItemStack(Blocks.LANTERN))
+                    .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
+                    .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
+                    .duration(100).EUt(1).save(provider);
+        }
 
         ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(4).inputItems(dust, Redstone)
                 .inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1))
