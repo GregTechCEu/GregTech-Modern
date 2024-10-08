@@ -26,8 +26,8 @@ public class ForgeModelBlockRendererMixin {
                                                      VertexConsumer _consumer, QuadLighter lighter, BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos, PoseStack poseStack) {
         if (GTShaders.allowedShader() && (!quad.isShade() || GTMetadataSection.hasBloom(quad.getSprite()))) {
             poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            poseStack.scale(2f, 2f, 2f);
+            poseStack.translate(pos.getX() - (pos.getX() & 15), pos.getY() - (pos.getY() & 15), pos.getZ() - (pos.getZ() & 15));
+            //poseStack.scale(2f, 2f, 2f);
             original.call(instance, GTShaders.BLOOM_BUFFER_BUILDER, poseStack.last(), quad, overlay);
             poseStack.popPose();
         }

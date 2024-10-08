@@ -19,7 +19,6 @@
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
         "PostChainAccessor",
-        "RenderTypeAccessor",
         "rei.FluidEntryRendererMixin"
     ],
     "mixins": [

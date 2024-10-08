@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.PostPass;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,6 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -230,7 +232,7 @@ public class BloomEffectUtil {
             EffectRenderContext context = EffectRenderContext.getInstance()
                     .update(entity, camX, camY, camZ, frustum, partialTicks);
 
-            GTRenderTypes.BLOOM_TARGET.setupRenderState();
+            GTRenderTypes.getBloom().setupRenderState();
 
             if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
                 RenderSystem.depthMask(true);
@@ -271,7 +273,7 @@ public class BloomEffectUtil {
             isDrawingBlockBloom.set(false);
 
             postDraw();
-            GTRenderTypes.BLOOM_TARGET.clearRenderState();
+            GTRenderTypes.getBloom().clearRenderState();
         } finally {
             BLOOM_RENDER_LOCK.unlock();
         }
@@ -345,7 +347,7 @@ public class BloomEffectUtil {
                                double camX, double camY, double camZ) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
-            //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             // Forcefully insert config values to shader
             List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
             for (PostPass pass : passes) {

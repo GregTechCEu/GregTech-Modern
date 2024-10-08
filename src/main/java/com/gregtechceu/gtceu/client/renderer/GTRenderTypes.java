@@ -35,11 +35,12 @@ public class GTRenderTypes extends RenderType {
                     .createCompositeState(false));
 
     private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
-            131072, false, false,
+            2097152, false, false,
             RenderType.CompositeState.builder()
                     .setLightmapState(RenderStateShard.LIGHTMAP)
-                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
-                    .setTextureState(RenderStateShard.BLOCK_SHEET)
+                    .setShaderState(RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setOutputState(BLOOM_TARGET)
                     .createCompositeState(false));
 

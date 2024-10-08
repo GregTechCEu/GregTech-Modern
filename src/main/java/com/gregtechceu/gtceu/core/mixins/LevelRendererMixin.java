@@ -60,6 +60,8 @@ public abstract class LevelRendererMixin {
 
     @Unique
     private boolean gtceu$needBloomRecompile;
+    @Unique
+    private boolean gtceu$hasBeenRecompiledThisFrame;
 
     @Inject(
             method = { "renderLevel" },
@@ -134,7 +136,8 @@ public abstract class LevelRendererMixin {
     private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
                                          boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                          LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
-        if (gtceu$needBloomRecompile) {
+        if (gtceu$needBloomRecompile && !gtceu$hasBeenRecompiledThisFrame) {
+            gtceu$hasBeenRecompiledThisFrame = true;
             gtceu$needBloomRecompile = false;
             BufferBuilder.RenderedBuffer buffer = GTShaders.BLOOM_BUFFER_BUILDER.endOrDiscardIfEmpty();
             if (buffer != null) {
@@ -144,6 +147,7 @@ public abstract class LevelRendererMixin {
         }
         BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
                 poseStack, projectionMatrix, getFrustum(), partialTick, camera.getEntity());
+        gtceu$hasBeenRecompiledThisFrame = false;
     }
 
     @Inject(method = "compileChunks", at = @At("TAIL"))

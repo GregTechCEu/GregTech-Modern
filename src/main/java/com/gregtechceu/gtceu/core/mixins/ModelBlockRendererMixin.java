@@ -29,8 +29,8 @@ public class ModelBlockRendererMixin {
                                               BlockAndTintGetter _level, BlockState _state, BlockPos _pos, PoseStack poseStack) {
         if (GTShaders.allowedShader() && (!quad.isShade() || GTMetadataSection.hasBloom(quad.getSprite()))) {
             poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            poseStack.scale(2f, 2f, 2f);
+            poseStack.translate(pos.getX() - (pos.getX() & 15), pos.getY() - (pos.getY() & 15), pos.getZ() - (pos.getZ() & 15));
+            //poseStack.scale(2f, 2f, 2f);
             original.call(instance, level, state, pos,
                     GTShaders.BLOOM_BUFFER_BUILDER, poseStack.last(), quad,
                     brightness0, brightness1, brightness2, brightness3,
@@ -58,8 +58,8 @@ public class ModelBlockRendererMixin {
                                               BlockAndTintGetter _level, BlockState _state, BlockPos _pos, int packedLight, int _packedOverlay, boolean repackLight, PoseStack poseStack) {
         if (GTShaders.allowedShader() && (!quad.isShade() || GTMetadataSection.hasBloom(quad.getSprite()))) {
             poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            poseStack.scale(2f, 2f, 2f);
+            poseStack.translate(pos.getX() - (pos.getX() & 15), pos.getY() - (pos.getY() & 15), pos.getZ() - (pos.getZ() & 15));
+            //poseStack.scale(2f, 2f, 2f);
             original.call(instance, level, state, pos,
                     GTShaders.BLOOM_BUFFER_BUILDER, poseStack.last(), quad,
                     brightness0, brightness1, brightness2, brightness3,
