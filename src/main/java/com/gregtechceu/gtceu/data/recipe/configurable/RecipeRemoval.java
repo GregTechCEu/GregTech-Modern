@@ -266,6 +266,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
         registry.accept(new ResourceLocation("minecraft:chain"));
+        registry.accept(new ResourceLocation("minecraft:packed_ice"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
