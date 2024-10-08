@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -44,10 +43,30 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
     @Getter
     private final int tier;
+    @Getter
+    private final int depletionChance;
+    @Getter
+    private final int rigMultiplier;
 
     public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier) {
+        this(holder, tier, switch (tier) {
+            case GTValues.MV -> 1;
+            case GTValues.HV -> 2;
+            case GTValues.EV -> 8;
+            default -> 1;
+        },
+        switch (tier) {
+            case GTValues.MV -> 1;
+            case GTValues.HV -> 4;
+            case GTValues.EV -> 16;
+            default -> 1;
+        });
+    }
+	public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier, int depletionChance, int rigMultiplier){
         super(holder);
         this.tier = tier;
+        this.depletionChance = depletionChance;
+        this.rigMultiplier = rigMultiplier;
     }
 
     @Override
@@ -110,7 +129,18 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         }
     }
 
-    public static int getDepletionChance(int tier) {
+    public static Material getMaterial(int tier) {
+        if (tier == GTValues.MV) return GTMaterials.Steel;
+        if (tier == GTValues.HV) return GTMaterials.Titanium;
+        if (tier == GTValues.EV) return GTMaterials.TungstenSteel;
+        return GTMaterials.Steel;
+    }
+
+    public static Block getCasingState(int tier) {
+        return GTBlocks.MATERIALS_TO_CASINGS.get(getMaterial(tier)).get();
+    }
+
+    public static int getDepletionChanceByTier(int tier) {
         if (tier == GTValues.MV)
             return 1;
         if (tier == GTValues.HV)
@@ -120,7 +150,7 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         return 1;
     }
 
-    public static int getRigMultiplier(int tier) {
+    public static int getRigMultiplierByTier(int tier) {
         if (tier == GTValues.MV)
             return 1;
         if (tier == GTValues.HV)
@@ -128,26 +158,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         if (tier == GTValues.EV)
             return 16;
         return 1;
-    }
-
-    public static Block getCasingState(int tier) {
-        if (tier == GTValues.MV)
-            return GTBlocks.CASING_STEEL_SOLID.get();
-        if (tier == GTValues.HV)
-            return GTBlocks.CASING_TITANIUM_STABLE.get();
-        if (tier == GTValues.EV)
-            return GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get();
-        return GTBlocks.CASING_STEEL_SOLID.get();
-    }
-
-    public static Block getFrameState(int tier) {
-        if (tier == GTValues.MV)
-            return GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get();
-        if (tier == GTValues.HV)
-            return GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Titanium).get();
-        if (tier == GTValues.EV)
-            return GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TungstenSteel).get();
-        return GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get();
     }
 
     public static ResourceLocation getBaseTexture(int tier) {

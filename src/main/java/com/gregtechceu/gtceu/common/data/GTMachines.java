@@ -2759,13 +2759,13 @@ public class GTMachines {
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",
                                             FormattingUtil.formatNumbers(
-                                                    100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
+                                                    100.0 / BedrockOreMinerMachine.getDepletionChanceByTier(tier))),
                                     Component.translatable("gtceu.universal.tooltip.energy_tier_range",
                                             GTValues.VNF[tier], GTValues.VNF[tier + 1]),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.production",
-                                            BedrockOreMinerMachine.getRigMultiplier(tier),
+                                            BedrockOreMinerMachine.getRigMultiplierByTier(tier),
                                             FormattingUtil.formatNumbers(
-                                                    BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))
+                                                    BedrockOreMinerMachine.getRigMultiplierByTier(tier) * 1.5)))
                             .appearanceBlock(() -> BedrockOreMinerMachine.getCasingState(tier))
                             .pattern((definition) -> FactoryBlockPattern.start()
                                     .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
@@ -2778,7 +2778,7 @@ public class GTMachines {
                                                             .setMaxGlobalLimited(2))
                                                     .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
                                     .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
-                                    .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
+                                    .where('F', frames(BedrockOreMinerMachine.getMaterial(tier)))
                                     .where('#', any())
                                     .build())
                             .workableCasingRenderer(BedrockOreMinerMachine.getBaseTexture(tier),
