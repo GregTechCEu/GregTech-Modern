@@ -846,6 +846,21 @@ public class WoodMachineRecipes {
                     registry.accept(new ResourceLocation(entry.modid, entry.fenceGateRecipeName));
                 }
             }
+            if (entry.trapdoor != null) {
+                if (entry.trapdoorRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.trapdoorRecipeName));
+                }
+            }
+            if (entry.chestBoat != null) {
+                if (entry.chestBoatRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.chestBoatRecipeName));
+                }
+            }
+            if (entry.sign != null) {
+                if (entry.signRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.signRecipeName));
+                }
+            }
         }
     }
 
