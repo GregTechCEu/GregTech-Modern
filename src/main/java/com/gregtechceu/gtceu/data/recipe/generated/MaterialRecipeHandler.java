@@ -409,7 +409,7 @@ public class MaterialRecipeHandler {
                     String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnder(prevPrefix.name),
                             material.getName()),
                     prevStack,
-                    "h", new UnificationEntry(gemPrefix, material));
+                    'h', new UnificationEntry(gemPrefix, material));
 
             CUTTER_RECIPES
                     .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(gemPrefix.name) +
