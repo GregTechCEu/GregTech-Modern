@@ -408,7 +408,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+                        "behavior.soft_hammer.enabled" : "behavior.soft_hammer.disabled"));
             }
             playerIn.swing(hand);
             return InteractionResult.CONSUME;

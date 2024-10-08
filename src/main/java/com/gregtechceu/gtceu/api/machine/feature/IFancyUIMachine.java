@@ -121,7 +121,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     controllable::isWorkingEnabled, (clickData, pressed) -> controllable.setWorkingEnabled(pressed))
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
-                                    pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
+                                    pressed ? "behavior.soft_hammer.enabled" : "behavior.soft_hammer.disabled"))));
         }
         if (this instanceof IOverclockMachine overclockMachine) {
             configuratorPanel.attachConfigurators(new OverclockFancyConfigurator(overclockMachine));

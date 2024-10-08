@@ -196,12 +196,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         int remainingUses = getUsesLeft(stack);
         if (color != null) {
             tooltipComponents
-                    .add(Component.translatable("behaviour.paintspray." + this.color.getSerializedName() + ".tooltip"));
+                    .add(Component.translatable("behavior.paintspray." + this.color.getSerializedName() + ".tooltip"));
         } else {
-            tooltipComponents.add(Component.translatable("behaviour.paintspray.solvent.tooltip"));
+            tooltipComponents.add(Component.translatable("behavior.paintspray.solvent.tooltip"));
         }
-        tooltipComponents.add(Component.translatable("behaviour.paintspray.uses", remainingUses));
-        tooltipComponents.add(Component.translatable("behaviour.paintspray.offhand");
+        tooltipComponents.add(Component.translatable("behavior.paintspray.uses", remainingUses));
+        tooltipComponents.add(Component.translatable("behavior.paintspray.offhand"));
     }
 
     @Override
