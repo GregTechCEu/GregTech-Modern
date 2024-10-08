@@ -24,7 +24,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     var replaceProperties = [
             version             : version,
             mod_id              : mod_id,
-            minecraft_version   : libs.versions.minecraft.get(),
+            minecraft_version   : "[1.21, 1.21.1]",
             loader_version      : loader_version,
             forge_version       : forgeVers[0] + "." + forgeVers[1], // only specify major version of forge
             configuration_version: "2.3.1",
