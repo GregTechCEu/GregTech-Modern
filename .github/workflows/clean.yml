@@ -10,18 +10,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Get Build Setup
-        uses: actions/checkout@v4
-        with:
-          ref: '1.20.1'
-          sparse-checkout: .github/actions
       - name: Setup Build
         uses: ./.github/actions/build_setup
         with:
           update-cache: true
-
       - name: Clean
         run: ./gradlew clean --build-cache
