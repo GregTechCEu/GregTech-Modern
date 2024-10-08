@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.jei;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
@@ -59,7 +60,9 @@ public class GTJEIPlugin implements IModPlugin {
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType));
+                    for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
+                        registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType, category));
+                    }
                 }
             }
         }

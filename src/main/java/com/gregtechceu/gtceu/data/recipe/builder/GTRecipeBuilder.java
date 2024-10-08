@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -98,6 +99,7 @@ public class GTRecipeBuilder {
     public int tierChanceBoost = 0;
     @Setter
     public boolean isFuel = false;
+    public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
     @Getter
@@ -124,6 +126,7 @@ public class GTRecipeBuilder {
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
         this.isFuel = toCopy.isFuel;
+        this.recipeCategory = toCopy.recipeCategory;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
@@ -1065,6 +1068,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder category(@NotNull GTRecipeCategory category) {
+        this.recipeCategory = category;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
@@ -1160,6 +1168,16 @@ public class GTRecipeBuilder {
                 this.recipeType.addDataStickEntry(entry.getResearchId(), buildRawRecipe());
             }
         }
+
+        if (recipeType != null) {
+            if (recipeCategory == null) {
+                // GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
+            } else if (recipeCategory.getRecipeType() != this.recipeType) {
+                // GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType", new
+                // IllegalArgumentException());
+            }
+        }
+
         consumer.accept(build());
     }
 
@@ -1167,7 +1185,7 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel);
+                conditions, List.of(), data, duration, isFuel, recipeCategory);
     }
 
     //////////////////////////////////////

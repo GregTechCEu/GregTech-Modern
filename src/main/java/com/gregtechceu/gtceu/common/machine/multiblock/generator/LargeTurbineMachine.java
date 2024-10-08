@@ -121,7 +121,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
                 recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
                 recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.isFuel);
+                recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
 
         result.init(-eut, recipe.duration, 1, params.getOcAmount());
 

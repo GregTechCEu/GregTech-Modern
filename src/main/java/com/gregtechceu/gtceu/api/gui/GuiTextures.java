@@ -483,6 +483,13 @@ public class GuiTextures {
     public static final ResourceTexture MULTIBLOCK_CATEGORY = new ResourceTexture(
             "gtceu:textures/gui/icon/coke_oven.png");
 
+    public static final ResourceTexture ARC_FURNACE_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/arc_furnace_recycling.png");
+    public static final ResourceTexture MACERATOR_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/macerator_recycling.png");
+    public static final ResourceTexture EXTRACTOR_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/extractor_recycling.png");
+
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(
             "gtceu:textures/items/metaitems/cover.controller.png");

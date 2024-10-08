@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -715,6 +716,8 @@ public class GTRecipeTypes {
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
         GTRegistries.RECIPE_TYPES.freeze();
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
+        GTRegistries.RECIPE_CATEGORIES.freeze();
 
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"),
                 GTRecipeSerializer.SERIALIZER);

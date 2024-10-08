@@ -2266,6 +2266,7 @@
   "config.gtceu.option.hardGlassRecipes": "hardGlassRecipes",
   "config.gtceu.option.hardIronRecipes": "hardIronRecipes",
   "config.gtceu.option.hardMiscRecipes": "hardMiscRecipes",
+  "config.gtceu.option.hardMultiRecipes": "hardMultiRecipes",
   "config.gtceu.option.hardRedstoneRecipes": "hardRedstoneRecipes",
   "config.gtceu.option.hardToolArmorRecipes": "hardToolArmorRecipes",
   "config.gtceu.option.hardWoodRecipes": "hardWoodRecipes",

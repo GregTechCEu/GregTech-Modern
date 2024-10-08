@@ -13,9 +13,9 @@ dependencies {
     modImplementation forge.flywheel
 
     // JEI
-    modCompileOnly(forge.jei.common.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.impl) { transitive = false }
+    modImplementation(forge.jei.common.api) { transitive = false }
+    modImplementation(forge.jei.forge.api) { transitive = false }
+    modImplementation(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
@@ -24,7 +24,7 @@ dependencies {
 
     // EMI
     //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modImplementation forge.emi
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
@@ -43,9 +43,9 @@ dependencies {
     modCompileOnly(forge.almostUnified.forge)
 
     // KJS
-    modImplementation(forge.kubejs) { transitive = false }
-    modImplementation(forge.architectury)
-    modImplementation(forge.rhino)
+    modCompileOnly(forge.kubejs) { transitive = false }
+    modCompileOnly(forge.architectury)
+    modCompileOnly(forge.rhino)
 
     // Mixin (& Extras)
     api(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
