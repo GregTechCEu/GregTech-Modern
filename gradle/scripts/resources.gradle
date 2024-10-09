@@ -12,7 +12,7 @@ def mod_issue_tracker = getConfig("mod_issue_tracker")
 
 task printVersion {
     doLast {
-        println libs.versions.minecraft.get() + "-" + mod_version
+        println mod_version
     }
 }
 
