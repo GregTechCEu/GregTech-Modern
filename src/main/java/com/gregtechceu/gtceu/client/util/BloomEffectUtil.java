@@ -10,18 +10,20 @@ import com.gregtechceu.gtceu.client.shader.post.BloomType;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.PostChainAccessor;
+import com.gregtechceu.gtceu.core.mixins.VertexBufferAccessor;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.CrashReport;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.PostPass;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,9 +32,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
@@ -334,6 +336,53 @@ public class BloomEffectUtil {
         }
     }
 
+    public static void removeBloomChunk(BlockPos origin) {
+        GTShaders.BLOOM_BUFFER_BUILDERS.remove(origin);
+        VertexBuffer buffer = GTShaders.BLOOM_BUFFERS.remove(origin);
+        if (buffer != null) {
+            if (!RenderSystem.isOnRenderThread()) {
+                RenderSystem.recordRenderCall(buffer::close);
+            } else {
+                buffer.close();
+            }
+        }
+        GTShaders.RENDERED_BLOOM_BUFFERS.remove(origin);
+    }
+
+    public static BufferBuilder getOrStartBloomBuffer(BlockPos pos) {
+        BufferBuilder builder = GTShaders.BLOOM_BUFFER_BUILDERS.get(pos);
+        if (builder == null) {
+            builder = new BufferBuilder(GTRenderTypes.getBloom().bufferSize());
+            GTShaders.BLOOM_BUFFER_BUILDERS.put(pos, builder);
+            builder.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+        } else if (!builder.building()) {
+            builder.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+        }
+        return builder;
+    }
+
+    public static void bakeBloomChunkBuffers(List<ChunkRenderDispatcher.RenderChunk> list) {
+        if (list.isEmpty()) {
+            return;
+        }
+
+        for (var chunk : list) {
+            BlockPos pos = chunk.getOrigin();
+            BufferBuilder builder = GTShaders.BLOOM_BUFFER_BUILDERS.get(pos);
+            if (builder == null || !builder.building()) {
+                continue;
+            }
+            BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
+            if (buffer != null) {
+                GTShaders.RENDERED_BLOOM_BUFFERS.put(pos, buffer);
+                BloomEffectUtil.uploadBloomBuffer(buffer,
+                        GTShaders.BLOOM_BUFFERS.computeIfAbsent(pos, c -> new VertexBuffer(VertexBuffer.Usage.STATIC)));
+            }
+        }
+    }
+
+    public static ThreadLocal<BlockPos> CURRENT_RENDERING_CHUNK_POS = new ThreadLocal<>();
+
     private static final String UNREAL_COMPOSITE_SHADER_NAME = "gtceu:unreal_composite";
     private static final String UNITY_COMPOSITE_SHADER_NAME = "gtceu:unity_composite";
     private static final String SEPERABLE_BLUR_SHADER_NAME = "gtceu:seperable_blur";
@@ -343,8 +392,7 @@ public class BloomEffectUtil {
     private static final String BLOOM_THRESHOLD_DOWN_UNIFORM = "BloomThresholdDown";
     private static final String BLUR_DIR_UNIFORM = "BlurDir";
 
-    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix,
-                               double camX, double camY, double camZ) {
+    private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix, double camX, double camY, double camZ) {
         if (GTShaders.allowedShader()) {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -364,8 +412,7 @@ public class BloomEffectUtil {
                         }
                     }
                 }
-                if (shader.getName().equals(UNITY_COMPOSITE_SHADER_NAME) ||
-                        shader.getName().equals(UNREAL_COMPOSITE_SHADER_NAME)) {
+                if (shader.getName().equals(UNITY_COMPOSITE_SHADER_NAME) || shader.getName().equals(UNREAL_COMPOSITE_SHADER_NAME)) {
                     shader.safeGetUniform(BLOOM_INTENSIVE_UNIFORM).set(BloomEffect.strength);
                     shader.safeGetUniform(BLOOM_BASE_UNIFORM).set(BloomEffect.baseBrightness);
                     shader.safeGetUniform(BLOOM_THRESHOLD_UP_UNIFORM).set(BloomEffect.highBrightnessThreshold);
@@ -373,11 +420,17 @@ public class BloomEffectUtil {
                 }
             }
 
-            if (GTShaders.RENDERED_BLOOM_BUFFER != null && !GTShaders.BLOOM_BUFFER.isInvalid()) {
-                GTShaders.BLOOM_BUFFER.bind();
+            for (var entry : GTShaders.BLOOM_BUFFERS.entrySet()) {
+                // return early if buffer is invalid or has no vertex data bound
+                // VertexBuffer#mode's nullness is the easiest way to check this.
+                if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
+                    continue;
+                }
+                entry.getValue().bind();
                 poseStack.pushPose();
+                poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
                 poseStack.translate(-camX, -camY, -camZ);
-                GTShaders.BLOOM_BUFFER.drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+                entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
                 poseStack.popPose();
             }
 
@@ -389,7 +442,9 @@ public class BloomEffectUtil {
         }
     }
 
-    private record BloomRenderKey(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType) {}
+    private record BloomRenderKey(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType) {
+
+    }
 
     public static final class BloomRenderTicket {
 
@@ -412,9 +467,7 @@ public class BloomEffectUtil {
             this.invalidated = true;
         }
 
-        BloomRenderTicket(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType,
-                          @NotNull IBloomEffect render, @Nullable Predicate<BloomRenderTicket> validityChecker,
-                          @Nullable Supplier<Level> worldContext) {
+        BloomRenderTicket(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType, @NotNull IBloomEffect render, @Nullable Predicate<BloomRenderTicket> validityChecker, @Nullable Supplier<Level> worldContext) {
             this.renderSetup = renderSetup;
             this.bloomType = Objects.requireNonNull(bloomType, "bloomType == null");
             this.render = Objects.requireNonNull(render, "render == null");

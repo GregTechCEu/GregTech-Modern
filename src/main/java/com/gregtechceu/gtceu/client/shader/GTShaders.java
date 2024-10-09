@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.shader;
 
 import com.google.gson.JsonSyntaxException;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -10,12 +9,16 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class GTShaders {
@@ -26,9 +29,9 @@ public class GTShaders {
     public static BloomType BLOOM_TYPE;
     public static RenderTarget BLOOM_TARGET;
 
-    public static VertexBuffer BLOOM_BUFFER = new VertexBuffer(VertexBuffer.Usage.STATIC);
-    public static BufferBuilder BLOOM_BUFFER_BUILDER = new BufferBuilder(GTRenderTypes.getBloom().bufferSize());
-    public static BufferBuilder.RenderedBuffer RENDERED_BLOOM_BUFFER = null;
+    public static Map<BlockPos, VertexBuffer> BLOOM_BUFFERS = new HashMap<>();
+    public static Map<BlockPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new HashMap<>();
+    public static Map<BlockPos, BufferBuilder.RenderedBuffer> RENDERED_BLOOM_BUFFERS = new HashMap<>();
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
         if (!allowedShader()) {

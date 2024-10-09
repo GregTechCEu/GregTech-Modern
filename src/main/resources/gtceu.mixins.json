@@ -10,7 +10,6 @@
         "BlockModelMixin",
         "ClientLevelAccessor",
         "CompassManagerMixin",
-        "ForgeModelBlockRendererMixin",
         "GuiGraphicsAccessor",
         "GuiGraphicsMixin",
         "GuiHeartTypeMixin",
@@ -19,6 +18,9 @@
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
         "PostChainAccessor",
+        "RebuildTaskMixin",
+        "RenderChunkMixin",
+        "VertexBufferAccessor",
         "rei.FluidEntryRendererMixin"
     ],
     "mixins": [
@@ -45,8 +47,8 @@
         "OreVeinifierMixin",
         "PartialNBTIngredientAccessor",
         "PrimedTntAccessor",
+        "QuadLighterMixin",
         "RecipeManagerAccessor",
-        "RecipeManagerInvoker",
         "RecipeManagerMixin",
         "RepairItemRecipeMixin",
         "ServerChunkProviderMixin",

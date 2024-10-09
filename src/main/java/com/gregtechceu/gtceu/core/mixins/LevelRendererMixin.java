@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.*;
+import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -19,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -32,12 +34,12 @@ import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(LevelRenderer.class)
 @OnlyIn(Dist.CLIENT)
@@ -119,9 +121,6 @@ public abstract class LevelRendererMixin {
                                         CallbackInfo ci) {
         GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
         minecraft.getMainRenderTarget().bindWrite(false);
-        if (!GTShaders.BLOOM_BUFFER_BUILDER.building()) {
-            GTShaders.BLOOM_BUFFER_BUILDER.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
-        }
     }
 
     @Inject(method = "renderLevel",
@@ -136,15 +135,9 @@ public abstract class LevelRendererMixin {
     }
 
     @Inject(method = "compileChunks", at = @At("TAIL"))
-    private void gtceu$compileBloomData(Camera camera, CallbackInfo ci,
-                                        @Local List<ChunkRenderDispatcher.RenderChunk> list) {
-        if (!list.isEmpty()) {
-            BufferBuilder.RenderedBuffer buffer = GTShaders.BLOOM_BUFFER_BUILDER.endOrDiscardIfEmpty();
-            if (buffer != null) {
-                GTShaders.RENDERED_BLOOM_BUFFER = buffer;
-                BloomEffectUtil.uploadBloomBuffer(buffer, GTShaders.BLOOM_BUFFER);
-            }
-        }
+    private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
+                                           @Local List<ChunkRenderDispatcher.RenderChunk> list) {
+        BloomEffectUtil.bakeBloomChunkBuffers(list);
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
