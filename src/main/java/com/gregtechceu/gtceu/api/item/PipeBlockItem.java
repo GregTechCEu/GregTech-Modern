@@ -48,7 +48,7 @@ public class PipeBlockItem extends BlockItem {
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
         if (GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("gtceu.tool_action.wire_cutter.connect"));
+            tooltip.add(Component.translatable("gtceu.tool_action.wrench.connect"));
         } else {
             tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
         }
