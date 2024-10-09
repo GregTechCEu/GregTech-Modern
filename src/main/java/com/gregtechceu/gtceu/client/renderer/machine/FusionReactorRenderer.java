@@ -41,11 +41,19 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
     public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-                machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine &&
-                !machine.isRegisteredBloomTicket()) {
-            machine.setRegisteredBloomTicket(true);
-            BloomEffectUtil.registerBloomRender(FusionBloomSetup.INSTANCE, getBloomType(),
-                    new FusionBloomEffect(machine), blockEntity);
+                machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
+            if (!machine.isRegisteredBloomTicket()) {
+                machine.setRegisteredBloomTicket(true);
+                BloomEffectUtil.registerBloomRender(FusionBloomSetup.INSTANCE, getBloomType(),
+                        new FusionBloomEffect(machine), blockEntity);
+            }
+            // TODO fix bloom on fusion reactor light
+            stack.pushPose();
+            // offset back by machine pos to render ring at machine in renderLightRing, sorry for this
+            BlockPos pos = machine.getPos();
+            stack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
+            renderLightRing(machine, partialTicks, stack, buffer.getBuffer(GTRenderTypes.getLightRing()), 0, 0, 0);
+            stack.popPose();
         }
     }
 
@@ -56,7 +64,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
     @OnlyIn(Dist.CLIENT)
     private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
-                                 VertexConsumer buffer, @NotNull EffectRenderContext context) {
+                                 VertexConsumer buffer, float camX, float camY, float camZ) {
         var color = machine.getColor();
         if (color == -1) return;
         int ringColor = ColorUtils.blendColor(color, -1, Eases.EaseQuadIn.getInterpolation(
@@ -72,9 +80,9 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
         RenderBufferHelper.renderRing(stack, buffer,
-                pos.getX() + relativeBack.getStepX() * 7 + 0.5F,
-                pos.getY() + relativeBack.getStepY() * 7 + 0.5F,
-                pos.getZ() + relativeBack.getStepZ() * 7 + 0.5F,
+                pos.getX() - camX + relativeBack.getStepX() * 7 + 0.5F,
+                pos.getY() - camY + relativeBack.getStepY() * 7 + 0.5F,
+                pos.getZ() - camZ + relativeBack.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
                 r, g, b, a, axis);
     }
@@ -110,7 +118,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                                       @NotNull EffectRenderContext context) {
             lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
             FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer,
-                    context);
+                    (float) context.cameraX(), (float) context.cameraY(), (float) context.cameraZ());
             BufferUploader.drawWithShader(lightRingBuffer.end());
         }
 

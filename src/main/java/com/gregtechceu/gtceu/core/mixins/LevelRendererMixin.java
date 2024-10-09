@@ -34,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Mixin(LevelRenderer.class)
 @OnlyIn(Dist.CLIENT)
@@ -106,35 +107,14 @@ public abstract class LevelRendererMixin {
         throw new AssertionError();
     }
 
-    @Shadow
-    public abstract Frustum getFrustum();
-
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    private void gtceu$startBloomBuffer(PoseStack poseStack, float partialTick, long finishNanoTime,
-                                        boolean renderBlockOutline, Camera camera,
-                                        GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix,
-                                        CallbackInfo ci) {
-        GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-        minecraft.getMainRenderTarget().bindWrite(false);
-    }
-
-    @Inject(method = "renderLevel",
-            at = @At(
-                     value = "INVOKE",
-                     target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"))
-    private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
-                                         boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
-                                         LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
-        BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
-                poseStack, projectionMatrix, getFrustum(), partialTick, camera.getEntity());
-    }
-
     @Inject(method = "updateRenderChunks", at = @At("HEAD"))
     private void gtceu$compileBloomBuffers(LinkedHashSet<LevelRenderer.RenderChunkInfo> chunkInfos,
                                            LevelRenderer.RenderInfoMap infoMap, Vec3 viewVector,
                                            Queue<LevelRenderer.RenderChunkInfo> infoQueue, boolean shouldCull,
                                            CallbackInfo ci) {
-        BloomEffectUtil.bakeBloomChunkBuffers(chunkInfos);
+        BloomEffectUtil.bakeBloomChunkBuffers(chunkInfos.stream()
+                .map(info -> info.chunk.getOrigin())
+                .collect(Collectors.toSet()));
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

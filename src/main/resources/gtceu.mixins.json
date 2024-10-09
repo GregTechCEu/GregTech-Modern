@@ -62,6 +62,8 @@
         "ae2.GenericStackInvAccessor",
         "create.RotationPropagatorMixin",
         "embeddium.BiomeColorCacheMixin",
+        "embeddium.BlockRendererMixin",
+        "embeddium.RenderSectionMixin",
         "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",

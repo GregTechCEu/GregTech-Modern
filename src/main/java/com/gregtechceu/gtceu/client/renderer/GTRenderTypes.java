@@ -31,7 +31,6 @@ public class GTRenderTypes extends RenderType {
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 131072, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(RenderStateShard.NO_CULL)
-                    .setOutputState(BLOOM_TARGET)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 

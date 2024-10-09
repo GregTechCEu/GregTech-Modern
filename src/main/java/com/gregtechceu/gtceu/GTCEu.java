@@ -66,9 +66,8 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_IRIS) || LDLib.isModLoaded(GTValues.MODID_OCULUS);
     }
 
-    public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_SODIUM) || LDLib.isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
+    public static boolean isEmbeddiumLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
     }
 
     public static boolean isAE2Loaded() {
