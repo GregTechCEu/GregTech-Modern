@@ -29,7 +29,7 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "ldlib"
-mandatory = false
+mandatory = true
 embedded = true
 versionRange = "[${ldlib_version},)"
 ordering = "AFTER"
@@ -41,7 +41,7 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "configuration"
-mandatory = false
+mandatory = true
 embedded = true
 versionRange = "[${configuration_version},)"
 ordering = "AFTER"
