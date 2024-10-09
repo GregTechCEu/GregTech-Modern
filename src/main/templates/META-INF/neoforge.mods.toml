@@ -35,7 +35,7 @@ file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]]
     modId = "ldlib"
-    type = "optional"
+    type = "required"
     embedded = true
     versionRange = "[${ldlib_version},)"
     ordering = "AFTER"
@@ -47,7 +47,7 @@ file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]]
     modId = "configuration"
-    type = "optional"
+    type = "required"
     embedded = true
     versionRange = "[${configuration_version},)"
     ordering = "AFTER"
