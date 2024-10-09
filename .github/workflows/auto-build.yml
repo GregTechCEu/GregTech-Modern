@@ -57,5 +57,4 @@ jobs:
             The latest build of GTM for Minecraft ${{ github.ref_name }}.
             Please report any [issues](https://github.com/GregTechCEu/GregTech-Modern/issues).
             ${{ steps.changelog.outputs.changelog }}
-          files: |
-            build/libs/*.jar
+          files: build/libs/*.jar

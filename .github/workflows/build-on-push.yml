@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Check Path Filter
         uses: dorny/paths-filter@v3
         id: filter
