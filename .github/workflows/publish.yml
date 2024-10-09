@@ -6,7 +6,6 @@ on:
       simulate:
         required: false
         type: boolean
-        default: true
       branch:
         description: 'Branch to checkout; 1.20.1 or 1.21'
         required: true
@@ -20,7 +19,7 @@ on:
         required: false
         type: string
       changelog-body:
-        description: 'Body for CHANGELOG.md'
+        description: 'Body of change notes to insert into CHANGELOG.md'
         required: false
         type: string
 
