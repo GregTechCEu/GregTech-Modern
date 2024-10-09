@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
+
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,7 +25,8 @@ public interface IBloomEffect {
      * @param context render context
      */
     @OnlyIn(Dist.CLIENT)
-    void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context);
+    void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+                           @NotNull EffectRenderContext context);
 
     /**
      * @param context render context

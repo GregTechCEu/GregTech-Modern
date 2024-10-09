@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.worldgen.RubberFoliagePlacer;
 import com.gregtechceu.gtceu.common.worldgen.RubberTrunkPlacer;
 import com.gregtechceu.gtceu.core.mixins.IFoliagePlacerTypeAccessor;
-
 import com.gregtechceu.gtceu.core.mixins.ITrunkPlacerTypeAccessor;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;

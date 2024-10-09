@@ -39,10 +39,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-
-import lombok.Getter;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -257,7 +257,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @OnlyIn(Dist.CLIENT)
     public void createParticle() {
-        particle = new GTOverheatParticle(this, meltTemp, getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
+        particle = new GTOverheatParticle(this, meltTemp,
+                getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
                 getPipeType().insulationLevel >= 0);
         GTParticleManager.INSTANCE.addEffect(particle);
     }

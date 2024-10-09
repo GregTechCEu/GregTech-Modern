@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.client.util;
 
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;

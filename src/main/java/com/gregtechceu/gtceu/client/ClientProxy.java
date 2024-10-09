@@ -24,15 +24,12 @@ import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -99,12 +96,7 @@ public class ClientProxy extends CommonProxy {
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
     }
-/*
-    @SubscribeEvent
-    public void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-        event.register("bloom", BloomEffectUtil.getEffectiveBloomLayer(), Sheets.cutoutBlockSheet());
-    }
-*/
+
     @SubscribeEvent
     public void onRegisterShaders(RegisterShadersEvent event) {
         GTShaders.onRegisterShaders(event);

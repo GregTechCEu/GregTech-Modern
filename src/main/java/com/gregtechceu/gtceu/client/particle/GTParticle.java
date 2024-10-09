@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.particle;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.util.EffectRenderContext;
 
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -101,7 +100,7 @@ public abstract class GTParticle {
      * called between a {@link IRenderSetup#preDraw(BufferBuilder)} call and a
      * {@link IRenderSetup#postDraw(BufferBuilder)} call.
      *
-     * @param poseStack
+     * @param poseStack pose stack
      * @param buffer    buffer builder
      * @param context   render context
      */

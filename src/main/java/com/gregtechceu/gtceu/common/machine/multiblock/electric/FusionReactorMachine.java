@@ -27,13 +27,13 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +70,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Nullable
     protected TickableSubscription preHeatSubs;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean registeredBloomTicket;
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {

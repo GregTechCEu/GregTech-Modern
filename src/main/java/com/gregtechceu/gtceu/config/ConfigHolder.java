@@ -672,8 +672,8 @@ public class ConfigHolder {
             public boolean emissiveTexturesBloom = true;
 
             @Configurable
-            @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR", "1 - Unity Bloom",
-                    "2 - Unreal Bloom", "Default: 2" })
+            @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR",
+                    "1 - Unity Bloom", "2 - Unreal Bloom", "Default: 2" })
             @Configurable.Range(min = 0, max = 2)
             public int bloomStyle = 2;
 
@@ -735,7 +735,8 @@ public class ConfigHolder {
                 public double strength = 1.5;
 
                 @Configurable
-                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR", "1 - Unity Bloom",
+                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR",
+                        "1 - Unity Bloom",
                         "2 - Unreal Bloom", "Default: 2" })
                 @Configurable.Range(min = 0, max = 2)
                 public int bloomStyle = 1;
@@ -781,7 +782,8 @@ public class ConfigHolder {
                 public double strength = 1.1;
 
                 @Configurable
-                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR", "1 - Unity Bloom",
+                @Configurable.Comment({ "Bloom Algorithm", "0 - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR",
+                        "1 - Unity Bloom",
                         "2 - Unreal Bloom", "Default: 2" })
                 @Configurable.Range(min = 0, max = 2)
                 public int bloomStyle = 2;

@@ -12,11 +12,10 @@ import com.gregtechceu.gtceu.client.util.IBloomEffect;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.RequiredArgsConstructor;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +24,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
@@ -69,9 +72,9 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
         RenderBufferHelper.renderRing(stack, buffer,
-                 pos.getX() /*- (float) context.cameraX()*/ + relativeBack.getStepX() * 7 + 0.5F,
-                 pos.getY() /*- (float) context.cameraY()*/ + relativeBack.getStepY() * 7 + 0.5F,
-                 pos.getZ() /*- (float) context.cameraZ()*/ + relativeBack.getStepZ() * 7 + 0.5F,
+                pos.getX() + relativeBack.getStepX() * 7 + 0.5F,
+                pos.getY() + relativeBack.getStepY() * 7 + 0.5F,
+                pos.getZ() + relativeBack.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
                 r, g, b, a, axis);
     }
@@ -99,12 +102,15 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
         private final FusionReactorMachine machine;
 
-        private static final BufferBuilder lightRingBuffer = new BufferBuilder(GTRenderTypes.getLightRing().bufferSize());
+        private static final BufferBuilder lightRingBuffer = new BufferBuilder(
+                GTRenderTypes.getLightRing().bufferSize());
 
         @Override
-        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer, @NotNull EffectRenderContext context) {
+        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
+                                      @NotNull EffectRenderContext context) {
             lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
-            FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer, context);
+            FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer,
+                    context);
             BufferUploader.drawWithShader(lightRingBuffer.end());
         }
 
@@ -131,8 +137,6 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         }
 
         @Override
-        public void postDraw(@NotNull BufferBuilder buffer) {
-
-        }
+        public void postDraw(@NotNull BufferBuilder buffer) {}
     }
 }

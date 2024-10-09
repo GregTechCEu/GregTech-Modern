@@ -1,26 +1,20 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-
 import com.gregtechceu.gtceu.client.shader.GTShaders;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
-import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.Util;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -28,6 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -39,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 @Mixin(LevelRenderer.class)
 @OnlyIn(Dist.CLIENT)
@@ -112,7 +106,8 @@ public abstract class LevelRendererMixin {
         throw new AssertionError();
     }
 
-    @Shadow public abstract Frustum getFrustum();
+    @Shadow
+    public abstract Frustum getFrustum();
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void gtceu$startBloomBuffer(PoseStack poseStack, float partialTick, long finishNanoTime,
@@ -125,8 +120,8 @@ public abstract class LevelRendererMixin {
 
     @Inject(method = "renderLevel",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"))
+                     value = "INVOKE",
+                     target = "Lnet/minecraft/client/renderer/DimensionSpecialEffects;constantAmbientLight()Z"))
     private void gtceu$injectRenderBloom(PoseStack poseStack, float partialTick, long finishNanoTime,
                                          boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
                                          LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
@@ -134,10 +129,12 @@ public abstract class LevelRendererMixin {
                 poseStack, projectionMatrix, getFrustum(), partialTick, camera.getEntity());
     }
 
-    @Inject(method = "compileChunks", at = @At("TAIL"))
-    private void gtceu$compileBloomBuffers(Camera camera, CallbackInfo ci,
-                                           @Local List<ChunkRenderDispatcher.RenderChunk> list) {
-        BloomEffectUtil.bakeBloomChunkBuffers(list);
+    @Inject(method = "updateRenderChunks", at = @At("HEAD"))
+    private void gtceu$compileBloomBuffers(LinkedHashSet<LevelRenderer.RenderChunkInfo> chunkInfos,
+                                           LevelRenderer.RenderInfoMap infoMap, Vec3 viewVector,
+                                           Queue<LevelRenderer.RenderChunkInfo> infoQueue, boolean shouldCull,
+                                           CallbackInfo ci) {
+        BloomEffectUtil.bakeBloomChunkBuffers(chunkInfos);
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
@@ -148,7 +145,8 @@ public abstract class LevelRendererMixin {
     }
 
     @Inject(method = "renderHitOutline", at = @At("HEAD"))
-    private void gtceu$renderAOEHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY,
+    private void gtceu$renderAOEHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX,
+                                           double camY,
                                            double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 

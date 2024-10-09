@@ -1,20 +1,22 @@
 package com.gregtechceu.gtceu.client.shader;
 
-import com.google.gson.JsonSyntaxException;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexBuffer;
+
+import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterShadersEvent;
+
+import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexBuffer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -86,7 +88,8 @@ public class GTShaders {
     }
 
     public static boolean allowedShader() {
-        return ConfigHolder.INSTANCE.client.shader.useShader && !GTCEu.isIrisOculusLoaded();
+        return ConfigHolder.INSTANCE.client.shader.useShader &&
+                !(GTCEu.isIrisOculusLoaded() && IrisApi.getInstance().isShaderPackInUse());
     }
 
     public static float getITime(float pPartialTicks) {

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -14,7 +14,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 @OnlyIn(Dist.CLIENT)
 public class GTRenderTypes extends RenderType {
 
-    public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard("bloom_target",
+    public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard(
+            "bloom_target",
             () -> {
                 if (GTShaders.allowedShader()) {
                     GTShaders.BLOOM_TARGET.bindWrite(false);
@@ -34,7 +35,8 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+    private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
             2097152, false, false,
             RenderType.CompositeState.builder()
                     .setLightmapState(RenderStateShard.LIGHTMAP)

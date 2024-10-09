@@ -1,18 +1,21 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
 public record GTMetadataSection(boolean bloom) {
+
     public static final String SECTION_NAME = GTCEu.MOD_ID;
     public static final GTMetadataSection MISSING = new GTMetadataSection(false);
 
@@ -32,7 +35,7 @@ public record GTMetadataSection(boolean bloom) {
 
     public static boolean hasBloom(TextureAtlasSprite sprite) {
         if (sprite == null) return false;
-        //noinspection resource
+        // noinspection resource
         GTMetadataSection ret = getMetadata(spriteToAbsolute(sprite.contents().name()));
         return ret != null && ret.bloom;
     }
@@ -48,7 +51,8 @@ public record GTMetadataSection(boolean bloom) {
     }
 
     public static class Serializer
-            implements MetadataSectionSerializer<GTMetadataSection> {
+                                   implements MetadataSectionSerializer<GTMetadataSection> {
+
         static GTMetadataSection.Serializer INSTANCE = new GTMetadataSection.Serializer();
 
         @NotNull
@@ -74,4 +78,3 @@ public record GTMetadataSection(boolean bloom) {
         }
     }
 }
-

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
 import com.gregtechceu.gtceu.client.shader.post.BloomType;
 import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.gregtechceu.gtceu.client.util.IBloomEffect;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
