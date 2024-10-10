@@ -429,6 +429,13 @@ public class ConfigHolder {
         public boolean enableMoreDualHatchAbility = false;
 
         @Configurable
+        @Configurable.Comment({
+                "Default maximum parallel of steam multiblocks",
+                "Default: 8"
+        })
+        public int steamMultiParallelAmount = 8;
+
+        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
