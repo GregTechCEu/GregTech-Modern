@@ -396,13 +396,6 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
-        // todo trapdoors
-        // ASSEMBLER_RECIPES.recipeBuilder()
-        // .inputItems(ItemTags.PLANKS, 3).circuitMeta(3)
-        // .outputItems(new ItemStack(Blocks.TRAPDOOR, 2))
-        // .duration(100).EUt(4)
-        // .save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("chest")
                 .inputItems(ItemTags.PLANKS, 8)
                 .outputItems(new ItemStack(Blocks.CHEST))
