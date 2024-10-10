@@ -30,24 +30,26 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
     public Tag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", payload.id.toString());
-        tag.put("recipe", GTRecipeSerializer.CODEC.encodeStart(NbtOps.INSTANCE, payload).result().orElse(new CompoundTag()));
+        tag.put("recipe",
+                GTRecipeSerializer.CODEC.encodeStart(NbtOps.INSTANCE, payload).result().orElse(new CompoundTag()));
         return tag;
     }
 
     @Override
     public void deserializeNBT(Tag tag) {
         RecipeManager recipeManager = Platform.getMinecraftServer().getRecipeManager();
-        if(tag instanceof CompoundTag compoundTag) {
+        if (tag instanceof CompoundTag compoundTag) {
             payload = GTRecipeSerializer.CODEC.parse(NbtOps.INSTANCE, compoundTag.get("recipe")).result().orElse(null);
-            if(payload != null) {
+            if (payload != null) {
                 payload.id = new ResourceLocation(compoundTag.getString("id"));
             }
         } else if (tag instanceof StringTag stringTag) { // Backwards Compatibility
             var recipe = recipeManager.byKey(new ResourceLocation(stringTag.getAsString())).orElse(null);
             if (recipe instanceof GTRecipe gtRecipe) {
                 payload = gtRecipe;
-            } else if(recipe instanceof SmeltingRecipe smeltingRecipe) {
-                payload = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(new ResourceLocation(stringTag.getAsString()), smeltingRecipe);
+            } else if (recipe instanceof SmeltingRecipe smeltingRecipe) {
+                payload = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(new ResourceLocation(stringTag.getAsString()),
+                        smeltingRecipe);
             } else {
                 payload = null;
             }
@@ -68,7 +70,7 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
     @Override
     public void readPayload(FriendlyByteBuf buf) {
         var id = buf.readResourceLocation();
-        if(buf.isReadable()) {
+        if (buf.isReadable()) {
             this.payload = GTRecipeSerializer.SERIALIZER.fromNetwork(id, buf);
         } else { // Backwards Compatibility
             RecipeManager recipeManager;
