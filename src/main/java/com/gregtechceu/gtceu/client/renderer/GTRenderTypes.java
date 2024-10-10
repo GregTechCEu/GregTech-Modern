@@ -39,9 +39,8 @@ public class GTRenderTypes extends RenderType {
             2097152, false, false,
             RenderType.CompositeState.builder()
                     .setLightmapState(RenderStateShard.LIGHTMAP)
-                    .setShaderState(RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER)
-                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET)
                     .setOutputState(BLOOM_TARGET)
                     .createCompositeState(false));
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.particle.GTParticle;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
@@ -173,7 +172,7 @@ public class BloomEffectUtil {
                                                         @NotNull IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
                                                         @Nullable Supplier<Level> worldContext) {
-        if (GTCEu.isIrisOculusLoaded()) return BloomRenderTicket.INVALID;
+        if (!GTShaders.allowedShader()) return BloomRenderTicket.INVALID;
         BloomRenderTicket ticket = new BloomRenderTicket(setup, bloomType, render, validityChecker, worldContext);
         BLOOM_RENDER_LOCK.lock();
         try {
@@ -358,30 +357,28 @@ public class BloomEffectUtil {
         return builder;
     }
 
-    public static void bakeBloomChunkBuffers(Set<BlockPos> list) {
-        if (!GTShaders.allowedShader() || list.isEmpty()) {
+    public static void bakeBloomChunkBuffers(BlockPos pos) {
+        if (!GTShaders.allowedShader()) {
             return;
         }
 
-        for (var pos : list) {
-            BufferBuilder builder = GTShaders.BLOOM_BUFFER_BUILDERS.get(pos);
-            if (builder == null || !builder.building()) {
-                continue;
-            }
-            BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
-            if (buffer != null) {
-                GTShaders.RENDERED_BLOOM_BUFFERS.put(pos, buffer);
-                if (RenderSystem.isOnRenderThread()) {
+        BufferBuilder builder = GTShaders.BLOOM_BUFFER_BUILDERS.get(pos);
+        if (builder == null || !builder.building()) {
+            return;
+        }
+        BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
+        if (buffer != null) {
+            GTShaders.RENDERED_BLOOM_BUFFERS.put(pos, buffer);
+            if (RenderSystem.isOnRenderThread()) {
+                VertexBuffer vertexBuffer = GTShaders.BLOOM_BUFFERS.computeIfAbsent(pos,
+                        $ -> new VertexBuffer(VertexBuffer.Usage.STATIC));
+                BloomEffectUtil.uploadBloomBuffer(buffer, vertexBuffer);
+            } else {
+                RenderSystem.recordRenderCall(() -> {
                     VertexBuffer vertexBuffer = GTShaders.BLOOM_BUFFERS.computeIfAbsent(pos,
                             $ -> new VertexBuffer(VertexBuffer.Usage.STATIC));
                     BloomEffectUtil.uploadBloomBuffer(buffer, vertexBuffer);
-                } else {
-                    RenderSystem.recordRenderCall(() -> {
-                        VertexBuffer vertexBuffer = GTShaders.BLOOM_BUFFERS.computeIfAbsent(pos,
-                                $ -> new VertexBuffer(VertexBuffer.Usage.STATIC));
-                        BloomEffectUtil.uploadBloomBuffer(buffer, vertexBuffer);
-                    });
-                }
+                });
             }
         }
     }

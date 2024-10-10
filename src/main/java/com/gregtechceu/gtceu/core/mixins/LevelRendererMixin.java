@@ -9,7 +9,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -22,8 +21,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -34,7 +36,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mixin(LevelRenderer.class)
 @OnlyIn(Dist.CLIENT)
@@ -107,14 +108,16 @@ public abstract class LevelRendererMixin {
         throw new AssertionError();
     }
 
-    @Inject(method = "updateRenderChunks", at = @At("HEAD"))
-    private void gtceu$compileBloomBuffers(LinkedHashSet<LevelRenderer.RenderChunkInfo> chunkInfos,
-                                           LevelRenderer.RenderInfoMap infoMap, Vec3 viewVector,
-                                           Queue<LevelRenderer.RenderChunkInfo> infoQueue, boolean shouldCull,
-                                           CallbackInfo ci) {
-        BloomEffectUtil.bakeBloomChunkBuffers(chunkInfos.stream()
-                .map(info -> info.chunk.getOrigin())
-                .collect(Collectors.toSet()));
+    @WrapOperation(method = "applyFrustum",
+                   at = @At(value = "INVOKE",
+                            target = "Lit/unimi/dsi/fastutil/objects/ObjectArrayList;add(Ljava/lang/Object;)Z",
+                            remap = false))
+    private boolean gtceu$compileBloomBuffers(ObjectArrayList<LevelRenderer.RenderChunkInfo> instance,
+                                              Object chunkInfo,
+                                              Operation<Boolean> original) {
+        // cast back to RenderChunkInfo
+        BloomEffectUtil.bakeBloomChunkBuffers(((LevelRenderer.RenderChunkInfo) chunkInfo).chunk.getOrigin());
+        return original.call(instance, chunkInfo);
     }
 
     @Inject(method = "resize", at = @At("TAIL"))

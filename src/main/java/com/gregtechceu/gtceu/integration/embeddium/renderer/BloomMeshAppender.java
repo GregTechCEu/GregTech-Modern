@@ -6,8 +6,6 @@ import net.minecraft.core.BlockPos;
 
 import org.embeddedt.embeddium.api.MeshAppender;
 
-import java.util.Set;
-
 public class BloomMeshAppender implements MeshAppender {
 
     public static BloomMeshAppender INSTANCE = new BloomMeshAppender();
@@ -15,7 +13,6 @@ public class BloomMeshAppender implements MeshAppender {
     @Override
     public void render(Context context) {
         BlockPos chunkOrigin = context.sectionOrigin().origin();
-        BloomEffectUtil.CURRENT_RENDERING_CHUNK_POS.set(chunkOrigin);
-        BloomEffectUtil.bakeBloomChunkBuffers(Set.of(chunkOrigin));
+        BloomEffectUtil.bakeBloomChunkBuffers(chunkOrigin);
     }
 }

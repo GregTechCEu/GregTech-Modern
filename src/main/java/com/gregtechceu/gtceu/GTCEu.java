@@ -11,7 +11,6 @@ import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import org.slf4j.Logger;
@@ -78,10 +77,6 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_CURIOS);
     }
 
-    public static boolean isShimmerLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
-    }
-
     public static boolean isJAVDLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_JAVD);
     }
@@ -92,10 +87,6 @@ public class GTCEu {
 
     public static boolean isArgonautsLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_ARGONAUTS);
-    }
-
-    public static boolean isOptifineLoaded() {
-        return ModList.get().isLoaded(GTValues.MODID_OPTIFINE);
     }
 
     @Deprecated(forRemoval = true, since = "1.0.21")

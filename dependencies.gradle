@@ -57,7 +57,6 @@ dependencies {
     jarJar(forge.configuration)
 
     // Shimmer
-    modCompileOnly(forge.shimmer.forge) { transitive = false }
     modImplementation("maven.modrinth:embeddium:0.3.31+mc1.20.1")
     modCompileOnly("maven.modrinth:oculus:1.20.1-1.7.0")
 
