@@ -96,7 +96,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:lapis_block"));
         registry.accept(new ResourceLocation("minecraft:lapis_lazuli"));
         registry.accept(new ResourceLocation("minecraft:quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:quartz_block"));
         registry.accept(new ResourceLocation("minecraft:clay"));
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
@@ -107,6 +106,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:snow_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
@@ -267,6 +267,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
         registry.accept(new ResourceLocation("minecraft:chain"));
+        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
+        registry.accept(new ResourceLocation("minecraft:lodestone"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
