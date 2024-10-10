@@ -50,8 +50,7 @@ public record GTMetadataSection(boolean bloom) {
         return sprite;
     }
 
-    public static class Serializer
-                                   implements MetadataSectionSerializer<GTMetadataSection> {
+    public static class Serializer implements MetadataSectionSerializer<GTMetadataSection> {
 
         static GTMetadataSection.Serializer INSTANCE = new GTMetadataSection.Serializer();
 
