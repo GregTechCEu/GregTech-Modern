@@ -934,31 +934,26 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
-                    .tag(CustomTags.ELECTRIC_MOTORS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
-                    .tag(CustomTags.ELECTRIC_MOTORS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
-                    .tag(CustomTags.ELECTRIC_MOTORS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
-                    .tag(CustomTags.ELECTRIC_MOTORS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
-                    .tag(CustomTags.ELECTRIC_MOTORS)
                     .register() :
             null;
 
@@ -1065,7 +1060,6 @@ public class GTItems {
                                 1280 * 64 * 64 * 4 / 20));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-                    .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
 
@@ -1079,7 +1073,6 @@ public class GTItems {
                                 1280 * 64 * 64 * 4 / 20));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-                    .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
 
@@ -1093,7 +1086,6 @@ public class GTItems {
                                 1280 * 64 * 64 * 4 / 20));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-                    .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
 
@@ -1107,7 +1099,6 @@ public class GTItems {
                                 1280 * 64 * 64 * 4 / 20));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-                    .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
 
@@ -1121,7 +1112,6 @@ public class GTItems {
                                 1280 * 64 * 64 * 4 / 20));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-                    .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
 
@@ -1223,7 +1213,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .tag(CustomTags.FLUID_REGULATORS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ?
@@ -1235,7 +1224,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .tag(CustomTags.FLUID_REGULATORS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ?
@@ -1247,7 +1235,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .tag(CustomTags.FLUID_REGULATORS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ?
@@ -1259,7 +1246,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .tag(CustomTags.FLUID_REGULATORS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ?
@@ -1271,7 +1257,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                                 1280 * 64 * 64 * 4 / 20));
                     })))
-                    .tag(CustomTags.FLUID_REGULATORS)
                     .register() :
             null;
 
@@ -1378,7 +1363,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-                    .tag(CustomTags.CONVEYOR_MODULES)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ?
@@ -1390,7 +1374,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-                    .tag(CustomTags.CONVEYOR_MODULES)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ?
@@ -1402,7 +1385,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-                    .tag(CustomTags.CONVEYOR_MODULES)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ?
@@ -1414,7 +1396,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-                    .tag(CustomTags.CONVEYOR_MODULES)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ?
@@ -1426,7 +1407,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-                    .tag(CustomTags.CONVEYOR_MODULES)
                     .register() :
             null;
 
@@ -1473,31 +1453,26 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_PISTON_UHV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uhv_electric_piston", Item::new).lang("UHV Electric Piston")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
-                    .tag(CustomTags.ELECTRIC_PISTONS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_PISTON_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_electric_piston", Item::new).lang("UEV Electric Piston")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
-                    .tag(CustomTags.ELECTRIC_PISTONS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_PISTON_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_electric_piston", Item::new).lang("UIV Electric Piston")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
-                    .tag(CustomTags.ELECTRIC_PISTONS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_PISTON_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_electric_piston", Item::new).lang("UXV Electric Piston")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
-                    .tag(CustomTags.ELECTRIC_PISTONS)
                     .register() :
             null;
     public static ItemEntry<Item> ELECTRIC_PISTON_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_electric_piston", Item::new).lang("OpV Electric Piston")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
-                    .tag(CustomTags.ELECTRIC_PISTONS)
                     .register() :
             null;
 
@@ -1591,7 +1566,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-                    .tag(CustomTags.ROBOT_ARMS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = GTCEuAPI.isHighTier() ?
@@ -1603,7 +1577,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-                    .tag(CustomTags.ROBOT_ARMS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = GTCEuAPI.isHighTier() ?
@@ -1615,7 +1588,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-                    .tag(CustomTags.ROBOT_ARMS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = GTCEuAPI.isHighTier() ?
@@ -1627,7 +1599,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-                    .tag(CustomTags.ROBOT_ARMS)
                     .register() :
             null;
     public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ?
@@ -1639,7 +1610,6 @@ public class GTItems {
                         lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
                     })))
                     .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-                    .tag(CustomTags.ROBOT_ARMS)
                     .register() :
             null;
 
@@ -1678,30 +1648,25 @@ public class GTItems {
     public static ItemEntry<Item> FIELD_GENERATOR_UHV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uhv_field_generator", Item::new).lang("UHV Field Generator")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
-                    .tag(CustomTags.FIELD_GENERATORS)
                     .register() :
             null;
     public static ItemEntry<Item> FIELD_GENERATOR_UEV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uev_field_generator", Item::new).lang("UEV Field Generator")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
-                    .tag(CustomTags.FIELD_GENERATORS)
                     .register() :
             null;
     public static ItemEntry<Item> FIELD_GENERATOR_UIV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uiv_field_generator", Item::new).lang("UIV Field Generator")
-                    .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
-            .tag(CustomTags.FIELD_GENERATORS).register() :
+                    .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator")).register() :
             null;
     public static ItemEntry<Item> FIELD_GENERATOR_UXV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uxv_field_generator", Item::new).lang("UXV Field Generator")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
-                    .tag(CustomTags.FIELD_GENERATORS)
                     .register() :
             null;
     public static ItemEntry<Item> FIELD_GENERATOR_OpV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("opv_field_generator", Item::new).lang("OpV Field Generator")
                     .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
-                    .tag(CustomTags.FIELD_GENERATORS)
                     .register() :
             null;
 
@@ -1739,23 +1704,18 @@ public class GTItems {
             .register();
     public static ItemEntry<Item> EMITTER_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_emitter", Item::new)
             .lang("UHV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter"))
-            .tag(CustomTags.EMITTERS)
             .register() : null;
     public static ItemEntry<Item> EMITTER_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_emitter", Item::new)
             .lang("UEV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter"))
-            .tag(CustomTags.EMITTERS)
             .register() : null;
     public static ItemEntry<Item> EMITTER_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_emitter", Item::new)
             .lang("UIV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter"))
-            .tag(CustomTags.EMITTERS)
             .register() : null;
     public static ItemEntry<Item> EMITTER_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_emitter", Item::new)
             .lang("UXV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter"))
-            .tag(CustomTags.EMITTERS)
             .register() : null;
     public static ItemEntry<Item> EMITTER_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_emitter", Item::new)
             .lang("OpV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter"))
-            .tag(CustomTags.EMITTERS)
             .register() : null;
 
     public static ItemEntry<Item> SENSOR_LV = REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor")
@@ -1793,27 +1753,22 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_sensor", Item::new)
             .lang("UHV Sensor")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor"))
-            .tag(CustomTags.SENSORS)
             .register() : null;
     public static ItemEntry<Item> SENSOR_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_sensor", Item::new)
             .lang("UEV Sensor")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor"))
-            .tag(CustomTags.SENSORS)
             .register() : null;
     public static ItemEntry<Item> SENSOR_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_sensor", Item::new)
             .lang("UIV Sensor")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor"))
-            .tag(CustomTags.SENSORS)
             .register() : null;
     public static ItemEntry<Item> SENSOR_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_sensor", Item::new)
             .lang("UXV Sensor")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor"))
-            .tag(CustomTags.SENSORS)
             .register() : null;
     public static ItemEntry<Item> SENSOR_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_sensor", Item::new)
             .lang("OpV Sensor")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor"))
-            .tag(CustomTags.SENSORS)
             .register() : null;
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::create)

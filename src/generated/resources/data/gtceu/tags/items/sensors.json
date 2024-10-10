@@ -8,10 +8,25 @@
     "gtceu:luv_sensor",
     "gtceu:zpm_sensor",
     "gtceu:uv_sensor",
-    "gtceu:uhv_sensor",
-    "gtceu:uev_sensor",
-    "gtceu:uiv_sensor",
-    "gtceu:uxv_sensor",
-    "gtceu:opv_sensor"
+    {
+      "id": "gtceu:uhv_sensor",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_sensor",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_sensor",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_sensor",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_sensor",
+      "required": false
+    }
   ]
 }

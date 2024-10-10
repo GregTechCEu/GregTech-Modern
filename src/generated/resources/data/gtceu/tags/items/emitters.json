@@ -8,10 +8,25 @@
     "gtceu:luv_emitter",
     "gtceu:zpm_emitter",
     "gtceu:uv_emitter",
-    "gtceu:uhv_emitter",
-    "gtceu:uev_emitter",
-    "gtceu:uiv_emitter",
-    "gtceu:uxv_emitter",
-    "gtceu:opv_emitter"
+    {
+      "id": "gtceu:uhv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_emitter",
+      "required": false
+    }
   ]
 }

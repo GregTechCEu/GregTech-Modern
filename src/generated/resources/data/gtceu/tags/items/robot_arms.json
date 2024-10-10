@@ -8,10 +8,25 @@
     "gtceu:luv_robot_arm",
     "gtceu:zpm_robot_arm",
     "gtceu:uv_robot_arm",
-    "gtceu:uhv_robot_arm",
-    "gtceu:uev_robot_arm",
-    "gtceu:uiv_robot_arm",
-    "gtceu:uxv_robot_arm",
-    "gtceu:opv_robot_arm"
+    {
+      "id": "gtceu:uhv_robot_arm",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_robot_arm",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_robot_arm",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_robot_arm",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_robot_arm",
+      "required": false
+    }
   ]
 }

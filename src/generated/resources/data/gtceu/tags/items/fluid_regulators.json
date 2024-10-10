@@ -8,10 +8,25 @@
     "gtceu:luv_fluid_regulator",
     "gtceu:zpm_fluid_regulator",
     "gtceu:uv_fluid_regulator",
-    "gtceu:uhv_fluid_regulator",
-    "gtceu:uev_fluid_regulator",
-    "gtceu:uiv_fluid_regulator",
-    "gtceu:uxv_fluid_regulator",
-    "gtceu:opv_fluid_regulator"
+    {
+      "id": "gtceu:uhv_fluid_regulator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_fluid_regulator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_fluid_regulator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_fluid_regulator",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_fluid_regulator",
+      "required": false
+    }
   ]
 }
