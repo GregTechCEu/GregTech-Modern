@@ -771,10 +771,6 @@ public class WoodMachineRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate",
                 GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_planks_saw",
-                GTBlocks.RUBBER_PLANK.asStack(ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                "s", "L", 'L', GTBlocks.RUBBER_LOG.asItem());
-
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_wood",
                 GTBlocks.RUBBER_WOOD.asStack(3),
                 "LL", "LL", 'L', GTBlocks.RUBBER_LOG.asStack());
@@ -782,14 +778,6 @@ public class WoodMachineRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "stripped_rubber_wood",
                 GTBlocks.STRIPPED_RUBBER_WOOD.asStack(3),
                 "LL", "LL", 'L', GTBlocks.STRIPPED_RUBBER_LOG.asStack());
-
-        CUTTER_RECIPES.recipeBuilder("rubber_planks")
-                .inputItems(GTBlocks.RUBBER_LOG.asItem())
-                .outputItems(GTBlocks.RUBBER_PLANK.asStack(6))
-                .outputItems(dust, Wood, 2)
-                .duration(200)
-                .EUt(VA[ULV])
-                .save(provider);
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
