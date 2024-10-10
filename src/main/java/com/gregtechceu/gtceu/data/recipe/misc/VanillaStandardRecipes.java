@@ -812,7 +812,8 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "leather_horse_armor", new ItemStack(Items.LEATHER_HORSE_ARMOR), "hdH",
+        VanillaRecipeHelper.addShapedRecipe(provider, "leather_horse_armor", new ItemStack(Items.LEATHER_HORSE_ARMOR),
+                "hdH",
                 "PCP", "LSL",
                 'H', new ItemStack(Items.LEATHER_HELMET),
                 'P', new ItemStack(Items.LEATHER),

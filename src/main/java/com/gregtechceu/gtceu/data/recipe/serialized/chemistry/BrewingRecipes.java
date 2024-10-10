@@ -60,11 +60,13 @@ public class BrewingRecipes {
                 .inputFluids(Water.getFluid(750)).outputFluids(Biomass.getFluid(750)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_kelp").duration(160).EUt(3).inputItems(Blocks.KELP.asItem())
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
-        BREWING_RECIPES.recipeBuilder("biomass_from_sea_pickle").duration(160).EUt(3).inputItems(Blocks.SEA_PICKLE.asItem())
+        BREWING_RECIPES.recipeBuilder("biomass_from_sea_pickle").duration(160).EUt(3)
+                .inputItems(Blocks.SEA_PICKLE.asItem())
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_sweet_berries").duration(160).EUt(3).inputItems(Items.SWEET_BERRIES)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
-        BREWING_RECIPES.recipeBuilder("biomass_from_crimson_fungus").duration(160).EUt(3).inputItems(Items.CRIMSON_FUNGUS)
+        BREWING_RECIPES.recipeBuilder("biomass_from_crimson_fungus").duration(160).EUt(3)
+                .inputItems(Items.CRIMSON_FUNGUS)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_warped_fungus").duration(160).EUt(3).inputItems(Items.WARPED_FUNGUS)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
@@ -72,8 +74,8 @@ public class BrewingRecipes {
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
         BREWING_RECIPES.recipeBuilder("biomass_from_pitcher_pod").duration(160).EUt(3).inputItems(Items.PITCHER_POD)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
-        BREWING_RECIPES.recipeBuilder("biomass_from_torchflower_seeds").duration(160).EUt(3).inputItems(Items.TORCHFLOWER_SEEDS)
+        BREWING_RECIPES.recipeBuilder("biomass_from_torchflower_seeds").duration(160).EUt(3)
+                .inputItems(Items.TORCHFLOWER_SEEDS)
                 .inputFluids(Water.getFluid(20)).outputFluids(Biomass.getFluid(20)).save(provider);
-
     }
 }
