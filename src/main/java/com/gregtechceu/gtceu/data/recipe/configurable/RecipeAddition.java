@@ -1427,7 +1427,6 @@ public class RecipeAddition {
             }
 
         } else {
-            // TODO: add non-harderMiscRecipes assembler recipes for 1.14 blocks
             ASSEMBLER_RECIPES.recipeBuilder("crafting_table").duration(80).EUt(6).circuitMeta(4)
                     .inputItems(ItemTags.PLANKS, 4).outputItems(new ItemStack(Blocks.CRAFTING_TABLE)).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("furnace").circuitMeta(8).inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 8)
@@ -1450,6 +1449,40 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("observer_quartzite").duration(100).EUt(VA[LV])
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 6).inputItems(dust, Redstone, 2)
                     .inputItems(plate, Quartzite).outputItems(new ItemStack(Blocks.OBSERVER)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("lantern").duration(100).EUt(VA[LV])
+                    .inputItems(Items.TORCH).inputFluids(Iron.getFluid(GTValues.L / 9 * 8)).outputItems(new ItemStack(Blocks.LANTERN)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("tinted_glass").duration(100).EUt(VA[LV])
+                    .inputItems(Items.AMETHYST_SHARD, 2).inputItems(Items.GLASS).outputItems(new ItemStack(Blocks.TINTED_GLASS)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("stonecutter").duration(100).EUt(VA[LV])
+                    .inputItems(Items.STONE, 3).inputFluids(Iron.getFluid(GTValues.L)).outputItems(new ItemStack(Blocks.STONECUTTER)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("cartography_table").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 4).inputItems(Items.PAPER, 2).outputItems(new ItemStack(Blocks.CARTOGRAPHY_TABLE)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("fletching_table").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 4).inputItems(Items.FLINT, 2).outputItems(new ItemStack(Blocks.FLETCHING_TABLE)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("smithing_table").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 4).inputFluids(Iron.getFluid(GTValues.L * 2)).outputItems(new ItemStack(Blocks.SMITHING_TABLE)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("grindstone").duration(100).EUt(VA[LV])
+                    .inputItems(Tags.Items.RODS_WOODEN, 2).inputItems(Items.STONE_SLAB).inputItems(ItemTags.PLANKS, 2).outputItems(new ItemStack(Blocks.GRINDSTONE)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("loom").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 2).inputItems(Items.STRING, 2).outputItems(new ItemStack(Blocks.LOOM)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("smoker").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.LOGS, 4).inputItems(Items.FURNACE).outputItems(new ItemStack(Blocks.SMOKER)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("blast_furnace").duration(100).EUt(VA[LV])
+                    .inputItems(Items.SMOOTH_STONE, 3).inputItems(Items.FURNACE).inputFluids(Iron.getFluid(GTValues.L * 5)).outputItems(new ItemStack(Blocks.BLAST_FURNACE)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("composter").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.WOODEN_SLABS, 7).outputItems(new ItemStack(Blocks.COMPOSTER)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("lodestone").duration(100).EUt(VA[LV])
+                    .inputItems(Items.CHISELED_STONE_BRICKS, 8).inputItems(Items.NETHERITE_INGOT).outputItems(new ItemStack(Blocks.LODESTONE)).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("scaffolding").duration(100).EUt(VA[LV])
+                    .inputItems(Items.BAMBOO, 6).inputItems(Items.STRING).outputItems(new ItemStack(Blocks.SCAFFOLDING, 6)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("beehive").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 6).inputItems(Items.HONEYCOMB, 3).outputItems(new ItemStack(Blocks.BEEHIVE)).circuitMeta(7).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("chiseled_bookshelf").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.PLANKS, 6).inputItems(ItemTags.WOODEN_SLABS, 3).outputItems(new ItemStack(Blocks.CHISELED_BOOKSHELF)).circuitMeta(9).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("lectern").duration(100).EUt(VA[LV])
+                    .inputItems(ItemTags.WOODEN_SLABS, 4).inputItems(Items.BOOKSHELF).outputItems(new ItemStack(Blocks.LECTERN)).circuitMeta(10).save(provider);
+            ASSEMBLER_RECIPES.recipeBuilder("respawn_anchor").duration(100).EUt(VA[LV])
+                    .inputItems(Items.CRYING_OBSIDIAN, 6).inputItems(Items.GLOWSTONE, 3).outputItems(new ItemStack(Blocks.RESPAWN_ANCHOR)).save(provider);
         }
     }
 

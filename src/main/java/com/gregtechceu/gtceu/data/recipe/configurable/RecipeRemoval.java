@@ -271,6 +271,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:chain"));
         registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
         registry.accept(new ResourceLocation("minecraft:lodestone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -347,7 +348,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:chiseled_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:bookshelf"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
         registry.accept(new ResourceLocation("minecraft:white_wool_from_string"));
