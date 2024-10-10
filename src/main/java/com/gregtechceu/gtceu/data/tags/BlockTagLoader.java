@@ -33,8 +33,8 @@ public class BlockTagLoader {
 
         create(provider, BlockTags.REPLACEABLE,
                 GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.OilLight.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.OilHeavy.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
+                GTMaterials.LightOil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
+                GTMaterials.HeavyOil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
                 GTMaterials.RawOil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
                 GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
     }

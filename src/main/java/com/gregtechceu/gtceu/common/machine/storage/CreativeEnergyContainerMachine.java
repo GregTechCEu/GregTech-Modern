@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.ILaserRelay;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -87,17 +88,22 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
         }
         ampsReceived = 0;
         if (!active || !source || voltage <= 0 || amps <= 0) return;
-        int ampsUsed = 0;
+        long ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
             IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing),
                     opposite);
             // Try to get laser capability
-            if (container == null)
-                container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+            if (container == null) {
+                ILaserRelay relay = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+                if (relay != null) {
+                    ampsUsed += relay.receiveLaser(voltage, amps - ampsUsed);
+                }
+
+            }
 
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
-                ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);
+                ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed, false);
                 if (ampsUsed >= amps) {
                     break;
                 }
@@ -107,7 +113,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     }
 
     @Override
-    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate) {
         if (source || !active || ampsReceived >= amps) {
             return 0;
         }
@@ -243,5 +249,10 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
                         .setBackground(ColorPattern.BLACK.rectTexture())
                         .setValue(GTValues.VNF[setTier]));
+    }
+
+    @Override
+    public long receiveLaser(long laserVoltage, long laserAmperage) {
+        return acceptEnergyFromNetwork(null, laserVoltage, laserAmperage, false);
     }
 }

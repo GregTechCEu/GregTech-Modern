@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
@@ -61,7 +62,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
             int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+            float tick = Minecraft.getInstance().levelRenderer.getTicks() + Minecraft.getInstance().getFrameTime();
             // Don't need to handle locked items here since they don't get saved to the item
             renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
 
@@ -76,9 +77,8 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
-            var level = machine.getLevel();
             var frontFacing = machine.getFrontFacing();
-            float tick = level.getGameTime() + partialTicks;
+            float tick = ClientProxy.getServerTickCount() + partialTicks;
             renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
                     machine.getLockedItem().getStackInSlot(0));
         }

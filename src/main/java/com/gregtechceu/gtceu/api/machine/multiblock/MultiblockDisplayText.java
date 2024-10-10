@@ -209,7 +209,7 @@ public class MultiblockDisplayText {
          * <br>
          * Added if the structure is formed and if the max CWU/t is greater than zero.
          */
-        public Builder addComputationUsageLine(int maxCWUt) {
+        public Builder addComputationUsageLine(long maxCWUt) {
             if (!isStructureFormed)
                 return this;
             if (maxCWUt > 0) {

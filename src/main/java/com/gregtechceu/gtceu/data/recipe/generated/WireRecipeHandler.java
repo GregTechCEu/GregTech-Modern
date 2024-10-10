@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -61,17 +61,23 @@ public class WireRecipeHandler {
         // Wiremill: 1x Wire -> Fine
         // Extruder: Ingot -> 1x Wire
         // Wire Cutter: Plate -> 1x Wire
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
+        wireGtSingle.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::processWires));
 
         // Generate Cable Covering Recipes
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtDouble.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtQuadruple.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtOctal.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtSingle.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::generateCableCovering));
+        wireGtDouble.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::generateCableCovering));
+        wireGtQuadruple.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::generateCableCovering));
+        wireGtOctal.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::generateCableCovering));
+        wireGtHex.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireRecipeHandler::generateCableCovering));
     }
 
-    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
+    public static void processWires(TagPrefix wirePrefix, Material material, MaterialEnergyProperties property,
                                     Consumer<FinishedRecipe> provider) {
         TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
                 material.hasProperty(PropertyKey.GEM) ? gem : dust;
@@ -120,14 +126,14 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property,
+    public static void generateCableCovering(TagPrefix wirePrefix, Material material, MaterialEnergyProperties property,
                                              Consumer<FinishedRecipe> provider) {
         // Superconductors have no Cables, so exit early
         if (property.isSuperconductor()) return;
 
         int cableAmount = (int) (wirePrefix.getMaterialAmount(material) * 2 / M);
         TagPrefix cablePrefix = TagPrefix.get("cable" + wirePrefix.name().substring(4));
-        int voltageTier = GTUtil.getTierByVoltage(property.getVoltage());
+        int voltageTier = GTUtil.getTierByVoltage(property.getVoltageLimit());
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
 
         // Generate hand-crafting recipes for ULV and LV cables

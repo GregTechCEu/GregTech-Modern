@@ -3,11 +3,10 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialEnergyProperties;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -36,20 +35,24 @@ public class WireCombiningHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // Generate Wire Packer/Unpacker recipes
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
+        wireGtSingle.executeHandler(provider,
+                MaterialEnergyProperties.registrationHandler(WireCombiningHandler::processWireCompression));
 
         // Generate manual recipes for combining Wires/Cables
         for (TagPrefix wirePrefix : WIRE_DOUBLING_ORDER) {
-            wirePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::generateWireCombiningRecipe);
+            wirePrefix.executeHandler(provider,
+                    MaterialEnergyProperties.registrationHandler(WireCombiningHandler::generateWireCombiningRecipe));
         }
 
         // Generate Cable -> Wire recipes in the unpacker
         for (TagPrefix cablePrefix : cableToWireMap.keySet()) {
-            cablePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processCableStripping);
+            cablePrefix.executeHandler(provider,
+                    MaterialEnergyProperties.registrationHandler(WireCombiningHandler::processCableStripping));
         }
     }
 
-    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property,
+    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material,
+                                                    MaterialEnergyProperties property,
                                                     Consumer<FinishedRecipe> provider) {
         int wireIndex = ArrayUtils.indexOf(WIRE_DOUBLING_ORDER, wirePrefix);
 
@@ -79,7 +82,7 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property,
+    private static void processWireCompression(TagPrefix prefix, Material material, MaterialEnergyProperties property,
                                                Consumer<FinishedRecipe> provider) {
         for (int startTier = 0; startTier < 4; startTier++) {
             for (int i = 1; i < 5 - startTier; i++) {
@@ -100,7 +103,7 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property,
+    private static void processCableStripping(TagPrefix prefix, Material material, MaterialEnergyProperties property,
                                               Consumer<FinishedRecipe> provider) {
         PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
                 .inputItems(prefix, material)

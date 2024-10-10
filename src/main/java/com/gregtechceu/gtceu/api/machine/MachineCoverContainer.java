@@ -22,10 +22,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -49,6 +55,8 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
                      deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
+    private final int[] sidedRedstoneInput = new int[6];
+
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
     }
@@ -70,6 +78,19 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         var level = getLevel();
         if (level != null && !level.isClientSide && level.getServer() != null) {
             level.getServer().execute(this::markDirty);
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        ICoverable.super.onLoad();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, () -> {
+                for (Direction side : GTUtil.DIRECTIONS) {
+                    this.sidedRedstoneInput[side.get3DDataValue()] = GTUtil.getRedstonePower(getLevel(), getPos(),
+                            side);
+                }
+            }));
         }
     }
 
@@ -127,6 +148,11 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
+    public boolean acceptsCovers() {
+        return up == null || down == null || north == null || south == null || west == null || east == null;
+    }
+
+    @Override
     public double getCoverPlateThickness() {
         return 0;
     }
@@ -162,6 +188,33 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             case EAST -> east;
             case NORTH -> north;
         };
+    }
+
+    @Override
+    public @Nullable BlockEntity getNeighbor(@NotNull Direction side) {
+        return machine.getNeighbor(side);
+    }
+
+    @Override
+    public int getInputRedstoneSignal(@NotNull Direction side, boolean ignoreCover) {
+        if (!ignoreCover && getCoverAtSide(side) != null) {
+            return 0; // covers block input redstone signal for machine
+        }
+        return sidedRedstoneInput[side.get3DDataValue()];
+    }
+
+    public void updateInputRedstoneSignals() {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            int redstoneValue = GTUtil.getRedstonePower(getLevel(), getPos(), side);
+            int currentValue = sidedRedstoneInput[side.get3DDataValue()];
+            if (redstoneValue != currentValue) {
+                this.sidedRedstoneInput[side.get3DDataValue()] = redstoneValue;
+                CoverBehavior cover = getCoverAtSide(side);
+                if (cover != null) {
+                    cover.onRedstoneInputSignalChange(redstoneValue);
+                }
+            }
+        }
     }
 
     @Override
@@ -218,6 +271,12 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
             return definition.createCoverBehavior(this, side);
         }
         GTCEu.LOGGER.error("couldn't find cover definition {}", definitionId);
-        throw new RuntimeException();
+        throw new RuntimeException("couldn't find cover definition " + definitionId);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+        // FIXME
+        return LazyOptional.empty();
     }
 }

@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.*;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
@@ -258,8 +258,8 @@ public class Predicates {
                 .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                 .toArray(Block[]::new))
                 .or(new TraceabilityPredicate(blockWorldState -> {
-                    BlockEntity tileEntity = blockWorldState.getTileEntity();
-                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                    BlockEntity tileEntity = blockWorldState.getBlockEntity();
+                    if (!(tileEntity instanceof PipeBlockEntity pipeNode)) {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());

@@ -61,14 +61,14 @@ public class AssemblerRecipeLoader {
         // Other
         ASSEMBLER_RECIPES.recipeBuilder("stable_titanium_casing")
                 .inputItems(rotor, Titanium, 2)
-                .inputItems(pipeNormalFluid, Titanium, 4)
+                .inputItems(pipeNormal, Titanium, 4)
                 .inputItems(CASING_TITANIUM_STABLE.asStack())
                 .outputItems(CASING_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
                 .inputItems(rotor, TungstenSteel, 2)
-                .inputItems(pipeNormalFluid, TungstenSteel, 4)
+                .inputItems(pipeNormal, TungstenSteel, 4)
                 .inputItems(CASING_TUNGSTENSTEEL_ROBUST.asStack())
                 .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16).save(provider);
@@ -127,21 +127,21 @@ public class AssemblerRecipeLoader {
                 .inputItems(plate, Wood)
                 .circuitMeta(12)
                 .inputFluids(Glue.getFluid(50))
-                .outputItems(pipeSmallFluid, Wood)
+                .outputItems(pipeSmall, Wood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("normal_wood_pipe").duration(200).EUt(VA[LV])
                 .inputItems(plate, Wood, 3)
                 .circuitMeta(6)
                 .inputFluids(Glue.getFluid(20))
-                .outputItems(pipeNormalFluid, Wood)
+                .outputItems(pipeNormal, Wood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("large_wood_pipe").duration(100).EUt(VA[LV])
                 .inputItems(plate, Wood, 6)
                 .circuitMeta(2)
                 .inputFluids(Glue.getFluid(10))
-                .outputItems(pipeLargeFluid, Wood)
+                .outputItems(pipeLarge, Wood)
                 .save(provider);
 
         // Treated Wood Pipes
@@ -149,21 +149,21 @@ public class AssemblerRecipeLoader {
                 .inputItems(plate, TreatedWood)
                 .circuitMeta(12)
                 .inputFluids(Glue.getFluid(50))
-                .outputItems(pipeSmallFluid, TreatedWood)
+                .outputItems(pipeSmall, TreatedWood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("normal_treated_wood_pipe").duration(200).EUt(VA[LV])
                 .inputItems(plate, TreatedWood, 3)
                 .circuitMeta(6)
                 .inputFluids(Glue.getFluid(20))
-                .outputItems(pipeNormalFluid, TreatedWood)
+                .outputItems(pipeNormal, TreatedWood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("large_treated_wood_pipe").duration(100).EUt(VA[LV])
                 .inputItems(plate, TreatedWood, 6)
                 .circuitMeta(2)
                 .inputFluids(Glue.getFluid(10))
-                .outputItems(pipeLargeFluid, TreatedWood)
+                .outputItems(pipeLarge, TreatedWood)
                 .save(provider);
 
         // Voltage Coils

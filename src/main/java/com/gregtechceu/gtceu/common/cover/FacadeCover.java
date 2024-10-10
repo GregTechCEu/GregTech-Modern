@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -66,6 +68,16 @@ public class FacadeCover extends CoverBehavior {
      */
     public boolean canPipePassThrough() {
         return false;
+    }
+
+    @Override
+    public boolean forcePipeRenderConnection() {
+        return false;
+    }
+
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return FacadeCoverRenderer.createRenderer(coverHolder.getLevel(), coverHolder.getPos(), facadeState);
     }
 
     @Nullable

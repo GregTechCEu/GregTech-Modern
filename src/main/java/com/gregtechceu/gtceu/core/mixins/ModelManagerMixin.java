@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
@@ -40,6 +42,8 @@ public abstract class ModelManagerMixin {
         ToolItemRenderer.reinitModels();
         SurfaceRockRenderer.reinitModels();
         GTModels.registerMaterialFluidModels();
+        GTModels.registerPipeModels();
+        AddonFinder.getAddons().forEach(IGTAddon::loadDynamicResources);
         GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
     }
 }

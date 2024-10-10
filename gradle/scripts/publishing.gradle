@@ -1,5 +1,6 @@
 artifacts {
-    archives tasks.reobfJar
+    archives tasks.shadowJar
+    archives tasks.reobfShadowJar
     archives tasks.reobfSlimJar
     archives tasks.sourcesJar
 }
@@ -8,7 +9,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = project.maven_group
-            artifactId = project.archivesBaseName
+            artifactId = base.archivesName
             version = project.version
 
             from components.java

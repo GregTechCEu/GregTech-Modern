@@ -10,10 +10,16 @@ import java.util.function.Supplier;
 public class SupplierMemoizer {
 
     public static <T> MemoizedSupplier<T> memoize(Supplier<T> delegate) {
+        if (delegate instanceof MemoizedSupplier<T> supplier) {
+            return supplier;
+        }
         return new MemoizedSupplier<>(delegate);
     }
 
     public static <T extends Block> MemoizedBlockSupplier<T> memoizeBlockSupplier(Supplier<T> delegate) {
+        if (delegate instanceof MemoizedBlockSupplier<T> supplier) {
+            return supplier;
+        }
         return new MemoizedBlockSupplier<>(delegate);
     }
 

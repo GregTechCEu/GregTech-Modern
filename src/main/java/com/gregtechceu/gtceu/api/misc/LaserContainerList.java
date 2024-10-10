@@ -15,11 +15,11 @@ public class LaserContainerList implements ILaserContainer {
     }
 
     @Override
-    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate) {
         long amperesUsed = 0L;
         List<? extends ILaserContainer> energyContainerList = this.energyContainerList;
         for (ILaserContainer iEnergyContainer : energyContainerList) {
-            amperesUsed += iEnergyContainer.acceptEnergyFromNetwork(null, voltage, amperage);
+            amperesUsed += iEnergyContainer.acceptEnergyFromNetwork(null, voltage, amperage, false);
             if (amperage == amperesUsed) {
                 return amperesUsed;
             }
@@ -94,5 +94,21 @@ public class LaserContainerList implements ILaserContainer {
     @Override
     public boolean outputsEnergy(Direction side) {
         return true;
+    }
+
+    @Override
+    public long receiveLaser(long laserVoltage, long laserAmperage) {
+        long available = laserAmperage;
+        List<? extends ILaserContainer> energyContainerList = this.energyContainerList;
+        for (ILaserContainer container : energyContainerList) {
+            long transmitted = container.receiveLaser(laserAmperage, laserAmperage);
+            if (transmitted > 0) {
+                available -= transmitted;
+                if (available <= 0) {
+                    return laserAmperage;
+                }
+            }
+        }
+        return laserAmperage - available;
     }
 }

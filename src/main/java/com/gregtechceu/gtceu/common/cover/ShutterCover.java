@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -40,13 +43,24 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     }
 
     @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_shutter"), null).build();
+    }
+
+    @Override
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
         return InteractionResult.FAIL;
     }
 
     @Override
     public boolean canPipePassThrough() {
-        return !workingEnabled;
+        // isWorkingAllowed restriction is applied during edge predication
+        return true;
+    }
+
+    @Override
+    public boolean forcePipeRenderConnection() {
+        return false;
     }
 
     @Override

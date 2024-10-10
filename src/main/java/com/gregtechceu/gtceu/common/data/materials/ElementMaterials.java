@@ -98,7 +98,7 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(1560))
                 .ore()
                 .color(0x73d73d).secondaryColor(0x184537).iconSet(METALLIC)
-                .appendFlags(STD_METAL)
+                .appendFlags(STD_METAL, GENERATE_FOIL)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.BERYLLIOSIS, false)
                 .element(GTElements.Be)
                 .buildAndRegister();
@@ -178,7 +178,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_ROTOR)
                 .element(GTElements.Cr)
                 .rotorStats(130, 155, 3.0f, 512)
-                .fluidPipeProperties(2180, 35, true, true, false, false)
+                .fluidPipeProperties(2180, 104, 35, true, false, false)
                 .blastTemp(1700, GasTier.LOW)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CARCINOGEN)
                 .buildAndRegister();
@@ -314,7 +314,7 @@ public class ElementMaterials {
                         GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE, GENERATE_FOIL)
                 .element(GTElements.Au)
                 .cableProperties(GTValues.V[3], 3, 2)
-                .fluidPipeProperties(1671, 25, true, true, false, false)
+                .fluidPipeProperties(1671, 25, true, false, false)
                 .buildAndRegister();
 
         Hafnium = new Material.Builder(GTCEu.id("hafnium"))
@@ -379,7 +379,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ir)
                 .rotorStats(130, 115, 3.0f, 2560)
-                .fluidPipeProperties(3398, 250, true, false, true, false)
+                .fluidPipeProperties(3398, 5, 250, false, true, false)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.IV], 1100)
                 .buildAndRegister();
 
@@ -620,7 +620,7 @@ public class ElementMaterials {
                 .itemPipeProperties(512, 4.0f)
                 .buildAndRegister();
 
-        Plutonium239 = new Material.Builder(GTCEu.id("plutonium"))
+        Plutonium239 = new Material.Builder(GTCEu.id("plutonium_239"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(913))
                 .ore(true)
@@ -840,7 +840,8 @@ public class ElementMaterials {
         Titanium = new Material.Builder(GTCEu.id("titanium")) // todo Ore? Look at EBF recipe here if we do Ti ores
                 .ingot(3).fluid()
                 .color(0xed8eea).secondaryColor(0xff64bc).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME)
+                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME,
+                        GENERATE_FOIL)
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
@@ -866,11 +867,11 @@ public class ElementMaterials {
                 .element(GTElements.W)
                 .rotorStats(130, 115, 3.0f, 2560)
                 .cableProperties(GTValues.V[5], 2, 2)
-                .fluidPipeProperties(4618, 50, true, true, false, true)
+                .fluidPipeProperties(4618, 50, true, false, true)
                 .blastTemp(3600, GasTier.MID, GTValues.VA[GTValues.EV], 1800)
                 .buildAndRegister();
 
-        Uranium238 = new Material.Builder(GTCEu.id("uranium"))
+        Uranium238 = new Material.Builder(GTCEu.id("uranium_238"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(1405))
                 .color(0x1d891d).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
@@ -935,7 +936,7 @@ public class ElementMaterials {
                 .element(GTElements.Nq)
                 .rotorStats(160, 105, 4.0f, 1280)
                 .cableProperties(GTValues.V[7], 2, 2)
-                .fluidPipeProperties(3776, 200, true, false, true, true)
+                .fluidPipeProperties(3776, 3, 200, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
                 .buildAndRegister();
 
@@ -967,7 +968,7 @@ public class ElementMaterials {
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
-                .fluidPipeProperties(100_000, 5000, true, true, true, true)
+                .fluidPipeProperties(100_000, 1, 5000, true, true, true)
                 .radioactiveHazard(10)
                 .buildAndRegister();
 
@@ -990,13 +991,13 @@ public class ElementMaterials {
                 .element(GTElements.Dr)
                 .toolStats(ToolProperty.Builder.of(14.0F, 12.0F, 8192, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
-                .fluidPipeProperties(9625, 500, true, true, true, true)
+                .fluidPipeProperties(9625, 1, 500, true, true, true)
                 .buildAndRegister();
 
         Trinium = new Material.Builder(GTCEu.id("trinium"))
                 .ingot(7).fluid()
                 .color(0x81808a).secondaryColor(0x351d4b).iconSet(SHINY)
-                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR)
+                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ke)
                 .cableProperties(GTValues.V[7], 6, 4)
                 .blastTemp(7200, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1500)

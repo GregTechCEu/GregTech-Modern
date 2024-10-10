@@ -131,7 +131,7 @@ public class SimplePredicate {
             }
         }
         if (nbtParser != null && !blockWorldState.world.isClientSide) {
-            BlockEntity te = blockWorldState.getTileEntity();
+            BlockEntity te = blockWorldState.getBlockEntity();
             if (te != null) {
                 CompoundTag nbt = te.saveWithFullMetadata();
                 if (Pattern.compile(nbtParser).matcher(nbt.toString()).find()) {

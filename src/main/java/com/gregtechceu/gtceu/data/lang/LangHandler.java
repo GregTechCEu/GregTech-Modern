@@ -483,9 +483,9 @@ public class LangHandler {
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
         replace(provider, GTMaterials.Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
-        replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        replace(provider, GTMaterials.HeavyOil.getUnlocalizedName(), "Heavy Oil");
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
+        replace(provider, GTMaterials.LightOil.getUnlocalizedName(), "Light Oil");
         replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
         replace(provider, "block.gtceu.oil_medium", "Raw Oil");
@@ -762,8 +762,8 @@ public class LangHandler {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =",
-                " null!");
+        provider.add("behavior.portable_scanner.debug_machine_invalid_null",
+                "invalid! MetaTileEntity = null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
         provider.add("behavior.portable_scanner.divider", "=========================");
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");
@@ -771,6 +771,7 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.energy_container_storage", "Energy: %s EU / %s EU");
         provider.add("behavior.portable_scanner.eu_per_sec", "Average (last second): %s EU/t");
         provider.add("behavior.portable_scanner.amp_per_sec", "Average (last second): %s A");
+        provider.add("behavior.portable_scanner.temperature", "Temperature: %sK");
         provider.add("behavior.portable_scanner.machine_disabled", "Disabled.");
         provider.add("behavior.portable_scanner.machine_front_facing", "Front Facing: %s");
         provider.add("behavior.portable_scanner.machine_ownership", "§2Machine Owner Type: %s§r");
@@ -1053,15 +1054,17 @@ public class LangHandler {
         provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
         provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
+        provider.add("gtceu.cable.superconductor_loss", "§cLoss is §f0§c under critical temperature §f%s§f K");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_pipe.max_temperature", "§cMax Temperature: §f%s K");
+        provider.add("gtceu.fluid_pipe.min_temperature", "§cMin Temperature: §f%s K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
         provider.add("gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
         provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
         provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
-        provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
+        provider.add("gtceu.pipe.priority", "§9Priority: §f%d");
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");

@@ -195,7 +195,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 4, Biotite, 1)
                 .buildAndRegister();
 
-        GraniteRed = new Material.Builder(GTCEu.id("granite_red"))
+        RedGranite = new Material.Builder(GTCEu.id("red_granite"))
                 .dust()
                 .color(0xFF0080).iconSet(ROUGH)
                 .flags(NO_SMASHING)
@@ -304,7 +304,7 @@ public class SecondDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(130, 115, 3.0f, 1920)
-                .fluidPipeProperties(2073, 50, true, true, false, false)
+                .fluidPipeProperties(2073, 50, true, true, false)
                 .blastTemp(1453, GasTier.LOW)
                 .buildAndRegister();
 
@@ -321,7 +321,7 @@ public class SecondDegreeMaterials {
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(1921))
                 .color(0xFAFAFA).secondaryColor(0xfaf5c0).iconSet(SHINY)
-                .flags(GENERATE_FINE_WIRE, GENERATE_PLATE)
+                .flags(GENERATE_FINE_WIRE, GENERATE_PLATE, NO_SMASHING)
                 .components(Boron, 1, SiliconDioxide, 7)
                 .buildAndRegister();
 

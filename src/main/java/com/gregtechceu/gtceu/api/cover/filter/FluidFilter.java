@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
@@ -49,6 +51,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
     FluidFilter EMPTY = new FluidFilter() {
 
         @Override
+        public MatchResult apply(FluidStack fluidStack) {
+            return MatchResult.ANY;
+        }
+
+        @Override
         public boolean test(FluidStack fluidStack) {
             return true;
         }
@@ -64,6 +71,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
+        public void loadFilter(CompoundTag tag) {
+            throw new NotImplementedException("Not available for empty fluid filter");
+        }
+
+        @Override
         public CompoundTag saveFilter() {
             throw new NotImplementedException("Not available for empty fluid filter");
         }
@@ -72,5 +84,13 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
             throw new NotImplementedException("Not available for empty fluid filter");
         }
+
+        @Override
+        public int getMaxTransferSize() {
+            return 0;
+        }
+
+        @Override
+        public void setMaxTransferSize(int maxTransferSize) {}
     };
 }

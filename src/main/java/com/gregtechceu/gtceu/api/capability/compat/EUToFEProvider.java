@@ -51,7 +51,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
         }
 
         @Override
-        public long acceptEnergyFromNetwork(Direction facing, long voltage, long amperage) {
+        public long acceptEnergyFromNetwork(Direction facing, long voltage, long amperage, boolean simulate) {
             int receive = 0;
 
             // Try to use the internal buffer before consuming a new packet

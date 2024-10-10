@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialFluidProperties;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
@@ -95,7 +96,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
-                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
+                .setFilter(
+                        material.getProperty(PropertyKey.PIPENET_PROPERTIES).getProperty(MaterialFluidProperties.KEY));
     }
 
     @Override

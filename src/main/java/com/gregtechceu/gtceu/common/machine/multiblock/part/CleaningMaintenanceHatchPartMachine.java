@@ -31,8 +31,8 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     // must come after the static block
     private static final ICleanroomProvider DUMMY_CLEANROOM = DummyCleanroom.createForTypes(CLEANED_TYPES);
 
-    public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId);
+    public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity metaBlockEntityId) {
+        super(metaBlockEntityId);
     }
 
     @Override

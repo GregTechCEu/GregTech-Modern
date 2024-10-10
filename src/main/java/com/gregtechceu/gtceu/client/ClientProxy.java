@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.*;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -29,38 +30,42 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author KilaBash
  * @date 2023/7/30
  * @implNote ClientProxy
  */
-@OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     public static final BiMap<ResourceLocation, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
     public static final BiMap<ResourceLocation, BedrockFluidDefinition> CLIENT_FLUID_VEINS = HashBiMap.create();
     public static final BiMap<ResourceLocation, BedrockOreDefinition> CLIENT_BEDROCK_ORE_VEINS = HashBiMap.create();
 
+    @Getter
+    @Setter
+    private static long serverTickCount = -1L;
+
     public ClientProxy() {
         super();
         init();
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void init() {
         RecipeComponent.registerRecipeViewCreator(new GTRecipeViewCreator());
         CompassManager.INSTANCE.registerUIConfig(GTCEu.MOD_ID, new GTCompassUIConfig());
         CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
@@ -80,18 +85,40 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void registerKeyBindings(RegisterKeyMappingsEvent event) {
         KeyBind.onRegisterKeyBinds(event);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAboveAll("hud", new HudGuiOverlay());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void modifyModels(ModelEvent.ModifyBakingResult event) {
+        AbstractPipeModel.invalidateCaches();
+        PipeModelRegistry.registerModels(event.getModels()::put);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        PipeModelRegistry.registerModels((id, $) -> event.register(id));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void modelRegistry(final ModelEvent.RegisterGeometryLoaders e) {
+        e.register("pipe", UnbakedPipeModel.Loader.INSTANCE);
     }
 }

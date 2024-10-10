@@ -21,11 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -37,23 +37,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.LongPredicate;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -148,6 +149,19 @@ public class GTUtil {
 
     public static float getExplosionPower(long voltage) {
         return getTierByVoltage(voltage) + 1;
+    }
+
+    public static int getRedstonePower(Level world, BlockPos blockPos, Direction side) {
+        BlockPos offsetPos = blockPos.relative(side);
+        int worldPower = world.getDirectSignal(offsetPos, side);
+        if (worldPower < 15) {
+            BlockState offsetState = world.getBlockState(offsetPos);
+            if (offsetState.getBlock() instanceof RedStoneWireBlock) {
+                int wirePower = offsetState.getValue(RedStoneWireBlock.POWER);
+                return Math.max(worldPower, wirePower);
+            }
+        }
+        return worldPower;
     }
 
     /**
@@ -386,6 +400,26 @@ public class GTUtil {
         return distances.get(min);
     }
 
+    public static double geometricMean(double first, double... numbers) {
+        for (double number : numbers) {
+            first *= number;
+        }
+        return Math.pow(first, 1D / (1 + numbers.length));
+    }
+
+    public static long binarySearch(long minValue, long maxValue, LongPredicate test, boolean ascending) {
+        while (maxValue - minValue > 1) {
+            long middle = (minValue + maxValue) / 2;
+            // XOR
+            if (test.test(middle) ^ !ascending) {
+                maxValue = middle;
+            } else {
+                minValue = middle;
+            }
+        }
+        return test.test(ascending ? minValue : maxValue) ^ ascending ? maxValue : minValue;
+    }
+
     public static int convertRGBtoARGB(int colorValue) {
         return convertRGBtoARGB(colorValue, 0xFF);
     }
@@ -394,6 +428,60 @@ public class GTUtil {
         // preserve existing opacity if present
         if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
         return opacity << 24 | colorValue;
+    }
+
+    public static int[] convertARGBtoArray(int argb) {
+        int a = argb >> 24 & 255;
+        int r = argb >> 16 & 255;
+        int g = argb >> 8 & 255;
+        int b = argb & 255;
+        return new int[] { a, r, g, b };
+    }
+
+    @Contract(pure = true)
+    public static boolean evalMask(@NotNull Enum<?> anEnum, byte mask) {
+        return (mask & (1 << anEnum.ordinal())) > 0;
+    }
+
+    @Contract(pure = true)
+    public static boolean evalMask(@NotNull Enum<?> anEnum, @NotNull BitSet mask) {
+        return mask.get(anEnum.ordinal());
+    }
+
+    @Contract(pure = true)
+    @NotNull
+    public static <T extends Enum<T>> EnumSet<T> maskToSet(@NotNull Class<T> enumClass, byte mask) {
+        EnumSet<T> set = EnumSet.noneOf(enumClass);
+        for (T anEnum : enumClass.getEnumConstants()) {
+            if (evalMask(anEnum, mask)) set.add(anEnum);
+        }
+        return set;
+    }
+
+    @Contract(pure = true)
+    @NotNull
+    public static <T extends Enum<T>> EnumSet<T> maskToSet(@NotNull Class<T> enumClass, @NotNull BitSet mask) {
+        EnumSet<T> set = EnumSet.noneOf(enumClass);
+        for (T anEnum : enumClass.getEnumConstants()) {
+            if (evalMask(anEnum, mask)) set.add(anEnum);
+        }
+        return set;
+    }
+
+    @Contract(pure = true)
+    @NotNull
+    public static BitSet setToMask(@NotNull EnumSet<?> enumSet) {
+        BitSet mask = new BitSet();
+        for (Enum<?> anEnum : enumSet) {
+            mask.set(anEnum.ordinal());
+        }
+        return mask;
+    }
+
+    @Contract(pure = true, value = "-> new")
+    @NotNull
+    public static <T> Set<T> createWeakHashSet() {
+        return Collections.newSetFromMap(new WeakHashMap<>());
     }
 
     /**
@@ -432,7 +520,8 @@ public class GTUtil {
             return false;
         }
 
-        Biome biome = world.getBiome(blockPos.above()).value();
+        Holder<Biome> biomeHolder = world.getBiome(blockPos.above());
+        Biome biome = biomeHolder.value();
         if (world.isRaining()) {
             if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
                 return false;
@@ -443,9 +532,9 @@ public class GTUtil {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.isJAVDLoaded() &&
-                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
+        ResourceLocation javdVoidBiome = new ResourceLocation(GTValues.MODID_JAVD, "void");
+        if (GTCEu.isJAVDLoaded() && javdVoidBiome
+                .equals(biomeHolder.unwrapKey().map(ResourceKey::location).orElse(null))) {
             return !world.isDay();
         } else return world.isDay();
     }
@@ -526,5 +615,22 @@ public class GTUtil {
                     effect.getDuration(),
                     100 * probability));
         });
+    }
+
+    /**
+     * Forces the initialization of a class; this includes things like loading its static fields.
+     * This can be useful because a statement like {@code AClass.class} does not initialize a class.
+     * <br>
+     * <br>
+     * Does nothing if the class is already initialized.
+     *
+     * @param clazz the class object to initialize.
+     */
+    public static void forceInitialization(Class<?> clazz) {
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError(e);  // Can't happen
+        }
     }
 }

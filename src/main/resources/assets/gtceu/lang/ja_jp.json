@@ -2786,7 +2786,7 @@
     "gtceu.item_filter.empty_item": "指定なし",
     "gtceu.item_filter.footer": "§e 書き換える項目でクリックする。",
     "gtceu.item_list.item_stored": "§7格納: %d",
-    "gtceu.item_pipe.priority": "§9優先順位: §f%d",
+    "gtceu.pipe.priority": "§9優先順位: §f%d",
     "gtceu.jade.cleaned_this_second": "汚染の洗浄度: %s/s",
     "gtceu.jade.energy_stored": "%d / %d EU",
     "gtceu.jade.progress_computation": "%s / %s CWU",

@@ -243,7 +243,7 @@ public class GTRecipeBuilder {
         return output(EURecipeCapability.CAP, eu);
     }
 
-    public GTRecipeBuilder inputCWU(int cwu) {
+    public GTRecipeBuilder inputCWU(long cwu) {
         return input(CWURecipeCapability.CAP, cwu);
     }
 
@@ -268,7 +268,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder outputCWU(int cwu) {
+    public GTRecipeBuilder outputCWU(long cwu) {
         return output(CWURecipeCapability.CAP, cwu);
     }
 

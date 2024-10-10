@@ -14,7 +14,7 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
      * @param amperage packet size (energy to add / input amperage)
      * @return amount of used amperes. 0 if not accepted anything.
      */
-    long acceptEnergyFromNetwork(Direction side, long voltage, long amperage);
+    long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate);
 
     /**
      * @return if this container accepts energy from the given side
@@ -31,7 +31,7 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
     /**
      * This changes the amount stored.
      * <b>This should only be used internally</b> (f.e. draining while working or filling while generating).
-     * For transfer between blocks use {@link #acceptEnergyFromNetwork(Direction, long, long)}!!!
+     * For transfer between blocks use {@link #acceptEnergyFromNetwork(Direction, long, long, boolean)}!!!
      *
      * @param differenceAmount amount of energy to add (>0) or remove (<0)
      * @return amount of energy added or removed
@@ -135,7 +135,7 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
     IEnergyContainer DEFAULT = new IEnergyContainer() {
 
         @Override
-        public long acceptEnergyFromNetwork(Direction Direction, long l, long l1) {
+        public long acceptEnergyFromNetwork(Direction Direction, long l, long l1, boolean simulate) {
             return 0;
         }
 

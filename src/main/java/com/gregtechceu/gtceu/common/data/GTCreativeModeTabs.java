@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -50,7 +49,7 @@ public class GTCreativeModeTabs {
             .register();
     public static RegistryEntry<CreativeModeTab> MATERIAL_PIPE = REGISTRATE.defaultCreativeTab("material_pipe",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_pipe", REGISTRATE))
-                    .icon(() -> ChemicalHelper.get(Insulation.WIRE_DOUBLE.getTagPrefix(), GTMaterials.Copper))
+                    .icon(() -> ChemicalHelper.get(TagPrefix.wireGtDouble, GTMaterials.Copper))
                     .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_pipe"), GTCEu.NAME + " Material Pipes"))
                     .build())
             .register();

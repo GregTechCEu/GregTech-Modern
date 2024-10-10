@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -41,11 +43,20 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         return !isBlackList();
     }
 
+    default int getMaxStackSize() {
+        return 1;
+    }
+
     /**
      * An empty item filter that allows all items.<br>
      * ONLY TO BE USED FOR ITEM MATCHING! All other functionality will throw an exception.
      */
     ItemFilter EMPTY = new ItemFilter() {
+
+        @Override
+        public MatchResult apply(ItemStack stack) {
+            return MatchResult.ANY;
+        }
 
         @Override
         public int testItemCount(ItemStack itemStack) {
@@ -63,6 +74,11 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
+        public void loadFilter(CompoundTag tag) {
+            throw new NotImplementedException("Not available for empty item filter");
+        }
+
+        @Override
         public CompoundTag saveFilter() {
             throw new NotImplementedException("Not available for empty item filter");
         }
@@ -71,5 +87,13 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
             throw new NotImplementedException("Not available for empty item filter");
         }
+
+        @Override
+        public int getMaxTransferSize() {
+            return 0;
+        }
+
+        @Override
+        public void setMaxTransferSize(int maxTransferSize) {}
     };
 }

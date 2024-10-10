@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -16,6 +19,12 @@ public class AdvancedActivityDetectorCover extends ActivityDetectorCover {
 
     public AdvancedActivityDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
+    }
+
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_activity_detector_advanced"),
+                GTCEu.id("block/cover/overlay_activity_detector_advanced_emissive")).build();
     }
 
     @Override

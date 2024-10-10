@@ -21,9 +21,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBan
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.NetworkSwitchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
@@ -302,12 +302,12 @@ public class GTResearchMachines {
 
     public static final MachineDefinition COMPUTATION_HATCH_TRANSMITTER = registerDataHatch(
             "computation_transmitter_hatch", "Computation Data Transmission Hatch",
-            ZPM, (holder) -> new OpticalComputationHatchMachine(holder, true),
+            ZPM, (holder) -> new ComputationHatchMachine(holder, true),
             "computation_data_hatch", PartAbility.COMPUTATION_DATA_TRANSMISSION).register();
 
     public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = registerDataHatch(
             "computation_receiver_hatch", "Computation Data Reception Hatch",
-            ZPM, (holder) -> new OpticalComputationHatchMachine(holder, false),
+            ZPM, (holder) -> new ComputationHatchMachine(holder, false),
             "computation_data_hatch", PartAbility.COMPUTATION_DATA_RECEPTION).register();
 
     public static final MachineDefinition DATA_HATCH_TRANSMITTER = registerDataHatch(

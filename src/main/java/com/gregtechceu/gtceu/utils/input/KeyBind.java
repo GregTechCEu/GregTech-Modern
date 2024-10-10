@@ -66,7 +66,7 @@ public enum KeyBind {
                 updating.add(keybind);
             }
         }
-        if (!updating.isEmpty()) {
+        if (!updating.isEmpty() && Minecraft.getInstance().getConnection() != null) {
             GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
         }
     }

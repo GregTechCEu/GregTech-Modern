@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidPipeType;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemPipeType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

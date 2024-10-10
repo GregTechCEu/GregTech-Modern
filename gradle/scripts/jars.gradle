@@ -1,12 +1,46 @@
-tasks.register('slimJar', Jar) {
+configurations {
+    includedLibrary {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
+// hack to avoid a bug in Shadow: https://github.com/GradleUp/shadow/issues/111
+tasks.register('shadowBugWorkaround', Jar) {
+    dependsOn jarJar
+    from jarJar.outputs
+}
+
+shadowJar {
+    from tasks.shadowBugWorkaround
+    configurations = [project.configurations.includedLibrary]
+    archiveClassifier = "dev"
+}
+
+slimJar {
+    configurations = [project.configurations.includedLibrary]
     archiveClassifier = "dev-slim"
-    from sourceSets.main.output
 }
 
 obfuscation {
     reobfuscate(tasks.named('slimJar'), sourceSets.main) {
         archiveClassifier = "slim"
     }
+    reobfuscate(tasks.named('shadowJar'), sourceSets.main) {
+        archiveClassifier = null
+        archiveClassifier.convention(null)
+    }
+}
+
+jar {
+    archiveClassifier = "dev-no-shadow"
+    archiveClassifier.convention("dev-no-shadow")
+    enabled = false
+}
+
+reobfJar {
+    archiveClassifier = "no-shadow"
+    enabled = false
 }
 
 tasks.register('sourcesJar', Jar) {
@@ -21,6 +55,8 @@ base {
 
 afterEvaluate {
     tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+        exclude ".cache/*"
+
         manifest.attributes([
                 'MixinConfigs': 'gtceu.mixins.json',
                 'Specification-Title': project.name,

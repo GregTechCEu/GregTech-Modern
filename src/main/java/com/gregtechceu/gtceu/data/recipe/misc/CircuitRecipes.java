@@ -1477,7 +1477,7 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("neuro_processor").EUt(80000).duration(600)
                 .inputItems(WETWARE_CIRCUIT_BOARD)
                 .inputItems(STEM_CELLS, 16)
-                .inputItems(pipeSmallFluid, Polybenzimidazole, 8)
+                .inputItems(pipeSmall, Polybenzimidazole, 8)
                 .inputItems(plate, Electrum, 8)
                 .inputItems(foil, SiliconeRubber, 16)
                 .inputItems(bolt, HSSE, 8)

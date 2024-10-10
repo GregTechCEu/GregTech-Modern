@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlock;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -46,7 +46,6 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -55,13 +54,12 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
         boolean superVal = super.placeBlock(context, state);
 
         if (!level.isClientSide) {
-            BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
+            BlockPos possiblePipe = pos.relative(side.getOpposite());
             Block block = level.getBlockState(possiblePipe).getBlock();
-            if (block instanceof PipeBlock<?, ?, ?>) {
-                IPipeNode pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);
-                if (pipeTile != null && ((PipeBlock<?, ?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
-                        level.getBlockEntity(pos))) {
-                    pipeTile.setConnection(side, true, false);
+            if (block instanceof PipeBlock pipeBlock) {
+                PipeBlockEntity pipeTile = pipeBlock.getBlockEntity(level, possiblePipe);
+                if (pipeTile != null && pipeTile.canConnectTo(side.getOpposite())) {
+                    pipeTile.updateActiveStatus(side.getOpposite(), true);
                 }
             }
         }

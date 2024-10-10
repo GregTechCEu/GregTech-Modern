@@ -10,6 +10,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
@@ -45,4 +49,20 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     public MultiManagedStorage getRootStorage() {
         return null;
     }
+
+    @Override
+    public void onNeighborChanged(Block fromBlock, BlockPos fromPos, boolean isMoving) {}
+
+    @Override
+    public Level getLevel() {
+        return null;
+    }
+
+    @Override
+    public BlockPos getBlockPos() {
+        return null;
+    }
+
+    @Override
+    public void markAsDirty() {}
 }

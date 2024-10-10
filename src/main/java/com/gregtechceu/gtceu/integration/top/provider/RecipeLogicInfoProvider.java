@@ -69,7 +69,7 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
 
                 if (text == null) {
                     // Default behavior, if this TE is not a steam machine (or somehow not instanceof
-                    // IGregTechTileEntity...)
+                    // IGregTechBlockEntity...)
                     text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " EU/t" +
                             ChatFormatting.GREEN + " (" + GTValues.VNF[GTUtil.getTierByVoltage(absEUt)] +
                             ChatFormatting.GREEN + ")";

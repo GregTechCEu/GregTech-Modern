@@ -57,7 +57,7 @@ public class RecipeAddition {
                     GTMachines.STEAM_MACERATOR.right().asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB",
                     "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P',
-                    new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel), 'T',
+                    new UnificationEntry(TagPrefix.pipeNormal, GTMaterials.Steel), 'T',
                     GTMachines.STEEL_DRUM.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus",
                     GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.STEEL_HULL.asStack(), 'C',
@@ -75,7 +75,7 @@ public class RecipeAddition {
                     GTMachines.STEAM_MACERATOR.left().asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB",
                     "BTB", "BPB", 'B', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'P',
-                    new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'T',
+                    new UnificationEntry(TagPrefix.pipeNormal, GTMaterials.Bronze), 'T',
                     GTMachines.BRONZE_DRUM.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_input_bus",
                     GTMachines.STEAM_IMPORT_BUS.asStack(), "C", "H", 'H', GTBlocks.BRONZE_HULL.asStack(), 'C',

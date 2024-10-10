@@ -1,6 +1,7 @@
 {
   "values": [
-    "gtceu:normal_laser_pipe",
-    "gtceu:normal_optical_pipe"
+    "gtceu:laser_pipe",
+    "gtceu:laser_reflector_pipe",
+    "gtceu:optical_fiber_cable"
   ]
 }

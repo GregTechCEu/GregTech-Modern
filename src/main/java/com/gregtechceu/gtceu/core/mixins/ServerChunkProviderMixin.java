@@ -59,7 +59,7 @@ public abstract class ServerChunkProviderMixin {
     }
 
     @Inject(method = "getChunkNow", at = @At(value = "HEAD"), cancellable = true)
-    private void getTileEntity(int pChunkX, int pChunkZ, CallbackInfoReturnable<LevelChunk> cir) {
+    private void getBlockEntity(int pChunkX, int pChunkZ, CallbackInfoReturnable<LevelChunk> cir) {
         if (Thread.currentThread() != this.mainThread &&
                 (MultiblockWorldSavedData.isThreadService() || AsyncThreadData.isThreadService())) {
             long i = ChunkPos.asLong(pChunkX, pChunkZ);

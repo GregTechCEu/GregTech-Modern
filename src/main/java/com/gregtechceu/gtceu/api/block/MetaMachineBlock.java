@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -262,9 +261,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                     machineLife.onMachineRemoved();
                 }
                 if (machine != null) {
-                    for (Direction direction : GTUtil.DIRECTIONS) {
-                        machine.getCoverContainer().removeCover(direction, null);
-                    }
+                    machine.getCoverContainer().dropAllCovers();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
@@ -366,6 +363,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var machine = getMachine(level, pos);
         if (machine != null) {
             machine.onNeighborChanged(block, fromPos, isMoving);
+            machine.getCoverContainer().updateInputRedstoneSignals();
         }
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }

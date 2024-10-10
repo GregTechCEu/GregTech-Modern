@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidStorage {
+public class FluidProperty implements IMaterialProperty, FluidStorage {
 
     private final FluidStorageImpl storage = new FluidStorageImpl();
     @Getter

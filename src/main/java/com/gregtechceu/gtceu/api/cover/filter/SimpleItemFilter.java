@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.common.cover.filter.MatchResult;
 
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -12,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -72,8 +74,19 @@ public class SimpleItemFilter implements ItemFilter {
         };
     }
 
+    @Override
+    public void loadFilter(CompoundTag tag) {
+        this.isBlackList = tag.getBoolean("isBlackList");
+        this.ignoreNbt = tag.getBoolean("matchNbt");
+        var list = tag.getList("matches", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            this.matches[i] = ItemStack.of((CompoundTag) list.get(i));
+        }
+    }
+
     public CompoundTag saveFilter() {
         var tag = new CompoundTag();
+        tag.putString("type", FilterType.ITEM.getSerializedName());
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);
         var list = new ListTag();
@@ -89,9 +102,29 @@ public class SimpleItemFilter implements ItemFilter {
         onUpdated.accept(this);
     }
 
+    @Override
+    public int getMaxTransferSize() {
+        return maxStackSize;
+    }
+
+    @Override
+    public void setMaxTransferSize(int maxTransferSize) {
+        maxTransferSize = Mth.clamp(maxTransferSize, 1, Integer.MAX_VALUE);
+        if (this.maxStackSize != maxTransferSize) {
+            this.maxStackSize = maxTransferSize;
+            onUpdated.accept(this);
+        }
+    }
+
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
         onUpdated.accept(this);
+    }
+
+    @Override
+    public int getTransferLimit(ItemStack stack, int transferSize) {
+        int matchedSlot = itemFilterMatch(ignoreNbt, stack);
+        return getTransferLimit(matchedSlot, transferSize);
     }
 
     public WidgetGroup openConfigurator(int x, int y) {
@@ -148,6 +181,12 @@ public class SimpleItemFilter implements ItemFilter {
         return totalItemCount;
     }
 
+    @Override
+    public MatchResult apply(ItemStack stack) {
+        int matchedSlot = itemFilterMatch(this.ignoreNbt, stack);
+        return MatchResult.create(matchedSlot != -1 == !isBlackList(), matches[matchedSlot], matchedSlot);
+    }
+
     public int getTotalConfiguredItemCount(ItemStack itemStack) {
         int totalCount = 0;
 
@@ -168,5 +207,23 @@ public class SimpleItemFilter implements ItemFilter {
         for (ItemStack match : matches) {
             match.setCount(Math.min(match.getCount(), maxStackSize));
         }
+    }
+
+    public int itemFilterMatch(boolean ignoreNBTData, ItemStack itemStack) {
+        for (int i = 0; i < matches.length; i++) {
+            ItemStack filterStack = matches[i];
+            if (!filterStack.isEmpty() && areItemsEqual(ignoreNBTData, filterStack, itemStack)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean areItemsEqual(boolean ignoreNBTData,
+                                         ItemStack filterStack, ItemStack itemStack) {
+        if (!ItemStack.isSameItem(filterStack, itemStack)) {
+            return false;
+        }
+        return ignoreNBTData || ItemStack.isSameItemSameTags(filterStack, itemStack);
     }
 }

@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialFluidProperties;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -546,7 +547,9 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create((int) FluidHelper.getBucket() * 8,
-                            GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false,
+                            GTMaterials.Steel.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                                    .getProperty(MaterialFluidProperties.KEY).getMaxFluidTemperature(),
+                            true, false,
                             false, false, true),
                     new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
@@ -559,7 +562,9 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create((int) FluidHelper.getBucket() * 32,
-                            GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
+                            GTMaterials.Aluminium.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                                    .getProperty(MaterialFluidProperties.KEY).getMaxFluidTemperature(),
+                            true,
                             false, false, false, true),
                     new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4))))
@@ -572,7 +577,8 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create((int) FluidHelper.getBucket() * 64,
-                            GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
+                            GTMaterials.StainlessSteel.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                                    .getProperty(MaterialFluidProperties.KEY).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
             .onRegister(
@@ -586,7 +592,9 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create((int) FluidHelper.getBucket() * 128,
-                            GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
+                            GTMaterials.Titanium.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                                    .getProperty(MaterialFluidProperties.KEY).getMaxFluidTemperature(),
+                            true,
                             false, false, false, true),
                     new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6))))
@@ -600,7 +608,8 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create((int) FluidHelper.getBucket() * 512,
-                            GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
+                            GTMaterials.TungstenSteel.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                                    .getProperty(MaterialFluidProperties.KEY).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
             .onRegister(
@@ -2779,7 +2788,7 @@ public class GTItems {
             .tag(Tags.Items.ARMORS_CHESTPLATES)
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("avanced_nanomuscle_chestplate",
+            .item("advanced_nanomuscle_chestplate",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new AdvancedNanoMuscleSuite(512,
                                     12_800_000L * (long) Math.max(1,
@@ -2824,6 +2833,10 @@ public class GTItems {
     public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::create)
             .onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
+
+    public static ItemEntry<Item> LASER_REFLECTOR = REGISTRATE
+            .item("dielectric_laser_mirror", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<GTBoatItem> RUBBER_BOAT = REGISTRATE

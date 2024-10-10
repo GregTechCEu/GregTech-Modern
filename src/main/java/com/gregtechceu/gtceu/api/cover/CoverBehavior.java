@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
@@ -27,8 +27,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,6 +64,9 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     @Getter
     @Persisted
     protected int redstoneSignalOutput = 0;
+
+    @OnlyIn(Dist.CLIENT)
+    protected @Nullable CoverRenderer renderer;
 
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         this.coverDefinition = definition;
@@ -93,7 +101,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
      *
      * @return true if cover can be attached, false otherwise
      */
-    public boolean canAttach() {
+    public boolean canAttach(@NotNull ICoverable coverable, @NotNull Direction side) {
         return true;
     }
 
@@ -140,9 +148,19 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         coverHolder.markDirty();
     }
 
+    /**
+     * @return if the Cover can connect to redstone
+     */
     public boolean canConnectRedstone() {
         return false;
     }
+
+    /**
+     * Called when the redstone input signal changes.
+     *
+     * @param redstone the new signal value
+     */
+    public void onRedstoneInputSignalChange(int redstone) {}
 
     //////////////////////////////////////
     // ******* Interaction *******//
@@ -176,9 +194,20 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return true;
     }
 
-    public ICoverRenderer getCoverRenderer() {
-        return coverDefinition.getCoverRenderer();
+    /**
+     * @return if the pipe this cover is placed on should always render a connection to the cover
+     */
+    public boolean forcePipeRenderConnection() {
+        return true;
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public @NotNull CoverRenderer getRenderer() {
+        if (renderer == null) renderer = buildRenderer();
+        return renderer;
+    }
+
+    protected abstract CoverRenderer buildRenderer();
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
@@ -218,6 +247,18 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     @Nullable
     public IFluidTransfer getFluidTransferCap(IFluidTransfer defaultValue) {
+        return defaultValue;
+    }
+
+    /**
+     * Will be called for each capability request to the CoverableView
+     * Cover can override CoverableView capabilities, modify their values, or deny accessing them
+     *
+     * @param capability   the requested Capability
+     * @param defaultValue value of the capability from CoverableView itself
+     * @return the resulting capability the caller will receive
+     */
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, LazyOptional<T> defaultValue) {
         return defaultValue;
     }
 }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
@@ -57,8 +58,8 @@ import java.util.function.Supplier;
 
 public class MixinHelpers {
 
-    public static <T> void generateGTDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
-                                                 Registry<T> registry) {
+    public static <T> void generateGTDynamicTags(final Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
+                                                 final Registry<T> registry) {
         if (registry == BuiltInRegistries.ITEM) {
             ChemicalHelper.UNIFICATION_ENTRY_ITEM.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
@@ -94,10 +95,7 @@ public class MixinHelpers {
             GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
-                MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
-            });
-            GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
             GTRegistries.MACHINES.forEach(machine -> {
@@ -149,6 +147,7 @@ public class MixinHelpers {
                 }
             }
         }
+        AddonFinder.getAddons().forEach(addon -> addon.loadDynamicTags(tagMap, registry));
     }
 
     public static void addMaterialBlockTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
@@ -189,7 +188,7 @@ public class MixinHelpers {
 
     private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot();
 
-    public static void generateGTDynamicLoot(Map<ResourceLocation, LootTable> lootTables) {
+    public static void generateGTDynamicLoot(final Map<ResourceLocation, LootTable> lootTables) {
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
@@ -244,10 +243,7 @@ public class MixinHelpers {
         GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
-            MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
-        });
-        GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTBlocks.MATERIAL_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
@@ -268,6 +264,7 @@ public class MixinHelpers {
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
         });
+        AddonFinder.getAddons().forEach(addon -> addon.loadDynamicLoot(lootTables, BLOCK_LOOT));
     }
 
     public static void addMaterialBlockLootTables(Map<ResourceLocation, LootTable> lootTables, TagPrefix prefix,

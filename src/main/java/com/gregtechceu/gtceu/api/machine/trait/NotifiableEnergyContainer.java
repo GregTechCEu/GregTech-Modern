@@ -172,7 +172,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
                         machine.getPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
-                            outputAmperes - amperesUsed);
+                            outputAmperes - amperesUsed, false);
                     if (amperesUsed == outputAmperes) break;
                 }
             }
@@ -255,7 +255,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+    public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage, boolean simulate) {
         var latestTimeStamp = getMachine().getOffsetTimer();
         if (lastTimeStamp < latestTimeStamp) {
             amps = 0;

@@ -175,10 +175,6 @@
     "gtceu:brown_large_metal_sheet",
     "gtceu:green_large_metal_sheet",
     "gtceu:red_large_metal_sheet",
-    "gtceu:black_large_metal_sheet",
-    "gtceu:small_duct_pipe",
-    "gtceu:normal_duct_pipe",
-    "gtceu:large_duct_pipe",
-    "gtceu:huge_duct_pipe"
+    "gtceu:black_large_metal_sheet"
   ]
 }

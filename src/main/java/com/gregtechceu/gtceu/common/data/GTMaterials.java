@@ -163,7 +163,7 @@ public class GTMaterials {
         rock.setIgnored(Marble, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
         rock.setIgnored(Granite, Blocks.GRANITE);
         rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
+        rock.setIgnored(RedGranite, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
         rock.setIgnored(Andesite, Blocks.ANDESITE);
         rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
         rock.setIgnored(Diorite, Blocks.DIORITE);
@@ -196,14 +196,14 @@ public class GTMaterials {
         toolHeadWireCutter
                 .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
 
-        pipeTinyFluid.setIgnored(Wood);
-        pipeHugeFluid.setIgnored(Wood);
-        pipeQuadrupleFluid.setIgnored(Wood);
-        pipeNonupleFluid.setIgnored(Wood);
-        pipeTinyFluid.setIgnored(TreatedWood);
-        pipeHugeFluid.setIgnored(TreatedWood);
-        pipeQuadrupleFluid.setIgnored(TreatedWood);
-        pipeNonupleFluid.setIgnored(TreatedWood);
+        pipeTiny.setIgnored(Wood);
+        pipeHuge.setIgnored(Wood);
+        pipeQuadruple.setIgnored(Wood);
+        pipeNonuple.setIgnored(Wood);
+        pipeTiny.setIgnored(TreatedWood);
+        pipeHuge.setIgnored(TreatedWood);
+        pipeQuadruple.setIgnored(TreatedWood);
+        pipeNonuple.setIgnored(TreatedWood);
 
         pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
         pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
@@ -219,7 +219,6 @@ public class GTMaterials {
         plateDouble.setIgnored(BorosilicateGlass);
         plateDouble.setIgnored(Wood);
         plateDouble.setIgnored(TreatedWood);
-        plate.setIgnored(BorosilicateGlass);
         foil.setIgnored(BorosilicateGlass);
 
         dustSmall.setIgnored(Lapotron);
@@ -774,9 +773,9 @@ public class GTMaterials {
     public static Material ConstructionFoam;
 
     public static Material Oil;
-    public static Material OilHeavy;
+    public static Material HeavyOil;
     public static Material RawOil;
-    public static Material OilLight;
+    public static Material LightOil;
     public static Material NaturalGas;
     public static Material SulfuricHeavyFuel;
     public static Material HeavyFuel;
@@ -907,7 +906,7 @@ public class GTMaterials {
     public static Material GarnetYellow;
     public static Material Marble;
     public static Material Deepslate;
-    public static Material GraniteRed;
+    public static Material RedGranite;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;
     public static Material Pollucite;

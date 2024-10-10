@@ -137,6 +137,12 @@ public class ConfigHolder {
     public static class CompatibilityConfigs {
 
         @Configurable
+        @Configurable.Comment({ "Whether to run datafixers on world load.",
+                "Do note that mods like ModernFix will likely interfere with this.",
+                "Default: true" })
+        public boolean doDatafixers = true;
+
+        @Configurable
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
         public EnergyCompatConfig energy = new EnergyCompatConfig();
 
@@ -629,6 +635,11 @@ public class ConfigHolder {
         @Configurable.Comment({ "Duration of UI animations in ms", "Default: 300" })
         @Configurable.Range(min = 1)
         public int animationTime = 300;
+
+        @Configurable
+        @Configurable.Comment({ "Prevent optical and laser cables from animating when active.", "Default: false" })
+        public boolean preventAnimatedCables = false;
+
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
 

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
@@ -12,11 +11,10 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
-import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
@@ -27,10 +25,12 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -80,17 +80,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.MissingMappingsEvent;
+import net.minecraftforge.registries.RegistryManager;
 
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
 /**
  * @author KilaBash
@@ -386,17 +385,6 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
-        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get());
-            }
-        });
-        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
-            }
-        });
-
         event.getMappings(Registries.BLOCK, "gregiceng").forEach(mapping -> {
             String path = mapping.getKey().getPath();
             switch (path) {
@@ -475,36 +463,104 @@ public class ForgeCommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
-            String first = prefix.invertedName ? toLowerCaseUnder(prefix.name) : "(.+?)";
-            String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnder(prefix.name);
-            Pattern idPattern = Pattern.compile(first + "_" + last);
-            event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
-                Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
-                if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                    if (block != null && block.isPresent()) {
-                        mapping.remap(block.get());
-                    }
-                }
+        // remap pipe blocks (uses the datafixer in 1.21)
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            String namespace = registry.getModid();
+            event.getMappings(Registries.BLOCK, namespace).forEach(mapping -> {
+                remapPipe(mapping);
             });
-            event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
-                Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
-                if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                    if (block != null && block.isPresent()) {
-                        mapping.remap(block.asItem());
-                    } else {
-                        ItemEntry<? extends TagPrefixItem> item = GTItems.MATERIAL_ITEMS.get(prefix,
-                                GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                        if (item != null && item.isPresent()) {
-                            mapping.remap(item.asItem());
-                        }
-                    }
-                }
+            event.getMappings(Registries.ITEM, namespace).forEach(mapping -> {
+                remapPipe(mapping);
             });
+        }
+        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.get());
+                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.get());
+                default -> {
+                    remapMaterial(Pattern.compile("uranium"), "uranium_238", mapping);
+                    remapMaterial(Pattern.compile("plutonium"), "plutonium_239", mapping);
+                    remapMaterial(Pattern.compile("granite_red"), "red_granite", mapping);
+                    remapMaterial(OilVariantsRenameFix.RENAMED_BLOCK_IDS, mapping);
+                }
+            }
+        });
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "normal_laser_pipe" -> mapping.remap(GTBlocks.LASER_PIPE.asItem());
+                case "normal_optical_pipe" -> mapping.remap(GTBlocks.OPTICAL_PIPE.asItem());
+                case "avanced_nanomuscle_chestplate" -> mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
+                default -> {
+                    remapMaterial(Pattern.compile("uranium"), "uranium_238", mapping);
+                    remapMaterial(Pattern.compile("plutonium"), "plutonium_239", mapping);
+                    remapMaterial(Pattern.compile("granite_red"), "red_granite", mapping);
+                    remapMaterial(OilVariantsRenameFix.RENAMED_ITEM_IDS, mapping);
+                }
+            }
+        });
+        event.getMappings(Registries.FLUID, GTCEu.MOD_ID).forEach(mapping -> {
+            remapMaterial(OilVariantsRenameFix.RENAMED_FLUID_IDS, mapping);
+            remapMaterial(Map.of(
+                    "gtceu:uranium", "gtceu:uranium_238",
+                    "gtceu:flowing_uranium", "gtceu:flowing_uranium_238",
+                    "gtceu:plutonium", "gtceu:plutonium_238",
+                    "gtceu:flowing_plutonium", "gtceu:flowing_plutonium_238"), mapping);
+        });
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
+            switch (mapping.getKey().getPath()) {
+                case "cable", "fluid_pipe", "item_pipe" -> mapping.remap(GTBlockEntities.MATERIAL_PIPE.get());
+                case "laser_pipe", "optical_pipe" -> mapping.remap(GTBlockEntities.ACTIVATABLE_PIPE.get());
+                case "duct_pipe" -> mapping.remap(GTBlockEntities.PIPE.get());
+            }
+        });
+    }
+
+    private static <T> void remapPipe(MissingMappingsEvent.Mapping<T> mapping) {
+        String namespace = mapping.getKey().getNamespace();
+        String path = mapping.getKey().getPath();
+        if (path.contains("_pipe")) {
+            StringBuilder result;
+            boolean restrictive = path.contains("restrictive");
+            boolean fluid = path.contains("fluid");
+            String[] split = path.substring(0, path.length() - (fluid ? 11 : 10)).split("_");
+            if (restrictive) {
+                result = new StringBuilder(split[split.length - 2] + "_" + split[split.length - 1]);
+                for (int i = 0; i < split.length - 2; ++i) {
+                    result.append("_").append(split[i]);
+                }
+            } else {
+                result = new StringBuilder(split[split.length - 1]);
+                for (int i = 0; i < split.length - 1; ++i) {
+                    result.append("_").append(split[i]);
+                }
+            }
+            result.append("_pipe");
+
+            ResourceLocation newBlock = new ResourceLocation(namespace, result.toString());
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
+        }
+    }
+
+    private static <T> void remapMaterial(Pattern pattern, String replacement,
+                                          MissingMappingsEvent.Mapping<T> mapping) {
+        String namespace = mapping.getKey().getNamespace();
+        String path = mapping.getKey().getPath();
+        Matcher match = pattern.matcher(path);
+        String replaced = match.replaceAll(replacement);
+        if (!path.equals(replaced)) {
+            ResourceLocation newBlock = new ResourceLocation(namespace, replaced);
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
+        }
+    }
+
+    private static <T> void remapMaterial(Map<String, String> renameMap, MissingMappingsEvent.Mapping<T> mapping) {
+        String newName = renameMap.get(mapping.getKey().toString());
+        if (newName != null) {
+            ResourceLocation newBlock = new ResourceLocation(newName);
+            IForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(mapping.getRegistry().getRegistryKey());
+            mapping.remap(registry.getValue(newBlock));
         }
     }
 }

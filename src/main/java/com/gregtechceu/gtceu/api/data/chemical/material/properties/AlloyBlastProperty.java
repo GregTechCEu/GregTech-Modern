@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class AlloyBlastProperty implements IMaterialProperty<AlloyBlastProperty> {
+public class AlloyBlastProperty implements IMaterialProperty {
 
     /**
      * Internal material fluid field

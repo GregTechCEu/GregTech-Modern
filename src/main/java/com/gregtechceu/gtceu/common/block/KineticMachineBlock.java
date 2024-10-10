@@ -61,8 +61,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
         // we can prevent a major re-propagation here
 
         BlockEntity tileEntity = level.getBlockEntity(pos);
-        if (tileEntity instanceof KineticBlockEntity kineticTileEntity) {
-            kineticTileEntity.preventSpeedUpdate = 0;
+        if (tileEntity instanceof KineticBlockEntity kineticBlockEntity) {
+            kineticBlockEntity.preventSpeedUpdate = 0;
 
             if (oldState.getBlock() != state.getBlock())
                 return;
@@ -71,7 +71,7 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
             if (!areStatesKineticallyEquivalent(oldState, state))
                 return;
 
-            kineticTileEntity.preventSpeedUpdate = 2;
+            kineticBlockEntity.preventSpeedUpdate = 2;
         }
     }
 

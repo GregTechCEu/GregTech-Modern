@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.block.PipeBlockItem;
+import com.gregtechceu.gtceu.api.graphnet.pipenet.physical.tile.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
@@ -144,18 +143,19 @@ public class BlockHighLightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
-                    null;
-            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
-                    pipeBlockEntity.getPipeType().type().equals(type.type())) {
+            var pipeBlock = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
+                    pipeBlockItem.getBlock() : null;
+            var pipeStructure = pipeBlock == null ? null : pipeBlock.getStructure();
+            if (pipeStructure != null && pipeBlock.hasPipeCollisionChangingItem(level, blockPos, player) &&
+                    blockEntity instanceof PipeBlockEntity pipeBlockEntity) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ?
-                        pipeBlockEntity.getPipeTexture(true) : null);
+                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) &&
+                        pipeBlockEntity.canConnectTo(side) ? pipeStructure.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }

@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.ILaserRelay;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -45,11 +47,10 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
             if (!outputsEnergy(side)) continue;
             BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
             Direction oppositeSide = side.getOpposite();
-            ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
+            ILaserRelay laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
                     getMachine().getPos().relative(side), oppositeSide);
             if (tileEntity != null && laserContainer != null) {
-                if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
-                amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
+                amperesUsed += laserContainer.receiveLaser(outputVoltage,
                         outputAmperes - amperesUsed);
                 if (amperesUsed == outputAmperes) break;
             }
@@ -57,5 +58,16 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         if (amperesUsed > 0) {
             setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
         }
+    }
+
+    @Override
+    public long receiveLaser(long laserVoltage, long laserAmperage) {
+        if (getInputVoltage() == 0) return 0;
+        long allowedAmps = getEnergyCanBeInserted() / laserVoltage;
+        addEnergy(laserVoltage * allowedAmps);
+        // over voltage explosion
+        if (laserVoltage > getInputVoltage() && getMachine() instanceof IExplosionMachine explosionMachine)
+            explosionMachine.doExplosion(GTUtil.getExplosionPower(laserVoltage));
+        return allowedAmps;
     }
 }

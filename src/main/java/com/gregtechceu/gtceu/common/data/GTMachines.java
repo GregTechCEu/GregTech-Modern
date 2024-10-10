@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -56,8 +55,9 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
-import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.handlers.properties.MaterialFluidProperties;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.fluid.LDFluidEndpointMachine;
+import com.gregtechceu.gtceu.common.pipelike.longdistance.item.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -687,9 +687,10 @@ public class GTMachines {
 
             var item = stack.getItem();
             if (item instanceof DrumMachineItem drumItem && material != null) {
-                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                    pipeprops.appendTooltips(list, true, true);
+                if (material.hasProperty(PropertyKey.PIPENET_PROPERTIES)) {
+                    MaterialFluidProperties pipeprops = material.getProperty(PropertyKey.PIPENET_PROPERTIES)
+                            .getProperty(MaterialFluidProperties.KEY);
+                    pipeprops.appendTooltips(list);
                 }
             }
         };
@@ -738,7 +739,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
             "wooden_multiblock_tank", "Wooden Multiblock Tank", 250 * 1000,
             CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
-            new PropertyFluidFilter(340, false, false, false, false),
+            new PropertyFluidFilter(340, 121, false, false, false),
             (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay));
 
     public static final MachineDefinition STEEL_TANK_VALVE = registerTankValve(
@@ -1182,17 +1183,17 @@ public class GTMachines {
             HV, EV, IV, LuV, ZPM, UV);
 
     public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
     public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
     public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096,
-            PartAbility.INPUT_LASER);
+            PartAbility.LASER_RECEPTION);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096,
-            PartAbility.OUTPUT_LASER);
+            PartAbility.LASER_TRANSMISSION);
 
     //////////////////////////////////////
     // ******* Multiblock *******//
@@ -2126,9 +2127,9 @@ public class GTMachines {
                                     .setMinGlobalLimited(PowerSubstationMachine.MIN_CASINGS)
                                     .or(autoAbilities(true, false, false))
                                     .or(abilities(PartAbility.INPUT_ENERGY, PartAbility.SUBSTATION_INPUT_ENERGY,
-                                            PartAbility.INPUT_LASER).setMinGlobalLimited(1))
+                                            PartAbility.LASER_RECEPTION).setMinGlobalLimited(1))
                                     .or(abilities(PartAbility.OUTPUT_ENERGY, PartAbility.SUBSTATION_OUTPUT_ENERGY,
-                                            PartAbility.OUTPUT_LASER).setMinGlobalLimited(1)))
+                                            PartAbility.LASER_TRANSMISSION).setMinGlobalLimited(1)))
                     .where('G', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('B', Predicates.powerSubstationBatteries())
                     .build())

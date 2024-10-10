@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.voiding;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -7,6 +8,8 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.pipe.cover.CoverRendererBuilder;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -40,6 +43,17 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     @Override
     protected boolean isSubscriptionActive() {
         return isWorkingEnabled() && isEnabled();
+    }
+
+    @Override
+    public @NotNull CoverRenderer getRenderer() {
+        if (renderer == null) renderer = buildRenderer();
+        return renderer;
+    }
+
+    @Override
+    protected CoverRenderer buildRenderer() {
+        return new CoverRendererBuilder(GTCEu.id("block/cover/overlay_item_voiding"), null).build();
     }
 
     //////////////////////////////////////////////

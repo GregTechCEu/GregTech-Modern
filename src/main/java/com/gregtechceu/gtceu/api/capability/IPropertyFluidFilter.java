@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -19,14 +17,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.fluids.FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
-
 public interface IPropertyFluidFilter extends Predicate<FluidStack> {
 
     @Override
     default boolean test(@NotNull FluidStack stack) {
         Fluid fluid = stack.getFluid();
-        if (FluidHelper.getTemperature(stack) < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
+        if (FluidHelper.getTemperature(stack) < getMinFluidTemperature()) return false;
 
         if (fluid instanceof IAttributedFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
@@ -79,27 +75,15 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * Append tooltips about containment info
      *
-     * @param tooltip             the tooltip to append to
-     * @param showToolsInfo       if the "hold shift" line should mention tool info
-     * @param showTemperatureInfo if the temperature information should be displayed
+     * @param tooltip the tooltip to append to
      */
-    default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
-        if (GTUtil.isShiftDown()) {
-            if (showTemperatureInfo)
-                tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                        FormattingUtil.formatNumbers(getMaxFluidTemperature())));
-            if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
-            else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
-            if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
-            if (isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
-            getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
-        } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
-            if (showToolsInfo) {
-                tooltip.add(Component.translatable("gtceu.tooltip.tool_fluid_hold_shift"));
-            } else {
-                tooltip.add(Component.translatable("gtceu.tooltip.fluid_pipe_hold_shift"));
-            }
-        }
+    default void appendTooltips(@NotNull List<Component> tooltip) {
+        tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
+        tooltip.add(Component.translatable("gtceu.fluid_pipe.min_temperature", getMinFluidTemperature()));
+        if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
+        else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
+        if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
     }
 
     /**
@@ -112,17 +96,23 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
      *
-     * @return whether this filter allows gases
+     * @return the minimum allowed temperature for a fluid
      */
-    boolean isGasProof();
+    int getMinFluidTemperature();
 
     /**
-     * @return whether this filter allows cryogenic fluids
+     * This is always checked, regardless of the contained fluid being a {@link IAttributedFluid} or not
+     *
+     * @return whether this filter allows gases
      */
-    boolean isCryoProof();
+    default boolean isGasProof() {
+        return canContain(FluidState.GAS);
+    }
 
     /**
      * @return whether this filter allows plasmas
      */
-    boolean isPlasmaProof();
+    default boolean isPlasmaProof() {
+        return canContain(FluidState.PLASMA);
+    }
 }

@@ -28,20 +28,20 @@ public class CraftingRecipeLoader {
         // todo facades
         // registerFacadeRecipe(provider, Iron, 4);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood),
+        VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmall, Wood),
                 "sWr", 'W', ItemTags.PLANKS);
-        VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood),
+        VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormal, Wood),
                 "WWW", "s r", 'W', ItemTags.PLANKS);
-        VanillaRecipeHelper.addShapedRecipe(provider, "large_wooden_pipe", ChemicalHelper.get(pipeLargeFluid, Wood),
+        VanillaRecipeHelper.addShapedRecipe(provider, "large_wooden_pipe", ChemicalHelper.get(pipeLarge, Wood),
                 "WWW", "s r", "WWW", 'W', ItemTags.PLANKS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "small_treated_wooden_pipe",
-                ChemicalHelper.get(pipeSmallFluid, TreatedWood), "sWr", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack());
+                ChemicalHelper.get(pipeSmall, TreatedWood), "sWr", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "normal_treated_wooden_pipe",
-                ChemicalHelper.get(pipeNormalFluid, TreatedWood), "WWW", "s r", 'W',
+                ChemicalHelper.get(pipeNormal, TreatedWood), "WWW", "s r", 'W',
                 GTBlocks.TREATED_WOOD_PLANK.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "large_treated_wooden_pipe",
-                ChemicalHelper.get(pipeLargeFluid, TreatedWood), "WWW", "s r", "WWW", 'W',
+                ChemicalHelper.get(pipeLarge, TreatedWood), "WWW", "s r", "WWW", 'W',
                 GTBlocks.TREATED_WOOD_PLANK.asStack());
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "integrated_circuit", INTEGRATED_CIRCUIT.asStack(),
@@ -155,7 +155,7 @@ public class CraftingRecipeLoader {
                 new UnificationEntry(rotor, Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing_sterile",
                 GTBlocks.FILTER_CASING_STERILE.asStack(), "BEB", "ISI", "MFR", 'B',
-                new UnificationEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I',
+                new UnificationEntry(pipeLarge, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I',
                 ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F',
                 new UnificationEntry(frameGt, Tritanium), 'R', new UnificationEntry(rotor, NaquadahAlloy));
 
@@ -288,7 +288,7 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_jetpack", GTItems.LIQUID_FUEL_JETPACK.asStack(), "xCw",
                 "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new UnificationEntry(rotor, Lead), 'I',
-                new UnificationEntry(pipeSmallFluid, Potin));
+                new UnificationEntry(pipeSmall, Potin));
         VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack", GTItems.ELECTRIC_JETPACK.asStack(), "xCd",
                 "TBT", "I I", 'C', CustomTags.MV_CIRCUITS, 'T', GTItems.POWER_THRUSTER.asStack(), 'B',
                 GTItems.BATTERY_MV_LITHIUM.asStack(), 'I', new UnificationEntry(wireGtDouble, AnnealedCopper));

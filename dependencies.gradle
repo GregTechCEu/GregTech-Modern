@@ -1,6 +1,12 @@
 dependencies {
     compileOnly 'org.jetbrains:annotations:24.1.0'
 
+    // Shadowed Dependencies
+    // Packages that aren't mods, and thus need to be included in the release files.
+
+    api(includedLibrary('org.jgrapht:jgrapht-core:1.5.2'))  // JGraphT 1.5.2
+    additionalRuntimeClasspath('org.jgrapht:jgrapht-core:1.5.2')
+
     // LDLib
     modApi(forge.ldlib.forge) { transitive = false }
     jarJar(forge.ldlib.forge)
@@ -57,7 +63,7 @@ dependencies {
     jarJar(forge.configuration)
 
     // Shimmer
-    modCompileOnly(forge.shimmer.forge) { transitive = false }
+    modImplementation(forge.shimmer.forge) { transitive = false }
     modCompileOnly("maven.modrinth:embeddium:0.3.19+mc1.20.1")
     modCompileOnly("maven.modrinth:oculus:1.20.1-1.7.0")
 
