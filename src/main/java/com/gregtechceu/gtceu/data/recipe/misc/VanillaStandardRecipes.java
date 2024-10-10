@@ -819,6 +819,14 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
+        VanillaRecipeHelper.addShapedRecipe(provider, "leather_horse_armor", new ItemStack(Items.LEATHER_HORSE_ARMOR), "hdH",
+                "PCP", "LSL",
+                'H', new ItemStack(Items.LEATHER_HELMET),
+                'P', new ItemStack(Items.LEATHER),
+                'C', new ItemStack(Items.LEATHER_CHESTPLATE),
+                'L', new ItemStack(Items.LEATHER_LEGGINGS),
+                'S', new UnificationEntry(screw, Iron));
+
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_horse_armor", new ItemStack(Items.IRON_HORSE_ARMOR), "hdH",
                 "PCP", "LSL",
                 'H', new ItemStack(Items.IRON_HELMET),
