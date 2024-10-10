@@ -1028,68 +1028,6 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER))
                 .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_sign").duration(100).EUt(4).inputItems(Items.OAK_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.OAK_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_sign").duration(100).EUt(4).inputItems(Items.SPRUCE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.SPRUCE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_sign").duration(100).EUt(4).inputItems(Items.BIRCH_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BIRCH_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_sign").duration(100).EUt(4).inputItems(Items.JUNGLE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.JUNGLE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_sign").duration(100).EUt(4).inputItems(Items.ACACIA_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.ACACIA_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("cherry_sign").duration(100).EUt(4).inputItems(Items.CHERRY_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CHERRY_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_sign").duration(100).EUt(4).inputItems(Items.DARK_OAK_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.DARK_OAK_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("mangrove_sign").duration(100).EUt(4).inputItems(Items.MANGROVE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.MANGROVE_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bamboo_sign").duration(100).EUt(4).inputItems(Items.BAMBOO_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BAMBOO_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("crimson_sign").duration(100).EUt(4).inputItems(Items.CRIMSON_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CRIMSON_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.WARPED_SIGN, 3).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("oak_hanging_sign").duration(100).EUt(4).inputItems(Items.STRIPPED_OAK_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.OAK_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_SPRUCE_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.SPRUCE_HANGING_SIGN, 5).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_BIRCH_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.BIRCH_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_JUNGLE_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.JUNGLE_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_ACACIA_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.ACACIA_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("cherry_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_CHERRY_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.CHERRY_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_DARK_OAK_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.DARK_OAK_HANGING_SIGN, 6)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("mangrove_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_MANGROVE_LOG, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.MANGROVE_HANGING_SIGN, 6)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bamboo_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_BAMBOO_BLOCK, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.BAMBOO_HANGING_SIGN, 6).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("crimson_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_CRIMSON_HYPHAE, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.CRIMSON_HANGING_SIGN, 6)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("warped_hanging_sign").duration(100).EUt(4)
-                .inputItems(Items.STRIPPED_WARPED_HYPHAE, 6)
-                .inputItems(new ItemStack(Items.CHAIN, 2)).outputItems(Items.WARPED_HANGING_SIGN, 6).save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3))
                 .outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
 
