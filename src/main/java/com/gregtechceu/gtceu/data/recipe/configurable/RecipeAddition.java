@@ -1277,12 +1277,6 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Blocks.BELL))
                     .duration(200).EUt(16).save(provider);
 
-            ASSEMBLER_RECIPES.recipeBuilder("conduit")
-                    .inputItems(new ItemStack(Items.HEART_OF_THE_SEA))
-                    .inputItems(new ItemStack(Items.NAUTILUS_SHELL, 8))
-                    .outputItems(new ItemStack(Blocks.CONDUIT))
-                    .duration(200).EUt(16).save(provider);
-
             VanillaRecipeHelper.addShapedRecipe(provider, "candle", new ItemStack(Blocks.CANDLE), "r",
                     "S", "W",
                     'S', new ItemStack(Items.STRING),

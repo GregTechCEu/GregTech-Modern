@@ -1172,6 +1172,12 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
                 .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("conduit")
+                .inputItems(new ItemStack(Items.HEART_OF_THE_SEA))
+                .inputItems(new ItemStack(Items.NAUTILUS_SHELL, 8))
+                .outputItems(new ItemStack(Blocks.CONDUIT))
+                .duration(200).EUt(16).save(provider);
     }
 
     /**
