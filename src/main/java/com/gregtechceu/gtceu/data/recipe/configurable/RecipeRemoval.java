@@ -158,6 +158,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:warped_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:mangrove_pressure_plate"));
+        registry.accept(new ResourceLocation("minecraft:cherry_pressure_plate"));
+        registry.accept(new ResourceLocation("minecraft:bamboo_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:heavy_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));

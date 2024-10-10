@@ -825,14 +825,16 @@ public class WoodMachineRecipes {
                     'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(),
-                GTBlocks.RUBBER_PLANK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(),
-                GTBlocks.TREATED_WOOD_PLANK.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_pressure_plate", GTBlocks.RUBBER_PRESSURE_PLATE.asStack(),
-                "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate",
-                GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        if(!ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
+            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(),
+                    GTBlocks.RUBBER_PLANK.asStack());
+            VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(),
+                    GTBlocks.TREATED_WOOD_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "rubber_pressure_plate", GTBlocks.RUBBER_PRESSURE_PLATE.asStack(),
+                    "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate",
+                    GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        }
 
         // add Recipes for rubber log
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
