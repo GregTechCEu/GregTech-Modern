@@ -88,7 +88,7 @@ public class CustomTags {
             UV_BATTERIES,
             UHV_BATTERIES
     };
-    
+
     public static final TagKey<Item> ELECTRIC_MOTORS = TagUtil.createModItemTag("electric_motors");
     public static final TagKey<Item> ELECTRIC_PUMPS = TagUtil.createModItemTag("electric_pumps");
     public static final TagKey<Item> FLUID_REGULATORS = TagUtil.createModItemTag("fluid_regulators");
