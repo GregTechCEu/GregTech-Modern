@@ -940,12 +940,6 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.NAME_TAG))
                 .duration(100).EUt(VA[ULV]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("bow")
-                .inputItems(new ItemStack(Items.STRING, 3))
-                .inputItems(Items.STICK, 3)
-                .outputItems(new ItemStack(Items.BOW, 1))
-                .duration(100).EUt(4).save(provider);
-
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball").duration(128).EUt(4).notConsumable(SHAPE_MOLD_BALL)
                 .inputFluids(Water.getFluid(250)).outputItems(new ItemStack(Items.SNOWBALL)).save(provider);
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball_distilled").duration(128).EUt(4)

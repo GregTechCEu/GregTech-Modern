@@ -892,6 +892,18 @@ public class RecipeAddition {
                     'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
                     'L', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Iron),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Wood));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "bow", new ItemStack(Items.BOW), "hLS", "LRS", "fLS",
+                    'L', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
+                    'S', new ItemStack(Items.STRING),
+                    'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "crossbow", new ItemStack(Items.CROSSBOW), "RIR", "STS",
+                    "sRf",
+                    'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
+                    'S', new ItemStack(Items.STRING),
+                    'T', new ItemStack(Items.TRIPWIRE_HOOK),
+                    'I', new UnificationEntry(ring, Iron));
         } else {
             ASSEMBLER_RECIPES.recipeBuilder("compass")
                     .inputItems(dust, Redstone)
@@ -906,6 +918,21 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Items.CLOCK))
                     .duration(100).EUt(4).save(provider);
         }
+
+        ASSEMBLER_RECIPES.recipeBuilder("bow")
+                .inputItems(new ItemStack(Items.STRING, 3))
+                .inputItems(Items.STICK, 3)
+                .outputItems(new ItemStack(Items.BOW, 1))
+                .circuitMeta(10)
+                .duration(100).EUt(4).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("crossbow")
+                .inputItems(new ItemStack(Items.STRING, 2))
+                .inputItems(Items.STICK, 3)
+                .inputItems(Items.TRIPWIRE_HOOK)
+                .outputItems(new ItemStack(Items.CROSSBOW, 1))
+                .circuitMeta(11)
+                .duration(100).EUt(4).save(provider);
     }
 
     private static void harderRods(Consumer<FinishedRecipe> provider) {
@@ -1043,18 +1070,6 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "lead", new ItemStack(Items.LEAD), "SSS", "SBS", "SSS",
                     'S', new ItemStack(Items.STRING),
                     'B', new ItemStack(Items.SLIME_BALL));
-
-            VanillaRecipeHelper.addShapedRecipe(provider, "bow", new ItemStack(Items.BOW), "hLS", "LRS", "fLS",
-                    'L', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
-                    'S', new ItemStack(Items.STRING),
-                    'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron));
-
-            VanillaRecipeHelper.addShapedRecipe(provider, "crossbow", new ItemStack(Items.CROSSBOW), "RIR", "STS",
-                    "sRf",
-                    'R', new UnificationEntry(TagPrefix.rodLong, GTMaterials.Wood),
-                    'S', new ItemStack(Items.STRING),
-                    'T', new ItemStack(Items.TRIPWIRE_HOOK),
-                    'I', new UnificationEntry(ring, Iron));
 
             VanillaRecipeHelper.addShapedRecipe(provider, "item_frame", new ItemStack(Items.ITEM_FRAME), "SRS", "TLT",
                     "TTT",

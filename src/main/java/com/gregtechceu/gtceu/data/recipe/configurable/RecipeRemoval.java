@@ -182,6 +182,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:clock"));
         registry.accept(new ResourceLocation("minecraft:shears"));
         registry.accept(new ResourceLocation("minecraft:shield"));
+        registry.accept(new ResourceLocation("minecraft:crossbow"));
+        registry.accept(new ResourceLocation("minecraft:bow"));
         for (String type : new String[] { "iron", "golden", "diamond" }) {
             registry.accept(new ResourceLocation("minecraft:" + type + "_shovel"));
             registry.accept(new ResourceLocation("minecraft:" + type + "_pickaxe"));
@@ -225,7 +227,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_diorite"));
         registry.accept(new ResourceLocation("minecraft:polished_andesite"));
         registry.accept(new ResourceLocation("minecraft:lead"));
-        registry.accept(new ResourceLocation("minecraft:bow"));
         registry.accept(new ResourceLocation("minecraft:item_frame"));
         registry.accept(new ResourceLocation("minecraft:painting"));
         registry.accept(new ResourceLocation("minecraft:chest_minecart"));
