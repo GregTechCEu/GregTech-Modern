@@ -378,8 +378,9 @@ public class RecipeRemoval {
         // registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
         // registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
         // registry.accept(new ResourceLocation("minecraft:end_crystal"));
-        // registry.accept(new ResourceLocation("minecraft:end_rod")); // wait for approval before uncommenting this one
+        registry.accept(new ResourceLocation("minecraft:end_rod"));
         // registry.accept(new ResourceLocation("minecraft:mud_bricks")); //no other way to obtain these rn
+        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
