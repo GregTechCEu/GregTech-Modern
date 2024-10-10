@@ -578,7 +578,7 @@ public class RecipeAddition {
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("daylight_detector")
                     .inputItems(rod, RedAlloy)
                     .inputItems(new ItemStack(Blocks.GLASS, 3))
-                    .inputItems(ingot, NetherQuartz, 3)
+                    .inputItems(gem, NetherQuartz, 3)
                     .inputItems(ItemTags.PLANKS)
                     .outputItems(new ItemStack(Blocks.DAYLIGHT_DETECTOR))
                     .duration(200).EUt(16).save(provider);
@@ -586,7 +586,7 @@ public class RecipeAddition {
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("daylight_detector_certus")
                     .inputItems(rod, RedAlloy)
                     .inputItems(new ItemStack(Blocks.GLASS, 3))
-                    .inputItems(ingot, CertusQuartz, 3)
+                    .inputItems(gem, CertusQuartz, 3)
                     .inputItems(ItemTags.PLANKS)
                     .outputItems(new ItemStack(Blocks.DAYLIGHT_DETECTOR))
                     .duration(200).EUt(16).save(provider);
@@ -594,7 +594,7 @@ public class RecipeAddition {
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("daylight_detector_quartzite")
                     .inputItems(rod, RedAlloy)
                     .inputItems(new ItemStack(Blocks.GLASS, 3))
-                    .inputItems(ingot, Quartzite, 3)
+                    .inputItems(gem, Quartzite, 3)
                     .inputItems(ItemTags.PLANKS)
                     .outputItems(new ItemStack(Blocks.DAYLIGHT_DETECTOR))
                     .duration(200).EUt(16).save(provider);
@@ -705,7 +705,7 @@ public class RecipeAddition {
 
             ASSEMBLER_RECIPES.recipeBuilder("calibrated_sculk_sensor")
                     .inputItems(new ItemStack(Blocks.SCULK_SENSOR))
-                    .inputItems(ingot, Amethyst)
+                    .inputItems(gem, Amethyst)
                     .inputItems(plate, Amethyst)
                     .outputItems(new ItemStack(Blocks.CALIBRATED_SCULK_SENSOR))
                     .duration(200).EUt(16).save(provider);
@@ -1331,8 +1331,8 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lightning_rod", new ItemStack(Blocks.LIGHTNING_ROD), " B ",
                     "fRh", " R ",
-                    'R', rod, Copper,
-                    'B', plateDouble, Copper);
+                    'R', new UnificationEntry(rod, Copper),
+                    'B', new UnificationEntry(plateDouble, Copper));
 
             ASSEMBLER_RECIPES.recipeBuilder("lightning_rod")
                     .inputItems(rod, Copper, 2)
