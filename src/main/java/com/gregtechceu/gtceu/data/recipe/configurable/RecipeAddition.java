@@ -1325,13 +1325,31 @@ public class RecipeAddition {
             // 'L', new ItemStack(Items.CRYING_OBSIDIAN),
             // 'G', new UnificationEntry(plate, Glowstone));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "chain", new ItemStack(Items.CHAIN), " R ",
+            VanillaRecipeHelper.addShapedRecipe(provider, "chain_iron", new ItemStack(Items.CHAIN), " R ",
                     "wR ", " R ",
                     'R', new UnificationEntry(ring, Iron));
 
-            ASSEMBLER_RECIPES.recipeBuilder("chain")
+            ASSEMBLER_RECIPES.recipeBuilder("chain_iron")
                     .inputItems(ring, Iron, 3)
-                    .outputItems(new ItemStack(Items.CHAIN))
+                    .outputItems(new ItemStack(Items.CHAIN, 2))
+                    .duration(40).EUt(10).save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "chain_wrought_iron", new ItemStack(Items.CHAIN, 2), " R ",
+                    "wR ", " R ",
+                    'R', new UnificationEntry(ring, WroughtIron));
+
+            ASSEMBLER_RECIPES.recipeBuilder("chain_wrought_iron")
+                    .inputItems(ring, WroughtIron, 3)
+                    .outputItems(new ItemStack(Items.CHAIN, 3))
+                    .duration(40).EUt(10).save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "chain_steel", new ItemStack(Items.CHAIN, 3), " R ",
+                    "wR ", " R ",
+                    'R', new UnificationEntry(ring, Steel));
+
+            ASSEMBLER_RECIPES.recipeBuilder("chain_steel")
+                    .inputItems(ring, Steel, 3)
+                    .outputItems(new ItemStack(Items.CHAIN, 4))
                     .duration(40).EUt(10).save(provider);
 
             for (DyeColor color : DyeColor.values()) {
