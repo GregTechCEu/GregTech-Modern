@@ -735,6 +735,24 @@ public class VanillaStandardRecipes {
                 .inputFluids(Concrete.getFluid(L))
                 .outputItems(new ItemStack(Items.COMPARATOR))
                 .duration(100).EUt(1).save(provider);
+
+        if (!ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
+            CUTTER_RECIPES.recipeBuilder("stone_pressure_plate")
+                    .inputItems(new ItemStack(Blocks.STONE_SLAB))
+                    .outputItems(new ItemStack(Blocks.STONE_PRESSURE_PLATE, 8))
+                    .duration(250).EUt(VA[ULV]).save(provider);
+
+            CUTTER_RECIPES.recipeBuilder("polished_blackstone_pressure_plate")
+                    .inputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_SLAB))
+                    .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
+                    .duration(250).EUt(VA[ULV]).save(provider);
+
+            CUTTER_RECIPES.recipeBuilder("polished_blackstone_pressure_plate")
+                    .inputItems(plate, Iron)
+                    .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
+                    .circuitMeta(10)
+                    .duration(250).EUt(VA[ULV]).save(provider);
+        }
     }
 
     /**
@@ -784,19 +802,19 @@ public class VanillaStandardRecipes {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_helmet", new ItemStack(Items.CHAINMAIL_HELMET), "PPP",
                 "PhP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_chestplate", new ItemStack(Items.CHAINMAIL_CHESTPLATE),
                 "PhP", "PPP", "PPP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_leggings", new ItemStack(Items.CHAINMAIL_LEGGINGS),
                 "PPP", "PhP", "P P",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_boots", new ItemStack(Items.CHAINMAIL_BOOTS), "P P",
                 "PhP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         ASSEMBLER_RECIPES.recipeBuilder("cauldron")
                 .inputItems(plate, Iron, 7)
@@ -1105,7 +1123,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("candle")
-                .inputFluids(Wax.getFluid(144))
+                .inputFluids(Wax.getFluid(L))
                 .inputItems(new ItemStack(Items.STRING))
                 .outputItems(new ItemStack(Blocks.CANDLE, 2))
                 .duration(20).EUt(1).save(provider);
@@ -1274,7 +1292,7 @@ public class VanillaStandardRecipes {
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("dark_prismarine")
                 .inputItems(new ItemStack(Items.PRISMARINE_SHARD, 8))
-                .inputFluids(DyeBlack.getFluid(144))
+                .inputFluids(DyeBlack.getFluid(L))
                 .outputItems(new ItemStack(Blocks.DARK_PRISMARINE))
                 .duration(20).EUt(VA[ULV]).save(provider);
     }
