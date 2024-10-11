@@ -5,14 +5,20 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,6 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     protected FluidFilter fluidFilter;
+    private FilteredFluidTransferWrapper fluidFilterWrapper;
 
     public FluidFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -44,10 +51,44 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
+    public @Nullable IFluidHandlerModifiable getFluidTransferCap(@Nullable IFluidHandlerModifiable defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+
+        if (fluidFilterWrapper == null || fluidFilterWrapper.delegate != defaultValue) {
+            this.fluidFilterWrapper = new FilteredFluidTransferWrapper(defaultValue);
+        }
+
+        return fluidFilterWrapper;
+    }
+
+    @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 80);
         group.addWidget(new LabelWidget(5, 3, attachItem.getDescriptionId()));
         group.addWidget(getFluidFilter().openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15));
         return group;
+    }
+
+    private class FilteredFluidTransferWrapper extends FluidTransferDelegate {
+
+        public FilteredFluidTransferWrapper(IFluidHandlerModifiable delegate) {
+            super(delegate);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            if (!fluidFilter.test(resource))
+                return 0;
+            return super.fill(resource, action);
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            if (!fluidFilter.test(resource))
+                return FluidStack.EMPTY;
+            return super.drain(resource, action);
+        }
     }
 }
