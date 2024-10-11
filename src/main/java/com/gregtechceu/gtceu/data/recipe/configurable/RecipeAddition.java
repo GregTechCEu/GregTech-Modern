@@ -920,21 +920,6 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Items.CLOCK))
                     .duration(100).EUt(4).save(provider);
         }
-
-        ASSEMBLER_RECIPES.recipeBuilder("bow")
-                .inputItems(new ItemStack(Items.STRING, 3))
-                .inputItems(Items.STICK, 3)
-                .outputItems(new ItemStack(Items.BOW, 1))
-                .circuitMeta(10)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("crossbow")
-                .inputItems(new ItemStack(Items.STRING, 2))
-                .inputItems(Items.STICK, 3)
-                .inputItems(Items.TRIPWIRE_HOOK)
-                .outputItems(new ItemStack(Items.CROSSBOW, 1))
-                .circuitMeta(11)
-                .duration(100).EUt(4).save(provider);
     }
 
     private static void harderRods(Consumer<FinishedRecipe> provider) {
