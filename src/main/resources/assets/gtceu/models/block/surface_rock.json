@@ -1,4 +1,5 @@
 {
+	"parent" : "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
 		"1": "gtceu:block/stones/gravel",

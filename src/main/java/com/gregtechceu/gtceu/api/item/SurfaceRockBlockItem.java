@@ -7,10 +7,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.Getter;
+
 public class SurfaceRockBlockItem extends BlockItem {
+
+    @Getter
+    private Material mat;
 
     public SurfaceRockBlockItem(SurfaceRockBlock block, Properties props, Material mat) {
         super(block, props);
+        this.mat = mat;
     }
 
     public static SurfaceRockBlockItem create(SurfaceRockBlock block, Properties props, Material mat) {

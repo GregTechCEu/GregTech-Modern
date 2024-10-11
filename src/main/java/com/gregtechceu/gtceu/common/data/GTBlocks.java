@@ -259,8 +259,9 @@ public class GTBlocks {
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> SurfaceRockBlock::tintedColor)
+                .color(() -> SurfaceRockBlock::tintedBlockColor)
                 .item((b, p) -> SurfaceRockBlockItem.create(b, p, material))
+                .color(() -> SurfaceRockBlock::tintedItemColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .build()
                 .register();
