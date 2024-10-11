@@ -3,25 +3,24 @@ name: Java Formatting
 
 on:
   push:
-    branches:
-      - '1.21'
+    branches: ['1.20.1', '1.21']
     paths: ['src/main/java/**', 'src/test/**']
   pull_request:
     paths: ['**']
 
 concurrency:
-  group: formatting-${{ github.head_ref || github.ref }}
+  group: formatting-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   formatting:
     name: Formatting
     runs-on: ubuntu-latest
-
+    permissions:
+      pull-requests: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
       - name: Check Path Filter
         uses: dorny/paths-filter@v3
         id: filter
@@ -30,11 +29,9 @@ jobs:
             code:
               - 'src/main/java/**'
               - 'src/test/**'
-
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
-
       - name: Run Spotless Formatting Check with Gradle
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew spotlessCheck --warning-mode all --build-cache
