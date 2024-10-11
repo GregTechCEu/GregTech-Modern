@@ -19,7 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
-import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -1398,8 +1397,7 @@ public class RecipeAddition {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_carpet",
                 new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_carpet"))), "WW",
-                'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_wool"))
-        );
+                'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_wool")));
     }
 
     private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {
