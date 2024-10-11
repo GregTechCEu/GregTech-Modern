@@ -1117,6 +1117,12 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
+        MACERATOR_RECIPES.recipeBuilder("macerate_obsidian")
+                .inputItems(new ItemStack(Blocks.OBSIDIAN))
+                .outputItems(dust, Obsidian)
+                .duration(150).EUt(2)
+                .save(provider);
+
         // TODO Stone-type tags?
         // if (!OreDictionary.getOres("stoneSoapstone").isEmpty())
         // MACERATOR_RECIPES.recipeBuilder()

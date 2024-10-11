@@ -74,6 +74,7 @@ public class RecipeRemoval {
         // removed these for parity with the other torch recipes
         registry.accept(ResourceLocation.withDefaultNamespace("soul_torch"));
         registry.accept(ResourceLocation.withDefaultNamespace("soul_lantern"));
+        registry.accept(ResourceLocation.withDefaultNamespace("leather_horse_armor"));
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
@@ -106,6 +107,7 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("snow_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("netherite_block"));
         registry.accept(ResourceLocation.withDefaultNamespace("netherite_ingot_from_netherite_block"));
+        registry.accept(ResourceLocation.withDefaultNamespace("dripstone_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
@@ -117,10 +119,10 @@ public class RecipeRemoval {
     }
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:ladder"));
-        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:bowl"));
-        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:chest"));
-        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:barrel"));
+        registry.accept(ResourceLocation.withDefaultNamespace("ladder"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bowl"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chest"));
+        registry.accept(ResourceLocation.withDefaultNamespace("barrel"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
@@ -157,6 +159,8 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("crimson_pressure_plate"));
         registry.accept(ResourceLocation.withDefaultNamespace("warped_pressure_plate"));
         registry.accept(ResourceLocation.withDefaultNamespace("mangrove_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cherry_pressure_plate"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bamboo_pressure_plate"));
         registry.accept(ResourceLocation.withDefaultNamespace("heavy_weighted_pressure_plate"));
         registry.accept(ResourceLocation.withDefaultNamespace("light_weighted_pressure_plate"));
         registry.accept(ResourceLocation.withDefaultNamespace("stone_button"));
@@ -179,6 +183,8 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("clock"));
         registry.accept(ResourceLocation.withDefaultNamespace("shears"));
         registry.accept(ResourceLocation.withDefaultNamespace("shield"));
+        registry.accept(ResourceLocation.withDefaultNamespace("crossbow"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bow"));
         for (String type : new String[] { "iron", "golden", "diamond" }) {
             registry.accept(ResourceLocation.withDefaultNamespace(type + "_shovel"));
             registry.accept(ResourceLocation.withDefaultNamespace(type + "_pickaxe"));
@@ -222,7 +228,6 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("polished_diorite"));
         registry.accept(ResourceLocation.withDefaultNamespace("polished_andesite"));
         registry.accept(ResourceLocation.withDefaultNamespace("lead"));
-        registry.accept(ResourceLocation.withDefaultNamespace("bow"));
         registry.accept(ResourceLocation.withDefaultNamespace("item_frame"));
         registry.accept(ResourceLocation.withDefaultNamespace("painting"));
         registry.accept(ResourceLocation.withDefaultNamespace("chest_minecart"));
@@ -264,6 +269,9 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("recovery_compass"));
         registry.accept(ResourceLocation.withDefaultNamespace("spyglass"));
         registry.accept(ResourceLocation.withDefaultNamespace("chain"));
+        registry.accept(ResourceLocation.withDefaultNamespace("respawn_anchor"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lodestone"));
+        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_bookshelf"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -348,7 +356,6 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_red_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("smooth_red_sandstone"));
         registry.accept(ResourceLocation.withDefaultNamespace("bookshelf"));
-        registry.accept(ResourceLocation.withDefaultNamespace("chiseled_bookshelf"));
         registry.accept(ResourceLocation.withDefaultNamespace("quartz_pillar"));
         registry.accept(ResourceLocation.withDefaultNamespace("sea_lantern"));
         registry.accept(ResourceLocation.withDefaultNamespace("white_wool_from_string"));

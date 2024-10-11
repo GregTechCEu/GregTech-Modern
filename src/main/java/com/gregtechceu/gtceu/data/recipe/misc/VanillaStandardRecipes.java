@@ -395,13 +395,6 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
-        // todo trapdoors
-        // ASSEMBLER_RECIPES.recipeBuilder()
-        // .inputItems(ItemTags.PLANKS, 3).circuitMeta(3)
-        // .outputItems(new ItemStack(Blocks.TRAPDOOR, 2))
-        // .duration(100).EUt(4)
-        // .save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("chest")
                 .inputItems(ItemTags.PLANKS, 8)
                 .outputItems(new ItemStack(Blocks.CHEST))
@@ -450,84 +443,6 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
                 .duration(100).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_fence")
-                .inputItems(new ItemStack(Blocks.OAK_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.OAK_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_fence")
-                .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.SPRUCE_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("birch_fence")
-                .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.BIRCH_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_fence")
-                .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.JUNGLE_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_fence")
-                .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.ACACIA_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_fence")
-                .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 1))
-                .outputItems(new ItemStack(Blocks.DARK_OAK_FENCE))
-                .circuitMeta(1)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("oak_fence_gate")
-                .inputItems(new ItemStack(Blocks.OAK_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.OAK_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_fence_gate")
-                .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.SPRUCE_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("birch_fence_gate")
-                .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.BIRCH_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_fence_gate")
-                .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.JUNGLE_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_fence_gate")
-                .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.ACACIA_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_fence_gate")
-                .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 2))
-                .inputItems(Items.STICK, 2)
-                .outputItems(new ItemStack(Blocks.DARK_OAK_FENCE_GATE))
-                .circuitMeta(2)
-                .duration(100).EUt(4).save(provider);
-
         VanillaRecipeHelper.addShapedRecipe(provider, "sticky_resin_torch", new ItemStack(Blocks.TORCH, 3), "X", "Y",
                 'X', STICKY_RESIN, 'Y', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_sulfur", new ItemStack(Blocks.TORCH, 2), "C", "S", 'C',
@@ -555,26 +470,7 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("torch_phosphorus").EUt(1).inputItems(new ItemStack(Items.STICK))
                 .inputItems(dust, Phosphorus).outputItems(new ItemStack(Blocks.TORCH, 6)).duration(100).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.OAK_PLANKS, 6)).outputItems(new ItemStack(Blocks.OAK_STAIRS, 4))
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.SPRUCE_PLANKS, 6)).outputItems(new ItemStack(Blocks.SPRUCE_STAIRS, 4))
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.BIRCH_PLANKS, 6)).outputItems(new ItemStack(Blocks.BIRCH_STAIRS, 4))
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.JUNGLE_PLANKS, 6)).outputItems(new ItemStack(Blocks.JUNGLE_STAIRS, 4))
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.ACACIA_PLANKS, 6)).outputItems(new ItemStack(Blocks.ACACIA_STAIRS, 4))
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_stairs").EUt(1).duration(100).circuitMeta(7)
-                .inputItems(new ItemStack(Blocks.DARK_OAK_PLANKS, 6))
-                .outputItems(new ItemStack(Blocks.DARK_OAK_STAIRS, 4)).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(1).duration(40).circuitMeta(7)
+        ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(4).duration(40).circuitMeta(7)
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("barrel")
@@ -835,6 +731,15 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4)
                 .save(provider);
 
+        VanillaRecipeHelper.addShapedRecipe(provider, "leather_horse_armor", new ItemStack(Items.LEATHER_HORSE_ARMOR),
+                "hdH",
+                "PCP", "LSL",
+                'H', new ItemStack(Items.LEATHER_HELMET),
+                'P', new ItemStack(Items.LEATHER),
+                'C', new ItemStack(Items.LEATHER_CHESTPLATE),
+                'L', new ItemStack(Items.LEATHER_LEGGINGS),
+                'S', new UnificationEntry(screw, Iron));
+
         VanillaRecipeHelper.addShapedRecipe(provider, "iron_horse_armor", new ItemStack(Items.IRON_HORSE_ARMOR), "hdH",
                 "PCP", "LSL",
                 'H', new ItemStack(Items.IRON_HELMET),
@@ -960,6 +865,15 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.STRING, 3))
                 .inputItems(Items.STICK, 3)
                 .outputItems(new ItemStack(Items.BOW, 1))
+                .circuitMeta(10)
+                .duration(100).EUt(4).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("crossbow")
+                .inputItems(new ItemStack(Items.STRING, 2))
+                .inputItems(Items.STICK, 3)
+                .inputItems(Items.TRIPWIRE_HOOK)
+                .outputItems(new ItemStack(Items.CROSSBOW, 1))
+                .circuitMeta(11)
                 .duration(100).EUt(4).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball").duration(128).EUt(4).notConsumable(SHAPE_MOLD_BALL)
@@ -1193,6 +1107,12 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
                 .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("conduit")
+                .inputItems(new ItemStack(Items.HEART_OF_THE_SEA))
+                .inputItems(new ItemStack(Items.NAUTILUS_SHELL, 8))
+                .outputItems(new ItemStack(Blocks.CONDUIT))
+                .duration(200).EUt(16).save(provider);
     }
 
     /**
