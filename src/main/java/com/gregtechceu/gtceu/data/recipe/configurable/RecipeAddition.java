@@ -1273,7 +1273,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "brush", new ItemStack(Items.BRUSH), " F ",
                     "fRr", " S ",
-                    'S', new UnificationEntry(rodLong, Wood),
+                    'S', new UnificationEntry(rod, Wood),
                     'R', new UnificationEntry(ring, Copper),
                     'F', new ItemStack(Items.FEATHER));
 
