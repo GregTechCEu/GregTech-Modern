@@ -452,8 +452,8 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(16 * FluidHelper.getBucket() * Math.max(1, tier))),
                             Component.translatable("gtceu.universal.tooltip.working_area",
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier,
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
+                                    PumpMachine.getMaxPumpRadius(tier) * 2,
+                                    PumpMachine.getMaxPumpRadius(tier) * 2))
                     .compassNode("pump")
                     .register(),
             LV, MV, HV, EV);

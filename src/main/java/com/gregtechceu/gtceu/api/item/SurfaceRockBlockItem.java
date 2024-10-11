@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.common.block.SurfaceRockBlock;
 
 import net.minecraft.network.chat.Component;
