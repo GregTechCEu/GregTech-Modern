@@ -124,8 +124,15 @@ public class VanillaStandardRecipes {
 
         PACKER_RECIPES.recipeBuilder("hay_block")
                 .inputItems(new ItemStack(Items.WHEAT, 9))
-                .circuitMeta(9)
+                .circuitMeta(8)
                 .outputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .duration(200).EUt(2)
+                .save(provider);
+
+        PACKER_RECIPES.recipeBuilder("wheat")
+                .inputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .outputItems(new ItemStack(Items.WHEAT, 9))
+                .circuitMeta(9)
                 .duration(200).EUt(2)
                 .save(provider);
 
