@@ -1242,6 +1242,9 @@ public class GTMachines {
             .multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
+            .renderer(() -> new PrimitiveBlastFurnaceRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
+                    GTCEu.id("block/multiblock/primitive_blast_furnace")))
+            .hasTESR(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
@@ -1251,8 +1254,6 @@ public class GTMachines {
                     .where('#', Predicates.air())
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
-                    GTCEu.id("block/multiblock/primitive_blast_furnace"))
             .compassSections(GTCompassSections.STEAM)
             .compassNodeSelf()
             .register();
