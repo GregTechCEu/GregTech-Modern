@@ -921,7 +921,6 @@ public class GTMaterials {
     public static Material Gypsum;
     public static Material Zeolite;
     public static Material Concrete;
-    public static Material DarkConcrete;
     public static Material SteelMagnetic;
     public static Material VanadiumSteel;
     public static Material Potin;
