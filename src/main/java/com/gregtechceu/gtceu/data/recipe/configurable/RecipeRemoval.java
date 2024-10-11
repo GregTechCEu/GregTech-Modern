@@ -271,6 +271,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:spyglass"));
         registry.accept(new ResourceLocation("minecraft:chain"));
         registry.accept(new ResourceLocation("minecraft:packed_ice"));
+        registry.accept(new ResourceLocation("minecraft:blue_ice"));
         registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
         registry.accept(new ResourceLocation("minecraft:lodestone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
