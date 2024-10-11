@@ -1024,7 +1024,7 @@ public class GTBlocks {
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -1076,18 +1076,18 @@ public class GTBlocks {
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
-    public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
-            .block("rubber_wood", RotatedPillarBlock::new)
+    public static final BlockEntry<RubberWoodBlock> RUBBER_WOOD = REGISTRATE
+            .block("rubber_wood", RubberWoodBlock::new)
             .initialProperties(() -> Blocks.SPRUCE_WOOD)
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1098,7 +1098,7 @@ public class GTBlocks {
                     provider.blockTexture(ctx.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
 
