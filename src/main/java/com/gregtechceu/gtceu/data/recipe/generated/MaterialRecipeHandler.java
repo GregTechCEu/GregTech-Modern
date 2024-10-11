@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -22,6 +24,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.minecraft.world.item.Items;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +57,8 @@ public class MaterialRecipeHandler {
         for (TagPrefix orePrefix : GEM_ORDER) {
             orePrefix.executeHandler(provider, PropertyKey.GEM, MaterialRecipeHandler::processGemConversion);
         }
+
+        generateSurfaceRockRecipe(provider);
     }
 
     public static void processDust(TagPrefix dustPrefix, Material mat, DustProperty property, RecipeOutput provider) {
@@ -588,6 +593,20 @@ public class MaterialRecipeHandler {
                         .inputItems(block, material)
                         .outputItems(gem, material, (int) (block.getMaterialAmount(material) / M))
                         .duration(100).EUt(24).save(provider);
+            }
+        }
+    }
+
+    private static void generateSurfaceRockRecipe(RecipeOutput provider) {
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            for (Material material : registry.getAllMaterials()) {
+                if (material.hasProperty(PropertyKey.ORE)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, "%s_surface_indicator".formatted(material.getName()),
+                            GTBlocks.SURFACE_ROCK_BLOCKS.get(material).asStack(2),
+                            "DDD", "DGD", "DDD",
+                            'D', ChemicalHelper.get(dustSmall, material),
+                            'G', Items.GRAVEL);
+                }
             }
         }
     }
