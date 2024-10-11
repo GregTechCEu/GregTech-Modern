@@ -342,7 +342,7 @@ public class ItemLang {
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
         provider.add("item.gtceu.basic_tape.tooltip",
-                "N§7ot strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
+                "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
 
         provider.add("item.gtceu.sus_record.desc", "§7sussy!");
     }
