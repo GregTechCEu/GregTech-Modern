@@ -23,7 +23,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -126,5 +129,18 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
             getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
+    }
+
+    @Override
+    public boolean onWorking() {
+        BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
+        getLevel().getEntities(null,
+                new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
+
+        if(getOffsetTimer() % 10 == 0) {
+
+        }
+
+        return super.onWorking();
     }
 }
