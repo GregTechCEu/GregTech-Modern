@@ -541,10 +541,10 @@ public class MiscRecipeLoader {
                 .duration(60).EUt(20).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("light_concrete")
-        .inputFluids(Concrete.getFluid(144))
-        .inputItems(SHAPE_MOLD_BLOCK)
-        .outputItems(GTBlocks.LIGHT_CONCRETE)
-        .duration(100).EUt(VA[ULV])
-        .save(provider);
+                .inputFluids(Concrete.getFluid(144))
+                .inputItems(SHAPE_MOLD_BLOCK)
+                .outputItems(GTBlocks.LIGHT_CONCRETE)
+                .duration(100).EUt(VA[ULV])
+                .save(provider);
     }
 }
