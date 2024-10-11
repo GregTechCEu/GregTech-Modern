@@ -14,8 +14,13 @@ jobs:
       CHANGELOG: ${{ steps.changelog.outputs.changelog }}
     permissions:
       contents: write
-      pull-requests: write
+      pull-requests: read
     steps:
+      - name: Get Config
+        uses: actions/checkout@v4
+        with:
+          ref: '1.20.1'
+          sparse-checkout: '.github/json'
       - name: Generate changelog
         id: changelog
         env:
@@ -36,8 +41,8 @@ jobs:
     with:
       simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
       branch: '1.20.1'
-      tag-name: ${{ github.event.release.tag }}
-      release-body: ${{ github.event.release.description }}
+      tag-name: ${{ github.ref_name }}
+      release-body: ${{ github.event.release.body }}
       changelog-body: ${{ needs.meta.outputs.CHANGELOG }}
 
   publish-21:
@@ -48,4 +53,6 @@ jobs:
     with:
       simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
       branch: '1.21'
-      tag-name: ${{ github.event.release.tag }}
+      tag-name: ${{ github.ref_name }}
+      release-body: ${{ github.event.release.body }}
+      changelog-body: ${{ needs.meta.outputs.CHANGELOG }}

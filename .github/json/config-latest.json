@@ -14,7 +14,7 @@
     }
   ],
   "sort": "ASC",
-  "template": "## Changes\n#{{CHANGELOG}}",
+  "template": "## What's Changed\n#{{CHANGELOG}}",
   "pr_template": "- #{{TITLE}} by #{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
   "ignore_labels": ["ignore changelog"],
   "max_pull_requests": 1000,

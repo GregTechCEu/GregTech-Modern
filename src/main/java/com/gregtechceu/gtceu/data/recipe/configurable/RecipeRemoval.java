@@ -74,6 +74,7 @@ public class RecipeRemoval {
         // removed these for parity with the other torch recipes
         registry.accept(new ResourceLocation("minecraft:soul_torch"));
         registry.accept(new ResourceLocation("minecraft:soul_lantern"));
+        registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
@@ -96,7 +97,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:lapis_block"));
         registry.accept(new ResourceLocation("minecraft:lapis_lazuli"));
         registry.accept(new ResourceLocation("minecraft:quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:quartz_block"));
         registry.accept(new ResourceLocation("minecraft:clay"));
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
@@ -107,6 +107,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:snow_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
@@ -158,6 +159,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:warped_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:mangrove_pressure_plate"));
+        registry.accept(new ResourceLocation("minecraft:cherry_pressure_plate"));
+        registry.accept(new ResourceLocation("minecraft:bamboo_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:heavy_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));
@@ -180,6 +183,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:clock"));
         registry.accept(new ResourceLocation("minecraft:shears"));
         registry.accept(new ResourceLocation("minecraft:shield"));
+        registry.accept(new ResourceLocation("minecraft:crossbow"));
+        registry.accept(new ResourceLocation("minecraft:bow"));
         for (String type : new String[] { "iron", "golden", "diamond" }) {
             registry.accept(new ResourceLocation("minecraft:" + type + "_shovel"));
             registry.accept(new ResourceLocation("minecraft:" + type + "_pickaxe"));
@@ -223,7 +228,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_diorite"));
         registry.accept(new ResourceLocation("minecraft:polished_andesite"));
         registry.accept(new ResourceLocation("minecraft:lead"));
-        registry.accept(new ResourceLocation("minecraft:bow"));
         registry.accept(new ResourceLocation("minecraft:item_frame"));
         registry.accept(new ResourceLocation("minecraft:painting"));
         registry.accept(new ResourceLocation("minecraft:chest_minecart"));
@@ -265,6 +269,9 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
         registry.accept(new ResourceLocation("minecraft:chain"));
+        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
+        registry.accept(new ResourceLocation("minecraft:lodestone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -341,7 +348,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:chiseled_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:bookshelf"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
         registry.accept(new ResourceLocation("minecraft:white_wool_from_string"));
