@@ -129,6 +129,12 @@ public class VanillaStandardRecipes {
                 .duration(200).EUt(2)
                 .save(provider);
 
+        FORGE_HAMMER_RECIPES.recipeBuilder("wheat_from_hay_block")
+                .inputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .outputItems(new ItemStack(Items.WHEAT, 9))
+                .duration(200).EUt(2)
+                .save(provider);
+
         PACKER_RECIPES.recipeBuilder("melon")
                 .inputItems(new ItemStack(Items.MELON_SLICE, 9))
                 .circuitMeta(9)
