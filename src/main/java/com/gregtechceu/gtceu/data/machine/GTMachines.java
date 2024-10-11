@@ -2681,7 +2681,8 @@ public class GTMachines {
         var definition = REGISTRATE
                 .machine(material.getName() + "_drum", MachineDefinition::createDefinition,
                         holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new,
-                        DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+                        (holder, prop) -> DrumMachineItem.create(holder, prop, material),
+                        MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(
