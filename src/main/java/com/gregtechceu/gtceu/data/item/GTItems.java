@@ -2265,6 +2265,12 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
             .register();
+    public static ItemEntry<ComponentItem> COVER_STORAGE = REGISTRATE
+            .item("storage_cover", ComponentItem::create)
+            .lang("Storage Cover")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.COVER_STORAGE)))
+            .register();
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
             .item("shutter_module_cover", ComponentItem::create)
             .lang("Shutter Module")
