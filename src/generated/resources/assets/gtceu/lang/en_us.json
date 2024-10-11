@@ -2333,6 +2333,7 @@
   "config.gtceu.option.solarBoilerBaseOutput": "solarBoilerBaseOutput",
   "config.gtceu.option.solidBoilerBaseOutput": "solidBoilerBaseOutput",
   "config.gtceu.option.sprayCanChainLength": "sprayCanChainLength",
+  "config.gtceu.option.steamMultiParallelAmount": "steamMultiParallelAmount",
   "config.gtceu.option.steamPerWater": "steamPerWater",
   "config.gtceu.option.steelBoilerHeatSpeed": "steelBoilerHeatSpeed",
   "config.gtceu.option.steelBoilerMaxTemperature": "steelBoilerMaxTemperature",
