@@ -92,8 +92,6 @@ public class CraftingRecipeLoader {
         // Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new
         // UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4),
-                GTBlocks.RUBBER_LOG.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8),
                 "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getBucket());
 

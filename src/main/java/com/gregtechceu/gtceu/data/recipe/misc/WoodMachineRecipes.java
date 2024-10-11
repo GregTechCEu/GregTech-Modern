@@ -261,7 +261,6 @@ public class WoodMachineRecipes {
                             .chestBoat(GTItems.RUBBER_CHEST_BOAT.asItem(), null)
                             .sign(GTBlocks.RUBBER_SIGN.asItem(), null)
                             .hangingSign(GTBlocks.RUBBER_HANGING_SIGN.asItem(), null)
-                            .generateLogToPlankRecipe(false) // rubber log does not have a tag
                             .registerAllTags()
                             .registerAllUnificationInfo()
                             .build(),
@@ -834,26 +833,13 @@ public class WoodMachineRecipes {
                     GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
         }
 
-        // add Recipes for rubber log
-        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
-                    GTBlocks.RUBBER_PLANK.asStack(2), GTBlocks.RUBBER_LOG.asItem());
-        } else {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
-                    GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asItem());
-        }
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_wood",
+                GTBlocks.RUBBER_WOOD.asStack(3),
+                "LL", "LL", 'L', GTBlocks.RUBBER_LOG.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_planks_saw",
-                GTBlocks.RUBBER_PLANK.asStack(ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                "s", "L", 'L', GTBlocks.RUBBER_LOG.asItem());
-
-        CUTTER_RECIPES.recipeBuilder("rubber_planks")
-                .inputItems(GTBlocks.RUBBER_LOG.asItem())
-                .outputItems(GTBlocks.RUBBER_PLANK.asStack(6))
-                .outputItems(dust, Wood, 2)
-                .duration(200)
-                .EUt(VA[ULV])
-                .save(provider);
+        VanillaRecipeHelper.addShapedRecipe(provider, "stripped_rubber_wood",
+                GTBlocks.STRIPPED_RUBBER_WOOD.asStack(3),
+                "LL", "LL", 'L', GTBlocks.STRIPPED_RUBBER_LOG.asStack());
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
