@@ -687,7 +687,7 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
-        GCyMRecipeTypes.init();
+        GCYMRecipeTypes.init();
         if (GTCEu.isCreateLoaded()) {
             CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
                     .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
