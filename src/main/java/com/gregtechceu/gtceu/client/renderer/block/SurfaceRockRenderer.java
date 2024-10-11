@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
@@ -41,11 +40,16 @@ public class SurfaceRockRenderer {
                     .multiVariant(model.block, Variant.variant().with(VariantProperties.MODEL, modelId))
                     .with(PropertyDispatch.property(BlockStateProperties.FACING)
                             .select(Direction.DOWN, Variant.variant())
-                            .select(Direction.UP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                            .select(Direction.NORTH, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                            .select(Direction.SOUTH, Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                            .select(Direction.WEST, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
-                            .select(Direction.EAST, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))));
+                            .select(Direction.UP,
+                                    Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
+                            .select(Direction.NORTH,
+                                    Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+                            .select(Direction.SOUTH,
+                                    Variant.variant().with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+                            .select(Direction.WEST,
+                                    Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
+                            .select(Direction.EAST,
+                                    Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))));
             GTDynamicResourcePack.addItemModel(blockId, new DelegatedModel(modelId));
         }
     }
