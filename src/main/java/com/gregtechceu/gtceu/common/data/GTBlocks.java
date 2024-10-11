@@ -255,11 +255,14 @@ public class GTBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
                 .color(() -> SurfaceRockBlock::tintedColor)
+                .item((b, p) -> SurfaceRockBlockItem.create(b, p, material))
+                .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                .build()
                 .register();
         SURFACE_ROCK_BLOCKS_BUILDER.put(material, entry);
     }
