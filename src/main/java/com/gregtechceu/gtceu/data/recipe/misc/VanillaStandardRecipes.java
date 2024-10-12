@@ -93,26 +93,53 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.GLOWSTONE))
                 .save(provider);
 
-        COMPRESSOR_RECIPES.recipeBuilder("packed_ice").inputItems(new ItemStack(Blocks.ICE, 9))
-                .outputItems(new ItemStack(Blocks.PACKED_ICE)).save(provider);
-        COMPRESSOR_RECIPES.recipeBuilder("blue_ice").inputItems(new ItemStack(Blocks.PACKED_ICE, 9))
-                .outputItems(new ItemStack(Blocks.BLUE_ICE)).save(provider);
-        COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust").inputItems(dust, Ice).outputItems(new ItemStack(Blocks.ICE))
+        COMPRESSOR_RECIPES.recipeBuilder("packed_ice")
+                .inputItems(new ItemStack(Blocks.ICE, 9))
+                .outputItems(new ItemStack(Blocks.PACKED_ICE))
+                .duration(300).EUt(2)
                 .save(provider);
+
+        COMPRESSOR_RECIPES.recipeBuilder("blue_ice")
+                .inputItems(new ItemStack(Blocks.PACKED_ICE, 9))
+                .outputItems(new ItemStack(Blocks.BLUE_ICE))
+                .duration(300).EUt(2)
+                .save(provider);
+
+        COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust")
+                .inputItems(dust, Ice)
+                .outputItems(new ItemStack(Blocks.ICE))
+                .duration(300).EUt(2)
+                .save(provider);
+
         COMPRESSOR_RECIPES.recipeBuilder("dripstone_block_from_pointed_dripstone")
                 .inputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
                 .outputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
+                .duration(300).EUt(2)
                 .save(provider);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("pointed_dripstone_from_dripstone_block")
                 .inputItems(new ItemStack(Blocks.DRIPSTONE_BLOCK))
                 .outputItems(new ItemStack(Items.POINTED_DRIPSTONE, 4))
+                .duration(300).EUt(2)
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("hay_block")
                 .inputItems(new ItemStack(Items.WHEAT, 9))
-                .circuitMeta(9)
+                .circuitMeta(8)
                 .outputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .duration(200).EUt(2)
+                .save(provider);
+
+        PACKER_RECIPES.recipeBuilder("wheat")
+                .inputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .outputItems(new ItemStack(Items.WHEAT, 9))
+                .circuitMeta(9)
+                .duration(200).EUt(2)
+                .save(provider);
+
+        FORGE_HAMMER_RECIPES.recipeBuilder("wheat_from_hay_block")
+                .inputItems(new ItemStack(Blocks.HAY_BLOCK))
+                .outputItems(new ItemStack(Items.WHEAT, 9))
                 .duration(200).EUt(2)
                 .save(provider);
 
@@ -208,9 +235,6 @@ public class VanillaStandardRecipes {
         // .outputItems(new ItemStack(Blocks.STAINED_GLASS_PANE, 8, i))
         // .save(provider);
         // }
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "glass_pane", new ItemStack(Blocks.GLASS_PANE, 2), "sG", 'G',
-                new ItemStack(Blocks.GLASS));
 
         CUTTER_RECIPES.recipeBuilder("cut_glass_block_to_plate").duration(50).EUt(VA[ULV])
                 .inputItems(new ItemStack(Blocks.GLASS, 3))
@@ -439,7 +463,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.SOUL_TORCH))
                 .duration(100).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
+        ASSEMBLER_RECIPES.recipeBuilder("soul_lantern_from_lantern")
                 .inputItems(new ItemStack(Blocks.LANTERN))
                 .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
                 .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
@@ -464,6 +488,16 @@ public class VanillaStandardRecipes {
                 new FluidContainerIngredient(Creosote.getFluidTag(), 1000));
         VanillaRecipeHelper.addShapedRecipe(provider, "soul_torch", new ItemStack(Blocks.SOUL_TORCH, 1), "WB",
                 'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.TORCH));
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "soul_lantern", new ItemStack(Blocks.SOUL_LANTERN, 1), "WB",
+                    'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.SOUL_LANTERN));
+
+            ASSEMBLER_RECIPES.recipeBuilder("soul_lantern")
+                    .inputItems(new ItemStack(Blocks.LANTERN))
+                    .inputItems(ItemTags.SOUL_FIRE_BASE_BLOCKS)
+                    .outputItems(new ItemStack(Blocks.SOUL_LANTERN))
+                    .duration(100).EUt(1).save(provider);
+        }
 
         ASSEMBLER_RECIPES.recipeBuilder("redstone_torch").EUt(4).inputItems(dust, Redstone)
                 .inputItems(new ItemStack(Items.STICK)).outputItems(new ItemStack(Blocks.REDSTONE_TORCH, 1))
@@ -708,6 +742,24 @@ public class VanillaStandardRecipes {
                 .inputFluids(Concrete.getFluid(L))
                 .outputItems(new ItemStack(Items.COMPARATOR))
                 .duration(100).EUt(1).save(provider);
+
+        if (!ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
+            CUTTER_RECIPES.recipeBuilder("stone_pressure_plate")
+                    .inputItems(new ItemStack(Blocks.STONE_SLAB))
+                    .outputItems(new ItemStack(Blocks.STONE_PRESSURE_PLATE, 8))
+                    .duration(250).EUt(VA[ULV]).save(provider);
+
+            CUTTER_RECIPES.recipeBuilder("polished_blackstone_pressure_plate")
+                    .inputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_SLAB))
+                    .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
+                    .duration(250).EUt(VA[ULV]).save(provider);
+
+            CUTTER_RECIPES.recipeBuilder("polished_blackstone_pressure_plate")
+                    .inputItems(plate, Iron)
+                    .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
+                    .circuitMeta(10)
+                    .duration(250).EUt(VA[ULV]).save(provider);
+        }
     }
 
     /**
@@ -757,19 +809,19 @@ public class VanillaStandardRecipes {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_helmet", new ItemStack(Items.CHAINMAIL_HELMET), "PPP",
                 "PhP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_chestplate", new ItemStack(Items.CHAINMAIL_CHESTPLATE),
                 "PhP", "PPP", "PPP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_leggings", new ItemStack(Items.CHAINMAIL_LEGGINGS),
                 "PPP", "PhP", "P P",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_boots", new ItemStack(Items.CHAINMAIL_BOOTS), "P P",
                 "PhP",
-                'P', new UnificationEntry(ring, Iron));
+                'P', Items.CHAIN);
 
         ASSEMBLER_RECIPES.recipeBuilder("cauldron")
                 .inputItems(plate, Iron, 7)
@@ -1078,7 +1130,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("candle")
-                .inputFluids(Wax.getFluid(144))
+                .inputFluids(Wax.getFluid(L))
                 .inputItems(new ItemStack(Items.STRING))
                 .outputItems(new ItemStack(Blocks.CANDLE, 2))
                 .duration(20).EUt(1).save(provider);
@@ -1098,6 +1150,9 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
                 .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
                 .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "hay_block_to_hay", new ItemStack(Items.WHEAT, 9),
+                Items.HAY_BLOCK, 'k');
 
         ASSEMBLER_RECIPES.recipeBuilder("conduit")
                 .inputItems(new ItemStack(Items.HEART_OF_THE_SEA))
@@ -1244,7 +1299,7 @@ public class VanillaStandardRecipes {
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("dark_prismarine")
                 .inputItems(new ItemStack(Items.PRISMARINE_SHARD, 8))
-                .inputFluids(DyeBlack.getFluid(144))
+                .inputFluids(DyeBlack.getFluid(L))
                 .outputItems(new ItemStack(Blocks.DARK_PRISMARINE))
                 .duration(20).EUt(VA[ULV]).save(provider);
     }

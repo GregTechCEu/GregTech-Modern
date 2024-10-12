@@ -102,7 +102,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:glowstone"));
         registry.accept(new ResourceLocation("minecraft:amethyst_block"));
         registry.accept(new ResourceLocation("minecraft:copper_block"));
-        registry.accept(new ResourceLocation("minecraft:copper"));
+        registry.accept(new ResourceLocation("minecraft:copper_ingot"));
+        registry.accept(new ResourceLocation("minecraft:copper_ingot_from_waxed_copper_block"));
         registry.accept(new ResourceLocation("minecraft:honeycomb_block"));
         registry.accept(new ResourceLocation("minecraft:snow_block"));
         registry.accept(new ResourceLocation("minecraft:netherite_block"));
@@ -150,31 +151,11 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:activator_rail"));
         registry.accept(new ResourceLocation("minecraft:redstone_torch"));
         registry.accept(new ResourceLocation("minecraft:stone_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:oak_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:birch_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:spruce_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:jungle_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:acacia_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:crimson_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:warped_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:cherry_pressure_plate"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_pressure_plate"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:heavy_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));
-        registry.accept(new ResourceLocation("minecraft:oak_button"));
-        registry.accept(new ResourceLocation("minecraft:birch_button"));
-        registry.accept(new ResourceLocation("minecraft:spruce_button"));
-        registry.accept(new ResourceLocation("minecraft:jungle_button"));
-        registry.accept(new ResourceLocation("minecraft:acacia_button"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_button"));
-        registry.accept(new ResourceLocation("minecraft:crimson_button"));
-        registry.accept(new ResourceLocation("minecraft:warped_button"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_button"));
-        registry.accept(new ResourceLocation("minecraft:cherry_button"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_button"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_button"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
@@ -210,23 +191,12 @@ public class RecipeRemoval {
      * - Removes Vanilla Fire Charge recipe
      */
     private static void hardMiscRecipes(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:beacon"));
-        registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
         registry.accept(new ResourceLocation("minecraft:golden_apple"));
         registry.accept(new ResourceLocation("minecraft:book"));
-        registry.accept(new ResourceLocation("minecraft:brewing_stand"));
         registry.accept(new ResourceLocation("minecraft:ender_eye"));
         registry.accept(new ResourceLocation("minecraft:glistering_melon_slice"));
         registry.accept(new ResourceLocation("minecraft:golden_carrot"));
         registry.accept(new ResourceLocation("minecraft:magma_cream"));
-        registry.accept(new ResourceLocation("minecraft:enchanting_table"));
-        registry.accept(new ResourceLocation("minecraft:jukebox"));
-        registry.accept(new ResourceLocation("minecraft:note_block"));
-        registry.accept(new ResourceLocation("minecraft:furnace"));
-        registry.accept(new ResourceLocation("minecraft:crafting_table"));
-        registry.accept(new ResourceLocation("minecraft:polished_granite"));
-        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
-        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
         registry.accept(new ResourceLocation("minecraft:lead"));
         registry.accept(new ResourceLocation("minecraft:item_frame"));
         registry.accept(new ResourceLocation("minecraft:painting"));
@@ -234,35 +204,11 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:furnace_minecart"));
         registry.accept(new ResourceLocation("minecraft:tnt_minecart"));
         registry.accept(new ResourceLocation("minecraft:hopper_minecart"));
-        registry.accept(new ResourceLocation("minecraft:flower_pot"));
-        registry.accept(new ResourceLocation("minecraft:armor_stand"));
-        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
-        registry.accept(new ResourceLocation("minecraft:ender_chest"));
         for (DyeColor color : DyeColor.values()) {
             registry.accept(new ResourceLocation(color.getName() + "_bed"));
         }
         registry.accept(new ResourceLocation("minecraft:fermented_spider_eye"));
         registry.accept(new ResourceLocation("minecraft:fire_charge"));
-        // All items from here downward need to be checked for if they belong to miscRecipes or
-        // removeVanillaBlockRecipes
-        registry.accept(new ResourceLocation("minecraft:lantern"));
-        registry.accept(new ResourceLocation("minecraft:tinted_glass"));
-        registry.accept(new ResourceLocation("minecraft:stonecutter"));
-        registry.accept(new ResourceLocation("minecraft:cartography_table"));
-        registry.accept(new ResourceLocation("minecraft:fletching_table"));
-        registry.accept(new ResourceLocation("minecraft:smithing_table"));
-        registry.accept(new ResourceLocation("minecraft:grindstone"));
-        registry.accept(new ResourceLocation("minecraft:smoker"));
-        registry.accept(new ResourceLocation("minecraft:blast_furnace"));
-        registry.accept(new ResourceLocation("minecraft:loom"));
-        registry.accept(new ResourceLocation("minecraft:composter"));
-        registry.accept(new ResourceLocation("minecraft:bell"));
-        registry.accept(new ResourceLocation("minecraft:conduit"));
-        registry.accept(new ResourceLocation("minecraft:candle"));
-        registry.accept(new ResourceLocation("minecraft:scaffolding"));
-        registry.accept(new ResourceLocation("minecraft:beehive"));
-        registry.accept(new ResourceLocation("minecraft:lightning_rod"));
-        registry.accept(new ResourceLocation("minecraft:lectern"));
         registry.accept(new ResourceLocation("minecraft:music_disc_5"));
         registry.accept(new ResourceLocation("minecraft:turtle_helmet"));
         registry.accept(new ResourceLocation("minecraft:brush"));
@@ -359,6 +305,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_vine"));
+        // TODO add recipes for ALL of these. sigh where do the nitpicks end
         // registry.accept(new ResourceLocation("minecraft:deepslate_bricks"));
         // registry.accept(new ResourceLocation("minecraft:cracked_nether_bricks"));
         // registry.accept(new ResourceLocation("minecraft:chiseled_nether_bricks"));
@@ -384,8 +331,47 @@ public class RecipeRemoval {
         // registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
         // registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
         // registry.accept(new ResourceLocation("minecraft:end_crystal"));
-        // registry.accept(new ResourceLocation("minecraft:end_rod")); // wait for approval before uncommenting this one
+        registry.accept(new ResourceLocation("minecraft:end_rod"));
         // registry.accept(new ResourceLocation("minecraft:mud_bricks")); //no other way to obtain these rn
+        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
+        registry.accept(new ResourceLocation("minecraft:beacon"));
+        registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
+        registry.accept(new ResourceLocation("minecraft:packed_ice"));
+        registry.accept(new ResourceLocation("minecraft:blue_ice"));
+        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
+        registry.accept(new ResourceLocation("minecraft:lodestone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
+        registry.accept(new ResourceLocation("minecraft:brewing_stand"));
+        registry.accept(new ResourceLocation("minecraft:enchanting_table"));
+        registry.accept(new ResourceLocation("minecraft:jukebox"));
+        registry.accept(new ResourceLocation("minecraft:note_block"));
+        registry.accept(new ResourceLocation("minecraft:furnace"));
+        registry.accept(new ResourceLocation("minecraft:crafting_table"));
+        registry.accept(new ResourceLocation("minecraft:polished_granite"));
+        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
+        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
+        registry.accept(new ResourceLocation("minecraft:flower_pot"));
+        registry.accept(new ResourceLocation("minecraft:armor_stand"));
+        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
+        registry.accept(new ResourceLocation("minecraft:ender_chest"));
+        registry.accept(new ResourceLocation("minecraft:lantern"));
+        registry.accept(new ResourceLocation("minecraft:tinted_glass"));
+        registry.accept(new ResourceLocation("minecraft:stonecutter"));
+        registry.accept(new ResourceLocation("minecraft:cartography_table"));
+        registry.accept(new ResourceLocation("minecraft:fletching_table"));
+        registry.accept(new ResourceLocation("minecraft:smithing_table"));
+        registry.accept(new ResourceLocation("minecraft:grindstone"));
+        registry.accept(new ResourceLocation("minecraft:smoker"));
+        registry.accept(new ResourceLocation("minecraft:blast_furnace"));
+        registry.accept(new ResourceLocation("minecraft:loom"));
+        registry.accept(new ResourceLocation("minecraft:composter"));
+        registry.accept(new ResourceLocation("minecraft:bell"));
+        registry.accept(new ResourceLocation("minecraft:conduit"));
+        registry.accept(new ResourceLocation("minecraft:candle"));
+        registry.accept(new ResourceLocation("minecraft:scaffolding"));
+        registry.accept(new ResourceLocation("minecraft:beehive"));
+        registry.accept(new ResourceLocation("minecraft:lightning_rod"));
+        registry.accept(new ResourceLocation("minecraft:lectern"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {

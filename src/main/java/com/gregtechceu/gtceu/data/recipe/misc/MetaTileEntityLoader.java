@@ -417,13 +417,6 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[HV].asStack(),
                 'S', GTBlocks.CASING_TEMPERED_GLASS);
 
-        // TODO Charcoal pile igniter
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
-        // GTMachines.CHARCOAL_PILE_IGNITER.getStackForm(), "ERE", "EHE", "FFF", 'E', new
-        // UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'R', new UnificationEntry(TagPrefix.rotor,
-        // GTMaterials.Iron), 'H', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_BRICKS_HULL), 'F', new
-        // ItemStack(Items.FLINT));
-
         // STEAM MACHINES
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_hull", GTBlocks.BRONZE_HULL.asStack(), "PPP", "PhP",
                 "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze));
