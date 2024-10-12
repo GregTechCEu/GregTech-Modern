@@ -520,6 +520,9 @@ public class MiscRecipeLoader {
             VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
                     new ItemStack(Blocks.PUMPKIN), new ItemStack(Items.SUGAR), new ItemStack(DOUGH));
 
+            VanillaRecipeHelper.addShapelessRecipe(provider, "cookie_from_dough", new ItemStack(Items.COOKIE, 8),
+                    new ItemStack(DOUGH), new ItemStack(Items.COCOA_BEANS));
+
             FORMING_PRESS_RECIPES.recipeBuilder("cookie")
                     .notConsumable(SHAPE_MOLD_CYLINDER)
                     .inputItems(DOUGH)
@@ -534,8 +537,7 @@ public class MiscRecipeLoader {
                     'E', Items.EGG,
                     'S', Items.SUGAR,
                     'M', Items.MILK_BUCKET,
-                    'D', DOUGH
-            );
+                    'D', DOUGH);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
                     "FFF", "FWF", "FFF",
@@ -552,10 +554,10 @@ public class MiscRecipeLoader {
                     .save(provider);
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
-                    new ItemStack(Blocks.PUMPKIN), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r','k');
+                    new ItemStack(Blocks.PUMPKIN), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r', 'k');
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "cookie", new ItemStack(Items.COOKIE, 4),
-                    new ItemStack(Items.COCOA_BEANS), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r' );
+                    new ItemStack(Items.COCOA_BEANS), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r');
 
             FORMING_PRESS_RECIPES.recipeBuilder("cookie")
                     .notConsumable(SHAPE_MOLD_CYLINDER)
@@ -572,8 +574,7 @@ public class MiscRecipeLoader {
                     'B', Items.SWEET_BERRIES,
                     'S', Items.SUGAR,
                     'M', Items.MILK_BUCKET,
-                    'D', DOUGH
-            );
+                    'D', DOUGH);
         }
 
         FORMING_PRESS_RECIPES.recipeBuilder("pumpkin_pie")
@@ -587,9 +588,12 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // XP set to 0.35, similar to vanilla food smelting
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD), 0.35f);
-        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD), 0.35f);
-        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD), 0.35f);
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
+        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
+        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
                 .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))

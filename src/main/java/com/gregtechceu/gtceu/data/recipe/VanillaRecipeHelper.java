@@ -135,7 +135,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                        ItemStack input, ItemStack output, float experience) {
+                                         ItemStack input, ItemStack output, float experience) {
         new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
     }
@@ -171,8 +171,6 @@ public class VanillaRecipeHelper {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
-
-
 
     /**
      * Adds a shaped recipe which clears the nbt of the outputs
