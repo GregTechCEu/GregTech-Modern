@@ -96,7 +96,8 @@ public class RecipeAddition {
 
     private static void harderBrickRecipes(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) {
-            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "brick_from_water",
+                    new ItemStack(Blocks.BRICKS, 2), "BBB",
                     "BWB", "BBB",
                     'B', new ItemStack(Items.BRICK),
                     'W', new FluidContainerIngredient(Water.getFluidTag(), 1000));

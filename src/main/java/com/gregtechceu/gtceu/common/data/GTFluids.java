@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-
 import net.minecraftforge.common.ForgeMod;
+
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
