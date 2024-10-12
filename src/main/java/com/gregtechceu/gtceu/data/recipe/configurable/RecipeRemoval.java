@@ -215,6 +215,13 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
         registry.accept(new ResourceLocation("minecraft:chain"));
+        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
+        registry.accept(new ResourceLocation("minecraft:lodestone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
+        registry.accept(new ResourceLocation("minecraft:bread"));
+        registry.accept(new ResourceLocation("minecraft:cake"));
+        registry.accept(new ResourceLocation("minecraft:cookie"));
+        registry.accept(new ResourceLocation("minecraft:pumpkin_pie"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {

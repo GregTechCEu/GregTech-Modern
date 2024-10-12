@@ -150,7 +150,8 @@ public class ItemLang {
         provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
         provider.add("item.gtceu.data_stick.tooltip", "§7A Low Capacity Data Storage");
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
-        provider.add("item.gtceu.programmed_circuit.tooltip", "§7Use to open configuration GUI");
+        multilineLang(provider, "item.gtceu.programmed_circuit.tooltip",
+                "Use to open configuration GUI\nShift-Right-Click on a machine\nwith a circuit slot to set it to\nthis circuit's value.");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
         // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
         // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");

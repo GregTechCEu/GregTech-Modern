@@ -19,6 +19,7 @@ public class CustomTags {
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
     public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concretes");
     public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powders");
+    public static final TagKey<Item> DOUGHS = TagUtil.createItemTag("dough");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");

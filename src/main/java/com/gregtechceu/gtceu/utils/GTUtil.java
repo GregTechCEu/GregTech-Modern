@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -216,7 +214,7 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if (voltage < GTValues.V[GTValues.ULV]) {
+        if (voltage < GTValues.V[GTValues.LV]) {
             return GTValues.ULV;
         }
         if (voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
@@ -406,24 +404,6 @@ public class GTUtil {
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
         if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
-        return null;
-    }
-
-    /**
-     * Get fluidstack from a container.
-     *
-     * @param ingredient the fluidstack or fluid container item
-     * @return the fluidstack in container
-     */
-    @Nullable
-    public static FluidStack getFluidFromContainer(Object ingredient) {
-        if (ingredient instanceof FluidStack) {
-            return (FluidStack) ingredient;
-        } else if (ingredient instanceof ItemStack itemStack) {
-            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
-            if (fluidHandler != null)
-                return fluidHandler.drain(Integer.MAX_VALUE, false);
-        }
         return null;
     }
 

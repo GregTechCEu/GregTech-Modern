@@ -92,6 +92,7 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
@@ -338,6 +339,7 @@ public class LangHandler {
         provider.add("cover.fluid_filter.mode.filter_drain", "Filter Drain");
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
         provider.add("cover.item_filter.title", "Item Filter");
+        provider.add("cover.storage.title", "Storage Cover");
         provider.add("cover.filter.mode.filter_insert", "Filter Insert");
         provider.add("cover.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.filter.mode.filter_both", "Filter Insert/Extract");

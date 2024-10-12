@@ -135,7 +135,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(((ShapedRecipeAccessor) this).getResult());
+            buffer.writeItem(((ShapedRecipeAccessor) recipe).getResult());
         }
     }
 }

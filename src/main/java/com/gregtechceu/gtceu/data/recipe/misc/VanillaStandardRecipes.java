@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -483,7 +484,8 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_coke_dust", new ItemStack(Blocks.TORCH, 8), "C", "S", 'C',
                 new UnificationEntry(dust, Coke), 'S', new ItemStack(Items.STICK));
         VanillaRecipeHelper.addShapedRecipe(provider, "torch_creosote", new ItemStack(Blocks.TORCH, 16), "WB", "S ",
-                'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B', Creosote.getBucket());
+                'W', ItemTags.WOOL, 'S', new ItemStack(Items.STICK), 'B',
+                new FluidContainerIngredient(Creosote.getFluidTag(), 1000));
         VanillaRecipeHelper.addShapedRecipe(provider, "soul_torch", new ItemStack(Blocks.SOUL_TORCH, 1), "WB",
                 'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.TORCH));
         if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
@@ -575,6 +577,11 @@ public class VanillaStandardRecipes {
                     .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
                     .outputItems(new ItemStack(
                             BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane"))))
+                    .save(provider);
+
+            CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_glass_to_pane").duration(20).EUt(VA[ULV])
+                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")))
+                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
