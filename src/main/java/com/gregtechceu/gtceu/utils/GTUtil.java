@@ -221,7 +221,7 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if (voltage < GTValues.V[GTValues.ULV]) {
+        if (voltage < GTValues.V[GTValues.LV]) {
             return GTValues.ULV;
         }
         if (voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
