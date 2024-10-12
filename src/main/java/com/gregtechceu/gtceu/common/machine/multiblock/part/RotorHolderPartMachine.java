@@ -215,7 +215,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
         var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
-        container.addWidget(new SlotWidget(inventory.storage, 0, 4, 4, true, true)
+        container.addWidget(new SlotWidget(inventory.storage, 0, 4, 4, rotorSpeed == 0, rotorSpeed == 0)
                 .setBackground(GuiTextures.SLOT, GuiTextures.TURBINE_OVERLAY));
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
