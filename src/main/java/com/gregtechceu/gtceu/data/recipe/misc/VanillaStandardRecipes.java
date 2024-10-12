@@ -551,8 +551,8 @@ public class VanillaStandardRecipes {
                     .save(provider);
 
             CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_glass_to_pane").duration(20).EUt(VA[ULV])
-                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")))
-                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")))
+                    .inputItems(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass")))
+                    .outputItems(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane")))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])

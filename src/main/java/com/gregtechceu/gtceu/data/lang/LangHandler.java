@@ -92,6 +92,7 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
