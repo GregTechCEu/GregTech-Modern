@@ -272,6 +272,10 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("respawn_anchor"));
         registry.accept(ResourceLocation.withDefaultNamespace("lodestone"));
         registry.accept(ResourceLocation.withDefaultNamespace("chiseled_bookshelf"));
+        registry.accept(ResourceLocation.withDefaultNamespace("bread"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cake"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cookie"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pumpkin_pie"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
