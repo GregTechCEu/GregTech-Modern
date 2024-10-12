@@ -94,7 +94,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
                         Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC)
                                 .forGetter(ShapedRecipe::category),
-                        ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor) val).getPattern()),
+                        ShapedRecipePattern.MAP_CODEC.forGetter(val -> val.pattern),
                         Ingredient.CODEC.fieldOf("chargeIngredient")
                                 .forGetter(ShapedEnergyTransferRecipe::getChargeIngredient),
                         Codec.BOOL.fieldOf("overrideCharge").forGetter(ShapedEnergyTransferRecipe::isOverrideCharge),
@@ -108,7 +108,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
                 .composite(
                         ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
                         CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
-                        ShapedRecipePattern.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getPattern(),
+                        ShapedRecipePattern.STREAM_CODEC, val -> val.pattern,
                         Ingredient.CONTENTS_STREAM_CODEC, ShapedEnergyTransferRecipe::getChargeIngredient,
                         ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isOverrideCharge,
                         ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isTransferMaxCharge,

@@ -17,9 +17,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ShapedRecipeAccessor {
 
     @Accessor
-    ShapedRecipePattern getPattern();
-
-    @Accessor
     ItemStack getResult();
 
     @Accessor

@@ -875,12 +875,6 @@ public class WoodMachineRecipes {
      * Standard recipes for GT woods
      */
     private static void registerGTWoodRecipes(RecipeOutput provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks",
-                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP",
-                'P', ItemTags.PLANKS,
-                'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
-
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
                 ChemicalHelper.get(rod, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
                 "L", "L",

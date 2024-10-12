@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.tag;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 
@@ -19,4 +20,7 @@ public class GTIngredientTypes {
 
     public static final DeferredHolder<IngredientType<?>, IngredientType<IntProviderIngredient>> INT_PROVIDER_INGREDIENT = INGREDIENT_TYPES
             .register("int_provider", () -> new IngredientType<>(IntProviderIngredient.CODEC));
+
+    public static final DeferredHolder<IngredientType<?>, IngredientType<FluidContainerIngredient>> FLUID_CONTAINER_INGREDIENT = INGREDIENT_TYPES
+            .register("fluid_container", () -> new IngredientType<>(FluidContainerIngredient.CODEC));
 }

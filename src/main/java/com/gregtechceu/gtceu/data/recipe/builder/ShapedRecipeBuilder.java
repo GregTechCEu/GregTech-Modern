@@ -41,10 +41,10 @@ public class ShapedRecipeBuilder {
     @Setter
     protected String group;
     @Setter
-    private RecipeCategory category = RecipeCategory.MISC;
+    protected RecipeCategory category = RecipeCategory.MISC;
 
-    private final List<String> rows = Lists.newArrayList();
-    private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
+    protected final List<String> rows = Lists.newArrayList();
+    protected final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
     @Setter
     protected boolean isStrict;
 

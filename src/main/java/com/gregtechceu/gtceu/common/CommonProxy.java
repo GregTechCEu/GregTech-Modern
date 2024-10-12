@@ -98,6 +98,7 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -120,6 +121,7 @@ public class CommonProxy {
 
     public CommonProxy(IEventBus modBus) {
         CommonProxy.modBus = modBus;
+        NeoForgeMod.enableMilkFluid();
         // used for forge events (ClientProxy + CommonProxy)
         modBus.register(this);
         modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
@@ -20,6 +21,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
@@ -98,10 +100,11 @@ public class RecipeAddition {
 
     private static void harderBrickRecipes(RecipeOutput provider) {
         if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "brick_from_water",
+                    new ItemStack(Blocks.BRICKS, 2), "BBB",
                     "BWB", "BBB",
                     'B', new ItemStack(Items.BRICK),
-                    'W', new ItemStack(Items.WATER_BUCKET));
+                    'W', new Ingredient(new FluidContainerIngredient(Water.getFluidTag(), 1000)));
 
             VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.getBucket()),
                     "CBS", "CWQ", " L ",
@@ -112,12 +115,12 @@ public class RecipeAddition {
                     'L', new UnificationEntry(dust, Clay),
                     'B', new ItemStack(Items.BUCKET));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "casing_primitive_bricks",
                     GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
                     "BGB", "BCB", "BGB",
                     'B', GTItems.FIRECLAY_BRICK.asStack(),
                     'G', new UnificationEntry(dust, Gypsum),
-                    'C', new ItemStack(Concrete.getBucket()));
+                    'C', new Ingredient(new FluidContainerIngredient(Concrete.getFluidTag(), 1000)));
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(),
                     WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -13,6 +14,7 @@ import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
@@ -94,8 +96,10 @@ public class CraftingRecipeLoader {
         // Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new
         // UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getBucket());
+        VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "treated_wood_planks",
+                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
+                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B',
+                new Ingredient(new FluidContainerIngredient(Creosote.getFluidTag(), 1000)));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X',
                 new UnificationEntry(plate, Rubber));
@@ -234,6 +238,7 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Credits //
         ///////////////////////////////////////////////////
+        // TODO shapeless fluid container recipes
         VanillaRecipeHelper.addShapelessRecipe(provider, "coin_chocolate", COIN_CHOCOLATE.asStack(),
                 new UnificationEntry(dust, Cocoa), new UnificationEntry(foil, Gold), new ItemStack(Items.MILK_BUCKET),
                 new UnificationEntry(dust, Sugar));

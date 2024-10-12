@@ -416,24 +416,6 @@ public class GTUtil {
         return null;
     }
 
-    /**
-     * Get fluidstack from a container.
-     *
-     * @param ingredient the fluidstack or fluid container item
-     * @return the fluidstack in container
-     */
-    @Nullable
-    public static FluidStack getFluidFromContainer(Object ingredient) {
-        if (ingredient instanceof FluidStack) {
-            return (FluidStack) ingredient;
-        } else if (ingredient instanceof ItemStack itemStack) {
-            IFluidHandler fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
-            if (fluidHandler != null)
-                return fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
-        }
-        return null;
-    }
-
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {
         if (!world.canSeeSky(blockPos.above())) {
             return false;

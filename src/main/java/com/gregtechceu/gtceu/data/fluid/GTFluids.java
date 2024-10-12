@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -26,6 +27,9 @@ public class GTFluids {
     public static void init() {
         handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
+        if (NeoForgeMod.MILK.asOptional().isPresent()) {
+            handleNonMaterialFluids(GTMaterials.Milk, NeoForgeMod.MILK.get());
+        }
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         // register fluids for materials
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
