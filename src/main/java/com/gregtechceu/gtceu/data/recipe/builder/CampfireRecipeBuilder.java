@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -15,22 +16,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-
-import com.google.gson.JsonObject;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
 /**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote SmeltingRecipeBuilder
+ * @author JuiceyBeans
+ * @date 2024/10/12
+ * @implNote CampfireRecipeBuilder
  */
-@Accessors(chain = true, fluent = true)
-public class SmokingRecipeBuilder {
 
+@Accessors(chain = true, fluent = true)
+public class CampfireRecipeBuilder {
     private Ingredient input;
     @Setter
     protected String group;
@@ -43,15 +40,15 @@ public class SmokingRecipeBuilder {
     @Setter
     protected ResourceLocation id;
 
-    public SmokingRecipeBuilder(@Nullable ResourceLocation id) {
+    public CampfireRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
     }
 
-    public SmokingRecipeBuilder input(TagKey<Item> itemStack) {
+    public CampfireRecipeBuilder input(TagKey<Item> itemStack) {
         return input(Ingredient.of(itemStack));
     }
 
-    public SmokingRecipeBuilder input(ItemStack itemStack) {
+    public CampfireRecipeBuilder input(ItemStack itemStack) {
         if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
             input = NBTIngredient.createNBTIngredient(itemStack);
         } else {
@@ -60,27 +57,27 @@ public class SmokingRecipeBuilder {
         return this;
     }
 
-    public SmokingRecipeBuilder input(ItemLike itemLike) {
+    public CampfireRecipeBuilder input(ItemLike itemLike) {
         return input(Ingredient.of(itemLike));
     }
 
-    public SmokingRecipeBuilder input(Ingredient ingredient) {
+    public CampfireRecipeBuilder input(Ingredient ingredient) {
         input = ingredient;
         return this;
     }
 
-    public SmokingRecipeBuilder output(ItemStack itemStack) {
+    public CampfireRecipeBuilder output(ItemStack itemStack) {
         this.output = itemStack.copy();
         return this;
     }
 
-    public SmokingRecipeBuilder output(ItemStack itemStack, int count) {
+    public CampfireRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
         return this;
     }
 
-    public SmokingRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
+    public CampfireRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
         this.output = itemStack.copy();
         this.output.setCount(count);
         this.output.setTag(nbt);
@@ -130,12 +127,12 @@ public class SmokingRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "smoking" + "/" + ID.getPath());
+                return new ResourceLocation(ID.getNamespace(), "campfire" + "/" + ID.getPath());
             }
 
             @Override
             public RecipeSerializer<?> getType() {
-                return RecipeSerializer.SMOKING_RECIPE;
+                return RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
             }
 
             @Nullable
