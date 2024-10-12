@@ -2378,6 +2378,7 @@ public class GTItems {
                             .effect(() -> new MobEffectInstance(MobEffects.POISON, 100), .05f)
                             .build(),
                     false, null)))
+            .tag(CustomTags.DOUGHS)
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)
             .onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(75)).register();
