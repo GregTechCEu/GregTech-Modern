@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+// TODO shapeless fluid container recipes
 public class ShapedFluidContainerRecipe extends ShapedRecipe {
 
     public static final RecipeSerializer<ShapedFluidContainerRecipe> SERIALIZER = new Serializer();

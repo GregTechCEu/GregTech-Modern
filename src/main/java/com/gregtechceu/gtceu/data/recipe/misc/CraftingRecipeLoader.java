@@ -237,6 +237,7 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Credits //
         ///////////////////////////////////////////////////
+        // TODO shapeless fluid container recipes
         VanillaRecipeHelper.addShapelessRecipe(provider, "coin_chocolate", COIN_CHOCOLATE.asStack(),
                 new UnificationEntry(dust, Cocoa), new UnificationEntry(foil, Gold), new ItemStack(Items.MILK_BUCKET),
                 new UnificationEntry(dust, Sugar));
