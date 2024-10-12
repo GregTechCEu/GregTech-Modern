@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -501,6 +502,38 @@ public class MiscRecipeLoader {
                 .outputItems(dust, Carbon)
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VA[LV]).save(provider);
+
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 8),
+                    "FFF", "FWF", "FFF",
+                    'F', ChemicalHelper.get(dust, Wheat),
+                    'W', Water.getBucket());
+
+            MIXER_RECIPES.recipeBuilder("flour_to_dough")
+                    .inputItems(dust, Wheat, 2)
+                    .inputFluids(Water.getFluid(150))
+                    .outputItems(DOUGH, 3)
+                    .EUt(VA[ULV])
+                    .duration(200)
+                    .save(provider);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
+                    "FFF", "FWF", "FFF",
+                    'F', ChemicalHelper.get(dust, Wheat),
+                    'W', Water.getBucket());
+
+            MIXER_RECIPES.recipeBuilder("flour_to_dough")
+                    .inputItems(dust, Wheat, 4)
+                    .inputItems(Items.EGG, 2)
+                    .inputFluids(Water.getFluid(250))
+                    .inputFluids(Milk.getFluid(50))
+                    .outputItems(DOUGH, 7)
+                    .EUt(VA[ULV])
+                    .duration(400)
+                    .save(provider);
+        }
+
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", DOUGH.asStack(), new ItemStack(Items.BREAD));
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
                 .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))

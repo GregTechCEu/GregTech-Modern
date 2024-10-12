@@ -54,6 +54,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -2366,6 +2369,15 @@ public class GTItems {
             .lang("Purple Drink")
             .onRegister(attach(new FoodStats(GTFoods.DRINK, true, Items.GLASS_BOTTLE::getDefaultInstance)))
             .onRegister(compassNode(GTCompassSections.MISC))
+            .register();
+    public static ItemEntry<ComponentItem> DOUGH = REGISTRATE.item("dough", ComponentItem::create)
+            .lang("Dough")
+            .onRegister(attach(new FoodStats(
+                    new FoodProperties.Builder().nutrition(1)
+                            .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 400), .40f)
+                            .effect(() -> new MobEffectInstance(MobEffects.POISON, 100), .05f)
+                            .build(),
+                    false, null)))
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)
             .onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(75)).register();
