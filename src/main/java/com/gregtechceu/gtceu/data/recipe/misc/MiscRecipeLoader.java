@@ -511,7 +511,7 @@ public class MiscRecipeLoader {
 
             MIXER_RECIPES.recipeBuilder("flour_to_dough")
                     .inputItems(dust, Wheat, 2)
-                    .inputFluids(Water.getFluid(L))
+                    .inputFluids(Water.getFluid(250))
                     .outputItems(DOUGH, 3)
                     .EUt(VA[ULV])
                     .duration(200)

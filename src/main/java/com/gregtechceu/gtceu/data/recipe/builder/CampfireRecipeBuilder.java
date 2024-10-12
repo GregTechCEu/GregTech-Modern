@@ -28,7 +28,6 @@ import java.util.function.Consumer;
  * @date 2024/10/12
  * @implNote CampfireRecipeBuilder
  */
-
 @Accessors(chain = true, fluent = true)
 public class CampfireRecipeBuilder {
 
