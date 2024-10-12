@@ -15,7 +15,7 @@
   ],
   "sort": "ASC",
   "template": "## Version [#{{TO_TAG}}](#{{RELEASE_DIFF}})\n#{{CHANGELOG}} ",
-  "pr_template": "- #{{TITLE}} by #{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
+  "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
   "empty_template": "- No changes",
   "ignore_labels": ["ignore changelog"],
   "tag_resolver": {
