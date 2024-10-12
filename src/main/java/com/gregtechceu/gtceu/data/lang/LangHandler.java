@@ -88,10 +88,10 @@ public class LangHandler {
         provider.add("metaitem.generic.electric_item.stored", "%d/%d EU (%s)");
         provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
-        provider.add("metaitem.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
-        provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
-        provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
-        provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+        provider.add("metaitem.electric.discharge_mode.tooltip", "§7Use while sneaking to toggle discharge mode");
+        provider.add("metaitem.dust.tooltip.purify", "§7Right click a Cauldron to get clean Dust");
+        provider.add("metaitem.crushed.tooltip.purify", "§7Right click a Cauldron to get Purified Ore");
+        provider.add("metaitem.int_circuit.configuration", "§aConfigured Value: §r%d");
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
@@ -314,9 +314,8 @@ public class LangHandler {
         provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
         provider.add("metaarmor.energy_share.tooltip.guide",
                 "To change mode shift-right click when holding item");
-        provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
-        provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
-        provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
+        provider.add("item.gtceu.nan_certificate.tooltip", "§7Challenge Accepted!");
+        provider.add("item.gtceu.blacklight.tooltip", "§7Long-Wave §dUltraviolet§7 light source");
         provider.add("gui.widget.incrementButton.default_tooltip",
                 "Hold Shift, Ctrl or both to change the amount");
         provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
@@ -693,37 +692,34 @@ public class LangHandler {
         provider.add("item.gtceu.small_iridium_metal_residue_dust", "Small Pile of Iridium Metal Residue");
         provider.add("item.gtceu.iridium_metal_residue_dust", "Iridium Metal Residue");
 
-        provider.add("behaviour.hoe", "Can till dirt");
-        provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
-        provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
-        provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
-        provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
-        provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
-        provider.add("behaviour.lighter.uses", "Remaining uses: %d");
-        provider.add("behavior.toggle_energy_consumer.tooltip", "Use to toggle mode");
-        provider.add("behaviour.hammer", "Turns on and off Muffling for Machines (by hitting them)");
-        provider.add("behaviour.wrench", "Rotates Blocks on Rightclick");
-        provider.add("behaviour.boor.by", "by %s");
-        provider.add("behaviour.paintspray.solvent.tooltip", "Can remove color from things");
-        provider.add("behaviour.paintspray.white.tooltip", "Can paint things in White");
-        provider.add("behaviour.paintspray.orange.tooltip", "Can paint things in Orange");
-        provider.add("behaviour.paintspray.magenta.tooltip", "Can paint things in Magenta");
-        provider.add("behaviour.paintspray.light_blue.tooltip", "Can paint things in Light Blue");
-        provider.add("behaviour.paintspray.yellow.tooltip", "Can paint things in Yellow");
-        provider.add("behaviour.paintspray.lime.tooltip", "Can paint things in Lime");
-        provider.add("behaviour.paintspray.pink.tooltip", "Can paint things in Pink");
-        provider.add("behaviour.paintspray.gray.tooltip", "Can paint things in Gray");
-        provider.add("behaviour.paintspray.light_gray.tooltip", "Can paint things in Light Gray");
-        provider.add("behaviour.paintspray.cyan.tooltip", "Can paint things in Cyan");
-        provider.add("behaviour.paintspray.purple.tooltip", "Can paint things in Purple");
-        provider.add("behaviour.paintspray.blue.tooltip", "Can paint things in Blue");
-        provider.add("behaviour.paintspray.brown.tooltip", "Can paint things in Brown");
-        provider.add("behaviour.paintspray.green.tooltip", "Can paint things in Green");
-        provider.add("behaviour.paintspray.red.tooltip", "Can paint things in Red");
-        provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
-        provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
-        provider.add("behaviour.prospecting", "Usable for Prospecting");
+        provider.add("behavior.soft_hammer", "§7Activates and Deactivates Machines");
+        provider.add("behavior.soft_hammer.enabled", "Working Enabled");
+        provider.add("behavior.soft_hammer.disabled", "Working Disabled");
+        provider.add("behavior.lighter.tooltip.description", "§7Can light things on fire");
+        provider.add("behavior.lighter.tooltip.usage", "§7Shift-right click to open/close");
+        provider.add("behavior.lighter.fluid.tooltip", "§7Can light things on fire with Butane or Propane");
+        provider.add("behavior.lighter.uses", "§7Remaining uses: %d");
+        provider.add("behavior.toggle_energy_consumer.tooltip", "§7Use to toggle mode");
+        provider.add("behavior.hammer", "§7Turns on and off Muffling for Machines (by hitting them)");
+        provider.add("behavior.paintspray.solvent.tooltip", "§7Can remove color from things");
+        provider.add("behavior.paintspray.white.tooltip", "§7Can paint things in White");
+        provider.add("behavior.paintspray.orange.tooltip", "§7Can paint things in Orange");
+        provider.add("behavior.paintspray.magenta.tooltip", "§7Can paint things in Magenta");
+        provider.add("behavior.paintspray.light_blue.tooltip", "§7Can paint things in Light Blue");
+        provider.add("behavior.paintspray.yellow.tooltip", "§7Can paint things in Yellow");
+        provider.add("behavior.paintspray.lime.tooltip", "§7Can paint things in Lime");
+        provider.add("behavior.paintspray.pink.tooltip", "§7Can paint things in Pink");
+        provider.add("behavior.paintspray.gray.tooltip", "§7Can paint things in Gray");
+        provider.add("behavior.paintspray.light_gray.tooltip", "§7Can paint things in Light Gray");
+        provider.add("behavior.paintspray.cyan.tooltip", "§7Can paint things in Cyan");
+        provider.add("behavior.paintspray.purple.tooltip", "§7Can paint things in Purple");
+        provider.add("behavior.paintspray.blue.tooltip", "§7Can paint things in Blue");
+        provider.add("behavior.paintspray.brown.tooltip", "§7Can paint things in Brown");
+        provider.add("behavior.paintspray.green.tooltip", "§7Can paint things in Green");
+        provider.add("behavior.paintspray.red.tooltip", "§7Can paint things in Red");
+        provider.add("behavior.paintspray.black.tooltip", "§7Can paint things in Black");
+        provider.add("behavior.paintspray.uses", "§7Remaining Uses: %d");
+        provider.add("behavior.paintspray.offhand", "§7Hold in offhand to color while placing blocks");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
@@ -1259,10 +1255,10 @@ public class LangHandler {
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
-        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
-        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
-        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
-        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: §e%s");
+        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: §e%s, %s");
+        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: §e%s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Types: §e%s, %s, %s, %s");
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");

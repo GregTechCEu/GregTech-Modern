@@ -47,10 +47,18 @@ public class PipeBlockItem extends BlockItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
-        if (GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("gtceu.tool_action.wire_cutter.connect"));
+        if (this instanceof OpticalPipeBlockItem) {
+            if (GTUtil.isShiftDown()) {
+                tooltip.add(Component.translatable("gtceu.tool_action.wire_cutter.connect"));
+            } else {
+                tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
+            }
         } else {
-            tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
+            if (GTUtil.isShiftDown()) {
+                tooltip.add(Component.translatable("gtceu.tool_action.wrench.connect"));
+            } else {
+                tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
+            }
         }
     }
 

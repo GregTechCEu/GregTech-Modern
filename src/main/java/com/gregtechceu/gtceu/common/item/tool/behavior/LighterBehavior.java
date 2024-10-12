@@ -275,10 +275,10 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level,
                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component
-                .translatable(usesFluid ? "behaviour.lighter.fluid.tooltip" : "behaviour.lighter.tooltip.description"));
-        tooltipComponents.add(Component.translatable("behaviour.lighter.tooltip.usage"));
+                .translatable(usesFluid ? "behavior.lighter.fluid.tooltip" : "behavior.lighter.tooltip.description"));
+        tooltipComponents.add(Component.translatable("behavior.lighter.tooltip.usage"));
         if (hasMultipleUses && !usesFluid) {
-            tooltipComponents.add(Component.translatable("behaviour.lighter.uses", getUsesLeft(stack)));
+            tooltipComponents.add(Component.translatable("behavior.lighter.uses", getUsesLeft(stack)));
         }
     }
 }

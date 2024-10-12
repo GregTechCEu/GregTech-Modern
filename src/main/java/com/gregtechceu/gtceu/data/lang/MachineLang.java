@@ -339,12 +339,12 @@ public class MachineLang {
         provider.add("gtceu.machine.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
         provider.add("gtceu.machine.item_collector.gui.collect_range",
                 "Collect within an area of %sx%s blocks");
-        provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself");
+        provider.add("gtceu.machine.item_collector.tooltip", "§7Collects Items around itself");
         provider.add("gtceu.machine.quantum_chest.tooltip", "§7Better than Storage Drawers");
         provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount:");
         provider.add("gtceu.machine.quantum_tank.tooltip", "§7Compact place to store all your fluids");
 
-        provider.add("gtceu.machine.buffer.tooltip", "A Small Buffer to store Items and Fluids");
+        provider.add("gtceu.machine.buffer.tooltip", "§7A Small Buffer to store Items and Fluids");
         // Gas Collector
         provider.add("gtceu.machine.lv_gas_collector.tooltip",
                 "§7Collects Gas from the air depending on the dimension");
@@ -387,10 +387,10 @@ public class MachineLang {
         provider.add("gtceu.machine.uxv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
         provider.add("gtceu.machine.opv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
         // Fisher
-        provider.add("gtceu.machine.fisher.tooltip", "Costs string to fish. Consumes one string each time.");
-        provider.add("gtceu.machine.fisher.speed", "Catches something every %d ticks");
+        provider.add("gtceu.machine.fisher.tooltip", "§7Costs string to fish. Consumes one string each time.");
+        provider.add("gtceu.machine.fisher.speed", "§7Catches something every %d ticks");
         provider.add("gtceu.machine.fisher.requirement",
-                "Requires a %dx%d centered square of water directly below.");
+                "§7Requires a %dx%d centered square of water directly below.");
         // World Accelerator
         provider.add("gtceu.machine.world_accelerator.description",
                 "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§7 or §fRandom Tick§7. Use Screwdriver to change mode.");
@@ -407,21 +407,21 @@ public class MachineLang {
         provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
 
         // HPCA Components
-        provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
-        provider.add("gtceu.machine.hpca.heat_sink_component.tooltip", "Free cooling! Is anything free?");
-        provider.add("gtceu.machine.hpca.active_cooler_component.tooltip", "Less free, more effective cooling");
-        provider.add("gtceu.machine.hpca.computation_component.tooltip", "Baby's first computation");
-        provider.add("gtceu.machine.hpca.advanced_computation_component.tooltip", "Computation big leagues");
+        provider.add("gtceu.machine.hpca.empty_component.tooltip", "§7Just for filling space");
+        provider.add("gtceu.machine.hpca.heat_sink_component.tooltip", "§7Free cooling! Is anything free?");
+        provider.add("gtceu.machine.hpca.active_cooler_component.tooltip", "§7Less free, more effective cooling");
+        provider.add("gtceu.machine.hpca.computation_component.tooltip", "§7Baby's first computation");
+        provider.add("gtceu.machine.hpca.advanced_computation_component.tooltip", "§7Computation big leagues");
         provider.add("gtceu.machine.hpca.bridge_component.tooltip",
-                "So that's where the \"Array\" in HPCA comes from");
+                "§7So that's where the \"Array\" in HPCA comes from");
 
         provider.add("gtceu.machine.hpca.computation_component.damaged.name",
                 "Damaged HPCA Computation Component");
-        provider.add("gtceu.machine.hpca.computation_component.damaged.tooltip", "Free recyclable materials");
+        provider.add("gtceu.machine.hpca.computation_component.damaged.tooltip", "§7Free recyclable materials");
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.name",
                 "Damaged HPCA Advanced Computation Component");
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.tooltip",
-                "It only cost an arm and a leg");
+                "§7It only cost an arm and a leg");
 
         provider.add("gtceu.machine.hpca.component_general.upkeep_eut", "§eUpkeep Energy: §f%d EU/t");
         provider.add("gtceu.machine.hpca.component_general.max_eut", "§6Max Energy: §f%d EU/t");
@@ -433,13 +433,13 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%d CWU/t");
         provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%d Cooling");
         provider.add("gtceu.machine.hpca.component_type.bridge",
-                "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
+                "§7Allows §fHPCA§7 to connect to §fNetwork Switches§7");
         provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
 
         multiLang(provider, "gtceu.machine.electric_blast_furnace.tooltip",
-                "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
-                "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
-                "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
+                "§7For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
+                "§7For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
+                "§7For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
 
         provider.add("gtceu.machine.coke_oven_hatch.tooltip", "§7Allows automation access for the Coke Oven.");
 
@@ -447,22 +447,22 @@ public class MachineLang {
                 "You can fill and empty any fluid containers with the Fluid Canner (e.g. Buckets or Fluid Cells)");
 
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 mB/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "§7Supply §f20 mB/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 mB/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "§7Supply §f80 mB/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
 
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
         provider.add("gtceu.machine.fusion_reactor.overclocking",
-                "Overclocks double energy and halve duration.");
+                "§7Overclocks double energy and halve duration.");
         // Miner
         provider.add("gtceu.machine.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
         provider.add("gtceu.machine.miner.per_block", "§7takes §f%ds §7per Block");
-        provider.add("gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
+        provider.add("gtceu.machine.miner.multi.modes", "§7Has Silk Touch and Chunk Aligned Modes.");
         provider.add("gtceu.machine.miner.multi.production",
-                "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
-        provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
+                "§7Produces §f3x§7 more crushed ore than a §fMacerator§7.");
+        provider.add("gtceu.machine.miner.fluid_usage", "§7Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
-                "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
+                "§7A multiblock mining machine that covers a large area and produces huge quantity of ore.");
         provider.add("gtceu.machine.miner.startx", "sX: %d");
         provider.add("gtceu.machine.miner.starty", "sY: %d");
         provider.add("gtceu.machine.miner.startz", "sZ: %d");
@@ -485,45 +485,45 @@ public class MachineLang {
 
         // Cleanroom
         multiLang(provider, "gtceu.machine.cleanroom.tooltip",
-                "Place machines inside to run cleanroom recipes.",
-                "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
-                "Overclocking increases cleaning per cycle.",
+                "§7Place machines inside to run cleanroom recipes.",
+                "§7Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
+                "§7Overclocking increases cleaning per cycle.",
                 "§bSize: §f5x5x5 to 15x15x15",
                 "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
-                "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
-                "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
-                "Send power through §fHulls §7or §fDiodes §7in the walls.");
+                "§7Accepts up to §f4 Doors§7! Remains clean when the door is open.",
+                "§7Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
+                "§7Send power through §fHulls §7or §fDiodes §7in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.hold_ctrl",
-                "Hold CTRL to show additional Structure Information");
+                "§7Hold CTRL to show additional Structure Information");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.channels",
-                "Send up to §f8 AE2 Channels §7through §fHulls§7 in the walls.");
+                "§7Send up to §f8 AE2 Channels §7through §fHulls§7 in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.no_channels",
-                "Send §aAE2 Networks§7 through §fHulls§7 in the walls.");
-        provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
-        provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
-        provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
+                "§7Send §aAE2 Networks§7 through §fHulls§7 in the walls.");
+        provider.add("gtceu.multiblock.cleanroom.clean_state", "§7Status: §aCLEAN");
+        provider.add("gtceu.multiblock.cleanroom.dirty_state", "§7Status: §4CONTAMINATED");
+        provider.add("gtceu.multiblock.cleanroom.clean_amount", "§7Cleanliness: §a%s%%");
 
         multiLang(provider, "gtceu.machine.charcoal_pile.tooltip",
-                "Turns Logs into §aCharcoal§7 when §cignited§7.",
-                "Right Click with fire-starting items to start.",
-                "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
-                "Logs must be not be exposed to §eAir§7!");
+                "§7Turns Logs into §aCharcoal§7 when §cignited§7.",
+                "§7Right Click with fire-starting items to start.",
+                "§7Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
+                "§7Logs must be not be exposed to §eAir§7!");
         multilineLang(provider, "gtceu.multiblock.charcoal_pile.description",
-                "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
+                "§7Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
 
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
         multiLang(provider, "gtceu.multiblock.central_monitor.tooltip",
-                "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
-                "You can build the central monitor screen from 3X2 to %dX%d (width X height).",
-                "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
-                "Energy consumption: %d EU/s for each screen.");
+                "§7This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
+                "§7You can build the central monitor screen from §b3X2 §rto §b%dX%d §r(width X height).",
+                "§7The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
+                "§7Energy consumption: %d EU/s for each screen.");
         multiLang(provider, "gtceu.multiblock.monitor_screen.tooltip",
-                "The GUI can be opened with a right-click of a screwdriver.",
-                "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
-                "The screen also supports plugins.");
+                "§7The GUI can be opened with a right-click of a screwdriver.",
+                "§7The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
+                "§7The screen also supports plugins.");
 
         provider.add("gtceu.multiblock.steam_grinder.description",
                 "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
@@ -586,13 +586,13 @@ public class MachineLang {
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
         // Parallel
-        provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "§7Can parallelize with §bParallel Control Hatches&r.");
 
-        provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "Allows to run up to 4 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "Allows to run up to 16 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
+        provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "§7Allows to run up to §b4 §rrecipes in parallel.");
+        provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "§7Allows to run up to §b16 §rrecipes in parallel.");
+        provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "§7Allows to run up to §b64 §rrecipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
-                "Allows to run up to 256 recipes in parallel.");
+                "Allows to run up to §b256 §rrecipes in parallel.");
         // Hatch Limits - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
         provider.add("gtceu.multiblock.exact_hatch_1.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
         // More tooltips
@@ -627,16 +627,16 @@ public class MachineLang {
         provider.add("gtceu.machine.steam_oven.tooltip", "Not to be confused with Multi-Smelter");
         provider.add("gtceu.machine.steam_grinder.tooltip", "A multiblock Macerator without the Byproducts");
         provider.add("gtceu.machine.large_miner.ev.tooltip", "Digging Ore instead of You");
-        provider.add("gtceu.machine.large_miner.iv.tooltip", "Biome Excavator");
-        provider.add("gtceu.machine.large_miner.luv.tooltip", "Terrestrial Harvester");
-        provider.add("gtceu.machine.central_monitor.tooltip", "But can it run Doom?");
-        provider.add("gtceu.machine.processing_array.tooltip", "When a few Machines just doesn't cut it");
-        provider.add("gtceu.machine.advanced_processing_array.tooltip", "Parallelize the World");
-        provider.add("gtceu.machine.mv_fluid_drilling_rig.tooltip", "Oil Extraction Pump");
-        provider.add("gtceu.machine.hv_fluid_drilling_rig.tooltip", "Does not perform Fracking");
-        provider.add("gtceu.machine.ev_fluid_drilling_rig.tooltip", "Well Drainer");
-        provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
-        provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
+        provider.add("gtceu.machine.large_miner.iv.tooltip", "§7Biome Excavator");
+        provider.add("gtceu.machine.large_miner.luv.tooltip", "§7Terrestrial Harvester");
+        provider.add("gtceu.machine.central_monitor.tooltip", "§7But can it run Doom?");
+        provider.add("gtceu.machine.processing_array.tooltip", "§7When a few Machines just doesn't cut it");
+        provider.add("gtceu.machine.advanced_processing_array.tooltip", "§7Parallelize the World");
+        provider.add("gtceu.machine.mv_fluid_drilling_rig.tooltip", "§7Oil Extraction Pump");
+        provider.add("gtceu.machine.hv_fluid_drilling_rig.tooltip", "§7Does not perform Fracking");
+        provider.add("gtceu.machine.ev_fluid_drilling_rig.tooltip", "§7Well Drainer");
+        provider.add("gtceu.machine.cleanroom.tooltip", "§7Keeping those pesky particles out");
+        provider.add("gtceu.machine.charcoal_pile.tooltip", "§7Underground fuel bakery");
 
         multiLang(provider, "gtceu.machine.data_bank.tooltip",
                 "Your Personal NAS",
