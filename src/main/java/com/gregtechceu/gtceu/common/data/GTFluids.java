@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -24,6 +25,7 @@ public class GTFluids {
     public static void init() {
         handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
+        handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK.get());
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         // register fluids for materials
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
