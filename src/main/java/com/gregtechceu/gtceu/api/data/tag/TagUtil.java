@@ -28,6 +28,7 @@ public class TagUtil {
 
     /**
      * Generates tag under Forge namespace
+     * 
      * @param vanilla Whether to use vanilla namespace instead of Forge
      * @return optional tag #forge:path or #minecraft:path
      */
@@ -38,6 +39,7 @@ public class TagUtil {
 
     /**
      * Generates tag under Forge namespace
+     * 
      * @param vanilla Whether to use vanilla namespace instead of Forge
      * @return optional tag #forge:path or #minecraft:path
      */
@@ -49,6 +51,7 @@ public class TagUtil {
 
     /**
      * Generates tag under GTM namespace
+     * 
      * @return #gtceu:path
      */
     public static <T> TagKey<T> createModTag(Registry<T> registry, String path) {
@@ -57,6 +60,7 @@ public class TagUtil {
 
     /**
      * Generates tag under GTM namespace
+     * 
      * @return #gtceu:path
      */
     public static <T> TagKey<T> createModTag(ResourceKey<? extends Registry<T>> registryKey, String path) {
@@ -65,6 +69,7 @@ public class TagUtil {
 
     /**
      * Generates block tag under Forge namespace
+     * 
      * @return Block tag #forge:path
      */
     public static TagKey<Block> createBlockTag(String path) {
@@ -73,6 +78,7 @@ public class TagUtil {
 
     /**
      * Generates block tag under Forge namespace
+     * 
      * @param vanilla Whether to use vanilla namespace instead of Forge
      * @return Block tag #forge:path or #minecraft:path
      */
@@ -86,6 +92,7 @@ public class TagUtil {
 
     /**
      * Generates tag under Forge namespace
+     * 
      * @return Tag #forge:path
      */
     public static TagKey<Item> createItemTag(String path) {
@@ -94,6 +101,7 @@ public class TagUtil {
 
     /**
      * Generates tag under Forge namespace
+     * 
      * @param vanilla Whether to use vanilla namespace instead of Forge
      * @return Tag #forge:path or #minecraft:path
      */
@@ -103,6 +111,7 @@ public class TagUtil {
 
     /**
      * Generates item tag under GTM namespace
+     * 
      * @return Item tag #gtceu:path
      */
     public static TagKey<Item> createModItemTag(String path) {
@@ -111,6 +120,7 @@ public class TagUtil {
 
     /**
      * Generates fluid tag under Forge namespace
+     * 
      * @return Fluid tag #forge:path
      */
     public static TagKey<Fluid> createFluidTag(String path) {
