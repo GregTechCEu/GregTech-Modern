@@ -174,7 +174,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
 
     public boolean consumeFuel(Player player, ItemStack stack) {
