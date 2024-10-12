@@ -61,6 +61,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public final String group;
     public final TreeMap<RecipeCapability<?>, Integer> maxInputs = new TreeMap<>(RecipeCapability.COMPARATOR);
     public final TreeMap<RecipeCapability<?>, Integer> maxOutputs = new TreeMap<>(RecipeCapability.COMPARATOR);
+    @Getter
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Getter

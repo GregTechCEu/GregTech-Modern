@@ -29,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -48,7 +47,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -750,11 +748,11 @@ public interface GTRecipeSchema {
          */
 
         @Override
-        public @Nullable RecipeHolder<?> createRecipe() {
+        public KubeRecipe serializeChanges() {
             if (onSave != null) {
                 onSave.accept(this);
             }
-            return super.createRecipe();
+            return super.serializeChanges();
         }
     }
 

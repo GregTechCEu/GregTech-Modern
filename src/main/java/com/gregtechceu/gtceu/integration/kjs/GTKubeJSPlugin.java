@@ -30,7 +30,6 @@ import com.gregtechceu.gtceu.api.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -53,7 +52,6 @@ import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.worldgen.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
@@ -65,28 +63,16 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.neoforged.neoforge.common.conditions.ICondition;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
@@ -94,13 +80,8 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.kubejs.util.NBTUtils;
 import dev.latvian.mods.rhino.Wrapper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -376,92 +357,5 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                     if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
                     return () -> BlockStatePredicate.ruleTestOf(ctx, o);
                 });
-    }
-
-    @Override
-    public void injectRuntimeRecipes(RecipesKubeEvent event, RecipeManagerKJS manager,
-                                     Map<ResourceLocation, RecipeHolder<?>> recipesByName) {
-        // (jankily) parse all GT recipes for extra ones to add, modify
-        event.addedRecipes.forEach(recipe -> {
-            if (recipe instanceof GTRecipeSchema.GTKubeRecipe gtRecipe) {
-                // get the recipe ID without the leading type path
-                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
-                        .recipeBuilder(gtRecipe.idWithoutType());
-
-                if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-                    builder.duration = (int) gtRecipe.getValue(GTRecipeSchema.DURATION).ticks();
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
-                    builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
-                    builder.conditions.addAll(gtRecipe.getValue(GTRecipeSchema.CONDITIONS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
-                    builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
-                }
-                builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
-
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
-                    builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS) != null) {
-                    builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS) != null) {
-                    builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS) != null) {
-                    builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS));
-                }
-
-                builder.save(new RecipeOutput() {
-
-                    @Override
-                    public Advancement.Builder advancement() {
-                        // noinspection removal
-                        return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
-                    }
-
-                    @Override
-                    public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
-                                       @Nullable AdvancementHolder advancement,
-                                       ICondition @NotNull... conditions) {
-                        recipesByName.put(id, new RecipeHolder<>(id, recipe));
-                    }
-                });
-            }
-        });
-
-        // clone vanilla recipes for stuff like electric furnaces, etc
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                gtRecipeType.getLookup().removeAllRecipes();
-
-                var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<RecipeHolder<GTRecipe>>> entry : proxyRecipes.entrySet()) {
-                    var type = entry.getKey();
-                    var recipes = entry.getValue();
-                    recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream()
-                            .filter(recipe -> recipe.getValue().value().getType() == type)
-                            .collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTRecipe(recipe.getValue()));
-                    }
-                }
-
-                Stream.concat(
-                        recipesByName.values().stream()
-                                .filter(recipeHolder -> recipeHolder.value().getType() == gtRecipeType),
-                        proxyRecipes.entrySet().stream()
-                                .flatMap(entry -> entry.getValue().stream()))
-                        .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                        .forEach(holder -> {
-                            GTRecipe recipe = (GTRecipe) holder.value();
-                            recipe.setId(holder.id());
-                            gtRecipeType.getLookup().addRecipe(recipe);
-                        });
-            }
-        }
     }
 }
