@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -95,10 +96,11 @@ public class RecipeAddition {
 
     private static void harderBrickRecipes(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "brick_from_water", new ItemStack(Blocks.BRICKS, 2), "BBB",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "brick_from_water",
+                    new ItemStack(Blocks.BRICKS, 2), "BBB",
                     "BWB", "BBB",
                     'B', new ItemStack(Items.BRICK),
-                    'W', new ItemStack(Items.WATER_BUCKET));
+                    'W', new FluidContainerIngredient(Water.getFluidTag(), 1000));
 
             VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.getBucket()),
                     "CBS", "CWQ", " L ",
@@ -109,12 +111,12 @@ public class RecipeAddition {
                     'L', new UnificationEntry(dust, Clay),
                     'B', new ItemStack(Items.BUCKET));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "casing_primitive_bricks",
                     GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
                     "BGB", "BCB", "BGB",
                     'B', GTItems.FIRECLAY_BRICK.asStack(),
                     'G', new UnificationEntry(dust, Gypsum),
-                    'C', new ItemStack(Concrete.getBucket()));
+                    'C', new FluidContainerIngredient(Concrete.getFluidTag(), 1000));
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(),
                     WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));

@@ -377,6 +377,95 @@ public class VanillaRecipeHelper {
                 GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                                     boolean isStrict,
+                                                     @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        var builder = new ShapedFluidContainerRecipeBuilder(regName).output(result);
+        builder.isStrict(isStrict);
+        CharSet set = new CharOpenHashSet();
+        for (int i = 0; i < recipe.length; i++) {
+            var o = recipe[i];
+            if (o instanceof String pattern) {
+                builder.pattern(pattern);
+                for (Character c : ToolHelper.getToolSymbols()) {
+                    if (pattern.indexOf(c) >= 0) {
+                        set.add(c.charValue());
+                    }
+                }
+            }
+            if (o instanceof String[] pattern) {
+                for (String s : pattern) {
+                    builder.pattern(s);
+                    for (Character c : ToolHelper.getToolSymbols()) {
+                        if (s.indexOf(c) >= 0) {
+                            set.add(c.charValue());
+                        }
+                    }
+                }
+            }
+            if (o instanceof Character sign) {
+                var content = recipe[i + 1];
+                i++;
+                if (content instanceof Ingredient ingredient) {
+                    builder.define(sign, ingredient);
+                } else if (content instanceof ItemStack itemStack) {
+                    builder.define(sign, itemStack);
+                } else if (content instanceof TagKey<?> key) {
+                    builder.define(sign, (TagKey<Item>) key);
+                } else if (content instanceof TagPrefix prefix) {
+                    if (prefix.getItemParentTags().length > 0) {
+                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    }
+                } else if (content instanceof ItemLike itemLike) {
+                    builder.define(sign, itemLike);
+                } else if (content instanceof UnificationEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    if (tag != null) {
+                        builder.define(sign, tag);
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else if (content instanceof ItemProviderEntry<?> entry) {
+                    builder.define(sign, entry.asStack());
+                }
+            }
+        }
+        for (Character c : set) {
+            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+        }
+
+        builder.save(provider);
+
+        if (withUnificationData) {
+            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        }
+    }
+
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                                     @NotNull String regName, @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        addShapedFluidContainerRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
+    }
+
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+                                                     @NotNull ResourceLocation regName, @NotNull ItemStack result,
+
+                                                     @NotNull Object... recipe) {
+        addShapedFluidContainerRecipe(provider, withUnificationData, false, regName, result, recipe);
+    }
+
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                                     @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        addShapedFluidContainerRecipe(provider, GTCEu.id(regName), result, recipe);
+    }
+
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider,
+                                                     @NotNull ResourceLocation regName,
+                                                     @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        addShapedFluidContainerRecipe(provider, false, regName, result, recipe);
+    }
+
     /**
      * Adds a shapeless recipe which clears the nbt of the outputs
      *
