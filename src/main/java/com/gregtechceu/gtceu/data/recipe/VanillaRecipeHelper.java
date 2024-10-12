@@ -341,9 +341,6 @@ public class VanillaRecipeHelper {
                         set.add(c.charValue());
                     }
                 }
-                if (pattern.indexOf('l') >= 0) {
-                    builder.define('l', GTMachines.BRONZE_DRUM.asStack());
-                }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
@@ -352,9 +349,6 @@ public class VanillaRecipeHelper {
                         if (s.indexOf(c) >= 0) {
                             set.add(c.charValue());
                         }
-                    }
-                    if (s.indexOf('l') >= 0) {
-                        builder.define('l', GTMachines.BRONZE_DRUM.asStack());
                     }
                 }
             }
