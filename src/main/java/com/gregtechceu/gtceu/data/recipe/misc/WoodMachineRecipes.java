@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -24,7 +22,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -807,12 +804,6 @@ public class WoodMachineRecipes {
      * Standard recipes for GT woods
      */
     private static void registerGTWoodRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks",
-                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP",
-                'P', ItemTags.PLANKS,
-                'B', FluidUtil.getFilledBucket(FluidHelperImpl.toFluidStack(Creosote.getFluid(1000))));
-
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
                 ChemicalHelper.get(rod, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
                 "L", "L",
