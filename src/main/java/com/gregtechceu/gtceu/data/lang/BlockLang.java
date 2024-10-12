@@ -30,8 +30,8 @@ public class BlockLang {
         replace(provider, "block.gtceu.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
 
         // Casings
-        replace(provider, "block.gtceu.casing_bronze_bricks", "Bronze Machine Casing");
-        replace(provider, "block.gtceu.casing_primitive_bricks", "Firebricks");
+        replace(provider, "block.gtceu.bronze_brick_casing", "Bricked Bronze Casing");
+        replace(provider, "block.gtceu.steel_brick_casing", "Bricked Wrought Iron Casing");
         replace(provider, "block.gtceu.heatproof_machine_casing", "Heat Proof Invar Machine Casing");
         replace(provider, "block.gtceu.frostproof_machine_casing", "Frost Proof Aluminium Machine Casing");
         replace(provider, "block.gtceu.steel_machine_casing", "Solid Steel Machine Casing");
