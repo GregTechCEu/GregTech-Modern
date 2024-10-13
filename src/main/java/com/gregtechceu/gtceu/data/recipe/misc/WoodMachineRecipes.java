@@ -690,14 +690,14 @@ public class WoodMachineRecipes {
 
             // plank -> slab crafting
             VanillaRecipeHelper.addShapedRecipe(provider, name + "_slab_saw", new ItemStack(entry.slab, 2),
-                    "sS", 'S', entry.planks);
+                        "sS", 'S', entry.planks);
 
             // plank -> slab cutting
             CUTTER_RECIPES.recipeBuilder(name + "_slab")
-                    .inputItems(entry.planks)
-                    .outputItems(new ItemStack(entry.slab, 2))
-                    .duration(200).EUt(VA[ULV])
-                    .save(provider);
+                        .inputItems(entry.planks)
+                        .outputItems(new ItemStack(entry.slab, 2))
+                        .duration(200).EUt(VA[ULV])
+                        .save(provider);
         }
 
         // fence
@@ -834,7 +834,7 @@ public class WoodMachineRecipes {
 
             // plank -> button cutting
             CUTTER_RECIPES.recipeBuilder(name + "_button")
-                    .inputItems(new ItemStack(entry.planks))
+                    .inputItems(new ItemStack(entry.pressurePlate))
                     .outputItems(entry.button, 12)
                     .duration(250).EUt(VA[ULV]).save(provider);
         }

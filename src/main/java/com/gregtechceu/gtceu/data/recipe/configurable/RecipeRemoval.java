@@ -74,7 +74,8 @@ public class RecipeRemoval {
         // removed these for parity with the other torch recipes
         registry.accept(new ResourceLocation("minecraft:soul_torch"));
         registry.accept(new ResourceLocation("minecraft:soul_lantern"));
-        registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
+        registry.accept(new ResourceLocation("gtceu:fluid_solidifer/solidify_concrete_block"));
+
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
