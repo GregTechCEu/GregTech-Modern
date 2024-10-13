@@ -80,8 +80,6 @@ import java.util.List;
 public class CommonProxy {
 
     public CommonProxy() {
-        ForgeMod.enableMilkFluid();
-
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
@@ -127,6 +125,7 @@ public class CommonProxy {
         GTCompassSections.init();
         GTCompassNodes.init();
         GTCovers.init();
+        ForgeMod.enableMilkFluid();
         GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
