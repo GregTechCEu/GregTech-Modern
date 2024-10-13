@@ -25,7 +25,8 @@ public class GTFluids {
     public static void init() {
         handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
-        handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK.get());
+        if (ForgeMod.MILK.isPresent())
+            handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK.get());
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         // register fluids for materials
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
