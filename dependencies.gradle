@@ -54,7 +54,6 @@ dependencies {
 
     // JAVD
     compileOnly(forge.javd) { transitive = false }
-    runtimeOnly("curse.maven:trenzalore-870210:4848244")
 
     compileOnly(forge.ftbteams)
     compileOnly(forge.ftblibrary)

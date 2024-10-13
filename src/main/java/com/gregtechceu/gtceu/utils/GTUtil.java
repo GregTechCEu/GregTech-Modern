@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,6 +22,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.ExtraCodecs;
@@ -488,15 +490,21 @@ public class GTUtil {
     }
 
     public static void addPotionTooltip(List<FoodProperties.PossibleEffect> effects, List<Component> list) {
-        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        if (!effects.isEmpty()) {
+            list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        }
         effects.forEach(pair -> {
             var effect = pair.effect();
             float probability = pair.effect().getDuration();
             list.add(Component.translatable("gtceu.tooltip.potion.each",
-                    Component.translatable(effect.getDescriptionId()),
-                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
-                    effect.getDuration(),
-                    100 * probability));
+                    Component.translatable(effect.getDescriptionId())
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.literal(String.valueOf(effect.getDuration()))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+                    Component.literal(String.valueOf(100 * probability))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
     }
 }
