@@ -75,7 +75,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:soul_torch"));
         registry.accept(new ResourceLocation("minecraft:soul_lantern"));
         registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
-
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
