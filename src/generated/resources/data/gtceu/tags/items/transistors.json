@@ -1,6 +1,7 @@
 {
   "values": [
     "gtceu:transistor",
-    "gtceu:smd_transistor"
+    "gtceu:smd_transistor",
+    "gtceu:advanced_smd_transistor"
   ]
 }

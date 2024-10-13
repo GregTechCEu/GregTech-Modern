@@ -1980,15 +1980,20 @@ public class GTItems {
     public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
             .tag(CustomTags.INDUCTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", Item::new)
-            .lang("Advanced SMD Transistor").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
+            .lang("Advanced SMD Transistor").tag(CustomTags.TRANSISTORS)
+            .onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> ADVANCED_SMD_RESISTOR = REGISTRATE.item("advanced_smd_resistor", Item::new)
-            .lang("Advanced SMD Resistor").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
+            .lang("Advanced SMD Resistor").tag(CustomTags.RESISTORS)
+            .onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> ADVANCED_SMD_CAPACITOR = REGISTRATE.item("advanced_smd_capacitor", Item::new)
-            .lang("Advanced SMD Capacitor").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
+            .lang("Advanced SMD Capacitor").tag(CustomTags.CAPACITORS)
+            .onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> ADVANCED_SMD_DIODE = REGISTRATE.item("advanced_smd_diode", Item::new)
-            .lang("Advanced SMD Diode").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
+            .lang("Advanced SMD Diode").tag(CustomTags.DIODES)
+            .onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> ADVANCED_SMD_INDUCTOR = REGISTRATE.item("advanced_smd_inductor", Item::new)
-            .lang("Advanced SMD Inductor").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
+            .lang("Advanced SMD Inductor").tag(CustomTags.INDUCTORS)
+            .onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
 
     // T1: Electronic
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", Item::new)
