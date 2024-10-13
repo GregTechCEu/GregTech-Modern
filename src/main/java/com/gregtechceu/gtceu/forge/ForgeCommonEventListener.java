@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
@@ -135,6 +136,16 @@ public class ForgeCommonEventListener {
                 block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
             if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
                     event.getFace())) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBreakEvent(BlockEvent.BreakEvent event) {
+        var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
+        if (machine != null) {
+            if (!MetaMachineBlock.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
                 event.setCanceled(true);
             }
         }

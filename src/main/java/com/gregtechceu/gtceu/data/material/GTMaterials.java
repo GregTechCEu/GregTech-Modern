@@ -176,8 +176,8 @@ public class GTMaterials {
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
         block.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);

@@ -124,7 +124,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType ASSEMBLER_RECIPES = register("assembler", ELECTRIC).setMaxIOSize(9, 1, 1, 0)
             .setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.CIRCUIT_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_CIRCUIT, LEFT_TO_RIGHT)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ASSEMBLER, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ASSEMBLER);
 
     public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
@@ -729,14 +729,16 @@ public class GTRecipeTypes {
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent(GTRegistries.RECIPE_TYPES));
         GTRegistries.RECIPE_TYPES.freeze();
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_facade_cover"),
                 FacadeCoverRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_strict"),
                 StrictShapedRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("shaped_energy_transfer_recipe"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_energy_transfer"),
                 ShapedEnergyTransferRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("tool_head_replace_recipe"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_tool_head_replace"),
                 ToolHeadReplaceRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_fluid_container"),
+                ShapedFluidContainerRecipe.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {

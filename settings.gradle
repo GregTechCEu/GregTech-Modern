@@ -39,6 +39,10 @@ dependencyResolutionManagement {
         def jadeForgeVersion = "5366595"
         def worldStripperForgeFile = "4578579"
         def javdVersion = "4803995"
+        def ftbteamsForgeFile = "5631446"
+        def ftblibraryForgeFile = "5754910"
+        def argonautsForgeFile = "5263580"
+        def resourcefulForgeFile = "5659871"
 
         // Libs
         def parchmentVersion = "2024.07.28" // https://parchmentmc.org/docs/getting-started
@@ -107,6 +111,18 @@ dependencyResolutionManagement {
 
             def javd = version("javd", javdVersion)
             library("javd", "curse.maven", "javd-370890").versionRef(javd)
+
+            def ftbteams = version("ftbteams", ftbteamsForgeFile)
+            library("ftbteams", "curse.maven", "ftb-teams-forge-404468").versionRef(ftbteams)
+
+            def ftblibrary = version("ftblibrary", ftblibraryForgeFile)
+            library("ftblibrary", "curse.maven", "ftb-library-forge-404465").versionRef(ftblibrary)
+
+            def argonautslib = version("argonauts", argonautsForgeFile)
+            library("argonauts", "curse.maven", "argonauts-845833").versionRef(argonautslib)
+
+            def resourceful = version("resourceful", resourcefulForgeFile)
+            library("resourceful", "curse.maven", "resourceful-lib-570073").versionRef(resourceful)
         }
 
         libs {

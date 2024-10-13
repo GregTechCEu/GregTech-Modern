@@ -18,6 +18,7 @@ public class CustomTags {
 
     // Added Vanilla tags
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
+    public static final TagKey<Item> DOUGHS = TagUtil.createItemTag("dough");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
@@ -88,8 +89,19 @@ public class CustomTags {
             UHV_BATTERIES
     };
 
+    public static final TagKey<Item> ELECTRIC_MOTORS = TagUtil.createModItemTag("electric_motors");
+    public static final TagKey<Item> ELECTRIC_PUMPS = TagUtil.createModItemTag("electric_pumps");
+    public static final TagKey<Item> FLUID_REGULATORS = TagUtil.createModItemTag("fluid_regulators");
+    public static final TagKey<Item> CONVEYOR_MODULES = TagUtil.createModItemTag("conveyor_modules");
+    public static final TagKey<Item> ELECTRIC_PISTONS = TagUtil.createModItemTag("electric_pistons");
+    public static final TagKey<Item> ROBOT_ARMS = TagUtil.createModItemTag("robot_arms");
+    public static final TagKey<Item> FIELD_GENERATORS = TagUtil.createModItemTag("field_generators");
+    public static final TagKey<Item> EMITTERS = TagUtil.createModItemTag("emitters");
+    public static final TagKey<Item> SENSORS = TagUtil.createModItemTag("sensors");
+
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
     public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
+    public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
 
     public static final TagKey<Block> NEEDS_WOOD_TOOL = Tags.Blocks.NEEDS_WOOD_TOOL;
     public static final TagKey<Block> NEEDS_GOLD_TOOL = Tags.Blocks.NEEDS_GOLD_TOOL;

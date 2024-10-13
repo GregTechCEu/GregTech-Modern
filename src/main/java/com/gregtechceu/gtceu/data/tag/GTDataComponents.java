@@ -43,6 +43,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> RELOCATE_MINED_BLOCKS = DATA_COMPONENTS
             .registerComponentType("relocate_mined_blocks", builder -> builder.persistent(Codec.unit(Unit.INSTANCE))
                     .networkSynchronized(StreamCodec.unit(Unit.INSTANCE)));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> RELOCATE_MOB_DROPS = DATA_COMPONENTS
+            .registerComponentType("relocate_mob_drops", builder -> builder.persistent(Codec.unit(Unit.INSTANCE))
+                    .networkSynchronized(StreamCodec.unit(Unit.INSTANCE)));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE = DATA_COMPONENTS
             .registerComponentType("active", builder -> builder.persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));

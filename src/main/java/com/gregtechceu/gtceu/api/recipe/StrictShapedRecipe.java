@@ -75,7 +75,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
                 Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC)
                         .forGetter(ShapedRecipe::category),
-                ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor) val).getPattern()),
+                ShapedRecipePattern.MAP_CODEC.forGetter(val -> val.pattern),
                 ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor) val).getResult()),
                 Codec.BOOL.optionalFieldOf("show_notification", true)
                         .forGetter(val -> ((ShapedRecipeAccessor) val).getShowNotification()))
@@ -84,7 +84,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
                 .composite(
                         ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
                         CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
-                        ShapedRecipePattern.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getPattern(),
+                        ShapedRecipePattern.STREAM_CODEC, val -> val.pattern,
                         ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getResult(),
                         ByteBufCodecs.BOOL, ShapedRecipe::showNotification,
                         StrictShapedRecipe::new);

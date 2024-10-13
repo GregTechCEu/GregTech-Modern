@@ -30,6 +30,7 @@
         "DataFixTypesMixin",
         "EntityMixin",
         "FluidStackAccessor",
+        "ForgeHooksMixin",
         "IFoliagePlacerTypeAccessor",
         "IHolderReferenceAccessor",
         "IngredientAccessor",
@@ -67,5 +68,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-    }
+  }
 }

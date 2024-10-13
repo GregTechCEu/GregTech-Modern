@@ -32,11 +32,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -190,6 +192,31 @@ public class ToolEventHandlers {
     public static void onAnvilUpdateEvent(@NotNull AnvilUpdateEvent event) {
         if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
             event.setCanceled(true);
+        }
+    }
+
+    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
+                                                              Collection<ItemEntity> drops) {
+        if (tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+            Iterator<ItemEntity> dropItr = drops.iterator();
+
+            while (dropItr.hasNext()) {
+                ItemEntity drop = dropItr.next();
+                ItemStack dropStack = drop.getItem();
+
+                if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
+                    dropItr.remove();
+                }
+            }
+        }
+        return drops;
+    }
+
+    @SubscribeEvent
+    public static void onPlayerKilledEntity(LivingDropsEvent event) {
+        Entity entity = event.getSource().getEntity();
+        if (entity instanceof Player player) {
+            ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
         }
     }
 }

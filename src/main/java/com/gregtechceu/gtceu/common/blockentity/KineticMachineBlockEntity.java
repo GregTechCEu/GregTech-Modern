@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.ChatFormatting;
@@ -37,6 +38,7 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 /**
@@ -52,6 +54,12 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     private final long offset = GTValues.RNG.nextInt(20);
     public float workingSpeed;
     public boolean reActivateSource;
+    @DescSynced
+    private UUID owner;
+    @Getter
+    @DescSynced
+    private String ownerName;
+    private Class<?> ownerType;
 
     protected KineticMachineBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);

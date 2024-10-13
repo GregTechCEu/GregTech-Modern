@@ -35,6 +35,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +56,8 @@ public class BlockPattern {
     protected final int thumbLength; // y size
     protected final int palmLength; // x size
     protected final int[] centerOffset; // x, y, z, minZ, maxZ
+    @Getter
+    protected int[] formedRepetitionCount;
 
     public BlockPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir,
                         int[][] aisleRepetitions, int[] centerOffset) {
@@ -62,6 +65,7 @@ public class BlockPattern {
         this.fingerLength = predicatesIn.length;
         this.structureDir = structureDir;
         this.aisleRepetitions = aisleRepetitions;
+        this.formedRepetitionCount = new int[aisleRepetitions.length];
 
         if (this.fingerLength > 0) {
             this.thumbLength = predicatesIn[0].length;
@@ -113,6 +117,7 @@ public class BlockPattern {
         // Checking aisles
         for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
             // Checking repeatable slices
+            int validRepetitions = 0;
             loop:
             for (r = 0; (findFirstAisle ? r < aisleRepetitions[c][1] : z <= -centerOffset[3]); r++) {
                 // Checking single slice
@@ -177,6 +182,7 @@ public class BlockPattern {
                         return false;
                     }
                 }
+                validRepetitions++;
             }
             // Repetitions out of range
             if (r < aisleRepetitions[c][0] || worldState.hasError() || !findFirstAisle) {
@@ -185,6 +191,9 @@ public class BlockPattern {
                 }
                 return false;
             }
+
+            // finished checking the aisle, so store the repetitions
+            formedRepetitionCount[c] = validRepetitions;
         }
 
         // Check count matches amount

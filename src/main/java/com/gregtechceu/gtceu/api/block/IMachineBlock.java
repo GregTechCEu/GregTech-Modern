@@ -14,6 +14,10 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
+import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
+import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 
@@ -21,6 +25,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,11 +43,16 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.IInWorldGridNodeHost;
+import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
+import dev.ftb.mods.ftbteams.api.Team;
+import earth.terrarium.argonauts.api.guild.Guild;
+import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author KilaBash
@@ -328,5 +338,23 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
             }
         }
         return list;
+    }
+
+    default void setMachineOwner(MetaMachine machine, ServerPlayer player) {
+        if (IMachineOwner.MachineOwnerType.FTB.isAvailable()) {
+            Optional<Team> team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(player.getUUID());
+            if (team.isPresent()) {
+                machine.holder.setOwner(new FTBOwner(team.get(), player.getUUID()));
+                return;
+            }
+        }
+        if (IMachineOwner.MachineOwnerType.ARGONAUTS.isAvailable()) {
+            Guild guild = GuildHandler.read(player.server).get(player);
+            if (guild != null) {
+                machine.holder.setOwner(new ArgonautsOwner(guild, player.getUUID()));
+                return;
+            }
+        }
+        machine.holder.setOwner(new PlayerOwner(player.getUUID()));
     }
 }
