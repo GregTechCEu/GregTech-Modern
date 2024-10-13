@@ -13,9 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidBlockTransfer;
-import com.gregtechceu.gtceu.core.mixins.LiquidBlockAccessor;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -39,10 +37,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -480,8 +478,11 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                     FluidState fluidState = sourceState.state().getFluidState();
                     if (sourceState.state().getBlock() instanceof LiquidBlock liquidBlock && fluidState.isSource()) {
                         var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), pos);
-                        FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
-                        if (!drainStack.isEmpty() && cache.fillInternal(drainStack, IFluidHandler.FluidAction.SIMULATE) == drainStack.getAmount()) {
+                        FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE,
+                                IFluidHandler.FluidAction.SIMULATE);
+                        if (!drainStack.isEmpty() &&
+                                cache.fillInternal(drainStack, IFluidHandler.FluidAction.SIMULATE) ==
+                                        drainStack.getAmount()) {
                             cache.fillInternal(drainStack, IFluidHandler.FluidAction.EXECUTE);
                             fluidHandler.drain(drainStack, IFluidHandler.FluidAction.EXECUTE);
                             getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());

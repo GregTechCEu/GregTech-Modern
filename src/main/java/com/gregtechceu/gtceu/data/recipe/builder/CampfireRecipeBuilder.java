@@ -1,26 +1,20 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
-import com.google.gson.JsonObject;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * @author JuiceyBeans
@@ -86,14 +80,15 @@ public class CampfireRecipeBuilder {
     }
 
     private CampfireCookingRecipe create() {
-        return new CampfireCookingRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output,
+        return new CampfireCookingRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.input,
+                this.output,
                 this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "campfire/" + recipeId.getPath()),
+        consumer.accept(
+                ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "campfire/" + recipeId.getPath()),
                 create(), null);
     }
-
 }

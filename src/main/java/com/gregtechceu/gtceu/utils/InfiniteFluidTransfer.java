@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.utils;
 
-
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor

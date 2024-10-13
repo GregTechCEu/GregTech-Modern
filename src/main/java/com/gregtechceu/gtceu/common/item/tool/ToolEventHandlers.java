@@ -32,9 +32,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -197,7 +197,7 @@ public class ToolEventHandlers {
 
     public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
                                                               Collection<ItemEntity> drops) {
-        if(tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+        if (tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             Iterator<ItemEntity> dropItr = drops.iterator();
 
             while (dropItr.hasNext()) {

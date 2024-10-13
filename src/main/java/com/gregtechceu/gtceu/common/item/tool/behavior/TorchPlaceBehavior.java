@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -117,7 +116,8 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             InteractionResult placed = slotItemBlock.place(blockPlaceContext);
             boolean wasPlaced = placed.consumesAction();
             if (wasPlaced) {
-                SoundType sound = slotItemBlock.getBlock().getSoundType(slotItemBlock.getBlock().defaultBlockState(), context.getLevel(), pos, context.getPlayer());
+                SoundType sound = slotItemBlock.getBlock().getSoundType(slotItemBlock.getBlock().defaultBlockState(),
+                        context.getLevel(), pos, context.getPlayer());
                 context.getLevel().playSound(context.getPlayer(), pos, sound.getPlaceSound(), SoundSource.BLOCKS,
                         (sound.getVolume() + 1.0F) / 2.0F, sound.getPitch() * 0.8F);
             }

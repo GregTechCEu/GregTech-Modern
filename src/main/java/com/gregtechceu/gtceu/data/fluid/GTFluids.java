@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-
 import net.neoforged.neoforge.common.NeoForgeMod;
+
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;

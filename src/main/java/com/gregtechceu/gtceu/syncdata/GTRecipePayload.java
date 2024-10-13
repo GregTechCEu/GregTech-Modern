@@ -9,10 +9,10 @@ import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.*;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -90,7 +90,7 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
                 recipeManager = Minecraft.getInstance().getConnection().getRecipeManager();
             }
             var holder = recipeManager.byKey(buf.readResourceLocation()).orElse(null);
-            this.payload = holder == null ? null :(GTRecipe) holder.value();
+            this.payload = holder == null ? null : (GTRecipe) holder.value();
         }
     }
 }

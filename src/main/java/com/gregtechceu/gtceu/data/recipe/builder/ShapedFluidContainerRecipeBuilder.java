@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.recipe.ShapedFluidContainerRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -25,7 +25,9 @@ public class ShapedFluidContainerRecipeBuilder extends ShapedRecipeBuilder {
                 ShapedRecipePattern.of(key, rows),
                 this.output,
                 false);
-        consumer.accept(ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "shaped_fluid_container/" + recipeId.getPath()),
+        consumer.accept(
+                ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(),
+                        "shaped_fluid_container/" + recipeId.getPath()),
                 recipe,
                 null);
     }

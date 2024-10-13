@@ -6,20 +6,20 @@ import com.gregtechceu.gtceu.utils.InfiniteFluidTransfer;
 
 import com.lowdragmc.lowdraglib.side.fluid.*;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-
-import lombok.Getter;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -29,9 +29,10 @@ import javax.annotation.Nonnull;
 
 public class FluidContainerIngredient implements ICustomIngredient {
 
-    public static final MapCodec<FluidContainerIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            SizedFluidIngredient.NESTED_CODEC.fieldOf("fluid").forGetter(FluidContainerIngredient::getFluid)
-    ).apply(instance, FluidContainerIngredient::new));
+    public static final MapCodec<FluidContainerIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    SizedFluidIngredient.NESTED_CODEC.fieldOf("fluid").forGetter(FluidContainerIngredient::getFluid))
+            .apply(instance, FluidContainerIngredient::new));
 
     @Getter
     private final SizedFluidIngredient fluid;
@@ -41,7 +42,8 @@ public class FluidContainerIngredient implements ICustomIngredient {
     }
 
     public FluidContainerIngredient(FluidStack fluidStack) {
-        this(SizedFluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
+        this(SizedFluidIngredient.of(
+                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
                 fluidStack.getAmount()));
     }
 
