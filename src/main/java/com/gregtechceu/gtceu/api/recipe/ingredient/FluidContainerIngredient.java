@@ -120,6 +120,12 @@ public class FluidContainerIngredient extends Ingredient {
         return false;
     }
 
+    @Override
+    @NotNull
+    public IIngredientSerializer<? extends Ingredient> getSerializer() {
+        return SERIALIZER;
+    }
+
     public static FluidContainerIngredient fromJson(JsonObject json) {
         return SERIALIZER.parse(json);
     }
