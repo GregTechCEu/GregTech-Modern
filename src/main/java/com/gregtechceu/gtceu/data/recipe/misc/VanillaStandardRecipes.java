@@ -489,7 +489,8 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "soul_torch", new ItemStack(Blocks.SOUL_TORCH, 1), "WB",
                 'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.TORCH));
         if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "soul_lantern_from_lantern", new ItemStack(Blocks.SOUL_LANTERN, 1), "WB",
+            VanillaRecipeHelper.addShapedRecipe(provider, "soul_lantern_from_lantern",
+                    new ItemStack(Blocks.SOUL_LANTERN, 1), "WB",
                     'W', ItemTags.SOUL_FIRE_BASE_BLOCKS, 'B', new ItemStack(Blocks.LANTERN));
 
             ASSEMBLER_RECIPES.recipeBuilder("soul_lantern_from_lantern")
