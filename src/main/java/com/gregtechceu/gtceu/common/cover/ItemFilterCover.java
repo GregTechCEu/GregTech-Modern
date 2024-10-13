@@ -103,7 +103,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate,
                                              boolean notifyChanges) {
-            if (filterMode != ItemFilterMode.FILTER_EXTRACT && !itemFilter.test(stack))
+            if (filterMode != ItemFilterMode.FILTER_EXTRACT && !getItemFilter().test(stack))
                 return stack;
             return super.insertItem(slot, stack, simulate, notifyChanges);
         }
@@ -111,7 +111,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
             ItemStack result = super.extractItem(slot, amount, true, notifyChanges);
-            if (result.isEmpty() || (filterMode != ItemFilterMode.FILTER_INSERT && !itemFilter.test(result))) {
+            if (result.isEmpty() || (filterMode != ItemFilterMode.FILTER_INSERT && !getItemFilter().test(result))) {
                 return ItemStack.EMPTY;
             }
             return simulate ? result : super.extractItem(slot, amount, false, notifyChanges);
