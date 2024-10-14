@@ -78,7 +78,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);
             if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
-                defaultState = defaultState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, Direction.NORTH);
+                defaultState = defaultState.setValue(BlockProperties.UPWARDS_FACING_PROPERTY, Direction.NORTH);
             }
             registerDefaultState(defaultState);
         }
@@ -92,7 +92,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             pBuilder.add(rotationState.property);
             if (MachineDefinition.getBuilt() instanceof MultiblockMachineDefinition multi &&
                     multi.isAllowExtendedFacing()) {
-                pBuilder.add(IMachineBlock.UPWARDS_FACING_PROPERTY);
+                pBuilder.add(BlockProperties.UPWARDS_FACING_PROPERTY);
             }
         }
     }
@@ -180,9 +180,10 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (getDefinition() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
                 if (frontFacing == Direction.UP) {
-                    state = state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection());
+                    state = state.setValue(BlockProperties.UPWARDS_FACING_PROPERTY, player.getDirection());
                 } else if (frontFacing == Direction.DOWN) {
-                    state = state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection().getOpposite());
+                    state = state.setValue(BlockProperties.UPWARDS_FACING_PROPERTY,
+                            player.getDirection().getOpposite());
                 }
             }
         }
