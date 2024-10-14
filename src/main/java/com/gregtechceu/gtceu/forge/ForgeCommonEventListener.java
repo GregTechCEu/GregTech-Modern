@@ -45,6 +45,7 @@ import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import com.gregtechceu.gtceu.utils.virtualregistry.VirtualEnderRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -249,18 +250,19 @@ public class ForgeCommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
+            VirtualEnderRegistry.clearMaps();
         }
     }
 
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
-                return;
-
             ServerLevel level = serverPlayer.serverLevel();
-            var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()), serverPlayer);
+            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                var data = EnvironmentalHazardSavedData.getOrCreate(level);
+                GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()), serverPlayer);
+            }
+            var data = VirtualEnderRegistry.getOrCreate(level);
         }
     }
 
@@ -350,20 +352,22 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-            return;
+        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
+        if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
+                    (ServerPlayer) event.getEntity());
         }
 
-        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
-        var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
-        GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()),
-                (ServerPlayer) event.getEntity());
+        var data = VirtualEnderRegistry.getOrCreate(newLevel);
+
     }
 
     @SubscribeEvent
     public static void onChunkWatch(ChunkWatchEvent.Watch event) {
         ChunkPos pos = event.getPos();
         ServerPlayer player = event.getPlayer();
+
         var data = EnvironmentalHazardSavedData.getOrCreate(event.getLevel());
 
         var zone = data.getZoneByPos(pos);
