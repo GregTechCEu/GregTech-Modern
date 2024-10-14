@@ -1,5 +1,16 @@
 # ChangeLog
 
+## Version [v1.4.6](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.4.5...v1.4.6)
+### Added
+
+- Add Programmed Circuits to GTEmiRecipe Catalysts by @krossgg in [#2175](https://github.com/GregTechCEu/GregTech-Modern/pull/2175)
+
+### Fixed
+
+- Fix NPE caused by filter not loading properly on cover by @YoungOnionMC in [#2176](https://github.com/GregTechCEu/GregTech-Modern/pull/2176)
+- Fix issues with serialization by @krossgg in [#2177](https://github.com/GregTechCEu/GregTech-Modern/pull/2177)
+
+ 
 ## Version [v1.4.5](https://github.com/GregTechCEu/GregTech-Modern/compare/1.20.1-1.4.4...v1.4.5)
 ### Added
 
