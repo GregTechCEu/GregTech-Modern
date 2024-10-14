@@ -78,14 +78,14 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if (!fluidFilter.test(resource))
+            if (!getFluidFilter().test(resource))
                 return 0;
             return super.fill(resource, action);
         }
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (!fluidFilter.test(resource))
+            if (!getFluidFilter().test(resource))
                 return FluidStack.EMPTY;
             return super.drain(resource, action);
         }
