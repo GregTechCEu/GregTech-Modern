@@ -507,14 +507,6 @@ public class MachineRecipeLoader {
                 .EUt(16).duration(100)
                 .save(provider);
 
-        // TODO Crafting station, crafting cover
-        // ASSEMBLER_RECIPES.recipeBuilder("cover_crafting")
-        // .inputItems(WORKBENCH)
-        // .inputItems(plate, material)
-        // .outputItems(COVER_CRAFTING)
-        // .EUt(16).duration(100)
-        // .save(provider);
-
         FluidStack solder = SolderingAlloy.getFluid(L / 2);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_machine_controller")
@@ -627,16 +619,15 @@ public class MachineRecipeLoader {
                 .EUt(VA[HV]).duration(320)
                 .save(provider);
 
-        // TODO Storage cover
-        // ASSEMBLER_RECIPES.recipeBuilder()
-        // .inputItems(OreDictNames.chestWood.toString())
-        // .inputItems(ELECTRIC_PISTON_LV)
-        // .inputItems(plate, Iron)
-        // .inputFluids(SolderingAlloy.getFluid(72))
-        // .outputItems(COVER_STORAGE)
-        // .EUt(16)
-        // .duration(100)
-        // .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
+                .inputItems(Tags.Blocks.CHESTS_WOODEN)
+                .inputItems(ELECTRIC_PISTON_LV)
+                .inputItems(plate, Iron)
+                .inputFluids(SolderingAlloy.getFluid(72))
+                .outputItems(COVER_STORAGE)
+                .EUt(16)
+                .duration(100)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ULV.asStack()).circuitMeta(8).duration(25).save(provider);
@@ -888,7 +879,7 @@ public class MachineRecipeLoader {
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE, 2).duration(100)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polycaprolactam").EUt(VA[LV]).inputItems(foil, Polycaprolactam, 2)
-                .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(144)).outputItems(DUCT_TAPE, 4).duration(100)
+                .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(L)).outputItems(DUCT_TAPE, 4).duration(100)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polybenzimidazole").EUt(VA[LV]).inputItems(foil, Polybenzimidazole)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(72)).outputItems(DUCT_TAPE, 8).duration(100)
@@ -1115,6 +1106,12 @@ public class MachineRecipeLoader {
                 .inputItems(new ItemStack(Blocks.NETHERRACK))
                 .outputItems(dust, Netherrack)
                 .chancedOutput(nugget, Gold, 500, 120)
+                .duration(150).EUt(2)
+                .save(provider);
+
+        MACERATOR_RECIPES.recipeBuilder("macerate_obsidian")
+                .inputItems(new ItemStack(Blocks.OBSIDIAN))
+                .outputItems(dust, Obsidian)
                 .duration(150).EUt(2)
                 .save(provider);
 

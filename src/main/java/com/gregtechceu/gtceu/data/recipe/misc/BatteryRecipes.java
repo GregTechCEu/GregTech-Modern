@@ -88,7 +88,7 @@ public class BatteryRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("battery_hull_ev")
                 .inputItems(cableGtSingle, Aluminium, 2)
                 .inputItems(plate, BlueSteel, 2)
-                .inputFluids(Polytetrafluoroethylene.getFluid(144))
+                .inputFluids(Polytetrafluoroethylene.getFluid(L))
                 .outputItems(BATTERY_HULL_SMALL_VANADIUM)
                 .duration(100).EUt(VA[HV]).save(provider);
 
@@ -104,7 +104,7 @@ public class BatteryRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("battery_hull_luv")
                 .inputItems(cableGtSingle, NiobiumTitanium, 2)
                 .inputItems(plate, RedSteel, 18)
-                .inputFluids(Polybenzimidazole.getFluid(144))
+                .inputFluids(Polybenzimidazole.getFluid(L))
                 .outputItems(BATTERY_HULL_LARGE_VANADIUM)
                 .duration(300).EUt(VA[IV]).save(provider);
 

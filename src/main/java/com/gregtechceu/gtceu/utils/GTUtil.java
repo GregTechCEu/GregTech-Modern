@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.LDLib;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -217,14 +219,14 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        if (voltage < GTValues.V[GTValues.ULV]) {
+        if (voltage < GTValues.V[GTValues.LV]) {
             return GTValues.ULV;
         }
         if (voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
             return GTValues.MAX_TRUE;
         }
 
-        return (byte) ((60 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
+        return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
     public static ItemStack copy(ItemStack... stacks) {
@@ -410,23 +412,6 @@ public class GTUtil {
         return null;
     }
 
-    /**
-     * Get fluidstack from a container.
-     *
-     * @param ingredient the fluidstack or fluid container item
-     * @return the fluidstack in container
-     */
-    @Nullable
-    public static FluidStack getFluidFromContainer(Object ingredient) {
-        if (ingredient instanceof FluidStack) {
-            return (FluidStack) ingredient;
-        } else if (ingredient instanceof ItemStack itemStack) {
-            return FluidUtil.getFluidHandler(itemStack)
-                    .map(h -> h.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE)).orElse(null);
-        }
-        return null;
-    }
-
     public static int getFluidColor(FluidStack fluid) {
         return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
     }
@@ -520,15 +505,21 @@ public class GTUtil {
     }
 
     public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
-        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        if (!effects.isEmpty()) {
+            list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        }
         effects.forEach(pair -> {
             var effect = pair.getFirst();
             float probability = pair.getSecond();
             list.add(Component.translatable("gtceu.tooltip.potion.each",
-                    Component.translatable(effect.getDescriptionId()),
-                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
-                    effect.getDuration(),
-                    100 * probability));
+                    Component.translatable(effect.getDescriptionId())
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.literal(String.valueOf(effect.getDuration()))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+                    Component.literal(String.valueOf(100 * probability))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
     }
 }

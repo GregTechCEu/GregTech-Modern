@@ -1,0 +1,35 @@
+# Manages labels on PRs before allowing merging
+name: Pull Request Labels
+
+# Checks for label once PR has been reviewed
+on:
+  pull_request_review:
+    types: [submitted]
+
+concurrency:
+  group: pr-labels-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  Labels:
+    name: On Approval
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read # needed to utilize required-labels
+    steps:
+      - name: Check for Merge-Blocking Labels # blocks merge if present
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: 'do not merge'
+          exit_type: failure
+
+      - name: Check for Required Labels # require at least one of these labels
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: minimum
+          count: 1
+          labels: 'type: feature, type: bugfix, type: refactor, type: translation, ignore changelog'
+          exit_type: failure
