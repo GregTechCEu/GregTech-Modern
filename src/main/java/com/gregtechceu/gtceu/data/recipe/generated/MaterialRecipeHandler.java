@@ -407,6 +407,15 @@ public class MaterialRecipeHandler {
                     "X", "m", 'X', new UnificationEntry(gemPrefix, material));
         }
 
+        MACERATOR_RECIPES
+                .recipeBuilder("macerate_" + material.getName() + "_" +
+                        FormattingUtil.toLowerCaseUnder(gemPrefix.name) + "_to_dust")
+                .inputItems(gemPrefix, material)
+                .outputItems(crushedStack)
+                .duration((int) ((materialAmount * 100) / M))
+                .EUt(4)
+                .save(provider);
+
         TagPrefix prevPrefix = GTUtil.getItem(GEM_ORDER, GEM_ORDER.indexOf(gemPrefix) - 1, null);
         ItemStack prevStack = prevPrefix == null ? ItemStack.EMPTY : ChemicalHelper.get(prevPrefix, material, 2);
         if (!prevStack.isEmpty() && prevPrefix != null) {
