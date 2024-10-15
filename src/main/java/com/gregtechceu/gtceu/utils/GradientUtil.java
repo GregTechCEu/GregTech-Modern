@@ -8,6 +8,22 @@ public class GradientUtil {
 
     private GradientUtil() {}
 
+    public static int swapByte1And3(int inValue) {
+        int swap = inValue & 0xFF;
+        swap = swap << 16 | (inValue >>> 16 & 0xFF);
+        return inValue & 0xFF00FF00 | swap;
+    }
+
+    public static int convertBRGtoRBG(int inColor) {
+        return swapByte1And3(inColor);
+    }
+
+    public static int abrgToRgba(int inColor) {
+        int swap = inColor >>> 24;
+        inColor = convertBRGtoRBG(inColor) << 8;
+        return inColor | swap;
+    }
+
     public static int argbToAbgr(int argb) {
         int r = (argb >> 16) & 0xFF;
         int b = argb & 0xFF;
@@ -26,7 +42,7 @@ public class GradientUtil {
         return new float[] { r, g, b };
     }
 
-    public static int multiplyBlendRGBA(int c1, int c2) {
+    public static int multiplyBlendARGB(int c1, int c2) {
         int a1 = (c1 & 0xff);
         int r1 = ((c1 & 0xff000000) >> 24);
         int g1 = ((c1 & 0xff0000) >> 16);

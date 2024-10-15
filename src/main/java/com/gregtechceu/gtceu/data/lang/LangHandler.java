@@ -122,6 +122,10 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
+        provider.add("message.gtceu.new_veins", "Prospected %d new veins!");
+        provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
+        provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
+
         provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
         provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
         provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s seconds");
@@ -129,6 +133,7 @@ public class LangHandler {
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
+        provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
 
         provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");

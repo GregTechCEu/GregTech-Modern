@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.common.capability;
 
-import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class WorldIDSaveData extends SavedData {
+
     private static WorldIDSaveData instance;
     private static final String DATA_NAME = "gtceu_world_id";
 

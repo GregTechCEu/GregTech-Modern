@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.integration.map.cache.server;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
-import net.minecraft.client.resources.model.BakedModel;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -46,8 +45,7 @@ public class ServerCacheSavedData extends SavedData {
         this.backingCache = backingCache;
         if (backingCache != null) {
             backingCache.fromNBT(compoundTag);
-        }
-        else {
+        } else {
             toRead = compoundTag;
         }
     }

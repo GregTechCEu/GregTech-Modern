@@ -1,8 +1,16 @@
 package com.gregtechceu.gtceu.integration.map;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.integration.map.journeymap.JourneymapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
+import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
+import com.lowdragmc.lowdraglib.Platform;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +28,21 @@ import java.util.Optional;
  * A map renderer designed to work with any map mod.
  */
 @OnlyIn(Dist.CLIENT)
-public class GenericMapRenderer {
+public abstract class GenericMapRenderer {
+
+    @Getter
+    private static final GenericMapRenderer instance;
+
+    static {
+        if (Platform.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
+            instance = new JourneymapRenderer();
+        } else if (Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
+            instance = new XaerosRenderer();
+        } else {
+            instance = null;
+        }
+    }
+
     private static final int VISIBLE_AREA_PADDING = 20;
 
     protected ResourceKey<Level> dimension;
@@ -35,7 +57,7 @@ public class GenericMapRenderer {
 
     public GenericMapRenderer() {
         layers = new ArrayList<>();
-        Layers.addLayersTo(layers);
+        Layers.addLayersTo(layers, this);
     }
 
     public GenericMapRenderer(Screen gui) {
@@ -49,7 +71,8 @@ public class GenericMapRenderer {
         y -= VISIBLE_AREA_PADDING;
         w += VISIBLE_AREA_PADDING * 2;
         h += VISIBLE_AREA_PADDING * 2;
-        if (!dim.equals(dimension) || visibleBounds[0] != x || visibleBounds[1] != y || visibleBounds[2] != w || visibleBounds[3] != h) {
+        if (!dim.equals(dimension) || visibleBounds[0] != x || visibleBounds[1] != y || visibleBounds[2] != w ||
+                visibleBounds[3] != h) {
             dimension = dim;
             visibleBounds[0] = x;
             visibleBounds[1] = y;
@@ -65,11 +88,12 @@ public class GenericMapRenderer {
 
     /**
      * Update the active overlays' hovered items.
-     * @param mouseX X position of the mouse, intended to be taken from the first parameter of {@link Screen#render}
-     * @param mouseY Y position of the mouse, see mouseX
+     * 
+     * @param mouseX  X position of the mouse, intended to be taken from the second parameter of {@link Screen#render}
+     * @param mouseY  Y position of the mouse, see mouseX
      * @param cameraX X position of the center block of the view
      * @param cameraZ Z position of the center block of the view
-     * @param scale Scale of the camera, such that scaling by <code>1/scale</code> results in 1 unit = 1 pixel
+     * @param scale   Scale of the camera, such that scaling by <code>1/scale</code> results in 1 unit = 1 pixel
      */
     public void updateHovered(int mouseX, int mouseY, double cameraX, double cameraZ, double scale) {
         for (MapRenderLayer layer : layers) {
@@ -85,9 +109,10 @@ public class GenericMapRenderer {
      * EXPECTED GL STATE:
      * <br>
      * 1 unit = 1 block, positioned such that drawing at (x, z) draws over the entire block (x, z)
+     * 
      * @param cameraX X position of the center block of the view
      * @param cameraZ Z position of the center block of the view
-     * @param scale Scale of the camera, such that scaling by <code>1/scale</code> results in 1 unit = 1 pixel
+     * @param scale   Scale of the camera, such that scaling by <code>1/scale</code> results in 1 unit = 1 pixel
      */
     public void render(GuiGraphics graphics, double cameraX, double cameraZ, float scale) {
         for (MapRenderLayer layer : layers) {
@@ -100,7 +125,9 @@ public class GenericMapRenderer {
     /**
      * Render tooltips provided by active overlays.
      * <br>
-     * Will error if called from a context with no GuiScreen provided - such as a minimap. Only call if one was provided.
+     * Will error if called from a context with no GuiScreen provided - such as a minimap. Only call if one was
+     * provided.
+     * 
      * @param mouseX X position of the mouse, intended to be taken from the first parameter of {@link Screen#render}
      * @param mouseY Y position of the mouse, see mouseX
      */
@@ -113,8 +140,7 @@ public class GenericMapRenderer {
                     if (!tooltip.isEmpty()) {
                         tooltip.add(0, Component.literal("---"));
                         tooltip.addAll(0, layerTooltip);
-                    }
-                    else {
+                    } else {
                         // layerTooltip might be immutable
                         tooltip = new ArrayList<>(layerTooltip);
                     }
@@ -126,6 +152,7 @@ public class GenericMapRenderer {
 
     /**
      * Call when {@link KeyBind#ACTION} is pressed.
+     * 
      * @return Whether to consume the key press
      */
     public boolean onActionKey() {
@@ -160,4 +187,8 @@ public class GenericMapRenderer {
     protected void renderTooltipInternal(List<Component> tooltip, GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
     }
+
+    public abstract boolean addMarker(String name, GeneratedVeinMetadata vein);
+
+    public abstract boolean removeMarker(String name);
 }

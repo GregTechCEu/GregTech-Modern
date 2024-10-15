@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.journeymap;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
-
-import com.lowdragmc.lowdraglib.LDLib;
 
 import journeymap.client.api.ClientPlugin;
 import journeymap.client.api.IClientAPI;
@@ -15,13 +12,15 @@ import lombok.Getter;
 public class JourneyMapPlugin implements IClientPlugin {
 
     @Getter
-    private static boolean isActive = false;
+    private static boolean active = false;
+
+    @Getter
+    private static IClientAPI jmApi;
 
     @Override
     public void initialize(IClientAPI jmClientApi) {
-        if (LDLib.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
-            isActive = true;
-        }
+        active = true;
+        jmApi = jmClientApi;
     }
 
     @Override

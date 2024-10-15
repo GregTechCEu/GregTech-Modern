@@ -14,11 +14,11 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
+import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.ore.OreRenderLayer;
-import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;

@@ -3,31 +3,35 @@ package com.gregtechceu.gtceu.integration.map.xaeros;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.map.IWaypointHandler;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraftforge.common.util.Lazy;
 import xaero.common.minimap.waypoints.Waypoint;
-import xaero.common.minimap.waypoints.WaypointsManager;
+import xaero.hud.minimap.BuiltInHudModules;
+import xaero.hud.minimap.waypoint.WaypointColor;
 
-import java.util.Hashtable;
 import java.util.List;
 
 public class XaeroWaypointHandler implements IWaypointHandler {
 
-    private final Hashtable<Integer, Waypoint> xwaypoints = WaypointsManager.getCustomWaypoints(GTCEu.MOD_ID);
+    private final Lazy<Int2ObjectMap<Waypoint>> waypoints = Lazy.of(() -> BuiltInHudModules.MINIMAP.getCurrentSession()
+            .getWorldManager()
+            .getCustomWaypoints(GTCEu.id(GTCEu.MOD_ID)));
     private final List<String> knownKeys = new ObjectArrayList<>();
 
     @Override
     public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z,
                             ResourceLocation texture) {
-        xwaypoints.put(getIndex(key), new WaypointWithDimension(dim, x, y, z, name, name.substring(0, 1), 15));
+        waypoints.get().put(getIndex(key), new WaypointWithDimension(dim, x, y, z, name, name.substring(0, 1), WaypointColor.WHITE));
     }
 
     @Override
     public void removeWaypoint(String key) {
-        xwaypoints.remove(getIndex(key));
+        waypoints.get().remove(getIndex(key));
     }
 
     private int getIndex(String key) {

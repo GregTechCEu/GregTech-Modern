@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class ClientCacheManager {
 
     public static final File clientCacheDir = new File(Minecraft.getInstance().gameDirectory, GTCEu.MOD_ID);
     private static final char resourceLocationSeparator = '=';
+    @Getter
     private static File worldFolder;
     private static final Reference2ObjectMap<IClientCache, ClientCacheInfo> caches = new Reference2ObjectArrayMap<>();
     private static boolean shouldInit = true;
@@ -59,7 +61,7 @@ public class ClientCacheManager {
             for (String dimFilePrefix : cacheInfo.dimFilePrefixes) {
                 for (File dimFile : getDimFiles(cacheInfo.cacheFolder, dimFilePrefix)) {
                     ResourceKey<Level> dimId = ResourceKey.create(Registries.DIMENSION,
-                            ResourceLocation.of(dimFile.getName().substring(dimFilePrefix.length() + 3),
+                            ResourceLocation.of(dimFile.getName().substring(dimFilePrefix.length()),
                                     resourceLocationSeparator));
                     try {
                         cache.readDimFile(dimFilePrefix, dimId, NbtIo.readCompressed(new FileInputStream(dimFile)));
@@ -168,10 +170,6 @@ public class ClientCacheManager {
                 break;
             }
         }
-    }
-
-    public static File getWorldFolder() {
-        return worldFolder;
     }
 
     public static void allowReinit() {

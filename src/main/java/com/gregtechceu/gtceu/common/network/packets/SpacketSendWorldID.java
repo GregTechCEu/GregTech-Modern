@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
+
 import com.lowdragmc.lowdraglib.networking.IHandlerContext;
 import com.lowdragmc.lowdraglib.networking.IPacket;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.FriendlyByteBuf;
+
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class SpacketSendWorldID implements IPacket {

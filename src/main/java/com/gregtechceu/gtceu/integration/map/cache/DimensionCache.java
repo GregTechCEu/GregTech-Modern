@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.map.cache;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public class DimensionCache {
 
+    @Getter
     private final Map<GridPos, GridCache> cache = new HashMap<>();
 
     public boolean dirty;

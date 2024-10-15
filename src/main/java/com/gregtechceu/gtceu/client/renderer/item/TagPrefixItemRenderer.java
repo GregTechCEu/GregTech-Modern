@@ -64,7 +64,7 @@ public class TagPrefixItemRenderer {
                     for (int x = 0; x < image1.getWidth(); ++x) {
                         for (int y = 0; y < image1.getHeight(); ++y) {
                             int color = image1.getPixelRGBA(x, y);
-                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
+                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendARGB(color, materialRGBA));
                         }
                     }
                     if (prefixItem.material.getMaterialSecondaryARGB() != -1) {
@@ -79,7 +79,7 @@ public class TagPrefixItemRenderer {
                                     for (int y = 0; y < image1.getHeight(); ++y) {
                                         int color = image2.getPixelRGBA(x, y);
                                         result.blendPixel(x, y,
-                                                GradientUtil.multiplyBlendRGBA(color, materialSecondaryRGBA));
+                                                GradientUtil.multiplyBlendARGB(color, materialSecondaryRGBA));
                                     }
                                 }
                             }

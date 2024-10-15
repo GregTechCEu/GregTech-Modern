@@ -12,11 +12,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record GeneratedVeinMetadata(
-                                    @NotNull ResourceLocation id,
+public record GeneratedVeinMetadata(@NotNull ResourceLocation id,
                                     @NotNull ChunkPos originChunk,
                                     @NotNull BlockPos center,
-                                    @NotNull GTOreDefinition definition) {
+                                    @NotNull GTOreDefinition definition,
+                                    boolean depleted) {
 
     public static final Codec<ChunkPos> CHUNK_POS_CODEC = Codec.LONG.xmap(ChunkPos::new, ChunkPos::toLong);
 
@@ -24,15 +24,23 @@ public record GeneratedVeinMetadata(
             ResourceLocation.CODEC.fieldOf("id").forGetter(GeneratedVeinMetadata::id),
             CHUNK_POS_CODEC.fieldOf("origin_chunk").forGetter(GeneratedVeinMetadata::originChunk),
             BlockPos.CODEC.fieldOf("center").forGetter(GeneratedVeinMetadata::center),
-            GTRegistries.ORE_VEINS.codec().fieldOf("definition").forGetter(GeneratedVeinMetadata::definition))
+            GTRegistries.ORE_VEINS.codec().fieldOf("definition").forGetter(GeneratedVeinMetadata::definition),
+            Codec.BOOL.optionalFieldOf("depleted", false).forGetter(GeneratedVeinMetadata::depleted))
             .apply(instance, GeneratedVeinMetadata::new));
+
+    public GeneratedVeinMetadata(@NotNull ResourceLocation id,
+                                 @NotNull ChunkPos originChunk,
+                                 @NotNull BlockPos center,
+                                 @NotNull GTOreDefinition definition) {
+        this(id, originChunk, center, definition, false);
+    }
 
     public static GeneratedVeinMetadata readFromPacket(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation();
         ChunkPos origin = new ChunkPos(buf.readVarLong());
         BlockPos center = BlockPos.of(buf.readVarLong());
         GTOreDefinition def = GTRegistries.ORE_VEINS.get(buf.readResourceLocation());
-        return new GeneratedVeinMetadata(id, origin, center, def);
+        return new GeneratedVeinMetadata(id, origin, center, def, false);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {
@@ -40,5 +48,9 @@ public record GeneratedVeinMetadata(
         buf.writeVarLong(this.originChunk.toLong());
         buf.writeVarLong(this.center.asLong());
         buf.writeResourceLocation(GTRegistries.ORE_VEINS.getKey(this.definition));
+    }
+
+    public GeneratedVeinMetadata setDepleted(boolean depleted) {
+        return new GeneratedVeinMetadata(id, originChunk, center, definition, depleted);
     }
 }

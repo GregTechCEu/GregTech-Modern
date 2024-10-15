@@ -44,9 +44,9 @@ dependencyResolutionManagement {
         def curiosForgeVersion = "5.9.1"
         def worldStripperForgeFile = "4578579"
         def javdVersion = "4803995"
-        def xaerosWorldMapVersion = "5262424" // May not actually be needed
-        def xaerosMinimapVersion = "5262365"
-        def journeyMapVersion = "5678927"
+        def xaerosWorldMapVersion = "5658224"
+        def xaerosMinimapVersion = "5773012"
+        def journeyMapVersion = "5789363"
         def journeyMapApiVersion = "2.0.0"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ButtonState;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,6 +15,10 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,30 +28,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xaero.common.IXaeroMinimap;
 import xaero.common.misc.Misc;
 import xaero.map.MapProcessor;
 import xaero.map.controls.KeyConflictContext;
-import xaero.map.gui.CursorBox;
-import xaero.map.gui.GuiMap;
-import xaero.map.gui.GuiTexturedButton;
+import xaero.map.gui.*;
 import xaero.minimap.XaeroMinimap;
 
 @Mixin(GuiMap.class)
-public abstract class GuiMapMixin extends Screen {
-    @Shadow(remap = false) private MapProcessor mapProcessor;
+public abstract class GuiMapMixin extends ScreenBase implements IRightClickableElement {
 
-    @Shadow(remap = false) private double scale;
-    @Shadow(remap = false) private double cameraX;
-    @Shadow(remap = false) private double cameraZ;
+    @Shadow(remap = false)
+    private MapProcessor mapProcessor;
 
-    @Shadow public abstract <T extends GuiEventListener & Renderable & NarratableEntry> T addButton(T guiEventListener);
+    @Shadow(remap = false)
+    private double scale;
+    @Shadow(remap = false)
+    private double cameraX;
+    @Shadow(remap = false)
+    private double cameraZ;
+
+    @Shadow
+    public abstract <T extends GuiEventListener & Renderable & NarratableEntry> T addButton(T guiEventListener);
 
     @Unique
     private GenericMapRenderer gtceu$renderer;
 
-    protected GuiMapMixin(Component title) {
-        super(title);
+    protected GuiMapMixin(Screen parent, Screen escape, MapProcessor mapProcessor, Entity player) {
+        super(parent, escape, Component.translatable("gui.xaero_world_map_screen"));
     }
 
     @Inject(method = "init", at = @At("TAIL"))
@@ -63,7 +70,8 @@ public abstract class GuiMapMixin extends Screen {
                 xOffset = 1;
                 yOffset = 0;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + ConfigHolder.INSTANCE.compat.minimap.direction);
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + ConfigHolder.INSTANCE.compat.minimap.direction);
         }
 
         switch (ConfigHolder.INSTANCE.compat.minimap.buttonAnchor) {
@@ -107,18 +115,19 @@ public abstract class GuiMapMixin extends Screen {
                 startY = height / 2 + ConfigHolder.INSTANCE.compat.minimap.yOffset;
                 yOffset = -yOffset;
             }
-            default -> throw new IllegalStateException("Unexpected value: " + ConfigHolder.INSTANCE.compat.minimap.buttonAnchor);
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + ConfigHolder.INSTANCE.compat.minimap.buttonAnchor);
         }
 
         if (ConfigHolder.INSTANCE.compat.minimap.buttonAnchor.isCentered()) {
             int totalButtonSize = ButtonState.buttonAmount() * 10;
-            if (ConfigHolder.INSTANCE.compat.minimap.buttonAnchor.usualDirection().equals(ConfigHolder.INSTANCE.compat.minimap.direction)) {
+            if (ConfigHolder.INSTANCE.compat.minimap.buttonAnchor.usualDirection()
+                    .equals(ConfigHolder.INSTANCE.compat.minimap.direction)) {
                 startX -= xOffset * totalButtonSize;
                 startY -= yOffset * totalButtonSize;
                 if (xOffset < 0) startX -= 20;
                 if (yOffset < 0) startY -= 20;
-            }
-            else {
+            } else {
                 startX -= Math.abs(yOffset) * 10;
                 startY -= Math.abs(xOffset) * 10;
             }
@@ -132,29 +141,32 @@ public abstract class GuiMapMixin extends Screen {
                     GTCEu.id("textures/gui/widget/button_" + button.name + ".png"),
                     guiButton -> {
                         ButtonState.toggleButton(button);
-                        //setWorldAndResolution(mc, width, height);
+                        resize(minecraft, width, height);
                     },
-                    () -> new CursorBox("gtceu.button." + button.name)
-            );
+                    () -> new CursorBox("gtceu.button." + button.name));
 
             addButton(mapButton);
             offset++;
         }
 
-        gtceu$renderer = new GenericMapRenderer((GuiMap) (Object) this);
+        gtceu$renderer = new XaerosRenderer((GuiMap) (Object) this);
     }
 
     @Inject(method = "render",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"),
             slice = @Slice(
-                    from = @At(value = "INVOKE", target = "Lxaero/map/element/MapElementRenderHandler;render(Lxaero/map/gui/GuiMap;Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lxaero/map/graphics/renderer/multitexture/MultiTextureRenderTypeRendererProvider;DDIIDDDDDFZLxaero/map/element/HoveredMapElementHolder;Lnet/minecraft/client/Minecraft;F)Lxaero/map/element/HoveredMapElementHolder;", remap = false),
-                    to = @At(value = "INVOKE", target = "Lxaero/map/MapProcessor;getFootprints()Ljava/util/ArrayList;", remap = false)
-            )
-    )
-    private void gtceu$injectDraw(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY, float partialTicks, CallbackInfo ci) {
+                           from = @At(value = "INVOKE",
+                                      target = "Lxaero/map/element/MapElementRenderHandler;render(Lxaero/map/gui/GuiMap;Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lxaero/map/graphics/renderer/multitexture/MultiTextureRenderTypeRendererProvider;DDIIDDDDDFZLxaero/map/element/HoveredMapElementHolder;Lnet/minecraft/client/Minecraft;F)Lxaero/map/element/HoveredMapElementHolder;",
+                                      remap = false),
+                           to = @At(value = "INVOKE",
+                                    target = "Lxaero/map/MapProcessor;getFootprints()Ljava/util/ArrayList;",
+                                    remap = false)))
+    private void gtceu$injectDraw(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY, float partialTicks,
+                                  CallbackInfo ci) {
         double rw = Minecraft.getInstance().getWindow().getScreenWidth() / scale;
         double rh = Minecraft.getInstance().getWindow().getScreenHeight() / scale;
-        gtceu$renderer.updateVisibleArea(mapProcessor.getMapWorld().getCurrentDimensionId(), (int) (cameraX - rw / 2), (int) (cameraZ - rh / 2), (int) (rw), (int) (rh));
+        gtceu$renderer.updateVisibleArea(mapProcessor.getMapWorld().getCurrentDimensionId(), (int) (cameraX - rw / 2),
+                (int) (cameraZ - rh / 2), (int) (rw), (int) (rh));
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(-cameraX, -cameraZ, 0);
@@ -164,23 +176,32 @@ public abstract class GuiMapMixin extends Screen {
     }
 
     // so buttons with semi-transparent regions render correctly
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lxaero/map/gui/ScreenBase;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"))
-    private void gtceu$injectDrawButtons(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY, float partialTicks, CallbackInfo ci) {
+    @Inject(method = "render",
+            at = @At(value = "INVOKE",
+                     target = "Lxaero/map/gui/ScreenBase;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"))
+    private void gtceu$injectDrawButtons(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY,
+                                         float partialTicks, CallbackInfo ci) {
         RenderSystem.enableBlend();
     }
 
     @Inject(method = "render",
-            at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lxaero/map/MapProcessor;renderThreadPauseSync:Ljava/lang/Object;", remap = false),
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lxaero/map/gui/GuiMap;renderTooltips(Lnet/minecraft/client/gui/GuiGraphics;IIF)Z", remap = false))
-    )
-    private void gtceu$injectTooltip(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY, float partialTicks, CallbackInfo ci) {
+            at = @At(value = "FIELD",
+                     opcode = Opcodes.GETFIELD,
+                     target = "Lxaero/map/MapProcessor;renderThreadPauseSync:Ljava/lang/Object;",
+                     remap = false),
+            slice = @Slice(from = @At(value = "INVOKE",
+                                      target = "Lxaero/map/gui/GuiMap;renderTooltips(Lnet/minecraft/client/gui/GuiGraphics;IIF)Z",
+                                      remap = false)))
+    private void gtceu$injectTooltip(GuiGraphics guiGraphics, int scaledMouseX, int scaledMouseY, float partialTicks,
+                                     CallbackInfo ci) {
         gtceu$renderer.updateHovered(scaledMouseX, scaledMouseY, cameraX, cameraZ, scale);
         gtceu$renderer.renderTooltip(guiGraphics, scaledMouseX, scaledMouseY);
     }
 
     @Inject(method = "onInputPress", at = @At("HEAD"), cancellable = true, remap = false)
     private void gtceu$injectKeyPress(InputConstants.Type type, int code, CallbackInfoReturnable<Boolean> cir) {
-        if (Misc.inputMatchesKeyBinding(XaeroMinimap.instance, type, code, KeyBind.ACTION.toMinecraft(), KeyConflictContext.GUI) && gtceu$renderer.onActionKey()) {
+        if (Misc.inputMatchesKeyBinding(XaeroMinimap.instance, type, code, KeyBind.ACTION.toMinecraft(),
+                KeyConflictContext.GUI) && gtceu$renderer.onActionKey()) {
             cir.setReturnValue(true);
         }
     }

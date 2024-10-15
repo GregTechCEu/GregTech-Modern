@@ -244,27 +244,37 @@ public class ConfigHolder {
             public String borderColor = "#00000000";
 
             @Configurable
-            @Configurable.Comment({"Which part of the screen to anchor buttons to", "Default: \"BOTTOM_LEFT\""})
+            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: \"BOTTOM_LEFT\"" })
             public Anchor buttonAnchor = Anchor.BOTTOM_LEFT;
 
             @Configurable
-            @Configurable.Comment({"Which direction the buttons will go", "Default: \"HORIZONTAL\""})
+            @Configurable.Comment({ "Which direction the buttons will go", "Default: \"HORIZONTAL\"" })
             public Direction direction = Direction.HORIZONTAL;
 
             @Configurable
-            @Configurable.Comment({"How horizontally far away from the anchor to place the buttons", "Default: 20"})
+            @Configurable.Comment({ "How horizontally far away from the anchor to place the buttons", "Default: 20" })
             public int xOffset = 20;
 
             @Configurable
-            @Configurable.Comment({"How vertically far away from the anchor to place the buttons", "Default: 0"})
+            @Configurable.Comment({ "How vertically far away from the anchor to place the buttons", "Default: 0" })
             public int yOffset = 0;
 
             @Configurable
-            @Configurable.Comment({"Whether to put buttons on a separate toolbar on the right instead of the map type toolbar in JourneyMap.", "Default: true"})
+            @Configurable.Comment({
+                    "Whether to put buttons on a separate toolbar on the right instead of the map type toolbar in JourneyMap.",
+                    "Default: true" })
             public boolean rightToolbar = true;
 
             public enum Anchor {
-                TOP_LEFT, TOP_CENTER, TOP_RIGHT, RIGHT_CENTER, BOTTOM_RIGHT, BOTTOM_CENTER, BOTTOM_LEFT, LEFT_CENTER;
+
+                TOP_LEFT,
+                TOP_CENTER,
+                TOP_RIGHT,
+                RIGHT_CENTER,
+                BOTTOM_RIGHT,
+                BOTTOM_CENTER,
+                BOTTOM_LEFT,
+                LEFT_CENTER;
 
                 public boolean isCentered() {
                     return this == TOP_CENTER || this == RIGHT_CENTER || this == BOTTOM_CENTER || this == LEFT_CENTER;
@@ -280,7 +290,8 @@ public class ConfigHolder {
             }
 
             public enum Direction {
-                VERTICAL, HORIZONTAL
+                VERTICAL,
+                HORIZONTAL
             }
 
             public int getBorderColor(int materialColor) {

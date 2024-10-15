@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.cache;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 
+import lombok.Getter;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class GridCache {
 
+    @Getter
     private final List<GeneratedVeinMetadata> veins = new ArrayList<>();
 
     public boolean addVein(GeneratedVeinMetadata vein) {

@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.integration.map.layer.ore;
 
+import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
 
@@ -22,6 +25,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class OreRenderLayer extends MapRenderLayer {
@@ -33,8 +37,8 @@ public class OreRenderLayer extends MapRenderLayer {
     // should be shared between all renderer instances
     protected static GeneratedVeinMetadata waypointVein;
 
-    public OreRenderLayer(String key) {
-        super(key);
+    public OreRenderLayer(String key, GenericMapRenderer renderer) {
+        super(key, renderer);
     }
 
     @Override
@@ -55,7 +59,7 @@ public class OreRenderLayer extends MapRenderLayer {
             RenderSystem.setShaderColor(1, 1, 1, 1);
 
             ResourceLocation texture = MaterialIconType.ore.getBlockTexturePath(firstMaterial.getMaterialIconSet(),
-                    true).withPrefix("textures/").withSuffix(".png");
+                    true).withPath(path -> "textures/" + path + ".png");
             graphics.blit(STONE, -iconSize / 2, -iconSize / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
 
             RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1);
@@ -88,7 +92,16 @@ public class OreRenderLayer extends MapRenderLayer {
 
     @Override
     public void updateVisibleArea(ResourceKey<Level> dimension, int[] visibleBounds) {
-        visibleVeins = GTClientCache.instance.getVeinsInArea(dimension, visibleBounds);
+        var visible = GTClientCache.instance.getVeinsInArea(dimension, visibleBounds);
+
+        var removed = new HashSet<>(visibleVeins);
+        removed.removeIf(vein -> !visible.contains(vein));
+        removed.forEach(vein -> renderer.removeMarker(getName(vein).getString()));
+        var added = new HashSet<>(visible);
+        added.removeIf(vein -> visibleVeins.contains(vein));
+        added.forEach(vein -> renderer.addMarker(getName(vein).getString(), vein));
+
+        visibleVeins = visible;
     }
 
     @Override
@@ -100,8 +113,8 @@ public class OreRenderLayer extends MapRenderLayer {
         mouseX = mouseX - mc.getWindow().getScreenWidth() / 2;
         mouseY = mouseY - mc.getWindow().getScreenHeight() / 2;
         for (GeneratedVeinMetadata vein : visibleVeins) {
-            double scaledVeinX = (vein.center().getX() + 0.5 - cameraX) * scale;
-            double scaledVeinZ = (vein.center().getZ() + 0.5 - cameraZ) * scale;
+            double scaledVeinX = (vein.center().getX() - 0.5 - cameraX) * clampedScale;
+            double scaledVeinZ = (vein.center().getZ() - 0.5 - cameraZ) * clampedScale;
             if (mouseX > scaledVeinX - iconRadius && mouseX < scaledVeinX + iconRadius &&
                     mouseY > scaledVeinZ - iconRadius && mouseY < scaledVeinZ + iconRadius) {
                 hoveredVeins.add(vein);
@@ -112,8 +125,9 @@ public class OreRenderLayer extends MapRenderLayer {
     }
 
     public static Component getName(GeneratedVeinMetadata vein) {
-        //noinspection ConstantValue IDK, it crashed
-        if (vein == null || vein.definition() == null) {
+        // noinspection ConstantValue IDK, it crashed
+        if (vein == null || vein.definition() == null ||
+                ClientProxy.CLIENT_ORE_VEINS.inverse().get(vein.definition()) == null) {
             return Component.translatable("gtceu.minimap.ore_vein.depleted");
         }
         return Component.translatable("gtceu.jei.ore_vein." +
@@ -142,7 +156,8 @@ public class OreRenderLayer extends MapRenderLayer {
     @Override
     public boolean onActionKey() {
         if (hoveredVeins.isEmpty()) return false;
-        // hoveredVeins.get(0).depleted = !hoveredVeins.get(0).depleted;
+        GeneratedVeinMetadata metadata = hoveredVeins.get(0);
+        hoveredVeins.set(0, metadata.setDepleted(!metadata.depleted()));
         return true;
     }
 

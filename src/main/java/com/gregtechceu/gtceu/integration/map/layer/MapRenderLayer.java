@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.layer;
 
 import com.gregtechceu.gtceu.integration.map.ButtonState;
+import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,13 +17,15 @@ import java.util.List;
 public abstract class MapRenderLayer {
 
     protected final String key;
+    protected final GenericMapRenderer renderer;
 
-    public MapRenderLayer(String key) {
+    public MapRenderLayer(String key, GenericMapRenderer renderer) {
         this.key = key;
+        this.renderer = renderer;
     }
 
     public boolean isEnabled() {
-        return true;//ButtonState.isEnabled(key);
+        return ButtonState.isEnabled(key);
     }
 
     /**

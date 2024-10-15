@@ -16,9 +16,7 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
-        "journeymap.FullscreenMixin",
-        "rei.FluidEntryRendererMixin",
-        "xaeroworldmap.GuiMapMixin"
+        "rei.FluidEntryRendererMixin"
     ],
     "mixins": [
         "AbstractRegistrateAccessor",
@@ -63,11 +61,9 @@
         "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
-        "journeymap.MiniMapMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
-        "top.ConfigMixin",
-        "xaerominimap.MinimapRendererMixin"
+        "top.ConfigMixin"
     ],
     "injectors": {
         "defaultRequire": 1,
