@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -35,11 +36,10 @@ import appeng.api.stacks.GenericStack;
 import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
-import static com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl.toFluidStack;
 
 /**
  * @Author GlodBlock
- * @Description A configurable slot for {@link com.lowdragmc.lowdraglib.side.fluid.FluidStack}
+ * @Description A configurable slot for {@link FluidStack}
  * @Date 2023/4/21-0:50
  */
 public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
@@ -66,7 +66,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (config != null) {
             var stack = AEUtil.toFluidStack(config);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, toFluidStack(stack), config.amount(), stackX, stackY, 16, 16);
+                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(stack), config.amount(), stackX,
+                        stackY, 16, 16);
                 if (!parentWidget.isStocking()) {
                     String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
                     drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
@@ -76,7 +77,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
         if (stock != null) {
             var stack = AEUtil.toFluidStack(stock);
             if (!stack.isEmpty()) {
-                DrawerHelper.drawFluidForGui(graphics, toFluidStack(stack), stock.amount(), stackX, stackY + 18, 16,
+                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(stack), stock.amount(), stackX,
+                        stackY + 18, 16,
                         16);
                 String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
                 drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);

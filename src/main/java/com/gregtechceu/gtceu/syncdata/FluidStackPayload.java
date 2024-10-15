@@ -10,6 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 
+import static com.lowdragmc.lowdraglib.side.fluid.FluidStack.loadFromTag;
+
 public class FluidStackPayload extends ObjectTypedPayload<FluidStack> {
 
     @Override
@@ -35,7 +37,7 @@ public class FluidStackPayload extends ObjectTypedPayload<FluidStack> {
         } catch (ClassCastException exception) {
             // LDLib FluidStack stores amount as Long tag, which will throw an error
             // Loads from tag using LDLib FluidStack, then converts it to a Forge FluidStack
-            var stack = com.lowdragmc.lowdraglib.side.fluid.FluidStack.loadFromTag((CompoundTag) tag);
+            var stack = loadFromTag((CompoundTag) tag);
             payload = FluidHelperImpl.toFluidStack(stack);
         }
     }

@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     protected FluidFilter fluidFilter;
-    private FilteredFluidTransferWrapper fluidFilterWrapper;
+    private FilteredFluidHandlerWrapper fluidFilterWrapper;
 
     public FluidFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -56,7 +56,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
         }
 
         if (fluidFilterWrapper == null || fluidFilterWrapper.delegate != defaultValue) {
-            this.fluidFilterWrapper = new FilteredFluidTransferWrapper(defaultValue);
+            this.fluidFilterWrapper = new FilteredFluidHandlerWrapper(defaultValue);
         }
 
         return fluidFilterWrapper;
@@ -70,9 +70,9 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
         return group;
     }
 
-    private class FilteredFluidTransferWrapper extends FluidHandlerDelegate {
+    private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {
 
-        public FilteredFluidTransferWrapper(IFluidHandlerModifiable delegate) {
+        public FilteredFluidHandlerWrapper(IFluidHandlerModifiable delegate) {
             super(delegate);
         }
 

@@ -33,18 +33,15 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -483,7 +480,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                     if (sourceState.state().getBlock() instanceof LiquidBlock liquidBlock && fluidState.isSource()) {
                         var fluidHandler = new BucketPickupHandlerWrapper(liquidBlock, getLevel(), pos);
                         FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-                        if (!drainStack.isEmpty() && cache.fillInternal(drainStack, FluidAction.SIMULATE) == drainStack.getAmount()) {
+                        if (!drainStack.isEmpty() &&
+                                cache.fillInternal(drainStack, FluidAction.SIMULATE) == drainStack.getAmount()) {
                             cache.fillInternal(drainStack, FluidAction.EXECUTE);
                             fluidHandler.drain(drainStack, FluidAction.EXECUTE);
                             getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());

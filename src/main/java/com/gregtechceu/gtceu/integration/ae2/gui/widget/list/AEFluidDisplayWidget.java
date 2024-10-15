@@ -29,7 +29,7 @@ import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 
 /**
  * @author GlodBlock
- * @ Display a certain {@link com.lowdragmc.lowdraglib.side.fluid.FluidStack} element.
+ * @ Display a certain {@link FluidStack} element.
  * @date 2023/4/19-0:30
  */
 public class AEFluidDisplayWidget extends Widget {
