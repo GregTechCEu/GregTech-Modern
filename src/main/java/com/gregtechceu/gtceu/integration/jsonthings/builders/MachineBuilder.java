@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredMachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -29,20 +28,20 @@ import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.tterrag.registrate.util.OneTimeEventReceiver;
+
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import com.tterrag.registrate.util.OneTimeEventReceiver;
 import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.builders.BlockBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
@@ -52,9 +51,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -304,10 +300,11 @@ public class MachineBuilder extends BaseBuilder<MachineDefinition, MachineBuilde
                     .build(null);
         });
         if (Platform.isClient() && isHasTESR()) {
-            OneTimeEventReceiver.addListener(FMLJavaModLoadingContext.get().getModEventBus(), FMLClientSetupEvent.class, $ -> {
-                BlockEntityRenderers.register(getBlockEntityTypeSupplier().get(),
-                        GTRendererProvider::getOrCreate);
-            });
+            OneTimeEventReceiver.addListener(FMLJavaModLoadingContext.get().getModEventBus(), FMLClientSetupEvent.class,
+                    $ -> {
+                        BlockEntityRenderers.register(getBlockEntityTypeSupplier().get(),
+                                GTRendererProvider::getOrCreate);
+                    });
         }
         definition.setBlockEntityTypeSupplier(blockEntityTypeSupplier);
 

@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.integration.jsonthings.builders.MachineBuilder;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.tterrag.registrate.util.OneTimeEventReceiver;
+
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -42,6 +42,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import com.tterrag.registrate.util.OneTimeEventReceiver;
 import dev.gigaherz.jsonthings.JsonThings;
 import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParseException;
@@ -70,8 +71,7 @@ public class MachineParser extends ThingParser<MachineBuilder> {
         bus.addListener((RegisterEvent e) -> registerBlocks(e, bus));
     }
 
-    public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
-    }
+    public void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {}
 
     public void registerBlocks(RegisterEvent event, IEventBus modBus) {
         event.register(Registries.BLOCK, helper -> {
@@ -263,30 +263,30 @@ public class MachineParser extends ThingParser<MachineBuilder> {
             FactoryBlockPattern patternFactory = FactoryBlockPattern.start(parsed[0], parsed[1], parsed[2]);
 
             objValue.key("aisles", val -> val.array().raw(array -> {
-                        for (JsonElement e : array.asList()) {
-                            String[] aisle;
-                            int minRepeat = 1;
-                            int maxRepeat = 1;
-                            if (e.isJsonArray()) {
-                                aisle = e.getAsJsonArray().asList()
-                                        .stream()
-                                        .map(JsonElement::getAsString)
-                                        .toArray(String[]::new);
-                            } else if (e.isJsonObject()) {
-                                JsonObject obj = e.getAsJsonObject();
-                                aisle = obj.getAsJsonArray("aisle").asList()
-                                        .stream()
-                                        .map(JsonElement::getAsString)
-                                        .toArray(String[]::new);
-                                minRepeat = GsonHelper.getAsInt(obj, "min_repeat");
-                                // default to minRepeat repetitions if max_repeat doesn't exist.
-                                maxRepeat = GsonHelper.getAsInt(obj, "max_repeat", minRepeat);
-                            } else {
-                                throw new ThingParseException("Invalid object type as aisle! wanted array or object, got " + e);
-                            }
-                            patternFactory.aisleRepeatable(minRepeat, maxRepeat, aisle);
-                        }
-                    }))
+                for (JsonElement e : array.asList()) {
+                    String[] aisle;
+                    int minRepeat = 1;
+                    int maxRepeat = 1;
+                    if (e.isJsonArray()) {
+                        aisle = e.getAsJsonArray().asList()
+                                .stream()
+                                .map(JsonElement::getAsString)
+                                .toArray(String[]::new);
+                    } else if (e.isJsonObject()) {
+                        JsonObject obj = e.getAsJsonObject();
+                        aisle = obj.getAsJsonArray("aisle").asList()
+                                .stream()
+                                .map(JsonElement::getAsString)
+                                .toArray(String[]::new);
+                        minRepeat = GsonHelper.getAsInt(obj, "min_repeat");
+                        // default to minRepeat repetitions if max_repeat doesn't exist.
+                        maxRepeat = GsonHelper.getAsInt(obj, "max_repeat", minRepeat);
+                    } else {
+                        throw new ThingParseException("Invalid object type as aisle! wanted array or object, got " + e);
+                    }
+                    patternFactory.aisleRepeatable(minRepeat, maxRepeat, aisle);
+                }
+            }))
                     .key("symbol_map", val -> val.obj().forEach((key, value) -> {
                         if (key.length() != 1) {
                             throw new ThingParseException("Pattern keys need to be 1 (one) character long, got " +
@@ -312,34 +312,34 @@ public class MachineParser extends ThingParser<MachineBuilder> {
     private static TraceabilityPredicate parseTraceabilityPredicate(Any value) {
         MutableObject<TraceabilityPredicate> object = new MutableObject<>(new TraceabilityPredicate());
         value.ifString(val -> {
-                    String string = val.getAsString();
-                    if (string.equalsIgnoreCase("heating_coils")) {
-                        object.setValue(Predicates.heatingCoils());
-                    } else if (string.equalsIgnoreCase("cleanroom_filters")) {
-                        object.setValue(Predicates.cleanroomFilters());
-                    } else if (string.equalsIgnoreCase("pss_batteries")) {
-                        object.setValue(Predicates.powerSubstationBatteries());
-                    } else {
-                        object.setValue(Predicates.blocks(BuiltInRegistries.BLOCK.get(new ResourceLocation(string))));
-                    }
-                }).ifArray(val -> {
-                    val.strings()
+            String string = val.getAsString();
+            if (string.equalsIgnoreCase("heating_coils")) {
+                object.setValue(Predicates.heatingCoils());
+            } else if (string.equalsIgnoreCase("cleanroom_filters")) {
+                object.setValue(Predicates.cleanroomFilters());
+            } else if (string.equalsIgnoreCase("pss_batteries")) {
+                object.setValue(Predicates.powerSubstationBatteries());
+            } else {
+                object.setValue(Predicates.blocks(BuiltInRegistries.BLOCK.get(new ResourceLocation(string))));
+            }
+        }).ifArray(val -> {
+            val.strings()
+                    .flatten(StringValue::getAsString, String[]::new)
+                    .map(strings -> Arrays.stream(strings)
+                            .map(string -> BuiltInRegistries.BLOCK.get(new ResourceLocation(string))))
+                    .handle(blocks -> {
+                        object.setValue(Predicates.blocks(blocks.toArray(Block[]::new)));
+                    });
+        })
+                .ifObj(objVal -> {
+                    objVal.ifKey("blocks", val -> val.array()
+                            .strings()
                             .flatten(StringValue::getAsString, String[]::new)
                             .map(strings -> Arrays.stream(strings)
                                     .map(string -> BuiltInRegistries.BLOCK.get(new ResourceLocation(string))))
                             .handle(blocks -> {
-                                object.setValue(Predicates.blocks(blocks.toArray(Block[]::new)));
-                            });
-                })
-                .ifObj(objVal -> {
-                    objVal.ifKey("blocks", val -> val.array()
-                                    .strings()
-                                    .flatten(StringValue::getAsString, String[]::new)
-                                    .map(strings -> Arrays.stream(strings)
-                                            .map(string -> BuiltInRegistries.BLOCK.get(new ResourceLocation(string))))
-                                    .handle(blocks -> {
-                                        object.setValue(object.getValue().or(Predicates.blocks(blocks.toArray(Block[]::new))));
-                                    }))
+                                object.setValue(object.getValue().or(Predicates.blocks(blocks.toArray(Block[]::new))));
+                            }))
                             .ifKey("block_tag", val -> val.string()
                                     .map(string -> TagKey.create(Registries.BLOCK, new ResourceLocation(string)))
                                     .handle(tags -> object.setValue(object.getValue().or(Predicates.blockTag(tags)))))
@@ -421,13 +421,13 @@ public class MachineParser extends ThingParser<MachineBuilder> {
         MutableObject<Supplier<List<MultiblockShapeInfo>>> shapeInfos = new MutableObject<>();
 
         value.ifArray(val -> shapeInfos.setValue(() -> {
-                    List<MultiblockShapeInfo> list = new ArrayList<>();
-                    var elements = val.getAsJsonArray().asList();
-                    for (int i = 0; i < elements.size(); i++) {
-                        list.add(parseShapeInfo(GsonHelper.convertToJsonObject(elements.get(i), "element " + i)));
-                    }
-                    return list;
-                }))
+            List<MultiblockShapeInfo> list = new ArrayList<>();
+            var elements = val.getAsJsonArray().asList();
+            for (int i = 0; i < elements.size(); i++) {
+                list.add(parseShapeInfo(GsonHelper.convertToJsonObject(elements.get(i), "element " + i)));
+            }
+            return list;
+        }))
                 .ifObj(val -> shapeInfos.setValue(() -> List.of(parseShapeInfo(val.getAsJsonObject()))));
 
         return shapeInfos.getValue();
