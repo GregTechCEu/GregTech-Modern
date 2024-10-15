@@ -442,8 +442,8 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(16 * FluidHelper.getBucket() * Math.max(1, tier))),
                             Component.translatable("gtceu.universal.tooltip.working_area",
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier,
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
+                                    PumpMachine.getMaxPumpRadius(tier) * 2,
+                                    PumpMachine.getMaxPumpRadius(tier) * 2))
                     .compassNode("pump")
                     .register(),
             LV, MV, HV, EV);
@@ -1919,7 +1919,7 @@ public class GTMachines {
                             .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .where('S', controller(blocks(definition.getBlock())))
                             .where('X', blocks(LargeMinerMachine.getCasingState(tier))
-                                    .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                                    .or(abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1).setPreviewCount(1))
                                     .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
                                     .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2).setPreviewCount(1)))
@@ -2655,7 +2655,8 @@ public class GTMachines {
         var definition = REGISTRATE
                 .machine(material.getName() + "_drum", MachineDefinition::createDefinition,
                         holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new,
-                        DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+                        (holder, prop) -> DrumMachineItem.create(holder, prop, material),
+                        MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(

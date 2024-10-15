@@ -10,13 +10,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Setup Build
         uses: ./.github/actions/build_setup
         with:
           update-cache: true
-
       - name: Clean
         run: ./gradlew clean --build-cache

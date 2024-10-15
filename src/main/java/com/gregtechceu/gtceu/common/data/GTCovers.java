@@ -57,6 +57,9 @@ public class GTCovers {
     public final static CoverDefinition SHUTTER = register(
             "shutter", ShutterCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_shutter")));
+    public final static CoverDefinition COVER_STORAGE = register(
+            "storage", StorageCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/storage_cover")));
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,

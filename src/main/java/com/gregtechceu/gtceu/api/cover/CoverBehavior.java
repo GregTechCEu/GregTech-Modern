@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
@@ -178,6 +179,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     public ICoverRenderer getCoverRenderer() {
         return coverDefinition.getCoverRenderer();
+    }
+
+    public @Nullable IFancyConfigurator getConfigurator() {
+        return null;
     }
 
     @Override

@@ -32,6 +32,7 @@
         "ChunkMixin",
         "CreeperMixin",
         "EntityMixin",
+        "ForgeHooksMixin",
         "IFoliagePlacerTypeAccessor",
         "IHolderReferenceAccessor",
         "IngredientAccessor",
@@ -62,9 +63,9 @@
         "ae2.GenericStackInvAccessor",
         "create.RotationPropagatorMixin",
         "embeddium.BiomeColorCacheMixin",
+        "embeddium.VanillaColorAdapterMixin",
         "embeddium.BlockRendererMixin",
         "embeddium.RenderSectionMixin",
-        "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
         "rei.InputSlotCrafterMixin",
@@ -74,5 +75,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-  }
+    }
 }

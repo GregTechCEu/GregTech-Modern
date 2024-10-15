@@ -125,6 +125,9 @@ public class ConfigHolder {
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
         @Configurable
+        @Configurable.Comment({ "Whether to nerf machine controller recipes.", "Default: false" })
+        public boolean hardMultiRecipes = false; // default false
+        @Configurable
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: true" })
@@ -424,6 +427,13 @@ public class ConfigHolder {
                 "Need restart Minecraft to apply."
         })
         public boolean enableMoreDualHatchAbility = false;
+
+        @Configurable
+        @Configurable.Comment({
+                "Default maximum parallel of steam multiblocks",
+                "Default: 8"
+        })
+        public int steamMultiParallelAmount = 8;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
