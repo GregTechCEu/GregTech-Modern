@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 public class MaterialParser extends ThingParser<MaterialBuilder> {
 
     public MaterialParser(IEventBus bus) {
-        super(GSON, "material");
+        super(GSON, "gtceu/material");
         bus.addListener(this::registerMaterialRegistries);
         bus.addListener(this::registerMaterials);
     }

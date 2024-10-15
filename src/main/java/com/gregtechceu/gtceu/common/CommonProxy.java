@@ -41,7 +41,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
-import com.gregtechceu.gtceu.integration.jsonthings.parsers.MaterialParser;
+import com.gregtechceu.gtceu.integration.jsonthings.JsonThingsCompat;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -77,7 +77,6 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import dev.gigaherz.jsonthings.things.parsers.ThingResourceManager;
 
 import java.util.List;
 
@@ -90,12 +89,7 @@ public class CommonProxy {
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
 
         if (LDLib.isModLoaded(GTValues.MODID_JSONTHINGS)) {
-            IEventBus jsonThingsBus = ((FMLModContainer) ModList.get()
-                    .getModContainerById(GTValues.MODID_JSONTHINGS)
-                    .get())
-                    .getEventBus();
-            ThingResourceManager manager = ThingResourceManager.instance();
-            manager.registerParser(new MaterialParser(jsonThingsBus));
+            JsonThingsCompat.init(eventBus);
         }
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage

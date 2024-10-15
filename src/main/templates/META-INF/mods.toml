@@ -91,5 +91,5 @@ side = "BOTH"
 modId = "jsonthings"
 mandatory = false
 versionRange = "[${jsonthings_version},)"
-ordering = "AFTER"
+ordering = "BEFORE"
 side = "BOTH"
