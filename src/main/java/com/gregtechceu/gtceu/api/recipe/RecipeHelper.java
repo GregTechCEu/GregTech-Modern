@@ -59,6 +59,14 @@ public class RecipeHelper {
         return GTUtil.getTierByVoltage(EUt);
     }
 
+    public static int getPreOCRecipeEuTier(GTRecipe recipe) {
+        long EUt = getInputEUt(recipe);
+        if (EUt == 0) EUt = getOutputEUt(recipe);
+        if (recipe.parallels > 1) EUt /= recipe.parallels;
+        EUt >>= (recipe.ocTier * 2);
+        return GTUtil.getTierByVoltage(EUt);
+    }
+
     /**
      * Calculates the overclocked Recipe's final duration and EU/t
      *
@@ -73,7 +81,7 @@ public class RecipeHelper {
         }
         EUt = getOutputEUt(recipe);
         if (EUt > 0) {
-            performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
+            performOverclocking(logic, recipe, -EUt, maxOverclockVoltage, params, result);
         }
         return recipe;
     }
@@ -83,14 +91,12 @@ public class RecipeHelper {
      * Then performs overclocking on the Recipe.
      *
      * @param recipe the recipe to overclock
-     * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
     public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
                                            long maxOverclockVoltage,
                                            @NotNull OCParams params, @NotNull OCResult result) {
-        int recipeTier = GTUtil.getTierByVoltage(EUt);
-        int maximumTier = maxOverclockVoltage < Integer.MAX_VALUE ? logic.getOverclockForTier(maxOverclockVoltage) :
-                GTUtil.getFakeVoltageTier(maxOverclockVoltage);
+        int recipeTier = GTUtil.getTierByVoltage(Math.abs(EUt));
+        int maximumTier = logic.getOverclockForTier(maxOverclockVoltage);
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
         // and the maximum tier that the machine can overclock to.
         int numberOfOCs = maximumTier - recipeTier;
@@ -101,7 +107,7 @@ public class RecipeHelper {
         params.initialize(EUt, recipe.duration, numberOfOCs);
         if (params.getOcAmount() <= 0) {
             // number of OCs is <=0, so do not overclock
-            result.init(params.getEut(), params.getDuration());
+            result.init(params.getEut(), params.getDuration(), numberOfOCs);
         } else {
             logic.getLogic().runOverclockingLogic(params, result, maxOverclockVoltage);
         }

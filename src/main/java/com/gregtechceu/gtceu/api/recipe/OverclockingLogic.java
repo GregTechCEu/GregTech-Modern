@@ -94,6 +94,7 @@ public class OverclockingLogic {
         double duration = params.getDuration();
         double eut = params.getEut();
         int ocAmount = params.getOcAmount();
+        int ocLevel = 0;
 
         while (ocAmount-- > 0) {
             // it is important to do voltage first,
@@ -112,8 +113,9 @@ public class OverclockingLogic {
             // update the voltage for the next iteration after everything else
             // in case duration overclocking would waste energy
             eut = potentialVoltage;
+            ocLevel++;
         }
-        result.init((long) eut, (int) duration);
+        result.init((long) eut, (int) duration, ocLevel);
     }
 
     /**
@@ -139,6 +141,7 @@ public class OverclockingLogic {
         double duration = params.getDuration();
         double eut = params.getEut();
         int ocAmount = params.getOcAmount();
+        int ocLevel = 0;
 
         while (ocAmount-- > 0) {
             double potentialEUt = eut * voltageFactor;
@@ -153,9 +156,10 @@ public class OverclockingLogic {
             }
 
             eut = potentialEUt;
+            ocLevel++;
         }
 
-        result.init((long) eut, (int) duration);
+        result.init((long) eut, (int) duration, ocLevel);
     }
 
     /**
@@ -184,6 +188,7 @@ public class OverclockingLogic {
         double parallel = 1;
         int parallelIterAmount = 0;
         boolean shouldParallel = false;
+        int ocLevel = 0;
 
         while (ocAmount-- > 0) {
             // it is important to do voltage first,
@@ -207,9 +212,10 @@ public class OverclockingLogic {
                     duration = potentialDuration;
                 }
             }
+            ocLevel++;
         }
         result.init((long) (eut / Math.pow(voltageFactor, parallelIterAmount)), (int) duration, (int) parallel,
-                (long) eut);
+                (long) eut, ocLevel);
     }
 
     /**
@@ -243,6 +249,7 @@ public class OverclockingLogic {
         double parallel = 1;
         int parallelIterAmount = 0;
         boolean shouldParallel = false;
+        int ocLevel = 0;
 
         while (ocAmount-- > 0) {
             boolean perfect = perfectOCAmount-- > 0;
@@ -279,10 +286,11 @@ public class OverclockingLogic {
                     duration = potentialDuration;
                 }
             }
+            ocLevel++;
         }
 
         result.init((long) (eut / Math.pow(STD_VOLTAGE_FACTOR, parallelIterAmount)), (int) duration, (int) parallel,
-                (long) eut);
+                (long) eut, ocLevel);
     }
 
     /**
@@ -313,6 +321,7 @@ public class OverclockingLogic {
         double duration = params.getDuration();
         double eut = params.getEut();
         double ocAmount = params.getOcAmount();
+        int ocLevel = 0;
 
         while (ocAmount-- > 0) {
             boolean perfect = amountPerfectOC-- > 0;
@@ -333,8 +342,9 @@ public class OverclockingLogic {
                 break;
             }
             duration = potentialDuration;
+            ocLevel++;
         }
-        result.init((long) eut, (int) duration);
+        result.init((long) eut, (int) duration, ocLevel);
     }
 
     /**

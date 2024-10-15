@@ -78,7 +78,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 4, Iron, 1)
                 .buildAndRegister();
 
-        Echo = new Material.Builder(GTCEu.id("echo"))
+        EchoShard = new Material.Builder(GTCEu.id("echo_shard"))
                 .gem(3)
                 .color(0x002b2d).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, GENERATE_ROD)
@@ -123,7 +123,7 @@ public class SecondDegreeMaterials {
         DamascusSteel = new Material.Builder(GTCEu.id("damascus_steel"))
                 .ingot(3).fluid()
                 .color(0x6E6E6E).secondaryColor(0x302222).iconSet(METALLIC)
-                .appendFlags(EXT_METAL)
+                .appendFlags(EXT_METAL, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, GENERATE_GEAR)
                 .components(Steel, 1)
                 .toolStats(ToolProperty.Builder.of(6.0F, 4.0F, 1024, 3)
                         .addTypes(GTToolType.MORTAR)

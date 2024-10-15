@@ -73,6 +73,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.common.Tags;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -254,11 +255,15 @@ public class GTBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> SurfaceRockBlock::tintedColor)
+                .color(() -> SurfaceRockBlock::tintedBlockColor)
+                .item((b, p) -> SurfaceRockBlockItem.create(b, p, material))
+                .color(() -> SurfaceRockBlock::tintedItemColor)
+                .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                .build()
                 .register();
         SURFACE_ROCK_BLOCKS_BUILDER.put(material, entry);
     }
@@ -980,7 +985,7 @@ public class GTBlocks {
             .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
-                    prov.blockTexture(ctx.get()).withSuffix("_side"),
+                    GTCEu.id("block/misc/industrial_tnt_side"),
                     new ResourceLocation("minecraft", "block/tnt_bottom"),
                     new ResourceLocation("minecraft", "block/tnt_top"))))
             .simpleItem()
@@ -1023,7 +1028,7 @@ public class GTBlocks {
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -1073,17 +1078,21 @@ public class GTBlocks {
             .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
             .lang("Stripped Rubber Log")
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
+            .build()
             .register();
-    public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
-            .block("rubber_wood", RotatedPillarBlock::new)
+    public static final BlockEntry<RubberWoodBlock> RUBBER_WOOD = REGISTRATE
+            .block("rubber_wood", RubberWoodBlock::new)
             .initialProperties(() -> Blocks.SPRUCE_WOOD)
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
+            .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
             .block("stripped_rubber_wood", RotatedPillarBlock::new)
@@ -1091,8 +1100,10 @@ public class GTBlocks {
             .lang("Stripped Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()),
                     provider.blockTexture(ctx.get())))
-            .tag(BlockTags.MINEABLE_WITH_AXE)
-            .simpleItem()
+            .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
+            .item()
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
+            .build()
             .register();
 
     public static final BlockEntry<Block> RUBBER_PLANK = REGISTRATE
@@ -1298,6 +1309,7 @@ public class GTBlocks {
             .tag(ItemTags.WOODEN_FENCES)
             .build()
             .register();
+
     public static final BlockEntry<GTStandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
             .block("treated_wood_sign", (p) -> new GTStandingSignBlock(p, TREATED_WOOD_TYPE))
             .initialProperties(() -> Blocks.SPRUCE_SIGN)
@@ -1536,6 +1548,12 @@ public class GTBlocks {
                                     prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_all"), "all",
                                     prov.modLoc(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() +
                                             "/" + type.id))));
+                }
+                if (type == StoneBlockType.STONE) {
+                    entry.tag(Tags.Blocks.STONE);
+                }
+                if (type == StoneBlockType.COBBLE) {
+                    entry.tag(Tags.Blocks.COBBLESTONE);
                 }
                 builder.put(type, strata, entry.register());
             }

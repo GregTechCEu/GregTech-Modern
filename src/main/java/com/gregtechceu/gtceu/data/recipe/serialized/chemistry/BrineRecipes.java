@@ -81,7 +81,7 @@ public class BrineRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("debrominated_brine_decomposition")
                 .inputFluids(DebrominatedBrine.getFluid(2000))
                 .outputFluids(SaltWater.getFluid(1000))
-                .duration(60).EUt(VA[MV]);
+                .duration(60).EUt(VA[MV]).save(provider);
     }
 
     public static void iodineProcess(Consumer<FinishedRecipe> provider) {

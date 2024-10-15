@@ -181,7 +181,7 @@ public class GTRecipeComponents {
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCondition value) {
             JsonObject object = new JsonObject();
-            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getClass()));
+            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
             object.add("data", value.serialize());
             return object;
         }
@@ -190,24 +190,24 @@ public class GTRecipeComponents {
         public RecipeCondition read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             }
             if (from instanceof JsonPrimitive primitive) {
                 var conditionKey = primitive.getAsString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             } else if (from instanceof JsonObject jsonObject) {
                 var conditionKey = GsonHelper.getAsString(jsonObject, "type", "");
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    RecipeCondition condition = RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    RecipeCondition condition = type.factory.createDefault();
                     if (condition != null) {
-                        return condition.deserialize(GsonHelper.getAsJsonObject(jsonObject, "data", new JsonObject()));
+                        return condition.deserialize(jsonObject);
                     }
                 }
             } else if (from instanceof Tag tag) {

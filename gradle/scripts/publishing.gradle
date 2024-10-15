@@ -1,18 +1,19 @@
+artifacts {
+    archives tasks.reobfJar
+    archives tasks.reobfSlimJar
+    archives tasks.sourcesJar
+}
+
 publishing {
     publications {
-        mavenForge(MavenPublication) {
-            artifact(remapJar) {
-                artifactId = archivesBaseName
-                builtBy remapJar
-            }
-            artifact(remapSourcesJar) {
-                artifactId = archivesBaseName
-                builtBy remapSourcesJar
-            }
-            artifact(remapSlimJar) {
-                artifactId = archivesBaseName
-                builtBy remapSlimJar
-            }
+        mavenJava(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = project.archivesBaseName
+            version = project.version
+
+            from components.java
+
+            artifact sourcesJar
         }
     }
 
@@ -20,10 +21,10 @@ publishing {
     repositories {
         // Add repositories to publish to here.
         maven {
-            url "https://maven.firstdarkdev.xyz/snapshots"
+            url "https://maven.gtceu.com"
             credentials {
                 username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASS")
+                password System.getenv("MAVEN_PASSWORD")
             }
         }
     }

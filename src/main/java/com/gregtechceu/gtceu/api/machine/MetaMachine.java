@@ -505,8 +505,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
-        if (toolTypes.contains(GTToolType.WRENCH) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+        if (toolTypes.contains(GTToolType.WRENCH)) return true;
         if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
+        if (toolTypes.contains(GTToolType.SCREWDRIVER) &&
+                (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid))
+            return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
@@ -642,7 +645,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     // ****** Capability ********//
     //////////////////////////////////////
 
-    protected Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
+    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
             if (cover instanceof ItemFilterCover filterCover) {
@@ -652,7 +655,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return item -> true;
     }
 
-    protected Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
+    public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
             if (cover instanceof FluidFilterCover filterCover) {

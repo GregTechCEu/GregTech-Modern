@@ -92,6 +92,7 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
@@ -125,6 +126,10 @@ public class LangHandler {
         provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
         provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s seconds");
         provider.add("command.gtceu.medical_condition.get.element.permanent", "Condition %s§r: %s seconds (permanent)");
+        provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
+        provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
+        provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
+
         provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
         provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
@@ -162,7 +167,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.scrape", "§bPolisher: §fRemoves Oxidation");
         provider.add("item.gtceu.tool.behavior.remove_wax", "§6Cleaner: §fRemoves Wax");
         provider.add("item.gtceu.tool.behavior.shield_disable", "§cBrute: §fDisables Shields");
-        provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks");
+        provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks and Mob Drops");
         provider.add("item.gtceu.tool.behavior.aoe_mining", "§5Area-of-Effect: §f%sx%sx%s");
         provider.add("item.gtceu.tool.behavior.ground_tilling", "§eFarmer: §fTills Ground");
         provider.add("item.gtceu.tool.behavior.grass_path", "§eLandscaper: §fCreates Grass Paths");
@@ -334,6 +339,7 @@ public class LangHandler {
         provider.add("cover.fluid_filter.mode.filter_drain", "Filter Drain");
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
         provider.add("cover.item_filter.title", "Item Filter");
+        provider.add("cover.storage.title", "Storage Cover");
         provider.add("cover.filter.mode.filter_insert", "Filter Insert");
         provider.add("cover.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.filter.mode.filter_both", "Filter Insert/Extract");
@@ -532,6 +538,7 @@ public class LangHandler {
                 "Severely Steam-Cracked Light Fuel");
         replace(provider, GTMaterials.SeverelySteamCrackedNaphtha.getUnlocalizedName(),
                 "Severely Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.LPG.getUnlocalizedName(), "LPG");
 
         replace(provider, GTMaterials.Zeron100.getUnlocalizedName(), "Zeron-100");
         replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
@@ -691,7 +698,8 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.lighter.tooltip", "Can light things on fire");
+        provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
+        provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
         provider.add("behaviour.lighter.uses", "Remaining uses: %d");
         provider.add("behavior.toggle_energy_consumer.tooltip", "Use to toggle mode");
@@ -718,10 +726,10 @@ public class LangHandler {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
         provider.add("enchantment.damage.disjunction", "Disjunction");
-        provider.add("enchantment.gtceu.disjunction.desc",
+        provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
         provider.add("enchantment.hard_hammer", "Hammering");
-        provider.add("enchantment.gtceu.hard_hammer.desc",
+        provider.add("enchantment.gtceu.hard_hammer.description",
                 "Breaks blocks as if they were mined with a GregTech Hammer.");
         provider.add("tile.gtceu.seal.name", "Sealed Block");
         provider.add("tile.gtceu.foam.name", "Foam");
@@ -767,6 +775,10 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.amp_per_sec", "Average (last second): %s A");
         provider.add("behavior.portable_scanner.machine_disabled", "Disabled.");
         provider.add("behavior.portable_scanner.machine_front_facing", "Front Facing: %s");
+        provider.add("behavior.portable_scanner.machine_ownership", "§2Machine Owner Type: %s§r");
+        provider.add("behavior.portable_scanner.guild_name", "§2Guild Name: %s§r");
+        provider.add("behavior.portable_scanner.team_name", "§2Team Name: %s§r");
+        provider.add("behavior.portable_scanner.player_name", "§2Player Name: %s§r, §7Player Online: %s§r");
         provider.add("behavior.portable_scanner.machine_power_loss", "Shut down due to power loss.");
         provider.add("behavior.portable_scanner.machine_progress", "Progress/Load: %s / %s");
         provider.add("behavior.portable_scanner.machine_upwards_facing", "Upwards Facing: %s");
@@ -1059,7 +1071,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
-        provider.add("gtceu.multiblock.progress", "Progress: %s%%");
+        provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
+        provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
+        provider.add("gtceu.multiblock.output_line.1", "%s x §e%s§r (%s/s)");
+        provider.add("gtceu.multiblock.output_line.2", "%s ≈ §e%s§r (%ss/ea)");
+        provider.add("gtceu.multiblock.output_line.3", "%s ≈ §e%s§r (%s/s)");
         provider.add("gtceu.multiblock.invalid_structure", "Invalid structure.");
         provider.add("gtceu.multiblock.invalid_structure.tooltip",
                 "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
@@ -1329,7 +1345,7 @@ public class LangHandler {
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
 
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
-        provider.add("gtceu.tooltip.potion.each", "   §e%s %s§r for §c%s§r ticks with a §a%s%%§r chance of happening");
+        provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
     }
 
     /**

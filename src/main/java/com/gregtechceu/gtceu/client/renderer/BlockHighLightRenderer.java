@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
-import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -24,8 +23,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -70,6 +71,19 @@ public class BlockHighLightRenderer {
                     gridHighLight = highLight;
                 } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighLight highLight) {
                     gridHighLight = highLight;
+                } else if (toolType.contains(GTToolType.WRENCH)) {
+                    var behavior = CustomBlockRotations.getCustomRotation(level.getBlockState(blockPos).getBlock());
+                    if (behavior != null && behavior.showGrid()) {
+                        gridHighLight = new IToolGridHighLight() {
+
+                            @Override
+                            public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
+                                                            Set<GTToolType> toolTypes, Direction side) {
+                                return behavior.showSideTip(state, side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION :
+                                        null;
+                            }
+                        };
+                    }
                 }
                 if (gridHighLight == null) {
                     return;
@@ -111,22 +125,6 @@ public class BlockHighLightRenderer {
                 }
                 poseStack.popPose();
                 return;
-            }
-
-            if (toolType.contains(GTToolType.WRENCH)) {
-                ICustomRotationBehavior behavior = CustomBlockRotations
-                        .getCustomRotation(level.getBlockState(blockPos).getBlock());
-                if (behavior != null && behavior.showGrid()) {
-                    Vec3 pos = camera.getPosition();
-                    poseStack.pushPose();
-                    poseStack.translate(-pos.x, -pos.y, -pos.z);
-                    var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                    RenderSystem.lineWidth(3);
-
-                    drawGridOverlays(poseStack, buffer, target, side -> GuiTextures.TOOL_FRONT_FACING_ROTATION);
-
-                    poseStack.popPose();
-                }
             }
 
             // draw cover grid highlight
