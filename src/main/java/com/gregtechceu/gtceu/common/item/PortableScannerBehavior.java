@@ -200,6 +200,9 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // General machine information
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
+                if (machineBlockEntity.getOwner() != null) {
+                    machineBlockEntity.getOwner().displayInfo(list);
+                }
 
                 if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&
                         multi.isAllowExtendedFacing()) {

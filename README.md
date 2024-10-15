@@ -11,18 +11,39 @@
     <a href="https://github.com/GregTechCEu/GregTech-Modern/releases"><img src="https://img.shields.io/github/downloads/GregTechCEu/GregTech-Modern/total?sort=semver&logo=github&label=&style=for-the-badge&color=2d2d2d&labelColor=545454&logoColor=FFFFFF" alt="GitHub"></a>
 </h1>
 
-## Documentation / Wiki
-[`Wiki`](https://gregtechceu.github.io/gtceu-modern-docs/)
+### [Wiki](https://gregtechceu.github.io/gtceu-modern-docs/)
 
+## Developers
 
-## Dev Q&A
-* [Todo List](https://github.com/GregTechCEu/GregTechCEu-1.19/issues/125) for potential contributors who are interested in this project
-* [Dev Q&A](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
+To add GTCEu: Modern (GTM) to your project as a dependency, add the following to your `build.gradle`:
+```groovy
+repositories {
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+        }
+    }
+}
+```
+Then, you can add it as a dependency, with `${mc_version}` being your Minecraft version target and `${gtm_version}` being the version of GTM you want to use.
+```groovy
+dependencies {
+	// Forge (see below block as well if you use Forge Gradle)
+	implementation fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}")
 
-##
-## IDE Requirements (when using IntelliJ IDEA)
+	// NeoForge
+	implementation "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
 
-For developing this mod, the [Lombok plugin](https://plugins.jetbrains.com/plugin/6317-lombok) for IntelliJ IDEA is strictly required.  
+	// Architectury
+	modImplementation "com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"
+}
+```
+
+### IDE Requirements (when using IntelliJ IDEA)
+
+For contributing to this mod, the [Lombok plugin](https://plugins.jetbrains.com/plugin/6317-lombok) for IntelliJ IDEA is strictly required.  
 Additionally, the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) is recommended.
 
 

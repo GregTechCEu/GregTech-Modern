@@ -260,7 +260,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                           @NotNull OCResult result) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
             recipe = recipe.copy();
-            result.init(0, recipe.duration);
+            result.init(0, recipe.duration, params.getOcAmount());
             if (boilerMachine.isHighPressure)
                 result.setDuration(result.getDuration() / 2);
             // recipe.duration *= 12; // maybe?

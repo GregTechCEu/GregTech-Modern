@@ -18,17 +18,22 @@ import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.common.commands.ServerCommands;
+import com.gregtechceu.gtceu.common.commands.GTCommands;
+import com.gregtechceu.gtceu.common.commands.HazardCommands;
+import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
+import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
@@ -38,6 +43,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.Direction;
@@ -62,12 +68,15 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -204,8 +213,20 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onBreakEvent(BlockEvent.BreakEvent event) {
+        var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
+        if (machine != null) {
+            if (!MetaMachineBlock.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
+        GTCommands.register(event.getDispatcher(), event.getBuildContext());
+        MedicalConditionCommands.register(event.getDispatcher(), event.getBuildContext());
+        HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent
@@ -230,6 +251,17 @@ public class ForgeCommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
+            MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        var levels = event.getServer().getAllLevels();
+        for (var level : levels) {
+            if (!level.isClientSide()) {
+                MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
+            }
         }
     }
 
@@ -267,24 +299,38 @@ public class ForgeCommonEventListener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack jet = player.getItemBySlot(EquipmentSlot.CHEST);
-
             if (player.fallDistance < 3.2f)
                 return;
 
-            if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
-                valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);
-            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem &&
-                    jet.getOrCreateTag().contains("flyMode")) {
-                        valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
-                                (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() instanceof IJetpack jetpack &&
+                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+                    player.fallDistance >= player.getHealth() + 3.2f) {
+                        IJetpack.performEHover(chest, player);
                         player.fallDistance = 0;
                         event.setCanceled(true);
                     }
+        }
+    }
+
+    @SubscribeEvent
+    public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
+        float MAGIC_STEP_HEIGHT = 1.0023f;
+        if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+            if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
+                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+            }
+        } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
+            player.setMaxUpStep(0.6f);
         }
     }
 

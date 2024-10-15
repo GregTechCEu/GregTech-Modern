@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.common.recipe.VentCondition;
+import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -138,9 +138,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
             modified.conditions.add(VentCondition.INSTANCE);
 
             if (steamMachine.isHighPressure) {
-                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration);
+                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration, params.getOcAmount());
             } else {
-                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2);
+                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2, params.getOcAmount());
             }
 
             return modified;

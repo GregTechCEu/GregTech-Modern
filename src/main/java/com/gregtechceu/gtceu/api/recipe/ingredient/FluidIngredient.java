@@ -17,6 +17,9 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +30,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class FluidIngredient implements Predicate<FluidStack> {
+
+    public static final Codec<FluidIngredient> CODEC = Codec.PASSTHROUGH.xmap(
+            dynamic -> FluidIngredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
+            ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
 
     public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, null);
     public FluidIngredient.Value[] values;

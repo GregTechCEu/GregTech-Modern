@@ -417,13 +417,6 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[HV].asStack(),
                 'S', GTBlocks.CASING_TEMPERED_GLASS);
 
-        // TODO Charcoal pile igniter
-        // VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
-        // GTMachines.CHARCOAL_PILE_IGNITER.getStackForm(), "ERE", "EHE", "FFF", 'E', new
-        // UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'R', new UnificationEntry(TagPrefix.rotor,
-        // GTMaterials.Iron), 'H', MetaBlocks.STEAM_CASING.getItemVariant(BRONZE_BRICKS_HULL), 'F', new
-        // ItemStack(Items.FLINT));
-
         // STEAM MACHINES
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_hull", GTBlocks.BRONZE_HULL.asStack(), "PPP", "PhP",
                 "PPP", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze));
@@ -546,7 +539,8 @@ public class MetaTileEntityLoader {
                 "PIP", 'P', GTBlocks.CASING_COKE_BRICKS.asStack(), 'I',
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Iron));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_hatch", GTMachines.COKE_OVEN_HATCH.asStack(),
-                "CD", 'C', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D', GTMachines.WOODEN_DRUM.asStack());
+                "CBD", 'C', Tags.Items.CHESTS_WOODEN, 'B', GTBlocks.CASING_COKE_BRICKS.asStack(), 'D',
+                GTMachines.WOODEN_DRUM.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
                 GTMachines.CHARCOAL_PILE_IGNITER.asStack(),
                 "ERE", "EHE", "FFF",
@@ -554,10 +548,19 @@ public class MetaTileEntityLoader {
                 'R', new UnificationEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
                 'F', Items.FLINT_AND_STEEL);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C', CustomTags.LV_CIRCUITS,
-                'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        if (!ConfigHolder.INSTANCE.recipes.hardMultiRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
+                    GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
+                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C',
+                    CustomTags.LV_CIRCUITS,
+                    'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
+                    GTMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
+                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(), 'C',
+                    CustomTags.LV_CIRCUITS,
+                    'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
+        }
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMachines.VACUUM_FREEZER.asStack(),
                 "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV,
                 'C', CustomTags.EV_CIRCUITS, 'W', new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
@@ -723,27 +726,27 @@ public class MetaTileEntityLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_multiblock_tank",
                 GTMachines.WOODEN_MULTIBLOCK_TANK.asStack(), " R ", "rCs", " R ", 'R',
-                new UnificationEntry(TagPrefix.ring, GTMaterials.Lead), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
+                new UnificationEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_multiblock_tank",
                 GTMachines.STEEL_MULTIBLOCK_TANK.asStack(), " R ", "hCw", " R ", 'R',
                 new UnificationEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_tank_valve", GTMachines.WOODEN_TANK_VALVE.asStack(),
                 " R ", "rCs", " O ", 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Lead), 'R',
-                new UnificationEntry(TagPrefix.ring, GTMaterials.Lead), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
+                new UnificationEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve", GTMachines.STEEL_TANK_VALVE.asStack(),
                 " R ", "hCw", " O ", 'O', new UnificationEntry(TagPrefix.rotor, GTMaterials.Steel), 'R',
                 new UnificationEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_wall", GTBlocks.CASING_WOOD_WALL.asStack(), "W W",
                 "sPh", "W W", 'W', GTBlocks.TREATED_WOOD_PLANK.asStack(), 'P',
-                new UnificationEntry(TagPrefix.plate, GTMaterials.Lead));
+                new UnificationEntry(TagPrefix.plate, GTMaterials.Copper));
 
         // MACHINES
         registerMachineRecipe(provider, GTMachines.ALLOY_SMELTER, "ECE", "CMC", "WCW", 'M', HULL, 'E', CIRCUIT, 'W',
                 CABLE, 'C', COIL_HEATING_DOUBLE);
         registerMachineRecipe(provider, GTMachines.ASSEMBLER, "ACA", "VMV", "WCW", 'M', HULL, 'V', CONVEYOR, 'A',
                 ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.BENDER, "PwP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.BENDER, "PBP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
+                CIRCUIT, 'W', CABLE, 'B', PLATE);
         registerMachineRecipe(provider, GTMachines.CANNER, "WPW", "CMC", "GGG", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W',
                 CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.COMPRESSOR, " C ", "PMP", "WCW", 'M', HULL, 'P', PISTON, 'C',

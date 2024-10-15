@@ -218,7 +218,7 @@ public class GCyMRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("mds_coil_block")
                 .inputItems(ChemicalHelper.get(ring, MolybdenumDisilicide, 32))
                 .inputItems(ChemicalHelper.get(foil, Graphene, 16))
-                .inputFluids(HSLASteel.getFluid(144))
+                .inputFluids(HSLASteel.getFluid(L))
                 .outputItems(MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(1))
                 .duration(500).EUt(1920)
                 .save(provider);

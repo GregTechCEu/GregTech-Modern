@@ -49,11 +49,11 @@ public class GuiTextures {
     public static final ResourceTexture TOOL_DISABLE_AUTO_OUTPUT = new ResourceTexture(
             "gtceu:textures/gui/overlay/tool_disable_auto_output.png");
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_NATIVE = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_block.png"); // switch to tool_switch_converter_native once that gets
-                                                               // made
+            "gtceu:textures/gui/overlay/tool_wire_block.png"); // todo switch to tool_switch_converter_native once that
+                                                               // gets made
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_EU = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // switch to tool_switch_converter_eu once that gets
-                                                                 // made
+            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // todo switch to tool_switch_converter_eu once that
+                                                                 // gets made
 
     // BASE TEXTURES
     public static final ResourceBorderTexture BACKGROUND = new ResourceBorderTexture(
@@ -387,6 +387,9 @@ public class GuiTextures {
             .fullImage("gtceu:textures/gui/progress_bar/progress_bar_arrow_%s.png");
     public static final ResourceTexture PROGRESS_BAR_ARROW_MULTIPLE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_arrow_multiple.png");
+    public static final ResourceTexture PROGRESS_BAR_ASSEMBLER = new ResourceTexture(
+            "gtceu:textures/gui/progress_bar/progress_bar_assembler.png");
+
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_assembly_line.png");
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE_ARROW = new ResourceTexture(
@@ -404,7 +407,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_CANNER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_canner.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT = new ResourceTexture(
-            "gtceu:textures/gui/progress_bar/progress_bar_circuit.png");
+            "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT_ASSEMBLER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_COKE_OVEN = new ResourceTexture(

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -111,11 +112,18 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-        recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
 
-        result.init(-eut, recipe.duration, parallelResult.getSecond());
+        recipe = new GTRecipe(recipe.recipeType, recipe.id,
+                recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.isFuel);
+
+        result.init(-eut, recipe.duration, 1, params.getOcAmount());
 
         return recipe;
     }
@@ -153,7 +161,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                            FormattingUtil.formatNumbers(currentProduction), voltageName));
+                            FormattingUtil.formatNumbers(currentProduction),
+                            FormattingUtil.formatNumbers(maxProduction)));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
