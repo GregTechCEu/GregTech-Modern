@@ -3,7 +3,7 @@
 <p align="center">GregTech:CEu built on modern Minecraft versions for Forge(1.20.1) & NeoForge(1.21+).</p>
 <h1 align="center">
     <a href="https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern"><img src="https://img.shields.io/badge/Available%20for-MC%201.20.1+%20-informational?style=for-the-badge" alt="Supported Versions"></a>
-    <a href="https://github.com/GregTechCEu/GregTech/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GregTechCEu/GregTech?style=for-the-badge" alt="License"></a>
+    <a href="https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/LICENSE"><img src="https://img.shields.io/github/license/GregTechCEu/GregTech?style=for-the-badge" alt="License"></a>
     <a href="https://discord.gg/bWSWuYvURP"><img src="https://img.shields.io/discord/701354865217110096?color=5464ec&label=Discord&style=for-the-badge" alt="Discord"></a>
     <br>
     <a href="https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern"><img src="https://cf.way2muchnoise.eu/890405.svg?badge_style=for_the_badge" alt="CurseForge"></a>
