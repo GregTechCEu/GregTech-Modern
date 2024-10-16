@@ -47,6 +47,8 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
 
     boolean isPlayerFriendly(Player player);
 
+    void broadcastMessage(Component message);
+
     enum MachineOwnerType {
 
         PLAYER,

@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
@@ -57,6 +59,12 @@ public interface IExplosionMachine extends IMachineFeature {
         var machine = self();
         var level = machine.getLevel();
         level.removeBlock(pos, false);
+        var owner = machine.getHolder().getOwner();
+        if (owner != null) {
+            String machineName = FormattingUtil.toEnglishName(machine.getDefinition().getName());
+            owner.broadcastMessage(
+                    Component.translatable("gtceu.machine.explosion", machineName, pos.getX(), pos.getY(), pos.getZ()));
+        }
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                 explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
                         Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
