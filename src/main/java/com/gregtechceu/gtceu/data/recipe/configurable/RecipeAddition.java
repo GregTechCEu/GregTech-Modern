@@ -189,7 +189,7 @@ public class RecipeAddition {
 
         ASSEMBLER_RECIPES.recipeBuilder("chain_steel")
                 .inputItems(ring, Steel, 3)
-                .outputItems(new ItemStack(Items.CHAIN, 4))
+                .outputItems(new ItemStack(Items.CHAIN, 6))
                 .duration(40).EUt(10).save(provider);
     }
 
