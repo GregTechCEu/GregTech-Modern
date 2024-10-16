@@ -661,6 +661,9 @@ public class ConfigHolder {
                 "Default: false (no placement printout in debug.log)" })
         public boolean debugWorldgen = false;
         @Configurable
+        @Configurable.Comment({ "Generate ores in superflat worlds?", "Default: false" })
+        public boolean doSuperflatOres = false;
+        @Configurable
         @Configurable.Comment({ "Dump all registered GT recipes?", "Default: false" })
         public boolean dumpRecipes = false;
         @Configurable
