@@ -46,7 +46,7 @@ public class RecipeRemoval {
          * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.LAPIS_ORE));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.REDSTONE_ORE));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.QUARTZ_ORE));
-         * 
+         *
          * // Remove a bunch of processing recipes for tools and armor, since we have significantly better options
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HELMET, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_CHESTPLATE, 1, W));
@@ -58,7 +58,7 @@ public class RecipeRemoval {
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_AXE, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_SWORD, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HOE, 1, W));
-         * 
+         *
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HELMET, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_CHESTPLATE, 1, W));
          * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_LEGGINGS, 1, W));
@@ -77,6 +77,9 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
     }
 
+    /**
+     * Remove recipes for any item that is 4x4 or 9x9 crafting (nuggets <-> ingot, ingot <-> block, etc.)
+     */
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:gold_block"));
         registry.accept(new ResourceLocation("minecraft:gold_nugget"));
@@ -131,6 +134,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:hopper"));
         registry.accept(new ResourceLocation("minecraft:iron_bars"));
         registry.accept(new ResourceLocation("minecraft:bucket"));
+        registry.accept(new ResourceLocation("minecraft:chain"));
     }
 
     private static void hardRedstoneRecipes(Consumer<ResourceLocation> registry) {
@@ -180,17 +184,43 @@ public class RecipeRemoval {
     }
 
     /**
-     * - Removes Vanilla Golden Apple Recipe
-     * - Removes Vanilla Ender Eye Recipe
-     * - Removes Vanilla Glistering Melon Recipe
-     * - Removes Vanilla Golden Carrot Recipe
-     * - Removes Vanilla Magma Cream Recipe
-     * - Removes Vanilla Polished Stone Variant Recipes
-     * - Removes Vanilla Brick Smelting Recipe
-     * - Removes Vanilla Fermented Spider Eye recipe
-     * - Removes Vanilla Fire Charge recipe
+     * Remove recipes for items that don't fit in any other config option.
+     * Vanilla items go here only if they not fit the criteria for removeVanillaBlockRecipes,
+     * disableManualCompression, or any of the other config options
      */
     private static void hardMiscRecipes(Consumer<ResourceLocation> registry) {
+        registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
+        registry.accept(new ResourceLocation("minecraft:beacon"));
+        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
+        registry.accept(new ResourceLocation("minecraft:lodestone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
+        registry.accept(new ResourceLocation("minecraft:brewing_stand"));
+        registry.accept(new ResourceLocation("minecraft:enchanting_table"));
+        registry.accept(new ResourceLocation("minecraft:jukebox"));
+        registry.accept(new ResourceLocation("minecraft:note_block"));
+        registry.accept(new ResourceLocation("minecraft:furnace"));
+        registry.accept(new ResourceLocation("minecraft:crafting_table"));
+        registry.accept(new ResourceLocation("minecraft:flower_pot"));
+        registry.accept(new ResourceLocation("minecraft:armor_stand"));
+        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
+        registry.accept(new ResourceLocation("minecraft:ender_chest"));
+        registry.accept(new ResourceLocation("minecraft:lantern"));
+        registry.accept(new ResourceLocation("minecraft:stonecutter"));
+        registry.accept(new ResourceLocation("minecraft:cartography_table"));
+        registry.accept(new ResourceLocation("minecraft:fletching_table"));
+        registry.accept(new ResourceLocation("minecraft:smithing_table"));
+        registry.accept(new ResourceLocation("minecraft:grindstone"));
+        registry.accept(new ResourceLocation("minecraft:smoker"));
+        registry.accept(new ResourceLocation("minecraft:blast_furnace"));
+        registry.accept(new ResourceLocation("minecraft:loom"));
+        registry.accept(new ResourceLocation("minecraft:composter"));
+        registry.accept(new ResourceLocation("minecraft:bell"));
+        registry.accept(new ResourceLocation("minecraft:conduit"));
+        registry.accept(new ResourceLocation("minecraft:candle"));
+        registry.accept(new ResourceLocation("minecraft:scaffolding"));
+        registry.accept(new ResourceLocation("minecraft:beehive"));
+        registry.accept(new ResourceLocation("minecraft:lightning_rod"));
+        registry.accept(new ResourceLocation("minecraft:lectern"));
         registry.accept(new ResourceLocation("minecraft:golden_apple"));
         registry.accept(new ResourceLocation("minecraft:book"));
         registry.accept(new ResourceLocation("minecraft:ender_eye"));
@@ -214,7 +244,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:brush"));
         registry.accept(new ResourceLocation("minecraft:recovery_compass"));
         registry.accept(new ResourceLocation("minecraft:spyglass"));
-        registry.accept(new ResourceLocation("minecraft:chain"));
         registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
         registry.accept(new ResourceLocation("minecraft:lodestone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
@@ -234,6 +263,7 @@ public class RecipeRemoval {
             registry.accept(new ResourceLocation(
                     String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
         }
+        registry.accept(new ResourceLocation("minecraft:tinted_glass"));
     }
 
     private static void nerfPaperCrafting(Consumer<ResourceLocation> registry) {
@@ -266,7 +296,17 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:flint_and_steel"));
     }
 
+    /**
+     * Removes the vanilla recipe for an item that would have BOTH a normal recipe as well as a GT recipe in
+     * normal recipe configs (think stairs, ladders, etc. having a crafting table recipe as well as a machine recipe)
+     */
     private static void removeVanillaBlockRecipes(Consumer<ResourceLocation> registry) {
+        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
+        registry.accept(new ResourceLocation("minecraft:polished_granite"));
+        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
+        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
+        registry.accept(new ResourceLocation("minecraft:packed_ice"));
+        registry.accept(new ResourceLocation("minecraft:blue_ice"));
         registry.accept(new ResourceLocation("minecraft:slime_block"));
         registry.accept(new ResourceLocation("minecraft:slime_ball"));
         registry.accept(new ResourceLocation("minecraft:melon"));
@@ -333,45 +373,6 @@ public class RecipeRemoval {
         // registry.accept(new ResourceLocation("minecraft:end_crystal"));
         registry.accept(new ResourceLocation("minecraft:end_rod"));
         // registry.accept(new ResourceLocation("minecraft:mud_bricks")); //no other way to obtain these rn
-        registry.accept(new ResourceLocation("minecraft:dripstone_block"));
-        registry.accept(new ResourceLocation("minecraft:beacon"));
-        registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
-        registry.accept(new ResourceLocation("minecraft:packed_ice"));
-        registry.accept(new ResourceLocation("minecraft:blue_ice"));
-        registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
-        registry.accept(new ResourceLocation("minecraft:lodestone"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
-        registry.accept(new ResourceLocation("minecraft:brewing_stand"));
-        registry.accept(new ResourceLocation("minecraft:enchanting_table"));
-        registry.accept(new ResourceLocation("minecraft:jukebox"));
-        registry.accept(new ResourceLocation("minecraft:note_block"));
-        registry.accept(new ResourceLocation("minecraft:furnace"));
-        registry.accept(new ResourceLocation("minecraft:crafting_table"));
-        registry.accept(new ResourceLocation("minecraft:polished_granite"));
-        registry.accept(new ResourceLocation("minecraft:polished_diorite"));
-        registry.accept(new ResourceLocation("minecraft:polished_andesite"));
-        registry.accept(new ResourceLocation("minecraft:flower_pot"));
-        registry.accept(new ResourceLocation("minecraft:armor_stand"));
-        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
-        registry.accept(new ResourceLocation("minecraft:ender_chest"));
-        registry.accept(new ResourceLocation("minecraft:lantern"));
-        registry.accept(new ResourceLocation("minecraft:tinted_glass"));
-        registry.accept(new ResourceLocation("minecraft:stonecutter"));
-        registry.accept(new ResourceLocation("minecraft:cartography_table"));
-        registry.accept(new ResourceLocation("minecraft:fletching_table"));
-        registry.accept(new ResourceLocation("minecraft:smithing_table"));
-        registry.accept(new ResourceLocation("minecraft:grindstone"));
-        registry.accept(new ResourceLocation("minecraft:smoker"));
-        registry.accept(new ResourceLocation("minecraft:blast_furnace"));
-        registry.accept(new ResourceLocation("minecraft:loom"));
-        registry.accept(new ResourceLocation("minecraft:composter"));
-        registry.accept(new ResourceLocation("minecraft:bell"));
-        registry.accept(new ResourceLocation("minecraft:conduit"));
-        registry.accept(new ResourceLocation("minecraft:candle"));
-        registry.accept(new ResourceLocation("minecraft:scaffolding"));
-        registry.accept(new ResourceLocation("minecraft:beehive"));
-        registry.accept(new ResourceLocation("minecraft:lightning_rod"));
-        registry.accept(new ResourceLocation("minecraft:lectern"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
