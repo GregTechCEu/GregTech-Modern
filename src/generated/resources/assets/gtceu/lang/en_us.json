@@ -2236,6 +2236,7 @@
   "config.gtceu.option.disableManualCompression": "disableManualCompression",
   "config.gtceu.option.doBedrockOres": "doBedrockOres",
   "config.gtceu.option.doProcessingArray": "doProcessingArray",
+  "config.gtceu.option.doSuperflatOres": "doSuperflatOres",
   "config.gtceu.option.doTerrainExplosion": "doTerrainExplosion",
   "config.gtceu.option.doesExplosionDamagesTerrain": "doesExplosionDamagesTerrain",
   "config.gtceu.option.dumpAssets": "dumpAssets",
