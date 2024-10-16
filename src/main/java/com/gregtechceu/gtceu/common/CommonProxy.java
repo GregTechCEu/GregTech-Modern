@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
+import com.gregtechceu.gtceu.integration.jsonthings.JsonThingsCompat;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -58,6 +59,7 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -67,6 +69,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
 import com.google.common.collect.Multimaps;
@@ -84,6 +87,10 @@ public class CommonProxy {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
+
+        if (LDLib.isModLoaded(GTValues.MODID_JSONTHINGS)) {
+            JsonThingsCompat.init(eventBus);
+        }
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
@@ -214,6 +221,11 @@ public class CommonProxy {
         /* End Material Registration */
     }
 
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void newRegistry(NewRegistryEvent event) {
+        CommonProxy.init();
+    }
+
     @SubscribeEvent
     public void register(RegisterEvent event) {
         if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
@@ -223,7 +235,6 @@ public class CommonProxy {
     @SubscribeEvent
     public void modConstruct(FMLConstructModEvent event) {
         // this is done to delay initialization of content to be after KJS has set up.
-        event.enqueueWork(CommonProxy::init);
     }
 
     @SubscribeEvent

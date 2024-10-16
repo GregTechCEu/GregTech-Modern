@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -18,12 +19,21 @@ import java.util.function.Supplier;
 
 public class FluidStorageImpl implements FluidStorage {
 
-    private final Map<FluidStorageKey, FluidEntry> map = new Object2ObjectOpenHashMap<>();
+    public static final Codec<FluidStorageImpl> CODEC = Codec.unboundedMap(FluidStorageKey.CODEC, FluidEntry.CODEC)
+            .xmap(FluidStorageImpl::new, (FluidStorageImpl fluidStorage) -> fluidStorage.map);
+
+    private final Map<FluidStorageKey, FluidEntry> map;
     private Map<FluidStorageKey, FluidBuilder> toRegister = new Object2ObjectOpenHashMap<>();
 
     private boolean registered = false;
 
-    public FluidStorageImpl() {}
+    public FluidStorageImpl() {
+        this.map = new Object2ObjectOpenHashMap<>();
+    }
+
+    private FluidStorageImpl(Map<FluidStorageKey, FluidEntry> map) {
+        this.map = map;
+    }
 
     /**
      * Enqueue a fluid for registration

@@ -1,8 +1,26 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.StringRepresentable;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Locale;
+
+@AllArgsConstructor
 public class BlastProperty implements IMaterialProperty<BlastProperty> {
+
+    public static final Codec<BlastProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.POSITIVE_INT.fieldOf("blast_temperature").forGetter(val -> val.blastTemperature),
+            GasTier.CODEC.fieldOf("gas_tier").forGetter(val -> val.gasTier),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("duration_override", -1)
+                    .forGetter(val -> val.durationOverride),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("eut_override", -1).forGetter(val -> val.EUtOverride))
+            .apply(instance, BlastProperty::new));
 
     /**
      * Blast Furnace Temperature of this Material.
@@ -12,6 +30,7 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * If a Material with this Property has a Fluid, its temperature
      * will be set to this if it is the default Fluid temperature.
      */
+    @Getter
     private int blastTemperature;
 
     /**
@@ -19,6 +38,8 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: null, meaning no Gas EBF recipes.
      */
+    @Getter
+    @Setter
     private GasTier gasTier = null;
 
     /**
@@ -26,6 +47,8 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: -1, meaning the duration will be: material.getAverageMass() * blastTemperature / 50
      */
+    @Getter
+    @Setter
     private int durationOverride = -1;
 
     /**
@@ -33,17 +56,12 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
      * <p>
      * Default: -1, meaning the EU/t will be 120.
      */
-    private int eutOverride = -1;
+    @Getter
+    @Setter
+    private int EUtOverride = -1;
 
     public BlastProperty(int blastTemperature) {
         this.blastTemperature = blastTemperature;
-    }
-
-    public BlastProperty(int blastTemperature, GasTier gasTier, int eutOverride, int durationOverride) {
-        this.blastTemperature = blastTemperature;
-        this.gasTier = gasTier;
-        this.eutOverride = eutOverride;
-        this.durationOverride = durationOverride;
     }
 
     /**
@@ -53,37 +71,9 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
         this(0);
     }
 
-    public int getBlastTemperature() {
-        return blastTemperature;
-    }
-
     public void setBlastTemperature(int blastTemp) {
         if (blastTemp <= 0) throw new IllegalArgumentException("Blast Temperature must be greater than zero!");
         this.blastTemperature = blastTemp;
-    }
-
-    public GasTier getGasTier() {
-        return gasTier;
-    }
-
-    public void setGasTier(@NotNull GasTier tier) {
-        this.gasTier = tier;
-    }
-
-    public int getDurationOverride() {
-        return durationOverride;
-    }
-
-    public void setDurationOverride(int duration) {
-        this.durationOverride = duration;
-    }
-
-    public int getEUtOverride() {
-        return eutOverride;
-    }
-
-    public void setEutOverride(int eut) {
-        this.eutOverride = eut;
     }
 
     @Override
@@ -91,21 +81,7 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
         properties.ensureSet(PropertyKey.INGOT, true);
     }
 
-    public static GasTier validateGasTier(String gasTierName) {
-        if (gasTierName == null) return null;
-        else if ("LOW".equalsIgnoreCase(gasTierName)) return GasTier.LOW;
-        else if ("MID".equalsIgnoreCase(gasTierName)) return GasTier.MID;
-        else if ("HIGH".equalsIgnoreCase(gasTierName)) return GasTier.HIGH;
-        else if ("HIGHER".equalsIgnoreCase(gasTierName)) return GasTier.HIGHER;
-        else if ("HIGHEST".equalsIgnoreCase(gasTierName)) return GasTier.HIGHEST;
-        else {
-            String message = "Gas Tier must be either \"LOW\", \"MID\", \"HIGH\", \"HIGHER\", or \"HIGHEST\"";
-            throw new IllegalArgumentException(
-                    "Could not find valid gas tier for name: " + gasTierName + ". " + message);
-        }
-    }
-
-    public enum GasTier {
+    public enum GasTier implements StringRepresentable {
 
         // Tiers used by GTCEu
         LOW,
@@ -117,5 +93,11 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
         HIGHEST;
 
         public static final GasTier[] VALUES = values();
+        public static final Codec<GasTier> CODEC = StringRepresentable.fromEnum(GasTier::values);
+
+        @Override
+        public String getSerializedName() {
+            return name().toUpperCase(Locale.ROOT);
+        }
     }
 }

@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -50,6 +51,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -122,6 +124,12 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
     public static MachineBuilder<MultiblockMachineDefinition> createPrimitiveMultiblock(String name, Object... args) {
         return new CustomMultiblockBuilder(name, (holder) -> new PrimitiveFancyUIWorkableMachine(holder, args));
+    }
+
+    public static MachineBuilder<MultiblockMachineDefinition> createSteamMultiblock(String name, Object... args) {
+        return new CustomMultiblockBuilder(name,
+                (holder) -> new SteamParallelMultiblockMachine(holder, ((Number) args[0]).intValue(),
+                        Arrays.copyOfRange(args, 1, args.length)));
     }
 
     public static CustomMultiblockBuilder tieredBuilder(String name, CustomMultiblockBuilder[] builders) {

@@ -120,7 +120,7 @@ public class GTValues {
             MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
             MODID_CREATE = "create",
-            MODID_REBORN_ENERGY = "team_reborn_energy",
+            MODID_JSONTHINGS = "jsonthings",
             MODID_ALMOSTUNIFIED = "almostunified",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",

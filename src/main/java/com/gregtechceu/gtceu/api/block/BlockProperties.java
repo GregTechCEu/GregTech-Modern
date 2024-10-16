@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.block;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
 /**
  * @author KilaBash
@@ -10,4 +12,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 public final class BlockProperties {
 
     public static final BooleanProperty SERVER_TICK = BooleanProperty.create("server_tick");
+    public static final DirectionProperty UPWARDS_FACING_PROPERTY = DirectionProperty.create("upwards_facing",
+            Direction.Plane.HORIZONTAL);
 }

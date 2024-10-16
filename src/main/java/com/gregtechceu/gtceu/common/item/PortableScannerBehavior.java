@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -211,7 +211,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",
                             machine.getFrontFacing().getSerializedName()));
                     list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing",
-                            machineBlockEntity.self().getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY)
+                            machineBlockEntity.self().getBlockState().getValue(BlockProperties.UPWARDS_FACING_PROPERTY)
                                     .getSerializedName()));
                 }
 

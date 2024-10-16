@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -234,7 +234,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     public Direction getUpwardsFacing() {
-        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) :
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(BlockProperties.UPWARDS_FACING_PROPERTY) :
                 Direction.NORTH;
     }
 
@@ -246,9 +246,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
         BlockState blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock &&
-                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+                blockState.getValue(BlockProperties.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+                    blockState.setValue(BlockProperties.UPWARDS_FACING_PROPERTY, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
