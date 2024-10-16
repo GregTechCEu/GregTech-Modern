@@ -75,7 +75,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
-@LDLRegister(name = "fluid_slot", group = "widget.container")
+@LDLRegister(name = "fluid_slot", group = "widget.container", priority = 50)
 @Accessors(chain = true)
 public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfigurableWidget {
 

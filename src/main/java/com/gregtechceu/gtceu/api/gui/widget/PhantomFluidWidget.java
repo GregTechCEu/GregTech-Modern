@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@LDLRegister(name = "phantom_fluid_slot", group = "widget.container")
+@LDLRegister(name = "phantom_fluid_slot", group = "widget.container", priority = 50)
 public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTarget, IConfigurableWidget {
 
     private final Supplier<FluidStack> phantomFluidGetter;
