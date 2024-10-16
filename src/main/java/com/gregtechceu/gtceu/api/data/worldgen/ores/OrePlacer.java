@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
