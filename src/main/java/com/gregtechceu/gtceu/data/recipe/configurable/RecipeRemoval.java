@@ -297,8 +297,8 @@ public class RecipeRemoval {
     }
 
     /**
-     * Removes the vanilla recipe for an item that would has BOTH a normal recipe as well as a GT recipe in normal
-     * configs (think stairs, ladders, etc.)
+     * Removes the vanilla recipe for an item that would have BOTH a normal recipe as well as a GT recipe in
+     * normal recipe configs (think stairs, ladders, etc. having a crafting table recipe as well as a machine recipe)
      */
     private static void removeVanillaBlockRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:dripstone_block"));
