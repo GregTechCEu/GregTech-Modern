@@ -56,15 +56,15 @@ public class TagPrefixItemRenderer {
             if (file1 == null) continue;
             try (InputStream stream1 = file1.open()) {
                 if (!(model.item instanceof TagPrefixItem prefixItem)) continue;
-                int materialRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialARGB());
-                int materialSecondaryRGBA = GradientUtil.argbToRgba(prefixItem.material.getMaterialSecondaryARGB());
+                int materialABGR = GradientUtil.argbToAbgr(prefixItem.material.getMaterialARGB());
+                int materialSecondaryABGR = GradientUtil.argbToAbgr(prefixItem.material.getMaterialSecondaryARGB());
 
                 NativeImage image1 = NativeImage.read(stream1);
                 try (NativeImage result = new NativeImage(image1.getWidth(), image1.getHeight(), true)) {
                     for (int x = 0; x < image1.getWidth(); ++x) {
                         for (int y = 0; y < image1.getHeight(); ++y) {
                             int color = image1.getPixelRGBA(x, y);
-                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendARGB(color, materialRGBA));
+                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendWithAlpha(color, materialABGR));
                         }
                     }
                     if (prefixItem.material.getMaterialSecondaryARGB() != -1) {
@@ -79,7 +79,7 @@ public class TagPrefixItemRenderer {
                                     for (int y = 0; y < image1.getHeight(); ++y) {
                                         int color = image2.getPixelRGBA(x, y);
                                         result.blendPixel(x, y,
-                                                GradientUtil.multiplyBlendARGB(color, materialSecondaryRGBA));
+                                                GradientUtil.multiplyBlendWithAlpha(color, materialSecondaryABGR));
                                     }
                                 }
                             }

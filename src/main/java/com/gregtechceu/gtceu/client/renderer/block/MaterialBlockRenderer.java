@@ -62,19 +62,19 @@ public class MaterialBlockRenderer {
             if (file1 == null) continue;
             try (InputStream stream1 = file1.open()) {
                 if (!(model.block instanceof MaterialBlock materialBlock)) continue;
-                int materialRGBA = GradientUtil.argbToRgba(materialBlock.material.getMaterialARGB());
+                int materialABGR = GradientUtil.argbToAbgr(materialBlock.material.getMaterialARGB());
 
                 NativeImage image1 = NativeImage.read(stream1);
                 try (NativeImage result = new NativeImage(image1.getWidth(), image1.getHeight(), true)) {
                     for (int x = 0; x < image1.getWidth(); ++x) {
                         for (int y = 0; y < image1.getHeight(); ++y) {
                             int color = image1.getPixelRGBA(x, y);
-                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendARGB(color, materialRGBA));
+                            result.setPixelRGBA(x, y, GradientUtil.multiplyBlendWithAlpha(color, materialABGR));
                         }
                     }
                     if (materialBlock.material.getMaterialSecondaryARGB() != -1) {
-                        int materialSecondaryRGBA = GradientUtil
-                                .argbToRgba(materialBlock.material.getMaterialSecondaryARGB());
+                        int materialSecondaryABGR = GradientUtil
+                                .argbToAbgr(materialBlock.material.getMaterialSecondaryARGB());
                         Resource file2 = Minecraft.getInstance().getResourceManager()
                                 .getResource(GTDynamicResourcePack.getTextureLocation(null,
                                         model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX)))
@@ -86,7 +86,7 @@ public class MaterialBlockRenderer {
                                     for (int y = 0; y < image1.getHeight(); ++y) {
                                         int color = image2.getPixelRGBA(x, y);
                                         result.blendPixel(x, y,
-                                                GradientUtil.multiplyBlendARGB(color, materialSecondaryRGBA));
+                                                GradientUtil.multiplyBlendWithAlpha(color, materialSecondaryABGR));
                                     }
                                 }
                             }

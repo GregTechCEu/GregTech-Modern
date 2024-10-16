@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.integration.map.journeymap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.map.IWaypointHandler;
 
-import journeymap.client.api.model.MapImage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -19,12 +17,10 @@ public class JourneymapWaypointHandler implements IWaypointHandler {
     private static final Map<String, Waypoint> waypoints = new Object2ObjectOpenHashMap<>();
 
     @Override
-    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z,
-                            ResourceLocation texture) {
+    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
         Waypoint waypoint = new Waypoint(GTCEu.MOD_ID, name, dim, new BlockPos(x, y, z))
                 .setPersistent(true)
-                .setColor(color)
-                .setIcon(new MapImage(texture, 16, 16));
+                .setColor(color);
         waypoints.put(key, waypoint);
         try {
             JourneyMapPlugin.getJmApi().show(waypoint);

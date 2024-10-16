@@ -20,9 +20,14 @@ import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -154,8 +159,31 @@ public abstract class ProspectorMode<T> {
         }
     };
 
-    public record FluidInfo(Fluid fluid, int left, int yield) {
+    @Accessors(fluent = true)
+    @AllArgsConstructor
+    public static final class FluidInfo {
 
+        @Getter
+        private final Fluid fluid;
+        @Getter
+        private final int yield;
+        @Getter @Setter
+        private int left;
+
+        public static FluidInfo fromNbt(CompoundTag tag) {
+            Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
+            int left = tag.getInt("left");
+            int yield = tag.getInt("yield");
+            return new FluidInfo(fluid, left, yield);
+        }
+
+        public CompoundTag toNbt() {
+            CompoundTag tag = new CompoundTag();
+            tag.putString("fluid", BuiltInRegistries.FLUID.getKey(fluid).toString());
+            tag.putInt("left", left);
+            tag.putInt("yield", yield);
+            return tag;
+        }
     }
 
     public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {

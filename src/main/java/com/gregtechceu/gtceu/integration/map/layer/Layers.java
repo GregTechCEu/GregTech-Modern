@@ -1,20 +1,21 @@
 package com.gregtechceu.gtceu.integration.map.layer;
 
 import com.gregtechceu.gtceu.integration.map.ButtonState;
+import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class Layers {
 
-    private static final BiMap<String, BiFunction<String, GenericMapRenderer, ? extends MapRenderLayer>> layers = HashBiMap.create();
+    private static final BiMap<String, BiFunction<String, GenericMapRenderer, ? extends MapRenderLayer>> layers = HashBiMap
+            .create();
 
-    public static void registerLayer(BiFunction<String, GenericMapRenderer, ? extends MapRenderLayer> initFunction, String key) {
+    public static void registerLayer(BiFunction<String, GenericMapRenderer, ? extends MapRenderLayer> initFunction,
+                                     String key) {
         layers.put(key, initFunction);
         ButtonState.Button.makeButton(key);
     }

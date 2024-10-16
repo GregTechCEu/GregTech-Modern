@@ -2,11 +2,12 @@ package com.gregtechceu.gtceu.integration.map.cache;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
+
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,17 +31,13 @@ public class DimensionCache {
         return added;
     }
 
-    public CompoundTag toNBT(boolean saveDepleted) {
-        return toNBT(new CompoundTag(), saveDepleted);
+    public CompoundTag toNBT() {
+        return toNBT(new CompoundTag());
     }
 
     public CompoundTag toNBT(CompoundTag nbt) {
-        return toNBT(nbt, false);
-    }
-
-    public CompoundTag toNBT(CompoundTag nbt, boolean saveDepleted) {
         for (GridPos key : cache.keySet()) {
-            nbt.put(key.x + "," + key.z, cache.get(key).toNBT(saveDepleted));
+            nbt.put(key.x + "," + key.z, cache.get(key).toNBT());
         }
         return nbt;
     }

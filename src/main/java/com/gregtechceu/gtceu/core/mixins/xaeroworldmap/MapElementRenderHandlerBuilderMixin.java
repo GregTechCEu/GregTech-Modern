@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.xaeroworldmap;
 
-import com.gregtechceu.gtceu.integration.map.xaeros.OreVeinElementRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore.OreVeinElementRenderer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;

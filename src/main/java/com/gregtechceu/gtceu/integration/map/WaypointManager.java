@@ -8,7 +8,6 @@ import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -47,11 +46,10 @@ public class WaypointManager {
         }
     }
 
-    public static void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z,
-                                   ResourceLocation texture) {
+    public static void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
         if (dim == null) dim = currentDimension;
         for (IWaypointHandler handler : handlers) {
-            handler.setWaypoint(key, name, color, dim, x, y, z, texture);
+            handler.setWaypoint(key, name, color, dim, x, y, z);
         }
         waypoints.put(key, new WaypointKey(dim, x, y, z));
     }
@@ -64,13 +62,13 @@ public class WaypointManager {
     }
 
     public static boolean toggleWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y,
-                                         int z, ResourceLocation texture) {
+                                         int z) {
         if (dim == null) dim = currentDimension;
         if ((new WaypointKey(dim, x, y, z)).equals(waypoints.get(key))) {
             removeWaypoint(key);
             return false;
         }
-        setWaypoint(key, name, color, dim, x, y, z, texture);
+        setWaypoint(key, name, color, dim, x, y, z);
         return true;
     }
 

@@ -101,5 +101,12 @@ public class IntegrationLang {
 
     private static void initMinimapLang(RegistrateLangProvider provider) {
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
+
+        provider.add("message.gtceu.new_veins", "Prospected %d new veins!");
+        provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
+        provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
+
+        provider.add("gtceu.journeymap.options.layers", "Prospection layers");
+        provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
     }
 }

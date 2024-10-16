@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
+import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -193,6 +195,11 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @OnlyIn(Dist.CLIENT)
     private void addPacketToQueue(PacketProspecting packet) {
         packetQueue.add(packet);
+        if (mode == ProspectorMode.FLUID && packet.data[0][0].length > 0) {
+            GTClientCache.instance.addFluid(gui.entityPlayer.level().dimension(), packet.chunkX, packet.chunkZ,
+                    (ProspectorMode.FluidInfo) packet.data[0][0][0]);
+
+        }
     }
 
     @Override

@@ -9,12 +9,14 @@ public class ButtonState {
 
     public static void toggleButton(Button button) {
         button.enabled = !button.enabled;
+        GroupingMapRenderer.getInstance().setLayerActive(button.name, button.enabled);
 
         // disable all other buttons if one is enabled
         if (button.enabled) {
             for (String name : buttons.keySet()) {
                 if (!name.equals(button.name)) {
                     buttons.get(name).enabled = false;
+                    GroupingMapRenderer.getInstance().setLayerActive(name, false);
                 }
             }
         }

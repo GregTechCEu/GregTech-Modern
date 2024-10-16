@@ -16,7 +16,10 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
-        "rei.FluidEntryRendererMixin"
+        "journeymap.FullscreenMixin",
+        "rei.FluidEntryRendererMixin",
+        "xaeroworldmap.GuiMapMixin",
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin"
     ],
     "mixins": [
         "AbstractRegistrateAccessor",
@@ -63,7 +66,9 @@
         "jei.FluidHelperMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
-        "top.ConfigMixin"
+        "top.ConfigMixin",
+        "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.WorldMapSessionMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

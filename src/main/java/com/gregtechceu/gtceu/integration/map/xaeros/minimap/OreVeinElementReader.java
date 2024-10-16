@@ -1,39 +1,28 @@
-package com.gregtechceu.gtceu.integration.map.xaeros;
+package com.gregtechceu.gtceu.integration.map.xaeros.minimap;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.map.xaeros.XaerosWorldMapPlugin;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+
+import xaero.hud.minimap.element.render.MinimapElementReader;
 import xaero.map.WorldMap;
-import xaero.map.element.MapElementReader;
-import xaero.map.gui.IRightClickableElement;
-import xaero.map.gui.dropdown.rightclick.RightClickOption;
 
-import java.util.ArrayList;
-
-public class OreVeinElementReader extends MapElementReader<OreVeinElement, OreVeinElementContext, OreVeinElementRenderer> {
-
-    public boolean waypointIsGood(OreVeinElement w, OreVeinElementContext context) {
-        return true;
-    }
+public class OreVeinElementReader extends MinimapElementReader<OreVeinElement, OreVeinElementContext> {
 
     @Override
     public boolean isHidden(OreVeinElement element, OreVeinElementContext context) {
-        return !this.waypointIsGood(element, context) || !WorldMap.settings.showDisabledWaypoints && context.isElementTypeDisabled;
-    }
-
-    @Override
-    public boolean isInteractable(int location, OreVeinElement element) {
-        return true;
-    }
-
-    @Override
-    public float getBoxScale(int location, OreVeinElement element, OreVeinElementContext context) {
-        return context.worldmapWaypointsScale;
+        return !XaerosWorldMapPlugin.getOptionValue("ore_veins");
     }
 
     @Override
     public double getRenderX(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
         return element.getVein().center().getX();
+    }
+
+    @Override
+    public double getRenderY(OreVeinElement var1, OreVeinElementContext var2, float var3) {
+        return 0;
     }
 
     @Override
@@ -79,29 +68,6 @@ public class OreVeinElementReader extends MapElementReader<OreVeinElement, OreVe
     @Override
     public String getFilterName(OreVeinElement element) {
         return this.getMenuName(element);
-    }
-
-    @Override
-    public ArrayList<RightClickOption> getRightClickOptions(final OreVeinElement element, IRightClickableElement target) {
-        ArrayList<RightClickOption> rightClickOptions = new ArrayList<>();
-        rightClickOptions.add(new RightClickOption("button.gtceu.toggle_waypoint.name", 0, target) {
-            @Override
-            public void onAction(Screen screen) {
-                element.onMouseSelect();
-            }
-        });
-        rightClickOptions.add((new RightClickOption("button.gtceu.mark_as_depleted.name", rightClickOptions.size(), target) {
-            @Override
-            public void onAction(Screen screen) {
-                element.toggleDepleted();
-            }
-        }));
-        return rightClickOptions;
-    }
-
-    @Override
-    public boolean isRightClickValid(OreVeinElement element) {
-        return true;
     }
 
     @Override

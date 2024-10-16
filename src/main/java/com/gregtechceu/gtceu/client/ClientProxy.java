@@ -18,7 +18,8 @@ import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.layer.Layers;
-import com.gregtechceu.gtceu.integration.map.layer.ore.OreRenderLayer;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
@@ -65,6 +66,7 @@ public class ClientProxy extends CommonProxy {
         CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
         ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
         Layers.registerLayer(OreRenderLayer::new, "ore_veins");
+        Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
     }
 
     @SubscribeEvent
