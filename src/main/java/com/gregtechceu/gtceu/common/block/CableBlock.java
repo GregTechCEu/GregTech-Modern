@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
+import com.gregtechceu.gtceu.data.advancements.LVAdvancements;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -135,9 +136,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                 if (voltage > 0L && amperage > 0L) {
                     float damageAmount = (float) ((GTUtil.getTierByVoltage(voltage) + 1) * amperage * 4);
                     entityLiving.hurt(GTDamageTypes.ELECTRIC.source(level), damageAmount);
-                    if (entityLiving instanceof ServerPlayer) {
-                        // TODO advancments
-                        // AdvancementTriggers.ELECTROCUTION_DEATH.trigger((EntityPlayerMP) entityLiving);
+                    if (entityLiving instanceof ServerPlayer player) {
+                        player.getAdvancements().award(LVAdvancements.ELECTROCUTION_DEATH, "gt_placeholder_criteria");
                     }
                 }
             }

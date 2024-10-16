@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "gt_placeholder_criteria": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "gtceu:textures/gui/advancements/background.png",
+    "description": {
+      "translate": "gtceu.advancement.root_lv.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "gtceu:lv_machine_casing"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "gtceu.advancement.root_lv.title"
+    }
+  },
+  "requirements": [
+    [
+      "gt_placeholder_criteria"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

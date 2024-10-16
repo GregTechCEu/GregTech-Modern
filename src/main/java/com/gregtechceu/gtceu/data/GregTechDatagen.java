@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.data.advancements.AdvancementsHandler;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 
@@ -19,5 +20,6 @@ public class GregTechDatagen {
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, TagsHandler::initFluid);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ENTITY_TAGS, TagsHandler::initEntity);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.LANG, LangHandler::init);
+        GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ADVANCEMENT, AdvancementsHandler::init);
     }
 }
