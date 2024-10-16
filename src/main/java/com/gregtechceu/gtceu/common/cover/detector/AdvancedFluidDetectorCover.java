@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -17,8 +17,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -27,6 +25,8 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 
@@ -51,7 +51,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
 
     @Persisted
     @Getter
-    private long minValue, maxValue;
+    private int minValue, maxValue;
 
     @Persisted
     @DescSynced
@@ -82,7 +82,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
             return;
 
         FluidFilter filter = filterHandler.getFilter();
-        IFluidTransfer fluidHandler = getFluidTransfer();
+        IFluidHandler fluidHandler = getFluidHandler();
         if (fluidHandler == null)
             return;
 
@@ -99,11 +99,11 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
                 RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
     }
 
-    public void setMinValue(long minValue) {
+    public void setMinValue(int minValue) {
         this.minValue = GTMath.clamp(minValue, 0, maxValue - 1);
     }
 
-    public void setMaxValue(long maxValue) {
+    public void setMaxValue(int maxValue) {
         this.maxValue = Math.max(maxValue, 0);
     }
 
@@ -122,8 +122,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         group.addWidget(new TextBoxWidget(10, 80, 65,
                 List.of(LocalizationUtils.format("cover.advanced_fluid_detector.max"))));
 
-        group.addWidget(new LongInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
-        group.addWidget(new LongInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
+        group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
+        group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
 
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(

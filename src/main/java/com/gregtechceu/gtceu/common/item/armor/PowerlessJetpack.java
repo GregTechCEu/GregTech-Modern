@@ -17,11 +17,6 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
@@ -38,6 +33,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import com.google.common.collect.Table;
@@ -67,7 +65,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        IFluidTransfer internalTank = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(stack), 0);
+        IFluidHandler internalTank = FluidUtil.getFluidHandler(stack).resolve().orElse(null);
         if (internalTank == null)
             return;
 
@@ -137,7 +135,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     @OnlyIn(Dist.CLIENT)
     @Override
     public void drawHUD(@NotNull ItemStack item, GuiGraphics guiGraphics) {
-        IFluidTransfer tank = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(item), 0);
+        IFluidHandler tank = FluidUtil.getFluidHandler(item).resolve().orElse(null);
         if (tank != null) {
             if (tank.getFluidInTank(0).getAmount() == 0) return;
             String formated = String.format("%.1f",
@@ -178,11 +176,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return false;
         }
 
-        IFluidTransfer fluidHandlerItem = getIFluidHandlerItem(stack);
+        IFluidHandler fluidHandlerItem = getIFluidHandlerItem(stack);
         if (fluidHandlerItem == null)
             return false;
 
-        com.lowdragmc.lowdraglib.side.fluid.FluidStack fluidStack = fluidHandlerItem.drain(fuel, false);
+        FluidStack fluidStack = fluidHandlerItem.drain(fuel, IFluidHandler.FluidAction.EXECUTE);
         if (fluidStack.isEmpty())
             return false;
 
@@ -194,7 +192,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (this.burnTimer == 0) {
             FluidStack fuel = getFuel();
             if (fuel == null) return;
-            getIFluidHandlerItem(stack).drain(fuel, true);
+            getIFluidHandlerItem(stack).drain(fuel, IFluidHandler.FluidAction.SIMULATE);
             burnTimer = currentRecipe.duration;
         }
         this.burnTimer--;
@@ -205,14 +203,14 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         return burnTimer > 0 || currentRecipe != null;
     }
 
-    private static IFluidTransfer getIFluidHandlerItem(@NotNull ItemStack stack) {
-        return FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(stack), 0);
+    private static IFluidHandler getIFluidHandlerItem(@NotNull ItemStack stack) {
+        return FluidUtil.getFluidHandler(stack).resolve().orElse(null);
     }
 
     public void findNewRecipe(@NotNull ItemStack stack) {
-        IFluidTransfer internalTank = getIFluidHandlerItem(stack);
+        IFluidHandler internalTank = getIFluidHandlerItem(stack);
         if (internalTank != null) {
-            com.lowdragmc.lowdraglib.side.fluid.FluidStack fluidStack = internalTank.drain(1, false);
+            FluidStack fluidStack = internalTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
             if (previousRecipe != null && !fluidStack.isEmpty() &&
                     FluidRecipeCapability.CAP.of(previousRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
                             .test(fluidStack) &&
@@ -222,7 +220,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             } else if (!fluidStack.isEmpty()) {
                 Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables
                         .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
                 handler.getStorages()[0].setFluid(fluidStack);
                 table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
                 table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
@@ -260,7 +258,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return fluid.getStacks()[0];
         }
 
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     /*
@@ -281,7 +279,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables
                     .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
             handler.getStorages()[0].setFluid(fluidStack);
             table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
             table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
@@ -306,7 +304,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         @Override
         public float getDurabilityForDisplay(@NotNull ItemStack itemStack) {
-            IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(itemStack), 0);
+            IFluidHandler fluidHandlerItem = FluidUtil.getFluidHandler(itemStack).resolve().orElse(null);
             if (fluidHandlerItem == null) return 0;
             FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
             return fluidStack.isEmpty() ? 0 :
@@ -326,7 +324,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
                         @Override
                         public boolean canFillFluidType(net.minecraftforge.fluids.FluidStack fluid) {
-                            return JETPACK_FUEL_FILTER.test(FluidHelperImpl.toFluidStack(fluid));
+                            return JETPACK_FUEL_FILTER.test(fluid);
                         }
                     }));
         }
@@ -350,9 +348,9 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         @Override
         public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
             ItemStack copy = item.getDefaultInstance();
-            IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(copy), 0);
+            IFluidHandler fluidHandlerItem = FluidUtil.getFluidHandler(copy).resolve().orElse(null);
             if (fluidHandlerItem != null) {
-                fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), true);
+                fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), IFluidHandler.FluidAction.SIMULATE);
                 items.add(copy);
             } else {
                 items.add(copy);

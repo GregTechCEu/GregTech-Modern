@@ -5,17 +5,17 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     protected FluidFilter fluidFilter;
-    private FilteredFluidTransferWrapper fluidFilterWrapper;
+    private FilteredFluidHandlerWrapper fluidFilterWrapper;
 
     public FluidFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -39,7 +39,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
     }
 
     public FluidFilter getFluidFilter() {
@@ -50,13 +50,13 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public @Nullable IFluidTransfer getFluidTransferCap(@Nullable IFluidTransfer defaultValue) {
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable IFluidHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
 
         if (fluidFilterWrapper == null || fluidFilterWrapper.delegate != defaultValue) {
-            this.fluidFilterWrapper = new FilteredFluidTransferWrapper(defaultValue);
+            this.fluidFilterWrapper = new FilteredFluidHandlerWrapper(defaultValue);
         }
 
         return fluidFilterWrapper;
@@ -70,24 +70,24 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
         return group;
     }
 
-    private class FilteredFluidTransferWrapper extends FluidTransferDelegate {
+    private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {
 
-        public FilteredFluidTransferWrapper(IFluidTransfer delegate) {
+        public FilteredFluidHandlerWrapper(IFluidHandlerModifiable delegate) {
             super(delegate);
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public int fill(FluidStack resource, FluidAction action) {
             if (!getFluidFilter().test(resource))
                 return 0;
-            return super.fill(tank, resource, simulate, notifyChanges);
+            return super.fill(resource, action);
         }
 
         @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!getFluidFilter().test(resource))
-                return FluidStack.empty();
-            return super.drain(tank, resource, simulate, notifyChanges);
+                return FluidStack.EMPTY;
+            return super.drain(resource, action);
         }
     }
 }

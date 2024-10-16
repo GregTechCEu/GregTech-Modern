@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -56,8 +55,8 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    public long testFluidAmount(FluidStack fluidStack) {
-        return test(fluidStack) ? Long.MAX_VALUE : 0;
+    public int testFluidAmount(FluidStack fluidStack) {
+        return test(fluidStack) ? Integer.MAX_VALUE : 0;
     }
 
     @Override

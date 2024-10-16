@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraftforge.fluids.FluidStack;
 
+import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,15 +11,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class FluidTransferDelegate implements IFluidTransfer {
+public abstract class FluidHandlerDelegate implements IFluidHandlerModifiable {
 
-    public IFluidTransfer delegate;
+    @Setter
+    public IFluidHandlerModifiable delegate;
 
-    public FluidTransferDelegate(IFluidTransfer delegate) {
-        this.delegate = delegate;
-    }
-
-    protected void setDelegate(IFluidTransfer delegate) {
+    public FluidHandlerDelegate(IFluidHandlerModifiable delegate) {
         this.delegate = delegate;
     }
 
@@ -46,7 +42,7 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
     }
 
     @Override
-    public long getTankCapacity(int tank) {
+    public int getTankCapacity(int tank) {
         return delegate.getTankCapacity(tank);
     }
 
@@ -57,8 +53,8 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
 
     @Override
     @ApiStatus.Internal
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        return delegate.fill(tank, resource, simulate, notifyChanges);
+    public int fill(FluidStack resource, FluidAction action) {
+        return delegate.fill(resource, action);
     }
 
     @Override
@@ -68,31 +64,17 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
 
     @Override
     @ApiStatus.Internal
-    @NotNull
-    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        return delegate.drain(tank, resource, simulate, notifyChanges);
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        return delegate.drain(resource, action);
+    }
+
+    @Override
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        return delegate.drain(maxDrain, action);
     }
 
     @Override
     public boolean supportsDrain(int tank) {
         return delegate.supportsDrain(tank);
-    }
-
-    @Override
-    @ApiStatus.Internal
-    @NotNull
-    public Object createSnapshot() {
-        return delegate.createSnapshot();
-    }
-
-    @Override
-    @ApiStatus.Internal
-    public void restoreFromSnapshot(Object snapshot) {
-        delegate.restoreFromSnapshot(snapshot);
-    }
-
-    @Override
-    public void onContentsChanged() {
-        delegate.onContentsChanged();
     }
 }

@@ -3,16 +3,16 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 
@@ -41,12 +41,12 @@ public class SimpleFluidFilter implements FluidFilter {
     protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
-    protected long maxStackSize = 1L;
+    protected int maxStackSize = 1;
 
-    private FluidStorage[] fluidStorageSlots = new FluidStorage[9];
+    private CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
     protected SimpleFluidFilter() {
-        Arrays.fill(matches, FluidStack.empty());
+        Arrays.fill(matches, FluidStack.EMPTY);
     }
 
     public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
@@ -60,7 +60,7 @@ public class SimpleFluidFilter implements FluidFilter {
         handler.ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = FluidStack.loadFromTag((CompoundTag) list.get(i));
+            handler.matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
         }
         return handler;
     }
@@ -79,7 +79,7 @@ public class SimpleFluidFilter implements FluidFilter {
         tag.putBoolean("matchNbt", ignoreNbt);
         var list = new ListTag();
         for (var match : matches) {
-            list.add(match.saveToTag(new CompoundTag()));
+            list.add(match.writeToNBT(new CompoundTag()));
         }
         tag.put("matches", list);
         return tag;
@@ -97,12 +97,12 @@ public class SimpleFluidFilter implements FluidFilter {
 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        fluidStorageSlots = new FluidStorage[9];
+        fluidStorageSlots = new CustomFluidTank[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
 
-                fluidStorageSlots[index] = new FluidStorage(maxStackSize);
+                fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
                 var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
@@ -143,18 +143,18 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public long testFluidAmount(FluidStack fluidStack) {
-        long totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
+    public int testFluidAmount(FluidStack fluidStack) {
+        int totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
 
         if (isBlackList) {
-            return (totalFluidAmount > 0L) ? 0L : Long.MAX_VALUE;
+            return (totalFluidAmount > 0) ? 0 : Integer.MAX_VALUE;
         }
 
         return totalFluidAmount;
     }
 
-    public long getTotalConfiguredFluidAmount(FluidStack fluidStack) {
-        long totalAmount = 0L;
+    public int getTotalConfiguredFluidAmount(FluidStack fluidStack) {
+        int totalAmount = 0;
 
         for (var candidate : matches) {
             if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
@@ -167,10 +167,10 @@ public class SimpleFluidFilter implements FluidFilter {
         return totalAmount;
     }
 
-    public void setMaxStackSize(long maxStackSize) {
+    public void setMaxStackSize(int maxStackSize) {
         this.maxStackSize = maxStackSize;
 
-        for (FluidStorage slot : fluidStorageSlots) {
+        for (CustomFluidTank slot : fluidStorageSlots) {
             if (slot != null)
                 slot.setCapacity(maxStackSize);
         }

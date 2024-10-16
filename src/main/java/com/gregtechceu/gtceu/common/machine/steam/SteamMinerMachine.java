@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -37,6 +36,8 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,7 +74,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
         this.inventorySize = 4;
-        this.energyPerTick = (int) (16 * FluidHelper.getBucket() / 1000);
+        this.energyPerTick = 16;
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
     }
@@ -98,7 +99,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {
@@ -222,7 +223,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drainInternal(energyPerTick, false);
+                steamTank.drainInternal(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;

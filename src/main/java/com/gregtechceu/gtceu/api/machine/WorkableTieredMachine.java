@@ -15,7 +15,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Persisted
     public int activeRecipeType;
     @Getter
-    public final Int2LongFunction tankScalingFunction;
+    public final Int2IntFunction tankScalingFunction;
     @Nullable
     @Getter
     @Setter
@@ -79,7 +79,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                  Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();

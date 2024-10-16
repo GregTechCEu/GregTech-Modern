@@ -142,7 +142,7 @@ public class WireRecipeHandler {
                     .EUt(VA[ULV]).duration(100)
                     .inputItems(wirePrefix, material)
                     .outputItems(cablePrefix, material)
-                    .inputFluids(Rubber.getFluid(L * (long) insulationAmount));
+                    .inputFluids(Rubber.getFluid(L * insulationAmount));
 
             if (voltageTier == EV) {
                 builder.inputItems(foil, PolyvinylChloride, insulationAmount);
@@ -167,7 +167,7 @@ public class WireRecipeHandler {
             builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
-        builder.inputFluids(SiliconeRubber.getFluid(L * (long) insulationAmount / 2))
+        builder.inputFluids(SiliconeRubber.getFluid(L * insulationAmount / 2))
                 .save(provider);
 
         // Styrene Butadiene Rubber Recipe (all cables)
@@ -187,7 +187,7 @@ public class WireRecipeHandler {
             builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
-        builder.inputFluids(StyreneButadieneRubber.getFluid(L * (long) insulationAmount / 4))
+        builder.inputFluids(StyreneButadieneRubber.getFluid(L * insulationAmount / 4))
                 .save(provider);
     }
 

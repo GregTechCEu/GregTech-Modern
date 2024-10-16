@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import org.jetbrains.annotations.NotNull;
@@ -390,10 +388,10 @@ public class GCyMRecipes {
                 .inputItems(TagPrefix.dust, input1, input1Amount)
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .circuitMeta(input1Amount + input2Amount)
-                .outputFluids(output.getFluid((long) GTValues.L * outputAmount))
+                .outputFluids(output.getFluid(GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
-                .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
+                .blastFurnaceTemp(output.getFluid().getFluidType().getTemperature())
                 .save(provider);
     }
 
@@ -409,10 +407,10 @@ public class GCyMRecipes {
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .inputItems(TagPrefix.dust, input3, input3Amount)
                 .circuitMeta(input1Amount + input2Amount + input3Amount)
-                .outputFluids(output.getFluid((long) GTValues.L * outputAmount))
+                .outputFluids(output.getFluid(GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
-                .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
+                .blastFurnaceTemp(output.getFluid().getFluidType().getTemperature())
                 .save(provider);
     }
 

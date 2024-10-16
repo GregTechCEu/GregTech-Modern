@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
-    IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.
