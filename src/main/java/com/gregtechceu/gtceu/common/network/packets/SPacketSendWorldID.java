@@ -11,7 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class SpacketSendWorldID implements IPacket {
+public class SPacketSendWorldID implements IPacket {
 
     private String worldId;
 

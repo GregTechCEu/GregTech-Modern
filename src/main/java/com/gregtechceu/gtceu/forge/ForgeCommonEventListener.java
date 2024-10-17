@@ -304,7 +304,7 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            GTNetwork.NETWORK.sendToPlayer(new SpacketSendWorldID(), serverPlayer);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSendWorldID(), serverPlayer);
 
             if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
