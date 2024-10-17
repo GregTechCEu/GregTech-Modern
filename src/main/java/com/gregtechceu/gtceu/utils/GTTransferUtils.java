@@ -226,42 +226,42 @@ public class GTTransferUtils {
         return true;
     }
 
-    public static int fillFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack, FluidAction action) {
+    public static int fillFluidAccountNotifiableList(IFluidHandler fluidHandler, FluidStack stack, FluidAction action) {
         if (stack.isEmpty()) return 0;
-        if (handler instanceof FluidHandlerList handlerList) {
+        if (fluidHandler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : handlerList.handlers) {
+            for (var handler : handlerList.handlers) {
                 var candidate = copied.copy();
-                if (transfer instanceof NotifiableFluidTank notifiable) {
+                if (handler instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.fillInternal(candidate, action));
                 } else {
-                    copied.shrink(transfer.fill(candidate, action));
+                    copied.shrink(handler.fill(candidate, action));
                 }
                 if (copied.isEmpty()) break;
             }
             return stack.getAmount() - copied.getAmount();
         }
-        return handler.fill(stack, action);
+        return fluidHandler.fill(stack, action);
     }
 
-    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
+    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler fluidHandler, FluidStack stack,
                                                              FluidAction action) {
         if (stack.isEmpty()) return FluidStack.EMPTY;
-        if (handler instanceof FluidHandlerList handlerList) {
+        if (fluidHandler instanceof FluidHandlerList handlerList) {
             var copied = stack.copy();
-            for (var transfer : handlerList.handlers) {
+            for (var handler : handlerList.handlers) {
                 var candidate = copied.copy();
-                if (transfer instanceof NotifiableFluidTank notifiable) {
+                if (handler instanceof NotifiableFluidTank notifiable) {
                     copied.shrink(notifiable.drainInternal(candidate, action).getAmount());
                 } else {
-                    copied.shrink(transfer.drain(candidate, action).getAmount());
+                    copied.shrink(handler.drain(candidate, action).getAmount());
                 }
                 if (copied.isEmpty()) break;
             }
             copied.setAmount(stack.getAmount() - copied.getAmount());
             return copied;
         }
-        return handler.drain(stack, action);
+        return fluidHandler.drain(stack, action);
     }
 
     /**

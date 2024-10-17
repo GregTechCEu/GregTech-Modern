@@ -705,11 +705,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOFluidHandlerList transferList = new IOFluidHandlerList(list, io, getFluidCapFilter(side));
-        if (!useCoverCapability || side == null) return transferList;
+        IOFluidHandlerList handlerList = new IOFluidHandlerList(list, io, getFluidCapFilter(side));
+        if (!useCoverCapability || side == null) return handlerList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getFluidHandlerCap(transferList) : transferList;
+        return cover != null ? cover.getFluidHandlerCap(handlerList) : handlerList;
     }
 
     //////////////////////////////////////
