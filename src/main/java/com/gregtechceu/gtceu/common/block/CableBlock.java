@@ -137,7 +137,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                     entityLiving.hurt(GTDamageTypes.ELECTRIC.source(level), damageAmount);
                     if (entityLiving instanceof ServerPlayer) {
                         // TODO advancments
-                        // AdvancementTriggers.ELECTROCUTION_DEATH.trigger((EntityPlayerMP) entityLiving);
+                        // AdvancementTriggers.ELECTROCUTION_DEATH.trigger((ServerPlayer) entityLiving);
                     }
                 }
             }

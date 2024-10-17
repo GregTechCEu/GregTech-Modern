@@ -74,6 +74,10 @@ public class BedrockFluidVeinSavedData extends SavedData {
         return nbt;
     }
 
+    public static int getVeinCoord(int chunkCoord) {
+        return Math.floorDiv(chunkCoord, VEIN_CHUNK_SIZE);
+    }
+
     /**
      * Gets the FluidVeinWorldInfo object associated with the given chunk
      *
@@ -86,7 +90,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
         if (!veinFluids.containsKey(pos)) {
             BedrockFluidDefinition definition = null;
             int query = RandomSource
-                    .create(Objects.hash(serverLevel.getSeed(), chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE))
+                    .create(Objects.hash(serverLevel.getSeed(), getVeinCoord(chunkX), getVeinCoord(chunkZ)))
                     .nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);

@@ -26,7 +26,7 @@ public class GradientUtil {
         return new float[] { r, g, b };
     }
 
-    public static int multiplyBlendRGBA(int c1, int c2) {
+    public static int multiplyBlendWithAlpha(int c1, int c2) {
         int a1 = (c1 & 0xff);
         int r1 = ((c1 & 0xff000000) >> 24);
         int g1 = ((c1 & 0xff0000) >> 16);

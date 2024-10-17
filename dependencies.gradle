@@ -39,13 +39,19 @@ dependencies {
     modImplementation(forge.ae2) { transitive = false }
     modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
-    //AlmostUnified
-    modCompileOnly(forge.almostUnified.forge)
-
     // KJS
     modImplementation(forge.kubejs) { transitive = false }
     modImplementation(forge.architectury)
     modImplementation(forge.rhino)
+
+    // xaerosWorldMap
+    modImplementation(forge.xaerosminimap)
+    modImplementation(forge.xaerosworldmap)
+
+    // journeyMap
+    modCompileOnly(forge.journeymap.api)
+    modImplementation(forge.journeymap.forge)
+
 
     // Mixin (& Extras)
     api(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))

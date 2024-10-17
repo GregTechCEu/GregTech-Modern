@@ -87,7 +87,7 @@ public class GTCEu {
     }
 
     public static boolean isFTBTeamsLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_FTBTEAMS);
+        return LDLib.isModLoaded(GTValues.MODID_FTB_TEAMS);
     }
 
     public static boolean isArgonautsLoaded() {

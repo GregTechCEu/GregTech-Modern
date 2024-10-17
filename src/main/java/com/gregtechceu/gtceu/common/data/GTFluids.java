@@ -13,6 +13,8 @@ import net.minecraftforge.common.ForgeMod;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
@@ -25,8 +27,7 @@ public class GTFluids {
     public static void init() {
         handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
-        if (ForgeMod.MILK.isPresent())
-            handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK.get());
+        handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK);
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         // register fluids for materials
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
@@ -44,14 +45,10 @@ public class GTFluids {
     public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Fluid fluid) {
         var property = material.getProperty(PropertyKey.FLUID);
         property.getStorage().store(FluidStorageKeys.LIQUID, () -> fluid, null);
-        // TODO TOOLTIPS
-        // List<String> tooltip = new ArrayList<>();
-        // if (!material.getChemicalFormula().isEmpty()) {
-        // tooltip.add(TextFormatting.YELLOW + material.getChemicalFormula());
-        // }
-        // tooltip.add(LocalizationUtils.format("gtceu.fluid.temperature", property.getFluidTemperature()));
-        // tooltip.add(LocalizationUtils.format(property.getFluidType().getUnlocalizedTooltip()));
-        // tooltip.addAll(property.getFluidType().getAdditionalTooltips());
-        // FluidTooltipUtil.registerTooltip(fluid, tooltip);
+    }
+
+    public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Supplier<Fluid> fluid) {
+        var property = material.getProperty(PropertyKey.FLUID);
+        property.getStorage().store(FluidStorageKeys.LIQUID, fluid, null);
     }
 }

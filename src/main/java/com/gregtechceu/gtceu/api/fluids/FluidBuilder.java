@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 
@@ -348,7 +346,7 @@ public class FluidBuilder {
     private void determineColor(@Nullable Material material) {
         if (color != INFER_COLOR) return;
         if (isColorEnabled && material != null) {
-            color = Platform.isForge() ? GTUtil.convertRGBtoARGB(material.getMaterialRGB()) : material.getMaterialRGB();
+            color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
         }
     }
 
