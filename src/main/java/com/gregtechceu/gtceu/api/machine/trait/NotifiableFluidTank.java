@@ -99,13 +99,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Override
     public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
                                                    @Nullable String slotName, boolean simulate) {
-        return handleRecipe(io, left, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-    }
-
-    // TODO: Propagate FluidAction parameter up the caller chain
-    public List<FluidIngredient> handleRecipe(IO io, List<FluidIngredient> left, FluidAction action) {
+        if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 
+        FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
         for (var it = left.iterator(); it.hasNext();) {
             var ingredient = it.next();
             if (ingredient.isEmpty()) {
@@ -119,26 +116,19 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 continue;
             }
 
-            for (CustomFluidTank storage : storages) {
-                FluidStack stored = storage.getFluid();
-                int transferred = 0;
-                int toTransfer = ingredient.getAmount();
-                if (io == IO.IN) {
-                    if (!ingredient.test(stored)) continue;
-                    var copy = stored.copy();
-                    copy.setAmount(toTransfer);
-                    transferred = storage.drain(copy, action).getAmount();
-                } else { // IO.OUT
-                    FluidStack output = fluids[0];
-                    transferred = storage.fill(output.copy(), action);
-                    // TODO: Check *all* tanks first
-                    if (output.isFluidEqual(stored) && transferred < toTransfer && !allowSameFluids) return left;
+            if(io == IO.IN) {
+                for(FluidStack fluid : fluids) {
+                    FluidStack copy = new FluidStack(fluid, ingredient.getAmount());
+                    ingredient.shrink(drainInternal(copy, action).getAmount());
+                    if(ingredient.getAmount() <= 0) {
+                        it.remove();
+                        break;
+                    }
                 }
-                ingredient.setAmount(toTransfer - transferred);
-                if (ingredient.getAmount() <= 0) {
-                    it.remove();
-                    break;
-                }
+            } else { // IO.OUT
+                FluidStack output = fluids[0];
+                int filled = fillInternal(output, action);
+                if(filled >= ingredient.getAmount()) it.remove();
             }
         }
         return left.isEmpty() ? null : left;

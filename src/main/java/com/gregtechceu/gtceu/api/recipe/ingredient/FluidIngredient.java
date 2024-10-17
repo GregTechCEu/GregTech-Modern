@@ -167,6 +167,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.changed = true;
     }
 
+    public void shrink(int amount) {
+        setAmount(this.amount - amount);
+    }
+
     public void setNbt(CompoundTag nbt) {
         this.nbt = nbt;
         this.changed = true;
