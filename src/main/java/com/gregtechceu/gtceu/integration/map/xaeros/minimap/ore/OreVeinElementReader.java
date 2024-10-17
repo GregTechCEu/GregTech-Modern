@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.integration.map.xaeros.minimap;
+package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.map.xaeros.XaerosWorldMapPlugin;
+import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
 import net.minecraft.client.Minecraft;
 
@@ -12,7 +12,7 @@ public class OreVeinElementReader extends MinimapElementReader<OreVeinElement, O
 
     @Override
     public boolean isHidden(OreVeinElement element, OreVeinElementContext context) {
-        return !XaerosWorldMapPlugin.getOptionValue("ore_veins");
+        return !GroupingMapRenderer.getInstance().doShowLayer("ore_veins");
     }
 
     @Override

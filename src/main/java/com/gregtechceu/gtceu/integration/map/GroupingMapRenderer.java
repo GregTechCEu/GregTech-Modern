@@ -8,10 +8,11 @@ import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import lombok.Getter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,8 @@ public class GroupingMapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos, ProspectorMode.FluidInfo fluid) {
+    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+                             ProspectorMode.FluidInfo fluid) {
         boolean value = false;
         for (GenericMapRenderer renderer : rendererList) {
             value |= renderer.addMarker(name, id, dim, pos, fluid);
@@ -59,19 +61,19 @@ public class GroupingMapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, GeneratedVeinMetadata vein) {
+    public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
         boolean value = false;
         for (GenericMapRenderer renderer : rendererList) {
-            value |= renderer.addMarker(name, id, vein);
+            value |= renderer.addMarker(name, dim, vein, id);
         }
         return value;
     }
 
     @Override
-    public boolean removeMarker(String id) {
+    public boolean removeMarker(ResourceKey<Level> dim, String id) {
         boolean value = false;
         for (GenericMapRenderer renderer : rendererList) {
-            value |= renderer.removeMarker(id);
+            value |= renderer.removeMarker(dim, id);
         }
         return value;
     }

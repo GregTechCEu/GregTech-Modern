@@ -1,15 +1,17 @@
-package com.gregtechceu.gtceu.integration.map.xaeros.minimap;
+package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.map.xaeros.XaerosWorldMapPlugin;
+import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.common.graphics.renderer.multitexture.MultiTextureRenderTypeRendererProvider;
@@ -19,10 +21,9 @@ import xaero.hud.minimap.element.render.MinimapElementRenderer;
 
 public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElement, OreVeinElementContext> {
 
-    protected static final ResourceLocation STONE = new ResourceLocation("textures/block/stone.png");
+    protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
 
-    private OreVeinElementRenderer(
-                                   OreVeinElementReader elementReader,
+    private OreVeinElementRenderer(OreVeinElementReader elementReader,
                                    OreVeinElementRenderProvider provider,
                                    OreVeinElementContext context) {
         super(elementReader, provider, context);
@@ -47,12 +48,27 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         float[] colors = DrawUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        graphics.blit(STONE, -iconSize / 2, -iconSize / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
-
-        ResourceLocation texture = MaterialIconType.ore.getBlockTexturePath(firstMaterial.getMaterialIconSet(),
-                true).withPath(path -> "textures/" + path + ".png");
-        RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1);
-        graphics.blit(texture, -iconSize / 2, -iconSize / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
+        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+                true);
+        if (oreTexture != null) {
+            var oreSprite = Minecraft.getInstance()
+                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    .apply(oreTexture);
+            graphics.blit(-iconSize / 2, -iconSize / 2, 0, iconSize, iconSize,
+                    oreSprite, colors[0], colors[1], colors[2], 1);
+        }
+        // FIXME drawing the 2nd layer makes xaero's minimap transparent. so we won't. for now.
+        // oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary",
+        // true);
+        // if (oreTexture != null) {
+        // int materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
+        // colors = DrawUtil.floats(materialSecondaryARGB);
+        // var oreSprite = Minecraft.getInstance()
+        // .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+        // .apply(oreTexture);
+        // graphics.blit(-iconSize / 2, -iconSize / 2, 0, iconSize, iconSize,
+        // oreSprite, colors[0], colors[1], colors[2], 1);
+        // }
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         int borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(materialARGB | 0xFF000000);
@@ -72,7 +88,8 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
 
     @Override
     public boolean shouldRender(MinimapElementRenderLocation location) {
-        return XaerosWorldMapPlugin.getOptionValue("ore_veins") && location == MinimapElementRenderLocation.IN_MINIMAP;
+        return GroupingMapRenderer.getInstance().doShowLayer("ore_veins") &&
+                location == MinimapElementRenderLocation.IN_MINIMAP;
     }
 
     public static final class Builder {
@@ -80,10 +97,8 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         private Builder() {}
 
         public OreVeinElementRenderer build() {
-            OreVeinElementReader elementReader = new OreVeinElementReader();
-            OreVeinElementRenderProvider provider = new OreVeinElementRenderProvider();
-            OreVeinElementContext context = new OreVeinElementContext();
-            return new OreVeinElementRenderer(elementReader, provider, context);
+            return new OreVeinElementRenderer(new OreVeinElementReader(), new OreVeinElementRenderProvider(),
+                    new OreVeinElementContext());
         }
 
         public static OreVeinElementRenderer.Builder begin() {

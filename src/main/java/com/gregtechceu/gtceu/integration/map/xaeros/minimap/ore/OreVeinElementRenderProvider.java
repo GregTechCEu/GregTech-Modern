@@ -1,6 +1,10 @@
-package com.gregtechceu.gtceu.integration.map.xaeros.minimap;
+package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 import xaero.hud.minimap.element.render.MinimapElementRenderLocation;
 import xaero.hud.minimap.element.render.MinimapElementRenderProvider;
@@ -17,8 +21,8 @@ public class OreVeinElementRenderProvider extends MinimapElementRenderProvider<O
     @Override
     public void begin(MinimapElementRenderLocation location, OreVeinElementContext context) {
         if (WorldMap.settings.waypoints) {
-            this.iterator = XaerosRenderer.oreElements.values().iterator();
-            context.worldmapWaypointsScale = WorldMap.settings.worldmapWaypointsScale;
+            ResourceKey<Level> currentDim = Minecraft.getInstance().level.dimension();
+            this.iterator = XaerosRenderer.oreElements.row(currentDim).values().iterator();
         } else {
             this.iterator = null;
         }

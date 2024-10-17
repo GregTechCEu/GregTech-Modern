@@ -19,7 +19,10 @@
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
         "xaeroworldmap.GuiMapMixin",
-        "xaeroworldmap.MapElementRenderHandlerBuilderMixin"
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
+        "xaerominimap.HighlighterRegistryMixin",
+        "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
         "AbstractRegistrateAccessor",
@@ -66,9 +69,7 @@
         "jei.FluidHelperMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
-        "top.ConfigMixin",
-        "xaerominimap.MinimapFBORendererMixin",
-        "xaeroworldmap.WorldMapSessionMixin"
+        "top.ConfigMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

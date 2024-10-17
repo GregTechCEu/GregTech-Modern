@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.journeymap;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
@@ -8,13 +9,10 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import journeymap.client.api.model.MapPolygon;
-import journeymap.client.api.model.ShapeProperties;
-import journeymap.client.api.util.PolygonHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -22,17 +20,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.display.*;
 import journeymap.client.api.model.MapImage;
+import journeymap.client.api.model.MapPolygon;
+import journeymap.client.api.model.ShapeProperties;
+import journeymap.client.api.util.PolygonHelper;
 import journeymap.client.api.util.UIState;
 import lombok.Getter;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import java.awt.geom.Point2D;
 import java.util.Map;
@@ -54,7 +55,8 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos, ProspectorMode.FluidInfo fluid) {
+    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+                             ProspectorMode.FluidInfo fluid) {
         IClientAPI api = JourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
@@ -73,12 +75,12 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, GeneratedVeinMetadata vein) {
+    public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
         IClientAPI api = JourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
         }
-        MarkerOverlay marker = createMarker(name, id, vein);
+        MarkerOverlay marker = createMarker(name, id, dim, vein);
         markers.put(id, marker);
         if (this.doShowLayer("ore_veins")) {
             try {
@@ -92,7 +94,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean removeMarker(String id) {
+    public boolean removeMarker(ResourceKey<Level> dim, String id) {
         Overlay marker = markers.remove(id);
         if (marker == null) {
             return false;
@@ -112,7 +114,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         JourneyMapPlugin.getOptions().toggleLayer(name, active);
     }
 
-    private MarkerOverlay createMarker(String name, String id, GeneratedVeinMetadata vein) {
+    private MarkerOverlay createMarker(String name, String id, ResourceKey<Level> dim, GeneratedVeinMetadata vein) {
         BlockPos center = vein.center();
 
         @SuppressWarnings("DataFlowIssue")
@@ -123,17 +125,18 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         MarkerOverlay overlay = new MarkerOverlay(GTCEu.MOD_ID, id, center, image);
 
-        overlay.setDimension(Minecraft.getInstance().player.level().dimension());
+        overlay.setDimension(dim);
         overlay.setLabel("")
-                .setTitle(OreRenderLayer.getTooltip(name, vein).stream().map(Component::getString).reduce("", (s1, s2) -> {
-                    if (s1.isEmpty()) {
-                        return s2;
-                    }
-                    if (s2.isEmpty()) {
-                        return s1;
-                    }
-                    return String.join("\n", s1, s2);
-                }))
+                .setTitle(OreRenderLayer.getTooltip(name, vein).stream().map(Component::getString).reduce("",
+                        (s1, s2) -> {
+                            if (s1.isEmpty()) {
+                                return s2;
+                            }
+                            if (s2.isEmpty()) {
+                                return s1;
+                            }
+                            return String.join("\n", s1, s2);
+                        }))
                 .setOverlayListener(new MarkerListener(vein, name));
 
         return overlay;
@@ -143,13 +146,10 @@ public class JourneymapRenderer extends GenericMapRenderer {
         Material firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         int materialABGR = GradientUtil.argbToAbgr(firstMaterial.getMaterialARGB());
 
-        ResourceLocation layer0 = MaterialIconType.ore.getBlockTexturePath(firstMaterial.getMaterialIconSet(), true);
+        ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), true);
         TextureAtlasSprite baseTexture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(layer0);
-        if (baseTexture == null) return null;
-
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(STONE);
-        if (sprite == null) {
+                .apply(layer1);
+        if (baseTexture == null) {
             return null;
         }
 
@@ -160,21 +160,19 @@ public class JourneymapRenderer extends GenericMapRenderer {
         NativeImage result = new NativeImage(NativeImage.Format.RGBA, width, height, false);
         for (int x = 0; x < result.getWidth(); ++x) {
             for (int y = 0; y < result.getHeight(); ++y) {
-                int color = sprite.getPixelRGBA(0, x, y);
-                result.setPixelRGBA(x, y, color);
-                result.blendPixel(x, y, GradientUtil
+                result.setPixelRGBA(x, y, GradientUtil
                         .multiplyBlendWithAlpha(baseTexture.getPixelRGBA(0, x, y), materialABGR));
             }
         }
         if (firstMaterial.getMaterialSecondaryARGB() != -1) {
             int materialSecondaryABGR = GradientUtil.argbToAbgr(firstMaterial.getMaterialSecondaryARGB());
-            ResourceLocation layer1 = MaterialIconType.ore.getBlockTexturePath(firstMaterial.getMaterialIconSet(),
-                    "layer2", true);
-            if (layer1 == null) {
+            ResourceLocation layer2 = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+                    "secondary", true);
+            if (layer2 == null) {
                 return result;
             }
             TextureAtlasSprite image2 = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                    .apply(layer1);
+                    .apply(layer2);
 
             for (int x = 0; x < result.getWidth(); ++x) {
                 for (int y = 0; y < result.getHeight(); ++y) {
@@ -185,17 +183,29 @@ public class JourneymapRenderer extends GenericMapRenderer {
             }
         }
         // always set alpha to 1
-        result.applyToAllPixels(color -> color | 0xFF000000);
+        result.applyToAllPixels(color -> {
+            if ((color & 0xFF000000) != 0) {
+                return color | 0xFF000000;
+            }
+            return color;
+        });
 
         return result;
     }
 
-    private PolygonOverlay createMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos, ProspectorMode.FluidInfo vein) {
+    private PolygonOverlay createMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+                                        ProspectorMode.FluidInfo vein) {
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
+        int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
+        Material material = ChemicalHelper.getMaterial(vein.fluid());
+        if (material != null) {
+            color = material.getMaterialARGB();
+        }
+
         ShapeProperties shapeProps = new ShapeProperties()
-                .setStrokeWidth(2)
-                .setStrokeColor(0x00ff00).setStrokeOpacity(.7f)
-                .setFillColor(IClientFluidTypeExtensions.of(vein.fluid()).getTintColor())
+                .setStrokeWidth(0)
+                .setStrokeColor(color)
+                .setFillColor(color)
                 .setFillOpacity(.4f)
                 .setImageLocation(texture);
 
@@ -206,7 +216,6 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         overlay.setDimension(Minecraft.getInstance().player.level().dimension());
         overlay.setLabel("")
-
                 .setTitle(FluidRenderLayer.getTooltip(vein).stream().map(Component::getString).reduce("", (s1, s2) -> {
                     if (s1.isEmpty()) {
                         return s2;

@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.map.layer.builtin;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.ChunkPos;

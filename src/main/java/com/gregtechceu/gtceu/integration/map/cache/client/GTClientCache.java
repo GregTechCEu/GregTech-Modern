@@ -37,7 +37,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
     public boolean addVein(ResourceKey<Level> dim, int gridX, int gridZ, GeneratedVeinMetadata vein) {
         GenericMapRenderer renderer = GroupingMapRenderer.getInstance();
         if (renderer != null) {
-            renderer.addMarker(OreRenderLayer.getName(vein).getString(), OreRenderLayer.getId(vein), vein);
+            renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
         }
         return super.addVein(dim, gridX, gridZ, vein);
     }
@@ -70,7 +70,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
         if (renderer != null) {
             for (GridCache grid : cache.get(dim).getCache().values()) {
                 for (GeneratedVeinMetadata vein : grid.getVeins()) {
-                    renderer.addMarker(OreRenderLayer.getName(vein).getString(), OreRenderLayer.getId(vein), vein);
+                    renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
                 }
             }
         }

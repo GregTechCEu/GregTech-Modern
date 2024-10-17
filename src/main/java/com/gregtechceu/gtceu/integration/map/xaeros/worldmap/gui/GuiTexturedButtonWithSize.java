@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.map.gui.CursorBox;
 import xaero.map.gui.GuiTexturedButton;
 
@@ -13,7 +14,9 @@ public class GuiTexturedButtonWithSize extends GuiTexturedButton {
     protected int spriteW;
     protected int spriteH;
 
-    public GuiTexturedButtonWithSize(int x, int y, int w, int h, int textureX, int textureY, int textureW, int textureH, int spriteW, int spriteH, ResourceLocation texture, OnPress onPress, Supplier<CursorBox> tooltip) {
+    public GuiTexturedButtonWithSize(int x, int y, int w, int h, int textureX, int textureY, int textureW, int textureH,
+                                     int spriteW, int spriteH, ResourceLocation texture, OnPress onPress,
+                                     Supplier<CursorBox> tooltip) {
         super(x, y, w, h, textureX, textureY, textureW, textureH, texture, onPress, tooltip);
         this.spriteW = spriteW;
         this.spriteH = spriteH;
@@ -39,6 +42,7 @@ public class GuiTexturedButtonWithSize extends GuiTexturedButton {
         }
 
         // this whole override is just to be able to pass a texture size here.
-        guiGraphics.blit(this.texture, iconX, iconY, this.textureX, this.textureY, this.textureW, this.textureH, spriteW, spriteH);
+        guiGraphics.blit(this.texture, iconX, iconY, this.textureX, this.textureY, this.textureW, this.textureH,
+                spriteW, spriteH);
     }
 }

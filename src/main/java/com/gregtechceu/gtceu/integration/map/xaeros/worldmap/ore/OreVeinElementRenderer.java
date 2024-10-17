@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.map.xaeros.XaerosWorldMapPlugin;
+import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.map.element.MapElementReader;
@@ -23,7 +24,7 @@ import xaero.map.graphics.renderer.multitexture.MultiTextureRenderTypeRendererPr
 public class OreVeinElementRenderer extends
                                     MapElementRenderer<OreVeinElement, OreVeinElementContext, OreVeinElementRenderer> {
 
-    protected static final ResourceLocation STONE = new ResourceLocation("textures/block/stone.png");
+    protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
 
     protected OreVeinElementRenderer(OreVeinElementContext context,
                                      MapElementRenderProvider<OreVeinElement, OreVeinElementContext> provider,
@@ -86,15 +87,25 @@ public class OreVeinElementRenderer extends
         float[] colors = DrawUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        ResourceLocation texture = MaterialIconType.ore.getBlockTexturePath(firstMaterial.getMaterialIconSet(), true);
-        if (texture == null) {
-            return false;
+        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+                true);
+        if (oreTexture != null) {
+            var oreSprite = Minecraft.getInstance()
+                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    .apply(oreTexture);
+            graphics.blit(-iconSize / 2, -iconSize / 2, 200, iconSize, iconSize,
+                    oreSprite, colors[0], colors[1], colors[2], 1);
         }
-        texture = texture.withPath(path -> "textures/" + path + ".png");
-        graphics.blit(STONE, -iconSize / 2, -iconSize / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
-
-        RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1);
-        graphics.blit(texture, -iconSize / 2, -iconSize / 2, 0, 0, iconSize, iconSize, iconSize, iconSize);
+        oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary", true);
+        if (oreTexture != null) {
+            int materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
+            colors = DrawUtil.floats(materialSecondaryARGB);
+            var oreSprite = Minecraft.getInstance()
+                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                    .apply(oreTexture);
+            graphics.blit(-iconSize / 2, -iconSize / 2, 200, iconSize, iconSize,
+                    oreSprite, colors[0], colors[1], colors[2], 1);
+        }
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         int borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(materialARGB | 0xFF000000);
@@ -110,7 +121,7 @@ public class OreVeinElementRenderer extends
 
     @Override
     public boolean shouldRender(int location, boolean pre) {
-        return XaerosWorldMapPlugin.getOptionValue("ore_veins");
+        return GroupingMapRenderer.getInstance().doShowLayer("ore_veins");
     }
 
     public static final class Builder {

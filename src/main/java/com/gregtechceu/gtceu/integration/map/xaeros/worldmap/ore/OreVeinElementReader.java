@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.map.xaeros.XaerosWorldMapPlugin;
+import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,7 +18,7 @@ public class OreVeinElementReader extends
 
     @Override
     public boolean isHidden(OreVeinElement element, OreVeinElementContext context) {
-        return !XaerosWorldMapPlugin.getOptionValue("ore_veins");
+        return !GroupingMapRenderer.getInstance().doShowLayer("ore_veins");
     }
 
     @Override

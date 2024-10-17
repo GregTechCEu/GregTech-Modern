@@ -19,7 +19,8 @@ public class JourneymapOptions {
 
         final BooleanOption oreLayer = new BooleanOption(category, "ore_veins", prefix + "ore_veins", false);
         layerOptions.put(oreLayer.getFieldName(), oreLayer);
-        final BooleanOption fluidLayer = new BooleanOption(category, "bedrock_fluids", prefix + "bedrock_fluids", false);
+        final BooleanOption fluidLayer = new BooleanOption(category, "bedrock_fluids", prefix + "bedrock_fluids",
+                false);
         layerOptions.put(fluidLayer.getFieldName(), fluidLayer);
     }
 

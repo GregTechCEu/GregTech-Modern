@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.xaerominimap;
 
-import com.gregtechceu.gtceu.integration.map.xaeros.minimap.OreVeinElementRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore.OreVeinElementRenderer;
 
 import net.minecraft.client.Minecraft;
 
@@ -19,6 +19,7 @@ import xaero.hud.minimap.compass.render.CompassRenderer;
 import xaero.hud.minimap.element.render.map.MinimapElementMapRendererHandler;
 import xaero.hud.minimap.waypoint.render.WaypointsGuiRenderer;
 
+// TODO move to xaeros api once that exists
 @Mixin(value = MinimapFBORenderer.class, remap = false)
 public abstract class MinimapFBORendererMixin extends MinimapRenderer {
 

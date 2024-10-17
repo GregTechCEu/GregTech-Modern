@@ -125,6 +125,7 @@ public class GTValues {
             MODID_SHIMMER = "shimmer",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
+            MODID_XAEROS_WORLDMAP = "xaeroworldmap",
             MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",

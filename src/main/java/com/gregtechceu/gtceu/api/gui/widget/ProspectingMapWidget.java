@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;

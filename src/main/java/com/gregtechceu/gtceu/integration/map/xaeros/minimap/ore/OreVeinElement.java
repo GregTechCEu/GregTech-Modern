@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.map.xaeros.minimap;
+package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;

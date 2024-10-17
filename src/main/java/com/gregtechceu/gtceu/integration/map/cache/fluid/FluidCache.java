@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.map.cache.fluid;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,14 +13,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 public class FluidCache {
+
     private final Table<ResourceKey<Level>, ChunkPos, ProspectorMode.FluidInfo> fluidCache = HashBasedTable.create();
 
     public void addFluid(ResourceKey<Level> dim, int chunkX, int chunkZ, ProspectorMode.FluidInfo fluid) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
-        fluidCache.put(dim, pos, fluid);
-        GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid).getString(),
-                FluidRenderLayer.getId(fluid, pos), dim, pos, fluid);
+        if (!fluidCache.contains(dim, pos)) {
+            fluidCache.put(dim, pos, fluid);
+            GroupingMapRenderer.getInstance().addMarker(FluidRenderLayer.getName(fluid).getString(),
+                    FluidRenderLayer.getId(fluid, pos), dim, pos, fluid);
+        }
     }
 
     public void fromNbt(CompoundTag nbt) {

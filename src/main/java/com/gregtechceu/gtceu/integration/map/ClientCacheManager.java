@@ -32,8 +32,11 @@ import java.util.stream.Collectors;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ClientCacheManager {
 
-    public static final File clientCacheDir = new File(Minecraft.getInstance().gameDirectory, GTCEu.MOD_ID);
+    public static final File clientCacheDir = new File(Minecraft.getInstance().gameDirectory,
+            GTCEu.MOD_ID + File.separator + "prospection_cache");
     private static final char resourceLocationSeparator = '=';
+    private static final String filePrefix = "DIM";
+    private static final String fileEnding = ".nbt";
     @Getter
     private static File worldFolder;
     private static final Reference2ObjectMap<IClientCache, ClientCacheInfo> caches = new Reference2ObjectArrayMap<>();
@@ -61,7 +64,9 @@ public class ClientCacheManager {
             for (String dimFilePrefix : cacheInfo.dimFilePrefixes) {
                 for (File dimFile : getDimFiles(cacheInfo.cacheFolder, dimFilePrefix)) {
                     ResourceKey<Level> dimId = ResourceKey.create(Registries.DIMENSION,
-                            ResourceLocation.of(dimFile.getName().substring(dimFilePrefix.length()),
+                            ResourceLocation.of(
+                                    dimFile.getName().substring(dimFilePrefix.length() + filePrefix.length(),
+                                            dimFile.getName().length() - fileEnding.length()),
                                     resourceLocationSeparator));
                     try {
                         cache.readDimFile(dimFilePrefix, dimId, NbtIo.readCompressed(new FileInputStream(dimFile)));
@@ -71,7 +76,7 @@ public class ClientCacheManager {
                 }
             }
             for (String singleFileName : cacheInfo.singleFiles) {
-                File singleFile = new File(cacheInfo.cacheFolder, singleFileName);
+                File singleFile = new File(cacheInfo.cacheFolder, singleFileName + fileEnding);
                 if (!singleFile.exists()) continue;
                 try {
                     cache.readSingleFile(singleFileName, NbtIo.readCompressed(new FileInputStream(singleFile)));
@@ -96,7 +101,8 @@ public class ClientCacheManager {
                     CompoundTag data = cache.saveDimFile(dimFilePrefix, dim);
                     if (data == null) continue;
                     File dimFile = new File(cacheInfo.cacheFolder,
-                            dimFilePrefix + dim.location().getNamespace() + "=" + dim.location().getPath());
+                            dimFilePrefix + filePrefix + dim.location().getNamespace() + "=" +
+                                    dim.location().getPath() + fileEnding);
                     try {
                         NbtIo.writeCompressed(data, new FileOutputStream(dimFile));
                     } catch (IOException e) {
@@ -107,7 +113,7 @@ public class ClientCacheManager {
             for (String singleFileName : cacheInfo.singleFiles) {
                 CompoundTag data = cache.saveSingleFile(singleFileName);
                 if (data == null) continue;
-                File singleFile = new File(cacheInfo.cacheFolder, singleFileName);
+                File singleFile = new File(cacheInfo.cacheFolder, singleFileName + fileEnding);
                 try {
                     NbtIo.writeCompressed(data, new FileOutputStream(singleFile));
                 } catch (IOException e) {
@@ -179,7 +185,7 @@ public class ClientCacheManager {
     private static List<File> getDimFiles(File parent, String prefix) {
         try (var stream = Files.walk(parent.toPath(), 1)) {
             return stream.filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().startsWith(prefix))
+                    .filter(path -> path.getFileName().toString().startsWith(prefix + filePrefix))
                     .map(Path::toFile).collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
