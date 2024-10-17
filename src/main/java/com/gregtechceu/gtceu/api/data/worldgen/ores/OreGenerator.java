@@ -120,10 +120,10 @@ public class OreGenerator {
 
         return OreVeinUtil.getVeinCenter(chunkPos, random).stream()
                 .flatMap(veinCenter -> getEntries(level, veinCenter, random).map(entry -> {
+                    if (entry == null) return null;
                     var id = GTRegistries.ORE_VEINS.getKey(entry);
 
-                    if (entry == null) return null;
-                    BlockPos origin = computeVeinOrigin(level, generator, random, veinCenter, entry)
+                    BlockPos origin = computeVeinOrigin(level, generator, chunkPos, random, veinCenter, entry)
                             .orElseThrow(() -> new IllegalStateException(
                                     "Cannot determine y coordinate for the vein at " + veinCenter));
 
@@ -149,7 +149,7 @@ public class OreGenerator {
     }
 
     @NotNull
-    private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator,
+    private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos pos,
                                                         RandomSource random, BlockPos veinCenter,
                                                         GTOreDefinition entry) {
         int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.layer())
@@ -157,6 +157,7 @@ public class OreGenerator {
                 .orElse(0);
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
+        veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);
         return entry.range().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
                 layeredRandom, veinCenter).findFirst();
