@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,18 +13,18 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * Simulates consecutive fills to {@link IFluidTransfer} instance.
+ * Simulates consecutive fills to {@link IFluidTank} instances.
  */
 public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
+    public OverlayedFluidHandler(@NotNull FluidHandlerList tank) {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
                 .toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
-            FluidStorage storage = new FluidStorage(tank.getTankCapacity(i));
+            CustomFluidTank storage = new CustomFluidTank(tank.getTankCapacity(i));
             storage.setFluid(entries[i]);
             this.overlayedTanks.add(new OverlayedTank(storage, tank.isFluidValid(i, entries[i])));
         }
@@ -48,11 +47,11 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@NotNull FluidStack fluid, long amountToInsert) {
+    public int insertFluid(@NotNull FluidStack fluid, int amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
-        long totalInserted = 0;
+        int totalInserted = 0;
         // flag value indicating whether the fluid was stored in 'distinct' slot at least once
         boolean distinctFillPerformed = false;
 
@@ -60,7 +59,7 @@ public class OverlayedFluidHandler {
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
             if (!overlayedTank.isEmpty() && overlayedTank.fluid != null && fluid.isFluidEqual(overlayedTank.fluid)) {
-                long inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;
@@ -82,7 +81,7 @@ public class OverlayedFluidHandler {
             if ((!distinctFillPerformed || overlayedTank.allowSameFluidFill) &&
                     overlayedTank.isEmpty() &&
                     overlayedTank.property.isFluidValid(fluid)) {
-                long inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;
@@ -116,7 +115,7 @@ public class OverlayedFluidHandler {
             if (fluid.isEmpty()) {
                 stb.append("None 0 / ").append(overlayedTank.property.getCapacity());
             } else {
-                stb.append(FluidHelper.getDisplayName(fluid)).append(' ').append(fluid.getAmount())
+                stb.append(fluid.getDisplayName()).append(' ').append(fluid.getAmount())
                         .append(" / ").append(overlayedTank.property.getCapacity());
             }
         }
@@ -126,19 +125,19 @@ public class OverlayedFluidHandler {
 
     private static class OverlayedTank {
 
-        private final IFluidStorage property;
+        private final IFluidTank property;
         private final boolean allowSameFluidFill;
 
         private FluidStack fluid;
 
-        OverlayedTank(@NotNull IFluidStorage property, boolean allowSameFluidFill) {
+        OverlayedTank(@NotNull IFluidTank property, boolean allowSameFluidFill) {
             this.property = property;
             this.allowSameFluidFill = allowSameFluidFill;
             reset();
         }
 
         public boolean isEmpty() {
-            return fluid == FluidStack.empty() || fluid.getAmount() <= 0;
+            return fluid.isEmpty();
         }
 
         /**
@@ -151,13 +150,13 @@ public class OverlayedFluidHandler {
          * @param amount Amount of the fluid to insert
          * @return Amount of fluid inserted into this tank
          */
-        public long tryInsert(@NotNull FluidStack fluid, long amount) {
+        public int tryInsert(@NotNull FluidStack fluid, int amount) {
             if (this.fluid.isEmpty()) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));
                 return this.fluid.getAmount();
             } else {
-                long maxInsert = Math.min(this.property.getCapacity() - this.fluid.getAmount(), amount);
+                int maxInsert = Math.min(this.property.getCapacity() - this.fluid.getAmount(), amount);
                 if (maxInsert > 0) {
                     this.fluid.setAmount(this.fluid.getAmount() + maxInsert);
                     return maxInsert;
@@ -167,7 +166,7 @@ public class OverlayedFluidHandler {
 
         public void reset() {
             FluidStack fluid = this.property.getFluid();
-            this.fluid = fluid != FluidStack.empty() ? fluid.copy() : FluidStack.empty();
+            this.fluid = fluid != FluidStack.EMPTY ? fluid.copy() : FluidStack.EMPTY;
         }
     }
 }

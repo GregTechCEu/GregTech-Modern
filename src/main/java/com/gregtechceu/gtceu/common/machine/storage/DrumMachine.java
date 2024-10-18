@@ -12,12 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
@@ -31,16 +28,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
@@ -74,7 +70,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @DescSynced
     @Getter
     @DropSaved // rename "Fluid" for Item capability
-    protected FluidStack stored = FluidStack.empty();
+    protected FluidStack stored = FluidStack.EMPTY;
     @Getter
     protected final Material material;
 
@@ -117,7 +113,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     private void updateStoredFluidFromCache() {
         FluidStack cachedFluid = cache.getFluidInTank(0);
-        this.stored = cachedFluid.isEmpty() ? FluidStack.empty() : cachedFluid;
+        this.stored = cachedFluid.isEmpty() ? FluidStack.EMPTY : cachedFluid;
     }
 
     @Override
@@ -137,7 +133,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     public void loadFromItem(CompoundTag tag) {
         IDropSaveMachine.super.loadFromItem(tag);
         if (!tag.contains("Fluid")) {
-            stored = FluidStack.empty();
+            stored = FluidStack.EMPTY;
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
         cache.getStorages()[0].setFluid(stored.copy());
@@ -181,8 +177,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null && FluidTransferHelper
-                .getFluidTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
+        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -203,46 +199,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        var currentStack = player.getMainHandItem();
-        if (!currentStack.isEmpty()) {
-            var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
-            var fluidTank = cache.getStorages()[0];
-            if (handler != null && !isRemote()) {
-                if (cache.getStorages()[0].getFluidAmount() > 0) {
-                    FluidStack initialFluid = fluidTank.getFluid();
-                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank,
-                            Integer.MAX_VALUE, null, false);
-                    if (result.isSuccess()) {
-                        ItemStack remainingStack = FluidTransferHelper
-                                .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                        currentStack.shrink(1);
-                        SoundEvent soundevent = FluidHelper.getFillSound(initialFluid);
-                        if (soundevent != null) {
-                            player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                                    soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                        if (!remainingStack.isEmpty() && !player.addItem(remainingStack)) {
-                            Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                        }
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-
-                FluidActionResult result = FluidTransferHelper.tryEmptyContainer(currentStack, fluidTank,
-                        Integer.MAX_VALUE, null, false);
-                if (result.isSuccess()) {
-                    ItemStack remainingStack = FluidTransferHelper
-                            .tryEmptyContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();
-                    currentStack.shrink(1);
-                    SoundEvent soundevent = FluidHelper.getEmptySound(fluidTank.getFluid());
-                    if (soundevent != null) {
-                        player.level().playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundevent,
-                                SoundSource.BLOCKS, 1.0F, 1.0F);
-                    }
-                    if (!remainingStack.isEmpty() && !player.getInventory().add(remainingStack)) {
-                        Block.popResource(player.level(), player.getOnPos(), remainingStack);
-                    }
-                }
+        if (!isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
                 return InteractionResult.SUCCESS;
             }
         }

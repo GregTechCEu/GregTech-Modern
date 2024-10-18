@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,13 +50,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     private final float hazardStrengthPerOperation;
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
-                                  float hazardStrengthPerOperation, Int2LongFunction tankScalingFunction,
+                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction,
                                   Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                   Object... args) {
         this(holder, tier, 0.25f, tankScalingFunction, args);
     }

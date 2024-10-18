@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
                                         boolean simulate) {
         long sum = left.stream().reduce(0L, Long::sum);
-        long realSum = (long) Math.ceil(sum * conversionRate);
+        int realSum = (int) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
             var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) :
                     FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
@@ -58,7 +58,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0, Integer::sum);
         long realSum = (long) Math.ceil(sum * conversionRate);
         return List.of(realSum);
     }
@@ -72,7 +72,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0, Integer::sum);
         return (long) Math.ceil(sum * conversionRate);
     }
 
@@ -87,7 +87,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     public long getStored() {
         FluidStack stack = steamTank.getFluidInTank(0);
-        if (stack != FluidStack.empty()) {
+        if (stack != FluidStack.EMPTY) {
             return stack.getAmount();
         }
         return 0;

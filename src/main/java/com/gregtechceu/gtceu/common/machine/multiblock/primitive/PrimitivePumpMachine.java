@@ -11,11 +11,11 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class,
             MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
-    private long biomeModifier = 0;
+    private int biomeModifier = 0;
     private int hatchModifier = 0;
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
@@ -56,9 +56,9 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
                 if (handler.getHandlerIO() == IO.OUT && handler.getCapability() == FluidRecipeCapability.CAP) {
                     fluidTank = (NotifiableFluidTank) handler;
                     long tankCapacity = fluidTank.getTankCapacity(0);
-                    if (tankCapacity == FluidHelper.getBucket()) {
+                    if (tankCapacity == FluidType.BUCKET_VOLUME) {
                         hatchModifier = 1;
-                    } else if (tankCapacity == FluidHelper.getBucket() * 8) {
+                    } else if (tankCapacity == FluidType.BUCKET_VOLUME * 8) {
                         hatchModifier = 2;
                     } else {
                         hatchModifier = 4;
@@ -116,8 +116,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
         return getLevel().getBiome(getPos()).value().getPrecipitationAt(getPos());
     }
 
-    public long getFluidProduction() {
-        long value = biomeModifier * hatchModifier;
+    public int getFluidProduction() {
+        int value = biomeModifier * hatchModifier;
         if (isRainingInBiome()) {
             value = value * 3 / 2;
         }

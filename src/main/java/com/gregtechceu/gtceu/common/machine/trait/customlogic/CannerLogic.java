@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 
 import net.minecraft.world.item.ItemStack;
@@ -39,8 +38,8 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
                         ArrayList::new)
                 .stream()
-                .filter(IFluidTransfer.class::isInstance).map(IFluidTransfer.class::cast)
-                .toArray(IFluidTransfer[]::new);
+                .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
+                .toArray(IFluidHandler[]::new);
 
         var inputs = new ItemTransferList(itemInputs);
         for (int i = 0; i < inputs.getSlots(); i++) {
@@ -60,21 +59,21 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                     return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))
                             .inputItems(inputStack)
                             .outputItems(fluidHandlerItem.getContainer())
-                            .outputFluids(com.lowdragmc.lowdraglib.side.fluid.FluidStack.create(fluid.getFluid(),
+                            .outputFluids(new FluidStack(fluid.getFluid(),
                                     fluid.getAmount(), fluid.getTag()))
                             .duration(Math.max(16, fluid.getAmount() / 64)).EUt(4)
                             .buildRawRecipe();
                 }
 
                 // nothing drained so try filling
-                for (IFluidTransfer fluidInput : fluidInputs) {
+                for (IFluidHandler fluidInput : fluidInputs) {
                     var fluidStack1 = fluidInput.getFluidInTank(0);
                     if (fluidStack1.isEmpty()) {
                         continue;
                     }
                     fluidStack1 = fluidStack1.copy();
                     fluidStack1.setAmount(
-                            fluidHandlerItem.fill(new FluidStack(fluidStack1.getFluid(), (int) fluidStack1.getAmount()),
+                            fluidHandlerItem.fill(new FluidStack(fluidStack1.getFluid(), fluidStack1.getAmount()),
                                     IFluidHandler.FluidAction.EXECUTE));
                     if (fluidStack1.getAmount() > 0) {
                         return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))

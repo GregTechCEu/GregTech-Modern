@@ -61,6 +61,7 @@
     "embeddium.VanillaColorAdapterMixin",
     "emi.FluidEmiStackMixin",
     "jei.FluidHelperMixin",
+    "ldlib.SyncUtilsMixin",
     "rei.InputSlotCrafterMixin",
     "rei.RecipeFinderMixin",
     "top.ConfigMixin"
