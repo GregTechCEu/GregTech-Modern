@@ -1,0 +1,22 @@
+{
+    "blend": {
+  "func": "add",
+  "srcrgb": "one",
+  "dstrgb": "zero"
+    },
+    "vertex": "gtceu:blit",
+    "fragment": "gtceu:unity_composite",
+    "attributes": [ "Position" ],
+    "samplers": [
+  { "name": "DiffuseSampler" },
+  { "name": "DownTexture" },
+  { "name": "Background" }
+    ],
+    "uniforms": [
+  { "name": "OutSize","type": "float","count": 2, "values": [ 1.0, 1.0 ] },
+  { "name": "BloomIntensive","type": "float","count": 1, "values": [ 1.7 ] },
+  { "name": "BloomBase","type": "float","count": 1, "values": [ 0.0 ] },
+  { "name": "BloomThresholdUp","type": "float","count": 1, "values": [ 1.3 ] },
+  { "name": "BloomThresholdDown","type": "float","count": 1, "values": [ 0.3 ] }
+    ]
+}

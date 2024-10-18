@@ -1,0 +1,17 @@
+{
+    "blend": {
+  "func": "add",
+  "srcrgb": "one",
+  "dstrgb": "zero"
+    },
+    "vertex": "gtceu:blit",
+    "fragment": "gtceu:down_sampling",
+    "attributes": [ "Position" ],
+    "samplers": [
+  { "name": "DiffuseSampler" }
+    ],
+    "uniforms": [
+  { "name": "OutSize","type": "float","count": 2, "values": [ 1.0, 1.0 ] },
+  { "name": "InSize","type": "float","count": 2, "values": [ 1.0, 1.0 ] }
+    ]
+}

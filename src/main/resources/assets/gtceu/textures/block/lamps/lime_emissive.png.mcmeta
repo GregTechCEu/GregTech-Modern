@@ -2,7 +2,7 @@
   "ldlib": {
     "connection": "gtceu:block/lamps/lime_ctm_emissive"
   },
-  "shimmer": {
+  "gtceu": {
     "bloom": true
   }
 }
