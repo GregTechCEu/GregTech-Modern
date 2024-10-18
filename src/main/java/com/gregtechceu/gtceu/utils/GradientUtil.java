@@ -26,23 +26,27 @@ public class GradientUtil {
         return new float[] { r, g, b };
     }
 
-    public static int multiplyBlendRGBA(int c1, int c2) {
-        int a1 = (c1 & 0xff);
-        int r1 = ((c1 & 0xff000000) >> 24);
-        int g1 = ((c1 & 0xff0000) >> 16);
-        int b1 = ((c1 & 0xff00) >> 8);
+    public static int multiplyBlendWithAlpha(int c1, int c2) {
+        int x1 = (c1 & 0xff);
+        int y1 = ((c1 & 0xff00) >> 8);
+        int z1 = ((c1 & 0xff0000) >> 16);
+        int w1 = ((c1 & 0xff000000) >> 24);
 
-        int a2 = (c2 & 0xff);
-        int r2 = ((c2 & 0xff000000) >> 24);
-        int g2 = ((c2 & 0xff0000) >> 16);
-        int b2 = ((c2 & 0xff00) >> 8);
+        int x2 = (c2 & 0xff);
+        int y2 = ((c2 & 0xff00) >> 8);
+        int z2 = ((c2 & 0xff0000) >> 16);
+        int w2 = ((c2 & 0xff000000) >> 24);
 
-        int a = (a1 * a2) / 255;
-        int r = (r1 * r2) / 255;
-        int g = (g1 * g2) / 255;
-        int b = (b1 * b2) / 255;
+        int x = (x1 * x2) / 255;
+        int y = (y1 * y2) / 255;
+        int z = (z1 * z2) / 255;
+        int w = (w1 * w2) / 255;
+        // harcode an exception for max alpha because it ends up as 0 from the above calculations
+        if (w1 == -1 && w2 == -1) {
+            w = 0xff;
+        }
 
-        return a << 24 | r << 16 | g << 8 | b;
+        return w << 24 | z << 16 | y << 8 | x;
     }
 
     public static int blend(int c1, int c2, float ratio) {

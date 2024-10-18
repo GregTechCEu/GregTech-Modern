@@ -83,7 +83,7 @@ public class EntityDamageUtil {
         entity.hurt(entity.damageSources().freeze(), damage);
         // TODO advancements
         // if (entity instanceof ServerPlayer) {
-        // AdvancementTriggers.COLD_DEATH.trigger((EntityPlayerMP) entity);
+        // AdvancementTriggers.COLD_DEATH.trigger((ServerPlayer) entity);
         // }
     }
 
@@ -102,6 +102,6 @@ public class EntityDamageUtil {
         entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);
         entity.addEffect(new MobEffectInstance(MobEffects.POISON, damage * 100, 1));
         // TODO advancements
-        // if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((EntityPlayerMP) entity);
+        // if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((ServerPlayer) entity);
     }
 }

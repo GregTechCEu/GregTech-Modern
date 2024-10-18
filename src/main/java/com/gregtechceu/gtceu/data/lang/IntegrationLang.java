@@ -13,6 +13,7 @@ public class IntegrationLang {
     public static void init(RegistrateLangProvider provider) {
         initRecipeViewerLang(provider);
         initWailaLikeLang(provider);
+        initMinimapLang(provider);
     }
 
     /** JEI, REI, EMI */
@@ -96,5 +97,16 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_computation", " / %s CWU");
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
+    }
+
+    private static void initMinimapLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
+
+        provider.add("message.gtceu.new_veins", "Prospected %d new veins!");
+        provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
+        provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
+
+        provider.add("gtceu.journeymap.options.layers", "Prospection layers");
+        provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
     }
 }

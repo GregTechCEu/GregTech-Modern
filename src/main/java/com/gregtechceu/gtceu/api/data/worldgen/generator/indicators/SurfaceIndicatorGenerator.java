@@ -169,6 +169,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         };
     }
 
+    @Nullable
+    @Override
+    public Either<BlockState, Material> block() {
+        return block;
+    }
+
     @Override
     public int getSearchRadiusModifier(int veinRadius) {
         return Math.max(0, radius.getMaxValue() - veinRadius);
