@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 
@@ -61,9 +62,11 @@ public class ClientProxy extends CommonProxy {
         RecipeComponent.registerRecipeViewCreator(new GTRecipeViewCreator());
         CompassManager.INSTANCE.registerUIConfig(GTCEu.MOD_ID, new GTCompassUIConfig());
         CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
-        ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
-        Layers.registerLayer(OreRenderLayer::new, "ore_veins");
-        Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
+        if (!Platform.isDatagen()) {
+            ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
+            Layers.registerLayer(OreRenderLayer::new, "ore_veins");
+            Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
+        }
     }
 
     @SubscribeEvent
