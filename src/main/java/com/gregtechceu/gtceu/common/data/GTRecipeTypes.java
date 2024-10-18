@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
 import com.gregtechceu.gtceu.common.recipe.condition.RPMCondition;
@@ -463,7 +464,14 @@ public class GTRecipeTypes {
             .setMaxIOSize(0, 0, 1, 0).setEUIO(IO.OUT)
             .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.COMBUSTION);
+            .setSound(GTSoundEntries.COMBUSTION)
+            .onRecipeBuild((builder, provider) -> {
+                if(builder.input.containsKey(FluidRecipeCapability.CAP)) {
+                    Content input = builder.input.get(FluidRecipeCapability.CAP).get(0);
+                    FluidIngredient ingredient = FluidRecipeCapability.CAP.of(input.getContent());
+                    PowerlessJetpack.FUELS.put(ingredient, builder.duration);
+                }
+            });
 
     public final static GTRecipeType GAS_TURBINE_FUELS = register("gas_turbine", GENERATOR).setMaxIOSize(0, 0, 1, 0)
             .setEUIO(IO.OUT)

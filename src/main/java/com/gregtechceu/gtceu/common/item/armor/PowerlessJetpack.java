@@ -1,23 +1,20 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
-import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -36,23 +33,23 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.List;
 
 public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider {
 
+    // Map of FluidIngredient -> burn time
+    public static final AbstractObject2IntMap<FluidIngredient> FUELS = new Object2IntOpenHashMap<>();
     public static final int tankCapacity = 16000;
 
-    private GTRecipe previousRecipe = null;
-    private GTRecipe currentRecipe = null;
+    private FluidIngredient currentFuel = FluidIngredient.EMPTY;
+    private FluidIngredient previousFuel = FluidIngredient.EMPTY;
     private int burnTimer = 0;
 
     @OnlyIn(Dist.CLIENT)
@@ -65,9 +62,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        IFluidHandler internalTank = FluidUtil.getFluidHandler(stack).resolve().orElse(null);
-        if (internalTank == null)
-            return;
+        if(!FluidUtil.getFluidHandler(stack).isPresent()) return;
 
         CompoundTag data = stack.getOrCreateTag();
 
@@ -103,9 +98,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
 
-        // This causes a caching issue. currentRecipe is only set to null in findNewRecipe, so the fuel is never updated
-        // Rewrite in Armor Rework
-        if (currentRecipe == null)
+        if(currentFuel.isEmpty())
             findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
@@ -171,94 +164,45 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public boolean canUseEnergy(ItemStack stack, int amount) {
-        FluidStack fuel = getFuel();
-        if (fuel == null) {
-            return false;
-        }
-
-        IFluidHandler fluidHandlerItem = getIFluidHandlerItem(stack);
-        if (fluidHandlerItem == null)
-            return false;
-
-        FluidStack fluidStack = fluidHandlerItem.drain(fuel, IFluidHandler.FluidAction.EXECUTE);
-        if (fluidStack.isEmpty())
-            return false;
-
-        return fluidStack.getAmount() >= fuel.getAmount();
+        if(currentFuel.isEmpty()) return false;
+        if(burnTimer > 0) return true;
+        var ret = FluidUtil.getFluidHandler(stack)
+                .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE))
+                .map(drained -> drained.getAmount() >= currentFuel.getAmount())
+                .orElse(Boolean.FALSE);
+        if(!ret) currentFuel = FluidIngredient.EMPTY;
+        return ret;
     }
 
     @Override
     public void drainEnergy(ItemStack stack, int amount) {
-        if (this.burnTimer == 0) {
-            FluidStack fuel = getFuel();
-            if (fuel == null) return;
-            getIFluidHandlerItem(stack).drain(fuel, IFluidHandler.FluidAction.SIMULATE);
-            burnTimer = currentRecipe.duration;
+        if (burnTimer == 0) {
+            FluidUtil.getFluidHandler(stack)
+                    .ifPresent(h -> h.drain(currentFuel.getAmount(), FluidAction.EXECUTE));
+            burnTimer = FUELS.getInt(currentFuel);
         }
-        this.burnTimer--;
+        burnTimer -= amount;
     }
 
     @Override
     public boolean hasEnergy(ItemStack stack) {
-        return burnTimer > 0 || currentRecipe != null;
-    }
-
-    private static IFluidHandler getIFluidHandlerItem(@NotNull ItemStack stack) {
-        return FluidUtil.getFluidHandler(stack).resolve().orElse(null);
+        return burnTimer > 0 || !currentFuel.isEmpty();
     }
 
     public void findNewRecipe(@NotNull ItemStack stack) {
-        IFluidHandler internalTank = getIFluidHandlerItem(stack);
-        if (internalTank != null) {
-            FluidStack fluidStack = internalTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
-            if (previousRecipe != null && !fluidStack.isEmpty() &&
-                    FluidRecipeCapability.CAP.of(previousRecipe.getInputContents(FluidRecipeCapability.CAP).get(0))
-                            .test(fluidStack) &&
-                    fluidStack.getAmount() > 0) {
-                currentRecipe = previousRecipe;
+        FluidUtil.getFluidContained(stack).ifPresentOrElse( fluid -> {
+            if(!previousFuel.isEmpty() && previousFuel.test(fluid) &&
+                    fluid.getAmount() >= previousFuel.getAmount()) {
+                currentFuel = previousFuel;
                 return;
-            } else if (!fluidStack.isEmpty()) {
-                Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables
-                        .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
-                handler.getStorages()[0].setFluid(fluidStack);
-                table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
-                table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
-                IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
+            }
 
-                    @Override
-                    public @NotNull Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy() {
-                        return table;
-                    }
-                };
-                Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
-                if (iterator.hasNext()) {
-                    GTRecipe nextRecipe = iterator.next();
-                    if (nextRecipe == null) {
-                        return;
-                    }
-                    previousRecipe = nextRecipe;
-                    currentRecipe = previousRecipe;
-                    return;
+            for(var fuel : FUELS.keySet()) {
+                if(fuel.test(fluid) && fluid.getAmount() >= fuel.getAmount()) {
+                    previousFuel = currentFuel = fuel;
                 }
             }
-        }
-        currentRecipe = null;
-    }
-
-    public void resetRecipe() {
-        currentRecipe = null;
-        previousRecipe = null;
-    }
-
-    public FluidStack getFuel() {
-        if (currentRecipe != null) {
-            var recipeInputs = currentRecipe.inputs.get(FluidRecipeCapability.CAP);
-            FluidIngredient fluid = FluidRecipeCapability.CAP.of(recipeInputs.get(0).content);
-            return fluid.getStacks()[0];
-        }
-
-        return FluidStack.EMPTY;
+        }, () -> currentFuel = FluidIngredient.EMPTY);
     }
 
     /*
@@ -276,24 +220,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     public static class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation,
                                   IInteractionItem, IComponentCapability {
 
-        private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
-            Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables
-                    .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
-            handler.getStorages()[0].setFluid(fluidStack);
-            table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
-            table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
-            IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
-
-                @Override
-                public @NotNull Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy() {
-                    return table;
-                }
-            };
-            Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
-            return iterator.hasNext() && iterator.next() != null;
-        };
-
         public final int maxCapacity;
         private final Pair<Integer, Integer> durabilityBarColors;
 
@@ -304,11 +230,9 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         @Override
         public float getDurabilityForDisplay(@NotNull ItemStack itemStack) {
-            IFluidHandler fluidHandlerItem = FluidUtil.getFluidHandler(itemStack).resolve().orElse(null);
-            if (fluidHandlerItem == null) return 0;
-            FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
-            return fluidStack.isEmpty() ? 0 :
-                    (float) fluidStack.getAmount() / (float) fluidHandlerItem.getTankCapacity(0);
+            return FluidUtil.getFluidContained(itemStack)
+                    .map(stack -> (float) stack.getAmount() / maxCapacity)
+                    .orElse(0f);
         }
 
         @Nullable
@@ -323,8 +247,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                     LazyOptional.of(() -> new FluidHandlerItemStack(itemStack, maxCapacity) {
 
                         @Override
-                        public boolean canFillFluidType(net.minecraftforge.fluids.FluidStack fluid) {
-                            return JETPACK_FUEL_FILTER.test(fluid);
+                        public boolean canFillFluidType(FluidStack fluid) {
+                            for(var ingredient : FUELS.keySet()) {
+                                if(ingredient.test(fluid)) return true;
+                            }
+                            return false;
                         }
                     }));
         }
