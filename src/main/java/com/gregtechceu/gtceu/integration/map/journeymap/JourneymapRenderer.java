@@ -154,8 +154,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
                         var matStack = ChemicalHelper.getMaterial(state.getBlock());
                         return matStack == null ? null : matStack.material();
                     },
-                    Function.identity()
-            );
+                    Function.identity());
         }
         if (firstMaterial == null && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
