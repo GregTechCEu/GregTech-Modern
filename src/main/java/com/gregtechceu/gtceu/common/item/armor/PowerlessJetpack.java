@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +34,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
+import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +62,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        if(!FluidUtil.getFluidHandler(stack).isPresent()) return;
+        if (!FluidUtil.getFluidHandler(stack).isPresent()) return;
 
         CompoundTag data = stack.getOrCreateTag();
 
@@ -98,7 +98,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
 
-        if(currentFuel.isEmpty())
+        if (currentFuel.isEmpty())
             findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
@@ -164,13 +164,13 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public boolean canUseEnergy(ItemStack stack, int amount) {
-        if(currentFuel.isEmpty()) return false;
-        if(burnTimer > 0) return true;
+        if (currentFuel.isEmpty()) return false;
+        if (burnTimer > 0) return true;
         var ret = FluidUtil.getFluidHandler(stack)
                 .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE))
                 .map(drained -> drained.getAmount() >= currentFuel.getAmount())
                 .orElse(Boolean.FALSE);
-        if(!ret) currentFuel = FluidIngredient.EMPTY;
+        if (!ret) currentFuel = FluidIngredient.EMPTY;
         return ret;
     }
 
@@ -190,15 +190,15 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     public void findNewRecipe(@NotNull ItemStack stack) {
-        FluidUtil.getFluidContained(stack).ifPresentOrElse( fluid -> {
-            if(!previousFuel.isEmpty() && previousFuel.test(fluid) &&
+        FluidUtil.getFluidContained(stack).ifPresentOrElse(fluid -> {
+            if (!previousFuel.isEmpty() && previousFuel.test(fluid) &&
                     fluid.getAmount() >= previousFuel.getAmount()) {
                 currentFuel = previousFuel;
                 return;
             }
 
-            for(var fuel : FUELS.keySet()) {
-                if(fuel.test(fluid) && fluid.getAmount() >= fuel.getAmount()) {
+            for (var fuel : FUELS.keySet()) {
+                if (fuel.test(fluid) && fluid.getAmount() >= fuel.getAmount()) {
                     previousFuel = currentFuel = fuel;
                 }
             }
@@ -248,8 +248,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
                         @Override
                         public boolean canFillFluidType(FluidStack fluid) {
-                            for(var ingredient : FUELS.keySet()) {
-                                if(ingredient.test(fluid)) return true;
+                            for (var ingredient : FUELS.keySet()) {
+                                if (ingredient.test(fluid)) return true;
                             }
                             return false;
                         }

@@ -116,11 +116,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 continue;
             }
 
-            if(io == IO.IN) {
-                for(FluidStack fluid : fluids) {
+            if (io == IO.IN) {
+                for (FluidStack fluid : fluids) {
                     FluidStack copy = new FluidStack(fluid, ingredient.getAmount());
                     ingredient.shrink(drainInternal(copy, action).getAmount());
-                    if(ingredient.getAmount() <= 0) {
+                    if (ingredient.getAmount() <= 0) {
                         it.remove();
                         break;
                     }
@@ -128,7 +128,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             } else { // IO.OUT
                 FluidStack output = fluids[0];
                 int filled = fillInternal(output, action);
-                if(filled >= ingredient.getAmount()) it.remove();
+                if (filled >= ingredient.getAmount()) it.remove();
             }
         }
         return left.isEmpty() ? null : left;

@@ -466,7 +466,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.COMBUSTION)
             .onRecipeBuild((builder, provider) -> {
-                if(builder.input.containsKey(FluidRecipeCapability.CAP)) {
+                if (builder.input.containsKey(FluidRecipeCapability.CAP)) {
                     Content input = builder.input.get(FluidRecipeCapability.CAP).get(0);
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(input.getContent());
                     PowerlessJetpack.FUELS.put(ingredient, builder.duration);
