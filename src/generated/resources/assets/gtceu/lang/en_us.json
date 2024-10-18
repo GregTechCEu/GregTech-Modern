@@ -1131,6 +1131,8 @@
   "block.gtceu.stripped_rubber_log": "Stripped Rubber Log",
   "block.gtceu.stripped_rubber_wood": "Stripped Rubber Wood",
   "block.gtceu.sturdy_machine_casing": "Sturdy HSS-E Machine Casing",
+  "block.gtceu.substation_capacitor.tooltip_empty": "§7For filling space in your Power Substation",
+  "block.gtceu.substation_capacitor.tooltip_filled": "§cEnergy Capacity: §f%d EU",
   "block.gtceu.superconducting_coil": "Superconducting Coil Block",
   "block.gtceu.tempered_glass": "Tempered Glass",
   "block.gtceu.the_end_marker": "The End",
