@@ -36,7 +36,9 @@ import journeymap.client.api.util.UIState;
 import lombok.Getter;
 
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -46,6 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class JourneymapRenderer extends GenericMapRenderer {
 
     protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
+    protected static final Map<Material, NativeImage> MATERIAL_ICONS = new HashMap<>();
 
     @Getter
     private static final Map<String, Overlay> markers = new Object2ObjectOpenHashMap<>();
@@ -143,7 +146,29 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     private static NativeImage createOreImage(GeneratedVeinMetadata vein) {
-        Material firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
+        Material firstMaterial = null;
+        if (!vein.definition().indicatorGenerators().isEmpty()) {
+            var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
+            firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
+                    state -> {
+                        var matStack = ChemicalHelper.getMaterial(state.getBlock());
+                        return matStack == null ? null : matStack.material();
+                    },
+                    Function.identity()
+            );
+        }
+        if (firstMaterial == null && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
+            firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
+        }
+        if (firstMaterial == null) {
+            // early exit if no materials were found.
+            // TODO figure out how to draw a block here instead in this case.
+            return null;
+        }
+        if (MATERIAL_ICONS.containsKey(firstMaterial)) {
+            return MATERIAL_ICONS.get(firstMaterial);
+        }
+
         int materialABGR = GradientUtil.argbToAbgr(firstMaterial.getMaterialARGB());
 
         ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), true);
@@ -160,8 +185,9 @@ public class JourneymapRenderer extends GenericMapRenderer {
         NativeImage result = new NativeImage(NativeImage.Format.RGBA, width, height, false);
         for (int x = 0; x < result.getWidth(); ++x) {
             for (int y = 0; y < result.getHeight(); ++y) {
+                int color = baseTexture.getPixelRGBA(0, x, y);
                 result.setPixelRGBA(x, y, GradientUtil
-                        .multiplyBlendWithAlpha(baseTexture.getPixelRGBA(0, x, y), materialABGR));
+                        .multiplyBlendWithAlpha(color, materialABGR));
             }
         }
         if (firstMaterial.getMaterialSecondaryARGB() != -1) {
@@ -190,6 +216,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
             return color;
         });
 
+        MATERIAL_ICONS.put(firstMaterial, result);
         return result;
     }
 
@@ -210,11 +237,9 @@ public class JourneymapRenderer extends GenericMapRenderer {
                 .setImageLocation(texture);
 
         MapPolygon polygon = PolygonHelper.createChunkPolygon(pos.x, 0, pos.z);
-        var overlay = new PolygonOverlay(GTCEu.MOD_ID, id,
-                Minecraft.getInstance().player.level().dimension(),
-                shapeProps, polygon);
+        var overlay = new PolygonOverlay(GTCEu.MOD_ID, id, dim, shapeProps, polygon);
 
-        overlay.setDimension(Minecraft.getInstance().player.level().dimension());
+        overlay.setDimension(dim);
         overlay.setLabel("")
                 .setTitle(FluidRenderLayer.getTooltip(vein).stream().map(Component::getString).reduce("", (s1, s2) -> {
                     if (s1.isEmpty()) {
