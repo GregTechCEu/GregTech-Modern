@@ -516,6 +516,10 @@ public class ConfigHolder {
         @Configurable.Range(min = 1, max = 512)
         public int sprayCanChainLength = 16;
         @Configurable
+        @Configurable.Comment({ "Delay in ticks between each log being broken when tree felling", "Default: 2" })
+        @Configurable.Range(min = 1, max = 400)
+        public int treeFellingDelay = 2;
+        @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();
         @Configurable
