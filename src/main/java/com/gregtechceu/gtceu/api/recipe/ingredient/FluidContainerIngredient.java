@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.utils.InfiniteFluidTransfer;
-
-import com.lowdragmc.lowdraglib.side.fluid.*;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,6 +13,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -60,7 +61,7 @@ public class FluidContainerIngredient extends Ingredient {
     public ItemStack[] getItems() {
         if (cachedStacks == null)
             cachedStacks = Arrays.stream(this.fluid.getStacks())
-                    .map(stack -> stack.getFluid().getBucket().getDefaultInstance())
+                    .map(FluidUtil::getFilledBucket)
                     .filter(s -> !s.isEmpty())
                     .toArray(ItemStack[]::new);
         return this.cachedStacks;
@@ -83,8 +84,9 @@ public class FluidContainerIngredient extends Ingredient {
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null || stack.isEmpty())
             return false;
-        IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(stack);
-        return transfer != null && this.extractFrom(transfer, true);
+        return FluidUtil.getFluidContained(stack).map(fluid::test).orElse(false) &&
+                FluidUtil.tryEmptyContainer(stack, VoidFluidHandler.INSTANCE, fluid.getAmount(), null, false)
+                        .isSuccess();
     }
 
     @Override
@@ -93,31 +95,12 @@ public class FluidContainerIngredient extends Ingredient {
     }
 
     public ItemStack getExtractedStack(ItemStack input) {
-        FluidActionResult result = FluidTransferHelper.tryEmptyContainer(input,
-                new InfiniteFluidTransfer(1),
-                (int) this.fluid.getAmount(),
-                ForgeHooks.getCraftingPlayer(),
-                true);
-        if (result.success) {
-            return result.result;
+        FluidActionResult result = FluidUtil.tryEmptyContainer(input, VoidFluidHandler.INSTANCE, fluid.getAmount(),
+                ForgeHooks.getCraftingPlayer(), true);
+        if (result.isSuccess()) {
+            return result.getResult();
         }
         return input;
-    }
-
-    public boolean extractFrom(IFluidTransfer handler, boolean simulate) {
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            FluidStack inTank = handler.getFluidInTank(tank);
-            if (fluid.test(inTank)) {
-                FluidStack toExtract = inTank.copy(fluid.getAmount());
-                FluidStack extractedSim = handler.drain(toExtract, true);
-                if (extractedSim.getAmount() >= fluid.getAmount()) {
-                    if (!simulate)
-                        handler.drain(toExtract, false);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     @Override

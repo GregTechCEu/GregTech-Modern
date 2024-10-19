@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.Locale;
 import java.util.function.BiConsumer;
@@ -39,7 +39,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  */
 public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefinition> {
 
-    public transient Int2LongFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
+    public transient Int2IntFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
     private final Object[] passedArguments;
 
     public KineticMachineBuilder(String name, boolean isSource, int tier, Object... args) {
@@ -58,7 +58,7 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
 
     @SuppressWarnings("unused") // Accessed via reflection
     public KineticMachineBuilder tankScalingFunction(Function<Object, Double> tankScalingFunction) {
-        this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).longValue();
+        this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).intValue();
         this.metaMachine((holder) -> new SimpleKineticElectricWorkableMachine(holder, tier(), this.tankScalingFunction,
                 passedArguments));
         return this;

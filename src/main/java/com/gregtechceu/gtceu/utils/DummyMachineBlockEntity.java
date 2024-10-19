@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     @Getter
     private final MachineDefinition definition;
 
-    public DummyMachineBlockEntity(int tier, GTRecipeType type, Int2LongFunction tankScalingFunction,
+    public DummyMachineBlockEntity(int tier, GTRecipeType type, Int2IntFunction tankScalingFunction,
                                    Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy,
                                    Object... args) {
         this.definition = MachineDefinition.createDefinition(GTCEu.id("dummy"));
