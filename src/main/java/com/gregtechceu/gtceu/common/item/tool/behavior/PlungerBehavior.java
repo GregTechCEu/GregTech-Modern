@@ -7,10 +7,6 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.misc.forge.VoidFluidHandlerItemStack;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +17,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,23 +47,24 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
             return InteractionResult.PASS;
         }
 
-        IFluidTransfer fluidHandler;
+        IFluidHandler fluidHandler;
 
         if (context.getLevel()
                 .getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity metaMachineBlockEntity) {
-            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidTransferCap(context.getClickedFace(), false);
+            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
         } else {
-            fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(),
-                    context.getClickedFace());
+            fluidHandler = FluidUtil
+                    .getFluidHandler(context.getLevel(), context.getClickedPos(), context.getClickedFace()).resolve()
+                    .orElse(null);
         }
 
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
 
-        com.lowdragmc.lowdraglib.side.fluid.FluidStack drained = fluidHandler.drain(FluidHelper.getBucket(), true);
-        if (drained != null && !drained.isEmpty()) {
-            fluidHandler.drain(FluidHelper.getBucket(), false);
+        FluidStack drained = fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+        if (!drained.isEmpty()) {
+            fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.CONSUME;
         }

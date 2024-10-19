@@ -932,7 +932,7 @@ public interface GTRecipeSchema {
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS) value).getFluidStack();
-            return FluidIngredient.of(fluid.getAmount(), fluid.getFluid()).toJson();
+            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
 
         @Override

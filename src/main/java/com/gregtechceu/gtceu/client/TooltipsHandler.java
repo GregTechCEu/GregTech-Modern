@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -50,7 +48,7 @@ public class TooltipsHandler {
                         .withStyle(ChatFormatting.YELLOW));
         }
         if (stack.getItem() instanceof BucketItem bucket) {
-            appendFluidTooltips(bucket.getFluid(), FluidHelper.getBucket(), tooltips::add, flag);
+            appendFluidTooltips(bucket.getFluid(), FluidType.BUCKET_VOLUME, tooltips::add, flag);
         }
 
         // Block/Item custom tooltips

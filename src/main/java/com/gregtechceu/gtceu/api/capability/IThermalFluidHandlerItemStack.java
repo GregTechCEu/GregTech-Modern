@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
-import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 /**
  * Interface for FluidHandlerItemStacks which handle GT's unique fluid mechanics
@@ -26,12 +24,12 @@ public interface IThermalFluidHandlerItemStack {
     default boolean canFillFluidType(FluidStack stack) {
         if (stack == null || stack.getFluid() == null) return false;
 
-        Fluid fluid = stack.getFluid();
-        var temp = FluidHelper.getTemperature(stack);
+        FluidType fluidType = stack.getFluid().getFluidType();
+        var temp = fluidType.getTemperature();
         if (temp > getMaxFluidTemperature()) return false;
         // fluids less than 120K are cryogenic
         if (temp < 120 && !isCryoProof()) return false;
-        if (FluidHelper.isLighterThanAir(stack) && !isGasProof()) return false;
+        if (fluidType.isLighterThanAir() && !isGasProof()) return false;
 
         // TODO custom fluid
         // for (RegistryEntry<Fluid> entry : GTRegistries.REGISTRATE.getAll(Registry.FLUID_REGISTRY)) {
