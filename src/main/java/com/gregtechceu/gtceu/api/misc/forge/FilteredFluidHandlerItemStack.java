@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.misc.forge;
 
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -12,14 +10,14 @@ import java.util.function.Predicate;
 
 public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
 
-    Predicate<com.lowdragmc.lowdraglib.side.fluid.FluidStack> filter;
+    Predicate<FluidStack> filter;
 
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.
      * @param capacity  The maximum capacity of this fluid tank.
      */
     public FilteredFluidHandlerItemStack(@NotNull ItemStack container, int capacity,
-                                         Predicate<com.lowdragmc.lowdraglib.side.fluid.FluidStack> filter) {
+                                         Predicate<FluidStack> filter) {
         super(container, capacity);
         this.filter = filter;
     }
@@ -39,13 +37,13 @@ public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
     }
 
     private void removeTagWhenEmpty(FluidAction action) {
-        if (getFluid() == FluidStack.EMPTY && action == FluidAction.EXECUTE) {
+        if (getFluid() == FluidStack.EMPTY && action.execute()) {
             this.container.setTag(null);
         }
     }
 
     @Override
     public boolean canFillFluidType(FluidStack fluid) {
-        return filter.test(FluidHelperImpl.toFluidStack(fluid));
+        return filter.test(fluid);
     }
 }

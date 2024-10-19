@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.misc.forge;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
 
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -47,14 +45,14 @@ public class ThermalFluidHandlerItemStack extends FluidHandlerItemStack implemen
     }
 
     private void removeTagWhenEmpty(FluidAction action) {
-        if (getFluid() == FluidStack.EMPTY && action == FluidAction.EXECUTE) {
+        if (getFluid() == FluidStack.EMPTY && action.execute()) {
             this.container.setTag(null);
         }
     }
 
     @Override
     public boolean canFillFluidType(FluidStack fluid) {
-        return IThermalFluidHandlerItemStack.super.canFillFluidType(FluidHelperImpl.toFluidStack(fluid));
+        return IThermalFluidHandlerItemStack.super.canFillFluidType(fluid);
     }
 
     @Override
