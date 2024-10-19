@@ -2376,8 +2376,7 @@ public class GTItems {
                     new FoodProperties.Builder().nutrition(1)
                             .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 400), .40f)
                             .effect(() -> new MobEffectInstance(MobEffects.POISON, 100), .05f)
-                            .build(),
-                    false, null)))
+                            .build())))
             .tag(CustomTags.DOUGHS)
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)

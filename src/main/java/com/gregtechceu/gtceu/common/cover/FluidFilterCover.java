@@ -78,14 +78,14 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            if (!fluidFilter.test(resource))
+            if (!getFluidFilter().test(resource))
                 return 0;
             return super.fill(tank, resource, simulate, notifyChanges);
         }
 
         @Override
         public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            if (!fluidFilter.test(resource))
+            if (!getFluidFilter().test(resource))
                 return FluidStack.empty();
             return super.drain(tank, resource, simulate, notifyChanges);
         }

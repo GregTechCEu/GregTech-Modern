@@ -834,7 +834,7 @@ public class WoodMachineRecipes {
 
             // plank -> button cutting
             CUTTER_RECIPES.recipeBuilder(name + "_button")
-                    .inputItems(new ItemStack(entry.planks))
+                    .inputItems(new ItemStack(entry.pressurePlate))
                     .outputItems(entry.button, 12)
                     .duration(250).EUt(VA[ULV]).save(provider);
         }
