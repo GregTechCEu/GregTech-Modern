@@ -416,7 +416,7 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Chalcopyrite, 5))
                     .oreBlock(new VeinBlockDefinition(Zeolite, 2))
                     .oreBlock(new VeinBlockDefinition(Cassiterite, 2))
-                    .rareBlock(new VeinBlockDefinition(Realgar, 1))
+                    .rareBlock(new VeinBlockDefinition(Realgar, 2))
                     .rareBlockChance(0.05f)
                     .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
