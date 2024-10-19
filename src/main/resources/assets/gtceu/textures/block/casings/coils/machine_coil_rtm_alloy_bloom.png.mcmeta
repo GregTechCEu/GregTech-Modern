@@ -3,7 +3,7 @@
         "connection": "gtceu:block/casings/coils/machine_coil_tungstensteel_bloom_ctm",
         "emissive": true
     },
-    "shimmer": {
+    "gtceu": {
         "bloom": true
     }
 }

@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
+import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -19,10 +21,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -56,9 +59,10 @@ public abstract class LevelRendererMixin {
     @Inject(
             method = { "renderLevel" },
             at = { @At("HEAD") })
-    private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
-                             Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
-                             Matrix4f projectionMatrix, CallbackInfo ci) {
+    private void gtceu$renderAOEBreakAnimation(PoseStack poseStack,
+                                               float partialTick, long finishNanoTime, boolean renderBlockOutline,
+                                               Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
+                                               Matrix4f projectionMatrix, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
@@ -99,14 +103,34 @@ public abstract class LevelRendererMixin {
     }
 
     @Shadow
-    public static void renderShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y,
-                                   double z, float red, float green, float blue, float alpha) {
+    private static void renderShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y,
+                                    double z, float red, float green, float blue, float alpha) {
         throw new AssertionError();
     }
 
+    @WrapOperation(method = "applyFrustum",
+                   at = @At(value = "INVOKE",
+                            target = "Lit/unimi/dsi/fastutil/objects/ObjectArrayList;add(Ljava/lang/Object;)Z",
+                            remap = false))
+    private boolean gtceu$compileBloomBuffers(ObjectArrayList<LevelRenderer.RenderChunkInfo> instance,
+                                              Object chunkInfo,
+                                              Operation<Boolean> original) {
+        // cast back to RenderChunkInfo
+        BloomEffectUtil.bakeBloomChunkBuffers(((LevelRenderer.RenderChunkInfo) chunkInfo).chunk.getOrigin());
+        return original.call(instance, chunkInfo);
+    }
+
+    @Inject(method = "resize", at = @At("TAIL"))
+    private void gtceu$resize(int width, int height, CallbackInfo ci) {
+        if (GTShaders.BLOOM_CHAIN != null) {
+            GTShaders.BLOOM_CHAIN.resize(width, height);
+        }
+    }
+
     @Inject(method = "renderHitOutline", at = @At("HEAD"))
-    private void renderHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY,
-                                  double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
+    private void gtceu$renderAOEHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX,
+                                           double camY,
+                                           double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
