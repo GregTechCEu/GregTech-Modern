@@ -3,12 +3,15 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
+
+import lombok.Getter;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;

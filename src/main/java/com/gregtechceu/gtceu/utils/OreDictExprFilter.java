@@ -14,12 +14,21 @@ import java.util.stream.Collectors;
  * @author brachy84
  */
 public class OreDictExprFilter {
+
     public static class OreDictExprParser {
+
         public enum TokenType {
-            LParen, RParen, And, Or, Not, Xor, String
+            LParen,
+            RParen,
+            And,
+            Or,
+            Not,
+            Xor,
+            String
         }
 
         public static class Token {
+
             public String lexeme;
             public TokenType type;
 
@@ -34,10 +43,12 @@ public class OreDictExprFilter {
         }
 
         abstract static public class MatchExpr {
+
             public abstract boolean matches(Set<String> input, boolean regexp);
         }
 
         static class BinExpr extends MatchExpr {
+
             MatchExpr left, right;
             Token op;
 
@@ -52,13 +63,15 @@ public class OreDictExprFilter {
                 return switch (op.type) {
                     case And -> left.matches(input, regexp) && right.matches(input, regexp);
                     case Or -> left.matches(input, regexp) || right.matches(input, regexp);
-                    case Xor -> (left.matches(input, regexp) && !right.matches(input, regexp)) || (!left.matches(input, regexp) && right.matches(input, regexp));
+                    case Xor -> (left.matches(input, regexp) && !right.matches(input, regexp)) ||
+                            (!left.matches(input, regexp) && right.matches(input, regexp));
                     default -> false;
                 };
             }
         }
 
         static class UnaryExpr extends MatchExpr {
+
             Token token;
             MatchExpr expr;
 
@@ -78,6 +91,7 @@ public class OreDictExprFilter {
         }
 
         static class StringExpr extends MatchExpr {
+
             String value;
 
             public StringExpr(String value) {
@@ -113,6 +127,7 @@ public class OreDictExprFilter {
         }
 
         static class GroupingExpr extends MatchExpr {
+
             MatchExpr inner;
 
             public GroupingExpr(MatchExpr inner) {
@@ -210,7 +225,8 @@ public class OreDictExprFilter {
                 // Parse strings
                 {
                     int stringLen = 0;
-                    while (cur != '(' && cur != ')' && cur != '!' && cur != '&' && cur != '|' && cur != '^' && cur != ' ') {
+                    while (cur != '(' && cur != ')' && cur != '!' && cur != '&' && cur != '|' && cur != '^' &&
+                            cur != ' ') {
                         stringLen++;
 
                         if (stringLen + idx == expr.length()) {
@@ -258,7 +274,7 @@ public class OreDictExprFilter {
     /**
      * Matches the given item against a list of rules
      *
-     * @param expr to check against
+     * @param expr  to check against
      * @param stack item to check
      * @return if any of the items oreDicts matches the rules
      */
