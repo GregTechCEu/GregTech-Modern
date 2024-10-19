@@ -9,8 +9,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -18,15 +19,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-@NoArgsConstructor
 public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidStorage {
 
-    private final FluidStorageImpl storage = new FluidStorageImpl();
+    public static final Codec<FluidProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            FluidStorageImpl.CODEC.fieldOf("storage").forGetter(val -> val.storage),
+            FluidStorageKey.CODEC.optionalFieldOf("primary_key", null).forGetter(val -> val.primaryKey))
+            .apply(instance, FluidProperty::new));
+
+    private final FluidStorageImpl storage;
     @Getter
     @Setter
     private FluidStorageKey primaryKey = null;
 
+    private FluidProperty(@NotNull FluidStorageImpl storage, @Nullable FluidStorageKey primaryKey) {
+        this.storage = storage;
+        this.primaryKey = primaryKey;
+    }
+
+    public FluidProperty() {
+        this.storage = new FluidStorageImpl();
+    }
+
     public FluidProperty(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+        this();
         enqueueRegistration(key, builder);
     }
 

@@ -325,7 +325,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         if (controllerBase.isFormed()) {
             LongSet set = controllerBase.getMultiblockState().getMatchContext().getOrDefault("renderMask",
                     LongSets.EMPTY_SET);
-            Set<BlockPos> modelDisabled = set.stream().map(BlockPos::of).collect(Collectors.toSet());
+            Set<BlockPos> modelDisabled = set.longStream().mapToObj(BlockPos::of).collect(Collectors.toSet());
             if (!modelDisabled.isEmpty()) {
                 sceneWidget.setRenderedCore(
                         poses.stream().filter(pos -> !modelDisabled.contains(pos)).collect(Collectors.toList()), null);

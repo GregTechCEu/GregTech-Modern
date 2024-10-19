@@ -33,6 +33,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             emi_version         : forge.versions.emi.get(),
             top_version         : forge.versions.theoneprobe.get(),
             jade_version        : forge.versions.jade.get(),
+            jsonthings_version  : forge.versions.jsonThings.get(),
             mod_license         : mod_license,
             mod_name            : mod_name,
             mod_description     : mod_description,

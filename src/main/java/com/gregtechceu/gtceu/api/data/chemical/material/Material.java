@@ -32,6 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -47,6 +48,10 @@ import java.util.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 public class Material implements Comparable<Material> {
+
+    public static final Codec<Material> CODEC = ResourceLocation.CODEC.xmap(
+            rl -> GTCEuAPI.materialManager.getRegistry(rl.getNamespace()).get(rl.getPath()),
+            Material::getResourceLocation);
 
     /**
      * Basic Info of this Material.
@@ -527,8 +532,11 @@ public class Material implements Comparable<Material> {
     @RemapPrefixForJS("kjs$")
     public static class Builder extends BuilderBase<Material> {
 
+        @Getter
         private final MaterialInfo materialInfo;
+        @Getter
         private final MaterialProperties properties;
+        @Getter
         private final MaterialFlags flags;
 
         /*
@@ -1245,7 +1253,7 @@ public class Material implements Comparable<Material> {
      * Holds the basic info for a Material, like the name, color, id, etc..
      */
     @Accessors(chain = true)
-    private static class MaterialInfo {
+    public static class MaterialInfo {
 
         /**
          * The modid and unlocalized name of this Material.

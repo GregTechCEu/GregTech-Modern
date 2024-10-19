@@ -39,9 +39,6 @@ dependencies {
     modImplementation(forge.ae2) { transitive = false }
     modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
-    //AlmostUnified
-    modCompileOnly(forge.almostUnified.forge)
-
     // KJS
     modImplementation(forge.kubejs) { transitive = false }
     modImplementation(forge.architectury)
@@ -65,12 +62,15 @@ dependencies {
     modImplementation(forge.javd) { transitive = false }
     modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
 
+    // FTB teams
     modCompileOnly(forge.ftbteams)
     modCompileOnly(forge.ftblibrary)
 
+    // Argonauts
     modCompileOnly(forge.argonauts)
     modCompileOnly(forge.resourceful)
 
-    // Runtime only testing mods
-    //modRuntimeOnly(forge.worldStripper)
+    // Json Things
+    modImplementation(forge.jsonThings)
 }
+

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,8 @@ import java.util.function.Function;
 public final class FluidStorageKey {
 
     private static final Map<ResourceLocation, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
+    public static final Codec<FluidStorageKey> CODEC = ResourceLocation.CODEC.xmap(FluidStorageKey.keys::get,
+            FluidStorageKey::getResourceLocation);
 
     @Getter
     private final ResourceLocation resourceLocation;

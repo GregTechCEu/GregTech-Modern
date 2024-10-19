@@ -2,11 +2,12 @@ package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,14 @@ public interface FluidStorage {
 
     @AllArgsConstructor
     public static class FluidEntry {
+
+        @SuppressWarnings({ "unchecked", "deprecation" })
+        public static final Codec<FluidEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid")
+                        .xmap(fluid1 -> (Supplier<Fluid>) () -> fluid1, Supplier::get)
+                        .forGetter(val -> (Supplier<Fluid>) val.fluid),
+                FluidBuilder.CODEC.optionalFieldOf("builder", null).forGetter(val -> val.builder))
+                .apply(instance, FluidEntry::new));
 
         @Getter
         private Supplier<? extends Fluid> fluid;

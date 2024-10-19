@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -15,6 +14,7 @@ import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,7 +48,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter
     private Supplier<? extends Block> blockSupplier;
     @Setter
-    private Supplier<? extends MetaMachineItem> itemSupplier;
+    private Supplier<? extends Item> itemSupplier;
     @Setter
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
@@ -124,7 +124,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return blockSupplier.get();
     }
 
-    public MetaMachineItem getItem() {
+    public Item getItem() {
         return itemSupplier.get();
     }
 

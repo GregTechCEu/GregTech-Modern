@@ -15,14 +15,13 @@ repositories {
         url = "https://maven.blamejared.com/"
     } // JEI
     maven {
-        // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
     } // JEI mirror, AE2
     maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
     maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
     maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
-    maven { // Flywheel
+    maven {
         url = "https://maven.tterrag.com/"
         content {
             // need to be specific here due to version overlaps
@@ -30,13 +29,12 @@ repositories {
             includeGroup("com.tterrag.registrate")
             includeGroup("com.simibubi.create")
         }
-    }
+    } // Flywheel
     maven { url = "https://maven.theillusivec4.top/" } // Curios
-    maven { // TOP
-        url "https://maven.k-4u.nl"
-    }
     maven {
-        // saps.dev Maven (KubeJS and Rhino)
+        url "https://maven.k-4u.nl"
+    } // TOP
+    maven {
         url = "https://maven.saps.dev/minecraft"
         content {
             includeGroup "dev.latvian.mods"
@@ -44,5 +42,7 @@ repositories {
     }
     maven { url "https://maven.architectury.dev/" }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
-    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+    maven { url = 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+    maven { url = 'https://www.dogforce-games.com/maven/' }
 }
+

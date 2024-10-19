@@ -86,3 +86,10 @@ mandatory = false
 versionRange = "[${jade_version},)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jsonthings"
+mandatory = false
+versionRange = "[${jsonthings_version},)"
+ordering = "BEFORE"
+side = "BOTH"
