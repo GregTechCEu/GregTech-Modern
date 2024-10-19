@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +34,7 @@ public abstract class RecipeManagerMixin {
             at = @At(value = "TAIL"))
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,
                                            ProfilerFiller profiler, CallbackInfo ci) {
+        PowerlessJetpack.FUELS.clear();
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 gtRecipeType.getLookup().removeAllRecipes();

@@ -18,6 +18,7 @@
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
         "PostChainAccessor",
+        "QuadLighterMixin",
         "RebuildTaskMixin",
         "RenderChunkMixin",
         "VertexBufferAccessor",
@@ -48,7 +49,6 @@
         "OreVeinifierMixin",
         "PartialNBTIngredientAccessor",
         "PrimedTntAccessor",
-        "QuadLighterMixin",
         "RecipeManagerAccessor",
         "RecipeManagerMixin",
         "RepairItemRecipeMixin",
@@ -68,6 +68,7 @@
         "embeddium.RenderSectionMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "ldlib.SyncUtilsMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"

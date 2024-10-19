@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -23,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
@@ -50,7 +49,7 @@ public class GTOreByProduct {
     private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
     protected final List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = new ArrayList<>();
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
-    protected final List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> fluidInputs = new ArrayList<>();
+    protected final List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = new ArrayList<>();
     private boolean hasDirectSmelt = false;
     private boolean hasChemBath = false;
     private boolean hasSeparator = false;
@@ -193,9 +192,9 @@ public class GTOreByProduct {
         addToOutputs(material, TagPrefix.crushedPurified, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, 1);
         addChance(3333, 0);
-        List<Pair<TagKey<Fluid>, Long>> fluidStacks = new ArrayList<>();
-        fluidStacks.add(Pair.of(GTMaterials.Water.getFluidTag(), 1000L));
-        fluidStacks.add(Pair.of(GTMaterials.DistilledWater.getFluidTag(), 100L));
+        List<Pair<TagKey<Fluid>, Integer>> fluidStacks = new ArrayList<>();
+        fluidStacks.add(Pair.of(GTMaterials.Water.getFluidTag(), 1000));
+        fluidStacks.add(Pair.of(GTMaterials.DistilledWater.getFluidTag(), 100));
         fluidInputs.add(Either.left(fluidStacks));
 
         // TC crushed/crushed purified -> centrifuged
@@ -233,9 +232,9 @@ public class GTOreByProduct {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 580);
-            List<Pair<TagKey<Fluid>, Long>> washedFluid = new ArrayList<>();
+            List<Pair<TagKey<Fluid>, Integer>> washedFluid = new ArrayList<>();
             // noinspection DataFlowIssue
-            washedFluid.add(Pair.of(washedIn.getFirst().getFluidTag(), (long) washedIn.getSecond()));
+            washedFluid.add(Pair.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond()));
             fluidInputs.add(Either.left(washedFluid));
         } else {
             addEmptyOutputs(2);

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -10,6 +12,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
@@ -43,6 +46,8 @@ public class OrePlacer {
      * once all of its chunks have been generated.
      */
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
+        if (!ConfigHolder.INSTANCE.dev.doSuperflatOres && chunkGenerator instanceof FlatLevelSource) return;
+
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().toLong());
         var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
         var generatedIndicators = oreGenCache.consumeChunkIndicators(level, chunkGenerator, chunk);

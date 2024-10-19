@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -133,8 +133,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     protected void updateAutoIOSubscription() {
         if ((!outputInventory.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(),
                 getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) ||
-                (!tank.isEmpty() && FluidTransferHelper.getFluidTransfer(getLevel(),
-                        getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null)) {
+                (!tank.isEmpty() && GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()))) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

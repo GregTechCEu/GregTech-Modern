@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
@@ -17,20 +19,25 @@ import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraftforge.fluids.FluidStack;
 
+import com.google.common.primitives.Ints;
 import lombok.Getter;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,6 +51,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            LargeCombustionEngineMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+
     private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(20);
     private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 80);
     private static final FluidStack LUBRICANT_STACK = GTMaterials.Lubricant.getFluid(1);
@@ -51,6 +61,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     @Getter
     private final int tier;
     // runtime
+    @DescSynced
     private boolean isOxygenBoosted = false;
 
     public LargeCombustionEngineMachine(IMachineBlockEntity holder, int tier) {
@@ -113,14 +124,14 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() &&
                     !engineMachine.isIntakesObstructed()) {
                 var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
-                var parallelResult = GTRecipeModifiers.fastParallel(engineMachine, recipe, maxParallel, false);
+                var parallelResult = GTRecipeModifiers.accurateParallel(engineMachine, recipe, maxParallel, false);
+                long eut;
                 if (engineMachine.isOxygenBoosted) { // boost production
-                    long eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
-                    result.init(-eut, recipe.duration, 1, params.getOcAmount());
+                    eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
                 } else {
-                    long eut = (long) (EUt * parallelResult.getSecond());
-                    result.init(-eut, recipe.duration, 1, params.getOcAmount());
+                    eut = EUt * parallelResult.getSecond();
                 }
+                result.init(-eut, recipe.duration, 1, params.getOcAmount());
                 return recipe;
             }
         }
@@ -159,29 +170,41 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (isFormed()) {
-            if (isBoostAllowed()) {
-                if (!isExtreme()) {
-                    if (isOxygenBoosted) {
-                        textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.oxygen_boosted"));
-                    } else {
-                        textList.add(Component
-                                .translatable("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"));
-                    }
-                } else {
-                    if (isOxygenBoosted) {
-                        textList.add(Component
-                                .translatable("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted"));
-                    } else {
-                        textList.add(Component.translatable(
-                                "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost"));
-                    }
-                }
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.large_combustion_engine.boost_disallowed"));
-            }
+        MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, isFormed())
+                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
+
+        if (isExtreme()) {
+            builder.addEnergyProductionLine(GTValues.V[tier + 1],
+                    recipeLogic.getLastRecipe() != null ? RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0);
+        } else {
+            builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
         }
+
+        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration())
+                .addCustom(tl -> {
+                    if (isFormed() && isOxygenBoosted) {
+                        String key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+                                "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
+                        tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA));
+                    }
+                })
+                .addWorkingStatusLine();
+    }
+
+    @Nullable
+    public String getRecipeFluidInputInfo() {
+        // Previous Recipe is always null on first world load, so try to acquire a new recipe
+        GTRecipe recipe = recipeLogic.getLastRecipe();
+        if (recipe == null) {
+            Iterator<GTRecipe> iterator = recipeLogic.searchRecipe();
+            recipe = iterator != null && iterator.hasNext() ? iterator.next() : null;
+            if (recipe == null) return null;
+        }
+        FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe).get(0);
+
+        int ocAmount = Ints.saturatedCast(getMaxVoltage() / RecipeHelper.getOutputEUt(recipe));
+        int neededAmount = (int) (ocAmount * requiredFluidInput.getAmount());
+        return ChatFormatting.RED + FormattingUtil.formatNumbers(neededAmount) + "mB";
     }
 
     @Override
@@ -193,5 +216,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 this::isIntakesObstructed,
                 () -> null));
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }
