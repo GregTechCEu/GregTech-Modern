@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -20,8 +19,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.TREE_FELLING_KEY;
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = GTCEu.MOD_ID)
 public class TreeFellingHelper {
@@ -89,7 +87,8 @@ public class TreeFellingHelper {
             for (var helper : helpers) {
                 if (event.level == helper.player.level()) {
                     if (helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
-                            !getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY)) {
+                            !(hasBehaviorsTag(helper.player.getMainHandItem()) &&
+                                    getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY))) {
                         return;
                     }
                     if (helper.tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0)
