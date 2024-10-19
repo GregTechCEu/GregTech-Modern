@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "gt_placeholder_criteria": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "gtceu:textures/gui/advancements/background.png",
+    "description": {
+      "translate": "gtceu.advancement.low_voltage.electrocution_death.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "gtceu:terminal"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "gtceu.advancement.low_voltage.electrocution_death.title"
+    }
+  },
+  "requirements": [
+    [
+      "gt_placeholder_criteria"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.utils.AdvancementUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +24,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -92,8 +91,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         notifyBlockUpdate();
         markDirty();
         scheduleNeighborShapeUpdate();
-        // TODO achievement
-        // AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
+        AdvancementUtil.awardAdvancement(player, GTCEu.id("low_voltage/first_cover_place"), "gt_placeholder_criteria");
         return true;
     }
 
