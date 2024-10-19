@@ -89,7 +89,7 @@ public class TreeFellingHelper {
                     if (helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
                             !(hasBehaviorsTag(helper.player.getMainHandItem()) &&
                                     getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY))) {
-                        return;
+                        continue;
                     }
                     if (helper.tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0)
                         ToolHelper.breakBlockRoutine(helper.player, helper.tool, helper.orderedBlocks.removeLast(),
