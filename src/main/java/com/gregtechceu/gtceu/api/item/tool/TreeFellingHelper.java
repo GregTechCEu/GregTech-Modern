@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.TREE_FELLING_KEY;
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = GTCEu.MOD_ID)
 public class TreeFellingHelper {
 
     private final ServerPlayer player;
