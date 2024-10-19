@@ -1,21 +1,39 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.gregtechceu.gtceu.utils.TaskHandler;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.TREE_FELLING_KEY;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
+
 public class TreeFellingHelper {
+
+    private final ServerPlayer player;
+    private final ItemStack tool;
+    private final Deque<BlockPos> orderedBlocks;
+    private int tick;
+
+    private TreeFellingHelper(ServerPlayer player, ItemStack tool, Deque<BlockPos> orderedBlocks) {
+        this.player = player;
+        this.tool = tool;
+        this.orderedBlocks = orderedBlocks;
+        tick = 0;
+    }
 
     public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos,
                                 LivingEntity miner) {
@@ -52,23 +70,25 @@ public class TreeFellingHelper {
         }
 
         if (!visited.isEmpty() && miner instanceof ServerPlayer serverPlayer) {
-            List<BlockPos> orderedBlocks = visited.stream()
+            Deque<BlockPos> orderedBlocks = visited.stream()
                     .sorted(Comparator.comparingInt(pos -> pos.getY() - originPos.getY()))
                     .collect(Collectors.toCollection(LinkedList::new));
-            breakBlocksPerTick(serverPlayer, stack, orderedBlocks, origin.getBlock());
+            MinecraftForge.EVENT_BUS.register(new TreeFellingHelper(serverPlayer, stack, orderedBlocks));
+            // breakBlocksPerTick(serverPlayer, stack, orderedBlocks, origin.getBlock());
         }
     }
 
-    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList,
-                                          Block originBlock) {
-        for (int i = 0; i < posList.size(); i++) {
-            int delayTick = i * 2; // 1 block per 2 tick
-            BlockPos pos = posList.get(i);
-            TaskHandler.enqueueServerTask(player.serverLevel(), () -> {
-                if (player.level().getBlockState(pos).is(originBlock)) {
-                    ToolHelper.breakBlockRoutine(player, tool, pos, true);
-                }
-            }, delayTick);
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.level == player.level() && event.side == LogicalSide.SERVER) {
+            if (orderedBlocks.isEmpty() || tool.isEmpty() ||
+                    !getBehaviorsTag(player.getMainHandItem()).getBoolean(TREE_FELLING_KEY)) {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                return;
+            }
+            if (tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0)
+                ToolHelper.breakBlockRoutine(player, tool, orderedBlocks.removeLast(), true);
+            tick++;
         }
     }
 }

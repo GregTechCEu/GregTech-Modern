@@ -478,15 +478,16 @@ public class ToolHelper {
                 return removeBlockRoutine(state, world, player, pos, playSound);
             } else {
                 world.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-                boolean successful = removeBlockRoutine(state, world, player, pos, playSound);
 
                 ItemStack copiedTool = tool.copy();
                 boolean canHarvest = player.hasCorrectToolForDrops(state);
-                tool.mineBlock(world, state, pos, player);
-                if (tool.isEmpty() && !copiedTool.isEmpty()) {
-                    onPlayerDestroyItem(player, copiedTool, InteractionHand.MAIN_HAND);
+                if (!tool.isEmpty()) {
+                    tool.mineBlock(world, state, pos, player);
+                    if (tool.isEmpty() && !copiedTool.isEmpty()) {
+                        onPlayerDestroyItem(player, copiedTool, InteractionHand.MAIN_HAND);
+                    }
                 }
-
+                boolean successful = removeBlockRoutine(null, world, player, pos, playSound);
                 if (successful && canHarvest) {
                     block.playerDestroy(world, player, pos, state, tile, copiedTool);
                 }
