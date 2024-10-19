@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,286 +14,275 @@ import java.util.stream.Collectors;
  * @author brachy84
  */
 public class OreDictExprFilter {
+    public static class OreDictExprParser {
+        public enum TokenType {
+            LParen, RParen, And, Or, Not, Xor, String
+        }
 
-    private static final Pattern PARTS_PATTERN = Pattern.compile("\\*+");
+        public static class Token {
+            public String lexeme;
+            public TokenType type;
 
-    /**
-     * Parses the given expression and creates a List.
-     *
-     * @param expression expr to parse
-     * @return match rule list
-     */
-    public static List<MatchRule> parseExpression(String expression) {
-        List<MatchRule> rules = new ArrayList<>();
-        parseExpression(rules, expression);
-        return rules;
+            public Token(TokenType type) {
+                this.type = type;
+            }
+
+            public Token(TokenType type, String lexeme) {
+                this.lexeme = lexeme;
+                this.type = type;
+            }
+        }
+
+        abstract static public class MatchExpr {
+            public abstract boolean matches(Set<String> input, boolean regexp);
+        }
+
+        static class BinExpr extends MatchExpr {
+            MatchExpr left, right;
+            Token op;
+
+            public BinExpr(Token op, MatchExpr left, MatchExpr right) {
+                this.op = op;
+                this.left = left;
+                this.right = right;
+            }
+
+            @Override
+            public boolean matches(Set<String> input, boolean regexp) {
+                return switch (op.type) {
+                    case And -> left.matches(input, regexp) && right.matches(input, regexp);
+                    case Or -> left.matches(input, regexp) || right.matches(input, regexp);
+                    case Xor -> (left.matches(input, regexp) && !right.matches(input, regexp)) || (!left.matches(input, regexp) && right.matches(input, regexp));
+                    default -> false;
+                };
+            }
+        }
+
+        static class UnaryExpr extends MatchExpr {
+            Token token;
+            MatchExpr expr;
+
+            public UnaryExpr(Token token, MatchExpr expr) {
+                this.token = token;
+                this.expr = expr;
+            }
+
+            @Override
+            public boolean matches(Set<String> input, boolean regexp) {
+                if (token.type == TokenType.Not) {
+                    return !expr.matches(input, regexp);
+                }
+
+                return false;
+            }
+        }
+
+        static class StringExpr extends MatchExpr {
+            String value;
+
+            public StringExpr(String value) {
+                this.value = value;
+            }
+
+            @Override
+            public boolean matches(Set<String> input, boolean regexp) {
+                if (!value.contains(":") && !value.startsWith("*")) {
+                    value = "forge:" + value;
+                }
+
+                if (regexp) {
+                    return input.stream().anyMatch(inp -> Pattern.matches(value, inp));
+                } else {
+                    String val = quote(value);
+                    return input.stream().anyMatch(inp -> Pattern.matches(val, inp));
+                }
+            }
+
+            private String quote(String str) {
+                if (str.contains("*")) {
+                    var idx = str.indexOf("*");
+                    if (idx == str.length() - 1) {
+                        return quote(str.substring(0, idx)) + ".*";
+                    } else {
+                        return quote(str.substring(0, idx)) + ".*" + quote(str.substring(idx + 1));
+                    }
+                }
+
+                return Pattern.quote(str);
+            }
+        }
+
+        static class GroupingExpr extends MatchExpr {
+            MatchExpr inner;
+
+            public GroupingExpr(MatchExpr inner) {
+                this.inner = inner;
+            }
+
+            @Override
+            public boolean matches(Set<String> input, boolean regexp) {
+                return inner.matches(input, regexp);
+            }
+        }
+
+        List<Token> tokens;
+        int idx = 0;
+        Token prev = null;
+
+        public MatchExpr parse(String expr) {
+            tokens = tokenize(expr);
+
+            return expression();
+        }
+
+        private boolean match(TokenType tt) {
+            if (idx >= tokens.size()) {
+                return false;
+            }
+
+            if (tokens.get(idx).type == tt) {
+                prev = tokens.get(idx);
+                idx++;
+                return true;
+            }
+
+            return false;
+        }
+
+        private MatchExpr expression() {
+            return term();
+        }
+
+        private MatchExpr term() {
+            MatchExpr lhs = unary();
+
+            BinExpr result = null;
+            while (match(TokenType.And) || match(TokenType.Or) || match(TokenType.Xor)) {
+                if (result == null) {
+                    result = new BinExpr(prev, lhs, unary());
+                } else {
+                    result = new BinExpr(prev, result, unary());
+                }
+            }
+
+            if (result != null) {
+                return result;
+            }
+
+            return lhs;
+        }
+
+        private MatchExpr unary() {
+            if (match(TokenType.Not)) {
+                return new UnaryExpr(prev, id());
+            }
+
+            return id();
+        }
+
+        private MatchExpr id() {
+            if (match(TokenType.LParen)) {
+                MatchExpr inner = expression();
+                match(TokenType.RParen);
+
+                return new GroupingExpr(inner);
+            }
+
+            if (match(TokenType.String)) {
+                return new StringExpr(prev.lexeme);
+            }
+
+            return null;
+        }
+
+        private List<Token> tokenize(String expr) {
+            List<Token> result = new ArrayList<>();
+
+            int idx = 0;
+            while (idx < expr.length()) {
+                char cur = expr.charAt(idx);
+
+                if (Character.isWhitespace(cur)) {
+                    idx++;
+                    continue;
+                }
+
+                // Parse strings
+                {
+                    int stringLen = 0;
+                    while (cur != '(' && cur != ')' && cur != '!' && cur != '&' && cur != '|' && cur != '^' && cur != ' ') {
+                        stringLen++;
+
+                        if (stringLen + idx == expr.length()) {
+                            break;
+                        }
+
+                        cur = expr.charAt(idx + stringLen);
+                    }
+
+                    if (stringLen > 0) {
+                        result.add(new Token(TokenType.String, expr.substring(idx, idx + stringLen)));
+                        idx += stringLen;
+                        continue;
+                    }
+                }
+
+                // Parse operators
+                switch (cur) {
+                    case '!' -> result.add(new Token(TokenType.Not));
+                    case '&' -> result.add(new Token(TokenType.And));
+                    case '|' -> result.add(new Token(TokenType.Or));
+                    case '^' -> result.add(new Token(TokenType.Xor));
+                    case '(' -> result.add(new Token(TokenType.LParen));
+                    case ')' -> result.add(new Token(TokenType.RParen));
+                }
+
+                idx++;
+            }
+
+            return result;
+        }
     }
 
     /**
      * Parses the given expression and puts them into the given list.
      *
-     * @param rules      list to fill
      * @param expression expr to parse
-     * @return the position of the expr. Is only relevant for sub rules
+     * @return The parsed expression tree
      */
-    public static int parseExpression(List<MatchRule> rules, String expression) {
-        rules.clear();
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < expression.length(); i++) {
-            char c = expression.charAt(i);
-            if (c == ' ')
-                continue;
-            if (c == '(') {
-                List<MatchRule> subRules = new ArrayList<>();
-                i = parseExpression(subRules, expression.substring(i + 1)) + i + 1;
-                rules.add(MatchRule.group(subRules, builder.toString()));
-                builder = new StringBuilder();
-            } else {
-                switch (c) {
-                    case '&' -> {
-                        rules.add(new MatchRule(builder.toString()));
-                        rules.add(new MatchRule(MatchLogic.AND));
-                        builder = new StringBuilder();
-                    }
-                    case '|' -> {
-                        rules.add(new MatchRule(builder.toString()));
-                        rules.add(new MatchRule(MatchLogic.OR));
-                        builder = new StringBuilder();
-                    }
-                    case '^' -> {
-                        rules.add(new MatchRule(builder.toString()));
-                        rules.add(new MatchRule(MatchLogic.XOR));
-                        builder = new StringBuilder();
-                    }
-                    case ')' -> {
-                        rules.add(new MatchRule(builder.toString()));
-                        return i + 1;
-                    }
-                    default -> builder.append(c);
-                }
-            }
-        }
-        if (builder.length() > 0) {
-            rules.add(new MatchRule(builder.toString()));
-        }
-        return expression.length();
+    public static OreDictExprParser.MatchExpr parseExpression(String expression) {
+        OreDictExprParser parser = new OreDictExprParser();
+        return parser.parse(expression);
     }
 
     /**
      * Matches the given item against a list of rules
      *
-     * @param rules to check against
+     * @param expr to check against
      * @param stack item to check
      * @return if any of the items oreDicts matches the rules
      */
-    public static boolean matchesOreDict(List<MatchRule> rules, ItemStack stack) {
-        Set<String> oreDicts = stack.getTags().map(TagKey::location).map(ResourceLocation::getPath)
-                .collect(Collectors.toSet());
-        if (oreDicts.isEmpty())
-            return false;
+    public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, ItemStack stack) {
+        Set<String> oreDicts = stack.getTags().map(TagKey::location)
+                .map(rl -> rl.getNamespace() + ":" + rl.getPath()).collect(Collectors.toSet());
 
-        if (rules == null || rules.isEmpty())
+        if (oreDicts.isEmpty() || expr == null) {
             return false;
-
-        for (String oreDict : oreDicts) {
-            if (matches(rules, oreDict))
-                return true;
         }
-        return false;
+
+        boolean val = expr.matches(oreDicts, false);
+        return val;
     }
 
-    public static boolean matchesOreDict(List<MatchRule> rules, FluidStack stack) {
+    public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, FluidStack stack) {
         Set<String> oreDicts = stack.getFluid().defaultFluidState().getTags().map(TagKey::location)
-                .map(ResourceLocation::getPath).collect(Collectors.toSet());
-        if (oreDicts.size() == 0)
+                .map(rl -> rl.getNamespace() + ":" + rl.getPath()).collect(Collectors.toSet());
+
+        if (oreDicts.isEmpty() || expr == null) {
             return false;
-
-        if (rules == null || rules.isEmpty())
-            return false;
-
-        for (String oreDict : oreDicts) {
-            if (matches(rules, oreDict))
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * Matches the given string against a list of rules.
-     * The string does not have to be an oreDict.
-     *
-     * @param rules   to check against
-     * @param oreDict string to check
-     * @return if the string matches the rules
-     */
-    public static boolean matches(List<MatchRule> rules, String oreDict) {
-        boolean first = true;
-        boolean lastResult = false;
-        MatchLogic lastLogic = null;
-        for (MatchRule rule : rules) {
-            if (lastLogic == null) {
-                if (rule.logic == MatchLogic.AND || rule.logic == MatchLogic.OR || rule.logic == MatchLogic.XOR) {
-                    lastLogic = rule.logic;
-                    continue;
-                }
-            }
-            if (lastLogic != null || first) {
-                if (lastLogic != null) {
-                    switch (lastLogic) {
-                        case AND: {
-                            if (!lastResult)
-                                return false;
-                            break;
-                        }
-                        case OR: {
-                            if (lastResult)
-                                return true;
-                            break;
-                        }
-                    }
-                }
-
-                boolean newResult;
-                if (rule.isGroup())
-                    newResult = rule.logic == MatchLogic.NOT ^ matches(rule.subRules, oreDict);
-                else
-                    newResult = matches(rule, oreDict);
-
-                if (lastLogic == MatchLogic.XOR) {
-                    if (lastResult == newResult)
-                        return false;
-                }
-
-                lastLogic = null;
-                lastResult = newResult;
-                first = false;
-            }
-
         }
 
-        return lastResult;
-    }
-
-    private static boolean matches(MatchRule rule, String oreDict) {
-        String filter = rule.expression;
-
-        if (filter.equals("*"))
-            return true;
-
-        boolean startWild = filter.startsWith("*"), endWild = filter.endsWith("*");
-        if (startWild) {
-            filter = filter.substring(1);
-        }
-
-        String[] parts = PARTS_PATTERN.split(filter);
-
-        return (rule.logic == MatchLogic.NOT) ^ matches(parts, oreDict, startWild, endWild);
-    }
-
-    private static boolean matches(String[] filter, String oreDict, boolean startWild, boolean endWild) {
-        String lastlastPart = filter[0];
-        String lastPart = filter[0];
-        int index = oreDict.indexOf(lastPart);
-        if ((!startWild && index != 0) || index < 0)
-            return false;
-        boolean didGoBack = false;
-
-        for (int i = 1; i < filter.length; i++) {
-            String part = filter[i];
-            int newIndex = oreDict.indexOf(part, index + lastPart.length());
-            if (newIndex < 0) {
-                if (i > 1 && !didGoBack) {
-                    i -= 2;
-                    lastPart = lastlastPart;
-                    didGoBack = true;
-                    continue;
-                }
-                return false;
-            }
-            lastlastPart = lastPart;
-            lastPart = part;
-            index = newIndex;
-            if (didGoBack)
-                didGoBack = false;
-        }
-
-        if (endWild || lastPart.length() + index == oreDict.length())
-            return true;
-
-        for (int i = filter.length - 1; i < filter.length; i++) {
-            String part = filter[i];
-            int newIndex = oreDict.indexOf(part, index + lastPart.length());
-            if (newIndex < 0) {
-                if (i > 1 && !didGoBack) {
-                    i -= 2;
-                    lastPart = lastlastPart;
-                    didGoBack = true;
-                    continue;
-                }
-                return false;
-            }
-            lastlastPart = lastPart;
-            lastPart = part;
-            index = newIndex;
-            if (didGoBack)
-                didGoBack = false;
-        }
-        return lastPart.length() + index == oreDict.length();
-    }
-
-    public static class MatchRule {
-
-        public final MatchLogic logic;
-        public final String expression;
-        private final List<MatchRule> subRules;
-
-        private MatchRule(MatchLogic logic, String expression, List<MatchRule> subRules) {
-            if (expression.startsWith("!")) {
-                logic = MatchLogic.NOT;
-                expression = expression.substring(1);
-            }
-            this.logic = logic;
-            this.expression = expression;
-            this.subRules = subRules;
-        }
-
-        public MatchRule(MatchLogic logic, String expression) {
-            this(logic, expression, null);
-        }
-
-        public MatchRule(MatchLogic logic) {
-            this(logic, "");
-        }
-
-        public MatchRule(String expression) {
-            this(MatchLogic.ANY, expression);
-        }
-
-        public static MatchRule not(String expression, boolean not) {
-            return new MatchRule(not ? MatchLogic.NOT : MatchLogic.ANY, expression);
-        }
-
-        public static MatchRule group(List<MatchRule> subRules, String expression) {
-            MatchLogic logic = expression.startsWith("!") ? MatchLogic.NOT : MatchLogic.ANY;
-            return new MatchRule(logic, "", subRules);
-        }
-
-        public boolean isGroup() {
-            return subRules != null;
-        }
-
-        @Nullable
-        public List<MatchRule> getSubRules() {
-            return subRules;
-        }
-    }
-
-    public enum MatchLogic {
-        OR,
-        AND,
-        XOR,
-        NOT,
-        ANY
+        boolean val = expr.matches(oreDicts, false);
+        return val;
     }
 }
