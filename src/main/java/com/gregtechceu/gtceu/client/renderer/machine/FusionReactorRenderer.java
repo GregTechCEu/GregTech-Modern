@@ -1,34 +1,25 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.renderer.IRenderSetup;
-import com.gregtechceu.gtceu.client.shader.post.BloomEffect;
-import com.gregtechceu.gtceu.client.shader.post.BloomType;
-import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
-import com.gregtechceu.gtceu.client.util.EffectRenderContext;
-import com.gregtechceu.gtceu.client.util.IBloomEffect;
+import com.gregtechceu.gtceu.client.util.BloomUtils;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
+import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
 
@@ -42,29 +33,18 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-            if (!machine.isRegisteredBloomTicket()) {
-                machine.setRegisteredBloomTicket(true);
-                BloomEffectUtil.registerBloomRender(FusionBloomSetup.INSTANCE, getBloomType(),
-                        new FusionBloomEffect(machine), blockEntity);
+            if (GTCEu.isShimmerLoaded()) {
+                PoseStack finalStack = RenderUtils.copyPoseStack(stack);
+                BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
+            } else {
+                renderLightRing(machine, partialTicks, stack, buffer);
             }
-            // TODO fix bloom on fusion reactor light
-            stack.pushPose();
-            // offset back by machine pos to render ring at machine in renderLightRing, sorry for this
-            BlockPos pos = machine.getPos();
-            stack.translate(-pos.getX(), -pos.getY(), -pos.getZ());
-            renderLightRing(machine, partialTicks, stack, buffer.getBuffer(GTRenderTypes.getLightRing()), 0, 0, 0);
-            stack.popPose();
         }
-    }
-
-    private static BloomType getBloomType() {
-        ConfigHolder.ClientConfigs.ShaderOptions.FusionBloom fusionBloom = ConfigHolder.INSTANCE.client.shader.fusionBloom;
-        return BloomType.fromValue(fusionBloom.useShader ? fusionBloom.bloomStyle : -1);
     }
 
     @OnlyIn(Dist.CLIENT)
     private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
-                                 VertexConsumer buffer, float camX, float camY, float camZ) {
+                                 MultiBufferSource buffer) {
         var color = machine.getColor();
         if (color == -1) return;
         int ringColor = ColorUtils.blendColor(color, -1, Eases.EaseQuadIn.getInterpolation(
@@ -72,17 +52,16 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         var front = machine.getFrontFacing();
         var upwards = machine.getUpwardsFacing();
         var flipped = machine.isFlipped();
-        BlockPos pos = machine.getPos();
         Direction relativeBack = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
         Direction.Axis axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
         float a = ColorUtils.alpha(ringColor);
         float r = ColorUtils.red(ringColor);
         float g = ColorUtils.green(ringColor);
         float b = ColorUtils.blue(ringColor);
-        RenderBufferHelper.renderRing(stack, buffer,
-                pos.getX() - camX + relativeBack.getStepX() * 7 + 0.5F,
-                pos.getY() - camY + relativeBack.getStepY() * 7 + 0.5F,
-                pos.getZ() - camZ + relativeBack.getStepZ() * 7 + 0.5F,
+        RenderBufferHelper.renderRing(stack, buffer.getBuffer(GTRenderTypes.getLightRing()),
+                relativeBack.getStepX() * 7 + 0.5F,
+                relativeBack.getStepY() * 7 + 0.5F,
+                relativeBack.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
                 r, g, b, a, axis);
     }
@@ -103,48 +82,5 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
     @OnlyIn(Dist.CLIENT)
     public int getViewDistance() {
         return 32;
-    }
-
-    @RequiredArgsConstructor
-    private final class FusionBloomEffect implements IBloomEffect {
-
-        private final FusionReactorMachine machine;
-
-        private static final BufferBuilder lightRingBuffer = new BufferBuilder(
-                GTRenderTypes.getLightRing().bufferSize());
-
-        @Override
-        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                                      @NotNull EffectRenderContext context) {
-            lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
-            FusionReactorRenderer.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer,
-                    (float) context.cameraX(), (float) context.cameraY(), (float) context.cameraZ());
-            BufferUploader.drawWithShader(lightRingBuffer.end());
-        }
-
-        @Override
-        public boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {
-            return machine.getColor() != null && context.frustum()
-                    .isVisible(new AABB(machine.getPos()).inflate(FusionReactorRenderer.this.getViewDistance()));
-        }
-    }
-
-    private static final class FusionBloomSetup implements IRenderSetup {
-
-        private static final FusionBloomSetup INSTANCE = new FusionBloomSetup();
-
-        @Override
-        public void preDraw(@NotNull BufferBuilder buffer) {
-            BloomEffect.strength = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.strength;
-            BloomEffect.baseBrightness = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.baseBrightness;
-            BloomEffect.highBrightnessThreshold = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.highBrightnessThreshold;
-            BloomEffect.lowBrightnessThreshold = (float) ConfigHolder.INSTANCE.client.shader.fusionBloom.lowBrightnessThreshold;
-            BloomEffect.step = 1;
-
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-        }
-
-        @Override
-        public void postDraw(@NotNull BufferBuilder buffer) {}
     }
 }

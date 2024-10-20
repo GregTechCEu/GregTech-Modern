@@ -3,7 +3,7 @@
         "connection": "gtceu:block/casings/coils/machine_coil_naquadah_bloom_ctm",
         "emissive": true
     },
-    "gtceu": {
+    "shimmer": {
         "bloom": true
     }
 }

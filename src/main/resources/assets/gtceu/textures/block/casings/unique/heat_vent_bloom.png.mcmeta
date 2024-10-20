@@ -2,7 +2,7 @@
     "animation": {
 		"frametime": 1
 	},
-    "gtceu": {
+    "shimmer": {
         "bloom": true
     }
 }
