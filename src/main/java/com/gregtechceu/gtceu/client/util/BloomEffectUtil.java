@@ -248,6 +248,7 @@ public class BloomEffectUtil {
                 RenderSystem.depthMask(false);
 
                 render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
+                GTRenderTypes.getBloom().clearRenderState();
                 return;
             }
 
@@ -261,8 +262,7 @@ public class BloomEffectUtil {
 
             RenderSystem.depthMask(true);
             if (!BLOOM_RENDERS.isEmpty()) {
-                for (var e : BLOOM_RENDERS.entrySet()) {
-                    List<BloomRenderTicket> list = e.getValue();
+                for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
                     BufferBuilder buffer = Tesselator.getInstance().getBuilder();
                     draw(poseStack, buffer, context, list);
                 }
@@ -396,13 +396,13 @@ public class BloomEffectUtil {
 
     private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix, double camX,
                                double camY, double camZ) {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.enableBlend();
+        //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         // Forcefully insert config values to shader
         List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
         for (PostPass pass : passes) {
             EffectInstance shader = pass.getEffect();
-            shader.safeGetUniform("iTime").set(GTShaders.getITime(partialTicks));
             shader.safeGetUniform("EnableFilter").set(BloomEffectUtil.isDrawingBlockBloom.get() ? 1 : 0);
 
             if (GTShaders.BLOOM_TYPE == BloomType.UNREAL) {
@@ -423,25 +423,27 @@ public class BloomEffectUtil {
             }
         }
 
-        for (var entry : GTShaders.BLOOM_BUFFERS.entrySet()) {
-            // return early if buffer is invalid or has no vertex data bound
-            // VertexBuffer#mode's nullness is the easiest way to check this.
-            if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
-                continue;
+        if (BloomEffectUtil.isDrawingBlockBloom.get()) {
+            for (var entry : GTShaders.BLOOM_BUFFERS.entrySet()) {
+                // return early if buffer is invalid or has no vertex data bound
+                // VertexBuffer#mode's nullness is the easiest way to check this.
+                if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
+                    continue;
+                }
+                entry.getValue().bind();
+                poseStack.pushPose();
+                poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
+                poseStack.translate(-camX, -camY, -camZ);
+                entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+                poseStack.popPose();
             }
-            entry.getValue().bind();
-            poseStack.pushPose();
-            poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
-            poseStack.translate(-camX, -camY, -camZ);
-            entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
-            poseStack.popPose();
         }
 
         GTShaders.BLOOM_CHAIN.process(partialTicks);
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
+        //RenderSystem.disableDepthTest();
+        //RenderSystem.disableBlend();
+        //RenderSystem.defaultBlendFunc();
         VertexBuffer.unbind();
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
     }
 
     private record BloomRenderKey(@Nullable IRenderSetup renderSetup, @NotNull BloomType bloomType) {

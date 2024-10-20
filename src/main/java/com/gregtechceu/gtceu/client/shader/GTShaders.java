@@ -21,6 +21,7 @@ import com.mojang.blaze3d.vertex.VertexBuffer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @OnlyIn(Dist.CLIENT)
 public class GTShaders {
@@ -32,11 +33,13 @@ public class GTShaders {
     public static RenderTarget BLOOM_TARGET;
 
     public static Map<BlockPos, VertexBuffer> BLOOM_BUFFERS = new HashMap<>();
-    public static Map<BlockPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new HashMap<>();
+    public static Map<BlockPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
     public static Map<BlockPos, BufferBuilder.RenderedBuffer> RENDERED_BLOOM_BUFFERS = new HashMap<>();
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
-        if (!allowedShader()) {
+        // skip bloom target check here
+        if (!ConfigHolder.INSTANCE.client.shader.useShader ||
+                GTCEu.isIrisOculusLoaded() && IrisApi.getInstance().isShaderPackInUse()) {
             return;
         }
 
@@ -88,15 +91,7 @@ public class GTShaders {
     }
 
     public static boolean allowedShader() {
-        return ConfigHolder.INSTANCE.client.shader.useShader &&
+        return ConfigHolder.INSTANCE.client.shader.useShader && BLOOM_TARGET != null &&
                 !(GTCEu.isIrisOculusLoaded() && IrisApi.getInstance().isShaderPackInUse());
-    }
-
-    public static float getITime(float pPartialTicks) {
-        if (mc.level == null) {
-            return System.currentTimeMillis() % 1200000 / 1000f;
-        } else {
-            return ((mc.level.getGameTime() % 24000) + pPartialTicks) / 20f;
-        }
     }
 }

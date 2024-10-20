@@ -34,14 +34,14 @@ public class ForgeClientEventListener {
 
     @SubscribeEvent
     public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
+        Camera camera = event.getCamera();
+        PoseStack poseStack = event.getPoseStack();
+        float partialTick = event.getPartialTick();
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            Camera camera = event.getCamera();
-            PoseStack poseStack = event.getPoseStack();
-            float partialTick = event.getPartialTick();
             // to render the preview after block entities, before the translucent. so it can be seen through the
             // transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
-
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             BloomEffectUtil.renderBloom(camera.getPosition().x, camera.getPosition().y, camera.getPosition().z,
                     poseStack, event.getProjectionMatrix(), event.getFrustum(), partialTick, camera.getEntity());
         }
@@ -50,8 +50,10 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START && Minecraft.getInstance().level != null) {
-            GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+            if (GTShaders.allowedShader()) {
+                GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
+                Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+            }
         }
     }
 
