@@ -53,6 +53,16 @@ public final class FTBOwner implements IMachineOwner {
     }
 
     @Override
+    public void broadcastMessage(Component message) {
+        for (var player : team.getMembers()) {
+            var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
+            if (serverPlayer != null) {
+                serverPlayer.displayClientMessage(message, false);
+            }
+        }
+    }
+
+    @Override
     public void displayInfo(List<Component> compList) {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         compList.add(Component.translatable("behavior.portable_scanner.team_name", team.getName()));
