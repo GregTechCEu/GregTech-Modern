@@ -406,18 +406,26 @@ public class BloomEffectUtil {
         }
 
         if (BloomEffectUtil.isDrawingBlockBloom.get()) {
-            for (var entry : GTShaders.BLOOM_BUFFERS.entrySet()) {
+            for (var it = GTShaders.BLOOM_BUFFERS.entrySet().iterator(); it.hasNext();) {
+                var entry = it.next();
                 // return early if buffer is invalid or has no vertex data bound
                 // VertexBuffer#mode's nullness is the easiest way to check this.
-                if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
-                    continue;
+                try {
+                    if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
+                        continue;
+                    }
+                    entry.getValue().bind();
+                    poseStack.pushPose();
+                    poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
+                    poseStack.translate(-camX, -camY, -camZ);
+                    entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+                    poseStack.popPose();
+                } finally {
+                    entry.getValue().close();
+                    GTShaders.BLOOM_BUFFER_BUILDERS.remove(entry.getKey());
+                    GTShaders.RENDERED_BLOOM_BUFFERS.remove(entry.getKey());
+                    it.remove();
                 }
-                entry.getValue().bind();
-                poseStack.pushPose();
-                poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
-                poseStack.translate(-camX, -camY, -camZ);
-                entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
-                poseStack.popPose();
             }
         }
 
