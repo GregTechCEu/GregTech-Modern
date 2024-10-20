@@ -197,7 +197,7 @@ public class AssemblerRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ev").duration(200).EUt(VA[EV])
                 .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireFine, TungstenSteel, 16)
+                .inputItems(wireFine, Platinum, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_EV)
                 .save(provider);
