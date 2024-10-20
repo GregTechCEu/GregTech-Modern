@@ -24,22 +24,24 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class BloomEffectUtil {
 
-    private static final Map<BloomRenderKey, List<BloomRenderTicket>> BLOOM_RENDERS = new ConcurrentHashMap<>();
-    private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new CopyOnWriteArrayList<>();
+    private static final Map<BloomRenderKey, List<BloomRenderTicket>> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
+    private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
+
+    private static final ReentrantLock BLOOM_RENDER_LOCK = new ReentrantLock();
 
     /**
      * <p>
@@ -171,7 +173,12 @@ public class BloomEffectUtil {
                                                         @Nullable Supplier<Level> worldContext) {
         if (!GTShaders.allowedShader()) return BloomRenderTicket.INVALID;
         BloomRenderTicket ticket = new BloomRenderTicket(setup, bloomType, render, validityChecker, worldContext);
-        SCHEDULED_BLOOM_RENDERS.add(ticket);
+        BLOOM_RENDER_LOCK.lock();
+        try {
+            SCHEDULED_BLOOM_RENDERS.add(ticket);
+        } finally {
+            BLOOM_RENDER_LOCK.unlock();
+        }
         return ticket;
     }
 
@@ -182,18 +189,23 @@ public class BloomEffectUtil {
      */
     public static void invalidateLevelTickets(@NotNull LevelAccessor level) {
         Objects.requireNonNull(level, "level == null");
-        for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
-            if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
-                ticket.invalidate();
-            }
-        }
-
-        for (Map.Entry<BloomRenderKey, List<BloomRenderTicket>> e : BLOOM_RENDERS.entrySet()) {
-            for (BloomRenderTicket ticket : e.getValue()) {
+        BLOOM_RENDER_LOCK.lock();
+        try {
+            for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
                 if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
                     ticket.invalidate();
                 }
             }
+
+            for (Map.Entry<BloomRenderKey, List<BloomRenderTicket>> e : BLOOM_RENDERS.entrySet()) {
+                for (BloomRenderTicket ticket : e.getValue()) {
+                    if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
+                        ticket.invalidate();
+                    }
+                }
+            }
+        } finally {
+            BLOOM_RENDER_LOCK.unlock();
         }
     }
 
@@ -211,55 +223,60 @@ public class BloomEffectUtil {
         }
         Minecraft.getInstance().getProfiler().popPush("gtceu_block_bloom");
 
-        preDraw();
+        BLOOM_RENDER_LOCK.lock();
+        try {
+            preDraw();
 
-        GTShaders.BLOOM_TARGET.bindWrite(false);
+            GTShaders.BLOOM_TARGET.bindWrite(false);
 
-        EffectRenderContext context = EffectRenderContext.getInstance()
-                .update(entity, camX, camY, camZ, frustum, partialTicks);
+            EffectRenderContext context = EffectRenderContext.getInstance()
+                    .update(entity, camX, camY, camZ, frustum, partialTicks);
 
-        GTRenderTypes.getBloom().setupRenderState();
+            GTRenderTypes.getBloom().setupRenderState();
 
-        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
+            if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesBloom) {
+                RenderSystem.depthMask(true);
+
+                if (!BLOOM_RENDERS.isEmpty()) {
+                    for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
+                        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+                        draw(poseStack, buffer, context, list);
+                    }
+                }
+                postDraw();
+                RenderSystem.depthMask(false);
+
+                render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
+                GTRenderTypes.getBloom().clearRenderState();
+                return;
+            }
+
+            BloomEffect.strength = ConfigHolder.INSTANCE.client.shader.strength;
+            BloomEffect.baseBrightness = ConfigHolder.INSTANCE.client.shader.baseBrightness;
+            BloomEffect.highBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.highBrightnessThreshold;
+            BloomEffect.lowBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.lowBrightnessThreshold;
+            BloomEffect.step = ConfigHolder.INSTANCE.client.shader.step;
+
+            // ********** render custom bloom ************
+
             RenderSystem.depthMask(true);
-
             if (!BLOOM_RENDERS.isEmpty()) {
                 for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
                     BufferBuilder buffer = Tesselator.getInstance().getBuilder();
                     draw(poseStack, buffer, context, list);
                 }
             }
-            postDraw();
             RenderSystem.depthMask(false);
 
+            isDrawingBlockBloom.set(true);
             render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
+            isDrawingBlockBloom.set(false);
+
+            postDraw();
             GTRenderTypes.getBloom().clearRenderState();
-            return;
+        } finally {
+            BLOOM_RENDER_LOCK.unlock();
         }
-
-        BloomEffect.strength = ConfigHolder.INSTANCE.client.shader.strength;
-        BloomEffect.baseBrightness = ConfigHolder.INSTANCE.client.shader.baseBrightness;
-        BloomEffect.highBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.highBrightnessThreshold;
-        BloomEffect.lowBrightnessThreshold = ConfigHolder.INSTANCE.client.shader.lowBrightnessThreshold;
-        BloomEffect.step = ConfigHolder.INSTANCE.client.shader.step;
-
-        // ********** render custom bloom ************
-
-        RenderSystem.depthMask(true);
-        if (!BLOOM_RENDERS.isEmpty()) {
-            for (List<BloomRenderTicket> list : BLOOM_RENDERS.values()) {
-                BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-                draw(poseStack, buffer, context, list);
-            }
-        }
-        RenderSystem.depthMask(false);
-
-        isDrawingBlockBloom.set(true);
-        render(partialTicks, poseStack, projectionMatrix, camX, camY, camZ);
-        isDrawingBlockBloom.set(false);
-
-        postDraw();
-        GTRenderTypes.getBloom().clearRenderState();
     }
 
     private static void preDraw() {
