@@ -42,6 +42,12 @@ public class GTValues {
     public static final int L = 144;
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
+    /**
+     * The Item WildCard Tag. Even shorter than the "-1" of the past
+     */
+
+    // public static final short W = OreDictionary.WILDCARD_VALUE;
+
     /** Current time on the Client. Will always be zero on the server. */
     public static long CLIENT_TIME = 0;
 
@@ -110,14 +116,18 @@ public class GTValues {
             MODID_KUBEJS = "kubejs",
             MODID_IRIS = "iris",
             MODID_OCULUS = "oculus",
+            MODID_SODIUM = "sodium",
+            MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
             MODID_CREATE = "create",
+            MODID_REBORN_ENERGY = "team_reborn_energy",
+            MODID_ALMOSTUNIFIED = "almostunified",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
+            MODID_SHIMMER = "shimmer",
             MODID_JAVD = "javd",
             MODID_FTBTEAMS = "ftbteams",
-            MODID_ARGONAUTS = "argonauts",
-            MODID_OPTIFINE = "optifine";
+            MODID_ARGONAUTS = "argonauts";
 
     /**
      * Spray painting compat modids
@@ -215,6 +225,11 @@ public class GTValues {
             "High Voltage", "Extreme Voltage", "Insane Voltage", "Ludicrous Voltage", "ZPM Voltage", "Ultimate Voltage",
             "Ultra High Voltage", "Ultra Excessive Voltage", "Ultra Immense Voltage", "Ultra Extreme Voltage",
             "Overpowered Voltage", "Maximum Voltage" };
+
+    /**
+     * Used to tell if any high-tier machine (UHV+) was registered.
+     */
+    public static boolean HT = false;
 
     public static Supplier<Boolean> FOOLS = () -> {
         String[] yearMonthDay = LocalDate.now().toString().split("-");

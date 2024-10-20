@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,10 +68,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
-
-    @Getter
-    @Setter
-    protected boolean registeredBloomTicket;
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);

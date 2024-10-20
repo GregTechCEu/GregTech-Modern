@@ -10,14 +10,11 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.client.shader.GTShaders;
-import com.gregtechceu.gtceu.client.util.BloomEffectUtil;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
-import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
@@ -31,8 +28,11 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.google.common.collect.BiMap;
@@ -59,10 +59,6 @@ public class ClientProxy extends CommonProxy {
         RecipeComponent.registerRecipeViewCreator(new GTRecipeViewCreator());
         CompassManager.INSTANCE.registerUIConfig(GTCEu.MOD_ID, new GTCompassUIConfig());
         CompassManager.INSTANCE.registerAction("multiblock", MultiblockAction::new);
-        BloomEffectUtil.init();
-        if (GTCEu.isEmbeddiumLoaded()) {
-            MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
-        }
     }
 
     @SubscribeEvent
@@ -76,13 +72,10 @@ public class ClientProxy extends CommonProxy {
 
         event.registerEntityRenderer(GTEntityTypes.BOAT.get(), c -> new GTBoatRenderer(c, false));
         event.registerEntityRenderer(GTEntityTypes.CHEST_BOAT.get(), c -> new GTBoatRenderer(c, true));
-    }
 
-    @SubscribeEvent
-    public void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         for (var type : GTBoat.BoatType.values()) {
-            event.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
-            event.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
+            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
+            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
                     ChestBoatModel::createBodyModel);
         }
     }
@@ -100,10 +93,5 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
-    }
-
-    @SubscribeEvent
-    public void onRegisterShaders(RegisterShadersEvent event) {
-        GTShaders.onRegisterShaders(event);
     }
 }
