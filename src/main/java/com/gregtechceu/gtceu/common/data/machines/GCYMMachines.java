@@ -34,8 +34,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.multiblock.PartAbility.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GCyMRecipeTypes.ALLOY_BLAST_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCYMRecipeTypes.ALLOY_BLAST_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
@@ -46,7 +46,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
  * @author Rundas
  * @implNote Gregicality Multiblocks
  */
-public class GCyMMachines {
+public class GCYMMachines {
 
     public static void init() {}
 

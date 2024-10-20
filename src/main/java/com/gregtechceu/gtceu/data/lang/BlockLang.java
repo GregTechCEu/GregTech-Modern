@@ -70,7 +70,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.steam_casing_bricked_steel", "Bricked Wrought Iron Hull");
         provider.add("block.gtceu.steam_casing_bricked_steel.tooltip", "§7For improved Steam Machines");
 
-        // GCyM Casings
+        // GCYM Casings
         replace(provider, "block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
         replace(provider, "block.gtceu.large_scale_assembler_casing", "Large-Scale Assembler Casing");
         replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
