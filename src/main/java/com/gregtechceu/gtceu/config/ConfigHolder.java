@@ -393,11 +393,11 @@ public class ConfigHolder {
         public int ldFluidPipeMinDistance = 50;
 
         @Configurable
-        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
-        public boolean machineOwnerGUI = true;
+        @Configurable.Comment({ "Whether ONLY owners can open a machine gui", "Default: false" })
+        public boolean onlyOwnerGUI = false;
         @Configurable
-        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
-        public boolean machineOwnerBreak = true;
+        @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
+        public boolean onlyOwnerBreak = false;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
