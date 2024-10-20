@@ -44,7 +44,7 @@ public class OreDictExprFilter {
 
         abstract static public class MatchExpr {
 
-            public abstract boolean matches(Set<String> input, boolean regexp);
+            public abstract boolean matches(Set<String> input);
         }
 
         static class BinExpr extends MatchExpr {
@@ -59,12 +59,12 @@ public class OreDictExprFilter {
             }
 
             @Override
-            public boolean matches(Set<String> input, boolean regexp) {
+            public boolean matches(Set<String> input) {
                 return switch (op.type) {
-                    case And -> left.matches(input, regexp) && right.matches(input, regexp);
-                    case Or -> left.matches(input, regexp) || right.matches(input, regexp);
-                    case Xor -> (left.matches(input, regexp) && !right.matches(input, regexp)) ||
-                            (!left.matches(input, regexp) && right.matches(input, regexp));
+                    case And -> left.matches(input) && right.matches(input);
+                    case Or -> left.matches(input) || right.matches(input);
+                    case Xor -> (left.matches(input) && !right.matches(input)) ||
+                            (!left.matches(input) && right.matches(input));
                     default -> false;
                 };
             }
@@ -81,9 +81,9 @@ public class OreDictExprFilter {
             }
 
             @Override
-            public boolean matches(Set<String> input, boolean regexp) {
+            public boolean matches(Set<String> input) {
                 if (token.type == TokenType.Not) {
-                    return !expr.matches(input, regexp);
+                    return !expr.matches(input);
                 }
 
                 return false;
@@ -99,17 +99,13 @@ public class OreDictExprFilter {
             }
 
             @Override
-            public boolean matches(Set<String> input, boolean regexp) {
+            public boolean matches(Set<String> input) {
                 if (!value.contains(":") && !value.startsWith("*")) {
                     value = "forge:" + value;
                 }
 
-                if (regexp) {
-                    return input.stream().anyMatch(inp -> Pattern.matches(value, inp));
-                } else {
-                    String val = quote(value);
-                    return input.stream().anyMatch(inp -> Pattern.matches(val, inp));
-                }
+                String val = quote(value);
+                return input.stream().anyMatch(inp -> Pattern.matches(val, inp));
             }
 
             private String quote(String str) {
@@ -135,8 +131,8 @@ public class OreDictExprFilter {
             }
 
             @Override
-            public boolean matches(Set<String> input, boolean regexp) {
-                return inner.matches(input, regexp);
+            public boolean matches(Set<String> input) {
+                return inner.matches(input);
             }
         }
 
@@ -285,7 +281,7 @@ public class OreDictExprFilter {
             return false;
         }
 
-        return expr.matches(oreDicts, false);
+        return expr.matches(oreDicts);
     }
 
     public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, FluidStack stack) {
@@ -296,6 +292,6 @@ public class OreDictExprFilter {
             return false;
         }
 
-        return expr.matches(oreDicts, false);
+        return expr.matches(oreDicts);
     }
 }
