@@ -267,8 +267,7 @@ public class OreDictExprFilter {
      * @return The parsed expression tree
      */
     public static OreDictExprParser.MatchExpr parseExpression(String expression) {
-        OreDictExprParser parser = new OreDictExprParser();
-        return parser.parse(expression);
+        return new OreDictExprParser().parse(expression);
     }
 
     /**
@@ -286,8 +285,7 @@ public class OreDictExprFilter {
             return false;
         }
 
-        boolean val = expr.matches(oreDicts, false);
-        return val;
+        return expr.matches(oreDicts, false);
     }
 
     public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, FluidStack stack) {
@@ -298,7 +296,6 @@ public class OreDictExprFilter {
             return false;
         }
 
-        boolean val = expr.matches(oreDicts, false);
-        return val;
+        return expr.matches(oreDicts, false);
     }
 }
