@@ -111,7 +111,7 @@ public class DimensionCondition extends RecipeCondition {
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         dimension = new ResourceLocation(
-                GsonHelper.getAsString(config, "dim", "dummy"));
+                GsonHelper.getAsString(config, "dimension", "dummy"));
         return this;
     }
 

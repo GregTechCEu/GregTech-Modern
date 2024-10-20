@@ -1,0 +1,18 @@
+name: Clean Gradle
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
+        with:
+          update-cache: true
+      - name: Clean
+        run: ./gradlew clean --build-cache

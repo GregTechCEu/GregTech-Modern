@@ -23,14 +23,14 @@ public class ReactorRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("raw_rubber_from_air")
                 .circuitMeta(1)
-                .inputFluids(Isoprene.getFluid(144))
+                .inputFluids(Isoprene.getFluid(L))
                 .inputFluids(Air.getFluid(2000))
                 .outputItems(dust, RawRubber)
                 .duration(160).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("raw_rubber_from_oxygen")
                 .circuitMeta(1)
-                .inputFluids(Isoprene.getFluid(144))
+                .inputFluids(Isoprene.getFluid(L))
                 .inputFluids(Oxygen.getFluid(2000))
                 .outputItems(dust, RawRubber, 3)
                 .duration(160).EUt(VA[LV]).save(provider);
@@ -219,14 +219,14 @@ public class ReactorRecipes {
         CHEMICAL_RECIPES.recipeBuilder("pva_from_air")
                 .circuitMeta(1)
                 .inputFluids(Air.getFluid(1000))
-                .inputFluids(VinylAcetate.getFluid(144))
-                .outputFluids(PolyvinylAcetate.getFluid(144))
+                .inputFluids(VinylAcetate.getFluid(L))
+                .outputFluids(PolyvinylAcetate.getFluid(L))
                 .duration(160).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("pva_from_oxygen")
                 .circuitMeta(1)
                 .inputFluids(Oxygen.getFluid(1000))
-                .inputFluids(VinylAcetate.getFluid(144))
+                .inputFluids(VinylAcetate.getFluid(L))
                 .outputFluids(PolyvinylAcetate.getFluid(216))
                 .duration(160).EUt(VA[LV]).save(provider);
 
@@ -704,8 +704,8 @@ public class ReactorRecipes {
 
         CHEMICAL_RECIPES.recipeBuilder("polyvinyl_butyral")
                 .inputFluids(Butyraldehyde.getFluid(250))
-                .inputFluids(PolyvinylAcetate.getFluid(144))
-                .outputFluids(PolyvinylButyral.getFluid(144))
+                .inputFluids(PolyvinylAcetate.getFluid(L))
+                .outputFluids(PolyvinylButyral.getFluid(L))
                 .duration(400).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("biphenyl_from_toluene")

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.Locale;
 import java.util.function.BiConsumer;
@@ -32,7 +32,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  */
 public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
 
-    public transient Int2LongFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
+    public transient Int2IntFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
 
     public SimpleMachineBuilder(String name, Function<IMachineBlockEntity, MetaMachine> machineConstructor) {
         super(GTRegistration.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor,
@@ -42,7 +42,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
 
     @SuppressWarnings("unused") // Accessed via reflection
     public SimpleMachineBuilder tankScalingFunction(Function<Integer, Double> tankScalingFunction) {
-        this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).longValue();
+        this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).intValue();
         this.metaMachine((holder) -> new SimpleTieredMachine(holder, tier(), this.tankScalingFunction));
         return this;
     }

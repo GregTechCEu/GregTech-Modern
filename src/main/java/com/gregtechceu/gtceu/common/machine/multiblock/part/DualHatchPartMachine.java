@@ -2,22 +2,22 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class DualHatchPartMachine extends ItemBusPartMachine {
 
-    public static final long INITIAL_TANK_CAPACITY = 16 * FluidHelper.getBucket();
+    public static final int INITIAL_TANK_CAPACITY = 16 * FluidType.BUCKET_VOLUME;
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
             ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
@@ -37,7 +37,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
-    private boolean hasFluidTransfer;
+    private boolean hasFluidHandler;
     private boolean hasItemTransfer;
 
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
@@ -49,8 +49,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     // ***** Initialization ******//
     ////////////////////////////////
 
-    public static long getTankCapacity(long initialCapacity, int tier) {
-        return initialCapacity * (1L << (tier - 6));
+    public static int getTankCapacity(int initialCapacity, int tier) {
+        return initialCapacity * (1 << (tier - 6));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         return (int) Math.pow((getTier() - 4), 2);
     }
 
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
@@ -88,14 +88,13 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         if (level != null) {
             this.hasItemTransfer = ItemTransferHelper.getItemTransfer(
                     level, getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null;
-            this.hasFluidTransfer = FluidTransferHelper.getFluidTransfer(
-                    level, getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null;
+            this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
         } else {
             this.hasItemTransfer = false;
-            this.hasFluidTransfer = false;
+            this.hasFluidHandler = false;
         }
 
-        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemTransfer || hasFluidTransfer)) {
+        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemTransfer || hasFluidHandler)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -111,14 +110,14 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                     if (hasItemTransfer) {
                         getInventory().exportToNearby(getFrontFacing());
                     }
-                    if (hasFluidTransfer) {
+                    if (hasFluidHandler) {
                         tank.exportToNearby(getFrontFacing());
                     }
                 } else if (io == IO.IN) {
                     if (hasItemTransfer) {
                         getInventory().importFromNearby(getFrontFacing());
                     }
-                    if (hasFluidTransfer) {
+                    if (hasFluidHandler) {
                         tank.importFromNearby(getFrontFacing());
                     }
                 }

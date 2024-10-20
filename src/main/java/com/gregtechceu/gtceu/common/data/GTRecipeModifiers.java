@@ -40,6 +40,8 @@ import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.applyCoilEUtDiscount;
+
 /**
  * @author KilaBash
  * @date 2023/7/9
@@ -205,6 +207,13 @@ public class GTRecipeModifiers {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
             }
+
+            recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(
+                    applyCoilEUtDiscount(RecipeHelper.getInputEUt(recipe),
+                            blastFurnaceTemperature, recipe.data.getInt("ebf_temp")),
+                    ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(),
+                    0, null, null)));
+
             return RecipeHelper.applyOverclock(
                     new OverclockingLogic((p, r, maxVoltage) -> OverclockingLogic.heatingCoilOC(
                             params, result, maxVoltage,

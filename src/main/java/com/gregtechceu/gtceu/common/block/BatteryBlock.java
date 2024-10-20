@@ -3,11 +3,19 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.AppearanceBlock;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class BatteryBlock extends AppearanceBlock {
 
@@ -17,6 +25,18 @@ public class BatteryBlock extends AppearanceBlock {
     public BatteryBlock(Properties properties, IBatteryData data) {
         super(properties);
         this.data = data;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
+                                TooltipFlag flag) {
+        super.appendHoverText(stack, level, tooltip, flag);
+        if (this.data.getTier() == -1) {
+            tooltip.add(Component.translatable("block.gtceu.substation_capacitor.tooltip_empty"));
+        } else {
+            tooltip.add(Component.translatable("block.gtceu.substation_capacitor.tooltip_filled",
+                    FormattingUtil.formatNumbers(this.data.getCapacity())));
+        }
     }
 
     public enum BatteryPartType implements StringRepresentable, IBatteryData {
