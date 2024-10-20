@@ -31,7 +31,8 @@ import org.joml.Matrix4f;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -41,7 +42,7 @@ public class BloomEffectUtil {
     private static final Map<BloomRenderKey, List<BloomRenderTicket>> BLOOM_RENDERS = new Object2ObjectOpenHashMap<>();
     private static final List<BloomRenderTicket> SCHEDULED_BLOOM_RENDERS = new ArrayList<>();
 
-    private static final ReentrantLock BLOOM_RENDER_LOCK = new ReentrantLock();
+    private static final ReadWriteLock BLOOM_RENDER_LOCK = new ReentrantReadWriteLock();
 
     /**
      * <p>
@@ -173,11 +174,11 @@ public class BloomEffectUtil {
                                                         @Nullable Supplier<Level> worldContext) {
         if (!GTShaders.allowedShader()) return BloomRenderTicket.INVALID;
         BloomRenderTicket ticket = new BloomRenderTicket(setup, bloomType, render, validityChecker, worldContext);
-        BLOOM_RENDER_LOCK.lock();
+        BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             SCHEDULED_BLOOM_RENDERS.add(ticket);
         } finally {
-            BLOOM_RENDER_LOCK.unlock();
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
         return ticket;
     }
@@ -189,7 +190,7 @@ public class BloomEffectUtil {
      */
     public static void invalidateLevelTickets(@NotNull LevelAccessor level) {
         Objects.requireNonNull(level, "level == null");
-        BLOOM_RENDER_LOCK.lock();
+        BLOOM_RENDER_LOCK.readLock().lock();
         try {
             for (BloomRenderTicket ticket : SCHEDULED_BLOOM_RENDERS) {
                 if (ticket.isValid() && ticket.worldContext != null && ticket.worldContext.get() == level) {
@@ -205,7 +206,7 @@ public class BloomEffectUtil {
                 }
             }
         } finally {
-            BLOOM_RENDER_LOCK.unlock();
+            BLOOM_RENDER_LOCK.readLock().lock();
         }
     }
 
@@ -223,7 +224,7 @@ public class BloomEffectUtil {
         }
         Minecraft.getInstance().getProfiler().popPush("gtceu_block_bloom");
 
-        BLOOM_RENDER_LOCK.lock();
+        BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             preDraw();
 
@@ -275,7 +276,7 @@ public class BloomEffectUtil {
             postDraw();
             GTRenderTypes.getBloom().clearRenderState();
         } finally {
-            BLOOM_RENDER_LOCK.unlock();
+            BLOOM_RENDER_LOCK.writeLock().unlock();
         }
     }
 
@@ -395,9 +396,9 @@ public class BloomEffectUtil {
 
     private static void render(float partialTicks, PoseStack poseStack, Matrix4f projectionMatrix, double camX,
                                double camY, double camZ) {
-        //RenderSystem.enableDepthTest();
-        //RenderSystem.enableBlend();
-        //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        // RenderSystem.enableDepthTest();
+        // RenderSystem.enableBlend();
+        // RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         // Forcefully insert config values to shader
         List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
         for (PostPass pass : passes) {
@@ -435,7 +436,8 @@ public class BloomEffectUtil {
                     poseStack.pushPose();
                     poseStack.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
                     poseStack.translate(-camX, -camY, -camZ);
-                    entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix, RenderSystem.getShader());
+                    entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix,
+                            RenderSystem.getShader());
                     poseStack.popPose();
                 } finally {
                     entry.getValue().close();
@@ -447,9 +449,9 @@ public class BloomEffectUtil {
         }
 
         GTShaders.BLOOM_CHAIN.process(partialTicks);
-        //RenderSystem.disableDepthTest();
-        //RenderSystem.disableBlend();
-        //RenderSystem.defaultBlendFunc();
+        // RenderSystem.disableDepthTest();
+        // RenderSystem.disableBlend();
+        // RenderSystem.defaultBlendFunc();
         VertexBuffer.unbind();
     }
 
