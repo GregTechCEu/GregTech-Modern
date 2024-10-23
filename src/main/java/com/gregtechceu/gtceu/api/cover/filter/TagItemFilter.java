@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
@@ -32,7 +32,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
         handler.oreDictFilterExpression = tag.getString("oreDict");
         handler.matchExpr = null;
         handler.cache.clear();
-        handler.matchExpr = OreDictExprFilter.parseExpression(handler.oreDictFilterExpression);
+        handler.matchExpr = TagExprFilter.parseExpression(handler.oreDictFilterExpression);
         return handler;
     }
 
@@ -45,7 +45,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     public boolean test(ItemStack itemStack) {
         if (oreDictFilterExpression.isEmpty()) return true;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
-        if (OreDictExprFilter.matchesOreDict(matchExpr, itemStack)) {
+        if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);
             return true;
         }

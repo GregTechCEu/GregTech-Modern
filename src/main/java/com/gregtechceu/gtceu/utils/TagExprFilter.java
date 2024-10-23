@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
 /**
  * @author brachy84
  */
-public class OreDictExprFilter {
+public class TagExprFilter {
 
-    public static class OreDictExprParser {
+    public static class TagExprParser {
 
         public enum TokenType {
             LParen,
@@ -42,12 +43,12 @@ public class OreDictExprFilter {
             }
         }
 
-        abstract static public class MatchExpr {
+        public static abstract class MatchExpr {
 
             public abstract boolean matches(Set<String> input);
         }
 
-        static class BinExpr extends MatchExpr {
+        private static class BinExpr extends MatchExpr {
 
             MatchExpr left, right;
             Token op;
@@ -70,7 +71,7 @@ public class OreDictExprFilter {
             }
         }
 
-        static class UnaryExpr extends MatchExpr {
+        private static class UnaryExpr extends MatchExpr {
 
             Token token;
             MatchExpr expr;
@@ -90,7 +91,7 @@ public class OreDictExprFilter {
             }
         }
 
-        static class StringExpr extends MatchExpr {
+        private static class StringExpr extends MatchExpr {
 
             String value;
 
@@ -122,7 +123,7 @@ public class OreDictExprFilter {
             }
         }
 
-        static class GroupingExpr extends MatchExpr {
+        private static class GroupingExpr extends MatchExpr {
 
             MatchExpr inner;
 
@@ -262,8 +263,8 @@ public class OreDictExprFilter {
      * @param expression expr to parse
      * @return The parsed expression tree
      */
-    public static OreDictExprParser.MatchExpr parseExpression(String expression) {
-        return new OreDictExprParser().parse(expression);
+    public static TagExprParser.MatchExpr parseExpression(String expression) {
+        return new TagExprParser().parse(expression);
     }
 
     /**
@@ -273,9 +274,9 @@ public class OreDictExprFilter {
      * @param stack item to check
      * @return if any of the items oreDicts matches the rules
      */
-    public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, ItemStack stack) {
+    public static boolean tagsMatch(TagExprParser.MatchExpr expr, ItemStack stack) {
         Set<String> oreDicts = stack.getTags().map(TagKey::location)
-                .map(rl -> rl.getNamespace() + ":" + rl.getPath()).collect(Collectors.toSet());
+                .map(ResourceLocation::toString).collect(Collectors.toSet());
 
         if (oreDicts.isEmpty() || expr == null) {
             return false;
@@ -284,9 +285,9 @@ public class OreDictExprFilter {
         return expr.matches(oreDicts);
     }
 
-    public static boolean matchesOreDict(OreDictExprParser.MatchExpr expr, FluidStack stack) {
+    public static boolean tagsMatch(TagExprParser.MatchExpr expr, FluidStack stack) {
         Set<String> oreDicts = stack.getFluid().defaultFluidState().getTags().map(TagKey::location)
-                .map(rl -> rl.getNamespace() + ":" + rl.getPath()).collect(Collectors.toSet());
+                .map(ResourceLocation::toString).collect(Collectors.toSet());
 
         if (oreDicts.isEmpty() || expr == null) {
             return false;

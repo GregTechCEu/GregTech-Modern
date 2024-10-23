@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         handler.oreDictFilterExpression = tag.getString("oreDict");
         handler.matchExpr = null;
         handler.cache.clear();
-        handler.matchExpr = OreDictExprFilter.parseExpression(handler.oreDictFilterExpression);
+        handler.matchExpr = TagExprFilter.parseExpression(handler.oreDictFilterExpression);
         return handler;
     }
 
@@ -46,7 +46,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     public boolean test(FluidStack fluidStack) {
         if (oreDictFilterExpression.isEmpty()) return true;
         if (cache.containsKey(fluidStack.getFluid())) return cache.getOrDefault(fluidStack.getFluid(), false);
-        if (OreDictExprFilter.matchesOreDict(matchExpr, fluidStack)) {
+        if (TagExprFilter.tagsMatch(matchExpr, fluidStack)) {
             cache.put(fluidStack.getFluid(), true);
             return true;
         }
