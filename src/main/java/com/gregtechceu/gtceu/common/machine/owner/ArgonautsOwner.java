@@ -63,6 +63,18 @@ public final class ArgonautsOwner implements IMachineOwner {
     }
 
     @Override
+    public void broadcastMessage(Component message) {
+        var members = guild.members();
+        for (var player : members.allMembers()) {
+            var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+                    .getPlayer(player.profile().getId());
+            if (serverPlayer != null) {
+                serverPlayer.displayClientMessage(message, false);
+            }
+        }
+    }
+
+    @Override
     public void displayInfo(List<Component> compList) {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         compList.add(Component.translatable("behavior.portable_scanner.guild_name", guild.displayName().getString()));

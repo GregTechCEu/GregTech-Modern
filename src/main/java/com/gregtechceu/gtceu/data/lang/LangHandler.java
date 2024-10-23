@@ -841,7 +841,7 @@ public class LangHandler {
         provider.add("gtceu.machine.muffle.off", "Sound Muffling: Disabled");
         provider.add("gtceu.machine.perfect_oc", "Does not lose energy efficiency when overclocked.");
         provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
-
+        provider.add("gtceu.machine.explosion", "%s exploded at X: §2%d§r, Y: §2%d§r, Z: §2%d§r");
         provider.add("gtceu.machine.multiblock.tank.tooltip",
                 "Fill and drain through the controller or tank valves.");
         provider.add("gtceu.machine.tank_valve.tooltip",
