@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xaero.map.MapProcessor;
 import xaero.map.gui.*;
 
-@Mixin(GuiMap.class)
+@Mixin(value = GuiMap.class, remap = false)
 public abstract class GuiMapMixin extends ScreenBase implements IRightClickableElement {
 
     @Shadow
@@ -31,7 +31,7 @@ public abstract class GuiMapMixin extends ScreenBase implements IRightClickableE
         super(parent, escape, Component.translatable("gui.xaero_world_map_screen"));
     }
 
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "init", at = @At("TAIL"), remap = true)
     private void gtceu$injectInitGui(CallbackInfo ci) {
         int startX, startY, xOffset, yOffset;
 
