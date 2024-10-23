@@ -553,7 +553,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
-                if (io == IO.IN && this.of(content.content) instanceof IntCircuitIngredient) {
+                if (io == IO.IN && (content.chance == 0 || this.of(content.content) instanceof IntCircuitIngredient)) {
                     slot.setIngredientIO(IngredientIO.CATALYST);
                 }
             }
