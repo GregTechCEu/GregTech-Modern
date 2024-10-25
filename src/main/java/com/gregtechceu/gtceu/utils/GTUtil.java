@@ -42,6 +42,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -482,6 +483,34 @@ public class GTUtil {
         } catch (RuntimeException var2) {
             GTCEu.LOGGER.debug("Tried to load invalid item: {}", compoundTag, var2);
             return ItemStack.EMPTY;
+        }
+    }
+
+    public static final String[] FIX_TAGS = {
+            "currentMilliBucketsPerTick",
+            "globalTransferSizeMillibuckets",
+            "minValue",
+            "maxValue",
+    };
+
+    // This is necessary for updating from old versions due to FluidStack long -> int changes
+    // Any fluid-related long tags need to be turned into int tags
+    public static void fixFluidTags(CompoundTag tag) {
+        if (tag.contains("cover", Tag.TAG_COMPOUND)) {
+            CompoundTag t = tag.getCompound("cover");
+            for (String key : t.getAllKeys()) {
+                var cover = t.getCompound(key);
+                var id = cover.getCompound("uid").getString("id");
+                if ((id.toLowerCase().contains("fluid") || id.toLowerCase().contains("pump"))) {
+                    var data = cover.getCompound("payload").getCompound("d");
+                    for (String fix_key : FIX_TAGS) {
+                        if (data.contains(fix_key, Tag.TAG_LONG)) {
+                            var l = data.getLong(fix_key);
+                            data.putInt(fix_key, Ints.saturatedCast(l));
+                        }
+                    }
+                }
+            }
         }
     }
 
