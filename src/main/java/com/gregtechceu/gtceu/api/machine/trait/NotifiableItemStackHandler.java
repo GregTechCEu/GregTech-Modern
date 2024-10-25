@@ -229,9 +229,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            ItemTransferHelper.exportToTarget(this, Integer.MAX_VALUE, getMachine().getItemCapFilter(facing), level,
-                    pos.relative(facing),
-                    facing.getOpposite());
+            var filter = getMachine().getItemCapFilter(facing, IO.OUT);
+            GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
+                    .ifPresent(adj -> GTTransferUtils.transferItemsFiltered(this, adj, filter));
         }
     }
 
@@ -239,9 +239,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            ItemTransferHelper.importToTarget(this, Integer.MAX_VALUE, getMachine().getItemCapFilter(facing), level,
-                    pos.relative(facing),
-                    facing.getOpposite());
+            var filter = getMachine().getItemCapFilter(facing, IO.IN);
+            GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
+                    .ifPresent(adj -> GTTransferUtils.transferItemsFiltered(adj, this, filter));
         }
     }
 

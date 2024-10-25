@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.FluidUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -240,8 +239,9 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
+            var filter = getMachine().getFluidCapFilter(facing);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
-                    .ifPresent(h -> FluidUtil.tryFluidTransfer(h, this, Integer.MAX_VALUE, true));
+                    .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
         }
     }
 
@@ -249,8 +249,9 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
+            var filter = getMachine().getFluidCapFilter(facing);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
-                    .ifPresent(h -> FluidUtil.tryFluidTransfer(this, h, Integer.MAX_VALUE, true));
+                    .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(adj, this, filter));
         }
     }
 
