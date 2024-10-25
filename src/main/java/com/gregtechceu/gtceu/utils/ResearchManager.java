@@ -14,15 +14,14 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -167,9 +166,10 @@ public final class ResearchManager {
         @Override
         public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
             var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream()
-                    .filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast)
-                    .toArray(IItemTransfer[]::new);
-            var inputs = new ItemTransferList(itemInputs);
+                    .filter(IItemHandlerModifiable.class::isInstance)
+                    .map(IItemHandlerModifiable.class::cast)
+                    .toArray(IItemHandlerModifiable[]::new);
+            var inputs = new CombinedInvWrapper(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
                 GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));

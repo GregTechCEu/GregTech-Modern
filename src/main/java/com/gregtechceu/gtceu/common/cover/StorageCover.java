@@ -6,13 +6,13 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -31,7 +31,7 @@ public class StorageCover extends CoverBehavior implements IUICover {
 
     @Persisted
     @DescSynced
-    public final ItemStackTransfer inventory;
+    public final CustomItemStackHandler inventory;
     private final int SIZE = 18;
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(StorageCover.class,
@@ -40,7 +40,7 @@ public class StorageCover extends CoverBehavior implements IUICover {
     public StorageCover(@NotNull CoverDefinition definition, @NotNull ICoverable coverableView,
                         @NotNull Direction attachedSide) {
         super(definition, coverableView, attachedSide);
-        inventory = new ItemStackTransfer(SIZE) {
+        inventory = new CustomItemStackHandler(SIZE) {
 
             @Override
             public int getSlotLimit(int slot) {
