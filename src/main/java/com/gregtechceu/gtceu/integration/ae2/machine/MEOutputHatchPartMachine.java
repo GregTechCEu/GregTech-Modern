@@ -38,7 +38,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+        super(holder, IO.OUT, args);
     }
 
     /////////////////////////////////
