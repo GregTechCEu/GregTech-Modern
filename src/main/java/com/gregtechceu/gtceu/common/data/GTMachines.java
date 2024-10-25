@@ -635,8 +635,8 @@ public class GTMachines {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
             int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(),
-                    storedAmount));
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
         }
     };
 

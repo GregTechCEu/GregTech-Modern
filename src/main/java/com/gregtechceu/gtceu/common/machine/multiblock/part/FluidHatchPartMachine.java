@@ -213,7 +213,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                             newFluid.setAmount(1);
                             this.tank.setLocked(true, newFluid);
                         }
-                    }).setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
+                    }).setShowAmount(false).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
 
             group.addWidget(new ToggleButtonWidget(7, 40, 18, 18,
                     GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
