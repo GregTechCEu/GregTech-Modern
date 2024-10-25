@@ -25,10 +25,11 @@ public class SizedIngredient extends Ingredient {
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
     @Getter
-    protected final int amount;
+    protected int amount;
     @Getter
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
+    private boolean changed = true;
 
     protected SizedIngredient(Ingredient inner, int amount) {
         super(Stream.empty());
@@ -118,13 +119,20 @@ public class SizedIngredient extends Ingredient {
         if (getInner() instanceof IntProviderIngredient intProviderIngredient) {
             return intProviderIngredient.getItems();
         }
-        if (itemStacks == null)
+        if (changed || itemStacks == null) {
             itemStacks = Arrays.stream(inner.getItems()).map(i -> {
                 ItemStack ic = i.copy();
                 ic.setCount(amount);
                 return ic;
             }).toArray(ItemStack[]::new);
+            changed = false;
+        }
         return itemStacks;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+        this.changed = true;
     }
 
     @Override
