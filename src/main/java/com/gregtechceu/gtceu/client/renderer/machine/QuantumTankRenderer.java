@@ -41,7 +41,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
  */
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
-    private static final Item CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
+    private static Item CREATIVE_FLUID_ITEM = null;
 
     public QuantumTankRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_tank"));
@@ -60,6 +60,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
     @Override
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+        if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
         model = getItemBakedModel();
         if (model != null && stack.hasTag()) {
             poseStack.pushPose();
