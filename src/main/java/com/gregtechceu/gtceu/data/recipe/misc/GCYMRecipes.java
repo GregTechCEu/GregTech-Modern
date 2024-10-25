@@ -21,19 +21,19 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_TEMPERED_GLASS;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.machines.GCyMMachines.*;
+import static com.gregtechceu.gtceu.common.data.machines.GCYMMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
 
-public class GCyMRecipes {
+public class GCYMRecipes {
 
-    private GCyMRecipes() {}
+    private GCYMRecipes() {}
 
     public static void init(Consumer<FinishedRecipe> provider) {
         registerManualRecipes(provider);
@@ -366,7 +366,7 @@ public class GCyMRecipes {
 
     private static void registerManual(Consumer<FinishedRecipe> provider) {
         // NZF
-        GCyMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder("nickel_zinc_ferrite")
+        GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder("nickel_zinc_ferrite")
                 .inputItems(TagPrefix.dust, GTMaterials.Nickel)
                 .inputItems(TagPrefix.dust, GTMaterials.Zinc)
                 .inputItems(TagPrefix.dust, GTMaterials.Iron, 4)
@@ -384,7 +384,7 @@ public class GCyMRecipes {
                                             @NotNull Material output, int outputAmount,
                                             int duration,
                                             Consumer<FinishedRecipe> provider) {
-        GCyMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())
+        GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())
                 .inputItems(TagPrefix.dust, input1, input1Amount)
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .circuitMeta(input1Amount + input2Amount)
@@ -402,7 +402,7 @@ public class GCyMRecipes {
                                              @NotNull Material output, int outputAmount,
                                              int duration,
                                              Consumer<FinishedRecipe> provider) {
-        GCyMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())
+        GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())
                 .inputItems(TagPrefix.dust, input1, input1Amount)
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .inputItems(TagPrefix.dust, input3, input3Amount)
@@ -417,7 +417,7 @@ public class GCyMRecipes {
     private static void registerBlastAlloyRecipes(Consumer<FinishedRecipe> provider) {
         registerFormulaic(provider);
         registerManual(provider);
-        ingot.executeHandler(provider, PropertyKey.ALLOY_BLAST, GCyMRecipes::generateAlloyBlastRecipes);
+        ingot.executeHandler(provider, PropertyKey.ALLOY_BLAST, GCYMRecipes::generateAlloyBlastRecipes);
     }
 
     /**

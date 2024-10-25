@@ -2344,6 +2344,7 @@
   "config.gtceu.option.toolCraftingSounds": "toolCraftingSounds",
   "config.gtceu.option.toolUseSounds": "toolUseSounds",
   "config.gtceu.option.tools": "tools",
+  "config.gtceu.option.treeFellingDelay": "treeFellingDelay",
   "config.gtceu.option.tungstensteelBoilerHeatSpeed": "tungstensteelBoilerHeatSpeed",
   "config.gtceu.option.tungstensteelBoilerMaxTemperature": "tungstensteelBoilerMaxTemperature",
   "config.gtceu.option.universalHazards": "universalHazards",

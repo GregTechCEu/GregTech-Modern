@@ -393,11 +393,11 @@ public class ConfigHolder {
         public int ldFluidPipeMinDistance = 50;
 
         @Configurable
-        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
-        public boolean machineOwnerGUI = true;
+        @Configurable.Comment({ "Whether ONLY owners can open a machine gui", "Default: false" })
+        public boolean onlyOwnerGUI = false;
         @Configurable
-        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
-        public boolean machineOwnerBreak = true;
+        @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
+        public boolean onlyOwnerBreak = false;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
@@ -515,6 +515,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
         @Configurable.Range(min = 1, max = 512)
         public int sprayCanChainLength = 16;
+        @Configurable
+        @Configurable.Comment({ "Delay in ticks between each log being broken when tree felling", "Default: 2" })
+        @Configurable.Range(min = 1, max = 400)
+        public int treeFellingDelay = 2;
         @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();

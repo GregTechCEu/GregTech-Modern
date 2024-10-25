@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GCyMRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -75,7 +75,7 @@ public class AlloyBlastRecipeProducer {
     @SuppressWarnings("MethodMayBeStatic")
     @NotNull
     protected GTRecipeBuilder createBuilder(@NotNull BlastProperty property, @NotNull Material material) {
-        GTRecipeBuilder builder = GCyMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(material.getName());
+        GTRecipeBuilder builder = GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(material.getName());
         // apply the duration override
         int duration = property.getDurationOverride();
         if (duration < 0) duration = Math.max(1, (int) (material.getMass() * property.getBlastTemperature() / 100L));

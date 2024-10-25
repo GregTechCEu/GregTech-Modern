@@ -116,7 +116,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         // Custom recipe matching logic to override output space test
         @Nullable
         @Override
-        protected Iterator<GTRecipe> searchRecipe() {
+        public Iterator<GTRecipe> searchRecipe() {
             IRecipeCapabilityHolder holder = this.machine;
             if (!holder.hasProxies()) return null;
             var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {

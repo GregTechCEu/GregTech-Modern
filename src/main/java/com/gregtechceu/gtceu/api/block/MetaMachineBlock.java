@@ -327,13 +327,13 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
-        if (!ConfigHolder.INSTANCE.machines.machineOwnerGUI) return true;
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
         if (machine.getOwner() == null) return true;
         return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
     }
 
     public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
-        if (!ConfigHolder.INSTANCE.machines.machineOwnerBreak) return true;
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
         if (machine.getOwner() == null) return true;
         return machine.getOwner().isPlayerInTeam(player);
     }

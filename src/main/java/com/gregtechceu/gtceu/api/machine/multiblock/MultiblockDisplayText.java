@@ -550,7 +550,7 @@ public class MultiblockDisplayText {
          * Added if structure is formed, the machine is active, and the passed fuelName parameter is not null.
          */
         public Builder addFuelNeededLine(String fuelName, int previousRecipeDuration) {
-            if (!isStructureFormed || !isActive)
+            if (!isStructureFormed || !isActive || fuelName == null)
                 return this;
             Component fuelNeeded = Component.literal(fuelName).withStyle(ChatFormatting.RED);
             Component numTicks = Component.literal(FormattingUtil.formatNumbers(previousRecipeDuration))
