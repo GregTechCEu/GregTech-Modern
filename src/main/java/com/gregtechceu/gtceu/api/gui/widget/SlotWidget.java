@@ -84,13 +84,13 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
     }
 
     public SlotWidget setContainerSlot(Container inventory, int slotIndex) {
-        updateSlot(createSlot(inventory, slotIndex));
+        super.setContainerSlot(inventory, slotIndex);
         return this;
     }
 
     @Override
     public SlotWidget setHandlerSlot(IItemTransfer itemHandler, int slotIndex) {
-        updateSlot(createSlot(itemHandler, slotIndex));
+        super.setHandlerSlot(itemHandler, slotIndex);
         return this;
     }
 
@@ -99,66 +99,69 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         return this;
     }
 
+    @Override
     public SlotWidget setBackgroundTexture(IGuiTexture backgroundTexture) {
-        this.backgroundTexture = backgroundTexture;
+        super.setBackgroundTexture(backgroundTexture);
         return this;
     }
 
+    @Override
     public SlotWidget setLocationInfo(boolean isPlayerContainer, boolean isPlayerHotBar) {
-        this.isPlayerHotBar = isPlayerHotBar;
-        this.isPlayerContainer = isPlayerContainer;
+        super.setLocationInfo(isPlayerContainer, isPlayerHotBar);
         return this;
     }
 
+    @Override
     public SlotWidget setCanTakeItems(boolean canTakeItems) {
-        this.canTakeItems = canTakeItems;
+        super.setCanTakeItems(canTakeItems);
         return this;
     }
 
+    @Override
     public SlotWidget setCanPutItems(boolean canPutItems) {
-        this.canPutItems = canPutItems;
+        super.setCanPutItems(canPutItems);
         return this;
     }
 
     @Override
     public SlotWidget setDrawHoverOverlay(boolean drawHoverOverlay) {
-        this.drawHoverOverlay = drawHoverOverlay;
+        super.setDrawHoverOverlay(drawHoverOverlay);
         return this;
     }
 
     @Override
     public SlotWidget setDrawHoverTips(boolean drawHoverTips) {
-        this.drawHoverTips = drawHoverTips;
+        super.setDrawHoverTips(drawHoverTips);
         return this;
     }
 
     @Override
     public SlotWidget setIngredientIO(IngredientIO ingredientIO) {
-        this.ingredientIO = ingredientIO;
+        super.setIngredientIO(ingredientIO);
         return this;
     }
 
     @Override
     public SlotWidget setChangeListener(Runnable changeListener) {
-        this.changeListener = changeListener;
+        super.setChangeListener(changeListener);
         return this;
     }
 
     @Override
     public SlotWidget setXEIChance(float XEIChance) {
-        this.XEIChance = XEIChance;
+        super.setXEIChance(XEIChance);
         return this;
     }
 
     @Override
     public SlotWidget setItemHook(Function<ItemStack, ItemStack> itemHook) {
-        this.itemHook = itemHook;
+        super.setItemHook(itemHook);
         return this;
     }
 
     @Override
     public SlotWidget setOnAddedTooltips(BiConsumer<com.lowdragmc.lowdraglib.gui.widget.SlotWidget, List<Component>> onAddedTooltips) {
-        this.onAddedTooltips = onAddedTooltips;
+        super.setOnAddedTooltips(onAddedTooltips);
         return this;
     }
 

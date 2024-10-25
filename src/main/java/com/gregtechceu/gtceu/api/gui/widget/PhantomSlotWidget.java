@@ -160,8 +160,7 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
                 }
                 if (slotReference != null && ingredient instanceof ItemStack stack) {
                     long id = Minecraft.getInstance().getWindow().getWindow();
-                    boolean shiftDown = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                            InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+                    boolean shiftDown = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
                     ClickType clickType = shiftDown ? ClickType.QUICK_MOVE : ClickType.PICKUP;
                     slotClickPhantom(slotReference, 0, clickType, stack);
                     writeClientAction(1, buffer -> {

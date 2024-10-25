@@ -89,16 +89,11 @@ public class CreativeChestMachine extends QuantumChestMachine {
                 return InteractionResult.SUCCESS;
             }
 
-            // // If player rclicks with item that isn't the same than stored
-            // if (stored.isEmpty() || !ItemHandlerHelper.canItemStacksStack(heldItem, stored)) {
-            //
-            // }
-
             // If held item can stack with stored item, delete held item
             if (!heldItem.isEmpty() && ItemHandlerHelper.canItemStacksStack(stored, heldItem)) {
                 player.setItemInHand(hand, ItemStack.EMPTY);
                 return InteractionResult.SUCCESS;
-            } else if (!heldItem.isEmpty()) {
+            } else if (!heldItem.isEmpty()) { // If held item is different than stored item, update stored item
                 updateStored(heldItem);
                 return InteractionResult.SUCCESS;
             }

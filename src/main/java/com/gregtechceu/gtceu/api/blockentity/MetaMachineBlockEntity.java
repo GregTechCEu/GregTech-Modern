@@ -15,11 +15,11 @@ import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -328,7 +328,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
 
     @Override
     public void load(CompoundTag tag) {
-        GTUtil.fixFluidTags(tag);
+        TagFixer.fixFluidTags(tag);
         super.load(tag);
         if (tag.contains("owner")) {
             this.owner = IMachineOwner.create(tag.getCompound("owner"));
