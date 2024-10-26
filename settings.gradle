@@ -168,4 +168,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "${mod_id}"
+rootProject.name = "gtceu-modern"
+
+include("API")
+include("GTLib")
+include("GTModern")

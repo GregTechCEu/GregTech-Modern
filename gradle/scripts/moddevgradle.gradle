@@ -1,7 +1,9 @@
 
-mixin {
-    add sourceSets.main, "gtceu.refmap.json"
-    config 'gtceu.mixins.json'
+if (project.file("src/main/resources/${project.mod_id}.mixins.json").exists()) {
+    mixin {
+        add sourceSets.main, "${project.mod_id}.refmap.json"
+        config "${project.mod_id}.mixins.json"
+    }
 }
 
 neoForge {
@@ -71,7 +73,7 @@ neoForge {
         // these are used to tell the game which sources are for which mod
         // mostly optional in a single mod project
         // but multi mod projects should define one per mod
-        "${mod_id}" {
+        "${project.mod_id}" {
             sourceSet(sourceSets.main)
         }
     }

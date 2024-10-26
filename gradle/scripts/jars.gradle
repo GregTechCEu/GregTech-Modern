@@ -16,19 +16,24 @@ tasks.register('sourcesJar', Jar) {
 }
 
 base {
-    archivesName = "${project.name}-${libs.versions.minecraft.get()}"
+    archivesName = "${project.mod_id}-${libs.versions.minecraft.get()}"
 }
 
 afterEvaluate {
     tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
-        manifest.attributes([
-                'MixinConfigs': 'gtceu.mixins.json',
-                'Specification-Title': project.name,
-                'Specification-Version': mod_version,
-                'Specification-Vendor': 'GregTechCEu Team',
-                'Implementation-Title': base.archivesName,
+        def attributes = [
+                'Specification-Title'   : project.mod_name,
+                'Specification-Version' : project.mod_version,
+                'Specification-Vendor'  : 'GregTechCEu Team',
+                'Implementation-Title'  : base.archivesName,
                 'Implementation-Version': version,
-                'Implementation-Vendor': 'GregTechCEu Team',
-        ])
+                'Implementation-Vendor' : 'GregTechCEu Team',
+        ]
+
+        if (project.file("src/main/resources/${project.mod_id}.mixins.json").exists()) {
+            attributes['MixinConfigs'] = "${project.mod_id}.mixins.json"
+        }
+
+        manifest.attributes(attributes)
     }
 }

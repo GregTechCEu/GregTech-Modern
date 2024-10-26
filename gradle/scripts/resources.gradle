@@ -1,14 +1,3 @@
-String getConfig(String key) {
-    return project.properties.get(key)
-}
-
-def mod_id = getConfig("mod_id")
-def version = getConfig("version")
-def mod_license = getConfig("mod_license")
-def mod_name = getConfig("mod_name")
-def mod_description = getConfig("mod_description")
-def mod_url = getConfig("mod_url")
-def mod_issue_tracker = getConfig("mod_issue_tracker")
 
 task printVersion {
     doLast {
@@ -21,8 +10,8 @@ task printVersion {
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var forgeVers = forge.versions.forgeShortVersion.get().split("\\.")[0]
     var replaceProperties = [
-            version             : version,
-            mod_id              : mod_id,
+            version             : project.mod_version,
+            mod_id              : project.mod_id,
             minecraft_version   : libs.versions.minecraft.get(),
             loader_version      : forgeVers,
             forge_version       : forgeVers, // only specify major version of forge
@@ -33,11 +22,11 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             emi_version         : forge.versions.emi.get(),
             top_version         : forge.versions.theoneprobe.get(),
             jade_version        : forge.versions.jade.get(),
-            mod_license         : mod_license,
-            mod_name            : mod_name,
-            mod_description     : mod_description,
-            mod_url             : mod_url,
-            mod_issue_tracker   : mod_issue_tracker
+            mod_license         : project.mod_license,
+            mod_name            : project.mod_name,
+            mod_description     : project.mod_description,
+            mod_url             : project.mod_url,
+            mod_issue_tracker   : project.mod_issue_tracker
     ]
     inputs.properties replaceProperties
     expand replaceProperties
