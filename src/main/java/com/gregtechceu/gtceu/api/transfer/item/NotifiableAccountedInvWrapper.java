@@ -32,7 +32,7 @@ public class NotifiableAccountedInvWrapper extends CombinedInvWrapper {
         int index = getIndexForSlot(slot);
         IItemHandlerModifiable handler = getHandlerFromIndex(index);
         slot = getSlotFromIndex(slot, index);
-        if (handler instanceof NotifiableItemStackHandler noti) return noti.extractItem(slot, amount, simulate);
+        if (handler instanceof NotifiableItemStackHandler noti) return noti.extractItemInternal(slot, amount, simulate);
         return handler.extractItem(slot, amount, simulate);
     }
 }
