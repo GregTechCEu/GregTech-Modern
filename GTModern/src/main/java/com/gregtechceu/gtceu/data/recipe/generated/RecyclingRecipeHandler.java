@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-
 public class RecyclingRecipeHandler {
 
     private static final List<Object> CRUSHING_PREFIXES = Arrays.asList(

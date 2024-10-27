@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.L;
 import static com.gregtechceu.gtceu.api.GTValues.M;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 
 public class RecyclingRecipes {
 

@@ -47,7 +47,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.createCreativeTooltips;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;

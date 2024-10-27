@@ -18,7 +18,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
 
 public class WireCombiningHandler {

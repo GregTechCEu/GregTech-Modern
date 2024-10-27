@@ -15,8 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-
 public enum Insulation implements IMaterialPipeType<WireProperties> {
 
     WIRE_SINGLE("single_wire", 0.125f, 1, 2, wireGtSingle, -1, false),

@@ -18,7 +18,6 @@ import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class ItemTagLoader {

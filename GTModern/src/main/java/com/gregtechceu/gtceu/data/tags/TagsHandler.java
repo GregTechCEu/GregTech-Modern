@@ -15,7 +15,6 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper.registerUnificationItems;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**

@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_TEMPERED_GLASS;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;

@@ -12,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-
 public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
 
     TINY("tiny", 0.25f, 1, pipeTinyFluid),
