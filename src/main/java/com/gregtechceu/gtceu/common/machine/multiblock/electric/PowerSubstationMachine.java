@@ -220,29 +220,29 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
                 var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
 
-                var storedValue = Component.literal(FormattingUtil.formatNumbers(energyStored));
+                var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.stored",
-                        storedValue.setStyle(STYLE_GOLD)));
+                        storedComponent.setStyle(STYLE_GOLD)));
 
-                var capacityValue = Component.literal(FormattingUtil.formatNumbers(energyCapacity));
+                var capacityComponent = Component.literal(FormattingUtil.formatNumbers(energyCapacity));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.capacity",
-                        capacityValue.setStyle(STYLE_GOLD)));
+                        capacityComponent.setStyle(STYLE_GOLD)));
 
-                var passiveDrainValue = Component.literal(FormattingUtil.formatNumbers(getPassiveDrain()));
+                var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(getPassiveDrain()));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.passive_drain",
-                        passiveDrainValue.setStyle(STYLE_DARK_RED)));
+                        passiveDrainComponent.setStyle(STYLE_DARK_RED)));
 
-                var avgInValue = Component.literal(FormattingUtil.formatNumbers(averageInLastSec));
+                var avgInComponent = Component.literal(FormattingUtil.formatNumbers(averageInLastSec));
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_in",
-                                avgInValue.setStyle(STYLE_GREEN))
+                                avgInComponent.setStyle(STYLE_GREEN))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_in_hover")))));
 
-                var avgOutValue = Component.literal(FormattingUtil.formatNumbers(Math.abs(averageOutLastSec)));
+                var avgOutComponent = Component.literal(FormattingUtil.formatNumbers(Math.abs(averageOutLastSec)));
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_out",
-                                avgOutValue.setStyle(STYLE_RED))
+                                avgOutComponent.setStyle(STYLE_RED))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
 
