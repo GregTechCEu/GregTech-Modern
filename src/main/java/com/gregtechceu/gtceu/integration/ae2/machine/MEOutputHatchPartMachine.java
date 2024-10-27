@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
@@ -22,6 +24,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -140,6 +143,32 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         @Override
         public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
             return storage.isFluidValid(stack);
+        }
+
+        @Override
+        @Nullable
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
+            if (io != IO.OUT) return left;
+            FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
+            for (var it = left.iterator(); it.hasNext();) {
+                var ingredient = it.next();
+                if (ingredient.isEmpty()) {
+                    it.remove();
+                    continue;
+                }
+
+                var fluids = ingredient.getStacks();
+                if (fluids.length == 0 || fluids[0].isEmpty()) {
+                    it.remove();
+                    continue;
+                }
+
+                FluidStack output = fluids[0];
+                ingredient.shrink(storage.fill(output, action));
+                if (ingredient.getAmount() <= 0) it.remove();
+            }
+            return left.isEmpty() ? null : left;
         }
     }
 
