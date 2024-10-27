@@ -1,0 +1,4 @@
+dependencies {
+    // compile project(':GTLib')
+    compile project(':API')
+}
