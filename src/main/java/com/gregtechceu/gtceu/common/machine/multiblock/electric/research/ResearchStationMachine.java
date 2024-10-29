@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
@@ -34,7 +33,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ResearchStationMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver, IDisplayUIMachine {
+public class ResearchStationMachine extends WorkableElectricMultiblockMachine
+                                    implements IOpticalComputationReceiver, IDisplayUIMachine {
 
     @Getter
     private IOpticalComputationProvider computationProvider;
@@ -115,7 +115,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addWorkingStatusLine()
-                //.addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
+                // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
                 .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
     }
 

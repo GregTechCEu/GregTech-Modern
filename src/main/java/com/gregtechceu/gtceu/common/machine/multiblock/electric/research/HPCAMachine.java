@@ -269,7 +269,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for display
+                .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
+                                                                            // display
                 .setWorkingStatusKeys(
                         "gtceu.multiblock.idling",
                         "gtceu.multiblock.idling",

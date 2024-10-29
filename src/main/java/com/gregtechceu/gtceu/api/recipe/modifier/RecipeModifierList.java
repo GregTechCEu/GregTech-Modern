@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
-import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -40,13 +39,9 @@ public class RecipeModifierList implements RecipeModifier {
         }
 
         if (modifiedRecipe != null && result.getDuration() != 0) {
-            if(modifiedRecipe.data.contains("duration_is_total_cwu")) {
-                boolean isTotalCWU = modifiedRecipe.data.getBoolean("duration_is_total_cwu");
-                if(isTotalCWU) {
-                    modifiedRecipe.duration = (int)(modifiedRecipe.duration * (1.f - .025f * result.getOcLevel()));
-                }
-            }
-            else {
+            if (modifiedRecipe.data.getBoolean("duration_is_total_cwu")) {
+                modifiedRecipe.duration = (int) (modifiedRecipe.duration * (1.f - .025f * result.getOcLevel()));
+            } else {
                 modifiedRecipe.duration = result.getDuration();
             }
             if (result.getEut() > 0) {
