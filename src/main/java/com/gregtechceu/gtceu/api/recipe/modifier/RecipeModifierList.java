@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -39,7 +40,15 @@ public class RecipeModifierList implements RecipeModifier {
         }
 
         if (modifiedRecipe != null && result.getDuration() != 0) {
-            modifiedRecipe.duration = result.getDuration();
+            if(modifiedRecipe.data.contains("duration_is_total_cwu")) {
+                boolean isTotalCWU = modifiedRecipe.data.getBoolean("duration_is_total_cwu");
+                if(isTotalCWU) {
+                    modifiedRecipe.duration = (int)(modifiedRecipe.duration * (1.f - .025f * result.getOcLevel()));
+                }
+            }
+            else {
+                modifiedRecipe.duration = result.getDuration();
+            }
             if (result.getEut() > 0) {
                 modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
                         ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
