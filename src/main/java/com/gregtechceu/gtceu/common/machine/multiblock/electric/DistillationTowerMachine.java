@@ -36,7 +36,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DistillationTowerMachine extends WorkableElectricMultiblockMachine {
+public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
+                                      implements FluidRecipeCapability.ICustomParallel {
 
     @Getter
     private List<IFluidHandler> fluidOutputs;
@@ -337,7 +338,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
                 var fluid = fluids.get(0).getStacks()[0];
                 var handler = getMachine().getFirstValid();
                 if (handler == null) return false;
-                int filled = (handler instanceof NotifiableFluidTank nft) ? nft.fillInternal(fluid, action) :
+                int filled = (handler instanceof NotifiableFluidTank nft) ?
+                        nft.fillInternal(fluid, action) :
                         handler.fill(fluid, action);
                 return filled == fluid.getAmount();
             }
@@ -347,7 +349,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
             for (int i = 0; i < Math.min(fluids.size(), outputs.size()); ++i) {
                 var handler = outputs.get(i);
                 var fluid = fluids.get(i).getStacks()[0];
-                int filled = (handler instanceof NotifiableFluidTank nft) ? nft.fillInternal(fluid, action) :
+                int filled = (handler instanceof NotifiableFluidTank nft) ?
+                        nft.fillInternal(fluid, action) :
                         handler.fill(fluid, action);
                 if (filled != fluid.getAmount()) valid = false;
                 if (action.simulate() && !valid) break;
