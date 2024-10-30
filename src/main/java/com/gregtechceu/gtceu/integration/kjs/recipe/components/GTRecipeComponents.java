@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -409,7 +408,7 @@ public class GTRecipeComponents {
         @Override
         public FluidIngredientJS kjs$copy(long amount) {
             FluidIngredient ingredient1 = ingredient.copy();
-            ingredient1.setAmount(amount);
+            ingredient1.setAmount((int) amount);
             return new FluidIngredientJS(ingredient1);
         }
 
@@ -417,7 +416,7 @@ public class GTRecipeComponents {
         public boolean matches(FluidLike other) {
             if (other instanceof FluidStackJS fluidStack) {
                 return ingredient
-                        .test(FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getNbt()));
+                        .test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getNbt()));
             }
             return other.matches(this);
         }
@@ -431,7 +430,8 @@ public class GTRecipeComponents {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));
             } else if (o instanceof FluidStackJS fluidStackJS) {
                 return new FluidIngredientJS(FluidIngredient.of(
-                        FluidStack.create(fluidStackJS.getFluid(), fluidStackJS.getAmount(), fluidStackJS.getNbt())));
+                        new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(),
+                                fluidStackJS.getNbt())));
             }
 
             var list = ListJS.of(o);
@@ -439,13 +439,13 @@ public class GTRecipeComponents {
                 List<FluidStack> stacks = new ArrayList<>();
                 for (var object : list) {
                     FluidStackJS stackJS = FluidStackJS.of(object);
-                    stacks.add(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt()));
+                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
                 }
                 return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
             } else {
                 FluidStackJS stackJS = FluidStackJS.of(o);
                 return new FluidIngredientJS(FluidIngredient
-                        .of(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt())));
+                        .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
             }
         }
     }

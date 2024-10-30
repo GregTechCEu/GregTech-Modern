@@ -5,22 +5,26 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
+import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -37,7 +41,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+        super(holder, IO.OUT, args);
     }
 
     /////////////////////////////////
@@ -45,7 +49,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     /////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteTank(this);
     }
@@ -113,7 +117,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
-        FluidStorage storage;
+        CustomFluidTank storage;
 
         public InaccessibleInfiniteTank(MetaMachine holder) {
             super(holder, List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
@@ -127,12 +131,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public FluidStack getFluidInTank(int tank) {
+        public @NotNull FluidStack getFluidInTank(int tank) {
             return storage.getFluid();
         }
 
         @Override
-        public long getTankCapacity(int tank) {
+        public int getTankCapacity(int tank) {
             return storage.getCapacity();
         }
 
@@ -140,17 +144,43 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
             return storage.isFluidValid(stack);
         }
+
+        @Override
+        @Nullable
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
+            if (io != IO.OUT) return left;
+            FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
+            for (var it = left.iterator(); it.hasNext();) {
+                var ingredient = it.next();
+                if (ingredient.isEmpty()) {
+                    it.remove();
+                    continue;
+                }
+
+                var fluids = ingredient.getStacks();
+                if (fluids.length == 0 || fluids[0].isEmpty()) {
+                    it.remove();
+                    continue;
+                }
+
+                FluidStack output = fluids[0];
+                ingredient.shrink(storage.fill(output, action));
+                if (ingredient.getAmount() <= 0) it.remove();
+            }
+            return left.isEmpty() ? null : left;
+        }
     }
 
-    private class FluidStorageDelegate extends FluidStorage {
+    private class FluidStorageDelegate extends CustomFluidTank {
 
         public FluidStorageDelegate() {
-            super(0L);
+            super(0);
         }
 
         @Override
-        public long getCapacity() {
-            return Long.MAX_VALUE;
+        public int getCapacity() {
+            return Integer.MAX_VALUE;
         }
 
         @Override
@@ -159,12 +189,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public int fill(FluidStack resource, FluidAction action) {
             var key = AEFluidKey.of(resource.getFluid(), resource.getTag());
-            long amount = resource.getAmount();
-            long oldValue = internalBuffer.storage.getOrDefault(key, 0);
-            long changeValue = Math.min(Long.MAX_VALUE - oldValue, amount);
-            if (changeValue > 0 && !simulate) {
+            int amount = resource.getAmount();
+            int oldValue = Ints.saturatedCast(internalBuffer.storage.getOrDefault(key, 0));
+            int changeValue = Math.min(Integer.MAX_VALUE - oldValue, amount);
+            if (changeValue > 0 && action.execute()) {
                 internalBuffer.storage.put(key, oldValue + changeValue);
                 internalBuffer.onChanged();
             }
@@ -182,13 +212,13 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public FluidStorage copy() {
+        public CustomFluidTank copy() {
             // because recipe testing uses copy transfer instead of simulated operations
             return new FluidStorageDelegate() {
 
                 @Override
-                public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-                    return super.fill(tank, resource, true, notifyChanges);
+                public int fill(FluidStack resource, FluidAction action) {
+                    return super.fill(resource, action);
                 }
             };
         }

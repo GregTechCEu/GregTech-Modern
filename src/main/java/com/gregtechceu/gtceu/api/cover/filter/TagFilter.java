@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
@@ -13,8 +13,6 @@ import net.minecraft.network.chat.MutableComponent;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -38,7 +36,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     protected Consumer<S> itemWriter = filter -> {};
     protected Consumer<S> onUpdated = filter -> itemWriter.accept(filter);
 
-    protected final List<OreDictExprFilter.MatchRule> matchRules = new ArrayList<>();
+    protected TagExprFilter.TagExprParser.MatchExpr matchExpr = null;
 
     protected TagFilter() {}
 
@@ -50,8 +48,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
 
     public void setOreDict(String oreDict) {
         this.oreDictFilterExpression = oreDict;
-        matchRules.clear();
-        OreDictExprFilter.parseExpression(matchRules, oreDictFilterExpression);
+        matchExpr = TagExprFilter.parseExpression(oreDictFilterExpression);
         onUpdated.accept((S) this);
     }
 

@@ -150,7 +150,8 @@ public class ItemLang {
         provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
         provider.add("item.gtceu.data_stick.tooltip", "§7A Low Capacity Data Storage");
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
-        provider.add("item.gtceu.programmed_circuit.tooltip", "§7Use to open configuration GUI");
+        multilineLang(provider, "item.gtceu.programmed_circuit.tooltip",
+                "Use to open configuration GUI\nShift-Right-Click on a machine\nwith a circuit slot to set it to\nthis circuit's value.");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
         // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
         // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
@@ -325,9 +326,9 @@ public class ItemLang {
                 "§7Voids §fItems§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         multilineLang(provider, "item.gtceu.advanced_item_voiding_cover.tooltip",
                 "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
-        provider.add("item.gtceu.facade_cover.tooltip", "§7Decorative Outfit §fCover§7.");
+        multilineLang(provider, "item.gtceu.facade_cover.tooltip",
+                "§7Decorative Outfit §fCover§7.\n§7Crafted using 3 Iron Plates and any block");
         provider.add("item.gtceu.computer_monitor_cover.tooltip", "§7Displays §fData§7 as §fCover§7.");
-        provider.add("item.gtceu.crafting_table_cover.tooltip", "§fAdvanced Workbench§7 on a Machine as §fCover§7.");
         provider.add("item.gtceu.shutter_module_cover.tooltip",
                 "§fBlocks Transfer§7 through attached Side as §fCover§7.");
         multilineLang(provider, "item.gtceu.solar_panel.tooltip",
@@ -342,8 +343,9 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
-        provider.add("item.gtceu.basic_tape.tooltip", "Not strong enough for mechanical issues");
+        provider.add("item.gtceu.basic_tape.tooltip",
+                "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
 
-        provider.add("item.gtceu.sus_record.desc", "sussy!");
+        provider.add("item.gtceu.sus_record.desc", "§7sussy!");
     }
 }

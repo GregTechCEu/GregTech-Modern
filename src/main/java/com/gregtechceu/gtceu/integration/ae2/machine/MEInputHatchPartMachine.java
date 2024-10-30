@@ -22,10 +22,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import com.google.common.primitives.Ints;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -52,7 +54,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEFluidList(this, slots);
         return aeFluidHandler;
     }
@@ -83,14 +85,15 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             // Try to clear the wrong fluid
             GenericStack exceedFluid = aeTank.exceedStack();
             if (exceedFluid != null) {
-                long total = exceedFluid.amount();
-                long inserted = networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
-                        this.actionSource);
+                int total = Ints.saturatedCast(exceedFluid.amount());
+                int inserted = Ints
+                        .saturatedCast(networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
+                                this.actionSource));
                 if (inserted > 0) {
-                    aeTank.drain(inserted, false);
+                    aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
                     continue;
                 } else {
-                    aeTank.drain(total, false);
+                    aeTank.drain(total, IFluidHandler.FluidAction.EXECUTE);
                 }
             }
             // Fill it

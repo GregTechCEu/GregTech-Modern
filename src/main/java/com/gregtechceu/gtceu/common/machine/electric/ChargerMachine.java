@@ -4,19 +4,19 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -64,7 +64,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private final int inventorySize;
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
 
     @Getter
     @DescSynced
@@ -92,12 +92,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         return new EnergyBatteryTrait((int) args[0]);
     }
 
-    protected ItemStackTransfer createChargerInventory(Object... args) {
-        var itemTransfer = new ItemStackTransfer(this.inventorySize);
-        itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+    protected CustomItemStackHandler createChargerInventory(Object... args) {
+        var handler = new CustomItemStackHandler(this.inventorySize);
+        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return itemTransfer;
+        return handler;
     }
 
     @Override

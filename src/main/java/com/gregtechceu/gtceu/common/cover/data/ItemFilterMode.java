@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -33,5 +34,10 @@ public enum ItemFilterMode implements EnumSelectorWidget.SelectableEnum {
     @Override
     public IGuiTexture getIcon() {
         return new ResourceTexture("gtceu:textures/gui/icon/item_filter_mode/" + localeName + ".png");
+    }
+
+    public boolean filters(IO io) {
+        return (this == FILTER_INSERT && io.support(IO.IN)) || (this == FILTER_EXTRACT && io.support(IO.OUT)) ||
+                (this == FILTER_BOTH);
     }
 }

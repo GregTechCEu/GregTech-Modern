@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
@@ -34,6 +35,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -66,8 +68,7 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.states;
+import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -195,6 +196,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
+        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
 
     @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability
@@ -373,8 +375,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
 
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
-        TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false, false)
-                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2));
+        TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+                .setMaxGlobalLimited(2)
+                .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
+                        .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+                        .setMaxGlobalLimited(1));
 
         // layer the slices one behind the next
         return FactoryBlockPattern.start()

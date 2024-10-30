@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -501,6 +502,98 @@ public class MiscRecipeLoader {
                 .outputItems(dust, Carbon)
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VA[LV]).save(provider);
+
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 8),
+                    "FFF", "FWF", "FFF",
+                    'F', ChemicalHelper.get(dust, Wheat),
+                    'W', Water.getBucket());
+
+            MIXER_RECIPES.recipeBuilder("flour_to_dough")
+                    .inputItems(dust, Wheat, 2)
+                    .inputFluids(Water.getFluid(250))
+                    .outputItems(DOUGH, 3)
+                    .EUt(VA[ULV])
+                    .duration(200)
+                    .save(provider);
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
+                    new ItemStack(Blocks.PUMPKIN), new ItemStack(Items.SUGAR), new ItemStack(DOUGH));
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "cookie_from_dough", new ItemStack(Items.COOKIE, 8),
+                    new ItemStack(DOUGH), new ItemStack(Items.COCOA_BEANS));
+
+            FORMING_PRESS_RECIPES.recipeBuilder("cookie")
+                    .notConsumable(SHAPE_MOLD_CYLINDER)
+                    .inputItems(DOUGH)
+                    .inputItems(Items.COCOA_BEANS, 2)
+                    .outputItems(Items.COOKIE, 12)
+                    .EUt(VA[LV])
+                    .duration(200)
+                    .save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "cake_from_dough", new ItemStack(Items.CAKE),
+                    "MMM", "SES", " D ",
+                    'E', Items.EGG,
+                    'S', Items.SUGAR,
+                    'M', Items.MILK_BUCKET,
+                    'D', DOUGH);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
+                    "FFF", "FWF", "FFF",
+                    'F', ChemicalHelper.get(dust, Wheat),
+                    'W', Water.getBucket());
+
+            MIXER_RECIPES.recipeBuilder("flour_to_dough")
+                    .inputItems(dust, Wheat, 4)
+                    .inputItems(Items.EGG, 2)
+                    .inputFluids(Milk.getFluid(250)) // 1 bucket = 1000mB, hence 250mb. Also its infinitely renewable
+                    .outputItems(DOUGH, 7)
+                    .EUt(VA[ULV])
+                    .duration(400)
+                    .save(provider);
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
+                    new ItemStack(Blocks.PUMPKIN), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r', 'k');
+
+            VanillaRecipeHelper.addShapelessRecipe(provider, "cookie", new ItemStack(Items.COOKIE, 4),
+                    new ItemStack(Items.COCOA_BEANS), new ItemStack(DOUGH), new ItemStack(Items.SUGAR), 'r');
+
+            FORMING_PRESS_RECIPES.recipeBuilder("cookie")
+                    .notConsumable(SHAPE_MOLD_CYLINDER)
+                    .inputItems(DOUGH)
+                    .inputItems(Items.COCOA_BEANS, 2)
+                    .inputItems(Items.SUGAR)
+                    .outputItems(Items.COOKIE, 8)
+                    .EUt(VA[LV])
+                    .duration(200)
+                    .save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "cake", new ItemStack(Items.CAKE),
+                    "BBB", "SMS", "DDD",
+                    'B', Items.SWEET_BERRIES,
+                    'S', Items.SUGAR,
+                    'M', Items.MILK_BUCKET,
+                    'D', DOUGH);
+        }
+
+        FORMING_PRESS_RECIPES.recipeBuilder("pumpkin_pie")
+                .notConsumable(SHAPE_MOLD_CYLINDER)
+                .inputItems(DOUGH, 2)
+                .inputItems(Items.PUMPKIN)
+                .inputItems(Items.SUGAR)
+                .outputItems(Items.PUMPKIN_PIE, 2)
+                .EUt(VA[LV])
+                .duration(200)
+                .save(provider);
+
+        // XP set to 0.35, similar to vanilla food smelting
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
+        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
+        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
+                0.35f);
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
                 .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))

@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.utils.OreDictExprFilter;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -32,9 +31,9 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
         var handler = new TagFluidFilter();
         handler.itemWriter = itemWriter;
         handler.oreDictFilterExpression = tag.getString("oreDict");
-        handler.matchRules.clear();
+        handler.matchExpr = null;
         handler.cache.clear();
-        OreDictExprFilter.parseExpression(handler.matchRules, handler.oreDictFilterExpression);
+        handler.matchExpr = TagExprFilter.parseExpression(handler.oreDictFilterExpression);
         return handler;
     }
 
@@ -47,7 +46,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     public boolean test(FluidStack fluidStack) {
         if (oreDictFilterExpression.isEmpty()) return true;
         if (cache.containsKey(fluidStack.getFluid())) return cache.getOrDefault(fluidStack.getFluid(), false);
-        if (OreDictExprFilter.matchesOreDict(matchRules, fluidStack)) {
+        if (TagExprFilter.tagsMatch(matchExpr, fluidStack)) {
             cache.put(fluidStack.getFluid(), true);
             return true;
         }
@@ -56,8 +55,8 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    public long testFluidAmount(FluidStack fluidStack) {
-        return test(fluidStack) ? Long.MAX_VALUE : 0;
+    public int testFluidAmount(FluidStack fluidStack) {
+        return test(fluidStack) ? Integer.MAX_VALUE : 0;
     }
 
     @Override

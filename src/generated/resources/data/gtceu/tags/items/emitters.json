@@ -1,0 +1,32 @@
+{
+  "values": [
+    "gtceu:lv_emitter",
+    "gtceu:mv_emitter",
+    "gtceu:hv_emitter",
+    "gtceu:ev_emitter",
+    "gtceu:iv_emitter",
+    "gtceu:luv_emitter",
+    "gtceu:zpm_emitter",
+    "gtceu:uv_emitter",
+    {
+      "id": "gtceu:uhv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_emitter",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_emitter",
+      "required": false
+    }
+  ]
+}

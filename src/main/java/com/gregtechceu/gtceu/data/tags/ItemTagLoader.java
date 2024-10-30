@@ -89,6 +89,70 @@ public class ItemTagLoader {
                 .addTag(CustomTags.ZPM_BATTERIES)
                 .addTag(CustomTags.UV_BATTERIES)
                 .addTag(CustomTags.UHV_BATTERIES);
+
+        // Add highTierContent items as optional entries so it doesn't error
+        provider.addTag(CustomTags.ELECTRIC_MOTORS)
+                .addOptional(GTItems.ELECTRIC_MOTOR_UHV.getId())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UEV.getId())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UIV.getId())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UXV.getId())
+                .addOptional(GTItems.ELECTRIC_MOTOR_OpV.getId());
+
+        provider.addTag(CustomTags.ELECTRIC_PUMPS)
+                .addOptional(GTItems.ELECTRIC_PUMP_UHV.getId())
+                .addOptional(GTItems.ELECTRIC_PUMP_UEV.getId())
+                .addOptional(GTItems.ELECTRIC_PUMP_UIV.getId())
+                .addOptional(GTItems.ELECTRIC_PUMP_UXV.getId())
+                .addOptional(GTItems.ELECTRIC_PUMP_OpV.getId());
+
+        provider.addTag(CustomTags.FLUID_REGULATORS)
+                .addOptional(GTItems.FLUID_REGULATOR_UHV.getId())
+                .addOptional(GTItems.FLUID_REGULATOR_UEV.getId())
+                .addOptional(GTItems.FLUID_REGULATOR_UIV.getId())
+                .addOptional(GTItems.FLUID_REGULATOR_UXV.getId())
+                .addOptional(GTItems.FLUID_REGULATOR_OpV.getId());
+
+        provider.addTag(CustomTags.CONVEYOR_MODULES)
+                .addOptional(GTItems.CONVEYOR_MODULE_UHV.getId())
+                .addOptional(GTItems.CONVEYOR_MODULE_UEV.getId())
+                .addOptional(GTItems.CONVEYOR_MODULE_UIV.getId())
+                .addOptional(GTItems.CONVEYOR_MODULE_UXV.getId())
+                .addOptional(GTItems.CONVEYOR_MODULE_OpV.getId());
+
+        provider.addTag(CustomTags.ELECTRIC_PISTONS)
+                .addOptional(GTItems.ELECTRIC_PISTON_UHV.getId())
+                .addOptional(GTItems.ELECTRIC_PISTON_UEV.getId())
+                .addOptional(GTItems.ELECTRIC_PISTON_UIV.getId())
+                .addOptional(GTItems.ELECTRIC_PISTON_UXV.getId())
+                .addOptional(GTItems.ELECTRIC_PISTON_OpV.getId());
+
+        provider.addTag(CustomTags.ROBOT_ARMS)
+                .addOptional(GTItems.ROBOT_ARM_UHV.getId())
+                .addOptional(GTItems.ROBOT_ARM_UEV.getId())
+                .addOptional(GTItems.ROBOT_ARM_UIV.getId())
+                .addOptional(GTItems.ROBOT_ARM_UXV.getId())
+                .addOptional(GTItems.ROBOT_ARM_OpV.getId());
+
+        provider.addTag(CustomTags.FIELD_GENERATORS)
+                .addOptional(GTItems.FIELD_GENERATOR_UHV.getId())
+                .addOptional(GTItems.FIELD_GENERATOR_UEV.getId())
+                .addOptional(GTItems.FIELD_GENERATOR_UIV.getId())
+                .addOptional(GTItems.FIELD_GENERATOR_UXV.getId())
+                .addOptional(GTItems.FIELD_GENERATOR_OpV.getId());
+
+        provider.addTag(CustomTags.EMITTERS)
+                .addOptional(GTItems.EMITTER_UHV.getId())
+                .addOptional(GTItems.EMITTER_UEV.getId())
+                .addOptional(GTItems.EMITTER_UIV.getId())
+                .addOptional(GTItems.EMITTER_UXV.getId())
+                .addOptional(GTItems.EMITTER_OpV.getId());
+
+        provider.addTag(CustomTags.SENSORS)
+                .addOptional(GTItems.SENSOR_UHV.getId())
+                .addOptional(GTItems.SENSOR_UEV.getId())
+                .addOptional(GTItems.SENSOR_UIV.getId())
+                .addOptional(GTItems.SENSOR_UXV.getId())
+                .addOptional(GTItems.SENSOR_OpV.getId());
     }
 
     private static void create(RegistrateTagsProvider<Item> provider, TagPrefix prefix, Material material,

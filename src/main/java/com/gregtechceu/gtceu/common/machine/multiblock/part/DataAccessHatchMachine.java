@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -20,7 +21,6 @@ import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

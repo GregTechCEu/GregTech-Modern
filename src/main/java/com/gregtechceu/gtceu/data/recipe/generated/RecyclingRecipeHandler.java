@@ -25,7 +25,7 @@ public class RecyclingRecipeHandler {
             nugget, gearSmall, gear, frameGt, plateDense, spring, springSmall,
             block, wireFine, rotor, lens, turbineBlade, round, plateDouble, dust,
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("toolHead"),
-            (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("gem"),
+            (Predicate<TagPrefix>) orePrefix -> orePrefix.name().contains("Gem"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("cableGt"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("wireGt"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("pipe"));

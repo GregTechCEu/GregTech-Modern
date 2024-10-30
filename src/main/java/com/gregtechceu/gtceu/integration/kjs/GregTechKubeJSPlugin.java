@@ -44,7 +44,8 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -197,9 +198,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTElements", GTElements.class);
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("GTBlocks", GTBlocks.class);
-        event.add("GCyMBlocks", GCyMBlocks.class);
+        event.add("GCyMBlocks", GCYMBlocks.class);
+        event.add("GCYMBlocks", GCYMBlocks.class);
         event.add("GTMachines", GTMachines.class);
-        event.add("GCyMMachines", GCyMMachines.class);
+        event.add("GCyMMachines", GCYMMachines.class);
+        event.add("GCYMMachines", GCYMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTMedicalConditions", GTMedicalConditions.class);
@@ -443,6 +446,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
         })));
 
+        PowerlessJetpack.FUELS.clear();
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {

@@ -28,6 +28,8 @@
     "gtceu:treated_wood_wall_hanging_sign",
     "gtceu:treated_wood_pressure_plate",
     "gtceu:treated_wood_trapdoor",
-    "gtceu:treated_wood_stairs"
+    "gtceu:treated_wood_stairs",
+    "gtceu:wood_drum",
+    "gtceu:wood_crate"
   ]
 }

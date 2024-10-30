@@ -19,8 +19,9 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
-import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
+import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
+import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
@@ -28,9 +29,6 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -63,6 +61,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -491,12 +492,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         traits.add(trait);
     }
 
-    public void clearInventory(IItemTransfer inventory) {
+    public void clearInventory(IItemHandlerModifiable inventory) {
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
-                inventory.onContentsChanged();
                 Block.popResource(getLevel(), getPos(), stackInSlot);
             }
         }
@@ -645,16 +645,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     // ****** Capability ********//
     //////////////////////////////////////
 
-    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
+    public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof ItemFilterCover filterCover) {
+            if (cover instanceof ItemFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
                 return filterCover.getItemFilter();
             }
         }
         return item -> true;
     }
 
+    // TODO: ADD Fluid Filter Modes
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
@@ -666,11 +667,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
-                .filter(IItemTransfer.class::isInstance)
+                .filter(IItemHandlerModifiable.class::isInstance)
                 .filter(t -> t.hasCapability(side))
-                .map(IItemTransfer.class::cast)
+                .map(IItemHandlerModifiable.class::cast)
                 .toList();
 
         if (list.isEmpty()) return null;
@@ -681,19 +682,20 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOItemTransferList transferList = new IOItemTransferList(list, io, getItemCapFilter(side));
-        if (!useCoverCapability || side == null) return transferList;
+        IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
+                getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
+        if (!useCoverCapability || side == null) return handlerList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(transferList) : transferList;
+        return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
     }
 
     @Nullable
-    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
-                .filter(IFluidTransfer.class::isInstance)
+                .filter(IFluidHandler.class::isInstance)
                 .filter(t -> t.hasCapability(side))
-                .map(IFluidTransfer.class::cast)
+                .map(IFluidHandler.class::cast)
                 .toList();
 
         if (list.isEmpty()) return null;
@@ -704,11 +706,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOFluidTransferList transferList = new IOFluidTransferList(list, io, getFluidCapFilter(side));
-        if (!useCoverCapability || side == null) return transferList;
+        IOFluidHandlerList handlerList = new IOFluidHandlerList(list, io, getFluidCapFilter(side));
+        if (!useCoverCapability || side == null) return handlerList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getFluidTransferCap(transferList) : transferList;
+        return cover != null ? cover.getFluidHandlerCap(handlerList) : handlerList;
     }
 
     //////////////////////////////////////

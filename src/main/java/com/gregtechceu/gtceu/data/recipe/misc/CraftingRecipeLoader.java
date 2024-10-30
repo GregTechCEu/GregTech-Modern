@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -88,16 +89,18 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
+                new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
 
         // TODO clipboard
         // VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P',
         // Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new
         // UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4),
-                GTBlocks.RUBBER_LOG.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getBucket());
+        VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "treated_wood_planks",
+                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
+                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B',
+                new FluidContainerIngredient(Creosote.getFluidTag(), 1000));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X',
                 new UnificationEntry(plate, Rubber));
@@ -236,6 +239,7 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Credits //
         ///////////////////////////////////////////////////
+        // TODO shapeless fluid container recipes
         VanillaRecipeHelper.addShapelessRecipe(provider, "coin_chocolate", COIN_CHOCOLATE.asStack(),
                 new UnificationEntry(dust, Cocoa), new UnificationEntry(foil, Gold), new ItemStack(Items.MILK_BUCKET),
                 new UnificationEntry(dust, Sugar));

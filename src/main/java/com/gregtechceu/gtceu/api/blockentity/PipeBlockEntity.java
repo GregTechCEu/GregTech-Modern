@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -31,6 +32,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -443,5 +445,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     public static boolean isConnected(int connections, Direction side) {
         return (connections & (1 << side.ordinal())) > 0;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        TagFixer.fixFluidTags(tag);
+        super.load(tag);
     }
 }

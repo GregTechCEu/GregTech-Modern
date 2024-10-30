@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.gui;
 
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.world.entity.player.Inventory;

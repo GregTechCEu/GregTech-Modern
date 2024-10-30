@@ -30,16 +30,27 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "ldlib"
 mandatory = true
+embedded = true
 versionRange = "[${ldlib_version},)"
 ordering = "AFTER"
 side = "BOTH"
+[dependencies.${mod_id}.mc-publish]
+    ignore = false
+    modrinth = "ldlib"
+    curseforge = "ldlib"
 
 [[dependencies.${mod_id}]]
 modId = "configuration"
 mandatory = true
+embedded = true
 versionRange = "[${configuration_version},)"
 ordering = "AFTER"
 side = "BOTH"
+[dependencies.${mod_id}.mc-publish]
+    ignore = false
+    modrinth = "configuration"
+    curseforge = "configuration"
+
 
 [[dependencies.${mod_id}]]
 modId = "kubejs"

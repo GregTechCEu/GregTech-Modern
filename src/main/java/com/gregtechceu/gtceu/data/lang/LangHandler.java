@@ -92,6 +92,7 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
+
         provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.mode.item", "§6Item§r");
@@ -338,6 +339,7 @@ public class LangHandler {
         provider.add("cover.fluid_filter.mode.filter_drain", "Filter Drain");
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
         provider.add("cover.item_filter.title", "Item Filter");
+        provider.add("cover.storage.title", "Storage Cover");
         provider.add("cover.filter.mode.filter_insert", "Filter Insert");
         provider.add("cover.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.filter.mode.filter_both", "Filter Insert/Extract");
@@ -980,12 +982,12 @@ public class LangHandler {
         provider.add("gtceu.gui.sort", "Sort");
         provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
         provider.add("gtceu.gui.fluid_auto_output.tooltip.disabled", "Fluid Auto-Output Disabled");
-        provider.add("gtceu.gui.fluid_auto_input.tooltip.enabled", "Fluid Auto-Output Enabled");
-        provider.add("gtceu.gui.fluid_auto_input.tooltip.disabled", "Fluid Auto-Output Disabled");
+        provider.add("gtceu.gui.fluid_auto_input.tooltip.enabled", "Fluid Auto-Input Enabled");
+        provider.add("gtceu.gui.fluid_auto_input.tooltip.disabled", "Fluid Auto-Input Disabled");
         provider.add("gtceu.gui.item_auto_output.tooltip.enabled", "Item Auto-Output Enabled");
         provider.add("gtceu.gui.item_auto_output.tooltip.disabled", "Item Auto-Output Disabled");
-        provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Output Enabled");
-        provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Output Disabled");
+        provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Input Enabled");
+        provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
         multilineLang(provider, "gtceu.gui.charger_slot.tooltip",
                 "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
         multilineLang(provider, "gtceu.gui.configurator_slot.tooltip",
@@ -1066,9 +1068,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "§6Idling.");
+        provider.add("gtceu.multiblock.research_station.researching", "§6Researching.");
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
+        provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
         provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
         provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
         provider.add("gtceu.multiblock.output_line.1", "%s x §e%s§r (%s/s)");
@@ -1343,7 +1347,7 @@ public class LangHandler {
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
 
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
-        provider.add("gtceu.tooltip.potion.each", "   §e%s %s§r for §c%s§r ticks with a §a%s%%§r chance of happening");
+        provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
     }
 
     /**

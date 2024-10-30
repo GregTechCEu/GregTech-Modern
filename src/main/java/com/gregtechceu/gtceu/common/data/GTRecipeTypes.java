@@ -9,12 +9,17 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
 import com.gregtechceu.gtceu.common.recipe.condition.RPMCondition;
@@ -24,12 +29,6 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.resources.language.I18n;
@@ -40,6 +39,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 
 import com.simibubi.create.AllBlocks;
@@ -120,7 +120,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType ASSEMBLER_RECIPES = register("assembler", ELECTRIC).setMaxIOSize(9, 1, 1, 0)
             .setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.CIRCUIT_OVERLAY)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_CIRCUIT, LEFT_TO_RIGHT)
+            .setProgressBar(GuiTextures.PROGRESS_BAR_ASSEMBLER, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ASSEMBLER);
 
     public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
@@ -435,12 +435,12 @@ public class GTRecipeTypes {
                 var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
                 var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new FluidStorage(FluidStack.create(fluidA, 1000)),
+                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidA, 1000)),
                             widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
                 if (fluidB != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new FluidStorage(FluidStack.create(fluidB, 1000)),
+                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidB, 1000)),
                             widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
@@ -688,7 +688,7 @@ public class GTRecipeTypes {
     }
 
     public static void init() {
-        GCyMRecipeTypes.init();
+        GCYMRecipeTypes.init();
         if (GTCEu.isCreateLoaded()) {
             CREATE_MIXER_RECIPES = register("create_mixer", KINETIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
                     .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
@@ -698,8 +698,8 @@ public class GTRecipeTypes {
                     .setMaxTooltips(4)
                     .setUiBuilder((recipe, group) -> {
                         if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
-                            var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
-                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30,
+                            var handler = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
+                            group.addWidget(new SlotWidget(handler, 0, group.getSize().width - 30,
                                     group.getSize().height - 30, false, false));
                         }
                     });
@@ -719,16 +719,18 @@ public class GTRecipeTypes {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
         GTRegistries.RECIPE_CATEGORIES.freeze();
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine"),
                 GTRecipeSerializer.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_facade_cover"),
                 FacadeCoverRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_strict"),
                 StrictShapedRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("shaped_energy_transfer_recipe_serializer"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_energy_transfer"),
                 ShapedEnergyTransferRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("tool_head_replace_recipe_serializer"),
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_tool_head_replace"),
                 ToolHeadReplaceRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_fluid_container"),
+                ShapedFluidContainerRecipe.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {

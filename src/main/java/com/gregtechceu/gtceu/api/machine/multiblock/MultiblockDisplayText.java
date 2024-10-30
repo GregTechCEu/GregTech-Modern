@@ -302,6 +302,14 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addProgressLineOnlyPercent(double progressPercent) {
+            if (!isStructureFormed || !isActive)
+                return this;
+            int currentProgress = (int) (progressPercent * 100);
+            textList.add(Component.translatable("gtceu.multiblock.progress_percent", currentProgress));
+            return this;
+        }
+
         /**
          * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
          * <br>
@@ -550,7 +558,7 @@ public class MultiblockDisplayText {
          * Added if structure is formed, the machine is active, and the passed fuelName parameter is not null.
          */
         public Builder addFuelNeededLine(String fuelName, int previousRecipeDuration) {
-            if (!isStructureFormed || !isActive)
+            if (!isStructureFormed || !isActive || fuelName == null)
                 return this;
             Component fuelNeeded = Component.literal(fuelName).withStyle(ChatFormatting.RED);
             Component numTicks = Component.literal(FormattingUtil.formatNumbers(previousRecipeDuration))

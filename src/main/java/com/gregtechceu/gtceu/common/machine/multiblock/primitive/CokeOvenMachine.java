@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -10,7 +12,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

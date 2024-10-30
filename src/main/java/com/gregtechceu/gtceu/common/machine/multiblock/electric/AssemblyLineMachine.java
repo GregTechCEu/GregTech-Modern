@@ -11,11 +11,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 

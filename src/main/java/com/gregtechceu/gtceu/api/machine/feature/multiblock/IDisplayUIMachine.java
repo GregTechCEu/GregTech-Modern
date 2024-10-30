@@ -42,7 +42,7 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
         screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                 .textSupplier(this.self().getLevel().isClientSide ? null : this::addDisplayText)
                 .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick)).setSizeHeight(8);
+                .clickHandler(this::handleDisplayClick));
         return new ModularUI(176, 216, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(screen)

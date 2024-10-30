@@ -130,7 +130,6 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS addCondition(RecipeCondition condition) {
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
             setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
             save();
             return this;
@@ -932,7 +931,7 @@ public interface GTRecipeSchema {
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS) value).getFluidStack();
-            return FluidIngredient.of(fluid.getAmount(), fluid.getFluid()).toJson();
+            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
 
         @Override

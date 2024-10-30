@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.Hash;
 import org.jetbrains.annotations.Nullable;

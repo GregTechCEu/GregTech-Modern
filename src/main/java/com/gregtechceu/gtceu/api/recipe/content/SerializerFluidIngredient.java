@@ -2,9 +2,8 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;

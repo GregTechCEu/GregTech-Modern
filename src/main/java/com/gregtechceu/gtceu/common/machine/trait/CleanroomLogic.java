@@ -84,6 +84,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                             .append(EURecipeCapability.CAP.getName()));
                     return;
                 }
+                setStatus(Status.WORKING);
                 // increase progress
                 if (progress++ < getMaxProgress()) {
                     if (!machine.onWorking()) {
@@ -96,7 +97,6 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                     return;
                 }
                 adjustCleanAmount(false);
-                setStatus(Status.WORKING);
             } else {
                 // has all maintenance problems
                 if (progress > 0) {

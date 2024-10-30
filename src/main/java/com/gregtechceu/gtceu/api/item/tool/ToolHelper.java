@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -22,8 +23,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
-
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -419,7 +418,7 @@ public class ToolHelper {
                 caps.put(IO.IN, EURecipeCapability.CAP, List.of(new InfiniteEnergyContainer(be.getMetaMachine(),
                         GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
                 caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1,
-                        IO.IN, IO.IN, (slots) -> new ItemStackTransfer(silktouchDrop))));
+                        IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
                 caps.put(IO.OUT, ItemRecipeCapability.CAP,
                         List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
@@ -478,15 +477,16 @@ public class ToolHelper {
                 return removeBlockRoutine(state, world, player, pos, playSound);
             } else {
                 world.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-                boolean successful = removeBlockRoutine(state, world, player, pos, playSound);
 
                 ItemStack copiedTool = tool.copy();
                 boolean canHarvest = player.hasCorrectToolForDrops(state);
-                tool.mineBlock(world, state, pos, player);
-                if (tool.isEmpty() && !copiedTool.isEmpty()) {
-                    onPlayerDestroyItem(player, copiedTool, InteractionHand.MAIN_HAND);
+                if (!tool.isEmpty()) {
+                    tool.mineBlock(world, state, pos, player);
+                    if (tool.isEmpty() && !copiedTool.isEmpty()) {
+                        onPlayerDestroyItem(player, copiedTool, InteractionHand.MAIN_HAND);
+                    }
                 }
-
+                boolean successful = removeBlockRoutine(null, world, player, pos, playSound);
                 if (successful && canHarvest) {
                     block.playerDestroy(world, player, pos, state, tile, copiedTool);
                 }

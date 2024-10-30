@@ -393,11 +393,11 @@ public class ConfigHolder {
         public int ldFluidPipeMinDistance = 50;
 
         @Configurable
-        @Configurable.Comment({ "Whether non owners can open a machine gui", "Default: false" })
-        public boolean machineOwnerGUI = true;
+        @Configurable.Comment({ "Whether ONLY owners can open a machine gui", "Default: false" })
+        public boolean onlyOwnerGUI = false;
         @Configurable
-        @Configurable.Comment({ "Whether non owners can break a machine", "Default: false" })
-        public boolean machineOwnerBreak = true;
+        @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
+        public boolean onlyOwnerBreak = false;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
@@ -427,6 +427,13 @@ public class ConfigHolder {
                 "Need restart Minecraft to apply."
         })
         public boolean enableMoreDualHatchAbility = false;
+
+        @Configurable
+        @Configurable.Comment({
+                "Default maximum parallel of steam multiblocks",
+                "Default: 8"
+        })
+        public int steamMultiParallelAmount = 8;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
@@ -508,6 +515,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
         @Configurable.Range(min = 1, max = 512)
         public int sprayCanChainLength = 16;
+        @Configurable
+        @Configurable.Comment({ "Delay in ticks between each log being broken when tree felling", "Default: 2" })
+        @Configurable.Range(min = 1, max = 400)
+        public int treeFellingDelay = 2;
         @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();
@@ -653,6 +664,9 @@ public class ConfigHolder {
         @Configurable.Comment({ "Debug ore vein placement? (will print placed veins to server's debug.log)",
                 "Default: false (no placement printout in debug.log)" })
         public boolean debugWorldgen = false;
+        @Configurable
+        @Configurable.Comment({ "Generate ores in superflat worlds?", "Default: false" })
+        public boolean doSuperflatOres = false;
         @Configurable
         @Configurable.Comment({ "Dump all registered GT recipes?", "Default: false" })
         public boolean dumpRecipes = false;

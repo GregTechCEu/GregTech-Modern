@@ -260,6 +260,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     public void search(String s, Consumer<Object> consumer) {
         var added = new HashSet<String>();
         for (var item : this.items) {
+            if (Thread.currentThread().isInterrupted()) return;
             var id = mode.getUniqueID(item);
             if (!added.contains(id)) {
                 added.add(id);

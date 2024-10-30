@@ -257,6 +257,8 @@ public class GTRecipeModifiers {
             final int FURNACE_DURATION = 128;
             var parallel = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
 
+            if (parallel.getSecond() == 0) return null;
+
             int parallelValue = parallel.getSecond();
             long eut = 4 * Math.max(1, (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount());
             int duration = (int) Math.max(1, FURNACE_DURATION * 2 * parallelValue / Math.max(1, maxParallel * 1.0));

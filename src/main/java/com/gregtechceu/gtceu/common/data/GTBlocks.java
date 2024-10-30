@@ -95,7 +95,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -255,11 +255,15 @@ public class GTBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> SurfaceRockBlock::tintedColor)
+                .color(() -> SurfaceRockBlock::tintedBlockColor)
+                .item((b, p) -> SurfaceRockBlockItem.create(b, p, material))
+                .color(() -> SurfaceRockBlock::tintedItemColor)
+                .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                .build()
                 .register();
         SURFACE_ROCK_BLOCKS_BUILDER.put(material, entry);
     }
@@ -560,7 +564,7 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
         builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
         builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
-        // GCyM
+        // GCYM
         builder.put(GTMaterials.HSLASteel, CASING_NONCONDUCTING);
         builder.put(GTMaterials.IncoloyMA956, CASING_VIBRATION_SAFE);
         builder.put(GTMaterials.WatertightSteel, CASING_WATERTIGHT);
@@ -1024,7 +1028,7 @@ public class GTBlocks {
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -1076,18 +1080,18 @@ public class GTBlocks {
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
-    public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
-            .block("rubber_wood", RotatedPillarBlock::new)
+    public static final BlockEntry<RubberWoodBlock> RUBBER_WOOD = REGISTRATE
+            .block("rubber_wood", RubberWoodBlock::new)
             .initialProperties(() -> Blocks.SPRUCE_WOOD)
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1098,7 +1102,7 @@ public class GTBlocks {
                     provider.blockTexture(ctx.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
 
@@ -1726,8 +1730,8 @@ public class GTBlocks {
         FLUID_PIPE_BLOCKS_BUILDER = null;
         ITEM_PIPE_BLOCKS_BUILDER = null;
 
-        // GCyM
-        GCyMBlocks.init();
+        // GCYM
+        GCYMBlocks.init();
     }
 
     public static boolean doMetalPipe(Material material) {

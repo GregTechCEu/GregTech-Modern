@@ -1,0 +1,32 @@
+{
+  "values": [
+    "gtceu:lv_conveyor_module",
+    "gtceu:mv_conveyor_module",
+    "gtceu:hv_conveyor_module",
+    "gtceu:ev_conveyor_module",
+    "gtceu:iv_conveyor_module",
+    "gtceu:luv_conveyor_module",
+    "gtceu:zpm_conveyor_module",
+    "gtceu:uv_conveyor_module",
+    {
+      "id": "gtceu:uhv_conveyor_module",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_conveyor_module",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_conveyor_module",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_conveyor_module",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_conveyor_module",
+      "required": false
+    }
+  ]
+}

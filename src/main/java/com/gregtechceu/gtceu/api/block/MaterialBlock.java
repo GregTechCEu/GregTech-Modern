@@ -240,7 +240,8 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
-        if (this.tagPrefix == TagPrefix.frameGt && useContext.getItemInHand().getItem() instanceof PipeBlockItem)
+        if (this.tagPrefix == TagPrefix.frameGt && useContext.getItemInHand().getItem() instanceof PipeBlockItem &&
+                !useContext.getPlayer().isCrouching())
             return true;
         return super.canBeReplaced(state, useContext);
     }

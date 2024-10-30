@@ -6,20 +6,23 @@ inputs:
     description: If cache should be updated
     required: false
     default: 'false'
+  ref:
+    description: 'Ref to checkout'
+    required: false
 
 runs:
   using: 'composite'
-
   steps:
     - uses: actions/checkout@v4
       with:
-        submodules: true
-
-    - name: Set up JDK 17
+        ref: ${{ inputs.ref || github.ref }}
+    - name: Set up JDK
       uses: actions/setup-java@v4
+      env:
+        REF: ${{ inputs.ref || github.ref }}
       with:
-        distribution: adopt
-        java-version: 17
+        distribution: temurin
+        java-version: ${{ contains(env.REF, '1.20.1') && '17' || '21' }}
 
     - name: Validate Gradle wrapper
       uses: gradle/actions/wrapper-validation@v3
