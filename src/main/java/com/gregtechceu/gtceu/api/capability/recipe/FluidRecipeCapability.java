@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
@@ -147,6 +148,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        if (holder instanceof DistillationTowerMachine dt) return dt.limitParallel(recipe, multiplier);
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
