@@ -1174,8 +1174,8 @@ public class GTRecipeBuilder {
         }
 
         if (recipeCategory == null) {
-            category(GTRecipeCategory.create(GTCEu.MOD_ID, recipeType.registryName.getPath(),
-                    recipeType.registryName.toLanguageKey(), recipeType));
+            //category(GTRecipeCategory.create(GTCEu.MOD_ID, recipeType.registryName.getPath(),
+            //        recipeType.registryName.toLanguageKey(), recipeType));
         }
 
         if (recipeType != null) {
