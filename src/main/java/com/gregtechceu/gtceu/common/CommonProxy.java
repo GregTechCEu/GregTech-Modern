@@ -106,6 +106,7 @@ public class CommonProxy {
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTRegistries.COMPASS_NODES.unfreeze();
+        GTRegistries.RECIPE_CATEGORIES.unfreeze();
 
         GTNetwork.init();
         UIFactory.register(MachineUIFactory.INSTANCE);

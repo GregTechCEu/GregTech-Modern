@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class GTRecipeCategory {
 
     static {
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
+        // GTRegistries.RECIPE_CATEGORIES.unfreeze();
     }
 
     private static final Map<String, GTRecipeCategory> categories = new Object2ObjectOpenHashMap<>();
@@ -39,7 +39,7 @@ public class GTRecipeCategory {
 
     public static GTRecipeCategory create(@NotNull String modID, @NotNull String categoryName,
                                           @NotNull String translationKey, @NotNull GTRecipeType recipeType) {
-        return categories.computeIfAbsent(modID,
+        return categories.computeIfAbsent(categoryName,
                 (k) -> new GTRecipeCategory(modID, categoryName, translationKey, recipeType));
     }
 

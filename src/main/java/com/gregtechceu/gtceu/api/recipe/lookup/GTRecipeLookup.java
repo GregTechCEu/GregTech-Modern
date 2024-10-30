@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -475,6 +476,10 @@ public class GTRecipeLookup {
     public boolean addRecipe(GTRecipe recipe) {
         if (recipe == null) {
             return false;
+        }
+        if (recipe.recipeCategory == null) {
+            recipe.recipeCategory = GTRecipeCategory.create(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
+                    recipe.recipeType.registryName.toLanguageKey(), recipe.recipeType);
         }
         // Add combustion fuels to the Powerless Jetpack
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
