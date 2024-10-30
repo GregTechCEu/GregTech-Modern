@@ -35,10 +35,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
+public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
 
-    public static final Function<GTRecipeType, RecipeType<GTRecipeWrapper>> TYPES = Util
-            .memoize(recipeMap -> new RecipeType<>(recipeMap.registryName, GTRecipeWrapper.class));
+    public static final Function<GTRecipeCategory, RecipeType<GTRecipeWrapper>> TYPES = Util
+            .memoize(category1 -> new RecipeType<>(category1.getResourceLocation(), GTRecipeWrapper.class));
 
     private final GTRecipeType recipeType;
     private final GTRecipeCategory category;
@@ -47,11 +47,11 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     @Getter
     private IDrawable icon;
 
-    private static final Map<GTRecipeCategory, GTRecipeTypeCategory> gtCategories = new Object2ObjectOpenHashMap<>();
-    private static final Map<net.minecraft.world.item.crafting.RecipeType<?>, List<GTRecipeTypeCategory>> recipeTypeCategories = new Object2ObjectOpenHashMap<>();
+    private static final Map<GTRecipeCategory, GTRecipeJEICategory> gtCategories = new Object2ObjectOpenHashMap<>();
+    private static final Map<net.minecraft.world.item.crafting.RecipeType<?>, List<GTRecipeJEICategory>> recipeTypeCategories = new Object2ObjectOpenHashMap<>();
 
-    public GTRecipeTypeCategory(IJeiHelpers helpers, @NotNull GTRecipeType recipeType,
-                                @NotNull GTRecipeCategory category) {
+    public GTRecipeJEICategory(IJeiHelpers helpers, @NotNull GTRecipeType recipeType,
+                               @NotNull GTRecipeCategory category) {
         this.recipeType = recipeType;
         this.category = category;
         IGuiHelper guiHelper = helpers.getGuiHelper();
@@ -78,13 +78,13 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     @Override
     @NotNull
     public RecipeType<GTRecipeWrapper> getRecipeType() {
-        return TYPES.apply(recipeType);
+        return TYPES.apply(category);
     }
 
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(recipeType.registryName.toLanguageKey());
+        return Component.translatable(category.getTranslation());
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
@@ -93,17 +93,18 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     for (Map.Entry<GTRecipeCategory, List<GTRecipe>> entry : gtRecipeType.getRecipesByCategory()
                             .entrySet()) {
-                        registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(entry.getKey().getRecipeType()),
-                                Minecraft.getInstance().getConnection().getRecipeManager()
-                                        .getAllRecipesFor(gtRecipeType)
+                        registration.addRecipes(GTRecipeJEICategory.TYPES.apply(entry.getKey()),
+                                entry.getValue().stream().map(GTRecipeWrapper::new).collect(Collectors.toList()));
+                                /*Minecraft.getInstance().getConnection().getRecipeManager()
+                                        .getAllRecipesFor(entry.getKey())
                                         .stream()
                                         .map(GTRecipeWrapper::new)
-                                        .collect(Collectors.toList()));
+                                        .collect(Collectors.toList()));*/
 
                         if (gtRecipeType.isScanner()) {
                             List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
                             if (!scannerRecipes.isEmpty()) {
-                                registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
+                                registration.addRecipes(GTRecipeJEICategory.TYPES.apply(entry.getKey()),
                                         scannerRecipes.stream()
                                                 .map(GTRecipeWrapper::new)
                                                 .collect(Collectors.toList()));
@@ -122,11 +123,11 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
                     if (machine.getRecipeTypes() != null) {
                         for (GTRecipeType type : machine.getRecipeTypes()) {
                             for (GTRecipeCategory category : type.getRecipeByCategory().keySet()) {
-                                var jeiCategory = GTRecipeTypeCategory.getCategoryFor(category);
+                                var jeiCategory = GTRecipeJEICategory.getCategoryFor(category);
                                 if (jeiCategory != null) {
                                     if (type == gtRecipeType) {
                                         registration.addRecipeCatalyst(machine.asStack(),
-                                                GTRecipeTypeCategory.TYPES.apply(jeiCategory.recipeType));
+                                                GTRecipeJEICategory.TYPES.apply(jeiCategory.category));
                                     }
                                 }
                             }
@@ -142,11 +143,11 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
         return wrapper.recipe.id;
     }
 
-    public static GTRecipeTypeCategory getCategoryFor(GTRecipeCategory category) {
+    public static GTRecipeJEICategory getCategoryFor(GTRecipeCategory category) {
         return gtCategories.get(category);
     }
 
-    public static Collection<GTRecipeTypeCategory> getCategoriesFor(GTRecipeType recipeType) {
+    public static Collection<GTRecipeJEICategory> getCategoriesFor(GTRecipeType recipeType) {
         return recipeTypeCategories.get(recipeType);
     }
 }

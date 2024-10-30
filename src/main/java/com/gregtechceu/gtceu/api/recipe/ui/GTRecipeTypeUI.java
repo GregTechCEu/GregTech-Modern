@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -34,6 +34,7 @@ import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -252,7 +253,7 @@ public class GTRecipeTypeUI {
                                                 .open();
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(recipeType)));
+                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet().stream().map(GTRecipeJEICategory.TYPES).toList()));
                                     } else if (LDLib.isEmiLoaded()) {
                                         EmiApi.displayRecipeCategory(
                                                 GTRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));

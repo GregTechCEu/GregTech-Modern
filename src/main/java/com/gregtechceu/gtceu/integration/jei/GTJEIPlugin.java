@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCa
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockOreInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -61,7 +61,7 @@ public class GTJEIPlugin implements IModPlugin {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
-                        registry.addRecipeCategories(new GTRecipeTypeCategory(jeiHelpers, gtRecipeType, category));
+                        registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, gtRecipeType, category));
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class GTJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
-        GTRecipeTypeCategory.registerRecipeCatalysts(registration);
+        GTRecipeJEICategory.registerRecipeCatalysts(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
         GTOreVeinInfoCategory.registerRecipeCatalysts(registration);
@@ -94,7 +94,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
-        GTRecipeTypeCategory.registerRecipes(registration);
+        GTRecipeJEICategory.registerRecipes(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingInfoCategory.registerRecipes(registration);
         GTOreVeinInfoCategory.registerRecipes(registration);
