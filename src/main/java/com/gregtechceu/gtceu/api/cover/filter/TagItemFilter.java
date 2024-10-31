@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.utils.OreDictExprFilter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
@@ -18,13 +16,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
  */
 public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements ItemFilter {
 
-    public static final Codec<TagItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression))
-            .apply(instance, TagItemFilter::new));
-
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
-
-    protected TagItemFilter() {}
 
     protected TagItemFilter(String tag) {
         oreDictFilterExpression = tag;
@@ -32,8 +24,10 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        var handler = itemStack.getOrDefault(GTDataComponents.TAG_ITEM_FILTER, new TagItemFilter());
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_ITEM_FILTER, (TagItemFilter) filter);
+        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPR, "");
+        var handler = new TagItemFilter(expr);
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPR,
+                ((TagItemFilter) filter).oreDictFilterExpression);
         return handler;
     }
 

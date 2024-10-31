@@ -7,8 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
@@ -19,13 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
  */
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
 
-    public static final Codec<TagFluidFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression))
-            .apply(instance, TagFluidFilter::new));
-
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
-
-    protected TagFluidFilter() {}
 
     protected TagFluidFilter(String oreDict) {
         this.oreDictFilterExpression = oreDict;
@@ -33,18 +25,10 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        var handler = itemStack.getOrDefault(GTDataComponents.TAG_FLUID_FILTER, new TagFluidFilter());
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FLUID_FILTER, (TagFluidFilter) filter);
-        return handler;
-    }
-
-    private static TagFluidFilter loadFilter(String oreDict) {
-        var handler = new TagFluidFilter();
-        // handler.itemWriter = itemWriter; // TODO fix
-        handler.oreDictFilterExpression = oreDict;
-        handler.matchRules.clear();
-        handler.cache.clear();
-        OreDictExprFilter.parseExpression(handler.matchRules, handler.oreDictFilterExpression);
+        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPR, "");
+        var handler = new TagFluidFilter(expr);
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPR,
+                ((TagFluidFilter) filter).oreDictFilterExpression);
         return handler;
     }
 
