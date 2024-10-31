@@ -7,22 +7,28 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 public class RecipeCategories {
 
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = GTRecipeCategory
-            .create(GTCEu.MOD_ID, "arc_furnace_recycling",
-                    "gregtech.recipe.category.arc_furnace_recycling",
+            .of(GTCEu.MOD_ID, "arc_furnace_recycling",
+                    "gtceu.recipe.category.arc_furnace_recycling",
                     GTRecipeTypes.ARC_FURNACE_RECIPES)
             .setIcon(GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
 
     public static final GTRecipeCategory MACERATOR_RECYCLING = GTRecipeCategory
-            .create(GTCEu.MOD_ID, "macerator_recycling",
-                    "gregtech.recipe.category.macerator_recycling",
+            .of(GTCEu.MOD_ID, "macerator_recycling",
+                    "gtceu.recipe.category.macerator_recycling",
                     GTRecipeTypes.MACERATOR_RECIPES)
-            .setIcon(GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
+            .setIcon(GuiTextures.MACERATOR_RECYCLING_CATEGORY);
 
     public static final GTRecipeCategory EXTRACTOR_RECYCLING = GTRecipeCategory
-            .create(GTCEu.MOD_ID, "extractor_recycling",
-                    "gregtech.recipe.category.extractor_recycling",
+            .of(GTCEu.MOD_ID, "extractor_recycling",
+                    "gtceu.recipe.category.extractor_recycling",
                     GTRecipeTypes.EXTRACTOR_RECIPES)
-            .setIcon(GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
+            .setIcon(GuiTextures.EXTRACTOR_RECYCLING_CATEGORY);
+
+    public static final GTRecipeCategory ORE_MACERATOR = GTRecipeCategory
+            .of(GTCEu.MOD_ID, "ore_crushing",
+                    "gtceu.recipe.category.ore_crushing",
+                    GTRecipeTypes.MACERATOR_RECIPES)
+            .setIcon(GuiTextures.ORE_CRUSHING_CATEGORY);
 
     private RecipeCategories() {}
 }

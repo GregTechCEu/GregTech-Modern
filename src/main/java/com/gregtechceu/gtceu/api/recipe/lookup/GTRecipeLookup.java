@@ -478,7 +478,7 @@ public class GTRecipeLookup {
             return false;
         }
         if (recipe.recipeCategory == null) {
-            recipe.recipeCategory = GTRecipeCategory.create(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
+            recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
                     recipe.recipeType.registryName.toLanguageKey(), recipe.recipeType);
         }
         // Add combustion fuels to the Powerless Jetpack

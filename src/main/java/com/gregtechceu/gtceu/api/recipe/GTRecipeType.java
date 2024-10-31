@@ -112,7 +112,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         this.group = group;
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         recipeBuilder.category(
-                GTRecipeCategory.create(GTCEu.MOD_ID, registryName.getPath(), registryName.toLanguageKey(), this));
+                GTRecipeCategory.of(GTCEu.MOD_ID, registryName.getPath(), registryName.toLanguageKey(), this));
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (RecipeType<?> proxyRecipe : proxyRecipes) {

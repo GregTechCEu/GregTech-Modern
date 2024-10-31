@@ -8,12 +8,14 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.recipe.category.RecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import mezz.jei.library.recipes.RecipeCatalystBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -126,6 +128,8 @@ public class OreRecipeHandler {
                 }
             }
 
+            builder.category(RecipeCategories.ORE_MACERATOR);
+
             builder.save(provider);
         }
 
@@ -180,7 +184,8 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .outputItems(GTUtil.copyAmount(crushedStack.getCount() * 2, crushedStack))
                     .EUt(2)
-                    .duration(400);
+                    .duration(400)
+                    .category(RecipeCategories.ORE_MACERATOR);
 
             Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(),
                     Material.class);
@@ -251,6 +256,7 @@ public class OreRecipeHandler {
                 .duration(400).EUt(2)
                 .chancedOutput(ChemicalHelper.get(dust, byproductMaterial, property.getByProductMultiplier()), 1400,
                         850)
+                .category(RecipeCategories.ORE_MACERATOR)
                 .save(provider);
 
         ItemStack crushedPurifiedOre = GTUtil.copy(
@@ -331,6 +337,7 @@ public class OreRecipeHandler {
                 .outputItems(dustStack)
                 .chancedOutput(byproductStack, 1400, 850)
                 .duration(400).EUt(2)
+                .category(RecipeCategories.ORE_MACERATOR)
                 .save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
@@ -360,6 +367,7 @@ public class OreRecipeHandler {
                 .outputItems(dustStack)
                 .chancedOutput(byproductStack, 1400, 850)
                 .duration(400).EUt(2)
+                .category(RecipeCategories.ORE_MACERATOR)
                 .save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material.getName()),

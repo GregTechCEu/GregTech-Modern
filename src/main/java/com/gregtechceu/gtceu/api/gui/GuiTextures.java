@@ -493,6 +493,9 @@ public class GuiTextures {
     public static final ResourceTexture EXTRACTOR_RECYCLING_CATEGORY = new ResourceTexture(
             "gtceu:textures/gui/icon/extractor_recycling.png");
 
+    public static final ResourceTexture ORE_CRUSHING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/ore_crushing.png");
+
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(
             "gtceu:textures/items/metaitems/cover.controller.png");

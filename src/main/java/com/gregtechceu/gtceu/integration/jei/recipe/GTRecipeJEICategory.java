@@ -40,7 +40,6 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
     public static final Function<GTRecipeCategory, RecipeType<GTRecipeWrapper>> TYPES = Util
             .memoize(category1 -> new RecipeType<>(category1.getResourceLocation(), GTRecipeWrapper.class));
 
-    private final GTRecipeType recipeType;
     private final GTRecipeCategory category;
     @Getter
     private final IDrawable background;
@@ -52,21 +51,22 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
     public GTRecipeJEICategory(IJeiHelpers helpers, @NotNull GTRecipeType recipeType,
                                @NotNull GTRecipeCategory category) {
-        this.recipeType = recipeType;
         this.category = category;
         IGuiHelper guiHelper = helpers.getGuiHelper();
         var size = recipeType.getRecipeUI().getJEISize();
         this.background = guiHelper.createBlankDrawable(size.width, size.height);
-        for (GTRecipeCategory category1 : recipeType.getRecipesByCategory().keySet()) {
-            Object icon = category1.getIcon();
-            if (icon instanceof ResourceTexture resourceTexture) {
-                icon = helpers.getGuiHelper().createDrawable(resourceTexture.imageLocation, 0, 0, 18, 18);
-            } else if (recipeType.getIconSupplier() != null) {
-                icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
-            } else {
-                icon = helpers.getGuiHelper().createDrawableItemStack(Items.BARRIER.getDefaultInstance());
-            }
+
+        Object icon1 = category.getIcon();
+        if (icon1 instanceof ResourceTexture tex) {
+            this.icon = helpers.getGuiHelper()
+                    .drawableBuilder(tex.imageLocation, 0, 0, 18, 18)
+                    .setTextureSize(18, 18).build();
+        } else if (recipeType.getIconSupplier() != null) {
+            this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
+        } else {
+            this.icon = helpers.getGuiHelper().createDrawableItemStack(Items.BARRIER.getDefaultInstance());
         }
+
         gtCategories.put(category, this);
         recipeTypeCategories.compute(recipeType, (k, v) -> {
             if (v == null) v = new ArrayList<>();
@@ -95,11 +95,6 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
                             .entrySet()) {
                         registration.addRecipes(GTRecipeJEICategory.TYPES.apply(entry.getKey()),
                                 entry.getValue().stream().map(GTRecipeWrapper::new).collect(Collectors.toList()));
-                                /*Minecraft.getInstance().getConnection().getRecipeManager()
-                                        .getAllRecipesFor(entry.getKey())
-                                        .stream()
-                                        .map(GTRecipeWrapper::new)
-                                        .collect(Collectors.toList()));*/
 
                         if (gtRecipeType.isScanner()) {
                             List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();

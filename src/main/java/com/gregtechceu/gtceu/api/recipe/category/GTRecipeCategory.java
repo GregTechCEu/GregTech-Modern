@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.category;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -33,14 +34,17 @@ public class GTRecipeCategory {
     private final GTRecipeType recipeType;
     @Nullable
     @Getter
-    private Object icon;
+    private Object icon = null;
     @Getter
     private ResourceLocation resourceLocation;
-
-    public static GTRecipeCategory create(@NotNull String modID, @NotNull String categoryName,
-                                          @NotNull String translationKey, @NotNull GTRecipeType recipeType) {
+    public static GTRecipeCategory of(@NotNull String modID, @NotNull String categoryName,
+                                      @NotNull String translationKey, @NotNull GTRecipeType recipeType) {
         return categories.computeIfAbsent(categoryName,
                 (k) -> new GTRecipeCategory(modID, categoryName, translationKey, recipeType));
+    }
+
+    public static GTRecipeCategory of(@NotNull GTRecipeType recipeType) {
+        return of(GTCEu.MOD_ID, recipeType.registryName.getPath(), recipeType.registryName.toLanguageKey(), recipeType);
     }
 
     private GTRecipeCategory(@NotNull String modID, @NotNull String categoryName, @NotNull String translationKey,

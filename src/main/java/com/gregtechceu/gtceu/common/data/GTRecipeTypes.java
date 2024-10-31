@@ -80,7 +80,8 @@ public class GTRecipeTypes {
                 // remove the * 12 if SteamBoilerMachine:240 is uncommented
                 var duration = (builder.duration / 12 / 80); // copied for large boiler
                 if (duration > 0) {
-                    GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
+                    GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration)
+                            .category(GTRecipeCategory.of(GTRecipeTypes.LARGE_BOILER_RECIPES)).save(provider);
                 }
             })
             .setMaxTooltips(1)
@@ -195,6 +196,7 @@ public class GTRecipeTypes {
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
+                    .category(GTRecipeCategory.of(GTRecipeTypes.LARGE_CHEMICAL_RECIPES))
                     .save(provider));
 
     public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor", ELECTRIC).setMaxIOSize(1, 1, 0, 0)
@@ -708,6 +710,7 @@ public class GTRecipeTypes {
                 CREATE_MIXER_RECIPES.copyFrom(builder)
                         .duration(Math.max((builder.duration / 2), 1))
                         .rpm(64)
+                        .category(GTRecipeCategory.of(CREATE_MIXER_RECIPES))
                         .save(provider);
             });
         }

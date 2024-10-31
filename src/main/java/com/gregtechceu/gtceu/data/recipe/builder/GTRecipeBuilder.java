@@ -109,8 +109,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
-        // this.recipeCategory = GTRecipeCategory.create(GTCEu.MOD_ID, recipeType.registryName.getPath(),
-        // recipeType.registryName.toLanguageKey(), recipeType);
+        this.recipeCategory = GTRecipeCategory.of(recipeType);
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
@@ -1091,7 +1090,7 @@ public class GTRecipeBuilder {
         json.add("tickInputChanceLogics", chanceLogicsToJson(tickInputChanceLogic));
         json.add("tickOutputChanceLogics", chanceLogicsToJson(tickOutputChanceLogic));
 
-        // json.addProperty("category", recipeCategory.getName().toString());
+        json.addProperty("category", recipeCategory.getResourceLocation().toString());
 
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();
@@ -1173,11 +1172,6 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (recipeCategory == null) {
-            //category(GTRecipeCategory.create(GTCEu.MOD_ID, recipeType.registryName.getPath(),
-            //        recipeType.registryName.toLanguageKey(), recipeType));
-        }
-
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
@@ -1194,8 +1188,7 @@ public class GTRecipeBuilder {
         var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel);
-        recipe.setCategory(recipeCategory);
+                conditions, List.of(), data, duration, isFuel, recipeCategory);
         return recipe;
     }
 

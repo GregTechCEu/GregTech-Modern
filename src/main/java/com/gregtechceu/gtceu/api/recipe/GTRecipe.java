@@ -80,10 +80,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    boolean isFuel) {
+                    boolean isFuel,
+                    @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, isFuel);
+                conditions, ingredientActions, data, duration, isFuel, recipeCategory);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -100,7 +101,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    boolean isFuel) {
+                    boolean isFuel,
+                    @NotNull GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -119,6 +121,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
+        this.recipeCategory = recipeCategory;
     }
 
     public void setCategory(GTRecipeCategory recipeCategory) {
@@ -148,7 +151,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 copyContents(tickInputs, null), copyContents(tickOutputs, null),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
-                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
+                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -162,7 +165,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, isFuel);
+                new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
