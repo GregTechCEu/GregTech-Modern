@@ -21,13 +21,21 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
 
     public static final Codec<TagFluidFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression))
-            .apply(instance, TagFluidFilter::loadFilter));
+            .apply(instance, TagFluidFilter::new));
+
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
 
     protected TagFluidFilter() {}
 
+    protected TagFluidFilter(String oreDict) {
+        this.oreDictFilterExpression = oreDict;
+        OreDictExprFilter.parseExpression(this.matchRules, this.oreDictFilterExpression);
+    }
+
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        return itemStack.get(GTDataComponents.TAG_FLUID_FILTER);
+        var handler = itemStack.getOrDefault(GTDataComponents.TAG_FLUID_FILTER, new TagFluidFilter());
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FLUID_FILTER, (TagFluidFilter) filter);
+        return handler;
     }
 
     private static TagFluidFilter loadFilter(String oreDict) {

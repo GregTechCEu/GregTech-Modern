@@ -8,7 +8,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 
 import lombok.Getter;
@@ -41,12 +40,6 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     protected final List<OreDictExprFilter.MatchRule> matchRules = new ArrayList<>();
 
     protected TagFilter() {}
-
-    public CompoundTag saveFilter() {
-        var tag = new CompoundTag();
-        tag.putString("oreDict", oreDictFilterExpression);
-        return tag;
-    }
 
     public void setOreDict(String oreDict) {
         this.oreDictFilterExpression = oreDict;
@@ -125,5 +118,19 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
             this.itemWriter.accept(filter);
             onUpdated.accept(filter);
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TagFilter<?, ?> tagFilter = (TagFilter<?, ?>) o;
+        return oreDictFilterExpression.equals(tagFilter.oreDictFilterExpression);
+    }
+
+    @Override
+    public int hashCode() {
+        return oreDictFilterExpression.hashCode();
     }
 }

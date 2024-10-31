@@ -5,14 +5,11 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.serialization.Codec;
@@ -39,6 +36,7 @@ public class SimpleItemFilter implements ItemFilter {
             Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
             ItemStack.OPTIONAL_CODEC.listOf().fieldOf("matches").forGetter(val -> Arrays.stream(val.matches).toList()))
             .apply(instance, SimpleItemFilter::new));
+
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -46,8 +44,8 @@ public class SimpleItemFilter implements ItemFilter {
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
 
-    protected Consumer<ItemFilter> itemWriter = filter -> {};
-    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
+    protected Consumer<SimpleItemFilter> itemWriter = filter -> {};
+    protected Consumer<SimpleItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected int maxStackSize;
@@ -64,8 +62,9 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        // handler.itemWriter = itemWriter; TODO fix
-        return itemStack.get(GTDataComponents.SIMPLE_ITEM_FILTER);
+        SimpleItemFilter handler = itemStack.getOrDefault(GTDataComponents.SIMPLE_ITEM_FILTER, new SimpleItemFilter());
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.SIMPLE_ITEM_FILTER, filter);
+        return handler;
     }
 
     @Override
@@ -74,18 +73,6 @@ public class SimpleItemFilter implements ItemFilter {
             this.itemWriter.accept(filter);
             onUpdated.accept(filter);
         };
-    }
-
-    public CompoundTag saveFilter() {
-        var tag = new CompoundTag();
-        tag.putBoolean("isBlackList", isBlackList);
-        tag.putBoolean("matchNbt", ignoreNbt);
-        var list = new ListTag();
-        for (var match : matches) {
-            list.add(match.saveOptional(Platform.getFrozenRegistry()));
-        }
-        tag.put("matches", list);
-        return tag;
     }
 
     public void setBlackList(boolean blackList) {
@@ -172,5 +159,23 @@ public class SimpleItemFilter implements ItemFilter {
         for (ItemStack match : matches) {
             match.setCount(Math.min(match.getCount(), maxStackSize));
         }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleItemFilter that)) return false;
+
+        return isBlackList == that.isBlackList && ignoreNbt == that.ignoreNbt && maxStackSize == that.maxStackSize &&
+                Arrays.equals(matches, that.matches);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Boolean.hashCode(isBlackList);
+        result = 31 * result + Boolean.hashCode(ignoreNbt);
+        result = 31 * result + Arrays.hashCode(matches);
+        result = 31 * result + maxStackSize;
+        return result;
     }
 }

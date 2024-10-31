@@ -6,13 +6,9 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -47,8 +43,8 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter = filter -> {};
-    protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
+    protected Consumer<SimpleFluidFilter> itemWriter = filter -> {};
+    protected Consumer<SimpleFluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected int maxStackSize = 1;
@@ -66,8 +62,9 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
-        // FIXME handler.itemWriter = itemWriter;
-        return itemStack.get(GTDataComponents.SIMPLE_FLUID_FILTER);
+        var handler = itemStack.getOrDefault(GTDataComponents.SIMPLE_FLUID_FILTER, new SimpleFluidFilter());
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.SIMPLE_FLUID_FILTER, filter);
+        return handler;
     }
 
     @Override
@@ -76,20 +73,6 @@ public class SimpleFluidFilter implements FluidFilter {
             this.itemWriter.accept(filter);
             onUpdated.accept(filter);
         };
-    }
-
-    public CompoundTag saveFilter() {
-        var tag = new CompoundTag();
-        tag.putBoolean("isBlackList", isBlackList);
-        tag.putBoolean("matchNbt", ignoreNbt);
-        var list = new ListTag();
-        for (var match : matches) {
-            list.add(FluidStack.OPTIONAL_CODEC
-                    .encodeStart(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), match)
-                    .getOrThrow());
-        }
-        tag.put("matches", list);
-        return tag;
     }
 
     public void setBlackList(boolean blackList) {
@@ -186,5 +169,21 @@ public class SimpleFluidFilter implements FluidFilter {
             if (!match.isEmpty())
                 match.setAmount(Math.min(match.getAmount(), maxStackSize));
         }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleFluidFilter that)) return false;
+
+        return isBlackList == that.isBlackList && ignoreNbt == that.ignoreNbt && Arrays.equals(matches, that.matches);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Boolean.hashCode(isBlackList);
+        result = 31 * result + Boolean.hashCode(ignoreNbt);
+        result = 31 * result + Arrays.hashCode(matches);
+        return result;
     }
 }

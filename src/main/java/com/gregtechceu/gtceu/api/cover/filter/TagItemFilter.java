@@ -20,23 +20,20 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
 
     public static final Codec<TagItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression))
-            .apply(instance, TagItemFilter::loadFilter));
+            .apply(instance, TagItemFilter::new));
 
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
 
     protected TagItemFilter() {}
 
-    public static TagItemFilter loadFilter(ItemStack itemStack) {
-        return itemStack.get(GTDataComponents.TAG_ITEM_FILTER);
+    protected TagItemFilter(String tag) {
+        oreDictFilterExpression = tag;
+        OreDictExprFilter.parseExpression(matchRules, oreDictFilterExpression);
     }
 
-    private static TagItemFilter loadFilter(String oreDict) {
-        var handler = new TagItemFilter();
-        // handler.itemWriter = itemWriter; // TODO fix
-        handler.oreDictFilterExpression = oreDict;
-        handler.matchRules.clear();
-        handler.cache.clear();
-        OreDictExprFilter.parseExpression(handler.matchRules, handler.oreDictFilterExpression);
+    public static TagItemFilter loadFilter(ItemStack itemStack) {
+        var handler = itemStack.getOrDefault(GTDataComponents.TAG_ITEM_FILTER, new TagItemFilter());
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_ITEM_FILTER, (TagItemFilter) filter);
         return handler;
     }
 
