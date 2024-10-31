@@ -1585,8 +1585,9 @@ public class GTMachines {
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
-                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X)
-                        .or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get())).setMaxLayerLimited(1);
+                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                if(GTCEu.isAE2Loaded()) exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate.setMaxLayerLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("YSY", "YYY", "YYY")
                         .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)

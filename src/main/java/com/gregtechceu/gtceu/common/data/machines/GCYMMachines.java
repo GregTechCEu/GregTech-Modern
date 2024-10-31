@@ -656,8 +656,9 @@ public class GCYMMachines {
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
-                TraceabilityPredicate exportPredicate = abilities(EXPORT_FLUIDS_1X)
-                        .or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get())).setMaxLayerLimited(1);
+                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                if(GTCEu.isAE2Loaded()) exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate.setMaxLayerLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
