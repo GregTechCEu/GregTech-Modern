@@ -6540,7 +6540,7 @@
     "behavior.portable_scanner.energy_container_in": "Макс. вход: %s (%s) EU при %s A",
     "behavior.portable_scanner.multiblock_parallel": "Параллелей: %s",
     "behavior.data_item.assemblyline.data": "- §a%s",
-    "behavior.data_item.assemblyline.title": "§nДанные для Сборочного конвеера:",
+    "behavior.data_item.assemblyline.title": "§nДанные для Сборочного конвейера:",
     "behavior.portable_scanner.debug_machine_invalid": " неверный!",
     "behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =": " null!",
     "behavior.portable_scanner.debug_machine_valid": " верный",
