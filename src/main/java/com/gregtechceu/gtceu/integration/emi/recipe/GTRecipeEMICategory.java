@@ -56,12 +56,9 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static EmiRenderable getDrawable(GTRecipeCategory category) {
         if (category.getIcon() instanceof ResourceTexture tex) {
-            var t = new EmiTexture(tex.imageLocation, 0, 0, 16, 16);
+            var t = new EmiTexture(tex.imageLocation, 0, 0, (int)tex.imageWidth, (int)tex.imageWidth);
             textureMap.put(category, t);
-            EmiRenderable renderable = (g, x, y, d) -> {
-                t.render(g, x + 1, y + 1, d);
-            };
-            return renderable;
+            return t;
         }
         else if (category.getRecipeType().getIconSupplier() != null)
             return EmiStack.of(category.getRecipeType().getIconSupplier().get());
@@ -71,13 +68,9 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static EmiRenderable getSimplified(GTRecipeCategory category, int u, int v) {
         if (category.getIcon() instanceof ResourceTexture tex) {
-            var t = new EmiTexture(tex.imageLocation, 0, 0, 16, 16);
+            var t = new EmiTexture(tex.imageLocation, 0, 0, (int)tex.imageWidth, (int)tex.imageWidth);
             textureMap.put(category, t);
-            EmiRenderable r = (g, x, y, d) -> {
-                EmiDrawContext context = EmiDrawContext.wrap(g);
-                context.drawTexture(category.getResourceLocation(), x, y, u, v, 16, 16);
-            };
-            return r;
+            return t;
         }
         else if (category.getRecipeType().getIconSupplier() != null)
             return getDrawable(category);
