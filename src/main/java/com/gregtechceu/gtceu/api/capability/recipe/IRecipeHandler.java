@@ -20,13 +20,13 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * Comparator for entries that can be used in insertion logic
      */
     Comparator<IRecipeHandler<?>> ENTRY_COMPARATOR = (o1, o2) -> {
-        // #1: non-empty storage first
+        // #1: Filter priority, like locked slots, first
+        int prio = IFilteredHandler.PRIORITY_COMPARATOR.compare(o1, o2);
+        if (prio != 0) return prio;
+        // #2: Then use non-empty storage
         boolean empty1 = o1.getTotalContentAmount() <= 0;
         boolean empty2 = o2.getTotalContentAmount() <= 0;
-        if (empty1 != empty2) return empty1 ? 1 : -1;
-
-        // #2: filter priority
-        return IFilteredHandler.PRIORITY_COMPARATOR.compare(o1, o2);
+        return Boolean.compare(empty1, empty2);
     };
 
     /**

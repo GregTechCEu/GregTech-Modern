@@ -302,6 +302,14 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addProgressLineOnlyPercent(double progressPercent) {
+            if (!isStructureFormed || !isActive)
+                return this;
+            int currentProgress = (int) (progressPercent * 100);
+            textList.add(Component.translatable("gtceu.multiblock.progress_percent", currentProgress));
+            return this;
+        }
+
         /**
          * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
          * <br>

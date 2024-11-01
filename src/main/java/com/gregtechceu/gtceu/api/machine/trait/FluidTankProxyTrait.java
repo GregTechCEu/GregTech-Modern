@@ -9,7 +9,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -136,8 +135,9 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing).ifPresent(
-                    h -> FluidUtil.tryFluidTransfer(h, this, Integer.MAX_VALUE, true));
+            var filter = getMachine().getFluidCapFilter(facing);
+            GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
+                    .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
         }
     }
 }

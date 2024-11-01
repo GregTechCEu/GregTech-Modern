@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -9,13 +10,16 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,9 +32,9 @@ import java.util.List;
  */
 public class CircuitFancyConfigurator implements IFancyConfigurator {
 
-    final ItemStackTransfer circuitSlot;
+    final ItemStackHandler circuitSlot;
 
-    public CircuitFancyConfigurator(ItemStackTransfer circuitSlot) {
+    public CircuitFancyConfigurator(ItemStackHandler circuitSlot) {
         this.circuitSlot = circuitSlot;
     }
 
@@ -60,7 +64,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                     clickData -> {
                         if (!clickData.isRemote) {
                             circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }
@@ -80,7 +83,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                                 } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                     circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                                 }
-                                circuitSlot.onContentsChanged(0);
                             }
                         }));
                 idx++;
@@ -100,7 +102,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                             } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                 circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                             }
-                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }

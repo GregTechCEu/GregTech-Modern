@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -72,10 +72,10 @@ public class DimensionCondition extends RecipeCondition {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension,
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
         ItemStack icon = dimMarker.getIcon();
-        ItemStackTransfer transfer = new ItemStackTransfer(1);
-        SlotWidget dimSlot = new SlotWidget(transfer, 0, xOffset, yOffset, false, false)
+        CustomItemStackHandler handler = new CustomItemStackHandler(1);
+        SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
                 .setIngredientIO(IngredientIO.INPUT);
-        transfer.setStackInSlot(0, icon);
+        handler.setStackInSlot(0, icon);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
             dimSlot.setOverlay(
                     new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))

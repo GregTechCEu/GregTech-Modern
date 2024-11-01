@@ -9,14 +9,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +30,9 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
                 .stream()
-                .filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast)
-                .toArray(IItemTransfer[]::new);
+                .filter(IItemHandlerModifiable.class::isInstance)
+                .map(IItemHandlerModifiable.class::cast)
+                .toArray(IItemHandlerModifiable[]::new);
 
         var fluidInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
@@ -41,7 +41,7 @@ public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
                 .toArray(IFluidHandler[]::new);
 
-        var inputs = new ItemTransferList(itemInputs);
+        var inputs = new CombinedInvWrapper(itemInputs);
         for (int i = 0; i < inputs.getSlots(); i++) {
             ItemStack item = inputs.getStackInSlot(i);
             if (!item.isEmpty()) {

@@ -899,17 +899,17 @@ public class MachineLang {
         provider.add("gtceu.multiblock.ore_rig.ore_amount", "Drilling Rate: %s");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
-        provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");
-        provider.add("gtceu.multiblock.power_substation.capacity", "Capacity: %s EU");
-        provider.add("gtceu.multiblock.power_substation.passive_drain", "Passive Drain: %s EU/t");
-        provider.add("gtceu.multiblock.power_substation.average_in", "Avg. Input: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.stored", "§7Stored: %s §7EU");
+        provider.add("gtceu.multiblock.power_substation.capacity", "§7Capacity: %s §7EU");
+        provider.add("gtceu.multiblock.power_substation.passive_drain", "§7Passive Drain: %s §7EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_in", "§7Avg. Input: %s §7EU/t");
         provider.add("gtceu.multiblock.power_substation.average_in_hover",
                 "The average inserted EU into the Power Substation's internal energy bank");
-        provider.add("gtceu.multiblock.power_substation.average_out", "Avg. Output: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_out", "§7Avg. Output: %s §7EU/t");
         provider.add("gtceu.multiblock.power_substation.average_out_hover",
                 "The average extracted EU out of the Power Substation's internal energy bank");
-        provider.add("gtceu.multiblock.power_substation.time_to_fill", "Time to fill: %s");
-        provider.add("gtceu.multiblock.power_substation.time_to_drain", "Time to drain: %s");
+        provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");
+        provider.add("gtceu.multiblock.power_substation.time_to_drain", "§7Time to drain: %s");
         provider.add("gtceu.multiblock.power_substation.time_seconds", "%s Seconds");
         provider.add("gtceu.multiblock.power_substation.time_minutes", "%s Minutes");
         provider.add("gtceu.multiblock.power_substation.time_hours", "%s Hours");

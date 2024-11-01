@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -16,8 +17,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ContainerTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -36,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -170,7 +171,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             }
             // Then for every slot in the player's main inventory, try to duct tape fix
             for (int i = 0; i < entityPlayer.getInventory().items.size(); i++) {
-                if (consumeDuctTape(new ContainerTransfer(entityPlayer.getInventory()), i)) {
+                if (consumeDuctTape(new InvWrapper(entityPlayer.getInventory()), i)) {
                     fixAllMaintenanceProblems();
                     setTaped(true);
                     return;
@@ -189,7 +190,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * @param slot    is the inventory slot to check for tape
      * @return true if tape was consumed, else false
      */
-    private boolean consumeDuctTape(IItemTransfer handler, int slot) {
+    private boolean consumeDuctTape(IItemHandler handler, int slot) {
         var stored = handler.getStackInSlot(slot);
         if (!stored.isEmpty() && stored.is(GTItems.DUCT_TAPE.get())) {
             return handler.extractItem(slot, 1, false).is(GTItems.DUCT_TAPE.get());

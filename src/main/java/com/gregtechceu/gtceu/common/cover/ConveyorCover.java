@@ -14,10 +14,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
+import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -25,8 +26,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -38,6 +37,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -110,16 +112,16 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected boolean isSubscriptionActive() {
-        return isWorkingEnabled() && getAdjacentItemTransfer() != null;
+        return isWorkingEnabled() && getAdjacentItemHandler() != null;
     }
 
-    protected @Nullable IItemTransfer getOwnItemTransfer() {
-        return coverHolder.getItemTransferCap(attachedSide, false);
+    protected @Nullable IItemHandlerModifiable getOwnItemHandler() {
+        return coverHolder.getItemHandlerCap(attachedSide, false);
     }
 
-    protected @Nullable IItemTransfer getAdjacentItemTransfer() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide),
-                attachedSide.getOpposite());
+    protected @Nullable IItemHandler getAdjacentItemHandler() {
+        return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+                .resolve().orElse(null);
     }
 
     //////////////////////////////////////
@@ -132,7 +134,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Override
     public boolean canAttach() {
-        return getOwnItemTransfer() != null;
+        return getOwnItemHandler() != null;
     }
 
     public void setTransferRate(int transferRate) {
@@ -145,6 +147,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
         }
+        subscriptionHandler.updateSubscription();
         coverHolder.markDirty();
     }
 
@@ -200,13 +203,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
-                var adjacentItemTransfer = getAdjacentItemTransfer();
-                var myItemHandler = getOwnItemTransfer();
+                var adjacent = getAdjacentItemHandler();
+                var self = getOwnItemHandler();
 
-                if (adjacentItemTransfer != null && myItemHandler != null) {
+                if (adjacent != null && self != null) {
                     int totalTransferred = switch (io) {
-                        case IN -> doTransferItems(adjacentItemTransfer, myItemHandler, itemsLeftToTransferLastSecond);
-                        case OUT -> doTransferItems(myItemHandler, adjacentItemTransfer, itemsLeftToTransferLastSecond);
+                        case IN -> doTransferItems(adjacent, self, itemsLeftToTransferLastSecond);
+                        case OUT -> doTransferItems(self, adjacent, itemsLeftToTransferLastSecond);
                         default -> 0;
                     };
                     this.itemsLeftToTransferLastSecond -= totalTransferred;
@@ -219,11 +222,11 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+    protected int doTransferItems(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
         return moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
     }
 
-    protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory,
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
                                      int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
@@ -238,13 +241,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
                 continue;
             }
 
-            ItemStack remainder = ItemTransferHelper.insertItem(targetInventory, sourceStack, true);
+            ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, sourceStack, true);
             int amountToInsert = sourceStack.getCount() - remainder.getCount();
 
             if (amountToInsert > 0) {
                 sourceStack = sourceInventory.extractItem(srcIndex, amountToInsert, false);
                 if (!sourceStack.isEmpty()) {
-                    ItemTransferHelper.insertItem(targetInventory, sourceStack, false);
+                    ItemHandlerHelper.insertItem(targetInventory, sourceStack, false);
                     itemsLeftToTransfer -= sourceStack.getCount();
 
                     if (itemsLeftToTransfer == 0) {
@@ -256,7 +259,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return maxTransferAmount - itemsLeftToTransfer;
     }
 
-    protected static boolean moveInventoryItemsExact(IItemTransfer sourceInventory, IItemTransfer targetInventory,
+    protected static boolean moveInventoryItemsExact(IItemHandler sourceInventory, IItemHandler targetInventory,
                                                      TypeItemInfo itemInfo) {
         // first, compute how much can we extract in reality from the machine,
         // because totalCount is based on what getStackInSlot returns, which may differ from what
@@ -287,13 +290,13 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
         // now, see how much we can insert into destination inventory
         // if we can't insert as much as itemInfo requires, and remainder is empty, abort, abort
-        ItemStack remainder = ItemTransferHelper.insertItem(targetInventory, resultStack, true);
+        ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, resultStack, true);
         if (!remainder.isEmpty()) {
             return false;
         }
 
         // otherwise, perform real insertion and then remove items from the source inventory
-        ItemTransferHelper.insertItem(targetInventory, resultStack, false);
+        ItemHandlerHelper.insertItem(targetInventory, resultStack, false);
 
         // perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
@@ -311,7 +314,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return true;
     }
 
-    protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory,
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
                                      Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
@@ -327,7 +330,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             ItemStack extractedStack = sourceInventory.extractItem(i,
                     Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
 
-            ItemStack remainderStack = ItemTransferHelper.insertItem(targetInventory, extractedStack, true);
+            ItemStack remainderStack = ItemHandlerHelper.insertItem(targetInventory, extractedStack, true);
             int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
 
             if (amountToInsert > 0) {
@@ -335,7 +338,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
                 if (!extractedStack.isEmpty()) {
 
-                    ItemTransferHelper.insertItem(targetInventory, extractedStack, false);
+                    ItemHandlerHelper.insertItem(targetInventory, extractedStack, false);
                     itemsLeftToTransfer -= extractedStack.getCount();
                     itemInfo.totalCount -= extractedStack.getCount();
 
@@ -355,7 +358,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @NotNull
-    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemTransfer inventory) {
+    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
@@ -376,7 +379,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @NotNull
-    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@NotNull IItemTransfer inventory) {
+    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@NotNull IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
@@ -474,52 +477,52 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
-    private CoverableItemTransferWrapper itemHandlerWrapper;
+    private CoverableItemHandlerWrapper itemHandlerWrapper;
 
     @Nullable
     @Override
-    public IItemTransfer getItemTransferCap(@Nullable IItemTransfer defaultValue) {
+    public IItemHandlerModifiable getItemHandlerCap(@Nullable IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != defaultValue) {
-            this.itemHandlerWrapper = new CoverableItemTransferWrapper(defaultValue);
+            this.itemHandlerWrapper = new CoverableItemHandlerWrapper(defaultValue);
         }
         return itemHandlerWrapper;
     }
 
-    private class CoverableItemTransferWrapper extends ItemTransferDelegate {
+    private class CoverableItemHandlerWrapper extends ItemHandlerDelegate {
 
-        public CoverableItemTransferWrapper(IItemTransfer delegate) {
+        public CoverableItemHandlerWrapper(IItemHandlerModifiable delegate) {
             super(delegate);
         }
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
                 return stack;
             }
             if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
                 return stack;
             }
-            return super.insertItem(slot, stack, simulate, notifyChanges);
+            return super.insertItem(slot, stack, simulate);
         }
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
                 return ItemStack.EMPTY;
             }
             if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true, notifyChanges);
+                ItemStack result = super.extractItem(slot, amount, true);
                 if (result.isEmpty() || !filterHandler.test(result)) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false, notifyChanges);
+                return simulate ? result : super.extractItem(slot, amount, false);
             }
-            return super.extractItem(slot, amount, simulate, notifyChanges);
+            return super.extractItem(slot, amount, simulate);
         }
     }
 }

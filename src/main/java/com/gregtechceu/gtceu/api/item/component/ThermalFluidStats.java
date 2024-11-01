@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -69,9 +71,15 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         if (stack.hasTag()) {
-            FluidUtil.getFluidContained(stack).ifPresent(tank -> tooltipComponents
-                    .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                            tank.getAmount())));
+            FluidUtil.getFluidContained(stack).ifPresent(tank -> {
+                tooltipComponents
+                        .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
+                                tank.getAmount()));
+                TooltipsHandler.appendFluidTooltips(tank.getFluid(), tank.getAmount(), tooltipComponents::add, null);
+            });
+        } else {
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                    FormattingUtil.formatNumbers(capacity)));
         }
     }
 }

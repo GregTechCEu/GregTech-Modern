@@ -1,21 +1,18 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTransfer {
+public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemHandlerModifiable {
 
     public ExportOnlyAEItemSlot() {
         super();
@@ -78,12 +75,12 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean notifyChanges) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return stack;
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot == 0 && this.stock != null) {
             int extracted = (int) Math.min(this.stock.amount(), amount);
             ItemStack result = this.stock.what() instanceof AEItemKey itemKey ?
@@ -95,15 +92,12 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
                     this.stock = null;
                 }
             }
-            if (notifyChanges) {
-                onContentsChanged();
-            }
+            onContentsChanged();
             return result;
         }
         return ItemStack.EMPTY;
     }
 
-    @Override
     public void onContentsChanged() {
         if (onContentsChanged != null) {
             onContentsChanged.run();
@@ -115,21 +109,5 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemTrans
         return new ExportOnlyAEItemSlot(
                 this.config == null ? null : copy(this.config),
                 this.stock == null ? null : copy(this.stock));
-    }
-
-    @Deprecated
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return Pair.of(this.config, this.stock);
-    }
-
-    @Deprecated
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-        if (snapshot instanceof Pair<?, ?> pair) {
-            this.config = (GenericStack) pair.getFirst();
-            this.stock = (GenericStack) pair.getSecond();
-        }
     }
 }

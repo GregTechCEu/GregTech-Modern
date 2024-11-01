@@ -635,8 +635,8 @@ public class GTMachines {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
             int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(),
-                    storedAmount));
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
         }
     };
 
@@ -2674,7 +2674,11 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerConverter(int amperage) {
-        return registerTieredMachines(amperage + "a_energy_converter",
+        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+            REGISTRATE.creativeModeTab(() -> null);
+        }
+
+        MachineDefinition[] converters = registerTieredMachines(amperage + "a_energy_converter",
                 (holder, tier) -> new ConverterMachine(holder, tier, amperage),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -2693,6 +2697,12 @@ public class GTMachines {
                         .compassNode("converter")
                         .register(),
                 ALL_TIERS);
+
+        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+            REGISTRATE.creativeModeTab(() -> MACHINE);
+        }
+
+        return converters;
     }
 
     public static Component explosion() {

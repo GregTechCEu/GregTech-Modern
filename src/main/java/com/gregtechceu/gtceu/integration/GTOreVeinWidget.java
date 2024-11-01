@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -16,10 +18,8 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.NonNullList;
@@ -106,7 +106,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
-            SlotWidget oreSlot = new SlotWidget(new ItemStackTransfer(containedOresAsItemStacks), i, x, 18, false,
+            SlotWidget oreSlot = new SlotWidget(new CustomItemStackHandler(containedOresAsItemStacks), i, x, 18, false,
                     false);
             int finalIndex = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
@@ -133,7 +133,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
-            SlotWidget oreSlot = new SlotWidget(new ItemStackTransfer(containedOresAsItemStacks), i, x, 18, false,
+            SlotWidget oreSlot = new SlotWidget(new CustomItemStackHandler(containedOresAsItemStacks), i, x, 18, false,
                     false);
             int finalIndex = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
@@ -193,16 +193,16 @@ public class GTOreVeinWidget extends WidgetGroup {
                             new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                     .toArray(DimensionMarker[]::new);
-            var transfer = new ItemStackTransfer(dimMarkers.length);
+            var handler = new CustomItemStackHandler(dimMarkers.length);
             for (int i = 0; i < dimMarkers.length; i++) {
                 var dimMarker = dimMarkers[i];
                 var icon = dimMarker.getIcon();
                 int row = Math.floorDiv(i, rowSlots);
-                SlotWidget dimSlot = new SlotWidget(transfer, i,
+                SlotWidget dimSlot = new SlotWidget(handler, i,
                         5 + (16 + interval) * (i - row * rowSlots),
                         yPosition + 18 * row,
                         false, false).setIngredientIO(IngredientIO.CATALYST);
-                transfer.setStackInSlot(i, icon);
+                handler.setStackInSlot(i, icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.setOverlay(
                             new TextTexture("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier))

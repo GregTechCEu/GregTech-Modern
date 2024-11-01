@@ -291,6 +291,14 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
     }
 
+    protected void setLocked(FluidStack fluid) {
+        if (fluid.isEmpty()) setLocked(false);
+        else if (stored.isEmpty()) {
+            cache.setLocked(false);
+            cache.setLocked(true, fluid);
+        } else if (stored.isFluidEqual(fluid)) setLocked(true);
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -300,11 +308,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
                 .addWidget(new LabelWidget(8, 18,
                         () -> String.valueOf(cache.getFluidInTank(0).getAmount()))
-                        .setTextColor(-1).setDropShadow(true))
+                        .setTextColor(-1).setDropShadow(false))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 0, 68, 41, 18, 18,
-                        () -> cache.getLockedFluid().getFluid(), (fluid) -> cache.getLockedFluid().setFluid(fluid))
+                        () -> cache.getLockedFluid().getFluid(), this::setLocked)
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
@@ -339,6 +347,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             if (side == getOutputFacingFluids()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            if (side == getFrontFacing()) return null;
         }
         return super.sideTips(player, pos, state, toolTypes, side);
     }

@@ -255,7 +255,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
                               int platformTransferLimit) {
-        return GTTransferUtils.transferFiltered(source, destination, platformTransferLimit, filterHandler.getFilter());
+        return GTTransferUtils.transferFluidsFiltered(source, destination, filterHandler.getFilter(),
+                platformTransferLimit);
     }
 
     protected enum TransferDirection {
