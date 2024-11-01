@@ -9,12 +9,8 @@ import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -46,7 +44,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     @Getter
     private ItemNetHandler defaultHandler;
     // the ItemNetHandler can only be created on the server so we have a empty placeholder for the client
-    private final IItemTransfer clientCapability = new ItemStackTransfer(0);
+    private final IItemHandlerModifiable clientCapability = new ItemStackHandler(0);
 
     private int transferredItems = 0;
     private long timer = 0;
@@ -75,8 +73,9 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
             if (side != null && isConnected(side)) {
                 ensureHandlersInitialized();
                 checkNetwork();
+                if (this.currentItemPipeNet.get() == null) return LazyOptional.empty();
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
+                        LazyOptional.of(() -> getHandler(side, true)));
             }
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
@@ -120,7 +119,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {
             return false;
         }
-        return ItemTransferHelper.getItemTransfer(level, getBlockPos().relative(side), side.getOpposite()) != null;
+        return GTTransferUtils.hasAdjacentItemHandler(level, getBlockPos(), side);
     }
 
     @Nullable
@@ -181,13 +180,13 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         this.handlers.clear();
     }
 
-    public IItemTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandlerModifiable getHandler(@Nullable Direction side, boolean useCoverCapability) {
         ensureHandlersInitialized();
 
         ItemNetHandler handler = getHandlers().getOrDefault(side, getDefaultHandler());
         if (!useCoverCapability || side == null) return handler;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(handler) : handler;
+        return cover != null ? cover.getItemHandlerCap(handler) : handler;
     }
 }

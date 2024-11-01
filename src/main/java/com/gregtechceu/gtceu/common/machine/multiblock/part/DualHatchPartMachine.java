@@ -2,16 +2,15 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -38,7 +37,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     protected ISubscription tankSubs;
 
     private boolean hasFluidHandler;
-    private boolean hasItemTransfer;
+    private boolean hasItemHandler;
 
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
@@ -86,15 +85,14 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         boolean canOutput = io == IO.OUT && (!tank.isEmpty() || !getInventory().isEmpty());
         var level = getLevel();
         if (level != null) {
-            this.hasItemTransfer = ItemTransferHelper.getItemTransfer(
-                    level, getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null;
+            this.hasItemHandler = GTTransferUtils.hasAdjacentItemHandler(level, getPos(), getFrontFacing());
             this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
         } else {
-            this.hasItemTransfer = false;
+            this.hasItemHandler = false;
             this.hasFluidHandler = false;
         }
 
-        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemTransfer || hasFluidHandler)) {
+        if (isWorkingEnabled() && (canOutput || io == IO.IN) && (hasItemHandler || hasFluidHandler)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -107,14 +105,14 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         if (getOffsetTimer() % 5 == 0) {
             if (isWorkingEnabled()) {
                 if (io == IO.OUT) {
-                    if (hasItemTransfer) {
+                    if (hasItemHandler) {
                         getInventory().exportToNearby(getFrontFacing());
                     }
                     if (hasFluidHandler) {
                         tank.exportToNearby(getFrontFacing());
                     }
                 } else if (io == IO.IN) {
-                    if (hasItemTransfer) {
+                    if (hasItemHandler) {
                         getInventory().importFromNearby(getFrontFacing());
                     }
                     if (hasFluidHandler) {

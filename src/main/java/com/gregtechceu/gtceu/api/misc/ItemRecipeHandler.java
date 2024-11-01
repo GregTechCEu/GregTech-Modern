@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler.handleIngredient;
-
 /**
  * @author KilaBash
  * @date 2023/7/13
@@ -29,17 +27,17 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
 
     @Getter
     public final IO handlerIO;
-    public final ItemStackTransfer storage;
+    public final CustomItemStackHandler storage;
 
     public ItemRecipeHandler(IO handlerIO, int slots) {
         this.handlerIO = handlerIO;
-        this.storage = new ItemStackTransfer(slots);
+        this.storage = new CustomItemStackHandler(slots);
     }
 
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName,
                                               boolean simulate) {
-        return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
+        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Override

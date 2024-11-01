@@ -3,33 +3,31 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.item.InfiniteItemTransferProxy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.items.ItemHandlerHelper;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class CreativeChestMachine extends QuantumChestMachine {
 
@@ -43,49 +41,13 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @DropSaved
     private int ticksPerCycle = 1;
 
-    private final InfiniteItemTransferProxy capabilityTransferProxy;
-
     public CreativeChestMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, -1);
-
-        capabilityTransferProxy = new InfiniteItemTransferProxy(cache, true, true);
-    }
-
-    @Nullable
-    @Override
-    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
-        if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
-            return super.getItemTransferCap(side, useCoverCapability);
-
-        return capabilityTransferProxy;
     }
 
     @Override
     protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.NONE) {
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
-            }
-
-            @Override
-            public void setStackInSlot(int slot, ItemStack stack) {
-                stack.setCount(1);
-                this.storage.setStackInSlot(slot, stack);
-                this.onContentsChanged();
-            }
-
-            @Override
-            public void onContentsChanged() {
-                super.onContentsChanged();
-                if (!isRemote()) {
-                    stored = getStackInSlot(0).copy();
-                    storedAmount = stored.getCount();
-                    stored.setCount(1);
-                }
-            }
-        };
+        return new InfiniteStackHandler(this);
     }
 
     protected void checkAutoOutput() {
@@ -97,11 +59,54 @@ public class CreativeChestMachine extends QuantumChestMachine {
         }
     }
 
+    public void updateItemTick() {
+        ItemStack stack = cache.getStackInSlot(0).copyWithCount(itemsPerCycle);
+        this.stored = stack; // For rendering purposes
+        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
+        if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
+
+        GTTransferUtils.getAdjacentItemHandler(getLevel(), getPos(), getOutputFacingItems()).ifPresent(adj -> {
+            var remainder = ItemHandlerHelper.insertItemStacked(adj, stack, true);
+            if (remainder.getCount() < itemsPerCycle) {
+                ItemHandlerHelper.insertItemStacked(adj, stack, false);
+            }
+        });
+    }
+
+    private void updateStored(ItemStack item) {
+        cache.setStackInSlot(0, item.copyWithCount(1));
+        stored = cache.getStackInSlot(0);
+    }
+
+    @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        var heldItem = player.getItemInHand(hand);
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            // Clear item if empty hand + shift-rclick
+            if (heldItem.isEmpty() && player.isCrouching() && !stored.isEmpty()) {
+                updateStored(ItemStack.EMPTY);
+                return InteractionResult.SUCCESS;
+            }
+
+            // If held item can stack with stored item, delete held item
+            if (!heldItem.isEmpty() && ItemHandlerHelper.canItemStacksStack(stored, heldItem)) {
+                player.setItemInHand(hand, ItemStack.EMPTY);
+                return InteractionResult.SUCCESS;
+            } else if (!heldItem.isEmpty()) { // If held item is different than stored item, update stored item
+                updateStored(heldItem);
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
     @Override
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
         group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
                 .setClearSlotOnRightClick(true)
+                .setMaxStackSize(1)
                 .setBackgroundTexture(GuiTextures.SLOT)
                 .setChangeListener(this::markDirty));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
@@ -132,59 +137,32 @@ public class CreativeChestMachine extends QuantumChestMachine {
         return group;
     }
 
-    public void updateItemTick() {
-        ItemStack stack = cache.getStackInSlot(0).copy();
-        this.stored = stack; // For rendering purposes
-        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
-        if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
-
-        IItemTransfer transfer = ItemTransferHelper.getItemTransfer(getLevel(),
-                getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
-        if (transfer != null) {
-            stack.setCount(itemsPerCycle);
-
-            ItemStack remainder = GTTransferUtils.insertItem(transfer, stack, true);
-            int amountToInsert = stack.getCount() - remainder.getCount();
-            if (amountToInsert > 0) {
-                GTTransferUtils.insertItem(transfer, stack, false);
-            }
-        }
-    }
-
-    @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (hit.getDirection() == getFrontFacing()) {
-            var held = player.getMainHandItem();
-            if (!held.isEmpty() && (ItemTransferHelper.canItemStacksStack(held, stored) || stored.isEmpty())) { // push
-                if (!isRemote()) {
-                    var remaining = cache.insertItem(0, held, false);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
-                }
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return super.onUse(state, world, pos, player, hand, hit);
-    }
-
-    @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
-        if (direction == getFrontFacing() && !isRemote()) {
-            if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1,
-                        false);
-                if (!drained.isEmpty()) {
-                    if (player.addItem(drained)) {
-                        Block.popResource(world, getPos().relative(getFrontFacing()), drained);
-                    }
-                }
-            }
-        }
-        return super.onLeftClick(player, world, hand, pos, direction);
-    }
-
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    private class InfiniteStackHandler extends NotifiableItemStackHandler {
+
+        public InfiniteStackHandler(MetaMachine holder) {
+            super(holder, 1, IO.BOTH, IO.BOTH);
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (!stored.isEmpty()) return ItemStack.EMPTY;
+            return stack;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (!stored.isEmpty()) return stored.copyWithCount(amount);
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
     }
 }

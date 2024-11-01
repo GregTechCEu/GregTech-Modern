@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 
 import net.minecraft.client.Minecraft;
@@ -35,6 +38,8 @@ import org.joml.Quaternionf;
  */
 public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
+    private static Item CREATIVE_CHEST_ITEM = null;
+
     public QuantumChestRenderer(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_chest"));
     }
@@ -53,6 +58,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
     @OnlyIn(Dist.CLIENT)
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+        if (CREATIVE_CHEST_ITEM == null) CREATIVE_CHEST_ITEM = GTMachines.CREATIVE_ITEM.getItem();
         model = getItemBakedModel();
         if (model != null && stack.hasTag()) {
             poseStack.pushPose();
@@ -63,7 +69,8 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
             float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
             // Don't need to handle locked items here since they don't get saved to the item
-            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
+            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY,
+                    stack.is(CREATIVE_CHEST_ITEM));
 
             poseStack.popPose();
         }
@@ -80,13 +87,14 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             var frontFacing = machine.getFrontFacing();
             float tick = level.getGameTime() + partialTicks;
             renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
-                    machine.getLockedItem().getStackInSlot(0));
+                    machine.getLockedItem().getStackInSlot(0), machine instanceof CreativeChestMachine);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderChest(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, ItemStack stored,
-                            int storedAmount, float tick, ItemStack locked) {
+                            int storedAmount,
+                            float tick, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
 
@@ -112,11 +120,19 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
         } else {
             RenderUtils.rotateToFace(poseStack, frontFacing, null);
         }
-        var amount = stored.isEmpty() ? "*" : TextFormattingUtil.formatLongToCompactString(storedAmount, 4);
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
-        new TextTexture(amount).draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 0, 24, 64, 28);
+
+        TransformTexture text;
+        if (isCreative) {
+            text = new TextTexture("∞").setDropShadow(false).scale(3.0f);
+        } else {
+            var amount = stored.isEmpty() ? "*" : TextFormattingUtil.formatLongToCompactString(storedAmount, 4);
+            text = new TextTexture(amount).setDropShadow(false);
+        }
+        text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
+                0, 0, 0, 24, 64, 28);
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }

@@ -9,13 +9,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -24,12 +27,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ResearchStationMachine extends WorkableElectricMultiblockMachine implements IOpticalComputationReceiver {
+public class ResearchStationMachine extends WorkableElectricMultiblockMachine
+                                    implements IOpticalComputationReceiver, IDisplayUIMachine {
 
     @Getter
     private IOpticalComputationProvider computationProvider;
@@ -99,6 +104,19 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     @Override
     public boolean dampingWhenWaiting() {
         return false;
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        MultiblockDisplayText.builder(textList, isFormed())
+                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
+                .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
+                        "gtceu.multiblock.research_station.researching")
+                .addEnergyUsageLine(energyContainer)
+                .addEnergyTierLine(tier)
+                .addWorkingStatusLine()
+                // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
+                .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
     }
 
     private static class ResearchStationRecipeLogic extends RecipeLogic {

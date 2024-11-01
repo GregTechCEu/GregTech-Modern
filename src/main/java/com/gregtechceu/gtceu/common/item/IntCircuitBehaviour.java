@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -18,8 +20,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -113,7 +113,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         label.setTextColor(0x404040);
         var modular = new ModularUI(184, 132, holder, entityPlayer)
                 .widget(label);
-        SlotWidget slotwidget = new SlotWidget(new ItemStackTransfer(stack(getCircuitConfiguration(holder.getHeld()))),
+        SlotWidget slotwidget = new SlotWidget(
+                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))),
                 0, 82, 20, false, false);
         slotwidget.setBackground(GuiTextures.SLOT);
         modular.widget(slotwidget);
@@ -125,7 +126,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                         new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
                         data -> {
                             setCircuitConfiguration(holder, finalIdx);
-                            slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0);
+                            slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
                         }));
                 idx++;
             }
@@ -136,7 +137,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                     new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
                     data -> {
                         setCircuitConfiguration(holder, finalIdx);
-                        slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0);
+                        slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
                     }));
         }
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);

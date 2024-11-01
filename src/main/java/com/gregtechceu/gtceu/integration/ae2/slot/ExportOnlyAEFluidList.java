@@ -122,6 +122,11 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         }
 
         @Override
+        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+            return fluid.drain(maxDrain, action);
+        }
+
+        @Override
         public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
             return fluid.drain(resource, action);
         }
@@ -134,18 +139,6 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         @Override
         public boolean supportsFill(int tank) {
             return false;
-        }
-
-        @Override
-        public CustomFluidTank copy() {
-            // because recipe testing uses copy storage instead of simulated operations
-            return new FluidStorageDelegate(fluid) {
-
-                @Override
-                public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-                    return super.drain(resource, action);
-                }
-            };
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.transfer.fluid.CycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
@@ -230,9 +231,9 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return Collections.emptyList();
 
         if (this.fluidTank instanceof CycleFluidHandler cycleFluidHandler) {
-            return getXEIIngredientsFromCycleHandler(cycleFluidHandler, tank);
+            return getXEIIngredientsFromCycleHandlerClickable(cycleFluidHandler, tank);
         } else if (this.fluidTank instanceof TagOrCycleFluidHandler tagOrCycleFluidHandler) {
-            return getXEIIngredientsFromTagOrCycleHandler(tagOrCycleFluidHandler, tank);
+            return getXEIIngredientsFromTagOrCycleHandlerClickable(tagOrCycleFluidHandler, tank);
         }
 
         if (LDLib.isJeiLoaded()) {
@@ -355,6 +356,35 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     @Override
+    public List<Component> getFullTooltipTexts() {
+        List<Component> tooltips = new ArrayList<>();
+        boolean isPhantom = this instanceof PhantomFluidWidget;
+        if (lastFluidInTank != null && !lastFluidInTank.isEmpty()) {
+            tooltips.add(lastFluidInTank.getDisplayName());
+            if (!isPhantom) {
+                tooltips.add(
+                        Component.translatable("ldlib.fluid.amount", lastFluidInTank.getAmount(), lastTankCapacity)
+                                .append(" mB"));
+            }
+            if (lastFluidInTank.getFluid() instanceof GTFluid gtFluid)
+                TooltipsHandler.appendFluidTooltips(gtFluid, lastFluidInTank.getAmount(), tooltips::add, null);
+            else {
+                tooltips.add(Component.translatable("ldlib.fluid.temperature",
+                        lastFluidInTank.getFluid().getFluidType().getTemperature(lastFluidInTank)));
+                tooltips.add(Component.translatable(lastFluidInTank.getFluid().getFluidType().isLighterThanAir() ?
+                        "ldlib.fluid.state_gas" : "ldlib.fluid.state_liquid"));
+            }
+        } else {
+            tooltips.add(Component.translatable("ldlib.fluid.empty"));
+            if (!isPhantom) {
+                tooltips.add(Component.translatable("ldlib.fluid.amount", 0, lastTankCapacity).append(" mB"));
+            }
+        }
+        tooltips.addAll(getTooltipTexts());
+        return tooltips;
+    }
+
+    @Override
     public List<Component> getTooltipTexts() {
         List<Component> tooltips = getToolTips(new ArrayList<>());
         tooltips.addAll(tooltipTexts);
@@ -435,32 +465,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     @OnlyIn(Dist.CLIENT)
     public void drawInForeground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (drawHoverTips && isMouseOverElement(mouseX, mouseY) && getHoverElement(mouseX, mouseY) == this) {
-            List<Component> tooltips = new ArrayList<>();
-            if (lastFluidInTank != null && !lastFluidInTank.isEmpty()) {
-                tooltips.add(lastFluidInTank.getDisplayName());
-                tooltips.add(Component.translatable("ldlib.fluid.amount", lastFluidInTank.getAmount(), lastTankCapacity)
-                        .append(" mB"));
-                if (!Platform.isForge()) {
-                    tooltips.add(Component.literal(
-                            "§6mB:§r %d/%d mB".formatted(lastFluidInTank.getAmount(),
-                                    lastTankCapacity)));
-                }
-                tooltips.add(Component.translatable("ldlib.fluid.temperature",
-                        lastFluidInTank.getFluid().getFluidType().getTemperature(lastFluidInTank)));
-                tooltips.add(Component.translatable(lastFluidInTank.getFluid().getFluidType().isLighterThanAir() ?
-                        "ldlib.fluid.state_gas" : "ldlib.fluid.state_liquid"));
-            } else {
-                tooltips.add(Component.translatable("ldlib.fluid.empty"));
-                tooltips.add(Component.translatable("ldlib.fluid.amount", 0, lastTankCapacity)
-                        .append(" mB"));
-                if (!Platform.isForge()) {
-                    tooltips.add(Component
-                            .literal("§6mB:§r %d/%d mB".formatted(0, lastTankCapacity)));
-                }
-            }
             if (gui != null) {
-                tooltips.addAll(getTooltipTexts());
-                gui.getModularUIGui().setHoverTooltip(tooltips, ItemStack.EMPTY, null, null);
+                gui.getModularUIGui().setHoverTooltip(getFullTooltipTexts(), ItemStack.EMPTY, null, null);
             }
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1f);
         } else {
