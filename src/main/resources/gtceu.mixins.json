@@ -33,7 +33,6 @@
         "ChunkMixin",
         "CreeperMixin",
         "EntityMixin",
-        "ForgeHooksMixin",
         "IFoliagePlacerTypeAccessor",
         "IHolderReferenceAccessor",
         "IngredientAccessor",
