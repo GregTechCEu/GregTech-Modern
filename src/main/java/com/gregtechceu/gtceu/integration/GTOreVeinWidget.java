@@ -243,17 +243,17 @@ public class GTOreVeinWidget extends WidgetGroup {
                 .toList();
     }
 
-    public String getOreName(GTOreDefinition oreDefinition) {
+    public static String getOreName(GTOreDefinition oreDefinition) {
         ResourceLocation id = ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
 
-    public String getFluidName(BedrockFluidDefinition fluid) {
+    public static String getFluidName(BedrockFluidDefinition fluid) {
         ResourceLocation id = ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
         return id.getPath();
     }
 
-    public String getBedrockOreName(BedrockOreDefinition oreDefinition) {
+    public static String getBedrockOreName(BedrockOreDefinition oreDefinition) {
         ResourceLocation id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
         return id.getPath();
     }
