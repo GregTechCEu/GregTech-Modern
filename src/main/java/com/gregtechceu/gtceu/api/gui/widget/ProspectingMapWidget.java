@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
+import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
+import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -17,6 +19,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -146,6 +149,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             int oz = row - chunkRadius + 1;
 
             var chunk = world.getChunk(playerChunkX + ox, playerChunkZ + oz);
+            ServerCache.instance.prospectAllInChunk(world.dimension(), chunk.getPos(), (ServerPlayer) player);
             PacketProspecting packet = new PacketProspecting(playerChunkX + ox, playerChunkZ + oz, this.mode);
             mode.scan(packet.data, chunk);
             writeUpdateInfo(-1, packet::writePacketData);
@@ -190,6 +194,11 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @OnlyIn(Dist.CLIENT)
     private void addPacketToQueue(PacketProspecting packet) {
         packetQueue.add(packet);
+        if (mode == ProspectorMode.FLUID && packet.data[0][0].length > 0) {
+            GTClientCache.instance.addFluid(gui.entityPlayer.level().dimension(), packet.chunkX, packet.chunkZ,
+                    (ProspectorMode.FluidInfo) packet.data[0][0][0]);
+
+        }
     }
 
     @Override

@@ -120,13 +120,15 @@ public class GTValues {
             MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
             MODID_CREATE = "create",
-            MODID_REBORN_ENERGY = "team_reborn_energy",
-            MODID_ALMOSTUNIFIED = "almostunified",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
+            MODID_JOURNEYMAP = "journeymap",
+            MODID_XAEROS_MINIMAP = "xaerominimap",
+            MODID_XAEROS_WORLDMAP = "xaeroworldmap",
+            MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
-            MODID_FTBTEAMS = "ftbteams",
+            MODID_FTB_TEAMS = "ftbteams",
             MODID_ARGONAUTS = "argonauts";
 
     /**

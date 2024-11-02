@@ -81,8 +81,7 @@ public class OreBlockRenderer {
         JsonObject children = newJson.getAsJsonObject("children");
         // add the base stone texture.
         children.getAsJsonObject("base_stone").addProperty("parent",
-                TagPrefix.ORES.get(prefix).baseModelLocation().toString());// .getAsJsonObject("textures").addProperty("stone",
-                                                                           // TagPrefix.ORES.get(prefix).baseModelLocation().toString());
+                TagPrefix.ORES.get(prefix).baseModelLocation().toString());
 
         ResourceLocation layer0 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
         ResourceLocation layer1 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), "layer2",
