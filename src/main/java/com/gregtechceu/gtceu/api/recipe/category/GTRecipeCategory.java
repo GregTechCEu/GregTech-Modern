@@ -37,6 +37,7 @@ public class GTRecipeCategory {
     private Object icon = null;
     @Getter
     private ResourceLocation resourceLocation;
+
     public static GTRecipeCategory of(@NotNull String modID, @NotNull String categoryName,
                                       @NotNull String translationKey, @NotNull GTRecipeType recipeType) {
         return categories.computeIfAbsent(categoryName,

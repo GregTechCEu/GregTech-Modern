@@ -6,14 +6,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.lowdragmc.lowdraglib.Platform;
-
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import dev.emi.emi.api.render.EmiRenderable;
-import dev.emi.emi.api.render.EmiTexture;
-import dev.emi.emi.runtime.EmiDrawContext;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -22,7 +17,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.render.EmiRenderable;
+import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,13 +35,11 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     public final GTRecipeType recipeType;
 
     private final GTRecipeCategory category;
-    private Object icon;
     private static final Map<GTRecipeCategory, GTRecipeEMICategory> gtCategories = new Object2ObjectOpenHashMap<>();
     private static final Map<net.minecraft.world.item.crafting.RecipeType<?>, List<GTRecipeEMICategory>> recipeTypeCategories = new Object2ObjectOpenHashMap<>();
-    private static final Map<GTRecipeCategory, EmiTexture> textureMap = new Object2ObjectOpenHashMap<>();
 
     public GTRecipeEMICategory(GTRecipeType recipeType, @NotNull GTRecipeCategory category) {
-        super(recipeType.registryName, getDrawable(category), getSimplified(category, 16, 16));
+        super(recipeType.registryName, getDrawable(category), getDrawable(category));
         this.recipeType = recipeType;
         this.category = category;
         gtCategories.put(category, this);
@@ -56,24 +52,10 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static EmiRenderable getDrawable(GTRecipeCategory category) {
         if (category.getIcon() instanceof ResourceTexture tex) {
-            var t = new EmiTexture(tex.imageLocation, 0, 0, (int)tex.imageWidth, (int)tex.imageWidth);
-            textureMap.put(category, t);
-            return t;
-        }
-        else if (category.getRecipeType().getIconSupplier() != null)
+            return new EmiTexture(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight,
+                    (int) tex.imageWidth + 2, (int) tex.imageHeight + 2, (int) tex.imageWidth, (int) tex.imageHeight);
+        } else if (category.getRecipeType().getIconSupplier() != null)
             return EmiStack.of(category.getRecipeType().getIconSupplier().get());
-        else
-            return EmiStack.of(Items.BARRIER);
-    }
-
-    public static EmiRenderable getSimplified(GTRecipeCategory category, int u, int v) {
-        if (category.getIcon() instanceof ResourceTexture tex) {
-            var t = new EmiTexture(tex.imageLocation, 0, 0, (int)tex.imageWidth, (int)tex.imageWidth);
-            textureMap.put(category, t);
-            return t;
-        }
-        else if (category.getRecipeType().getIconSupplier() != null)
-            return getDrawable(category);
         else
             return EmiStack.of(Items.BARRIER);
     }
@@ -82,7 +64,8 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    for (Map.Entry<GTRecipeCategory, List<GTRecipe>> entry : gtRecipeType.getRecipesByCategory().entrySet()) {
+                    for (Map.Entry<GTRecipeCategory, List<GTRecipe>> entry : gtRecipeType.getRecipesByCategory()
+                            .entrySet()) {
                         entry.getValue().stream()
                                 .map(recipe -> new GTEmiRecipe(gtCategories.get(entry.getKey()), recipe))
                                 .forEach(registry::addRecipe);

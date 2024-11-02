@@ -95,6 +95,7 @@ public class GTEMIPlugin implements EmiPlugin {
                 EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_OVEN.asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.MULTI_SMELTER.asStack()));
-        registry.addWorkstation(GTRecipeEMICategory.getCategoryFor(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)), EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+        registry.addWorkstation(GTRecipeEMICategory.getCategoryFor(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
+                EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 }

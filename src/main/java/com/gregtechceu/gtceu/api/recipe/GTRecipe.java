@@ -151,7 +151,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 copyContents(tickInputs, null), copyContents(tickOutputs, null),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
-                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
+                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel,
+                recipeCategory);
     }
 
     public GTRecipe copy(ContentModifier modifier) {

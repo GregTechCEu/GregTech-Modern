@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
-import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -247,15 +247,17 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        ViewSearchBuilder.builder()
-                                                .addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType))
-                                                .open();
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> ViewSearchBuilder.builder()
+                                                        .addCategory(GTRecipeREICategory.CATEGORIES.apply(e)).open());
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet().stream().map(GTRecipeJEICategory.TYPES).toList()));
+                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet()
+                                                        .stream().map(GTRecipeJEICategory.TYPES).toList()));
                                     } else if (LDLib.isEmiLoaded()) {
-                                        recipeType.getRecipesByCategory().keySet().stream().map(GTRecipeEMICategory.CATEGORIES)
-                                                .forEach(e -> e.forEach(f -> EmiApi.displayRecipeCategory(f.getCategory())));
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> EmiApi
+                                                        .displayRecipeCategory(GTRecipeEMICategory.getCategoryFor(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
