@@ -25,9 +25,9 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPR, "");
+        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPRESSION, "");
         var handler = new TagFluidFilter(expr);
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPR,
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPRESSION,
                 ((TagFluidFilter) filter).oreDictFilterExpression);
         return handler;
     }

@@ -75,8 +75,8 @@ public class GTDataComponents {
             .registerComponentType("simple_fluid_filter", builder -> builder.persistent(SimpleFluidFilter.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleItemFilter>> SIMPLE_ITEM_FILTER = DATA_COMPONENTS
             .registerComponentType("simple_item_filter", builder -> builder.persistent(SimpleItemFilter.CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> TAG_FILTER_EXPR = DATA_COMPONENTS
-            .registerComponentType("tag_filter_expr",
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> TAG_FILTER_EXPRESSION = DATA_COMPONENTS
+            .registerComponentType("tag_filter_expression",
                     builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CIRCUIT_CONFIG = DATA_COMPONENTS
             .registerComponentType("circuit_config", builder -> builder.persistent(Codec.INT));

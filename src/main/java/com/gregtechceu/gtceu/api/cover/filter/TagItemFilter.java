@@ -24,9 +24,9 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPR, "");
+        var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPRESSION, "");
         var handler = new TagItemFilter(expr);
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPR,
+        handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPRESSION,
                 ((TagItemFilter) filter).oreDictFilterExpression);
         return handler;
     }
