@@ -6958,7 +6958,7 @@
     "item.gtceu.nightvision_goggles": "Прибор ночного виденья (ПНВ)",
     "item.gtceu.quarktech_helmet": "QuarkTech™ Шлем",
     "item.gtceu.quarktech_leggings": "QuarkTech™ Поножи",
-    "item.gtceu.sus_record.desc": "Сус!",
+    "item.gtceu.sus_record.desc": "§7Сус!",
     "material.gtceu.echo": "Эхо",
     "config.gtceu.option.armorHud": "armorHud",
     "config.gtceu.option.hudOffsetY": "hudOffsetY",
@@ -7523,5 +7523,9 @@
     "item.gtceu.facade_cover.tooltip.0": "§7Декоративное§f улучшение§7.",
     "item.gtceu.facade_cover.tooltip.1": "§7Создается из 3 Железных пластин и любого блока",
     "gtceu.multiblock.research_station.researching": "§6Исследование.",
-    "item.gtceu.programmed_circuit.tooltip.0": "Используйте для открытия интерфейса настроек"
+    "item.gtceu.programmed_circuit.tooltip.0": "Используйте для открытия интерфейса настроек",
+    "item.gtceu.programmed_circuit.tooltip.2": "c Инт. схемой в руке",
+    "item.gtceu.programmed_circuit.tooltip.3": "чтобы задать программу машине.",
+    "item.gtceu.programmed_circuit.tooltip.1": "Щелкните ПКМ на машине",
+    "item.gtceu.storage_cover": "Хранилище (Улучшение)"
 }
