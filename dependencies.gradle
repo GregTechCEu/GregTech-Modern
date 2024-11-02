@@ -40,9 +40,9 @@ dependencies {
     modCompileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     // KJS
-    modCompileOnly(forge.kubejs) { transitive = false }
-    modCompileOnly(forge.architectury)
-    modCompileOnly(forge.rhino)
+    modImplementation(forge.kubejs) { transitive = false }
+    modImplementation(forge.architectury)
+    modImplementation(forge.rhino)
 
     // xaerosWorldMap
     modImplementation(forge.xaerosminimap)
