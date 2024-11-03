@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
 import com.gregtechceu.gtceu.common.recipe.condition.RPMCondition;
@@ -667,7 +668,8 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                    NumberFormat.getCompactNumberInstance().format(data.getLong("eu_to_start"))));
+                    NumberFormat.getCompactNumberInstance().format(data.getLong("eu_to_start")),
+                    FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);

@@ -503,6 +503,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
         public boolean onlyOwnerBreak = false;
+        @Configurable
+        @Configurable.Comment({ "Minimum op level to bypass the ownership checks", "Default: 2" })
+        @Configurable.Range(min = 0, max = 4)
+        public int ownerOPBypass = 2;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>

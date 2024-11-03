@@ -63,7 +63,7 @@ public class LangHandler {
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
-        provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
+        provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
@@ -919,7 +919,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.temperature", "Temp: %sK");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
-        provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
+        provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
         provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");
@@ -1239,6 +1239,8 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
 
         // gui
+        provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
+        provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
