@@ -24,11 +24,5 @@ public class RecipeCategories {
                     GTRecipeTypes.EXTRACTOR_RECIPES)
             .setIcon(GuiTextures.EXTRACTOR_RECYCLING_CATEGORY);
 
-    public static final GTRecipeCategory ORE_MACERATOR = GTRecipeCategory
-            .of(GTCEu.MOD_ID, "ore_crushing",
-                    "gtceu.recipe.category.ore_crushing",
-                    GTRecipeTypes.MACERATOR_RECIPES)
-            .setIcon(GuiTextures.ORE_CRUSHING_CATEGORY);
-
     private RecipeCategories() {}
 }

@@ -489,14 +489,11 @@ public class GuiTextures {
             "gtceu:textures/gui/icon/coke_oven.png");
 
     public static final ResourceTexture ARC_FURNACE_RECYCLING_CATEGORY = new ResourceTexture(
-            new ResourceLocation("gtceu:textures/gui/icon/arc_furnace_recycling.png"), 0, 0, 18, 18);
+            new ResourceLocation("gtceu:textures/gui/icon/arc_furnace_recycling.png"), 0, 0, 16, 16);
     public static final ResourceTexture MACERATOR_RECYCLING_CATEGORY = new ResourceTexture(
-            new ResourceLocation("gtceu:textures/gui/icon/macerator_recycling.png"), 0, 0, 18, 18);
+            new ResourceLocation("gtceu:textures/gui/icon/macerator_recycling.png"), 0, 0, 16, 16);
     public static final ResourceTexture EXTRACTOR_RECYCLING_CATEGORY = new ResourceTexture(
-            new ResourceLocation("gtceu:textures/gui/icon/extractor_recycling.png"), 0, 0, 18, 18);
-
-    public static final ResourceTexture ORE_CRUSHING_CATEGORY = new ResourceTexture(
-            new ResourceLocation("gtceu:textures/gui/icon/ore_crushing.png"), 0, 0, 18, 18);
+            new ResourceLocation("gtceu:textures/gui/icon/extractor_recycling.png"), 0, 0, 16, 16);
 
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(
