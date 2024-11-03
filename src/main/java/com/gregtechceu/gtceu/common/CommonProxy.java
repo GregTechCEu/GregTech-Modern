@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
@@ -178,6 +179,10 @@ public class CommonProxy {
         GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
     private static void initMaterials() {
