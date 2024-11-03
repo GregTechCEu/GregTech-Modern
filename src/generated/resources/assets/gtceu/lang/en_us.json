@@ -2638,6 +2638,8 @@
   "gtceu.bus.collapse.error": "Bus must be attached to multiblock first",
   "gtceu.bus.collapse_false": "Bus will not collapse Items",
   "gtceu.bus.collapse_true": "Bus will collapse Items",
+  "gtceu.button.bedrock_fluids": "Show Bedrock Fluid Veins",
+  "gtceu.button.ore_veins": "Show GT Ore Veins",
   "gtceu.cable.amperage": "Max Amperage: §e%d",
   "gtceu.cable.loss_per_block": "Loss/Meter/Ampere: §c%d§7 EU-Volt",
   "gtceu.cable.superconductor": "§d%s Superconductor",
