@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.recipe.category.RecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -127,7 +127,7 @@ public class RecyclingRecipes {
                 .outputItems(outputs.toArray(ItemStack[]::new))
                 .duration(calculateDuration(outputs))
                 .EUt(2L * multiplier)
-                .category(RecipeCategories.MACERATOR_RECYCLING);
+                .category(GTRecipeCategories.MACERATOR_RECYCLING);
         if (inputTag == null) {
             builder.inputItems(input.copy());
         } else {
@@ -167,7 +167,7 @@ public class RecyclingRecipes {
                     .outputFluids(m.getFluid((int) (ms.amount() * L / M)))
                     .duration((int) Math.max(1, ms.amount() * ms.material().getMass() / M))
                     .EUt((long) GTValues.VA[GTValues.LV] * multiplier)
-                    .category(RecipeCategories.EXTRACTOR_RECYCLING);
+                    .category(GTRecipeCategories.EXTRACTOR_RECYCLING);
             if (inputTag == null) {
                 builder.inputItems(input.copy());
             } else {
@@ -205,7 +205,7 @@ public class RecyclingRecipes {
                 .outputFluids(fluidMs.material().getFluid((int) (fluidMs.amount() * L / M)))
                 .duration((int) duration)
                 .EUt((long) GTValues.VA[GTValues.LV] * multiplier)
-                .category(RecipeCategories.EXTRACTOR_RECYCLING);
+                .category(GTRecipeCategories.EXTRACTOR_RECYCLING);
 
         if (inputTag == null) {
             extractorBuilder.inputItems(input.copy());
@@ -255,7 +255,7 @@ public class RecyclingRecipes {
 
                 if (ms.material().hasFlag(IS_MAGNETIC) ||
                         ms.material() == ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto()) {
-                    builder.category(RecipeCategories.ARC_FURNACE_RECYCLING);
+                    builder.category(GTRecipeCategories.ARC_FURNACE_RECYCLING);
                 }
                 builder.save(provider);
             }
@@ -292,7 +292,7 @@ public class RecyclingRecipes {
         }
 
         if (needsRecyclingCategory(prefix, ms, outputs)) {
-            builder.category(RecipeCategories.ARC_FURNACE_RECYCLING);
+            builder.category(GTRecipeCategories.ARC_FURNACE_RECYCLING);
         }
 
         builder.save(provider);

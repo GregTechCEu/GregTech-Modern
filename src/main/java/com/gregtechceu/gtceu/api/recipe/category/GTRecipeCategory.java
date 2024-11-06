@@ -16,10 +16,6 @@ import javax.annotation.Nullable;
 
 public class GTRecipeCategory {
 
-    static {
-        // GTRegistries.RECIPE_CATEGORIES.unfreeze();
-    }
-
     private static final Map<String, GTRecipeCategory> categories = new Object2ObjectOpenHashMap<>();
 
     @Getter

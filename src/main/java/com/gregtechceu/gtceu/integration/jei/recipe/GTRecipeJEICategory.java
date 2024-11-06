@@ -58,7 +58,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         Object icon1 = category.getIcon();
         if (icon1 instanceof ResourceTexture tex) {
             this.icon = helpers.getGuiHelper()
-                    .drawableBuilder(tex.imageLocation, 0, 0, (int)tex.imageWidth, (int)tex.imageHeight)
+                    .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
                     .setTextureSize(16, 16).build();
         } else if (recipeType.getIconSupplier() != null) {
             this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());

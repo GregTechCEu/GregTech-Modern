@@ -455,18 +455,6 @@ public class GTRecipeLookup {
         this.recipeType.getRecipeByCategory().clear();
     }
 
-    public boolean removeRecipe(@NotNull GTRecipe recipe) {
-        List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
-        if (recurseIngredientTreeRemove(recipe, items, lookup, 0) != null) {
-            recipeType.getRecipesByCategory().compute(recipe.recipeCategory, (k, v) -> {
-                if (v != null) v.remove(recipe);
-                return v == null || v.isEmpty() ? null : v;
-            });
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Compiles a recipe and adds it to the ingredient tree
      *
@@ -605,66 +593,6 @@ public class GTRecipeLookup {
         }
         // recipe addition was successful
         return true;
-    }
-
-    /**
-     * Removes a recipe from the map. (recursive part)
-     *
-     * @param recipeToRemove the recipe to add.
-     * @param ingredients    list of input ingredients.
-     * @param branchMap      the current branch in the recursion.
-     */
-    private @Nullable GTRecipe recurseIngredientTreeRemove(@NotNull GTRecipe recipeToRemove,
-                                                           @NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                           @NotNull Branch branchMap, int depth) {
-        // for every ingredient
-        for (List<AbstractMapIngredient> current : ingredients) {
-            // for all possibilities as keys
-            for (AbstractMapIngredient obj : current) {
-                // determine the root nodes
-                Map<AbstractMapIngredient, Either<GTRecipe, Branch>> targetMap = determineRootNodes(obj, branchMap);
-
-                // recursive part:
-                GTRecipe found = null;
-                Either<GTRecipe, Branch> result = targetMap.get(obj);
-                if (result != null) {
-                    // if there is a recipe (left mapping), return it immediately as found
-                    // otherwise, recurse and go to the next branch. Do so by omitting the current ingredient.
-                    GTRecipe r = result.map(potentialRecipe -> potentialRecipe,
-                            potentialBranch -> recurseIngredientTreeRemove(recipeToRemove,
-                                    ingredients.subList(1, ingredients.size()),
-                                    potentialBranch, depth + 1));
-                    if (r == recipeToRemove) {
-                        found = r;
-                    } else {
-                        // wasn't the correct recipe
-                        if (ConfigHolder.INSTANCE.dev.debug) {
-                            GTCEu.LOGGER.warn("Failed to remove recipe from RecipeType {}, {}",
-                                    this.recipeType.registryName, recipeToRemove.toString());
-                        }
-                    }
-                }
-
-                if (found != null) {
-                    if (ingredients.size() == 1) {
-                        // a recipe was found, and this is the only ingredient, so remove it directly
-                        targetMap.remove(obj);
-                    } else {
-                        if (targetMap.get(obj).right().isPresent()) {
-                            Branch branch = targetMap.get(obj).right().get();
-                            if (branch.isEmptyBranch()) {
-                                // have a branch at this stage, so remove the ingredient for this step
-                                targetMap.remove(obj);
-                            }
-                        }
-                    }
-                    // return the successfully removed recipe
-                    return found;
-                }
-            }
-        }
-        // could not remove the recipe
-        return null;
     }
 
     /**

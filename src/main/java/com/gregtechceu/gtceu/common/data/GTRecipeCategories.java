@@ -1,10 +1,10 @@
-package com.gregtechceu.gtceu.api.recipe.category;
+package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 
-public class RecipeCategories {
+public class GTRecipeCategories {
 
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = GTRecipeCategory
             .of(GTCEu.MOD_ID, "arc_furnace_recycling",
@@ -24,5 +24,5 @@ public class RecipeCategories {
                     GTRecipeTypes.EXTRACTOR_RECIPES)
             .setIcon(GuiTextures.EXTRACTOR_RECYCLING_CATEGORY);
 
-    private RecipeCategories() {}
+    private GTRecipeCategories() {}
 }

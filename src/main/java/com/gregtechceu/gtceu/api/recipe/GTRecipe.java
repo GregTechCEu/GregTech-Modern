@@ -124,10 +124,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.recipeCategory = recipeCategory;
     }
 
-    public void setCategory(GTRecipeCategory recipeCategory) {
-        this.recipeCategory = recipeCategory;
-    }
-
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
                                                                 @Nullable ContentModifier modifier) {
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
