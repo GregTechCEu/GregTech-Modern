@@ -1272,9 +1272,11 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_1_logic", "Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.chance_1", "Base Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_1_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_2", "Chance at Tier: %s%%");
+        provider.add("gtceu.gui.content.chance_2_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("gtceu.gui.content.tier_boost", "Bonus Chance: +%s%%/tier");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
 
         provider.add("gtceu.chance_logic.or", "OR");
