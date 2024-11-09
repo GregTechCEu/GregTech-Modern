@@ -150,7 +150,6 @@ public class Content {
     @OnlyIn(Dist.CLIENT)
     public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int tier) {
         if (chance == ChanceLogic.getMaxChancedValue()) return;
-        graphics.flush();
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
