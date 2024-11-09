@@ -44,6 +44,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
@@ -53,6 +54,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
+    public static final String RECIPE_CONTENT_GROUP_ID = "recipeContentGroup";
+    public static final Pattern RECIPE_CONTENT_GROUP_ID_REGEX = Pattern.compile("^recipeContentGroup$");
 
     public static final int LINE_HEIGHT = 10;
 
@@ -100,7 +103,14 @@ public class GTRecipeWidget extends WidgetGroup {
         addSlots(contents, group, recipe);
 
         var size = group.getSize();
+
+        // Ensure any previous instances of the widget are removed first. This applies when changing the recipe
+        // preview's voltage tier, as this recipe widget stays the same while its contents are updated.
+        group.setId(RECIPE_CONTENT_GROUP_ID);
+        getWidgetsById(RECIPE_CONTENT_GROUP_ID_REGEX).forEach(this::removeWidget);
+
         addWidget(group);
+        
         var EUt = RecipeHelper.getInputEUt(recipe);
         if (EUt == 0) {
             EUt = RecipeHelper.getOutputEUt(recipe);
