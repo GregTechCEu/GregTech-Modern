@@ -35,6 +35,11 @@ jobs:
           ignorePreReleases: true
           fetchViaCommits: true
           failOnError: true
+      - name: debug
+        run: |
+          echo ${{ contains(github.event.release.tag, '1.20.1') }}
+          echo ${{ contains(github.event.release.tag, '1.21') }}
+          echo ${{ (!contains(github.event.release.tag, '1.20.1') && !contains(github.event.release.tag, '1.21')) }}
 
   publish-20:
     name: 1.20.1
