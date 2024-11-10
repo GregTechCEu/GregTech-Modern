@@ -7,10 +7,6 @@ on:
 # TODO: Make it so you can publish releases for each mc-ver individually
 
 jobs:
-#  versioning:
-#    name: Get Version to Publish
-#    runs-on: ubuntu-latest
-#    steps:
   meta:
     name: Metadata
     runs-on: ubuntu-latest
