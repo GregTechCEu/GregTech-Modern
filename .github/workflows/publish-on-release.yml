@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       CHANGELOG: ${{ steps.changelog.outputs.changelog }}
-      TWENTY: ${{ contains(github.event.release.tag, '1.20.1') }}
-      TWENTYONE: ${{ contains(github.event.release.tag, '1.21') }}
-      BOTH: ${{ !contains(github.event.release.tag, '1.20.1') && !contains(github.event.release.tag, '1.21') }}
+      TWENTY: ${{ contains(github.event.release.tag, '1.20.1') && 'twenty' || '' }}
+      TWENTYONE: ${{ contains(github.event.release.tag, '1.21') && 'twentyone' || '' }}
+      BOTH: ${{ (!contains(github.event.release.tag, '1.20.1') && !contains(github.event.release.tag, '1.21')) && 'both' || '' }}
     permissions:
       contents: write
       pull-requests: read
