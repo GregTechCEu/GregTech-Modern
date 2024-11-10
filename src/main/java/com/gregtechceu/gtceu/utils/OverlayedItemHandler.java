@@ -58,7 +58,8 @@ public class OverlayedItemHandler {
             ItemStack slotKey = this.slots[i].getItemStack();
             if (slotKey.isEmpty() || ItemStack.isSameItemSameTags(slotKey, stack)) {
                 // if the slot is not full
-                int canInsertUpTo = Math.min(this.slots[i].getSlotLimit() - this.slots[i].getCount(), stack.getMaxStackSize());
+                int canInsertUpTo = Math.min(this.slots[i].getSlotLimit() - this.slots[i].getCount(),
+                        stack.getMaxStackSize());
                 if (canInsertUpTo > 0) {
                     int insertedAmount = Math.min(canInsertUpTo, amountToInsert);
                     this.slots[i].setItemStack(stack.copy()); // this copy may not be need, needs further tests
