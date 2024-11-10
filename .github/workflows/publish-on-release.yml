@@ -4,8 +4,6 @@ on:
   release:
     types: [released]
 
-# TODO: Make it so you can publish releases for each mc-ver individually
-
 jobs:
   meta:
     name: Metadata
