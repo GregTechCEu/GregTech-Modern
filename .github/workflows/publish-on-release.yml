@@ -37,7 +37,6 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         with:
           configuration: './.github/json/config${{ steps.tag.outputs.O }}.json'
-          toTag: ${{ github.ref }}
           ignorePreReleases: true
           fetchViaCommits: true
           failOnError: true
