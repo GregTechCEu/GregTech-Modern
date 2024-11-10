@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
@@ -15,7 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
-import static com.gregtechceu.gtceu.api.GTValues.LV;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -39,9 +38,9 @@ public class ElementMaterials {
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
                 .rotorStats(100, 140, 2.0f, 128)
-                .cableProperties(GTValues.V[4], 1, 1)
+                .cableProperties(V[EV], 1, 1)
                 .fluidPipeProperties(1166, 100, true)
-                .blastTemp(1700, GasTier.LOW)
+                .blast(1700, GasTier.LOW)
                 .buildAndRegister();
 
         Americium = new Material.Builder(GTCEu.id("americium"))
@@ -179,7 +178,7 @@ public class ElementMaterials {
                 .element(GTElements.Cr)
                 .rotorStats(130, 155, 3.0f, 512)
                 .fluidPipeProperties(2180, 35, true, true, false, false)
-                .blastTemp(1700, GasTier.LOW)
+                .blast(1700, GasTier.LOW)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CARCINOGEN)
                 .buildAndRegister();
 
@@ -190,7 +189,7 @@ public class ElementMaterials {
                 .color(0x5050FA).secondaryColor(0x2d2d7a).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FINE_WIRE)
                 .element(GTElements.Co)
-                .cableProperties(GTValues.V[LV], 2, 2)
+                .cableProperties(V[LV], 2, 2)
                 .itemPipeProperties(2560, 2.0f)
                 .buildAndRegister();
 
@@ -208,7 +207,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, MORTAR_GRINDABLE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_RING,
                         GENERATE_FINE_WIRE, GENERATE_ROTOR)
                 .element(GTElements.Cu)
-                .cableProperties(GTValues.V[2], 1, 2)
+                .cableProperties(V[MV], 1, 2)
                 .fluidPipeProperties(1696, 6, true)
                 .buildAndRegister();
 
@@ -259,9 +258,11 @@ public class ElementMaterials {
                 .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL,
                         GENERATE_FRAME)
                 .element(GTElements.Eu)
-                .cableProperties(GTValues.V[GTValues.UHV], 2, 32)
+                .cableProperties(V[UHV], 2, 32)
                 .fluidPipeProperties(7750, 300, true)
-                .blastTemp(6000, GasTier.MID, GTValues.VA[GTValues.IV], 180)
+                .blast(b -> b.temp(6000, GasTier.MID)
+                        .blastStats(VA[IV], 180)
+                        .vacuumStats(VA[HV]))
                 .buildAndRegister();
 
         Fermium = new Material.Builder(GTCEu.id("fermium"))
@@ -313,7 +314,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_RING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE, GENERATE_FOIL)
                 .element(GTElements.Au)
-                .cableProperties(GTValues.V[3], 3, 2)
+                .cableProperties(V[HV], 3, 2)
                 .fluidPipeProperties(1671, 25, true, true, false, false)
                 .buildAndRegister();
 
@@ -380,7 +381,9 @@ public class ElementMaterials {
                 .element(GTElements.Ir)
                 .rotorStats(130, 115, 3.0f, 2560)
                 .fluidPipeProperties(3398, 250, true, false, true, false)
-                .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.IV], 1100)
+                .blast(b -> b.temp(4500, GasTier.HIGH)
+                        .blastStats(VA[IV], 1100)
+                        .vacuumStats(VA[EV], 250))
                 .buildAndRegister();
 
         Iron = new Material.Builder(GTCEu.id("iron"))
@@ -396,7 +399,7 @@ public class ElementMaterials {
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
                 .rotorStats(115, 115, 2.5f, 256)
-                .cableProperties(GTValues.V[2], 2, 3)
+                .cableProperties(V[MV], 2, 3)
                 .buildAndRegister();
 
         Krypton = new Material.Builder(GTCEu.id("krypton"))
@@ -428,7 +431,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
-                .cableProperties(GTValues.V[0], 2, 2)
+                .cableProperties(V[ULV], 2, 2)
                 .fluidPipeProperties(1200, 32, true)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.WEAK_POISON)
                 .buildAndRegister();
@@ -507,7 +510,7 @@ public class ElementMaterials {
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nd)
                 .rotorStats(100, 115, 2.0f, 512)
-                .blastTemp(1297, GasTier.MID)
+                .blast(1297, GasTier.MID)
                 .buildAndRegister();
 
         Neon = new Material.Builder(GTCEu.id("neon"))
@@ -530,7 +533,7 @@ public class ElementMaterials {
                 .color(0xccdff5).secondaryColor(0x59563a).iconSet(METALLIC)
                 .appendFlags(STD_METAL, MORTAR_GRINDABLE)
                 .element(GTElements.Ni)
-                .cableProperties(GTValues.V[LV], 3, 3)
+                .cableProperties(V[LV], 3, 3)
                 .itemPipeProperties(2048, 1.0f)
                 .buildAndRegister();
 
@@ -543,7 +546,8 @@ public class ElementMaterials {
                 .ingot().fluid()
                 .color(0xb494b4).secondaryColor(0x4b3f4d).iconSet(BRIGHT)
                 .element(GTElements.Nb)
-                .blastTemp(2750, GasTier.MID, GTValues.VA[GTValues.HV], 900)
+                .blast(b -> b.temp(2750, GasTier.MID)
+                        .blastStats(VA[HV], 900))
                 .buildAndRegister();
 
         Nitrogen = new Material.Builder(GTCEu.id("nitrogen"))
@@ -570,9 +574,11 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_FOIL)
                 .element(GTElements.Os)
                 .rotorStats(160, 185, 4.0f, 1280)
-                .cableProperties(GTValues.V[6], 4, 2)
+                .cableProperties(V[LuV], 4, 2)
                 .itemPipeProperties(256, 8.0f)
-                .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1000)
+                .blast(b -> b.temp(4500, GasTier.HIGH)
+                        .blastStats(VA[LuV], 1000)
+                        .vacuumStats(VA[EV], 300))
                 .buildAndRegister();
 
         Oxygen = new Material.Builder(GTCEu.id("oxygen"))
@@ -593,7 +599,9 @@ public class ElementMaterials {
                 .color(0xbd92b5).secondaryColor(0x535b14).iconSet(SHINY)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .element(GTElements.Pd)
-                .blastTemp(1828, GasTier.LOW, GTValues.VA[GTValues.HV], 900)
+                .blast(b -> b.temp(1828, GasTier.LOW)
+                        .blastStats(VA[HV], 900)
+                        .vacuumStats(VA[HV], 150))
                 .buildAndRegister();
 
         Phosphorus = new Material.Builder(GTCEu.id("phosphorus"))
@@ -616,7 +624,7 @@ public class ElementMaterials {
                 .color(0xfff4ba).secondaryColor(0x8d8d71).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_RING, GENERATE_SPRING_SMALL)
                 .element(GTElements.Pt)
-                .cableProperties(GTValues.V[5], 2, 1)
+                .cableProperties(V[IV], 2, 1)
                 .itemPipeProperties(512, 4.0f)
                 .buildAndRegister();
 
@@ -686,7 +694,9 @@ public class ElementMaterials {
                 .color(0xfd46b1).secondaryColor(0xDC0C58).iconSet(BRIGHT)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_FINE_WIRE)
                 .element(GTElements.Rh)
-                .blastTemp(2237, GasTier.MID, GTValues.VA[GTValues.EV], 1200)
+                .blast(b -> b.temp(2237, GasTier.MID)
+                        .blastStats(VA[EV], 1200)
+                        .vacuumStats(VA[HV]))
                 .buildAndRegister();
 
         Roentgenium = new Material.Builder(GTCEu.id("roentgenium"))
@@ -704,7 +714,9 @@ public class ElementMaterials {
                 .color(0xa2cde0).secondaryColor(0x3c7285).iconSet(SHINY)
                 .flags(GENERATE_FOIL, GENERATE_GEAR)
                 .element(GTElements.Ru)
-                .blastTemp(2607, GasTier.MID, GTValues.VA[GTValues.EV], 900)
+                .blast(b -> b.temp(2607, GasTier.MID)
+                        .blastStats(VA[EV], 900)
+                        .vacuumStats(VA[HV], 200))
                 .buildAndRegister();
 
         Rutherfordium = new Material.Builder(GTCEu.id("rutherfordium"))
@@ -718,7 +730,9 @@ public class ElementMaterials {
                 .color(0xc2c289).secondaryColor(0x235254).iconSet(METALLIC)
                 .flags(GENERATE_LONG_ROD)
                 .element(GTElements.Sm)
-                .blastTemp(5400, GasTier.HIGH, GTValues.VA[GTValues.EV], 1500)
+                .blast(b -> b.temp(5400, GasTier.HIGH)
+                        .blastStats(VA[EV], 1500)
+                        .vacuumStats(VA[HV], 200))
                 .buildAndRegister();
 
         Scandium = new Material.Builder(GTCEu.id("scandium"))
@@ -742,7 +756,7 @@ public class ElementMaterials {
                 .color(0x707078).secondaryColor(0x10293b).iconSet(METALLIC)
                 .flags(GENERATE_FOIL)
                 .element(GTElements.Si)
-                .blastTemp(2273) // no gas tier for silicon
+                .blast(2273) // no gas tier for silicon
                 .buildAndRegister();
 
         Silver = new Material.Builder(GTCEu.id("silver"))
@@ -752,7 +766,7 @@ public class ElementMaterials {
                 .color(0xDCDCFF).secondaryColor(0x5a4705).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_FINE_WIRE, GENERATE_RING)
                 .element(GTElements.Ag)
-                .cableProperties(GTValues.V[3], 1, 1)
+                .cableProperties(V[HV], 1, 1)
                 .buildAndRegister();
 
         Sodium = new Material.Builder(GTCEu.id("sodium"))
@@ -833,7 +847,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
                 .element(GTElements.Sn)
-                .cableProperties(GTValues.V[1], 1, 1)
+                .cableProperties(V[LV], 1, 1)
                 .itemPipeProperties(4096, 0.5f)
                 .buildAndRegister();
 
@@ -846,7 +860,9 @@ public class ElementMaterials {
                         .enchantability(14).build())
                 .rotorStats(130, 115, 3.0f, 1600)
                 .fluidPipeProperties(2426, 150, true)
-                .blastTemp(1941, GasTier.MID, GTValues.VA[GTValues.HV], 1500)
+                .blast(b -> b.temp(1941, GasTier.MID)
+                        .blastStats(VA[HV], 1500)
+                        .vacuumStats(VA[HV]))
                 .buildAndRegister();
 
         Tritium = new Material.Builder(GTCEu.id("tritium"))
@@ -865,9 +881,11 @@ public class ElementMaterials {
                         GENERATE_FRAME)
                 .element(GTElements.W)
                 .rotorStats(130, 115, 3.0f, 2560)
-                .cableProperties(GTValues.V[5], 2, 2)
+                .cableProperties(V[IV], 2, 2)
                 .fluidPipeProperties(4618, 50, true, true, false, true)
-                .blastTemp(3600, GasTier.MID, GTValues.VA[GTValues.EV], 1800)
+                .blast(b -> b.temp(3600, GasTier.MID)
+                        .blastStats(VA[EV], 1800)
+                        .vacuumStats(VA[HV], 300))
                 .buildAndRegister();
 
         Uranium238 = new Material.Builder(GTCEu.id("uranium"))
@@ -892,7 +910,7 @@ public class ElementMaterials {
                 .ingot().fluid()
                 .color(0x696d76).secondaryColor(0x240808).iconSet(METALLIC)
                 .element(GTElements.V)
-                .blastTemp(2183, GasTier.MID)
+                .blast(2183, GasTier.MID)
                 .buildAndRegister();
 
         Xenon = new Material.Builder(GTCEu.id("xenon"))
@@ -910,7 +928,7 @@ public class ElementMaterials {
                 .ingot().fluid()
                 .color(0x7d8072).secondaryColor(0x15161a).iconSet(METALLIC)
                 .element(GTElements.Y)
-                .blastTemp(1799)
+                .blast(1799)
                 .buildAndRegister();
 
         Zinc = new Material.Builder(GTCEu.id("zinc"))
@@ -934,9 +952,11 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_SPRING, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq)
                 .rotorStats(160, 105, 4.0f, 1280)
-                .cableProperties(GTValues.V[7], 2, 2)
+                .cableProperties(V[ZPM], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
-                .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
+                .blast(b -> b.temp(5000, GasTier.HIGH)
+                        .blastStats(VA[IV], 600)
+                        .vacuumStats(VA[EV], 150))
                 .buildAndRegister();
 
         NaquadahEnriched = new Material.Builder(GTCEu.id("enriched_naquadah"))
@@ -945,7 +965,9 @@ public class ElementMaterials {
                 .color(0x3C3C3C, false).secondaryColor(0x122f06).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .element(GTElements.Nq1)
-                .blastTemp(7000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
+                .blast(b -> b.temp(7000, GasTier.HIGH)
+                        .blastStats(VA[IV], 1000)
+                        .vacuumStats(VA[EV], 150))
                 .buildAndRegister();
 
         Naquadria = new Material.Builder(GTCEu.id("naquadria"))
@@ -954,7 +976,9 @@ public class ElementMaterials {
                 .color(0x1E1E1E, false).secondaryColor(0x59b3ff).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq2)
-                .blastTemp(9000, GasTier.HIGH, GTValues.VA[GTValues.ZPM], 1200)
+                .blast(b -> b.temp(9000, GasTier.HIGH)
+                        .blastStats(VA[ZPM], 1200)
+                        .vacuumStats(VA[LuV], 200))
                 .radioactiveHazard(3)
                 .buildAndRegister();
 
@@ -978,7 +1002,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_SMALL_GEAR, GENERATE_ROUND,
                         GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .element(GTElements.Tr)
-                .cableProperties(GTValues.V[8], 1, 8)
+                .cableProperties(V[UV], 1, 8)
                 .rotorStats(220, 220, 6.0f, 10240)
                 .buildAndRegister();
 
@@ -998,8 +1022,10 @@ public class ElementMaterials {
                 .color(0x81808a).secondaryColor(0x351d4b).iconSet(SHINY)
                 .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR)
                 .element(GTElements.Ke)
-                .cableProperties(GTValues.V[7], 6, 4)
-                .blastTemp(7200, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1500)
+                .cableProperties(V[ZPM], 6, 4)
+                .blast(b -> b.temp(7200, GasTier.HIGH)
+                        .blastStats(VA[LuV], 1500)
+                        .vacuumStats(VA[IV], 300))
                 .buildAndRegister();
     }
 }
