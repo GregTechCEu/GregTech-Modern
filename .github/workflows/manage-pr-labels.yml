@@ -1,10 +1,12 @@
 # Manages labels on PRs before allowing merging
 name: Pull Request Labels
 
-# Checks for label once PR has been reviewed
+# Checks for label once PR has been reviewed or label is applied
 on:
   pull_request_review:
     types: [submitted]
+  pull_request:
+    types: [labeled]
 
 concurrency:
   group: pr-labels-${{ github.head_ref }}
