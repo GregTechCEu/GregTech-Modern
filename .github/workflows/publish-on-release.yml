@@ -16,16 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       CHANGELOG: ${{ steps.changelog.outputs.changelog }}
-      TWENTY: ${{ contains(github.ref_name, '1.20.1') }}
-      TWENTYONE: ${{ contains(github.ref_name, '1.21') }}
     permissions:
       contents: write
       pull-requests: read
     steps:
       - name: Read Tag
         run: |
-          echo ${{ github.event.release.tag }}
-          echo ${{ github.ref }}
           echo ${{ github.ref_name }}
           echo ${{ contains(github.ref_name, '1.20.1') }}
           echo ${{ contains(github.ref_name, '1.21') }}
@@ -49,7 +45,7 @@ jobs:
   publish-20:
     name: 1.20.1
     needs: [ meta ]
-    if: ${{ needs.meta.outputs.TWENTY || !needs.meta.outputs.TWENTYONE }}
+    if: ${{ contains(github.ref_name, '1.20.1') || !contains(github.ref_name, '1.21') }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:
@@ -62,7 +58,7 @@ jobs:
   publish-21:
     name: 1.21.1
     needs: [ meta ]
-    if: ${{ needs.meta.outputs.TWENTYONE || !needs.meta.outputs.TWENTY }}
+    if: ${{ contains(github.ref_name, '1.21') || !contains(github.ref_name, '1.20.1') }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:
