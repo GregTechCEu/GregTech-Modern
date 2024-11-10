@@ -39,10 +39,10 @@ public class HigherDegreeMaterials {
                 .ingot(3).fluid()
                 .color(0xa09191).secondaryColor(0x500404).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_GEAR, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD)
-                .components(SterlingSilver, 1, BismuthBronze, 1, Steel, 2, BlackSteel, 4)
+                .components(RoseGold, 1, Brass, 1, Steel, 2, BlackSteel, 4)
                 .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
                         .attackSpeed(0.1F).enchantability(21).build())
-                .blast(b -> b.temp(1300, GasTier.LOW)
+                .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
 
@@ -50,10 +50,10 @@ public class HigherDegreeMaterials {
                 .ingot(3).fluid()
                 .color(0x779ac6).secondaryColor(0x191948).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FRAME, GENERATE_GEAR, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD)
-                .components(RoseGold, 1, Brass, 1, Steel, 2, BlackSteel, 4)
+                .components(SterlingSilver, 1, BismuthBronze, 1, Steel, 2, BlackSteel, 4)
                 .toolStats(ToolProperty.Builder.of(15.0F, 6.0F, 1024, 3)
                         .attackSpeed(0.1F).enchantability(33).build())
-                .blast(b -> b.temp(1400, GasTier.LOW)
+                .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
 

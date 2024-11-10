@@ -117,7 +117,7 @@ public class SecondDegreeMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME)
                 .components(Nickel, 1, BlackBronze, 1, Steel, 3)
                 .cableProperties(V[EV], 3, 2)
-                .blast(1200, GasTier.LOW)
+                .blast(1758, GasTier.LOW)
                 .buildAndRegister();
 
         DamascusSteel = new Material.Builder(GTCEu.id("damascus_steel"))

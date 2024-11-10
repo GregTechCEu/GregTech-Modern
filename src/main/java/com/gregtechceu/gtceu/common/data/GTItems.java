@@ -693,7 +693,7 @@ public class GTItems {
             .register();
     public static ItemEntry<Item> BATTERY_HULL_SMALL_VANADIUM = REGISTRATE.item("ev_battery_hull", Item::new)
             .lang("Small Vanadium Battery Hull").onRegister(compassNodeExist(GTCompassSections.MISC, "battery_hull"))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 2))))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 2))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_VANADIUM = REGISTRATE.item("iv_battery_hull", Item::new)
             .lang("Medium Vanadium Battery Hull").onRegister(compassNodeExist(GTCompassSections.MISC, "battery_hull"))
@@ -701,7 +701,7 @@ public class GTItems {
             .register();
     public static ItemEntry<Item> BATTERY_HULL_LARGE_VANADIUM = REGISTRATE.item("luv_battery_hull", Item::new)
             .lang("Large Vanadium Battery Hull").onRegister(compassNodeExist(GTCompassSections.MISC, "battery_hull"))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 18))))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 18))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_NAQUADRIA = REGISTRATE.item("zpm_battery_hull", Item::new)
             .lang("Medium Naquadria Battery Hull").onRegister(compassNodeExist(GTCompassSections.MISC, "battery_hull"))
