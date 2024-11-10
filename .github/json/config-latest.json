@@ -14,9 +14,10 @@
     }
   ],
   "sort": "ASC",
-  "template": "## What's Changed\n#{{CHANGELOG}}",
+  "template": "## What's Changed\n#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
   "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
+  "empty_template": "",
   "ignore_labels": ["ignore changelog"],
   "max_pull_requests": 1000,
-  "max_back_track_time_days": 90
+  "max_back_track_time_days": 30
 }

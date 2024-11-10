@@ -4,8 +4,6 @@ on:
   release:
     types: [released]
 
-# TODO: Make it so you can publish releases for each mc-ver individually
-
 jobs:
   meta:
     name: Metadata
@@ -25,10 +23,10 @@ jobs:
         id: changelog
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          CONFIG: ${{ contains(github.ref_name, '1.21') && '-1.21' || '' }}
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          configuration: ./.github/json/config.json
-          toTag: ${{ github.event.release.tag }}
+          configuration: './.github/json/config${{ env.CONFIG }}.json'
           ignorePreReleases: true
           fetchViaCommits: true
           failOnError: true
@@ -36,6 +34,7 @@ jobs:
   publish-20:
     name: 1.20.1
     needs: [ meta ]
+    if: ${{ contains(github.ref_name, '1.20.1') || !contains(github.ref_name, '1.21') }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:
@@ -48,6 +47,7 @@ jobs:
   publish-21:
     name: 1.21.1
     needs: [ meta ]
+    if: ${{ contains(github.ref_name, '1.21') || !contains(github.ref_name, '1.20.1') }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:

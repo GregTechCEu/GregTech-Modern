@@ -31,7 +31,7 @@
   "tag_resolver": {
     "method": "semver",
     "filter": {
-      "pattern": "^(?!v?[0-9\\.]+(-1\\.20\\.1)?$).+$",
+      "pattern": "^(?!v?[0-9\\.]+(-1\\.21)$).+$",
       "flags": "gu"
     },
     "transformer": {
@@ -41,5 +41,5 @@
   },
   "max_pull_requests": 1000,
   "max_back_track_time_days": 90,
-  "base_branches": ["1.20.1"]
+  "base_branches": ["1.21"]
 }
