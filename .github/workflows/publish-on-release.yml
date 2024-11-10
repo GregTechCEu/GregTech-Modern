@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+      TWENTY: ${{ contains(github.event.release.tag, '1.20.1') }}
+      TWENTYONE: ${{ contains(github.event.release.tag, '1.21') }}
+      BOTH: ${{ !contains(github.event.release.tag, '1.20.1') && !contains(github.event.release.tag, '1.21') }}
     permissions:
       contents: write
       pull-requests: read
@@ -36,6 +39,7 @@ jobs:
   publish-20:
     name: 1.20.1
     needs: [ meta ]
+    if: ${{ needs.meta.outputs.TWENTY || needs.meta.outputs.BOTH }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:
@@ -48,6 +52,7 @@ jobs:
   publish-21:
     name: 1.21.1
     needs: [ meta ]
+    if: ${{ needs.meta.outputs.TWENTYONE || needs.meta.outputs.BOTH }}
     secrets: inherit
     uses: ./.github/workflows/publish.yml
     with:
