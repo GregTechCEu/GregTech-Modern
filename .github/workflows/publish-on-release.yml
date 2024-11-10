@@ -21,10 +21,10 @@ jobs:
       pull-requests: read
     steps:
       - name: Read Tag
+        id: tag
         run: |
-          echo ${{ github.ref_name }}
-          echo ${{ contains(github.ref_name, '1.20.1') }}
-          echo ${{ contains(github.ref_name, '1.21') }}
+          [[ "${{ contains(github.ref_name, '1.21') }}" = "true" ]] && O="-1.21" || O=""
+          echo "O=$O" >> $GITHUB_OUTPUT
       - name: Get Config
         uses: actions/checkout@v4
         with:
@@ -36,7 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          configuration: ./.github/json/config.json
+          configuration: './.github/json/config${{ steps.tag.outputs.O }}.json'
           toTag: ${{ github.ref }}
           ignorePreReleases: true
           fetchViaCommits: true
