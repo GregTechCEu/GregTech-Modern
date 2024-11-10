@@ -68,7 +68,6 @@ public class GTRecipeWidget extends WidgetGroup {
     @Getter
     private int yOffset;
     private LabelWidget voltageTextWidget;
-    private static GTRecipeWidget currentWidget;
 
     public GTRecipeWidget(GTRecipe recipe) {
         super(getXOffset(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width,
@@ -91,7 +90,6 @@ public class GTRecipeWidget extends WidgetGroup {
 
     @SuppressWarnings("UnstableApiUsage")
     private void setRecipeWidget() {
-        currentWidget = this;
         setClientSideWidget();
 
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
@@ -256,8 +254,6 @@ public class GTRecipeWidget extends WidgetGroup {
             oc = OverclockingLogic.PERFECT_OVERCLOCK;
         }
         setRecipeTextWidget(oc);
-
-        currentWidget.tier = this.tier;
         setRecipeWidget();
     }
 
@@ -283,7 +279,8 @@ public class GTRecipeWidget extends WidgetGroup {
         updateScreen();
     }
 
-    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips) {
+    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int tier,
+                                         int minTier) {
         var chance = content.chance;
         if (chance < ChanceLogic.getMaxChancedValue()) {
             if (chance == 0) {
@@ -292,7 +289,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 float chanceFloat = 100 * (float) content.chance / content.maxChance;
                 float chanceAtTierFloat = Math
                         .min(chanceFloat + (100.0f * ((float) content.tierChanceBoost / (float) content.maxChance)) *
-                                (currentWidget.getTier() - currentWidget.getMinTier()), 100.0f);
+                                Math.max(0, tier - minTier), 100.0f);
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_1_logic",
                             FormattingUtil.formatNumber2Places(chanceFloat), logic.getTranslation())
@@ -393,7 +390,7 @@ public class GTRecipeWidget extends WidgetGroup {
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
                                 cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null);
+                                        null, tier, getMinTier());
                                 widget.setOverlay(
                                         content.createOverlay(index >= nonTickCount, Math.max(0, tier - getMinTier())));
                             }

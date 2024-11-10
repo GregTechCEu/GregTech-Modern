@@ -192,7 +192,7 @@ public abstract class RecipeCapability<T> {
                                 @NotNull GTRecipeType recipeType,
                                 @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage) {}
+                                @Nullable Object storage, int tier, int minTier) {}
 
     // TODO
     public double calculateAmount(List<T> left) {
