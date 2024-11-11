@@ -1030,7 +1030,8 @@ public class GTMachines {
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE
-            .machine("cleaning_maintenance_hatch", holder -> new CleaningMaintenanceHatchPartMachine(holder, CleanroomType.CLEANROOM))
+            .machine("cleaning_maintenance_hatch",
+                    holder -> new CleaningMaintenanceHatchPartMachine(holder, CleanroomType.CLEANROOM))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"),
