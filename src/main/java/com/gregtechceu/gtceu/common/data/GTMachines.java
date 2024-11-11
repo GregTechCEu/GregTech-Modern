@@ -1038,8 +1038,8 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
-                tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN,
-                        Component.translatable(CleanroomType.CLEANROOM.getTranslationKey()).getString())));
+                tooltips.add(Component.literal("  ").append(Component
+                        .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
             })
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
             .compassNodeSelf()
