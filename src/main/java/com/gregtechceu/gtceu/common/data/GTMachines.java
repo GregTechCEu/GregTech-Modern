@@ -1030,17 +1030,15 @@ public class GTMachines {
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE
-            .machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
+            .machine("cleaning_maintenance_hatch", holder -> new CleaningMaintenanceHatchPartMachine(holder, CleanroomType.CLEANROOM))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
-                for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes()) {
-                    tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN,
-                            Component.translatable(type.getTranslationKey()).getString())));
-                }
+                tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN,
+                        Component.translatable(CleanroomType.CLEANROOM.getTranslationKey()).getString())));
             })
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
             .compassNodeSelf()
