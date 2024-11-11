@@ -47,7 +47,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    private static final double CONVERSION_RATE = 0.5D;
+    public static final double CONVERSION_RATE = 0.5D;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         this(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount, args);

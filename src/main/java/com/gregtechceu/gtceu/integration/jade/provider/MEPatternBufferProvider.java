@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -41,7 +42,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
                     CompoundTag itemTag = itemTags.getCompound(i);
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemTag.getString("item")));
                     long count = itemTag.getLong("count");
-                    if (item != null) {
+                    if (item != null && !item.equals(Items.AIR)) {
                         iTooltip.add(item.getDescription()
                                 .copy()
                                 .withStyle(ChatFormatting.GOLD)

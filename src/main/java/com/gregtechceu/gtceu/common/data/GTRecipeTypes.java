@@ -98,7 +98,8 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.FURNACE_OVERLAY_1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_ARROW_STEAM, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .setXEIVisible(false);
 
     public final static GTRecipeType ALLOY_SMELTER_RECIPES = register("alloy_smelter", ELECTRIC)
             .setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
