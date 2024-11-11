@@ -482,11 +482,6 @@ public class ConfigHolder {
         @Configurable.Comment({ "What Kind of material should the bedrock ore miner output?", "Default: \"raw\"" })
         public String bedrockOreDropTagPrefix = "raw";
         @Configurable
-        @Configurable.Comment({ "WARNING: THIS IS NO LONGER SUPPORTED AND WILL BE REMOVED!",
-                "This option only exists to provide backwards compatibility until the Processing Array will be removed in 1.3.0",
-                "Default: false" })
-        public boolean doProcessingArray = false;
-        @Configurable
         @Configurable.Comment({ "Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false" })
         public boolean enableTieredCasings = false;

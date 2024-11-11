@@ -92,7 +92,6 @@ public class CommonProxy {
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
         if (Platform.isDevEnv()) {
-            ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
