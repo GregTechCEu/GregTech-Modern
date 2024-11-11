@@ -92,10 +92,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -1581,27 +1578,64 @@ public class GTMachines {
             .register();
 
     public static final MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE
-            .multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
+            .multiblock("distillation_tower", DistillationTowerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
             .recipeModifiers(
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STAINLESS_CLEAN)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("YSY", "YYY", "YYY")
-                    .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
-                    .aisle("XXX", "XXX", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.getBlock())))
-                    .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
-                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                    .setMaxGlobalLimited(2))
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
-                    .where('X', blocks(CASING_STAINLESS_CLEAN.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMinLayerLimited(1)
-                                    .setMaxLayerLimited(1)))
-                    .where('#', Predicates.air())
-                    .build())
+            .pattern(definition -> {
+                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                if (GTCEu.isAE2Loaded())
+                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate.setMaxLayerLimited(1);
+                return FactoryBlockPattern.start(RIGHT, BACK, UP)
+                        .aisle("YSY", "YYY", "YYY")
+                        .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
+                        .aisle("XXX", "XXX", "XXX")
+                        .where('S', Predicates.controller(blocks(definition.getBlock())))
+                        .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
+                                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+                                        .setMaxGlobalLimited(2))
+                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                                .or(autoAbilities(true, false, false)))
+                        .where('X', blocks(CASING_STAINLESS_CLEAN.get()).or(exportPredicate))
+                        .where('#', Predicates.air())
+                        .build();
+            })
+            .shapeInfos(definition -> {
+                List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
+                var builder = MultiblockShapeInfo.builder()
+                        .where('C', definition, Direction.NORTH)
+                        .where('S', CASING_STAINLESS_CLEAN.getDefaultState())
+                        .where('X', ITEM_EXPORT_BUS[HV], Direction.NORTH)
+                        .where('I', FLUID_IMPORT_HATCH[HV], Direction.NORTH)
+                        .where('E', ENERGY_INPUT_HATCH[HV], Direction.SOUTH)
+                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH)
+                        .where('#', Blocks.AIR.defaultBlockState())
+                        .where('F', FLUID_EXPORT_HATCH[HV], Direction.SOUTH);
+                List<String> front = new ArrayList<>(15);
+                front.add("XCI");
+                front.add("SSS");
+                List<String> middle = new ArrayList<>(15);
+                middle.add("SSS");
+                middle.add("SSS");
+                List<String> back = new ArrayList<>(15);
+                back.add("MES");
+                back.add("SFS");
+                for (int i = 1; i <= 11; ++i) {
+                    front.add("SSS");
+                    middle.add(1, "S#S");
+                    back.add("SFS");
+                    var copy = builder.shallowCopy()
+                            .aisle(front.toArray(String[]::new))
+                            .aisle(middle.toArray(String[]::new))
+                            .aisle(back.toArray(String[]::new));
+                    shapeInfos.add(copy.build());
+                }
+                return shapeInfos;
+            })
             .allowExtendedFacing(false)
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),

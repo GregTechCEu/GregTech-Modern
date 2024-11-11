@@ -25,8 +25,8 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "15.12.1.46"
-        def reiVersion = "12.1.725"
+        def jeiVersion = "15.20.0.105"
+        def reiVersion = "12.1.785"
         def emiVersion = "1.1.13"
         def ae2Version = "15.0.18"
         def kjsVersion = "2001.6.4-build.120"
@@ -62,7 +62,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"
-        def ldLibVersion = "1.0.30.a"
+        def ldLibVersion = "1.0.31"
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.4"
         def lombokPluginVersion = "8.7.1"

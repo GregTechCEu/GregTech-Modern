@@ -14,9 +14,9 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
-import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -247,15 +247,17 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        ViewSearchBuilder.builder()
-                                                .addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType))
-                                                .open();
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> ViewSearchBuilder.builder()
+                                                        .addCategory(GTRecipeREICategory.CATEGORIES.apply(e)).open());
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(recipeType)));
+                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet()
+                                                        .stream().map(GTRecipeJEICategory.TYPES).toList()));
                                     } else if (LDLib.isEmiLoaded()) {
-                                        EmiApi.displayRecipeCategory(
-                                                GTRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> EmiApi
+                                                        .displayRecipeCategory(GTRecipeEMICategory.getCategoryFor(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

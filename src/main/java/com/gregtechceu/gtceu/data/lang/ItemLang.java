@@ -22,6 +22,12 @@ public class ItemLang {
         for (var recipeType : GTRegistries.RECIPE_TYPES) {
             provider.add(recipeType.registryName.toLanguageKey(), toEnglishName(recipeType.registryName.getPath()));
         }
+
+        // Recipe Categories
+        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Plasma Scrapping");
+        provider.add("gtceu.recipe.category.macerator_recycling", "Part Grinding");
+        provider.add("gtceu.recipe.category.extractor_recycling", "Scrap Remelting");
+
         // TagPrefix
         for (TagPrefix tagPrefix : TagPrefix.values()) {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);

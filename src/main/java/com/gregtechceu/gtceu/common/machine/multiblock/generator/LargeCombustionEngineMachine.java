@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -33,7 +34,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.primitives.Ints;
 import lombok.Getter;
-import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,8 +54,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             LargeCombustionEngineMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(20);
-    private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 80);
+    private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(1);
+    private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 4);
     private static final FluidStack LUBRICANT_STACK = GTMaterials.Lubricant.getFluid(1);
 
     @Getter
@@ -63,6 +63,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     // runtime
     @DescSynced
     private boolean isOxygenBoosted = false;
+    private int runningTimer = 0;
 
     public LargeCombustionEngineMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
@@ -131,6 +132,14 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 } else {
                     eut = EUt * parallelResult.getSecond();
                 }
+
+                recipe = new GTRecipe(recipe.recipeType, recipe.id,
+                        recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                        recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+                        recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+                        recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                        recipe.ingredientActions, recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
+
                 result.init(-eut, recipe.duration, 1, params.getOcAmount());
                 return recipe;
             }
@@ -142,8 +151,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     public boolean onWorking() {
         boolean value = super.onWorking();
         // check lubricant
-        val totalContinuousRunningTime = recipeLogic.getTotalContinuousRunningTime();
-        if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0)) {
+
+        if (runningTimer % 72 == 0) {
             // insufficient lubricant
             if (!getLubricantRecipe().handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches())) {
                 recipeLogic.interruptRecipe();
@@ -151,11 +160,15 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             }
         }
         // check boost fluid
-        if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 20 == 0) && isBoostAllowed()) {
+        if (isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
             this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() &&
                     boosterRecipe.handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches());
         }
+
+        runningTimer++;
+        if (runningTimer > 72000) runningTimer %= 72000; // reset once every hour of running
+
         return value;
     }
 

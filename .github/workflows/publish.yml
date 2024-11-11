@@ -76,8 +76,8 @@ jobs:
           files: ./*.jar
           fail_on_unmatched_files: true
 
-  publish-cf-modrinth:
-    name: Publish Mod
+  publish-modrinth:
+    name: Publish to Modrinth
     needs: build
     if: ${{ !inputs.simulate }}
     runs-on: ubuntu-latest
@@ -93,10 +93,42 @@ jobs:
           MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
           LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
           JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
+          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'alpha' || 'beta' }}
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           modrinth-id: 7tG215v7
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: |
+            ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
+            ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
+          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version-type: ${{ env.VERSION_TYPE }}
+          changelog: ${{ inputs.release-body }}
+          loaders: ${{ env.LOADER }}
+          java: ${{ env.JAVA }}
+          fail-mode: fail
+
+  publish-cf:
+    name: Publish to CF
+    needs: build
+    if: ${{ !inputs.simulate }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ inputs.branch }}
+      - name: Publish Mod
+        env:
+          MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
+          LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
+          JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
+          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'alpha' || 'beta' }}
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
           curseforge-id: 890405
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: |
@@ -104,7 +136,7 @@ jobs:
             ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
           name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
-          version-type: beta
+          version-type: ${{ env.VERSION_TYPE }}
           changelog: ${{ inputs.release-body }}
           loaders: ${{ env.LOADER }}
           java: ${{ env.JAVA }}
@@ -113,7 +145,7 @@ jobs:
   # After successful release, PR version bump and changelog
   bump-version-and-changelog:
     name: Bump Version and Build Changelog
-    needs: [ build, upload-release-artifacts, publish-cf-modrinth ]
+    needs: [ build, upload-release-artifacts, publish-modrinth, publish-cf]
     if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
