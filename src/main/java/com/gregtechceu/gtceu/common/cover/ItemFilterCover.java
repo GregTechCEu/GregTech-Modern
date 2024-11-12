@@ -31,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -59,9 +61,9 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     public ItemFilter getItemFilter() {
         if (itemFilter == null) {
             itemFilter = ItemFilter.loadFilter(attachItem);
-            if(itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
+            if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
-                if(machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
+                if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
             }
         }
         return itemFilter;

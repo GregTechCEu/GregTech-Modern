@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.common.cover.RobotArmCover;
-import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -150,9 +149,10 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         if (!this.filterItem.isEmpty()) {
             this.filter = loadFilter(this.filterItem);
             filter.setOnUpdated(this.onFilterUpdated);
-            if(this.filter instanceof SmartItemFilter smart && container instanceof CoverBehavior cover && cover.coverHolder instanceof MachineCoverContainer mcc) {
+            if (this.filter instanceof SmartItemFilter smart && container instanceof CoverBehavior cover &&
+                    cover.coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
-                if(machine != null) {
+                if (machine != null) {
                     smart.setModeFromMachine(machine.getDefinition().getName());
                 }
             }

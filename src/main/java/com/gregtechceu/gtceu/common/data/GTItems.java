@@ -2122,8 +2122,9 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("smart_item_filter", ComponentItem::create)
             .lang("Smart Item Filter")
-            .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),

@@ -7,18 +7,18 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -60,8 +60,9 @@ public class SmartItemFilter implements ItemFilter {
 
     @Override
     public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18*3+25, 18*3);
-        group.addWidget(new EnumSelectorWidget<>(0, 0, 20, 20, SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
+        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
+        group.addWidget(new EnumSelectorWidget<>(0, 0, 20, 20,
+                SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
         return group;
     }
 
@@ -78,21 +79,21 @@ public class SmartItemFilter implements ItemFilter {
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
         var ingredients = ItemRecipeCapability.CAP.convertToMapIngredient(copy);
-        var recipe = filterMode.lookup.recurseIngredientTreeFindRecipe(List.of(ingredients), filterMode.lookup.getLookup(), r -> true);
-        if(recipe == null) return 0;
-        var inputs = recipe.getInputContents(ItemRecipeCapability.CAP);
-        for(var input : inputs) {
-            var stacks = ItemRecipeCapability.CAP.of(input.getContent()).getItems();
-            for(var stack : stacks) {
-                if(ItemStack.isSameItem(stack, itemStack)) return stack.getCount();
+        var recipe = filterMode.lookup.recurseIngredientTreeFindRecipe(List.of(ingredients),
+                filterMode.lookup.getLookup(), r -> true);
+        if (recipe == null) return 0;
+        for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
+            var stacks = ItemRecipeCapability.CAP.of(content.getContent()).getItems();
+            for (var stack : stacks) {
+                if (ItemStack.isSameItem(stack, itemStack)) return stack.getCount();
             }
         }
         return 0;
     }
 
     public void setModeFromMachine(String machineName) {
-        for(SmartFilteringMode mode : SmartFilteringMode.VALUES) {
-            if(machineName.contains(mode.localeName)) {
+        for (SmartFilteringMode mode : SmartFilteringMode.VALUES) {
+            if (machineName.contains(mode.localeName)) {
                 this.filterMode = mode;
                 return;
             }
@@ -101,19 +102,20 @@ public class SmartItemFilter implements ItemFilter {
 
     @MethodsReturnNonnullByDefault
     private enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum {
+
         ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
         CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
         SIFTER("sifter", GTRecipeTypes.SIFTER_RECIPES);
 
         private static final SmartFilteringMode[] VALUES = values();
-        private final GTRecipeLookup lookup;
-        private final Object2IntOpenCustomHashMap<ItemStack> cache =
-                new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
         private final String localeName;
+        private final GTRecipeLookup lookup;
+        private final Object2IntOpenCustomHashMap<ItemStack> cache = new Object2IntOpenCustomHashMap<>(
+                ItemStackHashStrategy.comparingAllButCount());
 
         SmartFilteringMode(String localeName, GTRecipeType type) {
-            lookup = type.getLookup();
             this.localeName = localeName;
+            this.lookup = type.getLookup();
         }
 
         @Override
@@ -126,5 +128,4 @@ public class SmartItemFilter implements ItemFilter {
             return new ResourceTexture("gtceu:textures/block/machines/" + localeName + "/overlay_front.png");
         }
     }
-
 }
