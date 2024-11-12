@@ -57,9 +57,9 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_filter_sodalite", FLUID_FILTER.asStack(), "XXX", "XYX",
                 "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Sodalite));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_olivine", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_olivine", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Olivine));
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_emerald", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_emerald", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Emerald));
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_tag_filter", TAG_FLUID_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Amethyst));
