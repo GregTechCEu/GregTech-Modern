@@ -362,11 +362,11 @@ public class LangHandler {
                 "§cWARNING!§7 Setting this to \"Enabled\" means that fluids or items WILL be voided.");
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
-        provider.add("cover.smart_item_filter.title", "Smart Item Filter");
-        provider.add("cover.smart_item_filter.filtering_mode.electrolyzer", "Electrolyzer");
-        provider.add("cover.smart_item_filter.filtering_mode.centrifuge", "Centrifuge");
-        provider.add("cover.smart_item_filter.filtering_mode.sifter", "Sifter");
-        multilineLang(provider, "cover.smart_item_filter.filtering_mode.description",
+        provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
+        provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
+        provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
+        multilineLang(provider, "cover.item_smart_filter.filtering_mode.description",
                 "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
         provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
         provider.add("cover.conveyor.transfer_rate", "§7items/sec");

@@ -22,16 +22,13 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -97,8 +94,8 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 85);
-        group.addWidget(new LabelWidget(7, 5, attachItem.getDescriptionId()));
+        final var group = new WidgetGroup(0, 0, 120, 85);
+        group.addWidget(new LabelWidget(5, 5, attachItem.getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(7, 61, 18, 18,
                 ItemFilterMode.VALUES, filterMode, this::setFilterMode));
         group.addWidget(getItemFilter().openConfigurator(30, 25));

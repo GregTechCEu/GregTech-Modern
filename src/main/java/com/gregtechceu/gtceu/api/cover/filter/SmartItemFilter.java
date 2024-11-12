@@ -61,7 +61,7 @@ public class SmartItemFilter implements ItemFilter {
     @Override
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(0, 0, 20, 20,
+        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
                 SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
         return group;
     }
@@ -120,7 +120,7 @@ public class SmartItemFilter implements ItemFilter {
 
         @Override
         public String getTooltip() {
-            return localeName;
+            return "cover.item_smart_filter.filtering_mode." + localeName;
         }
 
         @Override

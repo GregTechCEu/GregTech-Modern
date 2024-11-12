@@ -306,7 +306,7 @@ public class ItemLang {
                 "§7Filters §fFluid§7 I/O as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
         multilineLang(provider, "item.gtceu.fluid_tag_filter.tooltip",
                 "§7Filters §fFluid§7 I/O with §fFluid Tags§7 as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
-        multilineLang(provider, "item.gtceu.smart_item_filter.tooltip",
+        multilineLang(provider, "item.gtceu.item_smart_filter.tooltip",
                 "§7Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
         provider.add("item.gtceu.machine_controller.tooltip", "§7Turns Machines §fON/OFF§7 as §fCover§7.");
         provider.add("item.gtceu.activity_detector_cover.tooltip",
