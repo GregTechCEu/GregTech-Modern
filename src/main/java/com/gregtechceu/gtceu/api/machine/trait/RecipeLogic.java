@@ -487,10 +487,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     suspendAfterFinish = false;
                 } else {
                     setStatus(Status.IDLE);
-                    progress = 0;
-                    duration = 0;
-                    isActive = false;
                 }
+                progress = 0;
+                duration = 0;
+                isActive = false;
             }
         }
     }
