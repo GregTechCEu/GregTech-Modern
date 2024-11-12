@@ -15,7 +15,7 @@ concurrency:
 jobs:
   Labels:
     name: On Approval
-    if: github.event.review.state == 'approved'
+    if: github.event_name == 'pull_request' || github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read # needed to utilize required-labels
