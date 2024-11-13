@@ -50,12 +50,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static final double CONVERSION_RATE = 0.5D;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
-        this(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount, args);
-    }
-
-    public SteamParallelMultiblockMachine(IMachineBlockEntity holder, int parallelAmount, Object... args) {
-        super(holder, args);
-        maxParallels = parallelAmount;
+        super(holder);
+        if (args.length > 0 && args[0] instanceof Integer i) {
+            this.maxParallels = i;
+        }
     }
 
     @Override
