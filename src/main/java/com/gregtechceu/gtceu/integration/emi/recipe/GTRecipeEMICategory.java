@@ -31,8 +31,8 @@ import java.util.function.Function;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
-    public static final Function<GTRecipeCategory, List<GTEmiRecipe>> CATEGORIES = Util
-            .memoize(category1 -> new ArrayList<>());
+    public static final Function<GTRecipeCategory, GTRecipeEMICategory> CATEGORIES = Util
+            .memoize(GTRecipeEMICategory::getCategoryFor);
     public final GTRecipeType recipeType;
 
     private final GTRecipeCategory category;
