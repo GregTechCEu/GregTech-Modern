@@ -622,7 +622,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(2041))
                 .ore()
                 .color(0xfff4ba).secondaryColor(0x8d8d71).iconSet(SHINY)
-                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_RING, GENERATE_SPRING_SMALL)
+                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_RING, GENERATE_SPRING_SMALL,
+                        GENERATE_SPRING)
                 .element(GTElements.Pt)
                 .cableProperties(V[IV], 2, 1)
                 .itemPipeProperties(512, 4.0f)
