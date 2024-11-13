@@ -3816,7 +3816,7 @@
   "gtceu.multiblock.steam_oven.description": "A Multi Smelter at the Steam Age. Requires at least 6 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch. Steam Hatch must be on the bottom layer, no more than one.",
   "gtceu.multiblock.title": "Multiblock Pattern",
   "gtceu.multiblock.turbine.efficiency": "Turbine Efficiency: %s%%",
-  "gtceu.multiblock.turbine.efficiency_tooltip": "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiples EU/t by 2 §7 ",
+  "gtceu.multiblock.turbine.efficiency_tooltip": "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2.§7",
   "gtceu.multiblock.turbine.energy_per_tick": "Energy Output: %s/%s EU/t",
   "gtceu.multiblock.turbine.energy_per_tick_maxed": "Energy Output: %s EU/t",
   "gtceu.multiblock.turbine.fuel_amount": "Fuel Amount: %sL (%s)",
