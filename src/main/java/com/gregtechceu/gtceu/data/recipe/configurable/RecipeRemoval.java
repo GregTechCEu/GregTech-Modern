@@ -75,6 +75,12 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:soul_torch"));
         registry.accept(new ResourceLocation("minecraft:soul_lantern"));
         registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
+
+        // remove vanilla dye recipes to gregify
+        registry.accept(new ResourceLocation("minecraft:white_dye"));
+        registry.accept(new ResourceLocation("minecraft:black_dye"));
+        registry.accept(new ResourceLocation("black_dye_from_wither_rose"));
+        registry.accept(new ResourceLocation("blue_dye"));
     }
 
     /**
