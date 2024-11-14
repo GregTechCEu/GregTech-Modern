@@ -1,5 +1,20 @@
 # ChangeLog
 
+## Version [v1.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
+### Fixed
+
+- Fix large miner chunk tooltip by @YoungOnionMC in [#2334](https://github.com/GregTechCEu/GregTech-Modern/pull/2334)
+- Fix dedicated server loading client class by @cyb0124 in [#2333](https://github.com/GregTechCEu/GregTech-Modern/pull/2333)
+- Fix Pump and Conveyor String format issue by @Spicierspace153 in [#2332](https://github.com/GregTechCEu/GregTech-Modern/pull/2332)
+- Fix potential pipe collision NPE by @YoungOnionMC in [#2330](https://github.com/GregTechCEu/GregTech-Modern/pull/2330)
+- Fix crash when dedicated server is being stopped by @cyb0124 in [#2337](https://github.com/GregTechCEu/GregTech-Modern/pull/2337)
+- Fix filename sanitization in ClientCacheManager by @cyb0124 in [#2339](https://github.com/GregTechCEu/GregTech-Modern/pull/2339)
+
+### Changed
+
+- Change LuV item naming convention in code by @YoungOnionMC in [#2331](https://github.com/GregTechCEu/GregTech-Modern/pull/2331)
+
+ 
 ## Version [v1.5.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.4.6...v1.5.0-1.20.1)
 ### Added
 
