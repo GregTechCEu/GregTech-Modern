@@ -17,7 +17,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class GTExplosiveEntity extends PrimedTnt {
+public abstract class   GTExplosiveEntity extends PrimedTnt {
 
     public GTExplosiveEntity(EntityType<? extends GTExplosiveEntity> type, Level level, double x, double y, double z,
                              @Nullable LivingEntity owner) {
@@ -49,7 +49,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
     /**
      * @return The range of the explosive, if {@link #dropsAllBlocks} is true.
      */
-    protected int getRange() {
+    public int getRange() {
         return 2;
     }
 
@@ -71,7 +71,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
                 x, y, z,
                 radius,
                 false,
-                dropBlocks ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY);
+                dropBlocks ? Explosion.BlockInteraction.KEEP : Explosion.BlockInteraction.DESTROY_WITH_DECAY);
         if (!ForgeEventFactory.onExplosionStart(level, explosion)) {
             explosion.explode();
             explosion.finalizeExplosion(false);
