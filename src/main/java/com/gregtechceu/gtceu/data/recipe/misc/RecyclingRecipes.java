@@ -126,13 +126,23 @@ public class RecyclingRecipes {
         GTRecipeBuilder builder = GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder("macerate_" + itemPath.getPath())
                 .outputItems(outputs.toArray(ItemStack[]::new))
                 .duration(calculateDuration(outputs))
-                .EUt(2L * multiplier)
-                .category(GTRecipeCategories.MACERATOR_RECYCLING);
+                .EUt(2L * multiplier);
+
         if (inputTag == null) {
             builder.inputItems(input.copy());
         } else {
             builder.inputItems(inputTag);
         }
+
+        boolean recycle = true;
+        if(entry != null && entry.tagPrefix == TagPrefix.ingot) {
+            recycle = false;
+        }
+
+        if(recycle) {
+            builder.category(GTRecipeCategories.MACERATOR_RECYCLING);
+        }
+
         builder.save(provider);
     }
 
