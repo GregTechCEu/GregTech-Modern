@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -121,7 +122,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
-        this.recipeCategory = recipeCategory;
+        this.recipeCategory = (recipeCategory == GTRecipeCategory.EMPTY) ? GTRecipeCategory.of(recipeType) :
+                recipeCategory;
+        if(this.recipeCategory.getRecipeType() == GTRecipeTypes.CENTRIFUGE_RECIPES) {
+            System.out.println("hi");
+        }
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,

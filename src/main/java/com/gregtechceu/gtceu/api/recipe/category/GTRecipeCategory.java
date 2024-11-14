@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.category;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,6 +18,8 @@ import javax.annotation.Nullable;
 public class GTRecipeCategory {
 
     private static final Map<String, GTRecipeCategory> categories = new Object2ObjectOpenHashMap<>();
+    public static final GTRecipeCategory EMPTY = GTRecipeCategory
+            .of(GTCEu.MOD_ID, "empty_category", "", GTRecipeTypes.DUMMY_RECIPES);
 
     @Getter
     private final String modid;
