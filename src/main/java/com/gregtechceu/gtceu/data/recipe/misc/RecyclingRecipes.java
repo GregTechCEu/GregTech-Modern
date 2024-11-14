@@ -135,11 +135,11 @@ public class RecyclingRecipes {
         }
 
         boolean recycle = true;
-        if(entry != null && entry.tagPrefix == TagPrefix.ingot) {
+        if (entry != null && entry.tagPrefix == TagPrefix.ingot) {
             recycle = false;
         }
 
-        if(recycle) {
+        if (recycle) {
             builder.category(GTRecipeCategories.MACERATOR_RECYCLING);
         }
 
