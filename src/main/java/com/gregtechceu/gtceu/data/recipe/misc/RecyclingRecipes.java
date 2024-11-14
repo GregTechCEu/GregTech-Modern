@@ -305,7 +305,7 @@ public class RecyclingRecipes {
                 UnificationEntry entry = ChemicalHelper.getUnificationEntry(outputs.get(0).getItem());
                 if (entry != null && inputStack != null) {
                     Material mat = inputStack.material();
-                    if (mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
+                    if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
                         return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material;
                     }
                 }
