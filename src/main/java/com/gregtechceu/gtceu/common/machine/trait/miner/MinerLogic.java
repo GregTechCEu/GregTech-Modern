@@ -534,10 +534,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 } else {
                     // reset z and move to the next y layer
                     z = startZ;
-                    if (dir == Direction.DOWN) {
-                        --y;
-                    } else {
+                    if (dir == Direction.UP) {
                         ++y;
+                    } else {
+                        --y;
                     }
                 }
             } else
