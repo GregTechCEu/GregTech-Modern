@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -47,7 +48,10 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
-
+    @Persisted
+    @Getter
+    @Setter
+    private int outputAmount;
     @Persisted
     @Getter
     private int minValue, maxValue;
@@ -93,7 +97,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         }
 
         setRedstoneSignalOutput(
-                RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
+                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(storedItems, maxValue, minValue,
+                        isInverted(), this.outputAmount));
     }
 
     public void setMinValue(int minValue) {

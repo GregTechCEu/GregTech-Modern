@@ -1969,7 +1969,7 @@ public class GTMachines {
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
                             Component.translatable("gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        int workingAreaChunks = (2 * tier - 5) * 2;
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),

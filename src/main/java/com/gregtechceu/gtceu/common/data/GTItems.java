@@ -821,7 +821,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
             .tag(CustomTags.IV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_LUV_VANADIUM = REGISTRATE
+    public static ItemEntry<ComponentItem> BATTERY_LuV_VANADIUM = REGISTRATE
             .item("luv_vanadium_battery", ComponentItem::create)
             .lang("Large Vanadium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
@@ -1165,7 +1165,7 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LuV = REGISTRATE
             .item("luv_fluid_regulator", ComponentItem::create)
             .lang("LuV Fluid Regulator")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
@@ -1430,7 +1430,7 @@ public class GTItems {
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
             .tag(CustomTags.ELECTRIC_PISTONS)
             .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_LUV = REGISTRATE.item("luv_electric_piston", Item::new)
+    public static ItemEntry<Item> ELECTRIC_PISTON_LuV = REGISTRATE.item("luv_electric_piston", Item::new)
             .lang("LuV Electric Piston")
             .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston"))
             .tag(CustomTags.ELECTRIC_PISTONS)
@@ -2030,7 +2030,7 @@ public class GTItems {
     public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", Item::new)
             .lang("Nanoprocessor Supercomputer").tag(CustomTags.IV_CIRCUITS)
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> NANO_MAINFRAME_LUV = REGISTRATE.item("nano_processor_mainframe", Item::new)
+    public static ItemEntry<Item> NANO_MAINFRAME_LuV = REGISTRATE.item("nano_processor_mainframe", Item::new)
             .lang("Nanoprocessor Mainframe").tag(CustomTags.LuV_CIRCUITS)
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
 
@@ -2041,7 +2041,7 @@ public class GTItems {
     public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_processor_assembly", Item::new)
             .lang("Quantum Processor Assembly").tag(CustomTags.IV_CIRCUITS)
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> QUANTUM_COMPUTER_LUV = REGISTRATE.item("quantum_processor_computer", Item::new)
+    public static ItemEntry<Item> QUANTUM_COMPUTER_LuV = REGISTRATE.item("quantum_processor_computer", Item::new)
             .lang("Quantum Processor Supercomputer").tag(CustomTags.LuV_CIRCUITS)
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
     public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", Item::new)
@@ -2052,7 +2052,7 @@ public class GTItems {
     public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("crystal_processor", Item::new)
             .lang("Crystal Processor").tag(CustomTags.IV_CIRCUITS).onRegister(compassNode(GTCompassSections.CIRCUITS))
             .register();
-    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LUV = REGISTRATE.item("crystal_processor_assembly", Item::new)
+    public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LuV = REGISTRATE.item("crystal_processor_assembly", Item::new)
             .lang("Crystal Processor Assembly").tag(CustomTags.LuV_CIRCUITS)
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
     public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_processor_computer", Item::new)
@@ -2063,7 +2063,7 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
 
     // T7: Wetware
-    public static ItemEntry<Item> WETWARE_PROCESSOR_LUV = REGISTRATE.item("wetware_processor", Item::new)
+    public static ItemEntry<Item> WETWARE_PROCESSOR_LuV = REGISTRATE.item("wetware_processor", Item::new)
             .lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS).onRegister(compassNode(GTCompassSections.CIRCUITS))
             .register();
     public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE
@@ -2318,7 +2318,7 @@ public class GTItems {
                         GTValues.VNF[GTValues.IV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
             .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LUV = REGISTRATE
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LuV = REGISTRATE
             .item("luv_solar_panel", ComponentItem::create).lang("Ludicrous Voltage Solar Panel")
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
@@ -2473,7 +2473,7 @@ public class GTItems {
                             ProspectorMode.FLUID,
                             ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null)))
             .register();
-    public static ItemEntry<ComponentItem> PROSPECTOR_LUV = REGISTRATE.item("prospector.luv", ComponentItem::create)
+    public static ItemEntry<ComponentItem> PROSPECTOR_LuV = REGISTRATE.item("prospector.luv", ComponentItem::create)
             .lang("Super Prospector (LuV)")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))

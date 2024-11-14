@@ -461,7 +461,7 @@ public class ComponentRecipes {
                 .inputItems(ELECTRIC_PUMP_LuV)
                 .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .circuitMeta(1)
-                .outputItems(FLUID_REGULATOR_LUV)
+                .outputItems(FLUID_REGULATOR_LuV)
                 .EUt(VA[LuV])
                 .duration(150)
                 .save(provider);
@@ -601,7 +601,7 @@ public class ComponentRecipes {
                 .inputItems(cableGtSingle, NiobiumTitanium, 2)
                 .inputFluids(SolderingAlloy.getFluid(L))
                 .inputFluids(Lubricant.getFluid(250))
-                .outputItems(ELECTRIC_PISTON_LUV)
+                .outputItems(ELECTRIC_PISTON_LuV)
                 .scannerResearch(b -> b
                         .researchStack(ELECTRIC_PISTON_IV.asStack())
                         .duration(900)
@@ -621,7 +621,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant.getFluid(500))
                 .outputItems(ELECTRIC_PISTON_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_PISTON_LUV.asStack())
+                        .researchStack(ELECTRIC_PISTON_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000).save(provider);
@@ -713,7 +713,7 @@ public class ComponentRecipes {
                 .inputItems(gear, HSSS)
                 .inputItems(gearSmall, HSSS, 3)
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(ELECTRIC_PISTON_LUV)
+                .inputItems(ELECTRIC_PISTON_LuV)
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(CustomTags.IV_CIRCUITS, 2)
                 .inputItems(CustomTags.EV_CIRCUITS, 4)
