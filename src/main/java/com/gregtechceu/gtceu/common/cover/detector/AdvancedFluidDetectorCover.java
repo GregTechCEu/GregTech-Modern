@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,10 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
-
+    @Persisted
+    @Getter
+    @Setter
+    private int outputAmount;
     @Persisted
     @Getter
     private int minValue, maxValue;
@@ -96,7 +100,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         }
 
         setRedstoneSignalOutput(
-                RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
+                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(storedFluid, maxValue, minValue, isInverted(), this.outputAmount));
     }
 
     public void setMinValue(int minValue) {

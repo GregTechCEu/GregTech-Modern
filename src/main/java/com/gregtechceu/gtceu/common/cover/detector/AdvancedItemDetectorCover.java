@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -47,7 +48,10 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
-
+    @Persisted
+    @Getter
+    @Setter
+    private int outputAmount;
     @Persisted
     @Getter
     private int minValue, maxValue;
@@ -93,7 +97,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         }
 
         setRedstoneSignalOutput(
-                RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
+            this.outputAmount =  RedstoneUtil.computeLatchedRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted(),this.outputAmount));
     }
 
     public void setMinValue(int minValue) {
