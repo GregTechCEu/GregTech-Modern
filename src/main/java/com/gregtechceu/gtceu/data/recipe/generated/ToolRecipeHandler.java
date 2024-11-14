@@ -95,7 +95,7 @@ public class ToolRecipeHandler {
         batteryItems.put(GTValues.EV, ImmutableList.of(GTItems.BATTERY_EV_VANADIUM, GTItems.LAPOTRON_CRYSTAL));
         batteryItems.put(GTValues.IV, ImmutableList.of(GTItems.BATTERY_IV_VANADIUM, GTItems.ENERGY_LAPOTRONIC_ORB));
         batteryItems.put(GTValues.LuV,
-                ImmutableList.of(GTItems.BATTERY_LUV_VANADIUM, GTItems.ENERGY_LAPOTRONIC_ORB_CLUSTER));
+                ImmutableList.of(GTItems.BATTERY_LuV_VANADIUM, GTItems.ENERGY_LAPOTRONIC_ORB_CLUSTER));
         batteryItems.put(GTValues.ZPM, ImmutableList.of(GTItems.BATTERY_ZPM_NAQUADRIA, GTItems.ENERGY_MODULE));
         batteryItems.put(GTValues.UV, ImmutableList.of(GTItems.BATTERY_UV_NAQUADRIA, GTItems.ENERGY_CLUSTER));
 
@@ -583,7 +583,7 @@ public class ToolRecipeHandler {
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
                     "prospector_luv_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LUV.asStack(),
+                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LuV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_LuV.asStack(),
                     'P', new UnificationEntry(plate, GTMaterials.RhodiumPlatedPalladium),
