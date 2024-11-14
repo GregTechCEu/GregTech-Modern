@@ -20,7 +20,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 public class PolarizingRecipeHandler {
 
     private static final TagPrefix[] POLARIZING_PREFIXES = new TagPrefix[] {
-            rod, rodLong, plate, ingot, plateDense, rotor,
+            rod, rodLong, plate, ingot, plateDense, plateDouble, rotor,
             bolt, screw, wireFine, foil, ring, dust, nugget, block,
             dustTiny, dustSmall };
 
@@ -34,7 +34,8 @@ public class PolarizingRecipeHandler {
                                          Consumer<FinishedRecipe> provider) {
         Material magneticMaterial = property.getMagneticMaterial();
 
-        if (magneticMaterial != null && polarizingPrefix.doGenerateItem(magneticMaterial)) {
+        if (magneticMaterial != null && (polarizingPrefix.doGenerateBlock(magneticMaterial) ||
+                polarizingPrefix.doGenerateItem(magneticMaterial))) {
             ItemStack magneticStack = ChemicalHelper.get(polarizingPrefix, magneticMaterial);
             POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + polarizingPrefix.name) // polarizing
                     .inputItems(polarizingPrefix, material)

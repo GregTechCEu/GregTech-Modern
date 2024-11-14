@@ -289,24 +289,26 @@ public class PartsRecipeHandler {
 
     public static void processPlateDouble(TagPrefix doublePrefix, Material material, IngotProperty property,
                                           Consumer<FinishedRecipe> provider) {
+        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
         if (material.hasFlag(GENERATE_PLATE)) {
             if (!material.hasFlag(NO_SMASHING)) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_double_%s", material.getName()),
-                        ChemicalHelper.get(doublePrefix, material),
+                        ChemicalHelper.get(doublePrefix, magMaterial),
                         "h", "P", "P", 'P', new UnificationEntry(plate, material));
             }
 
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_double_plate")
                     .EUt(96).duration((int) material.getMass() * 2)
                     .inputItems(plate, material, 2)
-                    .outputItems(doublePrefix, material)
+                    .outputItems(doublePrefix, magMaterial)
                     .circuitMeta(2)
                     .save(provider);
 
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_double_plate")
                     .inputItems(ingot, material, 2)
                     .circuitMeta(2)
-                    .outputItems(doublePrefix, material)
+                    .outputItems(doublePrefix, magMaterial)
                     .duration((int) material.getMass() * 2)
                     .EUt(96)
                     .save(provider);
@@ -315,10 +317,12 @@ public class PartsRecipeHandler {
 
     public static void processPlateDense(TagPrefix tagPrefix, Material material, DustProperty property,
                                          Consumer<FinishedRecipe> provider) {
+        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
                 .inputItems(plate, material, 9)
                 .circuitMeta(9)
-                .outputItems(tagPrefix, material)
+                .outputItems(tagPrefix, magMaterial)
                 .duration((int) Math.max(material.getMass() * 9L, 1L))
                 .EUt(96)
                 .save(provider);
@@ -327,7 +331,7 @@ public class PartsRecipeHandler {
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_dense_plate")
                     .inputItems(ingot, material, 9)
                     .circuitMeta(9)
-                    .outputItems(tagPrefix, material)
+                    .outputItems(tagPrefix, magMaterial)
                     .duration((int) Math.max(material.getMass() * 9L, 1L))
                     .EUt(96)
                     .save(provider);

@@ -243,10 +243,9 @@ public class MaterialRecipeHandler {
 
     public static void processSmallDust(TagPrefix orePrefix, Material material, DustProperty property,
                                         Consumer<FinishedRecipe> provider) {
-        ItemStack smallDustStack = ChemicalHelper.get(orePrefix, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
-        ItemStack dustStack = ChemicalHelper.get(dust, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        // small dust retains magnetism
+        ItemStack smallDustStack = ChemicalHelper.get(orePrefix, material);
+        ItemStack dustStack = ChemicalHelper.get(dust, material);
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
@@ -269,10 +268,9 @@ public class MaterialRecipeHandler {
 
     public static void processTinyDust(TagPrefix orePrefix, Material material, DustProperty property,
                                        Consumer<FinishedRecipe> provider) {
-        ItemStack tinyDustStack = ChemicalHelper.get(orePrefix, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
-        ItemStack dustStack = ChemicalHelper.get(dust, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        // tiny dust retains magnetism
+        ItemStack tinyDustStack = ChemicalHelper.get(orePrefix, material);
+        ItemStack dustStack = ChemicalHelper.get(dust, material);
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
@@ -389,7 +387,7 @@ public class MaterialRecipeHandler {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_to_plate")
                         .inputItems(ingotPrefix, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_PLATE)
-                        .outputItems(plate, material)
+                        .outputItems(plate, magMaterial)
                         .duration((int) material.getMass())
                         .EUt(8L * voltageMultiplier)
                         .save(provider);
@@ -398,7 +396,7 @@ public class MaterialRecipeHandler {
                     EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_plate")
                             .inputItems(dust, material)
                             .notConsumable(GTItems.SHAPE_EXTRUDER_PLATE)
-                            .outputItems(plate, material)
+                            .outputItems(plate, magMaterial)
                             .duration((int) material.getMass())
                             .EUt(8L * voltageMultiplier)
                             .save(provider);
@@ -543,7 +541,8 @@ public class MaterialRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            ItemStack plateStack = ChemicalHelper.get(plate, material);
+            ItemStack plateStack = ChemicalHelper.get(plate, material.hasFlag(IS_MAGNETIC) ?
+                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
             if (!plateStack.isEmpty()) {
                 CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_block_to_plate")
                         .inputItems(blockPrefix, material)
