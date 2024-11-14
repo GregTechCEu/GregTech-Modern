@@ -122,6 +122,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final ItemRecipeHandler inputItemHandler, outputItemHandler;
     private final IgnoreEnergyRecipeHandler inputEnergyHandler;
     @Setter
+    @Getter
     private Direction dir = Direction.DOWN;
 
     /**
