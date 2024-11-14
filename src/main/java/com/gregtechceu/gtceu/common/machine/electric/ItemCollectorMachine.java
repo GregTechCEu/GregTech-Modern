@@ -160,7 +160,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     protected CustomItemStackHandler createFilterItemHandler() {
         var handler = new CustomItemStackHandler();
         handler.setFilter(
-                item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.ORE_DICTIONARY_FILTER.asItem()));
+                item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.TAG_FILTER.asItem()));
         return handler;
     }
 

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -643,7 +644,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE
-            .multiblock("large_distillery", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_distillery", DistillationTowerMachine::new)
             .langValue("Large Fractionating Distillery")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -655,7 +656,10 @@ public class GCYMMachines {
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
-
+                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                if (GTCEu.isAE2Loaded())
+                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate.setMaxLayerLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
@@ -667,14 +671,63 @@ public class GCYMMachines {
                                 .or(abilities(IMPORT_FLUIDS).setMinGlobalLimited(1))
                                 .or(abilities(EXPORT_ITEMS))
                                 .or(autoAbilities(true, false, true)))
-                        .where('X', casingPredicate
-                                .or(abilities(EXPORT_FLUIDS_1X).setMinLayerLimited(1).setMaxLayerLimited(1)))
+                        .where('X', casingPredicate.or(exportPredicate))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
                         .where('C', abilities(MUFFLER))
                         .where('A', air())
                         .where('#', any())
                         .build();
+            })
+            .shapeInfos(definition -> {
+                List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
+                var builder = MultiblockShapeInfo.builder()
+                        .where('S', definition, Direction.NORTH)
+                        .where('C', CASING_WATERTIGHT.getDefaultState())
+                        .where('M', MUFFLER_HATCH[IV], Direction.UP)
+                        .where('X', PARALLEL_HATCH[IV], Direction.NORTH)
+                        .where('H', FLUID_IMPORT_HATCH[IV], Direction.NORTH)
+                        .where('B', ITEM_EXPORT_BUS[IV], Direction.NORTH)
+                        .where('N', MAINTENANCE_HATCH, Direction.NORTH)
+                        .where('P', CASING_STEEL_PIPE.getDefaultState())
+                        .where('F', FLUID_EXPORT_HATCH[IV], Direction.SOUTH)
+                        .where('E', ENERGY_INPUT_HATCH[IV], Direction.SOUTH)
+                        .where('#', Blocks.AIR.defaultBlockState());
+                List<String> aisle1 = new ArrayList<>(16);
+                aisle1.add("#HCB#");
+                aisle1.add("#NSX#");
+                aisle1.add("#####");
+                List<String> aisle2 = new ArrayList<>(16);
+                aisle2.add("CCCCC");
+                aisle2.add("C###C");
+                aisle2.add("#CCC#");
+                List<String> aisle3 = new ArrayList<>(16);
+                aisle3.add("CCCCC");
+                aisle3.add("C###C");
+                aisle3.add("#CMC#");
+                List<String> aisle4 = new ArrayList<>(16);
+                aisle4.add("CCCCC");
+                aisle4.add("C###C");
+                aisle4.add("#CCC#");
+                List<String> aisle5 = new ArrayList<>(16);
+                aisle5.add("#CEC#");
+                aisle5.add("#CCC#");
+                aisle5.add("#####");
+                for (int i = 1; i <= 12; ++i) {
+                    aisle1.add(2, "##C##");
+                    aisle2.add(2, "#C#C#");
+                    aisle3.add(2, "C#P#C");
+                    aisle4.add(2, "#C#C#");
+                    aisle5.add(2, "##F##");
+                    var copy = builder.shallowCopy()
+                            .aisle(aisle1.toArray(String[]::new))
+                            .aisle(aisle2.toArray(String[]::new))
+                            .aisle(aisle3.toArray(String[]::new))
+                            .aisle(aisle4.toArray(String[]::new))
+                            .aisle(aisle5.toArray(String[]::new));
+                    shapeInfos.add(copy.build());
+                }
+                return shapeInfos;
             })
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),

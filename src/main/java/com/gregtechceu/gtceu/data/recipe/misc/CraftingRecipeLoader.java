@@ -57,20 +57,16 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_filter_sodalite", FLUID_FILTER.asStack(), "XXX", "XYX",
                 "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Sodalite));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_olivine", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_olivine", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Olivine));
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_emerald", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_emerald", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Emerald));
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_tag_filter", TAG_FLUID_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Amethyst));
 
-        // TODO smart filter
-        // VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_olivine", SMART_FILTER.asStack(), "XEX",
-        // "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new
-        // UnificationEntry(plate, Olivine));
-        // VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_emerald", SMART_FILTER.asStack(), "XEX",
-        // "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new
-        // UnificationEntry(plate, Emerald));
+        VanillaRecipeHelper.addShapedRecipe(provider, "item_smart_filter_olivine", SMART_ITEM_FILTER.asStack(), "XEX",
+                "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E',
+                new UnificationEntry(plate, Ruby));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ",
                 " X ", "s  ", 'X', ItemTags.PLANKS);

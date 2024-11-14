@@ -143,7 +143,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             IGuiTexture overlay = null;
             if (chance != null) {
                 xeiChance = (float) chance.chance / chance.maxChance;
-                overlay = chance.createOverlay(false);
+                overlay = chance.createOverlay(false, 0);
             }
             if (itemOutputs.get(slotIndex).isEmpty()) {
                 itemOutputExists.add(false);

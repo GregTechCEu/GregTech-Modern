@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
@@ -20,6 +23,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -59,6 +63,10 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     public ItemFilter getItemFilter() {
         if (itemFilter == null) {
             itemFilter = ItemFilter.loadFilter(attachItem);
+            if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
+            }
         }
         return itemFilter;
     }
@@ -85,13 +93,18 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
+    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+        super.onAttached(itemStack, player);
+    }
+
+    @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 85);
-        group.addWidget(new LabelWidget(7, 5, attachItem.getDescriptionId()));
+        final var group = new WidgetGroup(0, 0, 120, 85);
+        group.addWidget(new LabelWidget(5, 5, attachItem.getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(7, 25, 18, 18,
                 FilterMode.VALUES, filterMode, this::setFilterMode));
         group.addWidget(new EnumSelectorWidget<>(7, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getItemFilter().openConfigurator(48, 18));
+        group.addWidget(getItemFilter().openConfigurator(30, 25));
         return group;
     }
 

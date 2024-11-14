@@ -56,7 +56,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
         group.addWidget(new ImageWidget(0, 0, 20, 20, GuiTextures.INFO_ICON)
                 .setHoverTooltips(
-                        LangHandler.getMultiLang("cover.ore_dictionary_filter.info").toArray(new MutableComponent[0])));
+                        LangHandler.getMultiLang("cover.tag_filter.info").toArray(new MutableComponent[0])));
         group.addWidget(new TextFieldWidget(0, 29, 18 * 3 + 25, 12, () -> oreDictFilterExpression, this::setOreDict)
                 .setMaxStringLength(64)
                 .setValidator(input -> {

@@ -86,12 +86,12 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 85);
-        group.addWidget(new LabelWidget(7, 5, attachItem.getDescriptionId()));
+        final var group = new WidgetGroup(0, 0, 120, 85);
+        group.addWidget(new LabelWidget(5, 5, attachItem.getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(7, 25, 18, 18,
                 FilterMode.VALUES, filterMode, this::setFilterMode));
         group.addWidget(new EnumSelectorWidget<>(7, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getFluidFilter().openConfigurator(48, 18));
+        group.addWidget(getFluidFilter().openConfigurator(25, 25));
         return group;
     }
 

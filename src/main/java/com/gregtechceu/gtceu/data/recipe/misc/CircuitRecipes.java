@@ -1277,7 +1277,7 @@ public class CircuitRecipes {
                 .inputItems(SMD_CAPACITOR, 32)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 32)
-                .outputItems(NANO_MAINFRAME_LUV)
+                .outputItems(NANO_MAINFRAME_LuV)
                 .solderMultiplier(4)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1289,7 +1289,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 32)
-                .outputItems(NANO_MAINFRAME_LUV)
+                .outputItems(NANO_MAINFRAME_LuV)
                 .solderMultiplier(4)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1362,7 +1362,7 @@ public class CircuitRecipes {
                 .inputItems(NOR_MEMORY_CHIP, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireFine, Platinum, 32)
-                .outputItems(QUANTUM_COMPUTER_LUV)
+                .outputItems(QUANTUM_COMPUTER_LuV)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1374,7 +1374,7 @@ public class CircuitRecipes {
                 .inputItems(NOR_MEMORY_CHIP, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireFine, Platinum, 32)
-                .outputItems(QUANTUM_COMPUTER_LUV)
+                .outputItems(QUANTUM_COMPUTER_LuV)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1382,7 +1382,7 @@ public class CircuitRecipes {
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("quantum_mainframe_zpm").EUt(VA[IV]).duration(800)
                 .inputItems(frameGt, HSSG, 2)
-                .inputItems(QUANTUM_COMPUTER_LUV, 2)
+                .inputItems(QUANTUM_COMPUTER_LuV, 2)
                 .inputItems(SMD_INDUCTOR, 24)
                 .inputItems(SMD_CAPACITOR, 48)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
@@ -1394,7 +1394,7 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("quantum_mainframe_zpm_asmd").EUt(VA[IV]).duration(400)
                 .inputItems(frameGt, HSSG, 2)
-                .inputItems(QUANTUM_COMPUTER_LUV, 2)
+                .inputItems(QUANTUM_COMPUTER_LuV, 2)
                 .inputItems(ADVANCED_SMD_INDUCTOR, 6)
                 .inputItems(ADVANCED_SMD_CAPACITOR, 12)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
@@ -1436,7 +1436,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
                 .inputItems(wireFine, NiobiumTitanium, 16)
-                .outputItems(CRYSTAL_ASSEMBLY_LUV, 2)
+                .outputItems(CRYSTAL_ASSEMBLY_LuV, 2)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1444,7 +1444,7 @@ public class CircuitRecipes {
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("crystal_computer_zpm").EUt(9600).duration(400)
                 .inputItems(ELITE_CIRCUIT_BOARD)
-                .inputItems(CRYSTAL_ASSEMBLY_LUV, 2)
+                .inputItems(CRYSTAL_ASSEMBLY_LuV, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(NOR_MEMORY_CHIP, 32)
                 .inputItems(NAND_MEMORY_CHIP, 64)
@@ -1494,7 +1494,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 8)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount)
+                .outputItems(WETWARE_PROCESSOR_LuV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1504,14 +1504,14 @@ public class CircuitRecipes {
                 .inputItems(HIGHLY_ADVANCED_SOC)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
                 .inputItems(bolt, Naquadah, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount * 2)
+                .outputItems(WETWARE_PROCESSOR_LuV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("wetware_processor_assembly_zpm").EUt(38400).duration(400)
                 .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(WETWARE_PROCESSOR_LUV, 2)
+                .inputItems(WETWARE_PROCESSOR_LuV, 2)
                 .inputItems(ADVANCED_SMD_INDUCTOR, 6)
                 .inputItems(ADVANCED_SMD_CAPACITOR, 12)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)

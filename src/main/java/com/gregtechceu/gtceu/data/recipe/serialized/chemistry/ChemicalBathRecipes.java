@@ -90,7 +90,7 @@ public class ChemicalBathRecipes {
                 .outputItems(ingot, Kanthal)
                 .duration(250).EUt(VA[MV]).save(provider);
 
-        CHEMICAL_BATH_RECIPES.recipeBuilder("silion_cool_down")
+        CHEMICAL_BATH_RECIPES.recipeBuilder("silicon_cool_down")
                 .inputItems(ingotHot, Silicon)
                 .inputFluids(Water.getFluid(100))
                 .outputItems(ingot, Silicon)
@@ -100,6 +100,42 @@ public class ChemicalBathRecipes {
                 .inputItems(ingotHot, Silicon)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(ingot, Silicon)
+                .duration(250).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("black_steel_cool_down")
+                .inputItems(ingotHot, BlackSteel)
+                .inputFluids(Water.getFluid(100))
+                .outputItems(ingot, BlackSteel)
+                .duration(200).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("black_steel_cool_down_distilled_water")
+                .inputItems(ingotHot, BlackSteel)
+                .inputFluids(DistilledWater.getFluid(100))
+                .outputItems(ingot, BlackSteel)
+                .duration(125).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("red_steel_cool_down")
+                .inputItems(ingotHot, RedSteel)
+                .inputFluids(Water.getFluid(100))
+                .outputItems(ingot, RedSteel)
+                .duration(400).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("red_steel_cool_down_distilled_water")
+                .inputItems(ingotHot, RedSteel)
+                .inputFluids(DistilledWater.getFluid(100))
+                .outputItems(ingot, RedSteel)
+                .duration(250).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("blue_steel_cool_down")
+                .inputItems(ingotHot, BlueSteel)
+                .inputFluids(Water.getFluid(100))
+                .outputItems(ingot, BlueSteel)
+                .duration(400).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_BATH_RECIPES.recipeBuilder("blue_steel_cool_down_distilled_water")
+                .inputItems(ingotHot, BlueSteel)
+                .inputFluids(DistilledWater.getFluid(100))
+                .outputItems(ingot, BlueSteel)
                 .duration(250).EUt(VA[MV]).save(provider);
     }
 }

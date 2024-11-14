@@ -33,13 +33,11 @@ import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -68,6 +66,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
+    private static final TreeMap<Long, Pair<Integer, String>> registeredFusionTiers = new TreeMap<>();
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
@@ -179,6 +178,21 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                     fusionReactorMachine.getMaxVoltage(), params, result);
         }
         return null;
+    }
+
+    public static String getFusionTier(long eu) {
+        Map.Entry<Long, Pair<Integer, String>> mapEntry = registeredFusionTiers.ceilingEntry(eu);
+
+        if (mapEntry == null) {
+            throw new IllegalArgumentException("Value is above registered maximum EU values");
+        }
+
+        return String.format(" %s", mapEntry.getValue().getRight());
+    }
+
+    public static void registerFusionTier(int tier, @NotNull String name) {
+        long maxEU = calculateEnergyStorageFactor(tier, 16);
+        registeredFusionTiers.put(maxEU, Pair.of(tier, name));
     }
 
     @Override
