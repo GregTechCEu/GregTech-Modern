@@ -33,7 +33,7 @@ public class IndustrialTNTEntity extends GTExplosiveEntity {
     }
 
     @Override
-    protected int getRange() {
+    public int getRange() {
         return 3;
     }
 
