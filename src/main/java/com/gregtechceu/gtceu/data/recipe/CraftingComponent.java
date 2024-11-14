@@ -622,7 +622,7 @@ public class CraftingComponent {
                 { 3, GTItems.ELECTRIC_PISTON_HV.asStack() },
                 { 4, GTItems.ELECTRIC_PISTON_EV.asStack() },
                 { 5, GTItems.ELECTRIC_PISTON_IV.asStack() },
-                { 6, GTItems.ELECTRIC_PISTON_LUV.asStack() },
+                { 6, GTItems.ELECTRIC_PISTON_LuV.asStack() },
                 { 7, GTItems.ELECTRIC_PISTON_ZPM.asStack() },
                 { 8, GTItems.ELECTRIC_PISTON_UV.asStack() },
                 { FALLBACK, GTItems.ELECTRIC_PISTON_UV.asStack() },
