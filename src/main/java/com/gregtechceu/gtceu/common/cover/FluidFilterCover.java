@@ -8,23 +8,23 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -110,7 +110,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
         public int fill(FluidStack resource, FluidAction action) {
             if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow == ManualIOMode.UNFILTERED)
                 return super.fill(resource, action);
-            if(filterMode != FilterMode.FILTER_EXTRACT && getFluidFilter().test(resource))
+            if (filterMode != FilterMode.FILTER_EXTRACT && getFluidFilter().test(resource))
                 return super.fill(resource, action);
             return 0;
         }
@@ -119,7 +119,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
         public FluidStack drain(FluidStack resource, FluidAction action) {
             if ((filterMode == FilterMode.FILTER_INSERT) && allowFlow == ManualIOMode.UNFILTERED)
                 return super.drain(resource, action);
-            if(filterMode != FilterMode.FILTER_INSERT && getFluidFilter().test(resource))
+            if (filterMode != FilterMode.FILTER_INSERT && getFluidFilter().test(resource))
                 return super.drain(resource, action);
             return FluidStack.EMPTY;
         }
