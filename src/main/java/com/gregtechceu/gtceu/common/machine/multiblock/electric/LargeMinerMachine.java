@@ -128,7 +128,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public boolean checkPattern() {
-        return super.checkPattern() && (this.getUpwardsFacing() == Direction.NORTH || this.getUpwardsFacing() == Direction.SOUTH);
+        return super.checkPattern() &&
+                (this.getUpwardsFacing() == Direction.NORTH || this.getUpwardsFacing() == Direction.SOUTH);
     }
 
     private void initializeAbilities() {
