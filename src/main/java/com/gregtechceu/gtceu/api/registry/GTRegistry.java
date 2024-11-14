@@ -86,7 +86,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
                 container.getModId().equals("minecraft")); // check for minecraft modid in case of datagen or a mishap
     }
 
-    public void register(K key, V value) {
+    public <T extends V> T register(K key, T value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
@@ -95,24 +95,27 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
                     "[register] registry %s contains key %s already".formatted(registryName, key));
         }
         registry.put(key, value);
+        return value;
     }
 
     @Nullable
-    public V replace(K key, V value) {
+    public <T extends V> T replace(K key, T value) {
         if (frozen) {
             throw new IllegalStateException("[replace] registry %s has been frozen".formatted(registryName));
         }
         if (!containKey(key)) {
             GTCEu.LOGGER.warn("[replace] couldn't find key %s in registry %s".formatted(registryName, key));
         }
-        return registry.put(key, value);
+        registry.put(key, value);
+        return value;
     }
 
-    public V registerOrOverride(K key, V value) {
+    public <T extends V> T registerOrOverride(K key, T value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
-        return registry.put(key, value);
+        registry.put(key, value);
+        return value;
     }
 
     @NotNull

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "gtceu:block/casings/gearbox/machine_casing_gearbox_stainless_steel"
+  }
+}

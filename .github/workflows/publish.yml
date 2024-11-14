@@ -1,0 +1,176 @@
+name: Publish Version
+
+on:
+  workflow_call:
+    inputs:
+      simulate:
+        required: false
+        type: boolean
+      branch:
+        description: 'Branch to checkout; 1.20.1 or 1.21'
+        required: true
+        type: string
+      tag-name:
+        description: 'Tag to upload to'
+        required: true
+        type: string
+      release-body:
+        description: 'Body for published release notes'
+        required: false
+        type: string
+      changelog-body:
+        description: 'Body of change notes to insert into CHANGELOG.md'
+        required: false
+        type: string
+
+jobs:
+  build:
+    name: Build and Publish to Maven
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      ver: ${{ steps.ver.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
+        with:
+          ref: ${{ inputs.branch }}
+      - name: Get Version
+        id: ver
+        run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
+      - name: Build
+        run: ./gradlew assemble --build-cache
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ inputs.branch }}
+          path: build/libs/*
+          if-no-files-found: error
+          retention-days: 3
+      - name: Publish
+        if: ${{ !inputs.simulate }}
+        env:
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew publish --build-cache
+
+  upload-release-artifacts:
+    name: Upload Artifacts
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ inputs.branch }}
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag-name }}
+          files: ./*.jar
+          fail_on_unmatched_files: true
+
+  publish-modrinth:
+    name: Publish to Modrinth
+    needs: build
+    if: ${{ !inputs.simulate }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ inputs.branch }}
+      - name: Publish Mod
+        env:
+          MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
+          LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
+          JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
+          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'alpha' || 'beta' }}
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          modrinth-id: 7tG215v7
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: |
+            ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
+            ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
+          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version-type: ${{ env.VERSION_TYPE }}
+          changelog: ${{ inputs.release-body }}
+          loaders: ${{ env.LOADER }}
+          java: ${{ env.JAVA }}
+          fail-mode: fail
+
+  publish-cf:
+    name: Publish to CF
+    needs: build
+    if: ${{ !inputs.simulate }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ inputs.branch }}
+      - name: Publish Mod
+        env:
+          MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
+          LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
+          JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
+          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'alpha' || 'beta' }}
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          curseforge-id: 890405
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: |
+            ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
+            ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
+          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          version-type: ${{ env.VERSION_TYPE }}
+          changelog: ${{ inputs.release-body }}
+          loaders: ${{ env.LOADER }}
+          java: ${{ env.JAVA }}
+          fail-mode: fail
+
+  # After successful release, PR version bump and changelog
+  bump-version-and-changelog:
+    name: Bump Version and Build Changelog
+    needs: [ build, upload-release-artifacts, publish-modrinth, publish-cf]
+    if: ${{ always() && !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: Bump Version
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -C gh/release-${{ inputs.branch }}
+          BUMPED=$(echo ${{ needs.build.outputs.ver }} | awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
+          sed -i "s/= ${{ needs.build.outputs.ver }}/= ${BUMPED}/" gradle.properties
+          git commit -am "Bump version to ${BUMPED}"
+      - name: Prepend to CHANGELOG
+        if: inputs.changelog-body
+        run: |
+          { head -n 2 CHANGELOG.md; echo -e "${{ inputs.changelog-body }}"; tail -n +3 CHANGELOG.md; } > temp.md && mv temp.md CHANGELOG.md
+          git commit -am "Updated CHANGELOG"
+      - name: Push and PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git push --force --set-upstream origin gh/release-${{ inputs.branch }}
+          gh pr create -B ${{ inputs.branch }} -H gh/release-${{ inputs.branch }} --title "RELEASE for ${{ inputs.branch }}" --body "Created by GH Workflow" --label "ignore changelog"

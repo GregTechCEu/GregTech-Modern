@@ -12,13 +12,13 @@ import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -56,22 +56,22 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     }
 
     protected void doVoidItems() {
-        IItemTransfer itemTransfer = getOwnItemTransfer();
-        if (itemTransfer == null) {
+        IItemHandler handler = getOwnItemHandler();
+        if (handler == null) {
             return;
         }
-        voidAny(itemTransfer);
+        voidAny(handler);
     }
 
-    void voidAny(IItemTransfer itemTransfer) {
+    void voidAny(IItemHandler handler) {
         ItemFilter filter = filterHandler.getFilter();
 
-        for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
-            ItemStack sourceStack = itemTransfer.extractItem(slot, Integer.MAX_VALUE, true);
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack sourceStack = handler.extractItem(slot, Integer.MAX_VALUE, true);
             if (sourceStack.isEmpty() || !filter.test(sourceStack)) {
                 continue;
             }
-            itemTransfer.extractItem(slot, Integer.MAX_VALUE, false);
+            handler.extractItem(slot, Integer.MAX_VALUE, false);
         }
     }
 

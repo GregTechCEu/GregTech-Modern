@@ -40,7 +40,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
             disableNightVision(world, player, false);
         }
         if (type == ArmorItem.Type.HELMET) {
-            boolean nightvision = nbtData.getBoolean("Nightvision");
+            boolean nightvision = nbtData.getBoolean("nightVision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 toggleTimer = 5;
                 if (!nightvision && item.getCharge() >= energyPerUse) {
@@ -59,7 +59,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 }
 
                 if (!world.isClientSide) {
-                    nbtData.putBoolean("Nightvision", nightvision);
+                    nbtData.putBoolean("nightVision", nightvision);
                 }
             }
 
@@ -93,7 +93,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("Nightvision");
+            boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

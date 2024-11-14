@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -14,6 +15,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -55,18 +57,16 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_filter_sodalite", FLUID_FILTER.asStack(), "XXX", "XYX",
                 "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Sodalite));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_olivine", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_olivine", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Olivine));
-        VanillaRecipeHelper.addShapedRecipe(provider, "ore_dictionary_filter_emerald", ORE_DICTIONARY_FILTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "tag_filter_emerald", TAG_FILTER.asStack(),
                 "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Emerald));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_tag_filter", TAG_FLUID_FILTER.asStack(),
+                "XXX", "XYX", "XXX", 'X', new UnificationEntry(foil, Zinc), 'Y', new UnificationEntry(plate, Amethyst));
 
-        // TODO smart filter
-        // VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_olivine", SMART_FILTER.asStack(), "XEX",
-        // "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new
-        // UnificationEntry(plate, Olivine));
-        // VanillaRecipeHelper.addShapedRecipe(provider, "smart_item_filter_emerald", SMART_FILTER.asStack(), "XEX",
-        // "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', new UnificationEntry(circuit, Tier.LV), 'E', new
-        // UnificationEntry(plate, Emerald));
+        VanillaRecipeHelper.addShapedRecipe(provider, "item_smart_filter_olivine", SMART_ITEM_FILTER.asStack(), "XEX",
+                "XCX", "XEX", 'X', new UnificationEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E',
+                new UnificationEntry(plate, Ruby));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ",
                 " X ", "s  ", 'X', ItemTags.PLANKS);
@@ -85,16 +85,18 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
+                new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
 
         // TODO clipboard
         // VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P',
         // Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new
         // UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_wood_planks", GTBlocks.RUBBER_PLANK.asStack(4),
-                GTBlocks.RUBBER_LOG.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks", GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B', Creosote.getBucket());
+        VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "treated_wood_planks",
+                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
+                "PPP", "PBP", "PPP", 'P', ItemTags.PLANKS, 'B',
+                new FluidContainerIngredient(Creosote.getFluidTag(), 1000));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "rubber_ring", ChemicalHelper.get(ring, Rubber), "k", "X", 'X',
                 new UnificationEntry(plate, Rubber));
@@ -129,7 +131,7 @@ public class CraftingRecipeLoader {
                 'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P',
                 CARBON_FIBER_PLATE.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC",
-                "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', CustomTags.GLASS_PANES, 'C', CustomTags.HV_CIRCUITS, 'P',
+                "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', Tags.Items.GLASS_PANES, 'C', CustomTags.HV_CIRCUITS, 'P',
                 ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC",
                 "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', GTBlocks.CASING_TEMPERED_GLASS.asStack(), 'C',
@@ -233,6 +235,7 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Credits //
         ///////////////////////////////////////////////////
+        // TODO shapeless fluid container recipes
         VanillaRecipeHelper.addShapelessRecipe(provider, "coin_chocolate", COIN_CHOCOLATE.asStack(),
                 new UnificationEntry(dust, Cocoa), new UnificationEntry(foil, Gold), new ItemStack(Items.MILK_BUCKET),
                 new UnificationEntry(dust, Sugar));

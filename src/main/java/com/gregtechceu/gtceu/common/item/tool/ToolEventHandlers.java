@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -187,6 +189,33 @@ public class ToolEventHandlers {
     public static void onAnvilUpdateEvent(AnvilUpdateEvent event) {
         if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
             event.setCanceled(true);
+        }
+    }
+
+    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
+                                                              Collection<ItemEntity> drops) {
+        CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
+
+        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
+            Iterator<ItemEntity> dropItr = drops.iterator();
+
+            while (dropItr.hasNext()) {
+                ItemEntity drop = dropItr.next();
+                ItemStack dropStack = drop.getItem();
+
+                if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
+                    dropItr.remove();
+                }
+            }
+        }
+        return drops;
+    }
+
+    @SubscribeEvent
+    public static void onPlayerKilledEntity(LivingDropsEvent event) {
+        Entity entity = event.getSource().getEntity();
+        if (entity instanceof Player player) {
+            ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
         }
     }
 }

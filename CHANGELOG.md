@@ -1,24 +1,199 @@
 # ChangeLog
 
-Version: 1.3.1
+## Version [v1.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
+### Fixed
+
+- Fix large miner chunk tooltip by @YoungOnionMC in [#2334](https://github.com/GregTechCEu/GregTech-Modern/pull/2334)
+- Fix dedicated server loading client class by @cyb0124 in [#2333](https://github.com/GregTechCEu/GregTech-Modern/pull/2333)
+- Fix Pump and Conveyor String format issue by @Spicierspace153 in [#2332](https://github.com/GregTechCEu/GregTech-Modern/pull/2332)
+- Fix potential pipe collision NPE by @YoungOnionMC in [#2330](https://github.com/GregTechCEu/GregTech-Modern/pull/2330)
+- Fix crash when dedicated server is being stopped by @cyb0124 in [#2337](https://github.com/GregTechCEu/GregTech-Modern/pull/2337)
+- Fix filename sanitization in ClientCacheManager by @cyb0124 in [#2339](https://github.com/GregTechCEu/GregTech-Modern/pull/2339)
+
+### Changed
+
+- Change LuV item naming convention in code by @YoungOnionMC in [#2331](https://github.com/GregTechCEu/GregTech-Modern/pull/2331)
+
+ 
+## Version [v1.5.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.4.6...v1.5.0-1.20.1)
+### Added
+
+- Fix cuboid & classic ore vein generators by @screret in [#2186](https://github.com/GregTechCEu/GregTech-Modern/pull/2186)
+- Add capacities of substation capacitors to their descriptions by @enitiaty in [#2207](https://github.com/GregTechCEu/GregTech-Modern/pull/2207)
+- Modified to prevent things like extruder/solidifier molds from auto-filling ae2 patterns by @Echoloquate in [#2241](https://github.com/GregTechCEu/GregTech-Modern/pull/2241)
+- Hide converters if they're disabled by @Zorbatron in [#2249](https://github.com/GregTechCEu/GregTech-Modern/pull/2249)
+- Power Substation UI Coloring by @mikerooni in [#2256](https://github.com/GregTechCEu/GregTech-Modern/pull/2256)
+- visual prospecting by @screret in [#1944](https://github.com/GregTechCEu/GregTech-Modern/pull/1944)
+- OP Bypass for machine ownership by @YoungOnionMC in [#2276](https://github.com/GregTechCEu/GregTech-Modern/pull/2276)
+- Add selective voiding and ME hatch capabillity to Distillation Tower multiblocks by @krossgg in [#2261](https://github.com/GregTechCEu/GregTech-Modern/pull/2261)
+- Recipe Categories by @YoungOnionMC in [#2274](https://github.com/GregTechCEu/GregTech-Modern/pull/2274)
+- Add BlastBuilder and Vacuum Freezer recipe overrides by @YoungOnionMC in [#2298](https://github.com/GregTechCEu/GregTech-Modern/pull/2298)
+- Increase density of Realgar in Copper/Tin Veins by @Spicierspace153 in [#2222](https://github.com/GregTechCEu/GregTech-Modern/pull/2222)
+- Machine Pausing by @YoungOnionMC in [#2311](https://github.com/GregTechCEu/GregTech-Modern/pull/2311)
+- Add Tier-Boosted Chance overlay and tooltip line in Recipe Viewers by @YoungOnionMC in [#2293](https://github.com/GregTechCEu/GregTech-Modern/pull/2293)
+- Add Smart Filters by @krossgg in [#1984](https://github.com/GregTechCEu/GregTech-Modern/pull/1984)
+- Add waypoint creation in the prospector by @Sintinium in [#2319](https://github.com/GregTechCEu/GregTech-Modern/pull/2319)
+- Add extra tooltip for large turbines by @Spicierspace153 in [#2326](https://github.com/GregTechCEu/GregTech-Modern/pull/2326)
+
+### Fixed
+
+- update LDLib to fix server freezing sometimes (and various other issues) by @Yefancy in [#2184](https://github.com/GregTechCEu/GregTech-Modern/pull/2184)
+- Fix Research Stations allowing more than two energy hatches by @a-a-GiTHuB-a-a in [#2205](https://github.com/GregTechCEu/GregTech-Modern/pull/2205)
+- fix ECE oxygen boosting by @screret in [#2211](https://github.com/GregTechCEu/GregTech-Modern/pull/2211)
+- Gem to dust Maceration by @YoungOnionMC in [#2183](https://github.com/GregTechCEu/GregTech-Modern/pull/2183)
+- Tree Felling Interaction Fixes by @YoungOnionMC in [#2218](https://github.com/GregTechCEu/GregTech-Modern/pull/2218)
+- fix Large Bronze Boiler GUI  by @Spicierspace153 in [#2223](https://github.com/GregTechCEu/GregTech-Modern/pull/2223)
+- Machine Ownership Config Wording by @YoungOnionMC in [#2225](https://github.com/GregTechCEu/GregTech-Modern/pull/2225)
+- Fix Power Substation inworld preview by @YoungOnionMC in [#2230](https://github.com/GregTechCEu/GregTech-Modern/pull/2230)
+- Change Wooden Tank Valve recipe to use copper rotor instead of lead rotor by @JuiceyBeans in [#2208](https://github.com/GregTechCEu/GregTech-Modern/pull/2208)
+- Fix Power Substation display when there is no input or output by @teh-banana in [#2239](https://github.com/GregTechCEu/GregTech-Modern/pull/2239)
+- Fix multiblock strcuture checking by @Yefancy in [#2247](https://github.com/GregTechCEu/GregTech-Modern/pull/2247)
+- Fix Aluminium Cell not showing Fluid by @YoungOnionMC in [#2244](https://github.com/GregTechCEu/GregTech-Modern/pull/2244)
+- Fixed input output mismatch in input bus/hatch lang entries by @ghost in [#2243](https://github.com/GregTechCEu/GregTech-Modern/pull/2243)
+- Research Station OC Fix by @YoungOnionMC in [#2259](https://github.com/GregTechCEu/GregTech-Modern/pull/2259)
+- Combustion Engine Logic Fixes by @YoungOnionMC in [#2287](https://github.com/GregTechCEu/GregTech-Modern/pull/2287)
+- Fix Cables emitting smoke on first tick by @YoungOnionMC in [#2288](https://github.com/GregTechCEu/GregTech-Modern/pull/2288)
+- Fix Smelting recipes being duplicated due to FURNACE_RECIPES by @YoungOnionMC in [#2306](https://github.com/GregTechCEu/GregTech-Modern/pull/2306)
+- Fix miscalculation of max parallel by output for non-64 stacked items by @YoungOnionMC in [#2305](https://github.com/GregTechCEu/GregTech-Modern/pull/2305)
+- Fix tape slot in Maintenance Hatches by @YoungOnionMC in [#2312](https://github.com/GregTechCEu/GregTech-Modern/pull/2312)
+- Flip Red and Blue Steel composition and usage by @YoungOnionMC in [#2299](https://github.com/GregTechCEu/GregTech-Modern/pull/2299)
+- Fix misaligned connected textures. by @WithersChat in [#2321](https://github.com/GregTechCEu/GregTech-Modern/pull/2321)
+- adds platinum spring by @Spicierspace153 in [#2323](https://github.com/GregTechCEu/GregTech-Modern/pull/2323)
+- Fix steam multiblock args by @krossgg in [#2324](https://github.com/GregTechCEu/GregTech-Modern/pull/2324)
+- Fix NoClassFoundException when EMI was not installed by @krossgg in [#2325](https://github.com/GregTechCEu/GregTech-Modern/pull/2325)
+
+### Changed
+
+- Refactor configs for vanilla recipes by @JuiceyBeans in [#2197](https://github.com/GregTechCEu/GregTech-Modern/pull/2197)
+- Move from LDLib's FluidStack implementation to Forge's FluidStack by @krossgg in [#1975](https://github.com/GregTechCEu/GregTech-Modern/pull/1975)
+- Update zh_cn.json by @iouter in [#2191](https://github.com/GregTechCEu/GregTech-Modern/pull/2191)
+- Update Japanese translate by @code-onigiri in [#2188](https://github.com/GregTechCEu/GregTech-Modern/pull/2188)
+- Change EV-tier Voltage Coil material to Platinum by @Zorbatron in [#2233](https://github.com/GregTechCEu/GregTech-Modern/pull/2233)
+- Update zh_tw.json by @IamNotBrianZ in [#2236](https://github.com/GregTechCEu/GregTech-Modern/pull/2236)
+- Renames GCYM classes to proper capitalization by @YoungOnionMC in [#2047](https://github.com/GregTechCEu/GregTech-Modern/pull/2047)
+- Rewrite OreDictExprFilter to fix tag filter functionality by @bdemmy in [#2220](https://github.com/GregTechCEu/GregTech-Modern/pull/2220)
+- Move from LDLib's IItemTransfer to Forge's IItemHandler by @krossgg in [#2246](https://github.com/GregTechCEu/GregTech-Modern/pull/2246)
+- Replace the Tungstensteel heating components with RTM Alloy by @a-a-GiTHuB-a-a in [#2275](https://github.com/GregTechCEu/GregTech-Modern/pull/2275)
+- Update zh_cn.json by @iouter in [#2301](https://github.com/GregTechCEu/GregTech-Modern/pull/2301)
+- Change Jade to show Steam usage by @krossgg in [#2309](https://github.com/GregTechCEu/GregTech-Modern/pull/2309)
+- Swap crafting component for Laser Input/Output Hatches by @YoungOnionMC in [#2303](https://github.com/GregTechCEu/GregTech-Modern/pull/2303)
+- Removes the old PA config by @YoungOnionMC in [#2308](https://github.com/GregTechCEu/GregTech-Modern/pull/2308)
+- Refactor CleaningMaintenanceHatch by @YoungOnionMC in [#2307](https://github.com/GregTechCEu/GregTech-Modern/pull/2307)
+- Replace all usage of OreDict with modern's Tag by @YoungOnionMC in [#2313](https://github.com/GregTechCEu/GregTech-Modern/pull/2313)
+- Changed the gas-filter texture to be semi-isometric like circuits/lenses/etc by @Ghostipedia in [#2315](https://github.com/GregTechCEu/GregTech-Modern/pull/2315)
+- Move some vanilla dye recipes to the Extractor by @Spicierspace153 in [#2322](https://github.com/GregTechCEu/GregTech-Modern/pull/2322)
+
+ 
+## Version [v1.4.6](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.4.5...v1.4.6)
+### Added
+
+- Add Programmed Circuits to GTEmiRecipe Catalysts by @krossgg in [#2175](https://github.com/GregTechCEu/GregTech-Modern/pull/2175)
+
+### Fixed
+
+- Fix NPE caused by filter not loading properly on cover by @YoungOnionMC in [#2176](https://github.com/GregTechCEu/GregTech-Modern/pull/2176)
+- Fix issues with serialization by @krossgg in [#2177](https://github.com/GregTechCEu/GregTech-Modern/pull/2177)
+
+ 
+## Version [v1.4.5](https://github.com/GregTechCEu/GregTech-Modern/compare/1.20.1-1.4.4...v1.4.5)
+### Added
+
+- Replace wrench with plate in bender recipe by @JuiceyBeans in [#2057](https://github.com/GregTechCEu/GregTech-Modern/pull/2057)
+- Machine Ownership by @YoungOnionMC in [#1970](https://github.com/GregTechCEu/GregTech-Modern/pull/1970)
+- Give coils an actual EU discount in EBF by @YoungOnionMC in [#2055](https://github.com/GregTechCEu/GregTech-Modern/pull/2055)
+- Multiblock Display Text for Outputs by @YoungOnionMC in [#2048](https://github.com/GregTechCEu/GregTech-Modern/pull/2048)
+- Make magnetic tool property pull mob drops too by @JuiceyBeans in [#2037](https://github.com/GregTechCEu/GregTech-Modern/pull/2037)
+- Yeet Sand from OreVeins by @Ghostipedia in [#2078](https://github.com/GregTechCEu/GregTech-Modern/pull/2078)
+- Give torch placing a sound by @YoungOnionMC in [#2091](https://github.com/GregTechCEu/GregTech-Modern/pull/2091)
+- Port of 1.12 hard ebf recipe by @YoungOnionMC in [#2093](https://github.com/GregTechCEu/GregTech-Modern/pull/2093)
+- Add tags for GT components by @JuiceyBeans in [#2111](https://github.com/GregTechCEu/GregTech-Modern/pull/2111)
+- Add in-line filtering for item and fluid pipes by @YoungOnionMC in [#2126](https://github.com/GregTechCEu/GregTech-Modern/pull/2126)
+- Add Storage Cover by @Spicierspace153 in [#1990](https://github.com/GregTechCEu/GregTech-Modern/pull/1990)
+- Add placable surface rock items by @YoungOnionMC in [#2132](https://github.com/GregTechCEu/GregTech-Modern/pull/2132)
+- Aisle Repetition Storage by @YoungOnionMC in [#2140](https://github.com/GregTechCEu/GregTech-Modern/pull/2140)
+- Copy the EBF's temperature tooltip to the ABS and RHF by @Zorbatron in [#2142](https://github.com/GregTechCEu/GregTech-Modern/pull/2142)
+- Add cutting recipe for stained glass panes by @YoungOnionMC in [#2144](https://github.com/GregTechCEu/GregTech-Modern/pull/2144)
+- Add ability to set ghost circuit using held circuit item by @YoungOnionMC in [#2145](https://github.com/GregTechCEu/GregTech-Modern/pull/2145)
+- Add dough by @YoungOnionMC in [#2147](https://github.com/GregTechCEu/GregTech-Modern/pull/2147)
+- fluid crafting table recipes by @screret in [#2152](https://github.com/GregTechCEu/GregTech-Modern/pull/2152)
+
+### Fixed
+
+- Give coils an actual EU discount in EBF by @YoungOnionMC in [#2055](https://github.com/GregTechCEu/GregTech-Modern/pull/2055)
+- Update tooltip capitalization for consistency by @JuiceyBeans in [#2061](https://github.com/GregTechCEu/GregTech-Modern/pull/2061)
+- Misc recipe fixes by @JuiceyBeans in [#2056](https://github.com/GregTechCEu/GregTech-Modern/pull/2056)
+- Torch Behaviour, now with less duping by @YoungOnionMC in [#2067](https://github.com/GregTechCEu/GregTech-Modern/pull/2067)
+- Fix broken treated wood recipes by @Electrolyte220 in [#2045](https://github.com/GregTechCEu/GregTech-Modern/pull/2045)
+- Remove any connected miner pipes when the machine is removed by @Vextin in [#2064](https://github.com/GregTechCEu/GregTech-Modern/pull/2064)
+- Add missing flags for materials by @JuiceyBeans in [#2024](https://github.com/GregTechCEu/GregTech-Modern/pull/2024)
+- Output Line Infinite formatting by @YoungOnionMC in [#2082](https://github.com/GregTechCEu/GregTech-Modern/pull/2082)
+- AE2 Integration: Use smart cable connection type for ME Connected blocks by @RealKC in [#2087](https://github.com/GregTechCEu/GregTech-Modern/pull/2087)
+- Missing progress lang for some multis by @YoungOnionMC in [#2090](https://github.com/GregTechCEu/GregTech-Modern/pull/2090)
+- Fix fluid drilling rig not working with 2 hatches by @YoungOnionMC in [#2092](https://github.com/GregTechCEu/GregTech-Modern/pull/2092)
+- Fix Wooden sign recipes by @YoungOnionMC in [#2094](https://github.com/GregTechCEu/GregTech-Modern/pull/2094)
+- Stone tags and LPG localisation by @JuiceyBeans in [#2095](https://github.com/GregTechCEu/GregTech-Modern/pull/2095)
+- Add more interactions + fixes for Lighter by @JuiceyBeans in [#2075](https://github.com/GregTechCEu/GregTech-Modern/pull/2075)
+- Fix Large Miner bus requirement by @YoungOnionMC in [#2121](https://github.com/GregTechCEu/GregTech-Modern/pull/2121)
+- Fix Assembly Line ordering for certain orientations by @YoungOnionMC in [#2119](https://github.com/GregTechCEu/GregTech-Modern/pull/2119)
+- Fix Gem downcrafting recipes by @YoungOnionMC in [#2102](https://github.com/GregTechCEu/GregTech-Modern/pull/2102)
+- Fix Recipe NBT Serialization by @YoungOnionMC in [#2105](https://github.com/GregTechCEu/GregTech-Modern/pull/2105)
+- Fix Drum Item fluid property handling by @YoungOnionMC in [#2128](https://github.com/GregTechCEu/GregTech-Modern/pull/2128)
+- Misc Recipe Fixes by @Electrolyte220 in [#2125](https://github.com/GregTechCEu/GregTech-Modern/pull/2125)
+- Rubber Wood/Log Fixes by @Electrolyte220 in [#2097](https://github.com/GregTechCEu/GregTech-Modern/pull/2097)
+- Fix Frame Block being deleted upon shift-click with pipe by @YoungOnionMC in [#2131](https://github.com/GregTechCEu/GregTech-Modern/pull/2131)
+- Fix Heat Capacity not showing in ABS and EBF by @RealKC in [#2134](https://github.com/GregTechCEu/GregTech-Modern/pull/2134)
+- Fix Debrominated brine not having any usage by @YoungOnionMC in [#2133](https://github.com/GregTechCEu/GregTech-Modern/pull/2133)
+- Add back backwards compatibility for the SteamParallelMultiblock constructor by @krossgg in [#2139](https://github.com/GregTechCEu/GregTech-Modern/pull/2139)
+- Fix voltage floor formula causing negative values by @YoungOnionMC in [#2141](https://github.com/GregTechCEu/GregTech-Modern/pull/2141)
+- Fix insertion and extraction of rotors in rotor holders by @YoungOnionMC in [#2143](https://github.com/GregTechCEu/GregTech-Modern/pull/2143)
+- Fix Lighter ground behavior by @YoungOnionMC in [#2146](https://github.com/GregTechCEu/GregTech-Modern/pull/2146)
+- Fix magnetic double plate overlay by @YoungOnionMC in [#2148](https://github.com/GregTechCEu/GregTech-Modern/pull/2148)
+- Fix Surface Rock model in inventories and player by @YoungOnionMC in [#2155](https://github.com/GregTechCEu/GregTech-Modern/pull/2155)
+- Fix various recipe and item issues by @JuiceyBeans in [#2077](https://github.com/GregTechCEu/GregTech-Modern/pull/2077)
+- Fix various Cleanroom issues by @krossgg in [#2156](https://github.com/GregTechCEu/GregTech-Modern/pull/2156)
+- Fixed milk crash by @YoungOnionMC in [#2158](https://github.com/GregTechCEu/GregTech-Modern/pull/2158)
+- Fix progress bar textures by @JuiceyBeans in [#2163](https://github.com/GregTechCEu/GregTech-Modern/pull/2163)
+- Fix FoodStats tooltip by @JuiceyBeans in [#2161](https://github.com/GregTechCEu/GregTech-Modern/pull/2161)
+
+### Changed
+
+- Update manage-pr-labels.yml by @krossgg in [#2062](https://github.com/GregTechCEu/GregTech-Modern/pull/2062)
+- Change Wooden Multiblock Tank recipe to use copper instead of lead by @JuiceyBeans in [#2107](https://github.com/GregTechCEu/GregTech-Modern/pull/2107)
+- Allow Steam Multiblocks to have variable parallel amounts by @Deepacat in [#2108](https://github.com/GregTechCEu/GregTech-Modern/pull/2108)
+- Refactor and add missing sign & trapdoor recipes by @Electrolyte220 in [#2098](https://github.com/GregTechCEu/GregTech-Modern/pull/2098)
+- Rework Pump Machine logic to fix issues by @eragaxshim in [#2003](https://github.com/GregTechCEu/GregTech-Modern/pull/2003)
+
+ 
+Version: 1.4.1
 
 ### ADDITIONS:
-- Ordered Assembly Lines
-- Integration of Monazite: providing lots of additional functionality to jade
-- Ghost Circuits for fluid hatches
-- Overclocking beyond MAX voltage
-- Much more lamp variants, with bloom support
-- Subtick parallels, if a recipe oc's past 1 tick it does parallels instead
+ 
+- Added Textures for Computer Casings styled around the new texture standard
+- Fluid Tags for Molten Fluids & Plasmas
+- Datasticks will now render the primary item within contained data when holding SHIFT
 
 ### CHANGES:
-- In world multiblock preview now properly works with rotated multiblocks
-- Updated jp and tw lang
-- Fusion Reactors now show a bloom ring when running a recipe
-- Pipes of any kind can be water logged
+
+- Parallel Hatches can no longer be shared.
+- SI Formatting for large fluid amounts
+- Updated all hatches and busses recipes to match GTCEU : 1.12.2
+- Hazard gear works in curios slots
+- Changed the location of the dimension icon for dimension based recipes
+- KubeJS Support for research methods
+- Research recipes now display CWU total in JADE and use the proper EU values.
+- PACK DEVS ! - Can now define render toggles for multiblocks
+- ADDON DEVS ! - OCLogic has been modified, please verify your addons reflect these new changes.
 
 ### FIXES:
-- Disabling hazard config now properly disables everything hazard related
-- Rubber trees spawn chance config now works
-- Singleblock machines can no longer run a recipe beyond its tier
-- Fluid Hatch locking properly saves between world loads
-- Color-changing tooltip now changes colors properly
+   
+- Fixed Rubber Leaves and Saplings not being able to compost.
+- Fix fluid output slots accepting manual inputs
+- Large variety of recipe logic and OC logic fixes
+- Fixed AEParts in assembly lines having wrong recipe voltages
+- Fixes Crashes due to null recipes caused by HighTier being disabled
+- Fixed PartialNBT usage in recipes
+- Various KubeJS recipe fixes
+- ME Export Bus is now considered an "EXPORT_ITEMS" part ability
+- Fix bedrock ore miner not overclocking
+- Assembly line Structure no longer allows MEBufferParts
+

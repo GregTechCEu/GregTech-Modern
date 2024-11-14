@@ -176,9 +176,9 @@ public class FusionLoader {
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("silver_and_lithium_to_indium_plasma")
-                .inputFluids(GTMaterials.Silver.getFluid(144))
-                .inputFluids(GTMaterials.Lithium.getFluid(144))
-                .outputFluids(GTMaterials.Indium.getFluid(144))
+                .inputFluids(GTMaterials.Silver.getFluid(L))
+                .inputFluids(GTMaterials.Lithium.getFluid(L))
+                .outputFluids(GTMaterials.Indium.getFluid(L))
                 .duration(16)
                 .EUt(24576)
                 .fusionStartEU(280_000_000)

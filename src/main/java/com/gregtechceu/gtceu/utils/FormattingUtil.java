@@ -179,6 +179,11 @@ public class FormattingUtil {
         return DECIMAL_FORMAT_2F.format(number);
     }
 
+    @NotNull
+    public static String formatNumber2Places(double number) {
+        return DECIMAL_FORMAT_2F.format(number);
+    }
+
     public static Component formatPercentage2Places(String langKey, float percentage) {
         return Component.translatable(langKey, formatNumber2Places(percentage)).withStyle(YELLOW);
     }

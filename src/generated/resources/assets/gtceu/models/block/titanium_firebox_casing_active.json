@@ -1,0 +1,8 @@
+{
+  "parent": "gtceu:block/fire_box_active",
+  "textures": {
+    "bottom": "gtceu:block/casings/solid/machine_casing_stable_titanium",
+    "side": "gtceu:block/casings/firebox/machine_casing_firebox_titanium",
+    "top": "gtceu:block/casings/solid/machine_casing_stable_titanium"
+  }
+}

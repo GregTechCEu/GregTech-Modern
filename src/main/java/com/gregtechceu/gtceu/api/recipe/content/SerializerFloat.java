@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class SerializerFloat implements IContentSerializer<Float> {
@@ -47,5 +48,10 @@ public class SerializerFloat implements IContentSerializer<Float> {
     @Override
     public Float defaultValue() {
         return 0f;
+    }
+
+    @Override
+    public Codec<Float> codec() {
+        return Codec.FLOAT;
     }
 }

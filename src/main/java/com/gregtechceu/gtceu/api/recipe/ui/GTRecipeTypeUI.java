@@ -9,12 +9,14 @@ import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
-import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -24,7 +26,10 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -242,15 +247,18 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        ViewSearchBuilder.builder()
-                                                .addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType))
-                                                .open();
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> ViewSearchBuilder.builder()
+                                                        .addCategory(GTRecipeREICategory.CATEGORIES.apply(e)).open());
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(recipeType)));
+                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet()
+                                                        .stream().map(GTRecipeJEICategory.TYPES).toList()));
                                     } else if (LDLib.isEmiLoaded()) {
-                                        EmiApi.displayRecipeCategory(
-                                                GTRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                                        recipeType.getRecipesByCategory().keySet()
+                                                .forEach(e -> EmiApi
+                                                        .displayRecipeCategory(
+                                                                GTRecipeEMICategory.CATEGORIES.apply(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
@@ -270,7 +278,7 @@ public class GTRecipeTypeUI {
                                 widget -> {
                                     var index = WidgetUtils.widgetIdIndex(widget);
                                     cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null,
-                                            storage);
+                                            storage, 0, 0);
                                 });
                     }
                 }

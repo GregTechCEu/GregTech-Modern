@@ -11,17 +11,17 @@ import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.common.recipe.VentCondition;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -30,7 +30,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.Tables;
 import lombok.Setter;
@@ -43,8 +43,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleSteamMachine extends SteamWorkableMachine
-                                implements IExhaustVentMachine, IMachineModifyDrops, IUIMachine {
+public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaustVentMachine, IUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleSteamMachine.class,
             SteamWorkableMachine.MANAGED_FIELD_HOLDER);
@@ -74,7 +73,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {
@@ -90,13 +89,13 @@ public class SimpleSteamMachine extends SteamWorkableMachine
         super.onLoad();
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
-                List.of(new SteamEnergyRecipeHandler(steamTank, FluidHelper.getBucket() / 1000d)));
+                List.of(new SteamEnergyRecipeHandler(steamTank, 1d)));
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, importItems.storage);
-        clearInventory(drops, exportItems.storage);
+    public void onMachineRemoved() {
+        clearInventory(importItems.storage);
+        clearInventory(exportItems.storage);
     }
 
     //////////////////////////////////////
@@ -128,7 +127,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof SimpleSteamMachine steamMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
                 return null;
@@ -137,9 +137,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine
             var modified = recipe.copy();
             modified.conditions.add(VentCondition.INSTANCE);
 
-            if (!steamMachine.isHighPressure) {
-                modified.duration *= 2;
-                RecipeHelper.setInputEUt(modified, RecipeHelper.getInputEUt(recipe) / 2);
+            if (steamMachine.isHighPressure) {
+                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration, params.getOcAmount());
+            } else {
+                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2, params.getOcAmount());
             }
 
             return modified;

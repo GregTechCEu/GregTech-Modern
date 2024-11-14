@@ -40,7 +40,7 @@ public class PolarizingRecipeHandler {
                     .inputItems(polarizingPrefix, material)
                     .outputItems(magneticStack)
                     .duration((int) ((int) material.getMass() * polarizingPrefix.getMaterialAmount(material) / M))
-                    .EUt(8L * getVoltageMultiplier(material))
+                    .EUt(getVoltageMultiplier(material))
                     .save(provider);
 
             VanillaRecipeHelper.addSmeltingRecipe(provider,

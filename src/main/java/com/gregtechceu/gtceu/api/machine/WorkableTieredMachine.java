@@ -12,13 +12,10 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
-                                            IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
+                                            IMachineLife, IMufflableMachine, IOverclockMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -52,7 +49,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Persisted
     public int activeRecipeType;
     @Getter
-    public final Int2LongFunction tankScalingFunction;
+    public final Int2IntFunction tankScalingFunction;
     @Nullable
     @Getter
     @Setter
@@ -82,7 +79,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                  Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
@@ -194,9 +191,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, importItems.storage);
-        clearInventory(drops, exportItems.storage);
+    public void onMachineRemoved() {
+        clearInventory(importItems.storage);
+        clearInventory(exportItems.storage);
     }
 
     //////////////////////////////////////

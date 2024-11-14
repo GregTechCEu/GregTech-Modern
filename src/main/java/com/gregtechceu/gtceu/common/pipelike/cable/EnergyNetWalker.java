@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import com.llamalad7.mixinextras.lib.apache.commons.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

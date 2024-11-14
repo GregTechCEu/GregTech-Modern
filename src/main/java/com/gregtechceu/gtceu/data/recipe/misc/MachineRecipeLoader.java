@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.LampBlock;
@@ -15,11 +17,10 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -505,14 +507,6 @@ public class MachineRecipeLoader {
                 .EUt(16).duration(100)
                 .save(provider);
 
-        // TODO Crafting station, crafting cover
-        // ASSEMBLER_RECIPES.recipeBuilder("cover_crafting")
-        // .inputItems(WORKBENCH)
-        // .inputItems(plate, material)
-        // .outputItems(COVER_CRAFTING)
-        // .EUt(16).duration(100)
-        // .save(provider);
-
         FluidStack solder = SolderingAlloy.getFluid(L / 2);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_machine_controller")
@@ -625,16 +619,15 @@ public class MachineRecipeLoader {
                 .EUt(VA[HV]).duration(320)
                 .save(provider);
 
-        // TODO Storage cover
-        // ASSEMBLER_RECIPES.recipeBuilder()
-        // .inputItems(OreDictNames.chestWood.toString())
-        // .inputItems(ELECTRIC_PISTON_LV)
-        // .inputItems(plate, Iron)
-        // .inputFluids(SolderingAlloy.getFluid(72))
-        // .outputItems(COVER_STORAGE)
-        // .EUt(16)
-        // .duration(100)
-        // .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
+                .inputItems(Tags.Blocks.CHESTS_WOODEN)
+                .inputItems(ELECTRIC_PISTON_LV)
+                .inputItems(plate, Iron)
+                .inputFluids(SolderingAlloy.getFluid(72))
+                .outputItems(COVER_STORAGE)
+                .EUt(16)
+                .duration(100)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ULV.asStack()).circuitMeta(8).duration(25).save(provider);
@@ -835,9 +828,9 @@ public class MachineRecipeLoader {
                 .inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2)
                 .inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
                 .inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
                 .inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
                 .save(provider);
 
@@ -886,11 +879,17 @@ public class MachineRecipeLoader {
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE, 2).duration(100)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polycaprolactam").EUt(VA[LV]).inputItems(foil, Polycaprolactam, 2)
-                .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(144)).outputItems(DUCT_TAPE, 4).duration(100)
+                .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(L)).outputItems(DUCT_TAPE, 4).duration(100)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polybenzimidazole").EUt(VA[LV]).inputItems(foil, Polybenzimidazole)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(72)).outputItems(DUCT_TAPE, 8).duration(100)
                 .save(provider);
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "basic_tape", BASIC_TAPE.asStack(),
+                " P ", "PSP", " P ", 'P', new UnificationEntry(plate, Paper), 'S', STICKY_RESIN.asItem());
+        ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(plate, Paper, 2).inputItems(STICKY_RESIN)
+                .outputItems(BASIC_TAPE, 2)
+                .duration(100).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_steel")
                 .inputItems(plateDouble, Steel, 2)
@@ -1110,6 +1109,12 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
+        MACERATOR_RECIPES.recipeBuilder("macerate_obsidian")
+                .inputItems(new ItemStack(Blocks.OBSIDIAN))
+                .outputItems(dust, Obsidian)
+                .duration(150).EUt(2)
+                .save(provider);
+
         // TODO Stone-type tags?
         // if (!OreDictionary.getOres("stoneSoapstone").isEmpty())
         // MACERATOR_RECIPES.recipeBuilder()
@@ -1303,6 +1308,20 @@ public class MachineRecipeLoader {
     }
 
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
+        for (MachineDefinition chest : GTMachines.SUPER_CHEST) {
+            if (chest != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_chest_nbt_" + chest.getTier(),
+                        chest.asStack(), chest.asStack());
+            }
+        }
+
+        for (MachineDefinition tank : GTMachines.SUPER_TANK) {
+            if (tank != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_tank_nbt_" + tank.getTier(),
+                        tank.asStack(), tank.asStack());
+            }
+        }
+
         for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(),
@@ -1364,6 +1383,15 @@ public class MachineRecipeLoader {
         // Jetpacks
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
+                ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
+                FLUID_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", TAG_FILTER.asStack(),
+                TAG_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
+                TAG_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
@@ -1419,15 +1447,15 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : BUFFER_HATCH_TIERS) {
+        for (int tier : DUAL_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
-            var inputBuffer = INPUT_BUFFER[tier];
-            var outputBuffer = OUTPUT_BUFFER[tier];
+            var inputBuffer = DUAL_IMPORT_HATCH[tier];
+            var outputBuffer = DUAL_EXPORT_HATCH[tier];
 
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_output_to_input_" + tierName,
+                    "dual_hatch_output_to_input_" + tierName,
                     inputBuffer.asStack(),
                     "d",
                     "B",
@@ -1435,7 +1463,7 @@ public class MachineRecipeLoader {
                     outputBuffer.asStack());
             VanillaRecipeHelper.addShapedRecipe(
                     provider,
-                    "buffer_input_to_output_" + tierName,
+                    "dual_hatch_input_to_output_" + tierName,
                     outputBuffer.asStack(),
                     "d",
                     "B",
@@ -1449,16 +1477,19 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_input_to_output", STEAM_IMPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_EXPORT_BUS.asStack());
 
-        // TODO fix the ME buses/hatches
-        // if (GTCEu.isAE2Loaded()) {
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
-        // GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_EXPORT_HATCH.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output",
-        // GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_IMPORT_HATCH.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input",
-        // GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
-        // VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output",
-        // GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
-        // }
+        if (GTCEu.isAE2Loaded()) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output",
+                    GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input",
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack());
+            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output",
+                    GTAEMachines.ITEM_EXPORT_BUS_ME.asStack(), "d", "B", 'B',
+                    GTAEMachines.ITEM_IMPORT_BUS_ME.asStack());
+        }
     }
 }

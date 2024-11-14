@@ -1,9 +1,6 @@
 {
   "values": [
     "gtceu:chemical_brown_dye",
-    {
-      "id": "gtceu:metal_mixture_dust",
-      "required": false
-    }
+    "gtceu:metal_mixture_dust"
   ]
 }

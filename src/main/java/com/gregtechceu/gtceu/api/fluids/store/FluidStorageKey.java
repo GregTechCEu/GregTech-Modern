@@ -22,6 +22,8 @@ public final class FluidStorageKey {
     @Getter
     private final ResourceLocation resourceLocation;
     @Getter
+    private final String tagKey;
+    @Getter
     private final MaterialIconType iconType;
     private final Function<Material, String> registryNameFunction;
     private final Function<Material, String> translationKeyFunction;
@@ -31,11 +33,13 @@ public final class FluidStorageKey {
     @Getter
     private final int registrationPriority;
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
+    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
+                           @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
         this.resourceLocation = resourceLocation;
+        this.tagKey = tagKey;
         this.iconType = iconType;
         this.registryNameFunction = registryNameFunction;
         this.translationKeyFunction = translationKeyFunction;

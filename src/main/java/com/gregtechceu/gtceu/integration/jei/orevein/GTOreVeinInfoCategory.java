@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jei.orevein;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
@@ -34,11 +34,11 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.background = guiHelper.createBlankDrawable(GTOreVeinWidget.width, 120);
         this.icon = helpers.getGuiHelper()
-                .createDrawableItemStack(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Iron));
+                .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, GTRegistries.ORE_VEINS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_ORE_VEINS.values().stream()
                 .map(GTOreVeinInfoWrapper::new)
                 .toList());
     }
@@ -53,7 +53,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(GTItems.PROSPECTOR_LV.asStack(), RECIPE_TYPE);
         registration.addRecipeCatalyst(GTItems.PROSPECTOR_HV.asStack(), RECIPE_TYPE);
-        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(GTItems.PROSPECTOR_LuV.asStack(), RECIPE_TYPE);
     }
 
     @NotNull

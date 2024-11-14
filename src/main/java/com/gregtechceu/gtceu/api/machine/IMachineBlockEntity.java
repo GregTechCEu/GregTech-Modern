@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
@@ -80,5 +81,11 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
     default void loadCustomPersistedData(CompoundTag tag) {
         IAutoPersistBlockEntity.super.loadCustomPersistedData(tag);
         getMetaMachine().loadCustomPersistedData(tag);
+    }
+
+    default void setOwner(IMachineOwner owner) {}
+
+    default IMachineOwner getOwner() {
+        return null;
     }
 }

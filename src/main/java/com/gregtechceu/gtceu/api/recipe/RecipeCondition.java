@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -11,30 +12,43 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
  * @date 2022/05/27
  * @implNote RecipeCondition, global conditions
  */
+@Accessors(chain = true)
 public abstract class RecipeCondition {
 
-    @Nullable
-    public static RecipeCondition create(Class<? extends RecipeCondition> clazz) {
-        if (clazz == null) return null;
-        try {
-            return clazz.newInstance();
-        } catch (Exception ignored) {
-            GTCEu.LOGGER.error("condition {} has no NonArgsConstructor", clazz);
-            return null;
-        }
+    public static final Codec<RecipeCondition> CODEC = GTRegistries.RECIPE_CONDITIONS.codec()
+            .dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
+
+    public static <
+            RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
+        return instance.group(Codec.BOOL.optionalFieldOf("reverse", false).forGetter(val -> val.isReverse));
     }
 
+    @Getter
+    @Setter
     protected boolean isReverse;
 
-    public abstract String getType();
+    public RecipeCondition() {
+        this(false);
+    }
+
+    public RecipeCondition(boolean isReverse) {
+        this.isReverse = isReverse;
+    }
+
+    public abstract RecipeConditionType<?> getType();
 
     public String getTranslationKey() {
         return "gtceu.recipe.condition." + getType();
@@ -49,17 +63,8 @@ public abstract class RecipeCondition {
                 0.5f);
     }
 
-    public boolean isReverse() {
-        return isReverse;
-    }
-
     public boolean isOr() {
         return false;
-    }
-
-    public RecipeCondition setReverse(boolean reverse) {
-        isReverse = reverse;
-        return this;
     }
 
     public abstract Component getTooltips();

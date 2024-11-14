@@ -70,97 +70,84 @@ public interface IJetpack {
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
         double deltaY = player.getDeltaMovement().y();
 
-        if (!hover || !flightEnabled) {
-            if (player.position().y() < player.level().getMinBuildHeight() - 5) {
-                performEHover(stack, player);
-            } else {
-                if (!player.isCreative() && player.fallDistance - 1.2f >= player.getHealth()) {
-                    if (!player.onGround() && !player.isSwimming()) {
-                        performEHover(stack, player);
-                    }
-                }
-            }
-        }
-
-        if (!flightEnabled) {
+        if ((!flightEnabled || !hover) && player.getY() < player.level().getMinBuildHeight() - 5) {
+            performEHover(stack, player);
+        } else if (!flightEnabled) {
             return;
         }
 
         boolean flyKeyDown = KeyBind.VANILLA_JUMP.isKeyDown(player);
         boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
-
-        double hoverSpeed = descendKeyDown ? getVerticalHoverSpeed() : getVerticalHoverSlowSpeed();
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
-        double currentSpeedVertical = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
 
-        if (!player.onGround() && canUseEnergy(stack, getEnergyPerUse())) {
-            drainEnergy(stack, (int) (player.isSprinting() ?
-                    Math.round(getEnergyPerUse() * getSprintEnergyModifier()) : getEnergyPerUse()));
+        if (!player.onGround() && player.getSleepingPos().isEmpty() && canUseEnergy(stack, getEnergyPerUse())) {
+            double potentialY = 0;
+            boolean editMotion = true;
 
-            double potentialY;
-            boolean editMotion = false;
-            if (hasEnergy(stack)) {
-                if (hover) {
-                    if (flyKeyDown && descendKeyDown) {
-                        potentialY = getVerticalHoverSlowSpeed();
-                    } else if (flyKeyDown) {
-                        potentialY = getVerticalHoverSpeed();
-                    } else if (descendKeyDown) {
-                        potentialY = -getVerticalHoverSpeed();
-                    } else {
-                        potentialY = 0.0;
-                    }
-
-                    if (player.isFallFlying()) { // if the player is hovering negate fall motion
-                        player.stopFallFlying();
-                    }
-                    editMotion = true;
+            if (hover) {
+                if (flyKeyDown && descendKeyDown) {
+                    potentialY = getVerticalHoverSlowSpeed();
+                } else if (flyKeyDown) {
+                    potentialY = getVerticalHoverSpeed();
+                } else if (descendKeyDown) {
+                    potentialY = -getVerticalHoverSpeed();
                 } else {
-                    if (flyKeyDown) {
-                        potentialY = currentSpeedVertical;
-                        editMotion = true;
-                        if (descendKeyDown) {
-                            potentialY -= currentSpeedVertical;
-                        }
-                    } else {
-                        potentialY = -hoverSpeed;
-                    }
-                }
-                potentialY = Math.min(deltaY + currentAccel, potentialY);
-                if (editMotion)
-                    setYMotion(player, potentialY);
-
-                float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
-                        getSidewaysSpeed());
-                float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
-                        speedSideways);
-
-                // make sure they arent using elytra movement
-                if (!player.isFallFlying()) {
-                    if (KeyBind.VANILLA_FORWARD.isKeyDown(player)) {
-                        player.moveRelative(speedForward, new Vec3(0, 0, speedForward));
-                    }
-                    if (KeyBind.VANILLA_BACKWARD.isKeyDown(player)) {
-                        player.moveRelative(speedSideways * 0.8f, new Vec3(0, 0, -speedForward));
-                    }
-                    if (KeyBind.VANILLA_LEFT.isKeyDown(player)) {
-                        player.moveRelative(speedSideways, new Vec3(speedSideways, 0, 0));
-                    }
-                    if (KeyBind.VANILLA_RIGHT.isKeyDown(player)) {
-                        player.moveRelative(-speedSideways, new Vec3(speedSideways, 0, 0));
-                    }
+                    potentialY = -getVerticalHoverSlowSpeed();
                 }
 
-                // ensure that the player is actually using the jetpack to cancel fall damage
-                if (!player.level().isClientSide && (hover || flyKeyDown)) {
-                    player.fallDistance = 0;
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.connection.aboveGroundTickCount = 0;
-                    }
+                if (player.isFallFlying()) { // if the player is hovering negate fall motion
+                    player.stopFallFlying();
                 }
-
+            } else {
+                if (flyKeyDown && descendKeyDown) {
+                    potentialY = 0;
+                } else if (flyKeyDown) {
+                    potentialY = getVerticalSpeed() * (player.isInWater() ? 0.4D : 1.0D);
+                } else { // Free fall, don't need to edit motion
+                    editMotion = false;
+                }
             }
-            ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
+
+            if (editMotion) {
+                potentialY = Math.min(deltaY + currentAccel, potentialY);
+                setYMotion(player, potentialY);
+            }
+
+            float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
+                    getSidewaysSpeed());
+            float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
+                    speedSideways);
+
+            // Make sure they aren't using elytra movement
+            if (!player.isFallFlying()) {
+                Vec3 movement = new Vec3(0, 0, 0);
+                if (KeyBind.VANILLA_FORWARD.isKeyDown(player)) movement = movement.add(0, 0, speedForward);
+                if (KeyBind.VANILLA_BACKWARD.isKeyDown(player)) movement = movement.add(0, 0, -speedSideways * 0.8f);
+                if (KeyBind.VANILLA_LEFT.isKeyDown(player)) movement = movement.add(speedSideways, 0, 0);
+                if (KeyBind.VANILLA_RIGHT.isKeyDown(player)) movement = movement.add(-speedSideways, 0, 0);
+
+                var dist = movement.length();
+                if (dist >= 1.0E-7) {
+                    player.moveRelative((float) dist, movement);
+                    if (!editMotion) editMotion = true;
+                }
+            }
+
+            if (editMotion) {
+                int energyUsed = (int) Math
+                        .round(getEnergyPerUse() * (player.isSprinting() ? getSprintEnergyModifier() : 1));
+                drainEnergy(stack, energyUsed);
+                ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
+            }
+
+            // ensure that the player is actually using the jetpack to cancel fall damage
+            if (!player.level().isClientSide && (hover || flyKeyDown)) {
+                player.fallDistance = 0;
+                if (player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.connection.aboveGroundTickCount = 0;
+                }
+            }
+
         }
     }
 
@@ -169,17 +156,14 @@ public interface IJetpack {
         player.setDeltaMovement(motion.x(), value, motion.z());
     }
 
-    private static void performEHover(ItemStack stack, Player player) {
+    static void performEHover(ItemStack stack, Player player) {
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains("enabled"))
-            tag.putBoolean("enabled", true);
-        if (tag.contains("hover"))
-            tag.putBoolean("hover", true);
+        tag.putBoolean("enabled", true);
+        tag.putBoolean("hover", true);
         player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
-        stack.setTag(tag);
+        player.fallDistance = 0;
 
         if (!player.level().isClientSide) {
-            player.fallDistance = 0;
             if (player instanceof ServerPlayer) {
                 ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
             }

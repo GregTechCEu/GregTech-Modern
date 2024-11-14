@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class SerializerDouble implements IContentSerializer<Double> {
@@ -47,5 +48,10 @@ public class SerializerDouble implements IContentSerializer<Double> {
     @Override
     public Double defaultValue() {
         return 0d;
+    }
+
+    @Override
+    public Codec<Double> codec() {
+        return Codec.DOUBLE;
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 
+import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,7 +23,10 @@ import java.util.function.Consumer;
 public class MedicalCondition {
 
     public static final Map<String, MedicalCondition> CONDITIONS = new HashMap<>();
+    public static final Codec<MedicalCondition> CODEC = Codec.STRING.xmap(MedicalCondition.CONDITIONS::get,
+            MedicalCondition::getName);
 
+    @Getter
     public final String name;
     public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached

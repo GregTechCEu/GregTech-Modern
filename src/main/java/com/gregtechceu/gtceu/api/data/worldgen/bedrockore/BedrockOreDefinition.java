@@ -138,6 +138,14 @@ public class BedrockOreDefinition {
         };
     }
 
+    public List<Integer> getAllChances() {
+        return materials().stream().map(Pair::getSecond).toList();
+    }
+
+    public List<Material> getAllMaterials() {
+        return materials().stream().map(Pair::getFirst).toList();
+    }
+
     public static Builder builder(ResourceLocation name) {
         return new Builder(name);
     }

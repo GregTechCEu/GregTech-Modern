@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/naquadah_coil_block"
+    },
+    "active=true": {
+      "model": "gtceu:block/naquadah_coil_block_active"
+    }
+  }
+}

@@ -49,8 +49,8 @@ public class CustomBlockRotations {
         }
 
         @Override
-        public boolean showXOnSide(BlockState state, Direction facing) {
-            return state.getValue(HorizontalDirectionalBlock.FACING) == facing;
+        public boolean showSideTip(BlockState state, Direction side) {
+            return side.getAxis() != Direction.Axis.Y && state.getValue(HorizontalDirectionalBlock.FACING) != side;
         }
     };
 
@@ -70,8 +70,8 @@ public class CustomBlockRotations {
         }
 
         @Override
-        public boolean showXOnSide(BlockState state, Direction facing) {
-            return state.getValue(DirectionalBlock.FACING) == facing;
+        public boolean showSideTip(BlockState state, Direction side) {
+            return state.getValue(DirectionalBlock.FACING) != side;
         }
     };
 
@@ -111,8 +111,8 @@ public class CustomBlockRotations {
             }
 
             @Override
-            public boolean showXOnSide(BlockState state, Direction facing) {
-                return state.getValue(HopperBlock.FACING) == facing;
+            public boolean showSideTip(BlockState state, Direction side) {
+                return side != Direction.UP && state.getValue(HopperBlock.FACING) != side;
             }
         }),
 

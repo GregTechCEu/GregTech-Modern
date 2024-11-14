@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -305,7 +305,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         level.getLightEngine().checkBlock(worldPosition);
-        if (!level.isClientSide) {
+        if (!level.isClientSide && temperature >= meltTemp) {
             var facing = Direction.UP;
             float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
             float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;

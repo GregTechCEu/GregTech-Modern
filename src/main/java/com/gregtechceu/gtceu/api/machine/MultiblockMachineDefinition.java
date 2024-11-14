@@ -46,6 +46,9 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Getter
     @Setter
     private boolean allowFlip;
+    @Getter
+    @Setter
+    private boolean renderXEIPreview;
     @Setter
     @Getter
     @Nullable

@@ -84,8 +84,6 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             }
             data.putBoolean("nightVision", nightVision);
 
-        } else if (type == ArmorItem.Type.BOOTS) {
-            updateStepHeight(player);
         }
 
         if (nightVisionTimer > 0) nightVisionTimer--;
@@ -168,7 +166,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("Nightvision");
+            boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

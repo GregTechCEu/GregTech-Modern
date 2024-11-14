@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -31,6 +32,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -332,10 +334,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
-        if (toolTypes.contains(getPipeTuneTool()) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+    public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
+                                    Set<GTToolType> toolTypes) {
+        if (toolTypes.contains(getPipeTuneTool())) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
-            if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
+            if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
         return false;
     }
@@ -345,7 +348,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(getPipeTuneTool())) {
             if (player.isShiftKeyDown() && this.canHaveBlockedFaces()) {
                 return getPipeTexture(isBlocked(side));
@@ -355,7 +359,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         }
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, toolTypes, side);
+            return cover.sideTips(player, pos, state, toolTypes, side);
         }
         return null;
     }
@@ -441,5 +445,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     public static boolean isConnected(int connections, Direction side) {
         return (connections & (1 << side.ordinal())) > 0;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        TagFixer.fixFluidTags(tag);
+        super.load(tag);
     }
 }

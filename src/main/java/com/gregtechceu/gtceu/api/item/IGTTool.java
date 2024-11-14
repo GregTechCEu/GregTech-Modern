@@ -175,6 +175,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         if (toolProperty.isMagnetic()) {
             behaviourTag.putBoolean(RELOCATE_MINED_BLOCKS_KEY, true);
+            behaviourTag.putBoolean(RELOCATE_MOB_DROPS_KEY, true);
         }
 
         return stack;

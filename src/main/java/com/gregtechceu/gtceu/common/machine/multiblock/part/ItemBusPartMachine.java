@@ -3,22 +3,22 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -28,14 +28,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineModifyDrops {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -106,11 +103,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, getInventory().storage);
+    public void onMachineRemoved() {
+        clearInventory(getInventory().storage);
 
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(drops, circuitInventory.storage);
+            clearInventory(circuitInventory.storage);
         }
     }
 
@@ -164,8 +161,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     protected void updateInventorySubscription() {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
-                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()),
-                        getFrontFacing().getOpposite()) != null) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

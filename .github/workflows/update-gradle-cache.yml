@@ -1,0 +1,26 @@
+# Updates the Gradle Cache when necessary
+name: Update Gradle Cache
+
+on:
+  push:
+    branches: ['1.20.1', '1.21']
+    paths: ['gradle/**', '**/*.gradle', 'gradle.properties', 'gradlew*', 'src/main/resources/accesstransformer.cfg']
+  workflow_dispatch:
+
+concurrency:
+  group: gradle-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-cache:
+    name: Update Grade Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
+        with:
+          update-cache: true
+      - name: Build Project with Gradle
+        run: ./gradlew assemble --warning-mode all --build-cache

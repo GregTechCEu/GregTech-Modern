@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "gtceu:block/casings/battery/luv_lapotronic/top",
+    "side": "gtceu:block/casings/battery/luv_lapotronic/side",
+    "top": "gtceu:block/casings/battery/luv_lapotronic/top"
+  }
+}

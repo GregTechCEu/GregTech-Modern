@@ -13,13 +13,14 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -33,6 +34,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +68,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
-    private long steamGenerated;
+    private int steamGenerated;
 
     public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
         super(holder, args);
@@ -115,8 +117,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
-                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000L);
+            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidType.BUCKET_VOLUME /
+                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
@@ -195,11 +197,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
             if (largeBoilerMachine.throttle < 100) {
                 var copied = recipe.copy();
-                copied.duration = recipe.duration * 100 / largeBoilerMachine.throttle;
+                result.setDuration(recipe.duration * 100 / largeBoilerMachine.throttle);
                 return copied;
             }
             return recipe;

@@ -199,7 +199,6 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     }
                 }
             }
-            updateStepHeight(player);
             data.putBoolean("boostedJump", boostedJump);
 
             if (boostedJumpTimer > 0) boostedJumpTimer--;
@@ -343,7 +342,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("Nightvision");
+            boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

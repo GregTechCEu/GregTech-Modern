@@ -23,16 +23,9 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         GTRegistries.MACHINES.values().stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
+                .filter(MultiblockMachineDefinition::isRenderXEIPreview)
                 .map(MultiblockInfoEmiRecipe::new)
                 .forEach(registry::addRecipe);
-    }
-
-    public static void registerWorkStations(EmiRegistry registry) {
-        for (var definition : GTRegistries.MACHINES.values()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                registry.addWorkstation(CATEGORY, EmiStack.of(multiblockDefinition.asStack()));
-            }
-        }
     }
 
     @Override

@@ -135,6 +135,12 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                              boolean multiBlockXEIPreview) {
+        return (MultiblockMachineBuilder) super.multiblockPreviewRenderer(multiBlockWorldPreview, multiBlockXEIPreview);
+    }
+
+    @Override
     public MultiblockMachineBuilder rotationState(RotationState rotationState) {
         return (MultiblockMachineBuilder) super.rotationState(rotationState);
     }

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -27,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
@@ -43,6 +45,7 @@ import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
+import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
@@ -53,6 +56,7 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -88,7 +92,6 @@ public class CommonProxy {
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
         if (Platform.isDevEnv()) {
-            ConfigHolder.INSTANCE.machines.doProcessingArray = true;
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
         }
@@ -123,6 +126,7 @@ public class CommonProxy {
         GTCompassSections.init();
         GTCompassNodes.init();
         GTCovers.init();
+        ForgeMod.enableMilkFluid();
         GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
@@ -134,6 +138,7 @@ public class CommonProxy {
         GTItems.init();
         GTDimensionMarkers.init();
         ChanceLogic.init();
+        WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
@@ -173,6 +178,10 @@ public class CommonProxy {
         GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
     private static void initMaterials() {
@@ -229,6 +238,7 @@ public class CommonProxy {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
+            CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
         });
     }
 

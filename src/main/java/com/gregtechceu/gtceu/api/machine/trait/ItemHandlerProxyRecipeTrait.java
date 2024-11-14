@@ -62,10 +62,19 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     }
 
     @Override
+    public int getSize() {
+        int size = 0;
+        for (NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
+            size += handlerTrait.getSize();
+        }
+        return size;
+    }
+
+    @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
-            amount += handler.getTotalContentAmount();
+        for (NotifiableRecipeHandlerTrait<Ingredient> handlerTrait : handlers) {
+            amount += handlerTrait.getTotalContentAmount();
         }
         return amount;
     }

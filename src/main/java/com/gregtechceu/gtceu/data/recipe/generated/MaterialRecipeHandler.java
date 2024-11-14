@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
@@ -22,6 +24,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,11 +58,13 @@ public class MaterialRecipeHandler {
         for (TagPrefix orePrefix : GEM_ORDER) {
             orePrefix.executeHandler(provider, PropertyKey.GEM, MaterialRecipeHandler::processGemConversion);
         }
+
+        generateSurfaceRockRecipe(provider);
     }
 
     public static void processDust(TagPrefix dustPrefix, Material mat, DustProperty property,
                                    Consumer<FinishedRecipe> provider) {
-        String id = "%s_%s_".formatted(FormattingUtil.toLowerCaseUnder(dustPrefix.name),
+        String id = "%s_%s".formatted(FormattingUtil.toLowerCaseUnder(dustPrefix.name),
                 mat.getName().toLowerCase(Locale.ROOT));
         ItemStack dustStack = ChemicalHelper.get(dustPrefix, mat);
         OreProperty oreProperty = mat.hasProperty(PropertyKey.ORE) ? mat.getProperty(PropertyKey.ORE) : null;
@@ -136,8 +141,8 @@ public class MaterialRecipeHandler {
                 if (blastTemp <= 0) {
                     // smelting magnetic dusts is handled elsewhere
                     if (!mat.hasFlag(IS_MAGNETIC)) {
-                        // do not register inputs by ore dict here. Let other mods register their own dust -> ingots
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_demagnetize_from_dust",
+                        // do not register inputs by tag prefix here. Let other mods register their own dust -> ingots
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 } else {
@@ -165,7 +170,7 @@ public class MaterialRecipeHandler {
                 if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
-                        VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_dust_to_ingot",
+                        VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
                 }
@@ -213,11 +218,15 @@ public class MaterialRecipeHandler {
 
         // Add Vacuum Freezer recipe if required.
         if (ingotHot.doGenerateItem(material)) {
+            int vacuumEUt = property.getVacuumEUtOverride() != -1 ? property.getVacuumEUtOverride() : VA[MV];
+            int vacuumDuration = property.getVacuumDurationOverride() != -1 ? property.getVacuumDurationOverride() :
+                    (int) material.getMass() * 3;
             if (blastTemp < 5000) {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
                         .inputItems(ingotHot, material)
                         .outputItems(ingot, material)
-                        .duration((int) material.getMass() * 3)
+                        .duration(vacuumDuration)
+                        .EUt(vacuumEUt)
                         .save(provider);
             } else {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
@@ -225,7 +234,8 @@ public class MaterialRecipeHandler {
                         .inputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 500))
                         .outputItems(ingot, material)
                         .outputFluids(Helium.getFluid(250))
-                        .duration((int) material.getMass() * 3)
+                        .duration(vacuumDuration)
+                        .EUt(vacuumEUt)
                         .save(provider);
             }
         }
@@ -337,10 +347,10 @@ public class MaterialRecipeHandler {
 
         if (!ChemicalHelper.get(block, material).isEmpty()) {
             ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_to_ingot")
-                    .EUt(VA[ULV]).duration((int) material.getMass() * 9)
+                    .EUt(VA[ULV]).duration((int) material.getMass() * (int) (block.getMaterialAmount(material) / M))
                     .inputItems(block, material)
                     .notConsumable(GTItems.SHAPE_MOLD_INGOT)
-                    .outputItems(ingot, magMaterial, 9)
+                    .outputItems(ingot, magMaterial, (int) (block.getMaterialAmount(material) / M))
                     .save(provider);
 
             COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_block")
@@ -417,7 +427,7 @@ public class MaterialRecipeHandler {
                     String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnder(prevPrefix.name),
                             material.getName()),
                     prevStack,
-                    "h", new UnificationEntry(gemPrefix, material));
+                    'h', new UnificationEntry(gemPrefix, material));
 
             CUTTER_RECIPES
                     .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(gemPrefix.name) +
@@ -599,6 +609,20 @@ public class MaterialRecipeHandler {
                         .inputItems(block, material)
                         .outputItems(gem, material, (int) (block.getMaterialAmount(material) / M))
                         .duration(100).EUt(24).save(provider);
+            }
+        }
+    }
+
+    private static void generateSurfaceRockRecipe(Consumer<FinishedRecipe> provider) {
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            for (Material material : registry.getAllMaterials()) {
+                if (material.hasProperty(PropertyKey.ORE)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, "%s_surface_indicator".formatted(material.getName()),
+                            GTBlocks.SURFACE_ROCK_BLOCKS.get(material).asStack(2),
+                            "DDD", "DGD", "DDD",
+                            'D', ChemicalHelper.get(dustSmall, material),
+                            'G', Items.GRAVEL);
+                }
             }
         }
     }

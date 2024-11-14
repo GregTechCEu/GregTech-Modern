@@ -111,7 +111,7 @@ public class OreRecipeHandler {
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         if (!crushedStack.isEmpty()) {
             GTRecipeBuilder builder = MACERATOR_RECIPES
-                    .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
+                    .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
                             Ingredient.of(orePrefix.getItemParentTags()[0])))
                     .outputItems(GTUtil.copyAmount(amountOfCrushedOre * 2 * oreTypeMultiplier, crushedStack))
@@ -223,15 +223,14 @@ public class OreRecipeHandler {
                     ChemicalHelper.get(rawOre, material, 9),
                     ChemicalHelper.getTag(rawOreBlock, material));
         }
-        COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "to_ore_block")
+        COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_raw_ore_block")
                 .inputItems(rawOre, material, 9)
                 .outputItems(rawOreBlock, material)
                 .duration(300).EUt(2).save(provider);
 
-        FORGE_HAMMER_RECIPES.recipeBuilder("decompress_" + material.getName() + "to_raw_ore")
+        FORGE_HAMMER_RECIPES.recipeBuilder("decompress_" + material.getName() + "_to_raw_ore")
                 .inputItems(rawOreBlock, material)
                 .outputItems(rawOre, material, 9)
-                .circuitMeta(2)
                 .duration(300).EUt(2).save(provider);
     }
 

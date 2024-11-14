@@ -27,43 +27,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
       - name: Setup Build
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build --build-cache
 
       - if: ${{ inputs.publishMaven }}
         name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish --build-cache
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: Get Version
         id: var
-        run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
-          echo version=$MESSAGE >> $GITHUB_OUTPUT
+        run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: mc-publish-forge
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
+          github-tag: ${{ steps.var.outputs.version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
           # Only include this section if you wish to publish
           # your assets on Modrinth.
           modrinth-id: 7tG215v7
@@ -75,13 +69,13 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
+            build/libs/!(*-@(dev|dev-all|dev-slim|sources|javadoc|dev-shadow|slim)).jar
             build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
 
           name: GregTechCEu ${{ steps.var.outputs.version }}
           version: mc${{ steps.var.outputs.version }}
           version-type: ${{ inputs.releaseType }}
-          changelog-file: CHANGELOG.*
+          changelog-file: RELEASE.*
 
           loaders: |
             forge

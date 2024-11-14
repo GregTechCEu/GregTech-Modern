@@ -4,14 +4,17 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -160,9 +163,9 @@ public class GTRecipeLookup {
      * @return a recipe
      */
     @Nullable
-    private GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                     @NotNull Branch branchRoot,
-                                                     @NotNull Predicate<GTRecipe> canHandle) {
+    public GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
+                                                    @NotNull Branch branchRoot,
+                                                    @NotNull Predicate<GTRecipe> canHandle) {
         // Try each ingredient as a starting point, adding it to the skip-list.
         // The skip-list is a packed long, where each 1 bit represents an index to skip
         for (int i = 0; i < ingredients.size(); i++) {
@@ -363,7 +366,6 @@ public class GTRecipeLookup {
     protected static void retrieveCachedIngredient(@NotNull List<List<AbstractMapIngredient>> list,
                                                    @NotNull List<AbstractMapIngredient> ingredients,
                                                    @NotNull WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> cache) {
-        boolean added = false;
         for (int i = 0; i < ingredients.size(); i++) {
             AbstractMapIngredient mappedIngredient = ingredients.get(i);
             // attempt to use the cached value if possible, otherwise cache for the next time
@@ -373,19 +375,8 @@ public class GTRecipeLookup {
             } else {
                 cache.put(mappedIngredient, new WeakReference<>(mappedIngredient));
             }
-
-            // hardcode a tree specialization for the intersection ingredient
-            if (mappedIngredient instanceof MapIntersectionIngredient intersection) {
-                for (Ingredient inner : intersection.ingredients) {
-                    List<AbstractMapIngredient> converted = ItemRecipeCapability.CAP.convertToMapIngredient(inner);
-                    retrieveCachedIngredient(list, converted, cache);
-                }
-                added = true;
-            }
         }
-        if (!added) {
-            list.add(ingredients);
-        }
+        list.add(ingredients);
     }
 
     /**
@@ -446,7 +437,7 @@ public class GTRecipeLookup {
                     }
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
-                        retrieveCachedIngredient(list, cap.convertToMapIngredient(content), ingredientRoot);
+                        list.add(cap.convertToMapIngredient(content));
                     }
                 }
             }
@@ -461,6 +452,7 @@ public class GTRecipeLookup {
     public void removeAllRecipes() {
         this.lookup.getNodes().clear();
         this.lookup.getSpecialNodes().clear();
+        this.recipeType.getRecipeByCategory().clear();
     }
 
     /**
@@ -473,8 +465,26 @@ public class GTRecipeLookup {
         if (recipe == null) {
             return false;
         }
+        if (recipe.recipeCategory == null) {
+            recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
+                    recipe.recipeType.registryName.toLanguageKey(), recipe.recipeType);
+        }
+        // Add combustion fuels to the Powerless Jetpack
+        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
+            Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
+            FluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
+            PowerlessJetpack.FUELS.put(fluid, recipe.duration);
+        }
         List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
-        return recurseIngredientTreeAdd(recipe, items, lookup, 0, 0);
+        if (recurseIngredientTreeAdd(recipe, items, lookup, 0, 0)) {
+            recipeType.getRecipeByCategory().compute(recipe.recipeCategory, (k, v) -> {
+                if (v == null) v = new ArrayList<>();
+                v.add(recipe);
+                return v;
+            });
+            return true;
+        }
+        return false;
     }
 
     /**

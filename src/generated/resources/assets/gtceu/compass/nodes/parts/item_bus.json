@@ -37,6 +37,7 @@
     "gtceu:steam_input_bus",
     "gtceu:steam_output_bus",
     "gtceu:me_input_bus",
+    "gtceu:me_stocking_input_bus",
     "gtceu:me_output_bus"
   ],
   "page": "gtceu:parts/item_bus",

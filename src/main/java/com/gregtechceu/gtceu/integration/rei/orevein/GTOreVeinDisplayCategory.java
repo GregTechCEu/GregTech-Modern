@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 
@@ -59,7 +59,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS) {
+        for (GTOreDefinition oreDefinition : ClientProxy.CLIENT_ORE_VEINS.values()) {
             registry.add(new GTOreVeinDisplay(oreDefinition));
         }
     }
@@ -67,6 +67,6 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
     public static void registerWorkstations(CategoryRegistry registry) {
         registry.addWorkstations(GTOreVeinDisplayCategory.CATEGORY, EntryStacks.of(GTItems.PROSPECTOR_LV.asStack()));
         registry.addWorkstations(GTOreVeinDisplayCategory.CATEGORY, EntryStacks.of(GTItems.PROSPECTOR_HV.asStack()));
-        registry.addWorkstations(GTOreVeinDisplayCategory.CATEGORY, EntryStacks.of(GTItems.PROSPECTOR_LUV.asStack()));
+        registry.addWorkstations(GTOreVeinDisplayCategory.CATEGORY, EntryStacks.of(GTItems.PROSPECTOR_LuV.asStack()));
     }
 }

@@ -56,8 +56,9 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
                             ModelFactory.getBlockSprite(firebox.side()), modelState));
                     if (machine instanceof IRecipeLogicMachine recipeLogicMachine &&
                             recipeLogicMachine.getRecipeLogic().isWorking()) {
-                        quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY),
-                                modelState, -101, 15, true, false));
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                                modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState,
+                                -101, 15, true, false));
                     }
                 }
             }

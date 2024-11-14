@@ -8,13 +8,12 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
 
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
-public class GridNodeHostTrait extends MachineTrait implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
     protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHostTrait.class);
     private final IManagedGridNode proxy;

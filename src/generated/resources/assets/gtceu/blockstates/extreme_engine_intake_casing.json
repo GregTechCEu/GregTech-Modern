@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/variant/extreme_engine_intake"
+    },
+    "active=true": {
+      "model": "gtceu:block/variant/extreme_engine_intake_active"
+    }
+  }
+}

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
@@ -15,17 +16,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -42,12 +41,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -98,7 +97,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected boolean allowInputFromOutputSideFluids;
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
@@ -107,7 +106,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
@@ -124,12 +123,12 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createChargerItemHandler(Object... args) {
-        var transfer = new ItemStackTransfer();
-        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+        var handler = new CustomItemStackHandler();
+        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return transfer;
+        return handler;
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
@@ -245,12 +244,10 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getOutputFacingItems();
         var outputFacingFluids = getOutputFacingFluids();
-        if ((isAutoOutputItems() && !exportItems.isEmpty()) && outputFacingItems != null &&
-                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems),
-                        outputFacingItems.getOpposite()) != null ||
-                (isAutoOutputFluids() && !exportFluids.isEmpty()) && outputFacingFluids != null &&
-                        FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(outputFacingFluids),
-                                outputFacingFluids.getOpposite()) != null) {
+        if ((isAutoOutputItems() && !exportItems.isEmpty() && outputFacingItems != null &&
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) ||
+                (isAutoOutputFluids() && !exportFluids.isEmpty() && outputFacingFluids != null &&
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -297,11 +294,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     // ********** MISC ***********//
     //////////////////////////////////////
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        super.onDrops(drops, entity);
-        clearInventory(drops, chargerInventory);
+    public void onMachineRemoved() {
+        super.onMachineRemoved();
+        clearInventory(chargerInventory);
         if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(drops, circuitInventory.storage);
+            clearInventory(circuitInventory.storage);
         }
     }
 
@@ -400,7 +397,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
@@ -413,6 +411,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

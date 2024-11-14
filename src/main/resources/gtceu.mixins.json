@@ -1,6 +1,7 @@
 {
     "required": true,
     "minVersion": "0.8",
+    "refmap": "gtceu.refmap.json",
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
@@ -15,7 +16,13 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
-        "rei.FluidEntryRendererMixin"
+        "journeymap.FullscreenMixin",
+        "rei.FluidEntryRendererMixin",
+        "xaeroworldmap.GuiMapMixin",
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
+        "xaerominimap.HighlighterRegistryMixin",
+        "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
         "AbstractRegistrateAccessor",
@@ -59,6 +66,7 @@
         "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "ldlib.SyncUtilsMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtceu:block/hv_hermetic_casing"
+    }
+  }
+}

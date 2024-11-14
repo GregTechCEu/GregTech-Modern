@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing"
+  }
+}

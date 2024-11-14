@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
@@ -55,7 +54,7 @@ public class GTBucketItem extends BucketItem {
     public static int color(ItemStack itemStack, int index) {
         if (itemStack.getItem() instanceof GTBucketItem item) {
             if (index == 1) {
-                return FluidHelper.getColor(FluidStack.create(item.getFluid(), FluidHelper.getBucket()));
+                return IClientFluidTypeExtensions.of(item.getFluid()).getTintColor();
             }
         }
         return -1;

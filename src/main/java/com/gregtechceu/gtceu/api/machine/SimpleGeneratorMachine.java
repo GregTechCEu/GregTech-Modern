@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 
@@ -22,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,13 +50,13 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     private final float hazardStrengthPerOperation;
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
-                                  float hazardStrengthPerOperation, Int2LongFunction tankScalingFunction,
+                                  float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction,
                                   Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                   Object... args) {
         this(holder, tier, 0.25f, tankScalingFunction, args);
     }
@@ -92,13 +94,17 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof SimpleGeneratorMachine generator) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             if (EUt > 0) {
                 var maxParallel = (int) (Math.min(generator.getOverclockVoltage(),
                         GTValues.V[generator.getOverclockTier()]) / EUt);
-                return GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false).getFirst();
+                var paraRecipe = GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false);
+                result.init(-RecipeHelper.getOutputEUt(paraRecipe.getFirst()), paraRecipe.getFirst().duration,
+                        paraRecipe.getSecond(), params.getOcAmount());
+                return paraRecipe.getFirst();
             }
         }
         return null;

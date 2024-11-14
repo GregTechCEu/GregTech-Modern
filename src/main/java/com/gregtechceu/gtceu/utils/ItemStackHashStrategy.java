@@ -44,13 +44,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                 .build();
     }
 
-    static ItemStackHashStrategy comparingItemTagCount() {
-        return builder().compareItem(true)
-                .compareTag(true)
-                .compareCount(true)
-                .build();
-    }
-
     /**
      * Builder pattern class for generating customized ItemStackHashStrategy
      */

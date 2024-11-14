@@ -125,6 +125,9 @@ public class ConfigHolder {
                 "Default: false" })
         public boolean harderCircuitRecipes = false;
         @Configurable
+        @Configurable.Comment({ "Whether to nerf machine controller recipes.", "Default: false" })
+        public boolean hardMultiRecipes = false; // default false
+        @Configurable
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: true" })
@@ -140,6 +143,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment("Config options regarding GTCEu compatibility with AE2")
         public AE2CompatConfig ae2 = new AE2CompatConfig();
+
+        @Configurable
+        @Configurable.Comment("Config options regarding GTCEu compatibility with minimap mods")
+        public MinimapCompatConfig minimap = new MinimapCompatConfig();
 
         @Configurable
         @Configurable.Comment({ "Whether to hide facades of all blocks in JEI and creative search menu.",
@@ -201,6 +208,107 @@ public class ConfigHolder {
             @Configurable.Comment({ "The energy consumption of ME Hatch/Bus.", "Default: 1.0AE/t" })
             @Configurable.DecimalRange(min = 0.0, max = 10.0)
             public double meHatchEnergyUsage = 1.0;
+        }
+
+        public static class MinimapCompatConfig {
+
+            @Configurable
+            @Configurable.Comment({ "The radius, in blocks, that picking up a surface rock will search for veins in.",
+                    "-1 to disable.", "Default: 24" })
+            @Configurable.Range(min = 1)
+            public int surfaceRockProspectRange = 24;
+
+            @Configurable
+            @Configurable.Comment({ "The radius, in blocks, that clicking an ore block will search for veins in.",
+                    "-1 to disable", "Default: 24" })
+            @Configurable.Range(min = 1)
+            public int oreBlockProspectRange = 24;
+
+            @Configurable
+            @Configurable.Comment("The map scale at which displayed ores will stop scaling.")
+            @Configurable.DecimalRange(min = 0.1, max = 16)
+            public float oreScaleStop = 1;
+
+            @Configurable
+            @Configurable.Comment("The size, in pixels, of ore icons on the map")
+            @Configurable.Range(min = 4)
+            public int oreIconSize = 32;
+
+            @Configurable
+            @Configurable.Comment("The string prepending ore names in the ore vein tooltip")
+            public String oreNamePrefix = "- ";
+
+            @Configurable
+            @Configurable.Comment({ "The color to draw a box around the ore icon with.",
+                    "Accepts either an ARGB hex color prefixed with # or the string 'material' to use the ore's material color" })
+            public String borderColor = "#00000000";
+
+            @Configurable
+            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: \"BOTTOM_LEFT\"" })
+            public Anchor buttonAnchor = Anchor.BOTTOM_LEFT;
+
+            @Configurable
+            @Configurable.Comment({ "Which direction the buttons will go", "Default: \"HORIZONTAL\"" })
+            public Direction direction = Direction.HORIZONTAL;
+
+            @Configurable
+            @Configurable.Comment({ "How horizontally far away from the anchor to place the buttons", "Default: 20" })
+            public int xOffset = 20;
+
+            @Configurable
+            @Configurable.Comment({ "How vertically far away from the anchor to place the buttons", "Default: 0" })
+            public int yOffset = 0;
+
+            @Configurable
+            @Configurable.Comment({
+                    "Whether to put buttons on a separate toolbar on the right instead of the map type toolbar in JourneyMap.",
+                    "Default: true" })
+            public boolean rightToolbar = true;
+
+            public enum Anchor {
+
+                TOP_LEFT,
+                TOP_CENTER,
+                TOP_RIGHT,
+                RIGHT_CENTER,
+                BOTTOM_RIGHT,
+                BOTTOM_CENTER,
+                BOTTOM_LEFT,
+                LEFT_CENTER;
+
+                public boolean isCentered() {
+                    return this == TOP_CENTER || this == RIGHT_CENTER || this == BOTTOM_CENTER || this == LEFT_CENTER;
+                }
+
+                public Direction usualDirection() {
+                    return switch (this) {
+                        case TOP_CENTER, BOTTOM_CENTER -> Direction.HORIZONTAL;
+                        case RIGHT_CENTER, LEFT_CENTER -> Direction.VERTICAL;
+                        default -> null;
+                    };
+                }
+            }
+
+            public enum Direction {
+                VERTICAL,
+                HORIZONTAL
+            }
+
+            public int getBorderColor(int materialColor) {
+                if (borderColor.equals("material")) {
+                    return materialColor;
+                }
+                // please java may I have an unsigned int
+                try {
+                    long tmp = Long.decode(borderColor);
+                    if (tmp > 0x7FFFFFFF) {
+                        tmp -= 0x100000000L;
+                    }
+                    return (int) tmp;
+                } catch (NumberFormatException e) {
+                    return 0x00000000;
+                }
+            }
         }
     }
 
@@ -374,11 +482,6 @@ public class ConfigHolder {
         @Configurable.Comment({ "What Kind of material should the bedrock ore miner output?", "Default: \"raw\"" })
         public String bedrockOreDropTagPrefix = "raw";
         @Configurable
-        @Configurable.Comment({ "WARNING: THIS IS NO LONGER SUPPORTED AND WILL BE REMOVED!",
-                "This option only exists to provide backwards compatibility until the Processing Array will be removed in 1.3.0",
-                "Default: false" })
-        public boolean doProcessingArray = false;
-        @Configurable
         @Configurable.Comment({ "Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false" })
         public boolean enableTieredCasings = false;
@@ -388,6 +491,17 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Minimum distance betweeb Long Distance Fluid Pipe Endpoints", "Default: 50" })
         public int ldFluidPipeMinDistance = 50;
+
+        @Configurable
+        @Configurable.Comment({ "Whether ONLY owners can open a machine gui", "Default: false" })
+        public boolean onlyOwnerGUI = false;
+        @Configurable
+        @Configurable.Comment({ "Whether ONLY owners can break a machine", "Default: false" })
+        public boolean onlyOwnerBreak = false;
+        @Configurable
+        @Configurable.Comment({ "Minimum op level to bypass the ownership checks", "Default: 2" })
+        @Configurable.Range(min = 0, max = 4)
+        public int ownerOPBypass = 2;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
@@ -412,11 +526,18 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({
-                "Let Buffer has more ability.",
-                "When enabled it, Buffer will can used to assemble line and so on.",
+                "Let Dual Hatch has more ability. (DEPRECATED: does nothing now)",
+                "When enabled it, Dual Hatch will can used to assemble line and so on.",
                 "Need restart Minecraft to apply."
         })
-        public boolean enableMoreBufferAbility = false;
+        public boolean enableMoreDualHatchAbility = false;
+
+        @Configurable
+        @Configurable.Comment({
+                "Default maximum parallel of steam multiblocks",
+                "Default: 8"
+        })
+        public int steamMultiParallelAmount = 8;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
@@ -498,6 +619,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
         @Configurable.Range(min = 1, max = 512)
         public int sprayCanChainLength = 16;
+        @Configurable
+        @Configurable.Comment({ "Delay in ticks between each log being broken when tree felling", "Default: 2" })
+        @Configurable.Range(min = 1, max = 400)
+        public int treeFellingDelay = 2;
         @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();
@@ -643,6 +768,9 @@ public class ConfigHolder {
         @Configurable.Comment({ "Debug ore vein placement? (will print placed veins to server's debug.log)",
                 "Default: false (no placement printout in debug.log)" })
         public boolean debugWorldgen = false;
+        @Configurable
+        @Configurable.Comment({ "Generate ores in superflat worlds?", "Default: false" })
+        public boolean doSuperflatOres = false;
         @Configurable
         @Configurable.Comment({ "Dump all registered GT recipes?", "Default: false" })
         public boolean dumpRecipes = false;

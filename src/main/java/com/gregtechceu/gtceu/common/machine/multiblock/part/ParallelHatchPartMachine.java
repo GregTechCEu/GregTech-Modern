@@ -61,4 +61,9 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
+
+    @Override
+    public boolean canShared() {
+        return false;
+    }
 }

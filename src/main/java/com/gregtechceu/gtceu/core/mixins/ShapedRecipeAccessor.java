@@ -23,23 +23,23 @@ public interface ShapedRecipeAccessor {
 
     @Invoker
     static Map<String, Ingredient> callKeyFromJson(JsonObject keyEntry) {
-        return null;
+        throw new AssertionError();
     }
 
     @Invoker
     static String[] callPatternFromJson(JsonArray patternArray) {
-        return null;
+        throw new AssertionError();
     }
 
     @Invoker
     static NonNullList<Ingredient> callDissolvePattern(String[] pattern, Map<String, Ingredient> keys, int patternWidth,
                                                        int patternHeight) {
-        return null;
+        throw new AssertionError();
     }
 
     @Invoker
     static String[] callShrink(String... toShrink) {
-        return null;
+        throw new AssertionError();
     }
 
     @Accessor

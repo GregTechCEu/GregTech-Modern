@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,8 @@ public class FuelRecipes {
         Set<Item> addedItems = new HashSet<>();
         for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
             addedItems.add(fuelEntry.getKey());
-            STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(fuelEntry.getKey()))
+            var resLoc = BuiltInRegistries.ITEM.getKey(fuelEntry.getKey());
+            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
                     .inputItems(fuelEntry.getKey())
                     .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
                     .save(provider);
@@ -35,7 +36,8 @@ public class FuelRecipes {
         for (Item item : BuiltInRegistries.ITEM) {
             var burnTime = GTUtil.getItemBurnTime(item);
             if (burnTime > 0 && !addedItems.contains(item)) {
-                STEAM_BOILER_RECIPES.recipeBuilder(BuiltInRegistries.ITEM.getKey(item))
+                var resLoc = BuiltInRegistries.ITEM.getKey(item);
+                STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
                         .inputItems(item)
                         .duration(burnTime * 12)
                         .save(provider);
@@ -43,7 +45,7 @@ public class FuelRecipes {
         }
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
-                .inputFluids(FluidStack.create(Fluids.LAVA, 100))
+                .inputFluids(new FluidStack(Fluids.LAVA, 100))
                 .duration(600 * 12)
                 .save(provider);
 

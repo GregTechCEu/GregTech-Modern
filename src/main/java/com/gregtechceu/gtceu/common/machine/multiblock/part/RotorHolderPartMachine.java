@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -36,8 +36,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -48,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RotorHolderPartMachine extends TieredPartMachine
-                                    implements IMachineModifyDrops, IRotorHolderMachine, IInteractedMachine {
+                                    implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
@@ -88,8 +86,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, inventory.storage);
+    public void onMachineRemoved() {
+        clearInventory(inventory.storage);
     }
 
     @Override
@@ -217,7 +215,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
         var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
-        container.addWidget(new SlotWidget(inventory.storage, 0, 4, 4, true, true)
+        container.addWidget(new BlockableSlotWidget(inventory.storage, 0, 4, 4)
+                .setIsBlocked(() -> rotorSpeed != 0)
                 .setBackground(GuiTextures.SLOT, GuiTextures.TURBINE_OVERLAY));
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);

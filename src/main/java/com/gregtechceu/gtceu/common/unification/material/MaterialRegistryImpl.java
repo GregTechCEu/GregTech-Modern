@@ -30,14 +30,15 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     }
 
     @Override
-    public void register(@NotNull java.lang.String key, @NotNull Material value) {
+    public <T extends Material> T register(@NotNull java.lang.String key, @NotNull T value) {
         if (isRegistryClosed) {
             GTCEu.LOGGER.error(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",
                     key);
-            return;
+            return null;
         }
         super.register(key, value);
+        return value;
     }
 
     @NotNull

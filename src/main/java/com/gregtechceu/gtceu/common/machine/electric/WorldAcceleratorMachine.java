@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
@@ -220,11 +221,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
-        return super.sideTips(player, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, side);
     }
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,

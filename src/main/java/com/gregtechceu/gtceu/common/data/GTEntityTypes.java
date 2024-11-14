@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
-import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
-import com.gregtechceu.gtceu.common.entity.PowderbarrelEntity;
+import com.gregtechceu.gtceu.common.entity.*;
 
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.MobCategory;
@@ -30,6 +28,18 @@ public class GTEntityTypes {
             .<IndustrialTNTEntity>entity("industrial_tnt", IndustrialTNTEntity::new, MobCategory.MISC)
             .lang("Industrial TNT")
             .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
+            .register();
+
+    public static final EntityEntry<GTBoat> BOAT = REGISTRATE
+            .<GTBoat>entity("boat", GTBoat::new, MobCategory.MISC)
+            .lang("Boat")
+            .properties(builder -> builder.sized(1.375f, 0.5625f).clientTrackingRange(10))
+            .register();
+
+    public static final EntityEntry<GTChestBoat> CHEST_BOAT = REGISTRATE
+            .<GTChestBoat>entity("chest_boat", GTChestBoat::new, MobCategory.MISC)
+            .lang("Chest Boat")
+            .properties(builder -> builder.sized(1.375f, 0.5625f).clientTrackingRange(10))
             .register();
 
     public static void init() {}

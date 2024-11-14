@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -61,7 +63,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @DescSynced
     @UpdateListener(methodName = "onActiveSynced")
-    private boolean isActive;
+    protected boolean isActive;
 
     @Nullable
     @Persisted
@@ -73,15 +75,19 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Nullable
     @Getter
     @Persisted
+    @DescSynced
     protected GTRecipe lastRecipe;
     /**
-     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}' which can be found
+     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe, OCParams, OCResult)}'
+     * which can be found
      * from {@link RecipeManager}.
      */
     @Nullable
     @Getter
     @Persisted
     protected GTRecipe lastOriginRecipe;
+    protected OCParams ocParams = new OCParams();
+    protected OCResult ocResult = new OCResult();
     @Persisted
     @Getter
     @Setter
@@ -100,6 +106,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @Getter
     protected long totalContinuousRunningTime;
+    @Persisted
+    @Setter
+    protected boolean suspendAfterFinish = false;
     @Getter
     protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
     protected TickableSubscription subscription;
@@ -140,6 +149,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
+        ocResult.reset();
         updateTickSubscription();
     }
 
@@ -217,7 +227,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match);
+        var matchCopy = match.copy();
+        var modified = machine.fullModifyRecipe(matchCopy, ocParams, ocResult);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
@@ -277,7 +288,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    protected Iterator<GTRecipe> searchRecipe() {
+    public Iterator<GTRecipe> searchRecipe() {
         return machine.getRecipeType().searchRecipe(this.machine);
     }
 
@@ -300,7 +311,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         recipeDirty = false;
     }
 
-    private void handleSearchingRecipes(Iterator<GTRecipe> matches) {
+    protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
         while (matches != null && matches.hasNext()) {
             GTRecipe match = matches.next();
             if (match == null) continue;
@@ -350,6 +361,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void setupRecipe(GTRecipe recipe) {
         if (handleFuelRecipe()) {
             if (!machine.beforeWorking(recipe)) {
+                setStatus(Status.IDLE);
+                progress = 0;
+                duration = 0;
+                isActive = false;
                 return;
             }
             recipe.preWorking(this.machine);
@@ -450,7 +465,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe);
+                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), ocParams, ocResult);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -461,13 +476,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 }
             }
             // try it again
-            if (!recipeDirty &&
+            if (!recipeDirty && !suspendAfterFinish &&
                     lastRecipe.matchRecipe(this.machine).isSuccess() &&
                     lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                     lastRecipe.checkConditions(this).isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
-                setStatus(Status.IDLE);
+                if (suspendAfterFinish) {
+                    setStatus(Status.SUSPEND);
+                    suspendAfterFinish = false;
+                } else {
+                    setStatus(Status.IDLE);
+                }
                 progress = 0;
                 duration = 0;
                 isActive = false;
@@ -493,6 +513,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
+            ocResult.reset();
         }
     }
 

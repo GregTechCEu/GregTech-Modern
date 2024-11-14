@@ -206,7 +206,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
                 () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.muffler_obstructed")
+                () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 () -> !isFrontFaceFree(),
                 () -> null));

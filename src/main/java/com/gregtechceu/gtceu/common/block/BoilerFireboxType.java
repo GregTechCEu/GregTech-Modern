@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.resources.ResourceLocation;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,8 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @date 2023/3/9
  * @implNote BoilerFireBoxCasingBlock
  */
-public record BoilerFireboxType(@Getter String name, @Getter ResourceLocation bottom, @Getter ResourceLocation top,
-                                @Getter ResourceLocation side) {
+public record BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
 
     public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox",
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),

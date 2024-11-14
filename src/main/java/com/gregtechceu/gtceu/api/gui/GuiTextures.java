@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.gui;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
+import net.minecraft.resources.ResourceLocation;
+
 import lombok.val;
 
 /**
@@ -49,11 +51,11 @@ public class GuiTextures {
     public static final ResourceTexture TOOL_DISABLE_AUTO_OUTPUT = new ResourceTexture(
             "gtceu:textures/gui/overlay/tool_disable_auto_output.png");
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_NATIVE = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_block.png"); // switch to tool_switch_converter_native once that gets
-                                                               // made
+            "gtceu:textures/gui/overlay/tool_wire_block.png"); // todo switch to tool_switch_converter_native once that
+                                                               // gets made
     public static final ResourceTexture TOOL_SWITCH_CONVERTER_EU = new ResourceTexture(
-            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // switch to tool_switch_converter_eu once that gets
-                                                                 // made
+            "gtceu:textures/gui/overlay/tool_wire_connect.png"); // todo switch to tool_switch_converter_eu once that
+                                                                 // gets made
 
     // BASE TEXTURES
     public static final ResourceBorderTexture BACKGROUND = new ResourceBorderTexture(
@@ -83,6 +85,10 @@ public class GuiTextures {
             "gtceu:textures/gui/base/fluid_tank_overlay.png");
     public static final ResourceBorderTexture SLOT = new ResourceBorderTexture("gtceu:textures/gui/base/slot.png", 18,
             18, 1, 1);
+    public static final ResourceBorderTexture SLOT_DARK = new ResourceBorderTexture(
+            "gtceu:textures/gui/base/slot_dark.png", 18,
+            18, 1, 1);
+
     public static final ResourceTexture SLOT_DARKENED = new ResourceTexture(
             "gtceu:textures/gui/base/darkened_slot.png");
     public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/slot_%s.png");
@@ -142,6 +148,8 @@ public class GuiTextures {
             "gtceu:textures/gui/widget/clipboard_text_box.png", 9, 18, 1, 1);
     public static final ResourceTexture DISTRIBUTION_MODE = new ResourceTexture(
             "gtceu:textures/gui/widget/button_distribution_mode.png");
+    public static final ResourceTexture BUTTON_AUTO_PULL = new ResourceTexture(
+            "gtceu:textures/gui/widget/button_me_auto_pull.png");
     public static final ResourceTexture LOCK = new ResourceTexture("gtceu:textures/gui/widget/lock.png");
     public static final ResourceTexture LOCK_WHITE = new ResourceTexture("gtceu:textures/gui/widget/lock_white.png");
     public static final ResourceTexture SWITCH = new ResourceTexture("gtceu:textures/gui/widget/switch.png");
@@ -164,6 +172,10 @@ public class GuiTextures {
     public static final ResourceTexture IO_CONFIG_COVER_SETTINGS = new ResourceTexture(
             "gtceu:textures/gui/icon/io_config/cover_settings.png");
 
+    public static final ResourceTexture PATTERN_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/pattern_overlay.png");
+    public static final ResourceTexture REFUND_OVERLAY = new ResourceTexture(
+            "gtceu:textures/gui/widget/refund_overlay.png");
     // INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture(
             "gtceu:textures/gui/base/indicator_no_energy.png");
@@ -377,6 +389,9 @@ public class GuiTextures {
             .fullImage("gtceu:textures/gui/progress_bar/progress_bar_arrow_%s.png");
     public static final ResourceTexture PROGRESS_BAR_ARROW_MULTIPLE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_arrow_multiple.png");
+    public static final ResourceTexture PROGRESS_BAR_ASSEMBLER = new ResourceTexture(
+            "gtceu:textures/gui/progress_bar/progress_bar_assembler.png");
+
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_assembly_line.png");
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE_ARROW = new ResourceTexture(
@@ -394,7 +409,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_CANNER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_canner.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT = new ResourceTexture(
-            "gtceu:textures/gui/progress_bar/progress_bar_circuit.png");
+            "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT_ASSEMBLER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_COKE_OVEN = new ResourceTexture(
@@ -472,6 +487,13 @@ public class GuiTextures {
     public static final ResourceTexture INFO_ICON = new ResourceTexture("gtceu:textures/gui/widget/information.png");
     public static final ResourceTexture MULTIBLOCK_CATEGORY = new ResourceTexture(
             "gtceu:textures/gui/icon/coke_oven.png");
+
+    public static final ResourceTexture ARC_FURNACE_RECYCLING_CATEGORY = new ResourceTexture(
+            new ResourceLocation("gtceu:textures/gui/icon/arc_furnace_recycling.png"), 0, 0, 16, 16);
+    public static final ResourceTexture MACERATOR_RECYCLING_CATEGORY = new ResourceTexture(
+            new ResourceLocation("gtceu:textures/gui/icon/macerator_recycling.png"), 0, 0, 16, 16);
+    public static final ResourceTexture EXTRACTOR_RECYCLING_CATEGORY = new ResourceTexture(
+            new ResourceLocation("gtceu:textures/gui/icon/extractor_recycling.png"), 0, 0, 16, 16);
 
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(

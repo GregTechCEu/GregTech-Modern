@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
@@ -16,18 +17,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -47,7 +47,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -73,7 +72,7 @@ public class MinerMachine extends WorkableTieredMachine
 
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
@@ -97,12 +96,12 @@ public class MinerMachine extends WorkableTieredMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createChargerItemHandler(Object... args) {
-        var transfer = new ItemStackTransfer();
-        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+        var handler = new CustomItemStackHandler();
+        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return transfer;
+        return handler;
     }
 
     @Override
@@ -130,9 +129,11 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, exportItems.storage);
-        clearInventory(drops, chargerInventory);
+    public void onMachineRemoved() {
+        // Remove the miner pipes below this miner
+        getRecipeLogic().onRemove();
+        clearInventory(exportItems.storage);
+        clearInventory(chargerInventory);
     }
 
     @Override
@@ -179,8 +180,7 @@ public class MinerMachine extends WorkableTieredMachine
     //////////////////////////////////////
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getFrontFacing();
-        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(),
-                getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
+        if (!exportItems.isEmpty() && GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();

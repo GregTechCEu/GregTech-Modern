@@ -91,6 +91,12 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private IRenderer renderer;
     @Setter
     private VoxelShape shape;
+    @Getter
+    @Setter
+    private boolean renderWorldPreview;
+    @Getter
+    @Setter
+    private boolean renderXEIPreview;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter
     @Setter

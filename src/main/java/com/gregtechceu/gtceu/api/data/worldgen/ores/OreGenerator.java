@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -39,18 +40,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
 
-    private record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {
+    public record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {
 
         public RandomSource newRandom() {
             return new XoroshiroRandomSource(random.nextLong());
         }
     }
 
-    public List<GeneratedVeinMetadata> generateMetadata(WorldGenLevel level, ChunkGenerator chunkGenerator,
+    public List<GeneratedVeinMetadata> generateMetadata(final WorldGenLevel level, ChunkGenerator chunkGenerator,
                                                         ChunkPos chunkPos) {
         return createConfigs(level, chunkGenerator, chunkPos).stream()
                 .map(OreGenerator::logVeinGeneration)
                 .map(entry -> entry.data)
+                .peek(data -> {
+                    int gridX = Math.floorDiv(chunkPos.x, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+                    int gridZ = Math.floorDiv(chunkPos.z, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+                    ServerCache.instance.addVein(level.getLevel().dimension(), gridX, gridZ, data);
+                })
                 .toList();
     }
 
@@ -96,7 +102,7 @@ public class OreGenerator {
                 .toList();
     }
 
-    private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
+    public Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         GTOreDefinition definition = config.data.definition();
         Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
                 .generate(level, config.newRandom(), definition, config.data.center());
@@ -114,10 +120,10 @@ public class OreGenerator {
 
         return OreVeinUtil.getVeinCenter(chunkPos, random).stream()
                 .flatMap(veinCenter -> getEntries(level, veinCenter, random).map(entry -> {
+                    if (entry == null) return null;
                     var id = GTRegistries.ORE_VEINS.getKey(entry);
 
-                    if (entry == null) return null;
-                    BlockPos origin = computeVeinOrigin(level, generator, random, veinCenter, entry)
+                    BlockPos origin = computeVeinOrigin(level, generator, chunkPos, random, veinCenter, entry)
                             .orElseThrow(() -> new IllegalStateException(
                                     "Cannot determine y coordinate for the vein at " + veinCenter));
 
@@ -143,7 +149,7 @@ public class OreGenerator {
     }
 
     @NotNull
-    private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator,
+    private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos pos,
                                                         RandomSource random, BlockPos veinCenter,
                                                         GTOreDefinition entry) {
         int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.layer())
@@ -151,6 +157,7 @@ public class OreGenerator {
                 .orElse(0);
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
+        veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);
         return entry.range().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
                 layeredRandom, veinCenter).findFirst();
@@ -162,7 +169,7 @@ public class OreGenerator {
 
     private static VeinConfiguration logVeinGeneration(VeinConfiguration config) {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            GTCEu.LOGGER.debug("Generating vein " + config.data.id() + " at " + config.data.center());
+            GTCEu.LOGGER.debug("Generating vein {} at {}", config.data.id(), config.data.center());
         }
 
         return config;
@@ -170,7 +177,7 @@ public class OreGenerator {
 
     private static void logEmptyVein(VeinConfiguration config) {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            GTCEu.LOGGER.debug("No blocks generated for vein " + config.data.id() + " at " + config.data.center());
+            GTCEu.LOGGER.debug("No blocks generated for vein {} at {}", config.data.id(), config.data.center());
         }
     }
 }

@@ -8,22 +8,22 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -45,6 +45,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,7 +67,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IControllable {
+                                 implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IControllable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -85,7 +86,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     protected final NotifiableItemStackHandler cache;
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, breakerSubs;
     @Nullable
@@ -132,12 +133,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createChargerItemHandler() {
-        var transfer = new ItemStackTransfer();
-        transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+    protected CustomItemStackHandler createChargerItemHandler() {
+        var handler = new CustomItemStackHandler();
+        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return transfer;
+        return handler;
     }
 
     protected NotifiableItemStackHandler createCacheItemHandler() {
@@ -175,9 +176,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, chargerInventory);
-        clearInventory(drops, cache.storage);
+    public void onMachineRemoved() {
+        clearInventory(chargerInventory);
+        clearInventory(cache.storage);
     }
 
     @Override
@@ -307,8 +308,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
         if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
-                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing),
-                        outputFacing.getOpposite()) != null)
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacing))
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -437,7 +437,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                    Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
@@ -446,8 +447,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+            if (side == getOutputFacingItems()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
+            }
         }
-        return super.sideTips(player, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, side);
     }
 
     //////////////////////////////////////

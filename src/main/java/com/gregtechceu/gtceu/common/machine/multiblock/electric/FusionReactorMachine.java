@@ -18,9 +18,11 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
+import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -31,17 +33,17 @@ import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_DURATION_FACTOR;
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_VOLTAGE_FACTOR;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 @ParametersAreNonnullByDefault
@@ -64,6 +66,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
+    private static final TreeMap<Long, Pair<Integer, String>> registeredFusionTiers = new TreeMap<>();
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
@@ -144,7 +147,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
+                                          @NotNull OCResult result) {
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                     !recipe.data.contains("eu_to_start") ||
@@ -156,8 +160,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
             // if the stored heat is >= required energy, recipe is okay to run
             if (heatDiff <= 0) {
-                return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe,
-                        fusionReactorMachine.getMaxVoltage());
+                return RecipeHelper.applyOverclock(
+                        new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
+                        fusionReactorMachine.getMaxVoltage(), params, result);
             }
             // if the remaining energy needed is more than stored, do not run
             if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
@@ -168,10 +173,26 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             // increase the stored heat
             fusionReactorMachine.heat += heatDiff;
             fusionReactorMachine.updatePreHeatSubscription();
-            return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe,
-                    fusionReactorMachine.getMaxVoltage());
+            return RecipeHelper.applyOverclock(
+                    new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
+                    fusionReactorMachine.getMaxVoltage(), params, result);
         }
         return null;
+    }
+
+    public static String getFusionTier(long eu) {
+        Map.Entry<Long, Pair<Integer, String>> mapEntry = registeredFusionTiers.ceilingEntry(eu);
+
+        if (mapEntry == null) {
+            throw new IllegalArgumentException("Value is above registered maximum EU values");
+        }
+
+        return String.format(" %s", mapEntry.getValue().getRight());
+    }
+
+    public static void registerFusionTier(int tier, @NotNull String name) {
+        long maxEU = calculateEnergyStorageFactor(tier, 16);
+        registeredFusionTiers.put(maxEU, Pair.of(tier, name));
     }
 
     @Override
@@ -201,10 +222,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         if (color == -1) {
             if (!recipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
-                int newColor = 0xFF000000 |
-                        FluidHelper.getColor(FluidRecipeCapability.CAP
-                                .of(recipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent())
-                                .getStacks()[0]);
+                var stack = FluidRecipeCapability.CAP
+                        .of(recipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()).getStacks()[0];
+                int newColor = 0xFF000000 | GTUtil.getFluidColor(stack);
                 if (!Objects.equals(color, newColor)) {
                     color = newColor;
                 }

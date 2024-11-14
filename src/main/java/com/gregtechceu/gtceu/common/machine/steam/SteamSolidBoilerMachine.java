@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -17,8 +18,6 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -26,13 +25,13 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -43,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMachineModifyDrops {
+public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMachineLife {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             SteamSolidBoilerMachine.class, SteamBoilerMachine.MANAGED_FIELD_HOLDER);
@@ -55,7 +54,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> {
-            if (FluidTransferHelper.getFluidContained(itemStack) != null) {
+            if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;
             }
             return FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
@@ -149,8 +148,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, fuelHandler.storage);
-        clearInventory(drops, ashHandler.storage);
+    public void onMachineRemoved() {
+        clearInventory(fuelHandler.storage);
+        clearInventory(ashHandler.storage);
     }
 }

@@ -6,28 +6,25 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -47,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-                                  implements IControllable, IFancyUIMachine, IMachineModifyDrops {
+                                  implements IControllable, IFancyUIMachine, IMachineLife {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -62,7 +59,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     private final int inventorySize;
     @Getter
     @Persisted
-    protected final ItemStackTransfer batteryInventory;
+    protected final CustomItemStackHandler batteryInventory;
 
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
         super(holder, tier, inventorySize);
@@ -85,18 +82,18 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         return new EnergyBatteryTrait((int) args[0]);
     }
 
-    protected ItemStackTransfer createBatteryInventory(Object... ignoredArgs) {
-        var itemTransfer = new ItemStackTransfer(this.inventorySize) {
+    protected CustomItemStackHandler createBatteryInventory(Object... ignoredArgs) {
+        var handler = new CustomItemStackHandler(this.inventorySize) {
 
             @Override
             public int getSlotLimit(int slot) {
                 return 1;
             }
         };
-        itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return itemTransfer;
+        return handler;
     }
 
     @Override
@@ -204,8 +201,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onDrops(List<ItemStack> drops, Player entity) {
-        MetaMachine.clearInventory(drops, batteryInventory);
+    public void onMachineRemoved() {
+        clearInventory(batteryInventory);
     }
 
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {

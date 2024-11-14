@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -18,7 +19,6 @@ import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
@@ -87,6 +87,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
                 .setScrollable(true)
                 .setDraggable(true);
+        scrollableWidgetGroup.setScrollWheelDirection(DraggableScrollableWidgetGroup.ScrollWheelDirection.HORIZONTAL);
         scrollableWidgetGroup.setScrollYOffset(0);
         addWidget(scrollableWidgetGroup);
 
@@ -165,7 +166,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     public static PatternPreviewWidget getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
         if (LEVEL == null) {
             if (Minecraft.getInstance().level == null) {
-                LDLib.LOGGER.error("Try to init pattern previews before level load");
+                GTCEu.LOGGER.error("Try to init pattern previews before level load");
                 throw new IllegalStateException();
             }
             LEVEL = new TrackedDummyWorld();
@@ -181,7 +182,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         setupScene(pattern);
         if (slotWidgets != null) {
             for (SlotWidget slotWidget : slotWidgets) {
-                removeWidget(slotWidget);
+                scrollableWidgetGroup.removeWidget(slotWidget);
             }
         }
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];

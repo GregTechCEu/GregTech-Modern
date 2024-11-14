@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.common.Tags;
 
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -271,12 +272,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private boolean tryPaintSpecialBlock(Player player, Level world, BlockPos pos, Block block) {
-        if (block.defaultBlockState().is(CustomTags.GLASS_BLOCKS_BLOCK)) {
+        if (block.defaultBlockState().is(Tags.Blocks.GLASS)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.GLASS_PANES_BLOCK)) {
+        if (block.defaultBlockState().is(Tags.Blocks.GLASS_PANES)) {
             if (recolorBlockNoState(GLASS_PANE_MAP, this.color, world, pos, Blocks.GLASS_PANE)) {
                 return true;
             }

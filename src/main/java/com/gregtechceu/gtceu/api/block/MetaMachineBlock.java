@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -25,7 +26,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -129,6 +128,12 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {
             var machine = getMachine(pLevel, pPos);
+            if (machine != null) {
+                if (player instanceof ServerPlayer sPlayer) {
+                    setMachineOwner(machine, sPlayer);
+                    machine.markDirty();
+                }
+            }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
                 CompoundTag tag = pStack.getTag();
                 if (tag != null) {
@@ -228,17 +233,12 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
-            for (Direction direction : GTUtil.DIRECTIONS) {
-                machine.getCoverContainer().removeCover(direction, null);
-            }
-            if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {
-                machineModifyDrops.onDrops(drops, (Player) entity);
+            if (machine instanceof IMachineModifyDrops machineModifyDrops) {
+                machineModifyDrops.onDrops(drops);
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
@@ -257,8 +257,14 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
-                if (getMachine(pLevel, pPos) instanceof IMachineLife machineLife) {
+                MetaMachine machine = getMachine(pLevel, pPos);
+                if (machine instanceof IMachineLife machineLife) {
                     machineLife.onMachineRemoved();
+                }
+                if (machine != null) {
+                    for (Direction direction : GTUtil.DIRECTIONS) {
+                        machine.getCoverContainer().removeCover(direction, null);
+                    }
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
@@ -282,6 +288,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var machine = getMachine(world, pos);
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
+
+        if (machine != null && machine.holder.getOwner() == null && player instanceof ServerPlayer) {
+            setMachineOwner(machine, (ServerPlayer) player);
+            machine.markDirty();
+        }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
@@ -308,10 +319,25 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
+                canOpenOwnerMachine(player, machine.getHolder())) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
+    }
+
+    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
+    }
+
+    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player);
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
