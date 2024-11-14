@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 
@@ -51,7 +52,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     private FilteredItemHandlerWrapper itemFilterWrapper;
     @Setter
     @Getter
-    protected boolean allowFlow = false;
+    protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
 
     public ItemFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -91,7 +92,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         group.addWidget(new LabelWidget(7, 5, attachItem.getDescriptionId()));
         group.addWidget(new EnumSelectorWidget<>(7, 25, 18, 18,
                 FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new ToggleButtonWidget(7, 45, 18, 18, GuiTextures.BUTTON, this::isAllowFlow, this::setAllowFlow));
+        group.addWidget(new EnumSelectorWidget<>(7, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
         group.addWidget(getItemFilter().openConfigurator(48, 18));
         return group;
     }
@@ -109,7 +110,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow)
+            if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow == ManualIOMode.UNFILTERED)
                 return super.insertItem(slot, stack, simulate);
             if (filterMode != FilterMode.FILTER_EXTRACT && getItemFilter().test(stack)) {
                 return super.insertItem(slot, stack, simulate);
@@ -120,7 +121,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
             ItemStack result = super.extractItem(slot, amount, true);
-            if (result.isEmpty() && (filterMode == FilterMode.FILTER_INSERT) && allowFlow) {
+            if (result.isEmpty() && (filterMode == FilterMode.FILTER_INSERT) && allowFlow == ManualIOMode.UNFILTERED) {
                 return super.extractItem(slot, amount, false);
             }
 
