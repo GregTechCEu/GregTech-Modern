@@ -82,13 +82,13 @@ public class Content {
         return Math.round(chanceBoost / error);
     }
 
-    public IGuiTexture createOverlay(boolean perTick) {
+    public IGuiTexture createOverlay(boolean perTick, int tier) {
         return new IGuiTexture() {
 
             @Override
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
-                drawChance(graphics, x, y, width, height);
+                drawChance(graphics, x, y, width, height, tier);
                 drawRangeAmount(graphics, x, y, width, height);
                 drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
@@ -148,12 +148,12 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int tier) {
         if (chance == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        float chance = 100 * (float) this.chance / maxChance;
+        float chance = 100 * (float) Math.min((this.chance + (this.tierChanceBoost * tier)), maxChance) / maxChance;
         String percent = FormattingUtil.formatPercent(chance);
 
         String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") :

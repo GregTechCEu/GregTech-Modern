@@ -1298,6 +1298,19 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.LIME_DYE, 2))
                 .save(provider);
 
+        EXTRACTOR_RECIPES.recipeBuilder("white_dye")
+                .inputItems(new ItemStack(Items.BONE_MEAL))
+                .outputItems(new ItemStack(Items.WHITE_DYE, 1))
+                .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("lapis_dye")
+                .inputItems(new ItemStack(Items.LAPIS_LAZULI))
+                .outputItems(new ItemStack(Items.BLUE_DYE))
+                .save(provider);
+        EXTRACTOR_RECIPES.recipeBuilder("ink_dye")
+                .inputItems(new ItemStack(Items.INK_SAC))
+                .outputItems(new ItemStack(Items.BLACK_DYE))
+                .save(provider);
+
         CHEMICAL_BATH_RECIPES.recipeBuilder("dark_prismarine")
                 .inputItems(new ItemStack(Items.PRISMARINE_SHARD, 8))
                 .inputFluids(DyeBlack.getFluid(L))

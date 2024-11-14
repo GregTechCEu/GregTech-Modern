@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -30,8 +31,8 @@ import java.util.function.Function;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
-    public static final Function<GTRecipeCategory, List<GTEmiRecipe>> CATEGORIES = Util
-            .memoize(category1 -> new ArrayList<>());
+    public static final Function<GTRecipeCategory, GTRecipeEMICategory> CATEGORIES = Util
+            .memoize(GTRecipeEMICategory::getCategoryFor);
     public final GTRecipeType recipeType;
 
     private final GTRecipeCategory category;
@@ -63,6 +64,8 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     public static void registerDisplays(EmiRegistry registry) {
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
+                if (gtRecipeType == GTRecipeTypes.FURNACE_RECIPES)
+                    continue;
                 if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
                     for (Map.Entry<GTRecipeCategory, List<GTRecipe>> entry : gtRecipeType.getRecipesByCategory()
                             .entrySet()) {

@@ -257,7 +257,8 @@ public class GTRecipeTypeUI {
                                     } else if (LDLib.isEmiLoaded()) {
                                         recipeType.getRecipesByCategory().keySet()
                                                 .forEach(e -> EmiApi
-                                                        .displayRecipeCategory(GTRecipeEMICategory.getCategoryFor(e)));
+                                                        .displayRecipeCategory(
+                                                                GTRecipeEMICategory.CATEGORIES.apply(e)));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
@@ -277,7 +278,7 @@ public class GTRecipeTypeUI {
                                 widget -> {
                                     var index = WidgetUtils.widgetIdIndex(widget);
                                     cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null,
-                                            storage);
+                                            storage, 0, 0);
                                 });
                     }
                 }

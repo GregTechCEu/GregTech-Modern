@@ -106,6 +106,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @Getter
     protected long totalContinuousRunningTime;
+    @Persisted
+    @Setter
+    protected boolean suspendAfterFinish = false;
     @Getter
     protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
     protected TickableSubscription subscription;
@@ -473,13 +476,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 }
             }
             // try it again
-            if (!recipeDirty &&
+            if (!recipeDirty && !suspendAfterFinish &&
                     lastRecipe.matchRecipe(this.machine).isSuccess() &&
                     lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                     lastRecipe.checkConditions(this).isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
-                setStatus(Status.IDLE);
+                if (suspendAfterFinish) {
+                    setStatus(Status.SUSPEND);
+                    suspendAfterFinish = false;
+                } else {
+                    setStatus(Status.IDLE);
+                }
                 progress = 0;
                 duration = 0;
                 isActive = false;

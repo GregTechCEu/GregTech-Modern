@@ -332,7 +332,7 @@ public class WoodMachineRecipes {
     }
 
     /**
-     * Adds all standard unification info and ore dictionary for a wood type
+     * Adds all standard unification info and tag for a wood type
      *
      * @param entry the entry to register for
      */
