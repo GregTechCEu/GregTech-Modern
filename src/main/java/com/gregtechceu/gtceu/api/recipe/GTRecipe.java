@@ -122,11 +122,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
-        this.recipeCategory = (recipeCategory == GTRecipeCategory.EMPTY) ? GTRecipeCategory.of(recipeType) :
-                recipeCategory;
-        if(this.recipeCategory.getRecipeType() == GTRecipeTypes.CENTRIFUGE_RECIPES) {
-            System.out.println("hi");
-        }
+        this.recipeCategory = (recipeCategory == GTRecipeCategory.EMPTY) ?
+                GTRecipeCategory.of(recipeType) : recipeCategory;
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
