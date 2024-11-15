@@ -92,7 +92,6 @@ public class LargeMinerLogic extends MinerLogic {
                 mineY = pos.getY() - 1;
             }
             mineZ = startPos.getMinBlockZ();
-            startY = pos.getY();
             if (dir == Direction.UP) {
                 pipeY = pos.getY() + 1;
             } else {
