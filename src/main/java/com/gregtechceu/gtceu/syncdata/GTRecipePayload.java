@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 
 import net.minecraft.client.Minecraft;
@@ -13,6 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +38,9 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
 
     @Override
     public void deserializeNBT(Tag tag) {
-        RecipeManager recipeManager = Platform.getMinecraftServer().getRecipeManager();
+        RecipeManager recipeManager;
+        if (FMLEnvironment.dist.isClient()) recipeManager = Client.getRecipeManager();
+        else recipeManager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
         if (tag instanceof CompoundTag compoundTag) {
             payload = GTRecipeSerializer.CODEC.parse(NbtOps.INSTANCE, compoundTag.get("recipe")).result().orElse(null);
             if (payload != null) {
@@ -74,12 +77,16 @@ public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
             this.payload = GTRecipeSerializer.SERIALIZER.fromNetwork(id, buf);
         } else { // Backwards Compatibility
             RecipeManager recipeManager;
-            if (!Platform.isClient()) {
-                recipeManager = Platform.getMinecraftServer().getRecipeManager();
-            } else {
-                recipeManager = Minecraft.getInstance().getConnection().getRecipeManager();
-            }
+            if (FMLEnvironment.dist.isClient()) recipeManager = Client.getRecipeManager();
+            else recipeManager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
             this.payload = (GTRecipe) recipeManager.byKey(id).orElse(null);
+        }
+    }
+
+    static class Client {
+
+        static RecipeManager getRecipeManager() {
+            return Minecraft.getInstance().getConnection().getRecipeManager();
         }
     }
 }
