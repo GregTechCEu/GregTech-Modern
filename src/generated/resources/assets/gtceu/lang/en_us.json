@@ -2797,6 +2797,8 @@
   "gtceu.gui.cover_setting.title": "Cover Settings",
   "gtceu.gui.editor.group.recipe_type": "cap",
   "gtceu.gui.editor.tips.citation": "Number of citations",
+  "gtceu.gui.fisher_mode.tooltip.0": "Toggle junk items",
+  "gtceu.gui.fisher_mode.tooltip.1": "Off costs 2 string per operation",
   "gtceu.gui.fluid_amount": "Fluid Amount:",
   "gtceu.gui.fluid_auto_input.tooltip.disabled": "Fluid Auto-Input Disabled",
   "gtceu.gui.fluid_auto_input.tooltip.enabled": "Fluid Auto-Input Enabled",

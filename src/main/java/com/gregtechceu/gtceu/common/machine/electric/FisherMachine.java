@@ -449,7 +449,8 @@ public class FisherMachine extends TieredEnergyMachine
         }, (toggleButtonWidget, machine) -> {
             toggleButtonWidget.setSupplier(machine::isJunkEnabled);
             toggleButtonWidget.setOnPressCallback((data, bool) -> machine.setJunkEnabled(bool));
-            toggleButtonWidget.setHoverTooltips(new String[]{"Enable/Disable junk items", "Costs 2 string per catch"});
+            toggleButtonWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
         });
     }
 
