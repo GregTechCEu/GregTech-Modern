@@ -77,9 +77,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:leather_horse_armor"));
 
         // remove vanilla dye recipes to gregify
-
-
-
     }
 
     /**
