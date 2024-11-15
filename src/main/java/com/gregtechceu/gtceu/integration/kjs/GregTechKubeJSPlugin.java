@@ -205,6 +205,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
+        event.add("GTRecipeCategories", GTRecipeCategories.class);
         event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.jei;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -18,9 +18,7 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeType;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -58,13 +56,9 @@ public class GTJEIPlugin implements IModPlugin {
         registry.addRecipeCategories(new GTBedrockFluidInfoCategory(jeiHelpers));
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
-                        registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, gtRecipeType, category));
-                    }
-                }
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (Platform.isDevEnv() || category.isXEIVisible()) {
+                registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }
     }

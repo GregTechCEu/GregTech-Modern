@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.DyeColor;
 
@@ -61,6 +63,7 @@ public class DecorationRecipes {
                     .inputFluids(CHEMICAL_DYES[i].getFluid(9))
                     .outputItems(METAL_SHEETS.get(color))
                     .EUt(2).duration(10)
+                    .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("large_metal_sheet_%s".formatted(colorName))
@@ -68,6 +71,7 @@ public class DecorationRecipes {
                     .inputFluids(CHEMICAL_DYES[i].getFluid(9))
                     .outputItems(LARGE_METAL_SHEETS.get(color))
                     .EUt(2).duration(10)
+                    .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("studs_%s".formatted(colorName))
@@ -75,6 +79,7 @@ public class DecorationRecipes {
                     .inputFluids(CHEMICAL_DYES[i].getFluid(9))
                     .outputItems(STUDS.get(color))
                     .EUt(2).duration(10)
+                    .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
         }
     }

@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -19,9 +19,7 @@ import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -55,13 +53,9 @@ public class GTREIPlugin implements REIClientPlugin {
         registry.add(new GTBedrockFluidDisplayCategory());
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.add(new GTBedrockOreDisplayCategory());
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
-                        registry.add(new GTRecipeREICategory(gtRecipeType, category));
-                    }
-                }
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (Platform.isDevEnv() || category.isXEIVisible()) {
+                registry.add(new GTRecipeREICategory(category));
             }
         }
         // workstations

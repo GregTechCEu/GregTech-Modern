@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -386,7 +387,7 @@ public class MiscRecipeLoader {
                     .outputFluids(Glass.getFluid(108))
                     .save(provider);
 
-            MACERATOR_RECIPES.recipeBuilder("macerate_" + item.get()).duration(15)
+            MACERATOR_RECIPES.recipeBuilder("macerate_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputItems(dustSmall, Glass, 3)
                     .save(provider);
@@ -401,40 +402,17 @@ public class MiscRecipeLoader {
 
         // Dyed Lens Recipes
         GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("").EUt(VA[HV]).duration(200).inputItems(lens,
-                Glass);
+                Glass).category(GTRecipeCategories.CHEM_DYES);
         final int dyeAmount = 288;
 
+        // skip white lens
+        for (int i = 1; i < CHEMICAL_DYES.length; i++) {
+            builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
+                    .outputItems(GLASS_LENSES.get(Color.VALUES[i]))
+                    .save(provider);
+        }
+
         builder.copy("colorless_lens").inputFluids(DyeWhite.getFluid(dyeAmount)).outputItems(lens, Glass)
-                .save(provider);
-        builder.copy("orange_lens").inputFluids(DyeOrange.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.Orange)).save(provider);
-        builder.copy("magenta_lens").inputFluids(DyeMagenta.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.Magenta)).save(provider);
-        builder.copy("light_blue_lens").inputFluids(DyeLightBlue.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.LightBlue)).save(provider);
-        builder.copy("yellow_lens").inputFluids(DyeYellow.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.Yellow)).save(provider);
-        builder.copy("lime_lens").inputFluids(DyeLime.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Lime))
-                .save(provider);
-        builder.copy("pink_lens").inputFluids(DyePink.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Pink))
-                .save(provider);
-        builder.copy("gray_lens").inputFluids(DyeGray.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Gray))
-                .save(provider);
-        builder.copy("light_gray_lens").inputFluids(DyeLightGray.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.LightGray)).save(provider);
-        builder.copy("cyan_lens").inputFluids(DyeCyan.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Cyan))
-                .save(provider);
-        builder.copy("purple_lens").inputFluids(DyePurple.getFluid(dyeAmount))
-                .outputItems(GLASS_LENSES.get(Color.Purple)).save(provider);
-        builder.copy("blue_lens").inputFluids(DyeBlue.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Blue))
-                .save(provider);
-        builder.copy("brown_lens").inputFluids(DyeBrown.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Brown))
-                .save(provider);
-        builder.copy("green_lens").inputFluids(DyeGreen.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Green))
-                .save(provider);
-        builder.copy("red_lens").inputFluids(DyeRed.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Red))
-                .save(provider);
-        builder.copy("black_lens").inputFluids(DyeBlack.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Black))
                 .save(provider);
 
         // NAN Certificate

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -336,6 +337,7 @@ public class MaterialRecipeHandler {
                 .inputItems(ingot, material)
                 .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                 .outputItems(nugget, material, 9)
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .save(provider);
 
         if (!ChemicalHelper.get(block, material).isEmpty()) {
@@ -344,6 +346,7 @@ public class MaterialRecipeHandler {
                     .inputItems(block, material)
                     .notConsumable(GTItems.SHAPE_MOLD_INGOT)
                     .outputItems(ingot, material, (int) (block.getMaterialAmount(material) / M))
+                    .category(GTRecipeCategories.INGOT_MOLDING)
                     .save(provider);
 
             COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_block")
@@ -472,6 +475,7 @@ public class MaterialRecipeHandler {
                     .inputItems(nugget, material, 9)
                     .notConsumable(GTItems.SHAPE_MOLD_INGOT)
                     .outputItems(ingot, material)
+                    .category(GTRecipeCategories.INGOT_MOLDING)
                     .save(provider);
 
             if (material.hasFluid()) {
@@ -588,6 +592,7 @@ public class MaterialRecipeHandler {
                         .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
                         .outputItems(blockStack)
                         .duration(5).EUt(4L * voltageMultiplier)
+                        .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
             } else if (material.hasProperty(PropertyKey.GEM)) {
                 COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_gem_to_block")
