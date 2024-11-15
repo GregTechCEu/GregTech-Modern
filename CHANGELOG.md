@@ -1,5 +1,20 @@
 # ChangeLog
 
+## Version [v1.5.2](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.1-1.20.1...v1.5.2-1.20.1)
+### Added
+
+- Add and tweak various Recipe Categories by @YoungOnionMC in [#2346](https://github.com/GregTechCEu/GregTech-Modern/pull/2346)
+
+### Fixed
+
+- Fix Recipe Serialization by @krossgg in [#2348](https://github.com/GregTechCEu/GregTech-Modern/pull/2348)
+- Fix npe error on Conveyor and Pump Covers by @Spicierspace153 in [#2357](https://github.com/GregTechCEu/GregTech-Modern/pull/2357)
+- Fix Lens decomposition recipes by @YoungOnionMC in [#2358](https://github.com/GregTechCEu/GregTech-Modern/pull/2358)
+- Fix Prospector Widget causing IndexOutOfBounds Exception by @YoungOnionMC in [#2361](https://github.com/GregTechCEu/GregTech-Modern/pull/2361)
+- Fix Multiblocks not staying suspended on unform/reform by @YoungOnionMC in [#2367](https://github.com/GregTechCEu/GregTech-Modern/pull/2367)
+- Fix GTRecipePayload trying to call the Minecraft Server on Client Dist by @krossgg in [#2369](https://github.com/GregTechCEu/GregTech-Modern/pull/2369)
+
+ 
 ## Version [v1.5.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
 ### Fixed
 
