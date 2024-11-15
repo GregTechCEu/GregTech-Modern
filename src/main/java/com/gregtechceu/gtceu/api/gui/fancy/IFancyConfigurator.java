@@ -34,4 +34,11 @@ public interface IFancyConfigurator {
     default void writeInitialData(FriendlyByteBuf buffer) {}
 
     default void readInitialData(FriendlyByteBuf buffer) {}
+
+    default boolean mouseWheelMove(BiConsumer<Integer, Consumer<FriendlyByteBuf>> writeClientAction, double mouseX,
+                                   double mouseY, double wheelDelta) {
+        return false;
+    }
+
+    default void handleClientAction(int id, FriendlyByteBuf buffer) {}
 }

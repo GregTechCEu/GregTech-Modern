@@ -185,7 +185,23 @@ public class ConfiguratorPanel extends WidgetGroup {
         public Tab(IFancyConfigurator configurator) {
             super(0, tabs.size() * (getTabSize() + 2), getTabSize(), getTabSize());
             this.configurator = configurator;
-            this.button = new ButtonWidget(0, 0, getTabSize(), getTabSize(), null, this::onClick);
+            this.button = new ButtonWidget(0, 0, getTabSize(), getTabSize(), null, this::onClick) {
+
+                @Override
+                public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+                    if (isMouseOverElement(mouseX, mouseY))
+                        return configurator.mouseWheelMove(this::writeClientAction, mouseX, mouseY, wheelDelta);
+                    return false;
+                }
+
+                @Override
+                public void handleClientAction(int id, FriendlyByteBuf buffer) {
+                    if (id > 1)
+                        configurator.handleClientAction(id, buffer);
+                    else
+                        super.handleClientAction(id, buffer);
+                }
+            };
             if (configurator instanceof IFancyConfiguratorButton) {
                 this.view = null;
                 this.addWidget(button);
