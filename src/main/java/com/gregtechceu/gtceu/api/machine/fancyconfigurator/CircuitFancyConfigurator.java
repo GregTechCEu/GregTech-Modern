@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyCustomMiddleClickAction;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyCustomMouseWheelAction;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -23,9 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +36,8 @@ import java.util.function.Consumer;
  * @date 2023/6/30
  * @implNote CircuitFancyConfigurator
  */
-public class CircuitFancyConfigurator implements IFancyConfigurator {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCustomMouseWheelAction,
+                                      IFancyCustomMiddleClickAction {
 
     private static final int SET_TO_ZERO = 2;
     private static final int SET_TO_EMPTY = 3;
@@ -70,7 +68,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
     @Override
     public boolean mouseWheelMove(BiConsumer<Integer, Consumer<FriendlyByteBuf>> writeClientAction, double mouseX,
                                   double mouseY, double wheelDelta) {
-        LOGGER.info("Scrolling in ui");
         if (wheelDelta == 0) return false;
         int nextValue = getNextValue(wheelDelta > 0);
         if (nextValue == NO_CONFIG) {
@@ -90,6 +87,12 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
             case SET_TO_EMPTY -> circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
             case SET_TO_N -> circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(buffer.readVarInt()));
         }
+    }
+
+    @Override
+    public void onMiddleClick(BiConsumer<Integer, Consumer<FriendlyByteBuf>> writeClientAction) {
+        circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
+        writeClientAction.accept(SET_TO_EMPTY, buf -> {});
     }
 
     @Override
