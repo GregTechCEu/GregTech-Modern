@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -122,8 +122,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
-        this.recipeCategory = (recipeCategory == GTRecipeCategory.EMPTY) ?
-                GTRecipeCategory.of(recipeType) : recipeCategory;
+        this.recipeCategory = (recipeCategory != GTRecipeCategory.EMPTY) ?
+                recipeCategory : GTRecipeCategory.of(recipeType);
+        if (id != null) {
+            this.recipeType.getCategoryMap()
+                    .computeIfAbsent(this.recipeCategory, k -> new ObjectLinkedOpenHashSet<>())
+                    .add(this);
+        }
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
