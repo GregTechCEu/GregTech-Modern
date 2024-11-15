@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -22,6 +23,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -62,6 +65,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Array;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -130,10 +135,25 @@ public class FisherMachine extends TieredEnergyMachine
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
 
+    public static HashMap<Integer, Integer> fisherSpeed = new HashMap<Integer, Integer>() {
+
+        {
+            put(1, 800);
+            put(2, 600);
+            put(3, 400);
+            put(4, 200);
+            put(5, 100);
+            put(6, 50);
+        }
+    };
+    @Getter
+    @Setter
+    protected boolean junkEnabled = true;
+
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.maxProgress = 1000 - tier * 200;
+        this.maxProgress = fisherSpeed.get(tier);
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = createCacheItemHandler();
         this.baitHandler = createBaitItemHandler();
@@ -252,8 +272,10 @@ public class FisherMachine extends TieredEnergyMachine
 
         drainEnergy(false);
         if (progress >= maxProgress) {
-
             LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
+            if (!this.junkEnabled) {
+                lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING_FISH);
+            }
 
             FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
 
@@ -276,8 +298,10 @@ public class FisherMachine extends TieredEnergyMachine
             for (ItemStack itemStack : generatedLoot)
                 useBait |= tryFillCache(itemStack);
 
-            if (useBait)
+            if (useBait && junkEnabled)
                 this.baitHandler.storage.extractItem(0, 1, false);
+            else if (useBait)
+                this.baitHandler.storage.extractItem(0, 2, false);
             updateFishingUpdateSubscription();
             progress = -1;
         }
@@ -398,6 +422,7 @@ public class FisherMachine extends TieredEnergyMachine
                     createTemplate(inventorySize).setupUI(template, fisherMachine);
                     createEnergyBar().setupUI(template, fisherMachine);
                     createBatterySlot().setupUI(template, fisherMachine);
+                    createJunkButton().setupUI(template, fisherMachine);
                 }
             }));
 
@@ -412,6 +437,19 @@ public class FisherMachine extends TieredEnergyMachine
             slotWidget.setCanTakeItems(true);
             slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
                     GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+        });
+    }
+
+    protected static EditableUI<ToggleButtonWidget, FisherMachine> createJunkButton() {
+        return new EditableUI<>("junk_button", ToggleButtonWidget.class, () -> {
+            var toggleButtonWidget = new ToggleButtonWidget(10, 20, 18, 18,
+                    new ItemStackTexture(Items.NAME_TAG).scale(0.9F), () -> false, b -> {});
+            toggleButtonWidget.setShouldUseBaseBackground();
+            return toggleButtonWidget;
+        }, (toggleButtonWidget, machine) -> {
+            toggleButtonWidget.setSupplier(machine::isJunkEnabled);
+            toggleButtonWidget.setOnPressCallback((data, bool) -> machine.setJunkEnabled(bool));
+            toggleButtonWidget.setHoverTooltips(new String[]{"Enable/Disable junk items", "Costs 2 string per catch"});
         });
     }
 
@@ -439,6 +477,10 @@ public class FisherMachine extends TieredEnergyMachine
             baitSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.STRING_SLOT_OVERLAY);
             baitSlotWidget.setId("bait_slot");
             main.addWidget(baitSlotWidget);
+            var junkButton = createJunkButton().createDefault();
+            junkButton.setSelfPosition(new Position(4, (main.getSize().height - junkButton.getSize().height) - 4));
+            junkButton.setId("junk_button");
+            main.addWidget(junkButton);
             main.setBackground(GuiTextures.BACKGROUND_INVERSE);
             return main;
         }, (group, machine) -> {

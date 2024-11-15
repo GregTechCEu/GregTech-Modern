@@ -452,7 +452,7 @@ public class GTMachines {
                     .tieredHullRenderer(GTCEu.id("block/machine/fisher_machine"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
-                            Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
+                            Component.translatable("gtceu.machine.fisher.speed", FisherMachine.fisherSpeed.get(tier)),
                             Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,
                                     FisherMachine.WATER_CHECK_SIZE),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -462,7 +462,7 @@ public class GTMachines {
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)))
                     .compassNode("fisher")
                     .register(),
-            LV, MV, HV, EV);
+            LV, MV, HV, EV, IV, LuV);
 
     public static final MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker",
             BlockBreakerMachine::new,
