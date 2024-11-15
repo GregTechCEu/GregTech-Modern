@@ -189,15 +189,16 @@ public class ConfiguratorPanel extends WidgetGroup {
 
                 @Override
                 public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+                    if (!(configurator instanceof IFancyCustomMouseWheelAction hasActions)) return false;
                     if (isMouseOverElement(mouseX, mouseY))
-                        return configurator.mouseWheelMove(this::writeClientAction, mouseX, mouseY, wheelDelta);
+                        return hasActions.mouseWheelMove(this::writeClientAction, mouseX, mouseY, wheelDelta);
                     return false;
                 }
 
                 @Override
                 public void handleClientAction(int id, FriendlyByteBuf buffer) {
-                    if (id > 1)
-                        configurator.handleClientAction(id, buffer);
+                    if (configurator instanceof IFancyCustomClientActionHandler handler && id > 1)
+                        handler.handleClientAction(id, buffer);
                     else
                         super.handleClientAction(id, buffer);
                 }
@@ -286,7 +287,9 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         private void onClick(ClickData clickData) {
-            if (configurator instanceof IFancyConfiguratorButton fancyButton) {
+            if (clickData.button == 2 && configurator instanceof IFancyCustomMiddleClickAction middleAction) {
+                middleAction.onMiddleClick(this::writeClientAction);
+            } else if (configurator instanceof IFancyConfiguratorButton fancyButton) {
                 fancyButton.onClick(clickData);
             } else {
                 if (expanded == this) {
