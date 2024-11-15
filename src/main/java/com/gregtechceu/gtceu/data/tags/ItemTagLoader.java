@@ -35,8 +35,8 @@ public class ItemTagLoader {
                 Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
                 Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
                 Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get(),
-                GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get());
+        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
         create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).get());
         create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).get());
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).get());
