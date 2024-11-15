@@ -133,6 +133,7 @@ public class CommonProxy {
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
+        GTRecipeCategories.init();
         GTMachines.init();
         GTFoods.init();
         GTItems.init();

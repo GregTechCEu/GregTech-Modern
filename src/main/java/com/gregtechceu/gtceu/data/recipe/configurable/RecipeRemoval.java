@@ -78,9 +78,6 @@ public class RecipeRemoval {
 
         // remove vanilla dye recipes to gregify
         registry.accept(new ResourceLocation("minecraft:white_dye"));
-        registry.accept(new ResourceLocation("minecraft:black_dye"));
-        registry.accept(new ResourceLocation("black_dye_from_wither_rose"));
-        registry.accept(new ResourceLocation("blue_dye"));
     }
 
     /**
@@ -294,6 +291,32 @@ public class RecipeRemoval {
             registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_wool", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_carpet", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_bed", colorMaterial.getName())));
+            registry.accept(new ResourceLocation("minecraft:black_dye"));
+            registry.accept(new ResourceLocation("black_dye_from_wither_rose"));
+            registry.accept(new ResourceLocation("blue_dye"));
+            registry.accept(new ResourceLocation("white_dye_from_lily_of_the_valley"));
+            registry.accept(new ResourceLocation("light_blue_dye_from_blue_orchid"));
+            registry.accept(new ResourceLocation("yellow_dye_from_dandelion"));
+            registry.accept(new ResourceLocation("light_gray_dye_from_white_tulip"));
+            registry.accept(new ResourceLocation("light_gray_dye_from_azure_bluet"));
+            registry.accept(new ResourceLocation("red_dye_from_poppy"));
+            registry.accept(new ResourceLocation("red_dye_from_tulip"));
+            registry.accept(new ResourceLocation("red_dye_from_rose_bush"));
+            registry.accept(new ResourceLocation("red_dye_from_beetroot"));
+            registry.accept(new ResourceLocation("orange_dye_from_orange_tulip"));
+            registry.accept(new ResourceLocation("orange_dye_from_torchflower"));
+            registry.accept(new ResourceLocation("yellow_dye_from_dandelion"));
+            registry.accept(new ResourceLocation("cyan_dye_from_pitcher_plant"));
+            registry.accept(new ResourceLocation("light_blue_dye_from_blue_orchid"));
+            registry.accept(new ResourceLocation("blue_dye_from_cornflower"));
+            registry.accept(new ResourceLocation("magenta_dye_from_allium"));
+            registry.accept(new ResourceLocation("magenta_dye_from_lilac"));
+            registry.accept(new ResourceLocation("lime_dye_from_lime"));
+            registry.accept(new ResourceLocation("pink_dye_from_pink_tulip"));
+            registry.accept(new ResourceLocation("pink_dye_from_pink_petals"));
+            registry.accept(new ResourceLocation("pink_dye_from_peony"));
+            registry.accept(new ResourceLocation("yellow_dye_from_sunflower"));
+            registry.accept(new ResourceLocation("light_gray_dye_from_oxeye_daisy"));
         }
         registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
     }

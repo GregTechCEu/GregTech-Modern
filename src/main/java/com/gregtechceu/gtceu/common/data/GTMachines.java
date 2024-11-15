@@ -1969,7 +1969,7 @@ public class GTMachines {
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
                             Component.translatable("gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        int workingAreaChunks = (2 * tier - 5) * 2;
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
@@ -2798,7 +2798,7 @@ public class GTMachines {
                     "bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                            .recipeType(new GTRecipeType(GTCEu.id("bedrock_ore_miner"), "dummy"))
+                            .recipeType(DUMMY_RECIPES)
                             .tooltips(
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",

@@ -201,7 +201,7 @@ public class BatteryRecipes {
         CANNER_RECIPES.recipeBuilder("vanadium_battery_luv")
                 .inputItems(BATTERY_HULL_LARGE_VANADIUM)
                 .inputItems(dust, Vanadium, 16)
-                .outputItems(BATTERY_LUV_VANADIUM)
+                .outputItems(BATTERY_LuV_VANADIUM)
                 .duration(200).EUt(VA[EV]).save(provider);
 
         // ZPM
@@ -243,7 +243,7 @@ public class BatteryRecipes {
                 .outputItems(BATTERY_HULL_SMALL_VANADIUM).save(provider);
         EXTRACTOR_RECIPES.recipeBuilder("unpackage_iv_vanadium_battery").inputItems(BATTERY_IV_VANADIUM)
                 .outputItems(BATTERY_HULL_MEDIUM_VANADIUM).save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("unpackage_luv_vanadium_battery").inputItems(BATTERY_LUV_VANADIUM)
+        EXTRACTOR_RECIPES.recipeBuilder("unpackage_luv_vanadium_battery").inputItems(BATTERY_LuV_VANADIUM)
                 .outputItems(BATTERY_HULL_LARGE_VANADIUM).save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("unpackage_zpm_naquadria_battery").inputItems(BATTERY_ZPM_NAQUADRIA)
