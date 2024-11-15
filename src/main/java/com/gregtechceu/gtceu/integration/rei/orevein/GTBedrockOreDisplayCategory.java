@@ -68,6 +68,6 @@ public class GTBedrockOreDisplayCategory extends ModularUIDisplayCategory<GTBedr
         registry.addWorkstations(GTBedrockOreDisplayCategory.CATEGORY,
                 EntryStacks.of(GTItems.PROSPECTOR_HV.asStack()));
         registry.addWorkstations(GTBedrockOreDisplayCategory.CATEGORY,
-                EntryStacks.of(GTItems.PROSPECTOR_LUV.asStack()));
+                EntryStacks.of(GTItems.PROSPECTOR_LuV.asStack()));
     }
 }

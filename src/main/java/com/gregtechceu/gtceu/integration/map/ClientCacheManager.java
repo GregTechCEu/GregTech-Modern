@@ -42,11 +42,16 @@ public class ClientCacheManager {
     private static final Reference2ObjectMap<IClientCache, ClientCacheInfo> caches = new Reference2ObjectArrayMap<>();
     private static boolean shouldInit = true;
 
+    private static String sanitizeFilename(String input) {
+        return input.replaceAll("(?U)[^\\w-]+", "_").trim();
+    }
+
     public static void init(String worldId) {
         if (shouldInit) {
             final Player player = Minecraft.getInstance().player;
-            worldFolder = new File(clientCacheDir, player.getName().getString() + "_" + player.getUUID() +
-                    File.separator + worldId);
+            worldFolder = new File(clientCacheDir,
+                    sanitizeFilename(player.getName().getString()) + "_" + player.getUUID() +
+                            File.separator + sanitizeFilename(worldId));
             worldFolder.mkdirs();
             // to ensure any cache data that might somehow be lying around gets dealt with
             clearCaches();
