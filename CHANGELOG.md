@@ -1,5 +1,10 @@
 # ChangeLog
 
+## Version [v1.5.3](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.2-1.20.1...v1.5.3-1.20.1)
+### Fixed
+
+ - Fixed recipe deserialization again so that both SP and MP worlds load ([#2376](https://github.com/GregTechCEu/GregTech-Modern/pull/2376))
+ 
 ## Version [v1.5.2](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.1-1.20.1...v1.5.2-1.20.1)
 ### Added
 
