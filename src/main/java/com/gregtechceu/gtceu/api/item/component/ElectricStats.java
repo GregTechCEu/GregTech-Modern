@@ -184,7 +184,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             maxChargeTime = durationMax.getSeconds();
             currentChargeTime = durationCurrent.toSeconds();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (durationCurrent.toMinutes()  <= 60) {
+        } else if (durationCurrent.toMinutes() <= 60) {
             maxChargeTime = durationMax.toMinutes();
             currentChargeTime = durationCurrent.toMinutes();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
