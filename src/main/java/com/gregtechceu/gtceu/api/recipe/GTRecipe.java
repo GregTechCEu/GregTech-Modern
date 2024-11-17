@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -121,7 +122,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
-        this.recipeCategory = recipeCategory;
+        this.recipeCategory = (recipeCategory != GTRecipeCategory.EMPTY) ?
+                recipeCategory : GTRecipeCategory.of(recipeType);
+        if (id != null) {
+            this.recipeType.getCategoryMap()
+                    .computeIfAbsent(this.recipeCategory, k -> new ObjectLinkedOpenHashSet<>())
+                    .add(this);
+        }
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,

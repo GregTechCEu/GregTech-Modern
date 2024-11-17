@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.emi;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -20,9 +20,6 @@ import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.crafting.RecipeType;
 
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import de.mari_023.ae2wtlib.wet.WETMenu;
@@ -49,13 +46,9 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addCategory(GTBedrockOreEmiCategory.CATEGORY);
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                if (Platform.isDevEnv() || gtRecipeType.getRecipeUI().isXEIVisible()) {
-                    for (GTRecipeCategory category : gtRecipeType.getRecipesByCategory().keySet()) {
-                        registry.addCategory(new GTRecipeEMICategory(gtRecipeType, category));
-                    }
-                }
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (Platform.isDevEnv() || category.isXEIVisible()) {
+                registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
         }
         registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
@@ -95,7 +88,8 @@ public class GTEMIPlugin implements EmiPlugin {
                 EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_OVEN.asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.MULTI_SMELTER.asStack()));
-        registry.addWorkstation(GTRecipeEMICategory.getCategoryFor(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
+        registry.addWorkstation(
+                GTRecipeEMICategory.CATEGORIES.apply(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
                 EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 }

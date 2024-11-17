@@ -299,7 +299,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier])));
+        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
 
         transferRateWidget = new IntInputWidget(10, 20, 134, 20,
                 this::getCurrentBucketModeTransferRate, this::setCurrentBucketModeTransferRate).setMin(0);
