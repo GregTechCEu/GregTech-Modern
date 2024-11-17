@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +44,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -584,9 +587,16 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             if (performedFill) {
                 SoundEvent soundevent = initialFluid.getFluid().getFluidType().getSound(initialFluid,
                         SoundActions.BUCKET_FILL);
+
                 if (soundevent != null) {
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+                else
+                {
+                  
+                    player.level().playSound(player, player.position().x, player.position().y + 0.5, player.position().z, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS,1.0f,1.0f);
+
                 }
                 gui.getModularUIContainer().setCarried(currentStack);
                 return currentStack.getCount();
