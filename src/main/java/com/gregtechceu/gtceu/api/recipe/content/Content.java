@@ -153,7 +153,9 @@ public class Content {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        float chance = 100 * (float) Math.min((this.chance + (this.tierChanceBoost * (tier >= 1 ? tier - 1 : tier))), maxChance) / maxChance;
+        float chance = 100 *
+                (float) Math.min((this.chance + (this.tierChanceBoost * (tier >= 1 ? tier - 1 : tier))), maxChance) /
+                maxChance;
         String percent = FormattingUtil.formatPercent(chance);
 
         String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") :
