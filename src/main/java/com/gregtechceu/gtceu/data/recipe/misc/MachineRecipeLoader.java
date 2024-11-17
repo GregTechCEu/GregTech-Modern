@@ -1388,8 +1388,8 @@ public class MachineRecipeLoader {
                 ITEM_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
                 FLUID_FILTER.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", ORE_DICTIONARY_FILTER.asStack(),
-                ORE_DICTIONARY_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "item_tag_filter_nbt", TAG_FILTER.asStack(),
+                TAG_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
                 TAG_FLUID_FILTER.asStack());
     }

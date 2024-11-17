@@ -141,7 +141,7 @@ public class MaterialRecipeHandler {
                 if (blastTemp <= 0) {
                     // smelting magnetic dusts is handled elsewhere
                     if (!mat.hasFlag(IS_MAGNETIC)) {
-                        // do not register inputs by ore dict here. Let other mods register their own dust -> ingots
+                        // do not register inputs by tag prefix here. Let other mods register their own dust -> ingots
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
                                 ChemicalHelper.getTag(dustPrefix, mat), ingotStack);
                     }
@@ -218,11 +218,15 @@ public class MaterialRecipeHandler {
 
         // Add Vacuum Freezer recipe if required.
         if (ingotHot.doGenerateItem(material)) {
+            int vacuumEUt = property.getVacuumEUtOverride() != -1 ? property.getVacuumEUtOverride() : VA[MV];
+            int vacuumDuration = property.getVacuumDurationOverride() != -1 ? property.getVacuumDurationOverride() :
+                    (int) material.getMass() * 3;
             if (blastTemp < 5000) {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
                         .inputItems(ingotHot, material)
                         .outputItems(ingot, material)
-                        .duration((int) material.getMass() * 3)
+                        .duration(vacuumDuration)
+                        .EUt(vacuumEUt)
                         .save(provider);
             } else {
                 VACUUM_RECIPES.recipeBuilder("cool_hot_" + material.getName() + "_ingot")
@@ -230,7 +234,8 @@ public class MaterialRecipeHandler {
                         .inputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 500))
                         .outputItems(ingot, material)
                         .outputFluids(Helium.getFluid(250))
-                        .duration((int) material.getMass() * 3)
+                        .duration(vacuumDuration)
+                        .EUt(vacuumEUt)
                         .save(provider);
             }
         }

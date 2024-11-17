@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -28,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -90,14 +92,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         super(metaTileEntityId, isConfigurable ? 3 : 1);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = createInventory();
-        this.itemStackHandler.setFilter(itemStack -> GTItems.DUCT_TAPE.is(itemStack));
+        this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
     }
 
     //////////////////////////////////////
     // ****** Initialization ******//
     //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
+        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH);
     }
 
     @Override
@@ -308,22 +310,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 .floatValue();
     }
 
-    private void incInternalMultiplier() {
-        if (durationMultiplier >= MAX_DURATION_MULTIPLIER) {
-            durationMultiplier = MAX_DURATION_MULTIPLIER;
-            return;
-        }
-        durationMultiplier += DURATION_ACTION_AMOUNT;
-    }
-
-    private void decInternalMultiplier() {
-        if (durationMultiplier <= MIN_DURATION_MULTIPLIER) {
-            durationMultiplier = MIN_DURATION_MULTIPLIER;
-            return;
-        }
-        durationMultiplier -= DURATION_ACTION_AMOUNT;
-    }
-
     //////////////////////////////////////
     // ******* INTERACTION *******//
     //////////////////////////////////////
@@ -361,9 +347,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                     }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
                         if (!clickData.isRemote) {
                             if (componentData.equals("sub")) {
-                                decInternalMultiplier();
+                                durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
+                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
                             } else if (componentData.equals("add")) {
-                                incInternalMultiplier();
+                                durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
+                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
                             }
                         }
                     })));
@@ -387,9 +375,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description",
-                    multiplier.get());
+                    FormattingUtil.formatNumber2Places(multiplier.get()));
         }
-        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get())
+        return Component
+                .translatable("gtceu.maintenance.configurable_" + type,
+                        FormattingUtil.formatNumber2Places(multiplier.get()))
                 .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
 }

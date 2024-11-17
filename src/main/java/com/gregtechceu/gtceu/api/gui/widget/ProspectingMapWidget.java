@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
+import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -17,11 +19,14 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -249,6 +254,79 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        var clickedItem = getClickedVein(mouseX, mouseY);
+        if (clickedItem == null) {
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+        WaypointManager.setWaypoint(new ChunkPos(clickedItem.position).toString(),
+                clickedItem.name,
+                clickedItem.color,
+                gui.entityPlayer.level().dimension(),
+                clickedItem.position.getX(), clickedItem.position.getY(), clickedItem.position.getZ());
+        gui.entityPlayer.displayClientMessage(
+                Component.translatable("behavior.prospector.added_waypoint", clickedItem.name), true);
+        playButtonClickSound();
+        return true;
+    }
+
+    private WaypointItem getClickedVein(double mouseX, double mouseY) {
+        var position = getPosition();
+        var size = getSize();
+        var x = position.x + 3;
+        var y = position.y + (size.getHeight() - texture.getImageHeight()) / 2 - 1;
+
+        int cX = (int) (mouseX - x) / 16;
+        int cZ = (int) (mouseY - y) / 16;
+        int offsetX = Math.abs((int) (mouseX - x) % 16);
+        int offsetZ = Math.abs((int) (mouseY - y) % 16);
+        int xDiff = cX - (chunkRadius - 1);
+        int zDiff = cZ - (chunkRadius - 1);
+
+        int xPos = ((gui.entityPlayer.chunkPosition().x + xDiff) << 4) + offsetX;
+        int zPos = ((gui.entityPlayer.chunkPosition().z + zDiff) << 4) + offsetZ;
+
+        var blockPos = new BlockPos(xPos, gui.entityPlayer.level().getHeight(Heightmap.Types.WORLD_SURFACE, xPos, zPos),
+                zPos);
+        if (cX < 0 || cZ < 0 || cX >= chunkRadius * 2 - 1 || cZ >= chunkRadius * 2 - 1) {
+            return null;
+        }
+
+        // If the ores are filtered use its name
+        if (!texture.getSelected().equals(ProspectingTexture.SELECTED_ALL)) {
+            for (var item : items) {
+                if (!texture.getSelected().equals(mode.getUniqueID(item))) continue;
+                var name = Component.translatable(mode.getDescriptionId(item)).getString();
+                var color = mode.getItemColor(item);
+                return new WaypointItem(blockPos, name, color);
+            }
+        }
+
+        // If the cursor is over an ore use its name
+        var hoveredItem = texture.data[cX * mode.cellSize + offsetX][cZ * mode.cellSize + offsetZ];
+        if (hoveredItem != null && hoveredItem.length != 0) {
+            var name = Component.translatable(mode.getDescriptionId(hoveredItem[0])).getString();
+            var color = mode.getItemColor(hoveredItem[0]);
+            return new WaypointItem(blockPos, name, color);
+        }
+
+        // If all else fails see if there's a nearby vein and use the vein's name
+        var vein = GTClientCache.instance.getNearbyVeins(gui.entityPlayer.level().dimension(), blockPos, 32);
+        if (!vein.isEmpty()) {
+            vein.sort((o1, o2) -> (int) (o1.center().distToCenterSqr(xPos, o1.center().getY(), zPos) -
+                    o2.center().distToCenterSqr(xPos, o2.center().getY(), zPos)));
+            var name = OreRenderLayer.getName(vein.get(0)).getString();
+            var materials = vein.get(0).definition().veinGenerator().getAllMaterials();
+            var mostCommonItem = materials.get(materials.size() - 1);
+            var color = mostCommonItem.getMaterialRGB();
+            return new WaypointItem(blockPos, name, color);
+        }
+
+        return new WaypointItem(blockPos, "Depleted Vein", 0x990000);
+    }
+
+    @Override
     public String resultDisplay(Object value) {
         return mode.getDescriptionId(value);
     }
@@ -281,4 +359,6 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             }
         }
     }
+
+    private record WaypointItem(BlockPos position, String name, int color) {}
 }

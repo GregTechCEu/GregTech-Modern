@@ -63,7 +63,7 @@ public class LangHandler {
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
-        provider.add("recipe.condition.eu_to_start.tooltip", "EU to start: %d");
+        provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
@@ -326,13 +326,13 @@ public class LangHandler {
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
-        provider.add("cover.ore_dictionary_filter.title", "Ore Dictionary Filter");
-        multilineLang(provider, "cover.ore_dictionary_filter.info",
+        provider.add("cover.tag_filter.title", "Tag Filter");
+        multilineLang(provider, "cover.tag_filter.info",
                 "§bAccepts complex expressions\n& = AND\n| = OR\n^ = XOR\n! = NOT\n( ) for priority\n* for wildcard\n§bExample:\n§6dust*Gold | (plate* & !*Double*)\nWill match all gold dusts of all sizes or all plates, but not double plates");
-        provider.add("cover.ore_dictionary_filter.test_slot.info",
+        provider.add("cover.tag_filter.test_slot.info",
                 "Insert a item to test if it matches the filter expression");
-        provider.add("cover.ore_dictionary_filter.matches", "Item matches");
-        provider.add("cover.ore_dictionary_filter.matches_not", "Item does not match");
+        provider.add("cover.tag_filter.matches", "Item matches");
+        provider.add("cover.tag_filter.matches_not", "Item does not match");
         provider.add("cover.fluid_filter.title", "Fluid Filter");
         multilineLang(provider, "cover.fluid_filter.config_amount",
                 "Scroll wheel up increases amount, down decreases.\nShift[§6x10§r],Ctrl[§ex100§r],Shift+Ctrl[§ax1000§r]\nRight click increases amount, left click decreases.\nHold shift to double/halve.\nMiddle click to clear");
@@ -362,11 +362,11 @@ public class LangHandler {
                 "§cWARNING!§7 Setting this to \"Enabled\" means that fluids or items WILL be voided.");
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
-        provider.add("cover.smart_item_filter.title", "Smart Item Filter");
-        provider.add("cover.smart_item_filter.filtering_mode.electrolyzer", "Electrolyzer");
-        provider.add("cover.smart_item_filter.filtering_mode.centrifuge", "Centrifuge");
-        provider.add("cover.smart_item_filter.filtering_mode.sifter", "Sifter");
-        multilineLang(provider, "cover.smart_item_filter.filtering_mode.description",
+        provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
+        provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
+        provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
+        multilineLang(provider, "cover.item_smart_filter.filtering_mode.description",
                 "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
         provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
         provider.add("cover.conveyor.transfer_rate", "§7items/sec");
@@ -392,14 +392,14 @@ public class LangHandler {
         multilineLang(provider, "cover.universal.manual_import_export.mode.description",
                 "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
-        multiLang(provider, "cover.conveyor.ore_dictionary.title", "Ore Dictionary Name",
+        multiLang(provider, "cover.conveyor.tag.title", "Tag Name",
                 "(use * for wildcard)");
         provider.add("cover.robotic_arm.title", "Robotic Arm Settings (%s)");
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
         multilineLang(provider, "cover.robotic_arm.transfer_mode.description",
-                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for ore dictionary filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
+                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
         provider.add("cover.pump.title", "Pump Cover Settings (%s)");
         provider.add("cover.pump.transfer_rate", "%s");
         provider.add("cover.pump.mode.export", "Mode: Export");
@@ -699,6 +699,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
+        provider.add("behaviour.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
@@ -746,6 +747,7 @@ public class LangHandler {
         provider.add("metaitem.prospector.tooltip.radius", "Scans range in a %s Chunk Radius");
         provider.add("metaitem.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
+        provider.add("behavior.prospector.added_waypoint", "Created waypoint named %s!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
@@ -919,7 +921,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.temperature", "Temp: %sK");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
-        provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
+        provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
         provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");
@@ -1161,7 +1163,7 @@ public class LangHandler {
         provider.add("gtceu.command.hand.material", "Material Id:");
         provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
         provider.add("gtceu.command.hand.meta_item", "MetaItem Id:");
-        provider.add("gtceu.command.hand.ore_dict_entries", "§3Ore dictionary entries:");
+        provider.add("gtceu.command.hand.tag_entries", "§3Tag entries:");
         provider.add("gtceu.command.hand.tool_stats", "Tool Stats Class: %s");
         provider.add("gtceu.command.hand.not_a_player", "This command is only usable by a player.");
         provider.add("gtceu.command.hand.no_item",
@@ -1239,6 +1241,8 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
 
         // gui
+        provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
+        provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
@@ -1270,9 +1274,11 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_1_logic", "Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.chance_1", "Base Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_1_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_2", "Chance at Tier: %s%%");
+        provider.add("gtceu.gui.content.chance_2_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("gtceu.gui.content.tier_boost", "Bonus Chance: +%s%%/tier");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
 
         provider.add("gtceu.chance_logic.or", "OR");

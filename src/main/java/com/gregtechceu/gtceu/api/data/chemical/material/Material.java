@@ -42,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -1032,22 +1033,33 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder blastTemp(int temp) {
+            return blast(temp);
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier) {
+            return blast(temp, gasTier);
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
+            return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride));
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
+            return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride, durationOverride));
+        }
+
+        public Builder blast(int temp) {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp));
             return this;
         }
 
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, -1, -1));
+        public Builder blast(int temp, BlastProperty.GasTier gasTier) {
+            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier));
             return this;
         }
 
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, -1));
-            return this;
-        }
-
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, durationOverride));
+        public Builder blast(UnaryOperator<BlastProperty.Builder> b) {
+            properties.setProperty(PropertyKey.BLAST, b.apply(new BlastProperty.Builder()).build());
             return this;
         }
 

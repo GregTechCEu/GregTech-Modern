@@ -864,7 +864,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
-                "Each Rotor Holder above %s§7 adds §f10%% efficiency§7.");
+                "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
         provider.add("gtceu.multiblock.turbine.fuel_needed", "Consumes %s per %s ticks");
         provider.add("gtceu.multiblock.large_boiler.max_temperature",
                 "Max Temperature: %dK, Steam Production: %dmB/t");

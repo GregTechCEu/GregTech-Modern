@@ -14,19 +14,29 @@
     }
   ],
   "sort": "ASC",
-  "template": "## Version [#{{TO_TAG}}](#{{RELEASE_DIFF}})\n#{{CHANGELOG}} ",
+  "template": "## Version [v#{{VERSION}}](#{{RELEASE_DIFF}})\n#{{CHANGELOG}} ",
   "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
-  "empty_template": "- No changes",
+  "custom_placeholders": [
+    {
+      "name": "VERSION",
+      "source": "TO_TAG",
+      "transformer": {
+        "pattern": "v?([0-9\\.]+)(-[0-9\\.]+)?",
+        "target": "$1"
+      }
+    }
+  ],
+  "empty_template": "",
   "ignore_labels": ["ignore changelog"],
   "tag_resolver": {
     "method": "semver",
     "filter": {
-      "pattern": "^(?!v?(1\\.20\\.1-)?[0-9\\.]+$).+$",
+      "pattern": "^(?!v?[0-9\\.]+(-1\\.20\\.1)?$).+$",
       "flags": "gu"
     },
     "transformer": {
-      "pattern": "v?([0-9\\.]+-)?([0-9\\.]+)",
-      "target": "$2"
+      "pattern": "v?([0-9\\.]+)(-[0-9\\.]+)?",
+      "target": "$1"
     }
   },
   "max_pull_requests": 1000,

@@ -273,22 +273,22 @@ public class MixerRecipes {
                 .outputItems(dust, Gunpowder, 6)
                 .save(provider);
 
-        MIXER_RECIPES.recipeBuilder("blue_steel").duration(800).EUt(VA[ULV])
+        MIXER_RECIPES.recipeBuilder("red_steel").duration(800).EUt(VA[ULV])
                 .inputItems(dust, RoseGold)
                 .inputItems(dust, Brass)
                 .inputItems(dust, BlackSteel, 4)
                 .inputItems(dust, Steel, 2)
                 .circuitMeta(1)
-                .outputItems(dust, BlueSteel, 8)
+                .outputItems(dust, RedSteel, 8)
                 .save(provider);
 
-        MIXER_RECIPES.recipeBuilder("red_steel").duration(800).EUt(VA[ULV])
+        MIXER_RECIPES.recipeBuilder("blue_steel").duration(800).EUt(VA[ULV])
                 .inputItems(dust, SterlingSilver)
                 .inputItems(dust, BismuthBronze)
                 .inputItems(dust, BlackSteel, 4)
                 .inputItems(dust, Steel, 2)
                 .circuitMeta(1)
-                .outputItems(dust, RedSteel, 8)
+                .outputItems(dust, BlueSteel, 8)
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("cobalt_brass").duration(900).EUt(VA[ULV])

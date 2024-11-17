@@ -243,6 +243,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
@@ -497,7 +499,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 @NotNull GTRecipeType recipeType,
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage) {
+                                @Nullable Object storage, int tier, int minTier) {
         if (widget instanceof SlotWidget slot) {
             if (storage instanceof IItemHandlerModifiable items) {
                 if (index >= 0 && index < items.getSlots()) {
@@ -531,10 +533,15 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             }
             if (content != null) {
-                slot.setXEIChance((float) content.chance / content.maxChance);
+                float chanceFloat = (float) content.chance / content.maxChance;
+                float chanceAtTierFloat = Math
+                        .min(chanceFloat + (((float) content.tierChanceBoost / (float) content.maxChance)) *
+                                Math.max(0, tier - minTier), 1.0f);
+                slot.setXEIChance(chanceAtTierFloat);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips);
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
+                            minTier);
                     //@formatter:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
@@ -720,5 +727,17 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public Object2IntMap<Ingredient> makeChanceCache() {
         return new Object2IntOpenCustomHashMap<>(IngredientEquality.IngredientHashStrategy.INSTANCE);
+    }
+
+    public interface ICustomParallel {
+
+        /**
+         * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
+         * 
+         * @param recipe     Recipe
+         * @param multiplier Initial multiplier
+         * @return Limited multiplier
+         */
+        int limitParallel(GTRecipe recipe, int multiplier);
     }
 }
