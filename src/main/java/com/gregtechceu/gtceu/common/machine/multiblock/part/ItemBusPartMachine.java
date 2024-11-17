@@ -195,8 +195,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         if (this.io == IO.OUT) {
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
-        }
-        else if (this.io == IO.IN) {
+        } else if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
