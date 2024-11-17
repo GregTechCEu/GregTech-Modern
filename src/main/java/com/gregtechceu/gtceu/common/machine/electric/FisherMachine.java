@@ -148,7 +148,7 @@ public class FisherMachine extends TieredEnergyMachine
     protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return handler;
     }

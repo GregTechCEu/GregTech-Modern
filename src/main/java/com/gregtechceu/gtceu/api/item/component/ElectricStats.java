@@ -109,7 +109,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                         transferLimit -= chargedAmount;
                         if (transferLimit == 0L) break;
                     }
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                     var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(itemInSlot);
                     if (feEnergyItem != null && feEnergyItem.canReceive() &&
                             feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {

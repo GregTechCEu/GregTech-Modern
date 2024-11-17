@@ -91,7 +91,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             }
         };
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return handler;
     }
@@ -157,7 +157,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     batteries.add(electricItem);
                 }
-            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                 IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
                 if (energyStorage != null) {
                     if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
@@ -190,7 +190,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 batteries.add(electricItem);
-            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                 IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
                 if (energyStorage != null) {
                     batteries.add(energyStorage);

@@ -2707,7 +2707,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerConverter(int amperage) {
-        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             REGISTRATE.creativeModeTab(() -> null);
         }
 
@@ -2731,7 +2731,7 @@ public class GTMachines {
                         .register(),
                 ALL_TIERS);
 
-        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             REGISTRATE.creativeModeTab(() -> MACHINE);
         }
 
