@@ -154,7 +154,8 @@ public class Content {
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
         float chance = 100 *
-                (float) Math.min((this.chance + (this.tierChanceBoost * (tier >= GTValues.LV ? tier - 1 : tier))), maxChance) /
+                (float) Math.min((this.chance + (this.tierChanceBoost * (tier >= GTValues.LV ? tier - 1 : tier))),
+                        maxChance) /
                 maxChance;
         String percent = FormattingUtil.formatPercent(chance);
 
