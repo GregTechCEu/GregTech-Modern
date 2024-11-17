@@ -1960,7 +1960,7 @@ public class GTMachines {
                             .where('F', frames(LargeMinerMachine.getMaterial(tier)))
                             .where('#', any())
                             .build())
-                    .allowExtendedFacing(false)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new LargeMinerRenderer(
                             MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner")))
