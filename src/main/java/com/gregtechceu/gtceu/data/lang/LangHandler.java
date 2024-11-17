@@ -186,7 +186,8 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.hammer", "%s Hammer");
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
         replace(provider, "item.gtceu.tool.mallet", "%s Soft Mallet");
-            multilineLang(provider, "item.gtceu.tool.mallet.tooltip", "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
+        multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
+                "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
         replace(provider, "item.gtceu.tool.wrench", "%s Wrench");
         provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.file", "%s File");
