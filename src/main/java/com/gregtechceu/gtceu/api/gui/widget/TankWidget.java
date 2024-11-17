@@ -44,8 +44,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -591,11 +589,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                 if (soundevent != null) {
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-                else
-                {
-                  
-                    player.level().playSound(player, player.position().x, player.position().y + 0.5, player.position().z, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS,1.0f,1.0f);
+                } else {
+
+                    player.level().playSound(player, player.position().x, player.position().y + 0.5,
+                            player.position().z, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
 
                 }
                 gui.getModularUIContainer().setCarried(currentStack);
