@@ -159,7 +159,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     @Override
     public boolean isDistinct() {
-        return super.isDistinct() && tank.isDistinct();
+        return io != IO.OUT && super.isDistinct() && tank.isDistinct();
     }
 
     @Override
