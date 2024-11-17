@@ -655,11 +655,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return item -> true;
     }
 
-    // TODO: ADD Fluid Filter Modes
-    public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side) {
+    public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof FluidFilterCover filterCover) {
+            if (cover instanceof FluidFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
                 return filterCover.getFluidFilter();
             }
         }
@@ -706,7 +705,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             io = IO.OUT;
         }
 
-        IOFluidHandlerList handlerList = new IOFluidHandlerList(list, io, getFluidCapFilter(side));
+        IOFluidHandlerList handlerList = new IOFluidHandlerList(list, io, getFluidCapFilter(side, IO.IN),
+                getFluidCapFilter(side, IO.OUT));
         if (!useCoverCapability || side == null) return handlerList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
