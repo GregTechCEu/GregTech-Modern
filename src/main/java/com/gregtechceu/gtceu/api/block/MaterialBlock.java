@@ -22,9 +22,12 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -40,6 +43,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -275,5 +279,29 @@ public class MaterialBlock extends AppearanceBlock {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
+            double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
+            double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);
+            Vec3 deltaMovement = livingEntity.getDeltaMovement();
+            livingEntity.resetFallDistance();
+            float f = 0.15F;
+            double d0 = Mth.clamp(deltaMovement.x, -f, f);
+            double d1 = Mth.clamp(deltaMovement.z, -f, f);
+            double d2 = Math.max(deltaMovement.y, -f);
+            if (d2 < 0.0 && !livingEntity.getFeetBlockState().isScaffolding(livingEntity) &&
+                    livingEntity.isSuppressingSlidingDownLadder() &&
+                    livingEntity instanceof Player) {
+                d2 = Math.min(deltaMovement.y + currentAccel, 0.0D);
+            }
+            if (livingEntity.horizontalCollision) {
+                d2 = 0.3;
+            }
+            deltaMovement = new Vec3(d0, d2, d1);
+            entity.setDeltaMovement(deltaMovement);
+        }
     }
 }
