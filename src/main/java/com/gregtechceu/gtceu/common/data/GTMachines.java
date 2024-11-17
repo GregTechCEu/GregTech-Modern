@@ -452,7 +452,7 @@ public class GTMachines {
                     .tieredHullRenderer(GTCEu.id("block/machine/fisher_machine"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
-                            Component.translatable("gtceu.machine.fisher.speed", FisherMachine.fisherSpeed.get(tier)),
+                            Component.translatable("gtceu.machine.fisher.speed", FisherMachine.calcMaxProgress(tier)),
                             Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,
                                     FisherMachine.WATER_CHECK_SIZE),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",

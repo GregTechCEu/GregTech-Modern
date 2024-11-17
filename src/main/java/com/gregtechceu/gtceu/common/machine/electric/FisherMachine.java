@@ -64,7 +64,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -133,17 +132,6 @@ public class FisherMachine extends TieredEnergyMachine
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
 
-    public static HashMap<Integer, Integer> fisherSpeed = new HashMap<Integer, Integer>() {
-
-        {
-            put(1, 800);
-            put(2, 600);
-            put(3, 400);
-            put(4, 200);
-            put(5, 100);
-            put(6, 50);
-        }
-    };
     @Getter
     @Setter
     protected boolean junkEnabled = true;
@@ -151,7 +139,7 @@ public class FisherMachine extends TieredEnergyMachine
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.maxProgress = fisherSpeed.get(tier);
+        this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = createCacheItemHandler();
         this.baitHandler = createBaitItemHandler();
@@ -231,6 +219,10 @@ public class FisherMachine extends TieredEnergyMachine
         clearInventory(chargerInventory);
         clearInventory(baitHandler.storage);
         clearInventory(cache.storage);
+    }
+
+    public static int calcMaxProgress(int tier) {
+        return (int) (800.0 - 170 * ((double) tier - 1.0) + (((double) Math.max(0, tier - 4) / 0.012)));
     }
 
     //////////////////////////////////////
