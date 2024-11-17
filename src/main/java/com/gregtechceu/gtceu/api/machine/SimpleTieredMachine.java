@@ -124,10 +124,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
-        var handler = new CustomItemStackHandler()
-        {public int getSlotLimit(int slot){return 1  ;}
+        var handler = new CustomItemStackHandler() {
 
-
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
         };
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
