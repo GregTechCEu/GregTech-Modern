@@ -22,6 +22,7 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new MulitblockStructureProvider());
         oneProbe.registerProvider(new MaintenanceInfoProvider());
         oneProbe.registerProvider(new ExhaustVentInfoProvider());
+        oneProbe.registerProvider(new SteamBoilerInfoProvider());
         oneProbe.registerProvider(new AutoOutputInfoProvider());
         oneProbe.registerProvider(new CableInfoProvider());
         oneProbe.registerProvider(new MachineModeProvider());
