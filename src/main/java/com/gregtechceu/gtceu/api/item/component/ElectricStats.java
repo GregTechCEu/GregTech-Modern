@@ -109,7 +109,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                         transferLimit -= chargedAmount;
                         if (transferLimit == 0L) break;
                     }
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                     var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(itemInSlot);
                     if (feEnergyItem != null && feEnergyItem.canReceive() &&
                             feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
@@ -180,11 +180,11 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         long maxChargeTime;
         String unit;
 
-        if (durationMax.getSeconds() <= 180) {
+        if (durationCurrent.getSeconds() <= 60) {
             maxChargeTime = durationMax.getSeconds();
             currentChargeTime = durationCurrent.toSeconds();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (durationMax.toMinutes() <= 180) {
+        } else if (durationCurrent.toMinutes() <= 60) {
             maxChargeTime = durationMax.toMinutes();
             currentChargeTime = durationCurrent.toMinutes();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");

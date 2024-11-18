@@ -133,7 +133,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public boolean isDistinct() {
-        return getInventory().isDistinct() && circuitInventory.isDistinct();
+        return io != IO.OUT && getInventory().isDistinct() && circuitInventory.isDistinct();
     }
 
     @Override
@@ -193,8 +193,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IDistinctPart.super.attachConfigurators(configuratorPanel);
-        if (this.io == IO.IN) {
+        if (this.io == IO.OUT) {
+            IDistinctPart.super.superAttachConfigurators(configuratorPanel);
+        } else if (this.io == IO.IN) {
+            IDistinctPart.super.attachConfigurators(configuratorPanel);
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }

@@ -7,7 +7,9 @@
     "gtceu:lv_fisher",
     "gtceu:mv_fisher",
     "gtceu:hv_fisher",
-    "gtceu:ev_fisher"
+    "gtceu:ev_fisher",
+    "gtceu:iv_fisher",
+    "gtceu:luv_fisher"
   ],
   "page": "gtceu:machines/fisher",
   "position": [

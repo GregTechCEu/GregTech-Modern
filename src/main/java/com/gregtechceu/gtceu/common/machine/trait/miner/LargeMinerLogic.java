@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -69,20 +70,33 @@ public class LargeMinerLogic extends MinerLogic {
         if (!isChunkMode) {
             super.initPos(pos, currentRadius);
         } else {
+            Direction dir = super.getDir();
             ServerLevel world = (ServerLevel) this.getMachine().getLevel();
             ChunkAccess origin = world.getChunk(pos);
             ChunkPos startPos = (world.getChunk(origin.getPos().x - currentRadius / CHUNK_LENGTH,
                     origin.getPos().z - currentRadius / CHUNK_LENGTH)).getPos();
             x = startPos.getMinBlockX();
-            y = pos.getY() - 1;
+            if (dir == Direction.UP) {
+                y = pos.getY() + 1;
+            } else {
+                y = pos.getY() - 1;
+            }
             z = startPos.getMinBlockZ();
             startX = startPos.getMinBlockX();
             startY = pos.getY();
             startZ = startPos.getMinBlockZ();
             mineX = startPos.getMinBlockX();
-            mineY = pos.getY() - 1;
+            if (dir == Direction.UP) {
+                mineY = pos.getY() + 1;
+            } else {
+                mineY = pos.getY() - 1;
+            }
             mineZ = startPos.getMinBlockZ();
-            pipeY = pos.getY() - 1;
+            if (dir == Direction.UP) {
+                pipeY = pos.getY() + 1;
+            } else {
+                pipeY = pos.getY() - 1;
+            }
         }
     }
 
