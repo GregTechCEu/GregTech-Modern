@@ -121,7 +121,15 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
+        Direction opposite = this.getUpwardsFacing().getOpposite();
+        getRecipeLogic().setDir(opposite == Direction.NORTH ? Direction.UP : Direction.DOWN);
         initializeAbilities();
+    }
+
+    @Override
+    public boolean checkPattern() {
+        return super.checkPattern() &&
+                (this.getUpwardsFacing() == Direction.NORTH || this.getUpwardsFacing() == Direction.SOUTH);
     }
 
     private void initializeAbilities() {
