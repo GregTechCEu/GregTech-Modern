@@ -450,6 +450,8 @@ public class RecyclingRecipes {
         List<Tuple<ItemStack, MaterialStack>> outputs = new ArrayList<>();
 
         for (MaterialStack ms : materials) {
+            ms = new MaterialStack(ms.material().hasFlag(IS_MAGNETIC) ?
+                    ms.material().getProperty(PropertyKey.INGOT).getMacerateInto() : ms.material(), ms.amount());
             ItemStack stack = toItemStackMapper.apply(ms);
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {

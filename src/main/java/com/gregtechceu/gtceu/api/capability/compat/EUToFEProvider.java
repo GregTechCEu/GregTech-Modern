@@ -31,7 +31,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
-        if (!ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative ||
+        if (!ConfigHolder.INSTANCE.compat.energy.nativeEUToFE ||
                 capability != GTCapability.CAPABILITY_ENERGY_CONTAINER)
             return LazyOptional.empty();
 
