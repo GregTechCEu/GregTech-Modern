@@ -168,7 +168,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    private static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
+    public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
         double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
