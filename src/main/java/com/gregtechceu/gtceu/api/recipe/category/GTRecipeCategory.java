@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.category;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,9 +18,10 @@ import javax.annotation.Nullable;
 public class GTRecipeCategory {
 
     private static final Map<String, GTRecipeCategory> categories = new Object2ObjectOpenHashMap<>();
+    public static final GTRecipeCategory EMPTY = new GTRecipeCategory();
 
     @Getter
-    private final String modid;
+    private final String modID;
     @Getter
     private final String name;
     @Getter
@@ -35,18 +37,31 @@ public class GTRecipeCategory {
     private ResourceLocation resourceLocation;
 
     public static GTRecipeCategory of(@NotNull String modID, @NotNull String categoryName,
-                                      @NotNull String translationKey, @NotNull GTRecipeType recipeType) {
+                                      @NotNull GTRecipeType recipeType, @NotNull String translationKey) {
         return categories.computeIfAbsent(categoryName,
-                (k) -> new GTRecipeCategory(modID, categoryName, translationKey, recipeType));
+                (k) -> new GTRecipeCategory(modID, categoryName, recipeType, translationKey));
+    }
+
+    public static GTRecipeCategory of(@NotNull String modID, @NotNull String categoryName,
+                                      @NotNull GTRecipeType recipeType) {
+        return of(modID, categoryName, recipeType, "%s.recipe.category.%s".formatted(modID, categoryName));
     }
 
     public static GTRecipeCategory of(@NotNull GTRecipeType recipeType) {
-        return of(GTCEu.MOD_ID, recipeType.registryName.getPath(), recipeType.registryName.toLanguageKey(), recipeType);
+        return of(GTCEu.MOD_ID, recipeType.registryName.getPath(), recipeType, recipeType.registryName.toLanguageKey());
     }
 
-    private GTRecipeCategory(@NotNull String modID, @NotNull String categoryName, @NotNull String translationKey,
-                             @NotNull GTRecipeType recipeType) {
-        this.modid = modID;
+    private GTRecipeCategory() {
+        this.modID = "";
+        this.name = "";
+        this.uniqueID = "";
+        this.translation = "";
+        this.recipeType = GTRecipeTypes.DUMMY_RECIPES;
+    }
+
+    private GTRecipeCategory(@NotNull String modID, @NotNull String categoryName, @NotNull GTRecipeType recipeType,
+                             @NotNull String translationKey) {
+        this.modID = modID;
         this.name = categoryName;
         this.uniqueID = modID + ":" + this.name;
         this.translation = translationKey;
@@ -58,6 +73,10 @@ public class GTRecipeCategory {
     public GTRecipeCategory setIcon(@Nullable Object icon) {
         this.icon = icon;
         return this;
+    }
+
+    public boolean isXEIVisible() {
+        return recipeType.getRecipeUI().isXEIVisible();
     }
 
     @Override

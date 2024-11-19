@@ -186,7 +186,8 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.hammer", "%s Hammer");
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
         replace(provider, "item.gtceu.tool.mallet", "%s Soft Mallet");
-        provider.add("item.gtceu.tool.mallet.tooltip", "§8Stops/Starts Machinery");
+        multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
+                "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
         replace(provider, "item.gtceu.tool.wrench", "%s Wrench");
         provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.file", "%s File");
@@ -1016,6 +1017,8 @@ public class LangHandler {
         multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
                 "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
         multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
+                "Toggle junk items\nOff costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
         multiLang(provider, "gtceu.jei.ore.surface_rock",
                 "Surface Rocks with this material denote vein spawn locations.",
