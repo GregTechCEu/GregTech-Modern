@@ -610,5 +610,11 @@ public class MiscRecipeLoader {
                 .inputItems(ring, Steel, 2)
                 .outputItems(STEEL_MINECART_WHEELS)
                 .duration(60).EUt(20).save(provider);
+
+        // Bookshelf Decomposition
+        MACERATOR_RECIPES.recipeBuilder("chiseled_bookshelf_maceration")
+                .inputItems(Blocks.CHISELED_BOOKSHELF)
+                .outputItems(dust, Wood, 6)
+                .duration(100).EUt(2).save(provider);
     }
 }
