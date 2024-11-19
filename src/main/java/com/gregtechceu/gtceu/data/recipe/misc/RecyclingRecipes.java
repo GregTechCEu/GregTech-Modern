@@ -126,13 +126,23 @@ public class RecyclingRecipes {
         GTRecipeBuilder builder = GTRecipeTypes.MACERATOR_RECIPES.recipeBuilder("macerate_" + itemPath.getPath())
                 .outputItems(outputs.toArray(ItemStack[]::new))
                 .duration(calculateDuration(outputs))
-                .EUt(2L * multiplier)
-                .category(GTRecipeCategories.MACERATOR_RECYCLING);
+                .EUt(2L * multiplier);
+
         if (inputTag == null) {
             builder.inputItems(input.copy());
         } else {
             builder.inputItems(inputTag);
         }
+
+        boolean recycle = true;
+        if (entry != null && entry.tagPrefix == TagPrefix.ingot) {
+            recycle = false;
+        }
+
+        if (recycle) {
+            builder.category(GTRecipeCategories.MACERATOR_RECYCLING);
+        }
+
         builder.save(provider);
     }
 
@@ -305,7 +315,7 @@ public class RecyclingRecipes {
                 UnificationEntry entry = ChemicalHelper.getUnificationEntry(outputs.get(0).getItem());
                 if (entry != null && inputStack != null) {
                     Material mat = inputStack.material();
-                    if (mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
+                    if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
                         return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material;
                     }
                 }
@@ -440,6 +450,8 @@ public class RecyclingRecipes {
         List<Tuple<ItemStack, MaterialStack>> outputs = new ArrayList<>();
 
         for (MaterialStack ms : materials) {
+            ms = new MaterialStack(ms.material().hasFlag(IS_MAGNETIC) ?
+                    ms.material().getProperty(PropertyKey.INGOT).getMacerateInto() : ms.material(), ms.amount());
             ItemStack stack = toItemStackMapper.apply(ms);
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {

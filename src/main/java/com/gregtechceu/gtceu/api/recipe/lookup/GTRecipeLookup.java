@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -452,7 +453,7 @@ public class GTRecipeLookup {
     public void removeAllRecipes() {
         this.lookup.getNodes().clear();
         this.lookup.getSpecialNodes().clear();
-        this.recipeType.getRecipeByCategory().clear();
+        this.recipeType.getCategoryMap().clear();
     }
 
     /**
@@ -467,7 +468,7 @@ public class GTRecipeLookup {
         }
         if (recipe.recipeCategory == null) {
             recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
-                    recipe.recipeType.registryName.toLanguageKey(), recipe.recipeType);
+                    recipe.recipeType, recipe.recipeType.registryName.toLanguageKey());
         }
         // Add combustion fuels to the Powerless Jetpack
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
@@ -477,11 +478,8 @@ public class GTRecipeLookup {
         }
         List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
         if (recurseIngredientTreeAdd(recipe, items, lookup, 0, 0)) {
-            recipeType.getRecipeByCategory().compute(recipe.recipeCategory, (k, v) -> {
-                if (v == null) v = new ArrayList<>();
-                v.add(recipe);
-                return v;
-            });
+            recipeType.getCategoryMap().computeIfAbsent(recipe.recipeCategory, k -> new ObjectLinkedOpenHashSet<>())
+                    .add(recipe);
             return true;
         }
         return false;

@@ -452,7 +452,7 @@ public class GTMachines {
                     .tieredHullRenderer(GTCEu.id("block/machine/fisher_machine"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
-                            Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
+                            Component.translatable("gtceu.machine.fisher.speed", FisherMachine.calcMaxProgress(tier)),
                             Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,
                                     FisherMachine.WATER_CHECK_SIZE),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -462,7 +462,7 @@ public class GTMachines {
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)))
                     .compassNode("fisher")
                     .register(),
-            LV, MV, HV, EV);
+            LV, MV, HV, EV, IV, LuV);
 
     public static final MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker",
             BlockBreakerMachine::new,
@@ -1960,7 +1960,7 @@ public class GTMachines {
                             .where('F', frames(LargeMinerMachine.getMaterial(tier)))
                             .where('#', any())
                             .build())
-                    .allowExtendedFacing(false)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new LargeMinerRenderer(
                             MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner")))
@@ -1969,7 +1969,7 @@ public class GTMachines {
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
                             Component.translatable("gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        int workingAreaChunks = (2 * tier - 5);
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
@@ -2707,7 +2707,7 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerConverter(int amperage) {
-        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             REGISTRATE.creativeModeTab(() -> null);
         }
 
@@ -2731,7 +2731,7 @@ public class GTMachines {
                         .register(),
                 ALL_TIERS);
 
-        if (!ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters) {
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             REGISTRATE.creativeModeTab(() -> MACHINE);
         }
 
@@ -2739,7 +2739,7 @@ public class GTMachines {
     }
 
     public static Component explosion() {
-        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion)
+        if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion)
             return Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
     }
@@ -2798,7 +2798,7 @@ public class GTMachines {
                     "bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                            .recipeType(new GTRecipeType(GTCEu.id("bedrock_ore_miner"), "dummy"))
+                            .recipeType(DUMMY_RECIPES)
                             .tooltips(
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",

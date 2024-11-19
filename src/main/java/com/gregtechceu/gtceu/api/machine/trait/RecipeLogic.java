@@ -148,7 +148,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         isActive = false;
         fuelTime = 0;
         lastFailedMatches = null;
-        status = Status.IDLE;
+        if (status != Status.SUSPEND)
+            status = Status.IDLE;
         ocResult.reset();
         updateTickSubscription();
     }

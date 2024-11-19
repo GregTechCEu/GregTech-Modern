@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -48,7 +49,10 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
-
+    @Persisted
+    @Getter
+    @Setter
+    private int outputAmount;
     @Persisted
     @Getter
     private int minValue, maxValue;
@@ -96,7 +100,8 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
         }
 
         setRedstoneSignalOutput(
-                RedstoneUtil.computeRedstoneBetweenValues(storedFluid, maxValue, minValue, this.isInverted()));
+                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(storedFluid, maxValue, minValue,
+                        isInverted(), this.outputAmount));
     }
 
     public void setMinValue(int minValue) {

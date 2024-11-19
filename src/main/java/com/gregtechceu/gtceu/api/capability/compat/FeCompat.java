@@ -10,8 +10,8 @@ public class FeCompat {
      * Conversion ratio used by energy converters
      */
     public static int ratio(boolean feToEu) {
-        return feToEu ? ConfigHolder.INSTANCE.compat.energy.platformToEuRatio :
-                ConfigHolder.INSTANCE.compat.energy.euToPlatformRatio;
+        return feToEu ? ConfigHolder.INSTANCE.compat.energy.feToEuRatio :
+                ConfigHolder.INSTANCE.compat.energy.euToFeRatio;
     }
 
     /**

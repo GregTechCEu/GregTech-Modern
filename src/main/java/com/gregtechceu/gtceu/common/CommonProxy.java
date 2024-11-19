@@ -93,7 +93,7 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
         if (Platform.isDevEnv()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
-            ConfigHolder.INSTANCE.compat.energy.enablePlatformConverters = true;
+            ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
         GTValueProviderTypes.init(eventBus);
@@ -133,6 +133,7 @@ public class CommonProxy {
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
+        GTRecipeCategories.init();
         GTMachines.init();
         GTFoods.init();
         GTItems.init();

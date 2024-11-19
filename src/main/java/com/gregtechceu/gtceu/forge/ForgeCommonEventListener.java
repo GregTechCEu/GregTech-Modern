@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
-import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
@@ -66,8 +65,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -238,10 +235,6 @@ public class ForgeCommonEventListener {
         HazardCommands.register(event.getDispatcher(), event.getBuildContext());
     }
 
-    public static void registerClientCommand(RegisterClientCommandsEvent event) {
-        GTClientCommands.register(event.getDispatcher(), event.getBuildContext());
-    }
-
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new GTOreLoader());
@@ -287,7 +280,6 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
-        ClientCacheManager.clearCaches();
         ServerCache.instance.clear();
     }
 
@@ -313,11 +305,6 @@ public class ForgeCommonEventListener {
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()), serverPlayer);
         }
-    }
-
-    @SubscribeEvent
-    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
-        ClientCacheManager.allowReinit();
     }
 
     @SubscribeEvent

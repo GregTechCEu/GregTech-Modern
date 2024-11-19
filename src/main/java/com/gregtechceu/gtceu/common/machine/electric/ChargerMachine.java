@@ -95,7 +95,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected CustomItemStackHandler createChargerInventory(Object... args) {
         var handler = new CustomItemStackHandler(this.inventorySize);
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative &&
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return handler;
     }
@@ -166,7 +166,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     electricItems.add(electricItem);
                 }
-            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+            } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                 var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                 if (energyStorage != null) {
                     if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
@@ -263,7 +263,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
                 if (electricItem != null) {
                     energyCapacity += electricItem.getMaxCharge();
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                     var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                     if (energyStorage != null) {
                         energyCapacity += FeCompat.toEu(energyStorage.getMaxEnergyStored(),
@@ -287,7 +287,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
                 if (electricItem != null) {
                     energyStored += electricItem.getCharge();
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                     var energyStorage = GTCapabilityHelper.getForgeEnergyItem(electricItemStack);
                     if (energyStorage != null) {
                         energyStored += FeCompat.toEu(energyStorage.getEnergyStored(),

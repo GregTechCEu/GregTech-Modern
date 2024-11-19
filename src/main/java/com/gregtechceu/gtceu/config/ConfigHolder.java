@@ -151,11 +151,11 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether to hide facades of all blocks in JEI and creative search menu.",
                 "Default: true" })
-        public boolean hideFacadesInJEI = true;
+        public boolean hideFacadesInRecipeViewer = true;
 
         @Configurable
         @Configurable.Comment({ "Whether to hide filled cells in JEI and creative search menu.", "Default: true" })
-        public boolean hideFilledCellsInJEI = true;
+        public boolean hideFilledCellsInRecipeViewer = true;
 
         @Configurable
         @Configurable.Comment({ "Whether to hide the ore processing diagrams in JEI", "Default: false" })
@@ -168,32 +168,31 @@ public class ConfigHolder {
         public boolean removeSmeltingForEBFMetals = true;
 
         @Configurable
-        @Configurable.Comment({ "Whether dimension marker should show dimension tier.", "Default: false" })
+        @Configurable.Comment({ "Whether dimension markers should show the dimension tier value.", "Default: false" })
         public boolean showDimensionTier = false;
 
         public static class EnergyCompatConfig {
 
             @Configurable
-            @Configurable.Comment({
-                    "Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.",
+            @Configurable.Comment({ "Enable Native GTEU to Forge Energy (RF and alike) on GT Cables and Wires.",
                     "This does not enable nor disable Converters.", "Default: true" })
-            public boolean nativeEUToPlatformNative = true;
+            public boolean nativeEUToFE = true;
 
             @Configurable
-            @Configurable.Comment({ "Enable GTEU to Platform native (and vice versa) Converters.", "Default: false" })
-            public boolean enablePlatformConverters = false;
+            @Configurable.Comment({ "Enable GTEU to FE (and vice versa) Converters.", "Default: false" })
+            public boolean enableFEConverters = false;
 
             @Configurable
-            @Configurable.Comment({ "Platform native Energy to GTEU ratio for converting FE to EU.",
-                    "Only affects converters.", "Default: 4 FE/Energy == 1 EU" })
+            @Configurable.Comment({ "Forge Energy to GTEU ratio for converting FE to EU.", "Only affects converters.",
+                    "Default: 4 FE == 1 EU" })
             @Configurable.Range(min = 1, max = 16)
-            public int platformToEuRatio = 4;
+            public int feToEuRatio = 4;
 
             @Configurable
-            @Configurable.Comment({ "GTEU to Platform native Energy ratio for converting EU to FE.",
-                    "Affects native conversion and Converters.", "Default: 4 FE/Energy == 1 EU" })
+            @Configurable.Comment({ "GTEU to Forge Energy ratio for converting EU to FE.",
+                    "Affects native conversion and Converters.", "Default: 4 FE == 1 EU" })
             @Configurable.Range(min = 1, max = 16)
-            public int euToPlatformRatio = 4;
+            public int euToFeRatio = 4;
         }
 
         public static class AE2CompatConfig {
@@ -405,7 +404,7 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava",
                 "Default: false" })
-        public boolean doTerrainExplosion = false;
+        public boolean shouldWeatherOrTerrainExplosion = false;
         @Configurable
         @Configurable.Comment({ "Energy use multiplier for electric items.", "Default: 100" })
         public int energyUsageMultiplier = 100;
