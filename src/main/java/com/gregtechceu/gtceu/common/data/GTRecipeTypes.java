@@ -47,7 +47,6 @@ import net.minecraftforge.fml.ModLoader;
 import com.simibubi.create.AllBlocks;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

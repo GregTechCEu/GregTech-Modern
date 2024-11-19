@@ -25,7 +25,8 @@ import static net.minecraft.ChatFormatting.YELLOW;
 public class FormattingUtil {
 
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
-    private static final NumberFormat COMPACT_NUMBER_FORMAT = NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT);
+    private static final NumberFormat COMPACT_NUMBER_FORMAT = NumberFormat.getCompactNumberInstance(Locale.ROOT,
+            NumberFormat.Style.SHORT);
     public static final DecimalFormat DECIMAL_FORMAT_0F = new DecimalFormat("#");
     public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#.#");
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#.##");
