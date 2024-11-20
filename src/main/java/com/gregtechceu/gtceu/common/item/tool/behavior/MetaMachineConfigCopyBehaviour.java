@@ -4,14 +4,14 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -97,8 +97,11 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine instanceof IMufflableMachine mufflableMachine) {
             configData.putBoolean(MUFFLED, mufflableMachine.isMuffled());
         }
-        if (machine instanceof SimpleTieredMachine stm) {
-			configData.putInt(CIRCUIT, IntCircuitBehaviour.getCircuitConfiguration(stm.getCircuitInventory().getStackInSlot(0)));
+        if (machine instanceof IHasCircuitSlot hasCircuitSlot) {
+            var circuitInventory = hasCircuitSlot.getCircuitInventory();
+            if (ConfigHolder.INSTANCE.machines.ghostCircuit || !circuitInventory.getStackInSlot(0).isEmpty())
+                configData.putInt(CIRCUIT,
+                        IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)) + 1);
         }
         stack.getOrCreateTag().put(CONFIG_DATA, configData);
         return InteractionResult.SUCCESS;
@@ -125,9 +128,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine instanceof IMufflableMachine mufflableMachine) {
             mufflableMachine.setMuffled(configData.getBoolean(MUFFLED));
         }
-		if (machine instanceof SimpleTieredMachine stm && ConfigHolder.INSTANCE.machines.ghostCircuit) {
-			stm.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(configData.getInt(CIRCUIT)));
-		}
+        if (machine instanceof IHasCircuitSlot hasCircuitSlot) {
+            var circuitInventory = hasCircuitSlot.getCircuitInventory();
+            int configuration = configData.getInt(CIRCUIT);
+            if (configuration != 0 && ConfigHolder.INSTANCE.machines.ghostCircuit ||
+                    !circuitInventory.getStackInSlot(0).isEmpty()) {
+                circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(configuration - 1));
+            }
+        }
         return InteractionResult.SUCCESS;
     }
 
