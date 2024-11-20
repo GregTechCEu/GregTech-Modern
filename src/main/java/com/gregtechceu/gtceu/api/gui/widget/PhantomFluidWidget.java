@@ -116,10 +116,10 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
             }
         } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
             if (jeiStack.getIngredient() instanceof FluidStack fluidStack) {
-                ingredient = fluidStack;
+                ingredient = fluidStack.copy();
             }
         }
-        if (!(ingredient instanceof FluidStack)) {
+        if (!(ingredient instanceof FluidStack f) || f.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -151,14 +151,14 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
                     }
                 } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiIngredient) {
                     if (jeiIngredient.getIngredient() instanceof FluidStack fluidStack) {
-                        ingredient = fluidStack;
+                        ingredient = fluidStack.copy();
                     }
                 }
 
                 FluidStack ingredientStack = null;
                 if (ingredient instanceof FluidStack fluidStack) ingredientStack = fluidStack;
 
-                if (ingredientStack != null) {
+                if (ingredientStack != null && !ingredientStack.isEmpty()) {
                     writeClientAction(2, ingredientStack::writeToPacket);
                 }
 
