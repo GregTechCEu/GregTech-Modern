@@ -2501,7 +2501,8 @@ public class GTItems {
             .lang("Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.ITEMS))
-            .onRegister(attach(new TerminalBehavior(), new MetaMachineConfigCopyBehaviour())).register();
+            .onRegister(attach(new TerminalBehavior()))
+            .register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
