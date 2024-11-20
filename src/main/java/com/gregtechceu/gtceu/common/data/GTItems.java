@@ -32,7 +32,6 @@ import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.common.item.tool.behavior.MetaMachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -2501,7 +2500,8 @@ public class GTItems {
             .lang("Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.ITEMS))
-            .onRegister(attach(new TerminalBehavior(), new MetaMachineConfigCopyBehaviour())).register();
+            .onRegister(attach(new TerminalBehavior()))
+            .register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
