@@ -34,7 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEInputHatchPartMachine extends MEHatchPartMachine implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
+public class MEInputHatchPartMachine extends MEHatchPartMachine
+                                     implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
