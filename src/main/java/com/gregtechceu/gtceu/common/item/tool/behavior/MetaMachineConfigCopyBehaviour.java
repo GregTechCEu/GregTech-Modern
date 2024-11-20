@@ -4,11 +4,14 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,6 +35,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String AUTO = "auto";
     public static final String INPUT_FROM_OUTPUT_SIDE = "in_from_out";
     public static final String MUFFLED = "muffled";
+    public static final String CIRCUIT = "circuit";
 
     public static int directionToInt(@Nullable Direction direction) {
         return direction == null ? 0 : direction.ordinal() + 1;
@@ -93,6 +97,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine instanceof IMufflableMachine mufflableMachine) {
             configData.putBoolean(MUFFLED, mufflableMachine.isMuffled());
         }
+        if (machine instanceof SimpleTieredMachine stm) {
+			configData.putInt(CIRCUIT, IntCircuitBehaviour.getCircuitConfiguration(stm.getCircuitInventory().getStackInSlot(0)));
+        }
         stack.getOrCreateTag().put(CONFIG_DATA, configData);
         return InteractionResult.SUCCESS;
     }
@@ -118,6 +125,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine instanceof IMufflableMachine mufflableMachine) {
             mufflableMachine.setMuffled(configData.getBoolean(MUFFLED));
         }
+		if (machine instanceof SimpleTieredMachine stm && ConfigHolder.INSTANCE.machines.ghostCircuit) {
+			stm.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(configData.getInt(CIRCUIT)));
+		}
         return InteractionResult.SUCCESS;
     }
 
