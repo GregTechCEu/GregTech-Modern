@@ -97,7 +97,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
 
     @Override
     public Widget createConfigurator() {
-        BiConsumer<Integer, FriendlyByteBuf> handleClientActionMethod = this::handleClientAction;
         PropertyDispatch.QuadFunction<BiConsumer<Integer, Consumer<FriendlyByteBuf>>, Double, Double, Double, Boolean> mouseWheelMoveMethod = this::mouseWheelMove;
         var group = new WidgetGroup(0, 0, 174, 132);
         group.addWidget(new LabelWidget(9, 8, "Programmed Circuit Configuration"));
