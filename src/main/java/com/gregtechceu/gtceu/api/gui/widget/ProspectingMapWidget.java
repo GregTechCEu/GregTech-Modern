@@ -304,7 +304,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
         }
 
         // If the cursor is over an ore use its name
-        var hoveredItem = texture.data[cX * mode.cellSize + offsetX][cZ * mode.cellSize + offsetZ];
+        var hoveredItem = texture.data[cX * mode.cellSize + (offsetX * mode.cellSize / 16)][cZ * mode.cellSize +
+                (offsetZ * mode.cellSize / 16)];
         if (hoveredItem != null && hoveredItem.length != 0) {
             var name = Component.translatable(mode.getDescriptionId(hoveredItem[0])).getString();
             var color = mode.getItemColor(hoveredItem[0]);

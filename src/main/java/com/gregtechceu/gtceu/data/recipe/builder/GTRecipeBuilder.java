@@ -158,6 +158,7 @@ public class GTRecipeBuilder {
         copy.chance = this.chance;
         copy.perTick = this.perTick;
         copy.isFuel = this.isFuel;
+        copy.recipeCategory = this.recipeCategory;
         copy.uiName = this.uiName;
         copy.slotName = this.slotName;
         copy.onSave = this.onSave;

@@ -419,7 +419,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Override
     public Widget createUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier])));
+        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));

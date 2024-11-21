@@ -289,7 +289,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 float chanceFloat = 100 * (float) content.chance / content.maxChance;
                 float chanceAtTierFloat = Math
                         .min(chanceFloat + (100.0f * ((float) content.tierChanceBoost / (float) content.maxChance)) *
-                                Math.max(0, tier - minTier), 100.0f);
+                                Math.max(0, (tier >= GTValues.LV ? tier - 1 : tier) - minTier), 100.0f);
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltips.add(Component.translatable("gtceu.gui.content.chance_1_logic",
                             FormattingUtil.formatNumber2Places(chanceFloat), logic.getTranslation())
