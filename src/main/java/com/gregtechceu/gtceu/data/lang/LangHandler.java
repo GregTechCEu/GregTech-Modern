@@ -1233,6 +1233,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.auto_output_info", "[GTCEu] Auto Output Info");
         provider.add("config.jade.plugin_gtceu.cable_info", "[GTCEu] Cable Info");
         provider.add("config.jade.plugin_gtceu.exhaust_vent_info", "[GTCEu] Exhaust Vent Info");
+        provider.add("config.jade.plugin_gtceu.steam_boiler_info", "[GTCEu] Steam Boiler Info");
         provider.add("config.jade.plugin_gtceu.machine_mode", "[GTCEu] Machine Mode");
         provider.add("config.jade.plugin_gtceu.maintenance_info", "[GTCEu] Maintenance Info");
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");

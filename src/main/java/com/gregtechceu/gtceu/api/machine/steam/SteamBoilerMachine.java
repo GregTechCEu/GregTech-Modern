@@ -77,8 +77,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public final NotifiableFluidTank waterTank;
     @Persisted
     @DescSynced
+    @Getter
     private int currentTemperature;
     @Persisted
+    @Getter
     private int timeBeforeCoolingDown;
     @Getter
     private boolean hasNoWater;

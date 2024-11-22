@@ -97,6 +97,7 @@ public class GTOreByProduct {
             // get all ores with the relevant oredicts instead of just the first unified ore
             oreStacks.add(Pair.of(ChemicalHelper.getTag(prefix, material), 1));
         }
+        oreStacks.add(Pair.of(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1));
         itemInputs.add(Either.left(oreStacks));
 
         // set up machines as inputs
