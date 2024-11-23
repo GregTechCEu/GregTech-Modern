@@ -579,11 +579,14 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 currentStack.shrink(1);
 
-                if (filledResult.isEmpty())
+                if (filledResult.isEmpty()) {
                     filledResult = remainingStack.copy();
-                else if (ItemStack.isSameItemSameTags(filledResult, remainingStack))
-                    filledResult.grow(1);
-                else {
+                } else if (ItemStack.isSameItemSameTags(filledResult, remainingStack)) {
+                    if (filledResult.getCount() < filledResult.getMaxStackSize())
+                        filledResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remainingStack);
+                } else {
                     player.getInventory().placeItemBackInInventory(filledResult);
                     filledResult = remainingStack.copy();
                 }
@@ -619,11 +622,14 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 currentStack.shrink(1);
 
-                if (drainedResult.isEmpty())
+                if (drainedResult.isEmpty()) {
                     drainedResult = remainingStack.copy();
-                else if (ItemStack.isSameItemSameTags(drainedResult, remainingStack))
-                    drainedResult.grow(1);
-                else {
+                } else if (ItemStack.isSameItemSameTags(drainedResult, remainingStack)) {
+                    if (drainedResult.getCount() < drainedResult.getMaxStackSize())
+                        drainedResult.grow(1);
+                    else
+                        player.getInventory().placeItemBackInInventory(remainingStack);
+                } else {
                     player.getInventory().placeItemBackInInventory(drainedResult);
                     drainedResult = remainingStack.copy();
                 }
@@ -637,8 +643,9 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                 player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                         soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
 
+                if (currentStack.isEmpty()) {
                     gui.getModularUIContainer().setCarried(drainedResult);
-                else {
+                } else {
                     gui.getModularUIContainer().setCarried(currentStack);
                     player.getInventory().placeItemBackInInventory(drainedResult);
                 }
