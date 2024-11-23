@@ -9,36 +9,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * Simulates consecutive fills to multiple {@link NotifiableFluidTank} instances
+ */
 public class OverlayedTankHandler {
 
-    private final List<OverlayedTank> tanks;
+    private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedTankHandler(List<NotifiableFluidTank> NFTs) {
-        var copy = new ArrayList<>(NFTs);
+    public OverlayedTankHandler(List<NotifiableFluidTank> tanks) {
+        overlayedTanks = new ArrayList<>(tanks.size());
+        var copy = new ArrayList<>(tanks);
         copy.sort(IRecipeHandler.ENTRY_COMPARATOR);
-        tanks = new ArrayList<>(copy.size());
-        for (var nft : copy) tanks.add(new OverlayedTank(nft));
+        for (var tank : copy) {
+            overlayedTanks.add(new OverlayedTank(tank));
+        }
     }
 
+    /**
+     * Resets the internal state of the handler to when it was constructed
+     */
     public void reset() {
-        for (var tank : tanks) tank.reset();
+        for (var tank : overlayedTanks) tank.reset();
     }
 
-    public int insertFluid(FluidStack fluid, int amount) {
+    /**
+     * Simulate fluid filling to the tanks
+     * 
+     * @param fluid  {@link FluidStack} with the fluid to attempt to 'fill' - stack amount does not matter
+     * @param amount Actual amount of fluid to attempt to 'fill'
+     * @return Amount of fluid that could potentially be filled into these tanks
+     */
+    public int tryFill(FluidStack fluid, int amount) {
         if (amount <= 0) return 0;
         int total = 0;
-        for (var tank : tanks) {
-            int filled = tank.tryFill(fluid, amount);
-            if (filled > 0) {
-                total += filled;
-                amount -= filled;
-                if (amount <= 0) return total;
-            }
+        for (var tank : overlayedTanks) {
+            int filled = tank.fill(fluid, amount);
+            total += filled;
+            amount -= filled;
+            if (amount <= 0) return total;
         }
 
         return total;
     }
 
+    /**
+     * Represents a single {@link NotifiableFluidTank} and its storages
+     */
     private static class OverlayedTank {
 
         private final int size;
@@ -49,10 +65,21 @@ public class OverlayedTankHandler {
 
         private List<FluidStack> stacks;
 
-        OverlayedTank(NotifiableFluidTank tank) {
-            sameFluidFill = tank.isAllowSameFluids();
+        /**
+         * Constructs the Overlayed Tank from the given NotifiableFluidTank <br>
+         * Stores properties, such as:
+         * <ul>
+         * <li>The number of tanks via {@link NotifiableFluidTank#getTanks}</li>
+         * <li>The tank's capacity per storage via {@link NotifiableFluidTank#getTankCapacity}</li>
+         * <li>Whether the tank is allowed be filled with duplicate fluids</li>
+         * <li>The tank's filter</li>
+         * <li>The tank's currently stored FluidStacks</li>
+         * </ul>
+         */
+        private OverlayedTank(NotifiableFluidTank tank) {
             size = tank.getTanks();
             capacity = tank.getTankCapacity(0);
+            sameFluidFill = tank.isAllowSameFluids();
             filter = tank.getFilter();
             originalStacks = new ArrayList<>(tank.getStorages().length);
             for (var storage : tank.getStorages()) {
@@ -62,15 +89,30 @@ public class OverlayedTankHandler {
             reset();
         }
 
-        public int tryFill(FluidStack fluid, int amount) {
+        /**
+         * Resets the Overlayed Tank back to its original state
+         */
+        public void reset() {
+            stacks = new ArrayList<>(size);
+            for (var stack : originalStacks) stacks.add(stack.copy());
+        }
+
+        /**
+         * 'Fill' this Overlayed Tank as much as is allowed
+         * 
+         * @param fluid  FluidStack with the fluid to attempt to 'fill'; stack amount does not matter
+         * @param amount Actual amount of fluid to attempt to 'fill'
+         * @return Amount of fluid that could potentially be filled into this tank
+         */
+        public int fill(FluidStack fluid, int amount) {
             if (!filter.test(fluid) || capacity <= 0) return 0;
-            int filled = fill(fluid, amount);
+            int filled = tryFill(fluid, amount);
             if (!sameFluidFill || filled >= amount) return filled;
 
             int total = filled;
             amount -= filled;
             for (int i = 1; i < size; ++i) { // Attempt to 'fill' tanks a total of (size) times
-                filled = fill(fluid, amount);
+                filled = tryFill(fluid, amount);
                 total += filled;
                 amount -= filled;
                 if (amount <= 0) return total;
@@ -78,10 +120,10 @@ public class OverlayedTankHandler {
             return total;
         }
 
-        private int fill(FluidStack fluid, int amount) {
-            var existing = get(fluid);
+        private int tryFill(FluidStack fluid, int amount) {
+            var existing = search(fluid);
             if (existing.isEmpty() || existing.getAmount() >= capacity) { // Need to add new stack
-                if (!existing.isEmpty() && !sameFluidFill) return 0;  // Can't add new stack
+                if (!existing.isEmpty() && !sameFluidFill) return 0;  // Not allowed to add new stack
                 if (stacks.size() >= size) return 0;  // No space to add new stack
                 int canInsert = Math.min(capacity, amount);
                 stacks.add(new FluidStack(fluid, amount));
@@ -93,7 +135,14 @@ public class OverlayedTankHandler {
             }
         }
 
-        private FluidStack get(FluidStack fluid) {
+        /**
+         * Searches {@link OverlayedTank#stacks} for a FluidStack equivalent to the passed {@code fluid} <br>
+         * 
+         * @param fluid A FluidStack with the fluid to search for
+         * @return If {@code sameFluidFill} is false, then the first matching stack found. Otherwise, the first non-full
+         *         stack. If no matching stack is found, then {@link FluidStack#EMPTY}
+         */
+        private FluidStack search(FluidStack fluid) {
             FluidStack found = FluidStack.EMPTY;
             for (var stack : stacks) {
                 if (stack.isFluidEqual(fluid)) {
@@ -102,11 +151,6 @@ public class OverlayedTankHandler {
                 }
             }
             return found;
-        }
-
-        public void reset() {
-            stacks = new ArrayList<>(size);
-            for (var stack : originalStacks) stacks.add(stack.copy());
         }
     }
 }

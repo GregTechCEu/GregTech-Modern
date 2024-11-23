@@ -182,7 +182,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     amountToInsert = fluidStack.getAmount() * multiplier;
                 }
-                returnedAmount = amountToInsert - overlayedFluidHandler.insertFluid(fluidStack, amountToInsert);
+                returnedAmount = amountToInsert - overlayedFluidHandler.tryFill(fluidStack, amountToInsert);
                 if (returnedAmount > 0) {
                     break;
                 }
