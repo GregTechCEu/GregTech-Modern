@@ -123,6 +123,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
             super(holder, List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = getStorages()[0];
+            allowSameFluids = true;
         }
 
         @Override

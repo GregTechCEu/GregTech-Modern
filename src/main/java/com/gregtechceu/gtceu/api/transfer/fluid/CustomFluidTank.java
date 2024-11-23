@@ -50,14 +50,6 @@ public class CustomFluidTank extends FluidTank
         this.onContentsChanged();
     }
 
-    public int fill(int tank, FluidStack resource, FluidAction action) {
-        return this.fill(resource, action);
-    }
-
-    public FluidStack drain(int tank, FluidStack resource, FluidAction action) {
-        return this.drain(resource, action);
-    }
-
     @Override
     public CompoundTag serializeNBT() {
         return writeToNBT(new CompoundTag());
