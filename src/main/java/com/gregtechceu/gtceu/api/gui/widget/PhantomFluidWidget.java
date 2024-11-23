@@ -153,7 +153,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
                 if (ingredient instanceof FluidStack fluidStack) ingredientStack = fluidStack;
                 else ingredientStack = drainFrom(ingredient);
 
-                if (ingredientStack != null && !ingredientStack.isEmpty()) {
+                if (!ingredientStack.isEmpty()) {
                     writeClientAction(2, ingredientStack::writeToPacket);
                 }
 
