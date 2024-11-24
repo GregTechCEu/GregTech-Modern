@@ -5858,7 +5858,7 @@
     "material.gtceu.quicklime": "Негашеная известь",
     "material.gtceu.radium": "Радий",
     "material.gtceu.radon": "Радон",
-    "material.gtceu.rare_earth": "Редкая земля",
+    "material.gtceu.rare_earth": "Редкоземельные элементы",
     "material.gtceu.rarest_metal_mixture": "Смесь редких металлов",
     "material.gtceu.raw_gasoline": "Сырой бензин",
     "material.gtceu.raw_growth_medium": "Сырая среда роста",
@@ -6064,7 +6064,7 @@
     "item.gtceu.purified_cassiterite_sand_ore": "Очищенный касситеритовый песок",
     "item.gtceu.purified_pitchblende_ore": "Очищенный уранит",
     "item.gtceu.purified_talc_ore": "Очищенный тальк",
-    "item.gtceu.rare_earth_dust": "Редкая земля",
+    "item.gtceu.rare_earth_dust": "Редкоземельные элементы",
     "item.gtceu.rarest_metal_mixture_dust": "Смесь редких металлов",
     "item.gtceu.refined_bentonite_ore": "Обработанный бентонит",
     "item.gtceu.refined_cassiterite_sand_ore": "Обработанный касситеритовый песок",
@@ -6087,7 +6087,7 @@
     "item.gtceu.small_platinum_group_sludge_dust": "Маленький комок шлама платиновой группы",
     "item.gtceu.small_platinum_raw_dust": "Маленькая кучка необработанного платинового порошка",
     "item.gtceu.small_quartz_sand_dust": "Маленькая кучка кварцевого песка",
-    "item.gtceu.small_rare_earth_dust": "Маленькая кучка редкой земли",
+    "item.gtceu.small_rare_earth_dust": "Маленькая кучка редкоземельных элементов",
     "item.gtceu.small_rarest_metal_mixture_dust": "Маленькая кучка смеси редких металлов",
     "item.gtceu.small_salt_dust": "Маленькая кучка соли",
     "item.gtceu.small_sugar_dust": "Маленькая кучка сахара",
@@ -6112,7 +6112,7 @@
     "item.gtceu.tiny_pitchblende_dust": "Крошечная кучка уранита",
     "item.gtceu.tiny_platinum_raw_dust": "Крошечная кучка необработанного платинового порошка",
     "item.gtceu.tiny_quartz_sand_dust": "Крошечная кучка кварцевого песка",
-    "item.gtceu.tiny_rare_earth_dust": "Крошечная кучка редкой земли",
+    "item.gtceu.tiny_rare_earth_dust": "Крошечная кучка редкоземельных элементов",
     "item.gtceu.tiny_rock_salt_dust": "Крошечная кучка каменной соли",
     "item.gtceu.tiny_salt_dust": "Крошечная кучка соли",
     "item.gtceu.tiny_sugar_dust": "Крошечная кучка сахара",
@@ -7546,5 +7546,6 @@
     "gtceu.journeymap.options.layers": "Слои разведки",
     "config.gtceu.option.minimap": "minimap",
     "config.gtceu.option.rightToolbar": "rightToolbar",
-    "gtceu.minimap.ore_vein.depleted": "Истощенный"
+    "gtceu.minimap.ore_vein.depleted": "Истощенный",
+    "behavior.prospector.added_waypoint": "Создана метка с именем %s!"
 }
