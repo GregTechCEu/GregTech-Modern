@@ -173,6 +173,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
+        copied.parallels = parallels;
         return copied;
     }
 
