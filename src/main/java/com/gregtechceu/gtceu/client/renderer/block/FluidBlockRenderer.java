@@ -53,6 +53,28 @@ public class FluidBlockRenderer {
     }
 
     public void drawPlane(Direction face, Collection<BlockPos> offsets, Matrix4f pose, VertexConsumer consumer,
+                          Fluid fluid, RenderUtil.FluidTextureType texture, int combinedOverlay, BlockPos origin) {
+        var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
+        var sprite = texture.map(fluidClientInfo);
+        float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
+        int color = fluidClientInfo.getTintColor();
+        int r = FastColor.ARGB32.red(color), g = FastColor.ARGB32.green(color),
+                b = FastColor.ARGB32.blue(color), a = (int) (FastColor.ARGB32.alpha(color) *
+                        (properties.isScaleAlpha() ? properties.getAlphaScale() : 1));
+        var normal = RenderUtil.getNormal(face);
+        var vertices = transformVertices(RenderUtil.getVertices(face), face);
+
+        BlockPos prevOffset = null;
+        for (var offset : offsets) {
+            BlockPos currOffset = prevOffset == null ? offset : offset.subtract(prevOffset);
+            pose.translate(currOffset.getX(), currOffset.getY(), currOffset.getZ());
+            drawFace(pose, consumer, vertices, normal, u0, u1, v0, v1, r, g, b, a, combinedOverlay,
+                    RenderUtil.getFluidLight(fluid, origin.offset(currOffset)));
+            prevOffset = offset;
+        }
+    }
+
+    public void drawPlane(Direction face, Collection<BlockPos> offsets, Matrix4f pose, VertexConsumer consumer,
                           Fluid fluid, RenderUtil.FluidTextureType texture, int combinedOverlay, int combinedLight) {
         var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
         var sprite = texture.map(fluidClientInfo);
