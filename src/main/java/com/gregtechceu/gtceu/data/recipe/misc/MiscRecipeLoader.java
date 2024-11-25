@@ -612,8 +612,8 @@ public class MiscRecipeLoader {
                 .duration(60).EUt(20).save(provider);
 
         // Bookshelf Decomposition
-        MACERATOR_RECIPES.recipeBuilder("chiseled_bookshelf_maceration")
-                .inputItems(Blocks.CHISELED_BOOKSHELF)
+        MACERATOR_RECIPES.recipeBuilder("chiseled_bookshelf_recycling")
+                .inputItems(Blocks.CHISELED_BOOKSHELF.asItem())
                 .outputItems(dust, Wood, 6)
                 .duration(100).EUt(2).save(provider);
     }
