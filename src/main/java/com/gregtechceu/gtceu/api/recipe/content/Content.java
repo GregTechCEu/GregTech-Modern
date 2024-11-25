@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,7 +54,7 @@ public class Content {
                         .forGetter(val -> val.chance),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.maxChance),
-                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("tierChanceBoost", 0)
+                Codec.INT.optionalFieldOf("tierChanceBoost", 0)
                         .forGetter(val -> val.tierChanceBoost),
                 Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
                 Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
@@ -60,12 +62,17 @@ public class Content {
     }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        if (modifier == null || chance == 0) {
+        if (modifier == null || chance < maxChance) {
             return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost, slotName, uiName);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost, slotName,
-                    uiName);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
+                    slotName, uiName);
         }
+    }
+
+    public Content copyExplicit(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
+        return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
+                slotName, uiName);
     }
 
     /**
@@ -80,16 +87,18 @@ public class Content {
      */
     private int fixBoost(int chanceBoost) {
         float error = (float) ChanceLogic.getMaxChancedValue() / maxChance;
-        return Math.round(chanceBoost / error);
+        int fixed = Math.round(Math.abs(chanceBoost) / error);
+        return chanceBoost < 0 ? -fixed : fixed;
     }
 
-    public IGuiTexture createOverlay(boolean perTick, int tier) {
+    public IGuiTexture createOverlay(boolean perTick, int recipeTier, int chanceTier,
+                                     @Nullable ChanceBoostFunction function) {
         return new IGuiTexture() {
 
             @Override
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
-                drawChance(graphics, x, y, width, height, tier);
+                drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
                 drawRangeAmount(graphics, x, y, width, height);
                 drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
@@ -130,13 +139,13 @@ public class Content {
             double amount = ingredient.getAmount();
             String s;
             if (amount >= 1_000_000_000) {
-                amount /= (double) 1_000_000_000;
+                amount /= 1_000_000_000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
             } else if (amount >= 1_000_000) {
-                amount /= (double) 1_000_000;
+                amount /= 1_000_000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
             } else if (amount >= 1000) {
-                amount /= (double) 1000;
+                amount /= 1000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
             } else {
                 s = (int) amount + "mB";
@@ -149,20 +158,21 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int tier) {
+    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
+                           int chanceTier, @Nullable ChanceBoostFunction function) {
         if (chance == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        float chance = 100 *
-                (float) Math.min((this.chance + (this.tierChanceBoost * (tier >= GTValues.LV ? tier - 1 : tier))),
-                        maxChance) /
-                maxChance;
-        String percent = FormattingUtil.formatPercent(chance);
+        var func = function == null ? ChanceBoostFunction.OVERCLOCK : function;
+        int chance = func.getBoostedChance(this, recipeTier, chanceTier);
+        float chanceFloat = 1f * chance / this.maxChance;
+        String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
 
-        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") :
+        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
                 percent + "%";
-        int color = chance == 0 ? 0xFF0000 : 0xFFFF00;
+
+        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
                 (int) ((y + (height / 3f) + 6) * 2 - height), color, true);

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
@@ -12,8 +13,10 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -58,6 +61,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>
                                   implements IDataInfoProvider {
@@ -111,6 +115,16 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         return false;
     }
 
+    private Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
+        if (side != null) {
+            var cover = getCoverContainer().getCoverAtSide(side);
+            if (cover instanceof FluidFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
+                return filterCover.getFluidFilter();
+            }
+        }
+        return fluid -> true;
+    }
+
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
@@ -119,8 +133,11 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 PipeTankList tankList = getTankList(facing);
                 if (tankList == null)
                     return LazyOptional.empty();
+
+                IOFluidHandlerList list = new IOFluidHandlerList(List.of(tankList), IO.BOTH,
+                        getFluidCapFilter(facing, IO.IN), getFluidCapFilter(facing, IO.OUT));
                 return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability,
-                        LazyOptional.of(() -> tankList));
+                        LazyOptional.of(() -> list));
             }
         } else if (capability == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
@@ -228,11 +245,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         // Now distribute
         for (FluidTransaction transaction : tanks) {
             if (availableCapacity > maxAmount) {
-                transaction.amount = Mth.floor(transaction.amount * maxAmount / availableCapacity); // Distribute fluids
-                                                                                                    // based on
-                                                                                                    // percentage
-                                                                                                    // available space
-                                                                                                    // at destination
+                // Distribute fluids based on percentage available space at destination
+                transaction.amount = Mth.floor(transaction.amount * maxAmount / availableCapacity);
             }
             if (transaction.amount == 0) {
                 if (tank.getFluidAmount() <= 0) break; // If there is no more stored fluid, stop transferring to prevent

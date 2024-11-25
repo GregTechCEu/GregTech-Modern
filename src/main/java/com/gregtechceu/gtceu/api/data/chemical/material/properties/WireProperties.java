@@ -9,21 +9,21 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 
 public class WireProperties implements IMaterialProperty<WireProperties> {
 
-    private int voltage;
+    private long voltage;
     private int amperage;
     private int lossPerBlock;
     private int superconductorCriticalTemperature;
     private boolean isSuperconductor;
 
-    public WireProperties(int voltage, int baseAmperage, int lossPerBlock) {
+    public WireProperties(long voltage, int baseAmperage, int lossPerBlock) {
         this(voltage, baseAmperage, lossPerBlock, false);
     }
 
-    public WireProperties(int voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon) {
+    public WireProperties(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon) {
         this(voltage, baseAmperage, lossPerBlock, isSuperCon, 0);
     }
 
-    public WireProperties(int voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon,
+    public WireProperties(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon,
                           int criticalTemperature) {
         this.voltage = voltage;
         this.amperage = baseAmperage;
@@ -48,7 +48,7 @@ public class WireProperties implements IMaterialProperty<WireProperties> {
      *
      * @return The current wire voltage
      */
-    public int getVoltage() {
+    public long getVoltage() {
         return voltage;
     }
 
@@ -57,7 +57,7 @@ public class WireProperties implements IMaterialProperty<WireProperties> {
      *
      * @param voltage The new wire voltage
      */
-    public void setVoltage(int voltage) {
+    public void setVoltage(long voltage) {
         this.voltage = voltage;
     }
 

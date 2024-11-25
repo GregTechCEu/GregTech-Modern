@@ -19,7 +19,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +42,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Persisted
     @Getter
     protected final CustomFluidTank[] storages;
-    @Setter
+    @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
                                        // while creating tanks.
     private Boolean isEmpty;
@@ -52,6 +51,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @DescSynced
     @Getter
     protected CustomFluidTank lockedFluid = new CustomFluidTank(FluidType.BUCKET_VOLUME);
+    @Getter
+    protected Predicate<FluidStack> filter = f -> true;
 
     public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO) {
         super(machine);
@@ -222,6 +223,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
+        this.filter = filter;
         for (CustomFluidTank storage : storages) {
             storage.setValidator(filter);
         }
@@ -284,7 +286,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            var filter = getMachine().getFluidCapFilter(facing);
+            var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                     .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
         }
@@ -294,7 +296,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            var filter = getMachine().getFluidCapFilter(facing);
+            var filter = getMachine().getFluidCapFilter(facing, IO.IN);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                     .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(adj, this, filter));
         }

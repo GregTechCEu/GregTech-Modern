@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,11 +45,13 @@ public abstract class ChanceLogic {
                 int newChance = getChance(entry, boostFunction, baseTier, machineTier);
                 int maxChance = entry.maxChance;
 
-                // Chanced outputs are deterministic, if a large batch is being done we can calculate how many we expect
-                // to get.
-                // Add the whole part of that to the list, then roll for the decimal part.
-                double expected = (double) times * newChance / maxChance;
-                if (expected > 1) builder.add(entry.copy(cap, ContentModifier.multiplier((int) expected)));
+                // Chanced outputs are deterministic
+                // If a large batch is being done we can calculate how many we expect to get.
+                // Add the guaranteed part of that to the list, then roll for the remaining chanced part.
+                int totalChance = times * newChance;
+                int guaranteed = totalChance / maxChance;
+                if (guaranteed > 0) builder.add(entry.copyExplicit(cap, ContentModifier.multiplier(guaranteed)));
+                newChance = totalChance - (guaranteed * maxChance);
 
                 int cached = getCachedChance(entry, cache);
                 int chance = newChance + cached;
@@ -90,18 +91,22 @@ public abstract class ChanceLogic {
                                                                    int baseTier, int machineTier,
                                                                    @Nullable Object2IntMap<?> cache, int times,
                                                                    RecipeCapability<?> cap) {
-            boolean failed = false;
-            for (Content entry : chancedEntries) {
-                int cached = getCachedChance(entry, cache);
+            ImmutableList.Builder<Content> builder = ImmutableList.builder();
+            for (int i = 0; i < times; ++i) {
+                boolean failed = false;
+                for (Content entry : chancedEntries) {
+                    int cached = getCachedChance(entry, cache);
 
-                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
-                int chance = newChance + cached;
-                if (!passesChance(chance, entry.maxChance)) {
-                    failed = true;
+                    int newChance = getChance(entry, boostFunction, baseTier, machineTier);
+                    int chance = newChance + cached;
+                    if (!passesChance(chance, entry.maxChance)) failed = true;
+                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    if (failed) break;
                 }
-                updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                if (!failed) builder.addAll(chancedEntries);
             }
-            return failed ? null : ImmutableList.copyOf(chancedEntries);
+            List<Content> list = builder.build();
+            return list.isEmpty() ? null : list;
         }
 
         @Override
@@ -126,18 +131,22 @@ public abstract class ChanceLogic {
                                                                    int baseTier, int machineTier,
                                                                    @Nullable Object2IntMap<?> cache, int times,
                                                                    RecipeCapability<?> cap) {
-            Content selected = null;
-            for (Content entry : chancedEntries) {
-                int cached = getCachedChance(entry, cache);
+            ImmutableList.Builder<Content> builder = ImmutableList.builder();
+            for (int i = 0; i < times; ++i) {
+                Content selected = null;
+                for (Content entry : chancedEntries) {
+                    int cached = getCachedChance(entry, cache);
 
-                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
-                int chance = newChance + cached;
-                if (passesChance(chance, entry.maxChance) && selected == null) {
-                    selected = entry;
+                    int newChance = getChance(entry, boostFunction, baseTier, machineTier);
+                    int chance = newChance + cached;
+                    if (passesChance(chance, entry.maxChance)) selected = entry;
+                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    if (selected != null) break;
                 }
-                updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                if (selected != null) builder.add(selected);
             }
-            return selected == null ? null : Collections.singletonList(selected);
+            List<Content> list = builder.build();
+            return list.isEmpty() ? null : list;
         }
 
         @Override

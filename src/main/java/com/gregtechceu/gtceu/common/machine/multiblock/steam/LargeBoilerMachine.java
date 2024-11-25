@@ -34,7 +34,6 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -117,8 +116,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidType.BUCKET_VOLUME /
-                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000);
+            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
+                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
@@ -214,7 +213,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    (int) (currentTemperature + 274.15), (int) (maxTemperature + 274.15)));
+                    currentTemperature + 274, maxTemperature + 274));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 

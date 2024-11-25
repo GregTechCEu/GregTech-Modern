@@ -63,13 +63,11 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,8 +117,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     protected int lastTankCapacity;
     @Setter
     protected Runnable changeListener;
-    @NotNull
-    protected List<Consumer<List<Component>>> tooltipCallback = new ArrayList<>();
+    @Nullable
+    FluidStack currentJEIRenderedIngredient = null;
 
     public TankWidget() {
         this(null, 0, 0, 18, 18, true, true);
@@ -148,15 +146,15 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         this.drawHoverTips = true;
     }
 
-    public TankWidget(IFluidHandler fluidTank, int tank, int x, int y, boolean allowClickContainerFilling,
+    public TankWidget(IFluidHandler fluidHandler, int tank, int x, int y, boolean allowClickContainerFilling,
                       boolean allowClickContainerEmptying) {
-        this(fluidTank, tank, x, y, 18, 18, allowClickContainerFilling, allowClickContainerEmptying);
+        this(fluidHandler, tank, x, y, 18, 18, allowClickContainerFilling, allowClickContainerEmptying);
     }
 
-    public TankWidget(@Nullable IFluidHandler fluidTank, int tank, int x, int y, int width, int height,
+    public TankWidget(@Nullable IFluidHandler fluidHandler, int tank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidTank;
+        this.fluidTank = fluidHandler;
         this.tank = tank;
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
@@ -216,11 +214,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             }
             if (LDLib.isReiLoaded()) {
                 return EntryStacks.of(dev.architectury.fluid.FluidStack.create(lastFluidInTank.getFluid(),
-                        lastFluidInTank.getAmount(), lastFluidInTank.getOrCreateTag()));
+                        lastFluidInTank.getAmount(), lastFluidInTank.getTag()));
             }
             if (LDLib.isEmiLoaded()) {
-                return EmiStack
-                        .of(lastFluidInTank.getFluid(), lastFluidInTank.getOrCreateTag(), lastFluidInTank.getAmount())
+                return EmiStack.of(lastFluidInTank.getFluid(), lastFluidInTank.getTag(), lastFluidInTank.getAmount())
                         .setChance(XEIChance);
             }
         }
@@ -238,16 +235,17 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
 
         if (LDLib.isJeiLoaded()) {
-            return List.of(JEICallWrapper.getPlatformFluidTypeForJEI(lastFluidInTank));
+            return List
+                    .of(JEICallWrapper.getPlatformFluidTypeForJEIClickable(lastFluidInTank, getPosition(), getSize()));
         }
         if (LDLib.isReiLoaded()) {
             return List.of(EntryStacks.of(dev.architectury.fluid.FluidStack.create(lastFluidInTank.getFluid(),
-                    lastFluidInTank.getAmount(), lastFluidInTank.getOrCreateTag())));
+                    lastFluidInTank.getAmount(), lastFluidInTank.getTag())));
         }
         if (LDLib.isEmiLoaded()) {
-            return List.of(EmiStack
-                    .of(lastFluidInTank.getFluid(), lastFluidInTank.getOrCreateTag(), lastFluidInTank.getAmount())
-                    .setChance(XEIChance));
+            return List
+                    .of(EmiStack.of(lastFluidInTank.getFluid(), lastFluidInTank.getTag(), lastFluidInTank.getAmount())
+                            .setChance(XEIChance));
         }
         return List.of(lastFluidInTank);
     }
@@ -294,8 +292,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                                 .getTag(pair.getFirst())
                                 .stream()
                                 .flatMap(HolderSet.ListBacked::stream)
-                                .map(fluid -> JEICallWrapper
-                                        .getPlatformFluidTypeForJEI(new FluidStack(fluid.value(), pair.getSecond()))))
+                                .map(fluid -> new FluidStack(fluid.value(), pair.getSecond()))
+                                .map(JEICallWrapper::getPlatformFluidTypeForJEI))
                         .collect(Collectors.toList());
             } else if (LDLib.isReiLoaded()) {
                 ref.returnValue = REICallWrapper.getReiIngredients(list);
@@ -306,7 +304,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             var stream = fluids.stream();
             if (LDLib.isJeiLoaded()) {
                 ref.returnValue = stream.filter(fluid -> !fluid.isEmpty())
-                        .map(JEICallWrapper::getPlatformFluidTypeForJEI).toList();
+                        .map(JEICallWrapper::getPlatformFluidTypeForJEI)
+                        .toList();
             } else if (LDLib.isReiLoaded()) {
                 ref.returnValue = REICallWrapper.getReiIngredients(stream);
             } else if (LDLib.isEmiLoaded()) {
@@ -331,8 +330,9 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                                 .getTag(pair.getFirst())
                                 .stream()
                                 .flatMap(HolderSet.ListBacked::stream)
-                                .map(fluid -> JEICallWrapper.getPlatformFluidTypeForJEIClickable(
-                                        new FluidStack(fluid.value(), pair.getSecond()), getPosition(), getSize())))
+                                .map(fluid -> new FluidStack(fluid.value(), pair.getSecond()))
+                                .map(fluidStack -> JEICallWrapper.getPlatformFluidTypeForJEIClickable(
+                                        fluidStack, getPosition(), getSize())))
                         .collect(Collectors.toList());
             } else if (LDLib.isReiLoaded()) {
                 ref.returnValue = REICallWrapper.getReiIngredients(list);
@@ -357,22 +357,37 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     @Override
+    public List<Component> getTooltipTexts() {
+        List<Component> tooltips = getAdditionalTooltips(new ArrayList<>());
+        tooltips.addAll(tooltipTexts);
+        return tooltips;
+    }
+
+    public List<Component> getAdditionalTooltips(List<Component> list) {
+        if (this.onAddedTooltips != null) {
+            this.onAddedTooltips.accept(this, list);
+        }
+        return list;
+    }
+
+    @Override
     public List<Component> getFullTooltipTexts() {
         List<Component> tooltips = new ArrayList<>();
         boolean isPhantom = this instanceof PhantomFluidWidget;
-        if (lastFluidInTank != null && !lastFluidInTank.isEmpty()) {
-            tooltips.add(lastFluidInTank.getDisplayName());
+        var stack = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
+        if (stack != null && !stack.isEmpty()) {
+            tooltips.add(stack.getDisplayName());
             if (!isPhantom) {
                 tooltips.add(
-                        Component.translatable("ldlib.fluid.amount", lastFluidInTank.getAmount(), lastTankCapacity)
+                        Component.translatable("ldlib.fluid.amount", stack.getAmount(), lastTankCapacity)
                                 .append(" mB"));
             }
-            if (lastFluidInTank.getFluid() instanceof GTFluid gtFluid)
-                TooltipsHandler.appendFluidTooltips(gtFluid, lastFluidInTank.getAmount(), tooltips::add, null);
+            if (stack.getFluid() instanceof GTFluid gtFluid)
+                TooltipsHandler.appendFluidTooltips(gtFluid, stack.getAmount(), tooltips::add, null);
             else {
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",
-                        lastFluidInTank.getFluid().getFluidType().getTemperature(lastFluidInTank)));
-                tooltips.add(Component.translatable(lastFluidInTank.getFluid().getFluidType().isLighterThanAir() ?
+                        stack.getFluid().getFluidType().getTemperature(stack)));
+                tooltips.add(Component.translatable(stack.getFluid().getFluidType().isLighterThanAir() ?
                         "ldlib.fluid.state_gas" : "ldlib.fluid.state_liquid"));
             }
         } else {
@@ -386,21 +401,12 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     @Override
-    public List<Component> getTooltipTexts() {
-        List<Component> tooltips = getToolTips(new ArrayList<>());
-        tooltips.addAll(tooltipTexts);
-        return tooltips;
-    }
-
-    private List<Component> getToolTips(List<Component> list) {
-        if (this.onAddedTooltips != null) {
-            this.onAddedTooltips.accept(this, list);
+    public void setCurrentJEIRenderedIngredient(Object ingredient) {
+        if (LDLib.isJeiLoaded()) {
+            currentJEIRenderedIngredient = ingredient instanceof FluidStack f ? f : null;
+        } else {
+            currentJEIRenderedIngredient = null;
         }
-        for (Consumer<List<Component>> callback : this.tooltipCallback) {
-            callback.accept(list);
-        }
-
-        return list;
     }
 
     @Override
@@ -421,11 +427,12 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
         Position pos = getPosition();
         Size size = getSize();
-        if (lastFluidInTank != null) {
+        var renderedFluid = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
+        if (renderedFluid != null) {
             RenderSystem.disableBlend();
-            if (!lastFluidInTank.isEmpty()) {
-                double progress = lastFluidInTank.getAmount() * 1.0 /
-                        Math.max(Math.max(lastFluidInTank.getAmount(), lastTankCapacity), 1);
+            if (!renderedFluid.isEmpty()) {
+                double progress = renderedFluid.getAmount() * 1.0 /
+                        Math.max(Math.max(renderedFluid.getAmount(), lastTankCapacity), 1);
                 float drawnU = (float) fillDirection.getDrawnU(progress);
                 float drawnV = (float) fillDirection.getDrawnV(progress);
                 float drawnWidth = (float) fillDirection.getDrawnWidth(progress);
@@ -434,15 +441,15 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                 int height = size.height - 2;
                 int x = pos.x + 1;
                 int y = pos.y + 1;
-                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(lastFluidInTank),
-                        lastFluidInTank.getAmount(), (int) (x + drawnU * width), (int) (y + drawnV * height),
+                DrawerHelper.drawFluidForGui(graphics, FluidHelperImpl.toFluidStack(renderedFluid),
+                        renderedFluid.getAmount(), (int) (x + drawnU * width), (int) (y + drawnV * height),
                         ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             }
 
-            if (showAmount && !lastFluidInTank.isEmpty()) {
+            if (showAmount && !renderedFluid.isEmpty()) {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 1);
-                String s = TextFormattingUtil.formatLongToCompactStringBuckets(lastFluidInTank.getAmount(), 3) + "B";
+                String s = TextFormattingUtil.formatLongToCompactStringBuckets(renderedFluid.getAmount(), 3) + "B";
                 Font fontRenderer = Minecraft.getInstance().font;
                 graphics.drawString(fontRenderer, s,
                         (int) ((pos.x + (size.width / 3f)) * 2 - fontRenderer.width(s) + 21),
@@ -590,10 +597,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                     player.level().playSound(null, player.position().x, player.position().y + 0.5, player.position().z,
                             soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
                 } else {
-
                     player.level().playSound(player, player.position().x, player.position().y + 0.5,
                             player.position().z, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-
                 }
                 gui.getModularUIContainer().setCarried(currentStack);
                 return currentStack.getCount();
@@ -678,7 +683,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
 
         private static <T> Object _getPlatformFluidTypeForJEI(IPlatformFluidHelper<T> helper, FluidStack fluidStack) {
-            return helper.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getOrCreateTag());
+            return helper.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
         }
 
         public static Object getPlatformFluidTypeForJEIClickable(FluidStack fluidStack, Position pos, Size size) {
@@ -688,7 +693,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
         private static <T> Object _getPlatformFluidTypeForJEIClickable(IPlatformFluidHelper<T> helper,
                                                                        FluidStack fluidStack, Position pos, Size size) {
-            T ingredient = helper.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getOrCreateTag());
+            T ingredient = helper.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
             return JEIPlugin.jeiHelpers.getIngredientManager().createTypedIngredient(ingredient)
                     .map(typedIngredient -> new ClickableIngredient<>(typedIngredient, pos.x, pos.y, size.width,
                             size.height))
@@ -701,7 +706,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         public static List<Object> getReiIngredients(Stream<FluidStack> stream) {
             return List.of(EntryIngredient.of(stream
                     .map(fluidStack -> dev.architectury.fluid.FluidStack.create(fluidStack.getFluid(),
-                            fluidStack.getAmount(), fluidStack.getOrCreateTag()))
+                            fluidStack.getAmount(), fluidStack.getTag()))
                     .map(EntryStacks::of)
                     .toList()));
         }
@@ -719,7 +724,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
         public static List<Object> getEmiIngredients(Stream<FluidStack> stream, float xeiChance) {
             return List.of(EmiIngredient.of(stream.map(fluidStack -> EmiStack.of(fluidStack.getFluid(),
-                    fluidStack.getOrCreateTag(), fluidStack.getAmount())).toList()).setChance(xeiChance));
+                    fluidStack.getTag(), fluidStack.getAmount())).toList()).setChance(xeiChance));
         }
 
         public static List<Object> getEmiIngredients(List<Pair<TagKey<Fluid>, Integer>> list, float xeiChance) {

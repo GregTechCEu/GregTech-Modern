@@ -61,6 +61,9 @@ public class TagExprFilter {
 
             @Override
             public boolean matches(Set<String> input) {
+                if (left == null || right == null) {
+                    return false;
+                }
                 return switch (op.type) {
                     case And -> left.matches(input) && right.matches(input);
                     case Or -> left.matches(input) || right.matches(input);

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.chance.boost;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +19,7 @@ public interface ChanceBoostFunction {
         int tierDiff = machineTier - recipeTier;
         if (tierDiff <= 0) return entry.chance; // equal or invalid tiers do not boost at all
         if (recipeTier == GTValues.ULV) tierDiff--; // LV does not boost over ULV
-        return entry.chance + (entry.tierChanceBoost * tierDiff);
+        return GTMath.clamp(entry.chance + (entry.tierChanceBoost * tierDiff), 0, entry.maxChance);
     };
 
     /**
