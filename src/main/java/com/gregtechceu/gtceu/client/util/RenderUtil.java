@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +18,6 @@ import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
@@ -53,7 +51,7 @@ public class RenderUtil {
         return new Vector3f(x, y, z);
     }
 
-    public static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = new HashMap<>() {
+    private static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = new HashMap<>() {
 
         {
             put(Direction.UP, new Vector3f[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
@@ -65,7 +63,11 @@ public class RenderUtil {
         }
     };
 
-    public static final Map<Direction, Vector3f> DIRECTION_NORMAL_MAP = new HashMap<>() {
+    public static Vector3f[] getVertices(Direction direction) {
+        return DIRECTION_POSITION_MAP.get(direction);
+    }
+
+    private static final Map<Direction, Vector3f> DIRECTION_NORMAL_MAP = new HashMap<>() {
 
         {
             put(Direction.UP, vec3f(0, 1, 0));
@@ -77,58 +79,8 @@ public class RenderUtil {
         }
     };
 
-    public static void renderFluidBlockFace(Matrix4f pose, VertexConsumer vertexConsumer, Fluid fluid,
-                                            FluidTextureType type, Direction face, int combinedOverlay,
-                                            int combinedLight) {
-        IClientFluidTypeExtensions fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
-        TextureAtlasSprite sprite = type.map(fluidClientInfo);
-        float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
-        int color = fluidClientInfo.getTintColor();
-        int r = FastColor.ARGB32.red(color), g = FastColor.ARGB32.green(color),
-                b = FastColor.ARGB32.blue(color), a = FastColor.ARGB32.alpha(color);
-
-        var norm = DIRECTION_NORMAL_MAP.get(face);
-        var vertices = DIRECTION_POSITION_MAP.get(face);
-
-        var vert = vertices[0];
-        vertex(pose, vertexConsumer, vert.x, vert.y, vert.z, r, g, b, a, u0, v1, combinedOverlay, combinedLight, norm.x,
-                norm.y, norm.z);
-        vert = vertices[1];
-        vertex(pose, vertexConsumer, vert.x, vert.y, vert.z, r, g, b, a, u0, v0, combinedOverlay, combinedLight, norm.x,
-                norm.y, norm.z);
-        vert = vertices[2];
-        vertex(pose, vertexConsumer, vert.x, vert.y, vert.z, r, g, b, a, u1, v0, combinedOverlay, combinedLight, norm.x,
-                norm.y, norm.z);
-        vert = vertices[3];
-        vertex(pose, vertexConsumer, vert.x, vert.y, vert.z, r, g, b, a, u1, v1, combinedOverlay, combinedLight, norm.x,
-                norm.y, norm.z);
-    }
-
-    public static void renderFluidBlock(Matrix4f pose, VertexConsumer vertexConsumer, Fluid fluid,
-                                        FluidTextureType type, int combinedOverlay, int combinedLight) {
-        for (Direction face : Direction.values()) {
-            renderFluidBlockFace(pose, vertexConsumer, fluid, type, face, combinedOverlay, combinedLight);
-        }
-    }
-
-    public static void renderFluidBlocks(Matrix4f pose, VertexConsumer vertexConsumer, Fluid fluid,
-                                         FluidTextureType type, int combinedOverlay, BlockPos origin,
-                                         Set<Vector3f> offsets) {
-        Vector3f prevOffset = null;
-        for (var offset : offsets) {
-            // get the translation offset
-            Vector3f currOffset = prevOffset == null ? offset : offset.sub(prevOffset);
-            // translate
-            pose.translate(currOffset.x, currOffset.y, currOffset.z);
-            // render block in position
-            renderFluidBlock(pose, vertexConsumer, fluid, type, combinedOverlay,
-                    getFluidLight(fluid, origin
-                            .relative(Direction.Axis.X, (int) offset.x)
-                            .relative(Direction.Axis.Y, (int) offset.y)
-                            .relative(Direction.Axis.Z, (int) offset.z)));
-            // update previous
-            prevOffset = offset;
-        }
+    public static Vector3f getNormal(Direction direction) {
+        return DIRECTION_NORMAL_MAP.get(direction);
     }
 
     public static int getFluidLight(Fluid fluid, BlockPos pos) {
@@ -148,5 +100,17 @@ public class RenderUtil {
                 .uv2(lightOverlay)
                 .normal(v0, v1, v2)
                 .endVertex();
+    }
+
+    public static Vector3f transformVertex(Vector3f vertex, Direction direction, float offsetX, float offsetY,
+                                           float offsetZ) {
+        float addX = offsetX, addY = offsetY, addZ = offsetZ;
+        switch (direction) {
+            case DOWN -> addY = -addY;
+            case SOUTH -> addZ = -addZ;
+            case EAST -> addX = -addX;
+        }
+
+        return vec3f(vertex.x + addX, vertex.y + addY, vertex.z + addZ);
     }
 }
