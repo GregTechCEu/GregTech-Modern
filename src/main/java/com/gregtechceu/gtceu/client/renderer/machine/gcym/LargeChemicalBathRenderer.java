@@ -12,13 +12,10 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.LargeChemicalBathMachine;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -37,25 +34,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
 
         fluidBlockRenderer = FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
-                .setForcedLight(LightTexture.FULL_BRIGHT)
                 .getRenderer();
-    }
-
-    @Override
-    public boolean shouldRender(BlockEntity blockEntity, Vec3 cameraPos) {
-        boolean result = super.shouldRender(blockEntity, cameraPos);
-        if (result) return true;
-        var level = blockEntity.getLevel();
-        if (level == null) return false;
-        if (!(blockEntity instanceof MetaMachineBlockEntity mm)) return false;
-        if (!(mm.metaMachine instanceof LargeChemicalBathMachine lcb)) return false;
-
-        var pos = lcb.getPos();
-        var offsets = (BlockPos[]) lcb.getFluidBlockOffsets().toArray();
-        for (int i = 0; !result && i < offsets.length; i++) {
-            result |= super.shouldRender(level.getBlockEntity(pos.offset(offsets[i])), cameraPos);
-        }
-        return result;
     }
 
     @Override
