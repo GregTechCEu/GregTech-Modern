@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -12,14 +13,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
-import com.gregtechceu.gtceu.utils.OverlayedFluidHandler;
+import com.gregtechceu.gtceu.utils.OverlayedTankHandler;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -32,7 +32,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -152,13 +151,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidHandlerList(
-                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
+        OverlayedTankHandler overlayedFluidHandler = new OverlayedTankHandler(
+                Objects.requireNonNullElseGet(
+                        holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP),
                         Collections::emptyList)
                         .stream()
-                        .filter(IFluidHandler.class::isInstance)
-                        .map(IFluidHandler.class::cast)
-                        .toList()));
+                        .filter(NotifiableFluidTank.class::isInstance)
+                        .map(NotifiableFluidTank.class::cast)
+                        .toList());
 
         List<FluidStack> recipeOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP)
                 .stream()
@@ -182,7 +182,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     amountToInsert = fluidStack.getAmount() * multiplier;
                 }
-                returnedAmount = amountToInsert - overlayedFluidHandler.insertFluid(fluidStack, amountToInsert);
+                returnedAmount = amountToInsert - overlayedFluidHandler.tryFill(fluidStack, amountToInsert);
                 if (returnedAmount > 0) {
                     break;
                 }
@@ -282,7 +282,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 }
             }
             if (available >= needed) {
-                int ratio = (int) Math.min(parallelAmount, available / needed);
+                int ratio = (int) Math.min(parallelAmount, (float) available / needed);
                 if (ratio < minMultiplier) {
                     minMultiplier = ratio;
                 }
@@ -343,11 +343,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (content != null) {
-                float chanceFloat = (float) content.chance / content.maxChance;
-                float chanceAtTierFloat = Math
-                        .min(chanceFloat + (((float) content.tierChanceBoost / (float) content.maxChance)) *
-                                Math.max(0, tier - minTier), 1.0f);
-                tank.setXEIChance(chanceAtTierFloat);
+                float chance = (float) recipeType.getChanceFunction().getBoostedChance(content, minTier, tier) /
+                        content.maxChance;
+                tank.setXEIChance(chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getStacks().length > 0) {
@@ -360,7 +358,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
-                            minTier);
+                            minTier, recipeType.getChanceFunction());
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }

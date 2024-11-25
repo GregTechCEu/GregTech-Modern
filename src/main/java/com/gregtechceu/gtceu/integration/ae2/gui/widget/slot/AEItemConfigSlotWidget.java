@@ -50,9 +50,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (config != null) {
-            ItemStack stack = config.what() instanceof AEItemKey key ?
-                    new ItemStack(key.getItem(), (int) config.amount()) : ItemStack.EMPTY;
-            stack.setCount(1);
+            ItemStack stack = config.what() instanceof AEItemKey key ? new ItemStack(key.getItem()) : ItemStack.EMPTY;
             drawItemStack(graphics, stack, stackX, stackY, 0xFFFFFFFF, null);
 
             if (!parentWidget.isStocking()) {
@@ -61,9 +59,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
             }
         }
         if (stock != null) {
-            ItemStack stack = stock.what() instanceof AEItemKey key ?
-                    new ItemStack(key.getItem(), (int) stock.amount()) : ItemStack.EMPTY;
-            stack.setCount(1);
+            ItemStack stack = stock.what() instanceof AEItemKey key ? new ItemStack(key.getItem()) : ItemStack.EMPTY;
             drawItemStack(graphics, stack, stackX, stackY + 18, 0xFFFFFFFF, null);
             String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4);
             drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 18 + 17, 16777215, true, 0.5f);
@@ -162,8 +158,8 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
         if (id == PICK_UP_ID) {
             if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY &&
                     slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(),
-                        Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+                ItemStack stack = new ItemStack(key.getItem());
+                stack.setCount(Math.min((int) slot.getStock().amount(), stack.getMaxStackSize()));
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
@@ -196,8 +192,8 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
         }
         if (id == PICK_UP_ID) {
             if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(),
-                        Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+                ItemStack stack = new ItemStack(key.getItem());
+                stack.setCount(Math.min((int) slot.getStock().amount(), stack.getMaxStackSize()));
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
