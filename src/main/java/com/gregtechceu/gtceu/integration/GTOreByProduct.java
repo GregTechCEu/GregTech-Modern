@@ -298,8 +298,8 @@ public class GTOreByProduct {
             Content entry = chances.get(slotIndex);
             float chance = 100 * (float) entry.chance / entry.maxChance;
             float boost = entry.tierChanceBoost / 100.0f;
-            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance));
-            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", boost));
+            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
+            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost", boost));
         }
     }
 
