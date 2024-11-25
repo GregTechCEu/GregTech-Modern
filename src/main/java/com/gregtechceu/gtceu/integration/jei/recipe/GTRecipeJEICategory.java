@@ -77,7 +77,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             var type = category.getRecipeType();
             if (type == GTRecipeTypes.FURNACE_RECIPES) continue;
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getCategoryMap().get(category).stream();
+            var recipes = type.getCategoryMap().getOrDefault(category, Set.of()).stream();
             var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(GTRecipeWrapper::new)
                     .toList();

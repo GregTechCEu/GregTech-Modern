@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
+import com.gregtechceu.gtceu.utils.GTMath;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class AEUtil {
     }
 
     public static FluidStack toFluidStack(AEFluidKey key, long amount) {
-        return key.toStack(Ints.saturatedCast(amount));
+        return key.toStack(GTMath.saturatedCast(amount));
     }
 
     public static ItemStack[] toItemStacks(GenericStack stack) {

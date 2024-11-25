@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.datafixers;
 
+import com.gregtechceu.gtceu.utils.GTMath;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-
-import com.google.common.primitives.Ints;
 
 public class TagFixer {
 
@@ -27,7 +27,7 @@ public class TagFixer {
                     for (String fix_key : FLUID_TAGS) {
                         if (data.contains(fix_key, Tag.TAG_LONG)) {
                             var l = data.getLong(fix_key);
-                            data.putInt(fix_key, Ints.saturatedCast(l));
+                            data.putInt(fix_key, GTMath.saturatedCast(l));
                         }
                     }
                 }

@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-@LDLRegister(name = "phantom_item_slot", group = "widget.container")
+@LDLRegister(name = "phantom_item_slot", group = "widget.container", priority = 50)
 public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTarget, IConfigurableWidget {
 
     private boolean clearSlotOnRightClick;

@@ -240,7 +240,7 @@ public class GTRecipeModifiers {
 
             if (coilMachine.getCoilTier() == 0) {
                 // 75% speed with cupro coils
-                result.setDuration(Math.max(1, (int) result.getDuration() * 4 / 3));
+                result.setDuration(Math.max(1, (int) (result.getDuration() * 4.0 / 3)));
             } else {
                 result.setDuration(Math.max(1, (int) (result.getDuration() * 2.0 / (tier + 1))));
             }
@@ -261,14 +261,13 @@ public class GTRecipeModifiers {
 
             int parallelValue = parallel.getSecond();
             long eut = 4 * Math.max(1, (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount());
-            int duration = (int) Math.max(1, FURNACE_DURATION * 2 * parallelValue / Math.max(1, maxParallel * 1.0));
 
-            recipe.duration = duration;
+            recipe.duration = (int) Math.max(1, FURNACE_DURATION * 2 * parallelValue / Math.max(1.0, maxParallel));
             recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut,
                     ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(),
                     0, null, null)));
 
-            var re = RecipeHelper.applyOverclock(new OverclockingLogic((p, r, maxVoltage) -> {
+            RecipeHelper.applyOverclock(new OverclockingLogic((p, r, maxVoltage) -> {
                 OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
                         .runOverclockingLogic(params, result, maxVoltage);
             }), recipe, coilMachine.getOverclockVoltage(), params, result);

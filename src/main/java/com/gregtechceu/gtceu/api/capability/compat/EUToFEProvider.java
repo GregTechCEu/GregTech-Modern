@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
@@ -13,7 +14,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 
 public class EUToFEProvider extends CapabilityCompatProvider {
@@ -57,7 +57,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
             // Try to use the internal buffer before consuming a new packet
             if (feBuffer > 0) {
 
-                receive = energyStorage.receiveEnergy(Ints.saturatedCast(feBuffer), true);
+                receive = energyStorage.receiveEnergy(GTMath.saturatedCast(feBuffer), true);
 
                 if (receive == 0)
                     return 0;
@@ -70,7 +70,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                     // Buffer could not provide max value, save the remainder and continue processing
                 } else {
-                    receive = Ints.saturatedCast(feBuffer);
+                    receive = GTMath.saturatedCast(feBuffer);
                     feBuffer = 0;
                 }
             }
@@ -81,7 +81,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
             // Try to consume our remainder buffer plus a fresh packet
             if (receive != 0) {
 
-                int consumable = energyStorage.receiveEnergy(Ints.saturatedCast(maximalValue + receive), true);
+                int consumable = energyStorage.receiveEnergy(GTMath.saturatedCast(maximalValue + receive), true);
 
                 // Machine unable to consume any power
                 if (consumable == 0)
@@ -107,15 +107,15 @@ public class EUToFEProvider extends CapabilityCompatProvider {
                 }
 
                 // Able to consume buffered amount plus some amount of power with a packet remainder
-                int ampsToConsume = Ints.saturatedCast((newPower / maxPacket) + 1);
-                feBuffer = Ints.saturatedCast((maxPacket * ampsToConsume) - consumable);
+                int ampsToConsume = GTMath.saturatedCast((newPower / maxPacket) + 1);
+                feBuffer = GTMath.saturatedCast((maxPacket * ampsToConsume) - consumable);
                 energyStorage.receiveEnergy(consumable, false);
                 return ampsToConsume;
 
                 // Else try to draw 1 full packet
             } else {
 
-                int consumable = energyStorage.receiveEnergy(Ints.saturatedCast(maximalValue), true);
+                int consumable = energyStorage.receiveEnergy(GTMath.saturatedCast(maximalValue), true);
 
                 // Machine unable to consume any power
                 if (consumable == 0)
@@ -133,8 +133,8 @@ public class EUToFEProvider extends CapabilityCompatProvider {
                 }
 
                 // Able to consume power with some amount of power remainder in the packet
-                int ampsToConsume = Ints.saturatedCast((consumable / maxPacket) + 1);
-                feBuffer = Ints.saturatedCast((maxPacket * ampsToConsume) - consumable);
+                int ampsToConsume = GTMath.saturatedCast((consumable / maxPacket) + 1);
+                feBuffer = GTMath.saturatedCast((maxPacket * ampsToConsume) - consumable);
                 energyStorage.receiveEnergy(consumable, false);
                 return ampsToConsume;
             }

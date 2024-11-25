@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
-import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
+import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -104,9 +104,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     public static boolean checkImportCover(CoverBehavior cover, boolean onPipe, ItemStack stack) {
         if (cover == null) return true;
         if (cover instanceof ItemFilterCover filter) {
-            return (filter.getFilterMode() != ItemFilterMode.FILTER_BOTH &&
-                    (filter.getFilterMode() != ItemFilterMode.FILTER_INSERT || !onPipe) &&
-                    (filter.getFilterMode() != ItemFilterMode.FILTER_EXTRACT || onPipe)) ||
+            return (filter.getFilterMode() != FilterMode.FILTER_BOTH &&
+                    (filter.getFilterMode() != FilterMode.FILTER_INSERT || !onPipe) &&
+                    (filter.getFilterMode() != FilterMode.FILTER_EXTRACT || onPipe)) ||
                     filter.getItemFilter().test(stack);
         }
         return true;

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.ShutterCover;
-import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
+import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -123,13 +123,13 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
         if (thisCover instanceof ShutterCover shutter) {
             filters.add(stack -> !shutter.isWorkingEnabled());
         } else if (thisCover instanceof ItemFilterCover itemFilterCover &&
-                itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_INSERT) {
+                itemFilterCover.getFilterMode() != FilterMode.FILTER_INSERT) {
                     filters.add(itemFilterCover.getItemFilter());
                 }
         if (neighbourCover instanceof ShutterCover shutter) {
             filters.add(stack -> !shutter.isWorkingEnabled());
         } else if (neighbourCover instanceof ItemFilterCover itemFilterCover &&
-                itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_EXTRACT) {
+                itemFilterCover.getFilterMode() != FilterMode.FILTER_EXTRACT) {
                     filters.add(itemFilterCover.getItemFilter());
                 }
         if (!filters.isEmpty()) {
