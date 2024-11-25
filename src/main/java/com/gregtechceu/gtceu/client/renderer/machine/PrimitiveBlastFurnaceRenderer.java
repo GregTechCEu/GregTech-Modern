@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 
@@ -17,13 +19,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Matrix4f;
 
 public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer {
 
+    private final FluidBlockRenderer fluidBlockRenderer;
+
     public PrimitiveBlastFurnaceRenderer(ResourceLocation base, ResourceLocation overlay) {
         super(base, overlay);
+        fluidBlockRenderer = FluidBlockRenderer.Builder.create()
+                .setFaceOffset(-.125f)
+                .setForcedLight(LightTexture.FULL_BRIGHT)
+                .getRenderer();
     }
 
     @Override
@@ -42,18 +48,18 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
                 if (pbf.isActive()) {
                     Direction opposite = pbf.getFrontFacing().getOpposite();
                     RenderType lavaRenderType = ItemBlockRenderTypes.getRenderLayer(Fluids.LAVA.defaultFluidState());
-                    combinedLight = LightTexture.FULL_BRIGHT;
 
                     stack.pushPose();
-                    Matrix4f pose = stack.last().pose();
-
+                    var pose = stack.last().pose();
                     pose.translate(opposite.getStepX(), opposite.getStepY(), opposite.getStepZ());
 
-                    VertexConsumer vertexConsumer = buffer
-                            .getBuffer(RenderTypeHelper.getEntityRenderType(lavaRenderType, true));
+                    var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(lavaRenderType, true));
+                    var up = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
+                            pbf.isFlipped());
+                    if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
 
-                    RenderUtil.renderFluidBlockFace(pose, vertexConsumer, Fluids.LAVA,
-                            RenderUtil.FluidTextureType.STILL, Direction.UP, combinedOverlay, combinedLight);
+                    fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
+                            RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
 
                     stack.popPose();
                 }
