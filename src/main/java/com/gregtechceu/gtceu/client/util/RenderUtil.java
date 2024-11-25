@@ -92,6 +92,11 @@ public class RenderUtil {
     public static void vertex(Matrix4f pose, VertexConsumer vertexConsumer, float x, float y, float z, int r, int g,
                               int b, int a, float u, float v, int overlayCoords, int lightOverlay, float v0, float v1,
                               float v2) {
+        /*
+         * For future reference:
+         * The order of the vertex calls is important.
+         * Change it, and it'll break and complain that you didn't fill all elements (even though you did).
+         */
         vertexConsumer
                 .vertex(pose, x, y, z)
                 .color(r, g, b, a)
