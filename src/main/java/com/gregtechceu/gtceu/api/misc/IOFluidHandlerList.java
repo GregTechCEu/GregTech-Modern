@@ -48,7 +48,9 @@ public class IOFluidHandlerList extends FluidHandlerList implements IFluidHandle
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         if (!io.support(IO.OUT)) return FluidStack.EMPTY;
-        return super.drain(maxDrain, action);
+        var fluidStack = super.drain(maxDrain, FluidAction.SIMULATE);
+        if (fluidStack.isEmpty() || !outFilter.test(fluidStack)) return FluidStack.EMPTY;
+        return action.simulate() ? fluidStack : super.drain(maxDrain, action);
     }
 
     @Override
