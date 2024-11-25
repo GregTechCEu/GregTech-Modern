@@ -61,7 +61,7 @@ public class DecompositionRecipeHandler {
             List<Integer> materialAmounts = new ArrayList<>();
             materialAmounts.add(totalInputAmount);
             outputs.forEach(itemStack -> materialAmounts.add(itemStack.getCount()));
-            fluidOutputs.forEach(fluidStack -> materialAmounts.add((int) (fluidStack.getAmount() / 1000)));
+            fluidOutputs.forEach(fluidStack -> materialAmounts.add(fluidStack.getAmount() / 1000));
 
             int highestDivisor = 1;
 

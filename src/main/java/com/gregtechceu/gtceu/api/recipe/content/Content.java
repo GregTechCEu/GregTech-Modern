@@ -130,13 +130,13 @@ public class Content {
             double amount = ingredient.getAmount();
             String s;
             if (amount >= 1_000_000_000) {
-                amount /= (double) 1_000_000_000;
+                amount /= 1_000_000_000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
             } else if (amount >= 1_000_000) {
-                amount /= (double) 1_000_000;
+                amount /= 1_000_000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
             } else if (amount >= 1000) {
-                amount /= (double) 1000;
+                amount /= 1000;
                 s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
             } else {
                 s = (int) amount + "mB";

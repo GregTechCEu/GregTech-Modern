@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
@@ -210,7 +211,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 currentStack.setCount(newStackSize);
                 gui.getModularUIContainer().setCarried(currentStack);
 
-                FluidStack stack = new FluidStack(key.getFluid(), (int) slot.getStock().amount());
+                FluidStack stack = new FluidStack(key.getFluid(), GTMath.saturatedCast(slot.getStock().amount()));
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
@@ -253,7 +254,8 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
             return false;
         }
         FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ?
-                new FluidStack(fluidKey.getFluid(), (int) slot.getConfig().amount(), fluidKey.getTag()) :
+                new FluidStack(fluidKey.getFluid(), GTMath.saturatedCast(slot.getConfig().amount()),
+                        fluidKey.getTag()) :
                 FluidStack.EMPTY;
         long amt;
         if (isCtrlDown()) {

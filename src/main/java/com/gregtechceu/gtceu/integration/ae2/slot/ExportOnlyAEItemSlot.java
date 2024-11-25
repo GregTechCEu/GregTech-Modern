@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
+import com.gregtechceu.gtceu.utils.GTMath;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -58,7 +60,8 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemHandl
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot == 0 && this.stock != null) {
-            return this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) :
+            return this.stock.what() instanceof AEItemKey itemKey ?
+                    itemKey.toStack(GTMath.saturatedCast(this.stock.amount())) :
                     ItemStack.EMPTY;
         }
         return ItemStack.EMPTY;
@@ -83,9 +86,8 @@ public class ExportOnlyAEItemSlot extends ExportOnlyAESlot implements IItemHandl
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot == 0 && this.stock != null) {
             int extracted = (int) Math.min(this.stock.amount(), amount);
-            ItemStack result = this.stock.what() instanceof AEItemKey itemKey ?
-                    itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY.copy();
-            result.setCount(extracted);
+            if (!(this.stock.what() instanceof AEItemKey itemKey)) return ItemStack.EMPTY;
+            ItemStack result = itemKey.toStack(extracted);
             if (!simulate) {
                 this.stock = ExportOnlyAESlot.copy(this.stock, this.stock.amount() - extracted);
                 if (this.stock.amount() == 0) {

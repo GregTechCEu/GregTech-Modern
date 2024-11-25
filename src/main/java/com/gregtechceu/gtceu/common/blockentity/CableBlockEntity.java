@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -232,7 +233,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         averageVoltageCounter.increment(getLevel(), voltage * amps);
         averageAmperageCounter.increment(getLevel(), amps);
 
-        int dif = (int) (averageAmperageCounter.getLast(getLevel()) - getMaxAmperage());
+        int dif = GTMath.saturatedCast(averageAmperageCounter.getLast(getLevel()) - getMaxAmperage());
         if (dif > 0) {
             applyHeat(dif * 40);
             return true;
