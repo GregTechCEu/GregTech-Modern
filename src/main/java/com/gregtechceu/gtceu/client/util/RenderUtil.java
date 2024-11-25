@@ -53,16 +53,15 @@ public class RenderUtil {
         return new Vector3f(x, y, z);
     }
 
-    // todo: fill maps
     public static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = new HashMap<>() {
 
         {
             put(Direction.UP, new Vector3f[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
-            put(Direction.DOWN, new Vector3f[] { vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(1, 0, 1) });
-            put(Direction.NORTH, new Vector3f[] {});
-            put(Direction.SOUTH, new Vector3f[] {});
-            put(Direction.WEST, new Vector3f[] {});
-            put(Direction.EAST, new Vector3f[] {});
+            put(Direction.DOWN, new Vector3f[] { vec3f(1, 0, 1), vec3f(0, 0, 1), vec3f(0, 0, 0), vec3f(1, 0, 0) });
+            put(Direction.SOUTH, new Vector3f[] { vec3f(1, 1, 0), vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 1, 0) });
+            put(Direction.NORTH, new Vector3f[] { vec3f(0, 1, 1), vec3f(0, 0, 1), vec3f(1, 0, 1), vec3f(1, 1, 1) });
+            put(Direction.EAST, new Vector3f[] { vec3f(0, 1, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(0, 1, 1) });
+            put(Direction.WEST, new Vector3f[] { vec3f(1, 1, 1), vec3f(1, 0, 1), vec3f(1, 0, 0), vec3f(1, 1, 0) });
         }
     };
 
@@ -70,11 +69,11 @@ public class RenderUtil {
 
         {
             put(Direction.UP, vec3f(0, 1, 0));
-            put(Direction.DOWN, vec3f(0, 0, 0));
-            put(Direction.NORTH, Vec3.ZERO.toVector3f());
-            put(Direction.SOUTH, Vec3.ZERO.toVector3f());
-            put(Direction.WEST, Vec3.ZERO.toVector3f());
-            put(Direction.EAST, Vec3.ZERO.toVector3f());
+            put(Direction.DOWN, vec3f(0, 1, 0));
+            put(Direction.SOUTH, vec3f(0, 0, 1));
+            put(Direction.NORTH, vec3f(0, 0, 1));
+            put(Direction.EAST, vec3f(1, 0, 0));
+            put(Direction.WEST, vec3f(1, 0, 0));
         }
     };
 
