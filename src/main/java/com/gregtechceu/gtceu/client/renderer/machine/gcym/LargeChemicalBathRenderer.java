@@ -59,6 +59,16 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
     }
 
     @Override
+    public int getViewDistance() {
+        return 32;
+    }
+
+    @Override
+    public boolean isGlobalRenderer(BlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public boolean hasTESR(BlockEntity blockEntity) {
         return true;
     }
@@ -98,7 +108,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
                         lcb.isFlipped());
                 if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
                 fluidBlockRenderer.drawPlane(up, lcb.getFluidBlockOffsets(), pose, consumer, fluid,
-                        RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
+                        RenderUtil.FluidTextureType.STILL, combinedOverlay, lcb.getPos());
 
                 stack.popPose();
             }
