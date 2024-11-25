@@ -13,9 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import com.mojang.logging.LogUtils;
 import lombok.Getter;
-import org.slf4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,8 +23,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             LargeChemicalBathMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -59,8 +55,6 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
 
     protected void saveOffsets() {
         Direction up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
-        LOGGER.info("Allow extended facing {}", allowExtendedFacing());
-        LOGGER.info("The upwards direction is {}", up);
         Direction back = getFrontFacing().getOpposite();
         Direction clockWise;
         Direction counterClockWise;
