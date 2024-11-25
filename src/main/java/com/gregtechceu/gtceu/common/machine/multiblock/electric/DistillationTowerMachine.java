@@ -258,13 +258,18 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     }
                 }
 
-                if (!recipeDirty &&
+                if (!recipeDirty && !suspendAfterFinish &&
                         matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
                         lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                         lastRecipe.checkConditions(this).isSuccess()) {
                     setupRecipe(lastRecipe);
                 } else {
-                    setStatus(Status.IDLE);
+                    if (suspendAfterFinish) {
+                        setStatus(Status.SUSPEND);
+                        suspendAfterFinish = false;
+                    } else {
+                        setStatus(Status.IDLE);
+                    }
                     progress = 0;
                     duration = 0;
                     isActive = false;

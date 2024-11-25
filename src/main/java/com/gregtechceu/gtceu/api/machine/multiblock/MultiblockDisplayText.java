@@ -342,60 +342,41 @@ public class MultiblockDisplayText {
 
                 for (var item : itemOutputs) {
                     var stack = (ItemRecipeCapability.CAP.of(item.content).getItems()[0]);
-                    if (stack.getCount() < maxDurationSec) {
-                        if (item.chance < item.maxChance) {
-                            double averageDurationforRoll = (double) item.maxChance / (double) function
-                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.2", stack.getHoverName(),
-                                    stack.getCount(),
-                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
-                        } else {
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.0", stack.getHoverName(),
-                                    stack.getCount(),
-                                    FormattingUtil.formatNumber2Places(maxDurationSec / stack.getCount())));
-                        }
+                    int count = stack.getCount();
+                    double countD = count;
+                    if (item.chance < item.maxChance) {
+                        countD = countD * recipe.parallels *
+                                function.getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier) /
+                                item.maxChance;
+                        count = countD < 1 ? 1 : (int) Math.round(countD);
+                    }
+                    if (count < maxDurationSec) {
+                        String key = "gtceu.multiblock.output_line." + (item.chance < item.maxChance ? "2" : "0");
+                        textList.add(Component.translatable(key, stack.getHoverName(), count,
+                                FormattingUtil.formatNumber2Places(maxDurationSec / countD)));
                     } else {
-                        double countPerSec = (double) stack.getCount() / maxDurationSec;
-                        if (item.chance < item.maxChance) {
-                            double averageDurationforRoll = (double) item.maxChance / (double) function
-                                    .getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.3",
-                                    stack.getHoverName(), stack.getCount(),
-                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
-                        } else {
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.1",
-                                    stack.getHoverName(), stack.getCount(),
-                                    FormattingUtil.formatNumber2Places(countPerSec)));
-                        }
+                        String key = "gtceu.multiblock.output_line." + (item.chance < item.maxChance ? "3" : "1");
+                        textList.add(Component.translatable(key, stack.getHoverName(), count,
+                                FormattingUtil.formatNumber2Places(countD / maxDurationSec)));
                     }
                 }
                 for (var fluid : fluidOutputs) {
                     var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
-                    if (stack.getAmount() < maxDurationSec) {
-                        if (fluid.chance < fluid.maxChance) {
-                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
-                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.2",
-                                    stack.getDisplayName(), stack.getAmount(),
-                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * maxDurationSec)));
-                        } else {
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.0",
-                                    stack.getDisplayName(), stack.getAmount(),
-                                    FormattingUtil.formatNumber2Places(maxDurationSec / stack.getAmount())));
-                        }
+                    int amount = stack.getAmount();
+                    double amountD = amount;
+                    if (fluid.chance < fluid.maxChance) {
+                        amountD = amountD * recipe.parallels * function.getBoostedChance(fluid,
+                                RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier) / fluid.maxChance;
+                        amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                    }
+                    if (amount < maxDurationSec) {
+                        String key = "gtceu.multiblock.output_line." + (fluid.chance < fluid.maxChance ? "2" : "0");
+                        textList.add(Component.translatable(key, stack.getDisplayName(), amount,
+                                FormattingUtil.formatNumber2Places(maxDurationSec / amountD)));
                     } else {
-                        double countPerSec = (double) stack.getAmount() / maxDurationSec;
-                        if (fluid.chance < fluid.maxChance) {
-                            double averageDurationforRoll = (double) fluid.maxChance / (double) function
-                                    .getBoostedChance(fluid, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier);
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.3",
-                                    stack.getDisplayName(), stack.getAmount(),
-                                    FormattingUtil.formatNumber2Places(averageDurationforRoll * countPerSec)));
-                        } else {
-                            textList.add(Component.translatable("gtceu.multiblock.output_line.1",
-                                    stack.getDisplayName(), stack.getAmount(),
-                                    FormattingUtil.formatNumber2Places(countPerSec)));
-                        }
+                        String key = "gtceu.multiblock.output_line." + (fluid.chance < fluid.maxChance ? "3" : "1");
+                        textList.add(Component.translatable(key, stack.getDisplayName(), amount,
+                                FormattingUtil.formatNumber2Places(amountD / maxDurationSec)));
                     }
                 }
             }

@@ -1276,13 +1276,14 @@ public class LangHandler {
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
         provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
 
-        provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
-        provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_1", "Base Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_1_logic", "Base Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_2", "Chance at Tier: %s%%");
-        provider.add("gtceu.gui.content.chance_2_logic", "Chance at Tier: %s%% (%s)");
-        provider.add("gtceu.gui.content.tier_boost", "Bonus Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.chance_nc", "§cNot Consumed§r");
+        provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
+        provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
+        provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
+        provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
 
         provider.add("gtceu.chance_logic.or", "OR");

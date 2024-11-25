@@ -213,7 +213,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    (int) (currentTemperature + 274.15), (int) (maxTemperature + 274.15)));
+                    currentTemperature + 274, maxTemperature + 274));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 

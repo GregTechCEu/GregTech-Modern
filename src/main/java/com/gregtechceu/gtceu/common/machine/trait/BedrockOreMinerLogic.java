@@ -159,7 +159,12 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                 return;
             }
         }
-        setStatus(Status.IDLE);
+        if (suspendAfterFinish) {
+            setStatus(Status.SUSPEND);
+            suspendAfterFinish = false;
+        } else {
+            setStatus(Status.IDLE);
+        }
         progress = 0;
         duration = 0;
     }
