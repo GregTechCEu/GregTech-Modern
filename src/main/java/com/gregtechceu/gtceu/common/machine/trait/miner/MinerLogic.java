@@ -157,8 +157,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void resetRecipeLogic() {
         super.resetRecipeLogic();
         resetArea(false);
-        if (getStatus() != Status.SUSPEND)
-            setStatus(Status.IDLE);
         this.cachedItemHandler = null;
         this.pipeLength = 0;
     }
