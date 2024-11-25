@@ -106,8 +106,9 @@ public class MultiblockDisplayText {
 
                 String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
                 // wrap in text component to keep it from being formatted
+                byte voltageTier = GTUtil.getFloorTierByVoltage(maxVoltage);
                 Component voltageName = Component.literal(
-                        GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
+                        GTValues.VNF[voltageTier > GTValues.MAX ? GTValues.MAX + 1 : voltageTier]);
 
                 MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
                         energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
