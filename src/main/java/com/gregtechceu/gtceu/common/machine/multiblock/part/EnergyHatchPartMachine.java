@@ -127,4 +127,8 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
         }
         return super.tintColor(index);
     }
+
+    public static long getHatchEnergyCapacity(int tier, int amperage) {
+        return GTValues.V[tier] * 64L * amperage;
+    }
 }

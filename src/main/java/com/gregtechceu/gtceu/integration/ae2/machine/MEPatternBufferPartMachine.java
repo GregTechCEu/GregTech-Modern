@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -65,7 +66,6 @@ import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.primitives.Ints;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -501,7 +501,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 for (FluidStack stack : fluidInventory) {
                     if (stack == null || stack.isEmpty()) continue;
 
-                    int inserted = Ints.saturatedCast(StorageHelper.poweredInsert(
+                    int inserted = GTMath.saturatedCast(StorageHelper.poweredInsert(
                             energy,
                             networkInv,
                             AEFluidKey.of(stack.getFluid(), stack.getTag()),
@@ -521,7 +521,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
             patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                 if (what instanceof AEFluidKey key) {
-                    addFluid(key, Ints.saturatedCast(amount));
+                    addFluid(key, GTMath.saturatedCast(amount));
                 }
 
                 if (what instanceof AEItemKey key) {

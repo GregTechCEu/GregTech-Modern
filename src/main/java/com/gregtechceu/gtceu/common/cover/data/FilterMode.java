@@ -12,17 +12,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public enum ItemFilterMode implements EnumSelectorWidget.SelectableEnum {
+public enum FilterMode implements EnumSelectorWidget.SelectableEnum {
 
     FILTER_INSERT("filter_insert"),
     FILTER_EXTRACT("filter_extract"),
     FILTER_BOTH("filter_both");
 
-    public static final ItemFilterMode[] VALUES = values();
+    public static final FilterMode[] VALUES = values();
 
     public final String localeName;
 
-    ItemFilterMode(String localeName) {
+    FilterMode(String localeName) {
         this.localeName = localeName;
     }
 
@@ -33,7 +33,7 @@ public enum ItemFilterMode implements EnumSelectorWidget.SelectableEnum {
 
     @Override
     public IGuiTexture getIcon() {
-        return new ResourceTexture("gtceu:textures/gui/icon/item_filter_mode/" + localeName + ".png");
+        return new ResourceTexture("gtceu:textures/gui/icon/filter_mode/" + localeName + ".png");
     }
 
     public boolean filters(IO io) {

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
@@ -64,6 +65,8 @@ public class GTRecipeWidget extends WidgetGroup {
     private final GTRecipe recipe;
     private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
     @Getter
+    private final int minTier;
+    @Getter
     private int tier;
     @Getter
     private int yOffset;
@@ -74,6 +77,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 recipe.recipeType.getRecipeUI().getJEISize().height);
         this.recipe = recipe;
         this.xOffset = getXOffset(recipe);
+        this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
         setRecipeWidget();
         setTierToMin();
         initializeRecipeTextWidget();
@@ -280,41 +284,39 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int tier,
-                                         int minTier) {
-        var chance = content.chance;
-        if (chance < ChanceLogic.getMaxChancedValue()) {
-            if (chance == 0) {
-                tooltips.add(Component.translatable("gtceu.gui.content.chance_0"));
+                                         int minTier, ChanceBoostFunction function) {
+        if (content.chance < ChanceLogic.getMaxChancedValue()) {
+            int boostedChance = function.getBoostedChance(content, minTier, tier);
+            if (boostedChance == 0) {
+                tooltips.add(Component.translatable("gtceu.gui.content.chance_nc"));
             } else {
-                float chanceFloat = 100 * (float) content.chance / content.maxChance;
-                float chanceAtTierFloat = Math
-                        .min(chanceFloat + (100.0f * ((float) content.tierChanceBoost / (float) content.maxChance)) *
-                                Math.max(0, (tier >= GTValues.LV ? tier - 1 : tier) - minTier), 100.0f);
+                float baseChanceFloat = 100f * content.chance / content.maxChance;
+                float boostedChanceFloat = 100f * boostedChance / content.maxChance;
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltips.add(Component.translatable("gtceu.gui.content.chance_1_logic",
-                            FormattingUtil.formatNumber2Places(chanceFloat), logic.getTranslation())
-                            .withStyle(ChatFormatting.YELLOW));
-                } else {
-                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chanceFloat));
-                }
-                if (content.tierChanceBoost != 0) {
-                    tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
-                            content.tierChanceBoost / 100.0f));
-                }
-                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltips.add(Component.translatable("gtceu.gui.content.chance_2_logic",
-                            FormattingUtil.formatNumber2Places(chanceAtTierFloat), logic.getTranslation())
+                    tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
+                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltips.add(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_2", chanceAtTierFloat));
+                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", baseChanceFloat));
+                }
+                if (content.tierChanceBoost != 0) {
+                    String key = "gtceu.gui.content.chance_tier_boost_" +
+                            ((content.tierChanceBoost > 0) ? "plus" : "minus");
+                    tooltips.add(FormattingUtil.formatPercentage2Places(key,
+                            Math.abs(100f * content.tierChanceBoost / content.maxChance)));
+                }
+                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                    tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
+                            FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                            .withStyle(ChatFormatting.YELLOW));
+                } else {
+                    tooltips.add(
+                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
+                                    boostedChanceFloat));
                 }
             }
         }
-    }
-
-    private int getMinTier() {
-        return RecipeHelper.getRecipeEUtTier(recipe);
     }
 
     private void setTier(int tier) {
@@ -392,7 +394,8 @@ public class GTRecipeWidget extends WidgetGroup {
                                 cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
                                         null, tier, getMinTier());
                                 widget.setOverlay(
-                                        content.createOverlay(index >= nonTickCount, Math.max(0, tier - getMinTier())));
+                                        content.createOverlay(index >= nonTickCount, getMinTier(), tier,
+                                                recipe.getType().getChanceFunction()));
                             }
                         });
             }

@@ -282,6 +282,18 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder conditionalTooltip(Component component, Supplier<Boolean> condition) {
+        return conditionalTooltip(component, condition.get());
+    }
+
+    @Override
+    public MultiblockMachineBuilder conditionalTooltip(Component component, boolean condition) {
+        if (condition)
+            tooltips(component);
+        return this;
+    }
+
+    @Override
     public MultiblockMachineBuilder abilities(PartAbility... abilities) {
         return (MultiblockMachineBuilder) super.abilities(abilities);
     }

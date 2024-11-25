@@ -103,23 +103,21 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
         if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
             ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getTag());
         } else if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-            Fluid fluid = emiStack.getKeyOfType(Fluid.class);
-            if (fluid != null) ingredient = new FluidStack(fluid,
-                    emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount(), emiStack.getNbt());
-            else {
-                Item item = emiStack.getKeyOfType(Item.class);
-                if (item != null) {
-                    ingredient = new ItemStack(item, (int) emiStack.getAmount());
-                    ((ItemStack) ingredient).setTag(emiStack.getNbt());
-                    ingredient = drainFrom(ingredient);
-                }
+            var key = emiStack.getKey();
+            if (key instanceof Fluid f) {
+                int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
+                ingredient = new FluidStack(f, amount, emiStack.getNbt());
+            } else if (key instanceof Item i) {
+                ingredient = new ItemStack(i, (int) emiStack.getAmount());
+                ((ItemStack) ingredient).setTag(emiStack.getNbt());
+            } else {
+                ingredient = null;
             }
         } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            if (jeiStack.getIngredient() instanceof FluidStack fluidStack) {
-                ingredient = fluidStack;
-            }
+            ingredient = jeiStack.getIngredient();
         }
-        if (!(ingredient instanceof FluidStack)) {
+
+        if (!(ingredient instanceof FluidStack) && drainFrom(ingredient).isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -135,30 +133,27 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
             @Override
             public void accept(@Nonnull Object ingredient) {
                 if (LDLib.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-                    ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(),
+                    ingredient = new FluidStack(fluidStack.getFluid(),
+                            (int) fluidStack.getAmount(),
                             fluidStack.getTag());
                 } else if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
-                    Fluid fluid = emiStack.getKeyOfType(Fluid.class);
-                    if (fluid != null) ingredient = new FluidStack(fluid,
-                            emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount(), emiStack.getNbt());
-                    else {
-                        Item item = emiStack.getKeyOfType(Item.class);
-                        if (item != null) {
-                            ingredient = new ItemStack(item, (int) emiStack.getAmount());
-                            ((ItemStack) ingredient).setTag(emiStack.getNbt());
-                            ingredient = drainFrom(ingredient);
-                        }
-                    }
-                } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiIngredient) {
-                    if (jeiIngredient.getIngredient() instanceof FluidStack fluidStack) {
-                        ingredient = fluidStack;
+                    var key = emiStack.getKey();
+                    if (key instanceof Fluid f) {
+                        int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
+                        ingredient = new FluidStack(f, amount, emiStack.getNbt());
+                    } else if (key instanceof Item i) {
+                        ingredient = new ItemStack(i, (int) emiStack.getAmount());
+                        ((ItemStack) ingredient).setTag(emiStack.getNbt());
+                    } else {
+                        ingredient = null;
                     }
                 }
 
-                FluidStack ingredientStack = null;
+                FluidStack ingredientStack;
                 if (ingredient instanceof FluidStack fluidStack) ingredientStack = fluidStack;
+                else ingredientStack = drainFrom(ingredient);
 
-                if (ingredientStack != null) {
+                if (!ingredientStack.isEmpty()) {
                     writeClientAction(2, ingredientStack::writeToPacket);
                 }
 

@@ -198,7 +198,7 @@ public class ParallelLogic {
         GTRecipe multiRecipe;
         if (limitByOutput > 0) {
             multiRecipe = currentRecipe.copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
-            multiRecipe.parallels = limitByOutput;
+            multiRecipe.parallels *= limitByOutput;
             return Pair.of(multiRecipe, limitByOutput);
         }
 
