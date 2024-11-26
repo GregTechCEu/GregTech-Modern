@@ -2338,6 +2338,8 @@
   "config.gtceu.option.removeVanillaLargeOreVeins": "removeVanillaLargeOreVeins",
   "config.gtceu.option.removeVanillaOreGen": "removeVanillaOreGen",
   "config.gtceu.option.removeVanillaTNTRecipe": "removeVanillaTNTRecipe",
+  "config.gtceu.option.renderFluids": "renderFluids",
+  "config.gtceu.option.renderer": "renderer",
   "config.gtceu.option.replaceMinedBlocksWith": "replaceMinedBlocksWith",
   "config.gtceu.option.requireGTToolsForBlocks": "requireGTToolsForBlocks",
   "config.gtceu.option.rightToolbar": "rightToolbar",
